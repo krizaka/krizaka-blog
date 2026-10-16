@@ -1,7 +1,7 @@
 "use client";
 
 /* The bar, built on @krizaka/ui's NavBar, in the three zones of every Krizaka site. Left: the Krizaka mark and the
-   blog's name. Centre: this site's sections (Posts · Topics · Search). Right: RSS · GitHub · theme · language · the
+   blog's name. Centre: this site's sections (Posts · Topics · Search · Saved). Right: RSS · GitHub · theme · language · the
    way back to krizaka.com. Below md: the mark and the mobile panel's toggle. */
 
 import Link from "next/link";
@@ -26,6 +26,7 @@ export default function TopBar() {
   const home = localizedPath(locale, "/");
   const tags = localizedPath(locale, "/tags");
   const search = localizedPath(locale, "/search");
+  const saved = localizedPath(locale, "/saved");
   const feed = `${locale === "en" ? "" : "/fr"}/feed.xml`;
   /* The language switch lands on the same page when it exists in the other language, else on that language's home. */
   const switchTo = clean.startsWith("/posts/") ? localizedPath(other, "/") : localizedPath(other, clean);
@@ -49,6 +50,9 @@ export default function TopBar() {
           </NavBar.Link>
           <NavBar.Link asChild active={clean === "/search"}>
             <Link href={search}>{b.search}</Link>
+          </NavBar.Link>
+          <NavBar.Link asChild active={clean === "/saved"}>
+            <Link href={saved}>{b.saved}</Link>
           </NavBar.Link>
         </NavBar.Items>
 
@@ -79,6 +83,7 @@ export default function TopBar() {
             <MobileLink href={home}>{b.posts}</MobileLink>
             <MobileLink href={tags}>{b.tags}</MobileLink>
             <MobileLink href={search}>{b.search}</MobileLink>
+            <MobileLink href={saved}>{b.saved}</MobileLink>
             <MobileLink href={feed} external>{b.rssAria}</MobileLink>
             <MobileLink href={KRIZAKA_URL} external>{b.company}</MobileLink>
             <MobileLink href={GITHUB_ORG_URL} external>{b.github}</MobileLink>

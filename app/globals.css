@@ -163,6 +163,14 @@ html.light ::selection { background: hsla(217, 92%, 50%, 0.18); }
 .bl-series-title a, .bl-series li a { color: var(--kz-accent-text); text-decoration: underline; text-underline-offset: 3px; }
 .bl-series ol { padding-inline-start: 1.5rem; display: grid; gap: 0.25rem; list-style: decimal; }
 .bl-series li[aria-current="page"] { font-weight: 650; color: var(--kz-text-primary); }
+/* Save and share (app/components/engage): Krizaka UI buttons in wrapping rows, nothing past the column on a phone. */
+.bl-hero-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.bl-engage { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--kz-border-subtle); display: grid; gap: 0.75rem; }
+.bl-engage-title { font-family: var(--kz-font-display); font-size: 1.125rem; font-weight: 700; color: var(--kz-text-primary); }
+.bl-engage-row, .bl-share { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.bl-saved { display: grid; gap: 1rem; }
+.bl-saved-item { display: grid; gap: 0.25rem; align-content: start; justify-items: start; }
+.bl-saved-item > :first-child { width: 100%; }
 .bl-feed { margin-top: 2rem; font-size: 0.9375rem; }
 .bl-feed a { color: var(--kz-accent-text); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 
