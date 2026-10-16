@@ -38,7 +38,7 @@ export function PostCard({ post, locale, feature = false, priority = false }: { 
           {formatDate(post.date, locale)} · {format(t.post.readingTime, { minutes: String(post.readingMinutes) })}
         </p>
         <Card.Title as={feature ? "h2" : "h3"}>
-          <Link href={localizedPath(locale, postPath(post.slug))} className="bl-card-link">
+          <Link href={localizedPath(locale, postPath(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(post.slug) ? post.slug : ""))} className="bl-card-link">
             {post.title}
           </Link>
         </Card.Title>
