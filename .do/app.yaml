@@ -28,12 +28,17 @@ functions:
     routes:
       - path: /api
     envs:
+      # `unset` until the GitHub OAuth App exists (the sign-in answers 503 meanwhile). The real values are set on the app
+      # (console or `doctl apps update` with a spec kept outside the repository) — never in this file. BUILD_TIME as well:
+      # functions/project.yml substitutes them when the actions are built.
       - key: AUTH_GITHUB_CLIENT_ID
-        scope: RUN_TIME
+        scope: RUN_AND_BUILD_TIME
         type: SECRET
+        value: unset
       - key: AUTH_GITHUB_CLIENT_SECRET
-        scope: RUN_TIME
+        scope: RUN_AND_BUILD_TIME
         type: SECRET
+        value: unset
 domains:
   - domain: blog.krizaka.com
     type: PRIMARY

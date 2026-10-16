@@ -29,4 +29,7 @@ const resultPage = (status, content) => `<!doctype html><meta charset="utf-8"><t
 })();
 </script>`;
 
-module.exports = { makeState, checkState, authorizeUrl, resultPage };
+/** A value is configured when it is set and is not the `unset` placeholder of the app spec. */
+const configured = (v) => typeof v === "string" && v !== "" && v !== "unset";
+
+module.exports = { makeState, checkState, authorizeUrl, resultPage, configured };
