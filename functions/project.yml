@@ -1,5 +1,8 @@
 packages:
   - name: oauth
+    environment:
+      AUTH_GITHUB_CLIENT_ID: ${AUTH_GITHUB_CLIENT_ID}
+      AUTH_GITHUB_CLIENT_SECRET: ${AUTH_GITHUB_CLIENT_SECRET}
     actions:
       - name: auth
         runtime: "nodejs:default"
