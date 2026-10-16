@@ -1,0 +1,9 @@
+packages:
+  - name: oauth
+    actions:
+      - name: auth
+        runtime: "nodejs:default"
+        web: true
+      - name: callback
+        runtime: "nodejs:default"
+        web: true

@@ -1,0 +1,45 @@
+---
+title: "Why Krizaka builds sovereign AI in Montréal"
+description: "What we mean by sovereign, what it constrains in how we build, and what we have not solved yet."
+date: 2026-10-16
+tags: [sovereignty, ai, montreal]
+author: krizaka
+draft: true
+---
+
+When we say **sovereign AI**, we mean something narrow and checkable: a customer can say where their documents are processed, which model read them, and who can see the result. Everything else on this page follows from that sentence.
+
+## What "sovereign" means here
+
+Three things, in the order we can prove them.
+
+1. **A named place.** Our databases run in Toronto, Canada. The code that reads a document runs on infrastructure we rent and can name, not behind an opaque API we cannot inspect.
+2. **A traced run.** Every analysis is a run of [Orazaka](https://dev.orazaka.com), our engine. The run keeps its identifier, the version of the Studio that ran, and the rules it applied. If a result is questioned, the run is the answer.
+3. **No hidden model.** The model that did the work is a choice recorded in data, not a constant buried in a product. A product built on Orazaka never calls a model itself.
+
+We do not claim more than that. Sovereign is not a synonym for "private by magic" or "better". It is a property you can verify, or it is marketing.
+
+## Why Montréal
+
+Krizaka is a company from Montréal, and two practical facts make the city a good place for this work: the law we read first is Québec's (the Civil Code, Law 25 on personal information), and the people who must trust the result live under it. A tool that reads a Québec lease should be built by people who have to live with the answer.
+
+It also keeps us honest about language. Every Krizaka site ships in English and French from the first day, not as a later translation.
+
+## What it constrains
+
+Choosing to be checkable costs something, and we would rather list the costs than hide them.
+
+- **We refuse a verdict out of nowhere.** A finding quotes the rule and the exact passage it rests on, or it does not appear.
+- **We keep the work small.** No cluster we do not need, no service we cannot explain. Our product sites run on the smallest instances that work.
+- **We publish the code.** The component kit ([Krizaka UI](https://ui.krizaka.com)) and the Spring Boot building blocks ([Krizaka Java](https://java.krizaka.com)) are open source, so the base of our products can be read by anyone.
+- **We say what is not finished.** Several products are "in development": sign-up is closed, and their sites say so.
+
+## What we have not solved
+
+- Sovereignty of the *model* is still the hard part. Running a capable model on infrastructure we control costs real money and real GPU hours; we measure it in [the next post](/posts/measured-not-promised).
+- Our Québec rules for lease checking still await a lawyer's review, and the reports say so.
+- Rented infrastructure is not owned infrastructure. We know where our data sits; we do not build data centers.
+
+## What to expect from this blog
+
+Short posts, with the numbers we can point to and the runs that produced them. If a claim cannot be traced to a run, a measurement or a line of code, we will not write it.

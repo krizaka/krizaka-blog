@@ -1,0 +1,10 @@
+node_modules/
+.next/
+out/
+.cache/
+next-env.d.ts
+*.tsbuildinfo
+public/favicon.svg
+.env
+.env.*
+!.env.example

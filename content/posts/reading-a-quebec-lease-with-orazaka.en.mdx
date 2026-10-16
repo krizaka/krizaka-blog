@@ -1,0 +1,51 @@
+---
+title: "Reading a Québec lease with Orazaka"
+description: "A sample Montréal lease, checked rule by rule against the Civil Code of Québec by Yomizaka and Orazaka: what came back, how to check it, and what it does not prove."
+date: 2026-10-16
+tags: [yomizaka, orazaka, documents, law]
+author: krizaka
+draft: true
+---
+
+[Yomizaka](https://dev.yomizaka.com) reads a lease before you sign it. It does not give an opinion: it hands the lease to [Orazaka](https://dev.orazaka.com), applies a set of rules for the lease's jurisdiction, and shows every finding next to the exact words it rests on. This post walks through one real run on a sample lease, because a claim like that is only worth something if you can look at the evidence.
+
+## The document
+
+A sample residential lease for a 4½ in Montréal: twelve months from 1 July 2026 to 30 June 2027, a monthly rent of $1,450, a security deposit of $1,450 on signature, twelve postdated cheques, and a clause that forbids children in the dwelling. The rest is thirty lines of generic clauses. We wrote it to contain four known problems; it is not a client's document.
+
+## The run
+
+The lease was sent to the compliance Studio of Orazaka on dev.orazaka.com, with the Québec rules of 21 February 2024 (`qc-residential-lease`). The run came back with **nine checks: five non-compliant, four compliant**, and the run identifier `de62fe0d-16ec-44c6-8b32-751607e17cdf`.
+
+## The findings
+
+| Finding | Rule | Passage quoted |
+|:---|:---|:---|
+| Security deposit forbidden: only the first month may be demanded in advance | C.c.Q., art. 1904, para. 1 | « depot de securite de 1 450 $ » |
+| Postdated cheques forbidden | C.c.Q., art. 1904, para. 2 | « cheques postdates » |
+| Refusal of children has no effect | C.c.Q., art. 1899 | « interdit d'avoir des enfants » |
+| Notice of the lowest rent of the last twelve months | C.c.Q., art. 1896 and the regulation on mandatory lease forms, section G | — |
+| Abusive clause | C.c.Q., art. 1901 | « Il est interdit d'avoir des enfants dans le logement. » |
+
+Four of the five non-compliant findings point at words in the lease. The fifth is different in kind: the lease says nothing about the lowest rent of the last twelve months, and the rule requires that it does. A finding can be an absence, and the report shows that too. Four other checks, among them the identification of the landlord and of the tenant, were compliant.
+
+## How to check it
+
+Every number above is on the dev site, and none of it is a screenshot.
+
+- The **run identifier** is kept with the result and shown.
+- The **document's SHA-256** and the file's SHA-256 are recorded, so a different document cannot be passed off as this one.
+- The **signed report** is an HTML file signed with an Ed25519 key. Change one character and verification fails; the site has a page to verify it yourself.
+
+## What it does not prove
+
+We would rather say it ourselves.
+
+- **It is not legal advice**, and it does not prove the findings are legally right. Orazaka applies the rules it is given.
+- **The Québec rules still await a lawyer's review.** The report says so on its first page.
+- The signature proves the report is unchanged and that Krizaka issued it. There is no independent time-stamp and no blockchain; what you trust is Krizaka, the holder of the key.
+- The run is on a **development environment**. Yomizaka is in development and sign-up is closed.
+
+## Why we show a run
+
+A compliance tool can say "trust me" or it can show its work. We chose the second, and we think it is the only version a tenant, a landlord or a lawyer can reasonably accept.

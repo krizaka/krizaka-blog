@@ -1,0 +1,45 @@
+---
+title: "Pourquoi Krizaka construit une IA souveraine à Montréal"
+description: "Ce que nous entendons par souveraine, ce que cela impose à notre façon de construire, et ce que nous n'avons pas encore résolu."
+date: 2026-10-16
+tags: [sovereignty, ai, montreal]
+author: krizaka
+draft: true
+---
+
+Quand nous disons **IA souveraine**, nous voulons dire quelque chose d'étroit et de vérifiable : un client peut dire où ses documents sont traités, quel modèle les a lus et qui peut voir le résultat. Tout le reste de cette page découle de cette phrase.
+
+## Ce que « souveraine » veut dire ici
+
+Trois choses, dans l'ordre où nous pouvons les prouver.
+
+1. **Un lieu nommé.** Nos bases de données tournent à Toronto, au Canada. Le code qui lit un document s'exécute sur une infrastructure que nous louons et pouvons nommer, pas derrière une API opaque que nous ne pouvons pas inspecter.
+2. **Une exécution tracée.** Chaque analyse est une exécution d'[Orazaka](https://dev.orazaka.com), notre moteur. L'exécution garde son identifiant, la version du Studio qui a tourné et les règles appliquées. Si un résultat est contesté, l'exécution est la réponse.
+3. **Aucun modèle caché.** Le modèle qui a fait le travail est un choix consigné dans des données, pas une constante enfouie dans un produit. Un produit construit sur Orazaka n'appelle jamais un modèle lui-même.
+
+Nous n'en prétendons pas davantage. Souverain n'est pas synonyme de « privé par magie » ni de « meilleur ». C'est une propriété que l'on peut vérifier, ou c'est du marketing.
+
+## Pourquoi Montréal
+
+Krizaka est une compagnie de Montréal, et deux faits pratiques font de la ville un bon endroit pour ce travail : le droit que nous lisons d'abord est celui du Québec (le Code civil, la Loi 25 sur les renseignements personnels), et ceux qui doivent faire confiance au résultat y vivent. Un outil qui lit un bail québécois devrait être construit par des gens qui doivent vivre avec la réponse.
+
+Cela nous garde aussi honnêtes sur la langue. Chaque site Krizaka paraît en français et en anglais dès le premier jour, pas comme une traduction ultérieure.
+
+## Ce que cela impose
+
+Choisir d'être vérifiable coûte quelque chose, et nous préférons lister les coûts plutôt que les cacher.
+
+- **Nous refusons un verdict sorti de nulle part.** Un constat cite la règle et le passage exact sur lesquels il repose, ou il n'apparaît pas.
+- **Nous gardons le travail petit.** Aucun cluster dont nous n'avons pas besoin, aucun service que nous ne savons pas expliquer. Nos sites de produits tournent sur les plus petites instances qui fonctionnent.
+- **Nous publions le code.** Le kit de composants ([Krizaka UI](https://ui.krizaka.com)) et les briques Spring Boot ([Krizaka Java](https://java.krizaka.com)) sont open source : la base de nos produits peut être lue par tous.
+- **Nous disons ce qui n'est pas terminé.** Plusieurs produits sont « en développement » : l'inscription est fermée, et leurs sites le disent.
+
+## Ce que nous n'avons pas résolu
+
+- La souveraineté du *modèle* reste le point difficile. Faire tourner un modèle capable sur une infrastructure que nous contrôlons coûte de l'argent réel et des heures de GPU réelles ; nous le mesurons dans [le billet suivant](/fr/posts/measured-not-promised).
+- Nos règles québécoises de vérification de bail attendent encore la revue d'un avocat, et les rapports le disent.
+- Une infrastructure louée n'est pas une infrastructure possédée. Nous savons où se trouvent nos données ; nous ne construisons pas de centres de données.
+
+## À quoi s'attendre de ce blogue
+
+Des billets courts, avec les chiffres que nous pouvons montrer et les exécutions qui les ont produits. Si une affirmation ne remonte pas à une exécution, à une mesure ou à une ligne de code, nous ne l'écrirons pas.

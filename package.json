@@ -1,0 +1,44 @@
+{
+  "name": "krizaka-blog",
+  "version": "0.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "description": "blog.krizaka.com — the Krizaka company blog: a static site built from MDX posts, edited by GitHub accounts.",
+  "scripts": {
+    "gen": "node scripts/gen-favicon.mjs",
+    "dev": "npm run gen && next dev",
+    "build": "npm run gen && next build && node scripts/postbuild.mjs",
+    "lint": "tsc --noEmit && krizaka-i18n check messages && node scripts/check-content.mjs",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@krizaka/fonts": "^0.2.1",
+    "@krizaka/i18n": "^0.2.1",
+    "@krizaka/icons": "^0.5.1",
+    "@krizaka/tailwind": "^3.18.2",
+    "@krizaka/tokens": "^3.18.2",
+    "@krizaka/ui": "^3.18.2",
+    "gray-matter": "^4.0.3",
+    "next": "^16.3.8",
+    "next-mdx-remote": "^6.0.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "remark-gfm": "^4.0.1",
+    "rehype-slug": "^6.0.0"
+  },
+  "devDependencies": {
+    "@krizaka/config": "^0.4.1",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "overrides": {
+    "@krizaka/ui": "$@krizaka/ui",
+    "@krizaka/tokens": "$@krizaka/tokens",
+    "@krizaka/tailwind": "$@krizaka/tailwind"
+  },
+  "engines": { "node": ">=22" }
+}
