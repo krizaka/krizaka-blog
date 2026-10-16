@@ -31,8 +31,6 @@ functions:
       branch: main
       deploy_on_push: true
     source_dir: functions
-    routes:
-      - path: /api
     envs:
       # `unset` until the GitHub OAuth App exists (the sign-in answers 503 meanwhile). The real values are set on the app
       # (console or `doctl apps update` with a spec kept outside the repository) — never in this file. BUILD_TIME as well:
@@ -45,6 +43,22 @@ functions:
         scope: RUN_AND_BUILD_TIME
         type: SECRET
         value: unset
+# Who answers which path. The sign-in functions under /api, the static site everywhere else, and a 308 for each post
+# merged into another (tests/redirects.test.mjs: every target is a published post, every source is gone).
+ingress:
+  rules:
+    - match: { path: { prefix: /posts/measured-not-promised } }
+      redirect: { uri: /posts/what-image-and-video-generation-costs/, redirect_code: 308 }
+    - match: { path: { prefix: /fr/posts/measured-not-promised } }
+      redirect: { uri: /fr/posts/what-image-and-video-generation-costs/, redirect_code: 308 }
+    - match: { path: { prefix: /posts/the-real-economics-of-sovereign-ai } }
+      redirect: { uri: /posts/what-image-and-video-generation-costs/, redirect_code: 308 }
+    - match: { path: { prefix: /fr/posts/the-real-economics-of-sovereign-ai } }
+      redirect: { uri: /fr/posts/what-image-and-video-generation-costs/, redirect_code: 308 }
+    - match: { path: { prefix: /api } }
+      component: { name: oauth }
+    - match: { path: { prefix: / } }
+      component: { name: site }
 domains:
   - domain: blog.krizaka.com
     type: PRIMARY
