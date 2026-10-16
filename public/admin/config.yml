@@ -1,0 +1,65 @@
+# The editor of blog.krizaka.com (Decap CMS, MIT) at /admin/. Users are GitHub accounts: who can write is who can write to
+# krizaka/krizaka-blog (writer / editor / admin = repository permissions). A draft is a branch and a pull request
+# (editorial workflow); publishing merges it, CI having built the site. Sign-in goes through the site's own small
+# function (functions/, /api/oauth/*) — no credential of ours leaves GitHub.
+backend:
+  name: github
+  repo: krizaka/krizaka-blog
+  branch: main
+  base_url: https://blog.krizaka.com
+  auth_endpoint: api/oauth/auth
+  commit_messages:
+    create: "docs(post): create {{collection}} “{{slug}}”"
+    update: "docs(post): update {{collection}} “{{slug}}”"
+    delete: "docs(post): delete {{collection}} “{{slug}}”"
+    uploadMedia: "docs(post): upload “{{path}}”"
+    deleteMedia: "docs(post): delete “{{path}}”"
+    openAuthoring: "{{message}}"
+
+publish_mode: editorial_workflow
+locale: en
+site_url: https://blog.krizaka.com
+display_url: https://blog.krizaka.com
+logo_url: https://krizaka-assets.b-cdn.net/brand/krizaka/logo-dark.svg
+# Images are never committed (they live on the media CDN, Bunny `krizaka-assets` under `blog/`): the picker is not used,
+# each image is a URL (`image` field, or ![alt](url) in the text). The folder below only keeps Decap's config valid;
+# `npm run lint` fails if an image file lands in the repository.
+media_folder: ".cms-unused"
+public_folder: "/.cms-unused"
+
+i18n:
+  structure: multiple_files
+  locales: [en, fr]
+  default_locale: en
+
+collections:
+  - name: posts
+    label: Posts
+    label_singular: Post
+    folder: content/posts
+    extension: mdx
+    format: frontmatter
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    i18n: true
+    summary: "{{title}} — {{date}}"
+    sortable_fields: [date, title]
+    view_filters:
+      - label: Drafts
+        field: draft
+        pattern: true
+    fields:
+      - { name: title, label: Title, widget: string, i18n: true }
+      - { name: description, label: Summary (one or two sentences, 220 characters at most), widget: text, i18n: true, pattern: ["^.{1,220}$", "At most 220 characters"] }
+      - { name: date, label: Date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD", picker_utc: true, i18n: duplicate }
+      - { name: tags, label: Topics (lower-case ids, e.g. costs, orazaka), widget: list, i18n: duplicate, required: false }
+      - name: author
+        label: Author
+        widget: select
+        options: [krizaka, oussama]
+        default: krizaka
+        i18n: duplicate
+      - { name: draft, label: "Draft (not published while ticked)", widget: boolean, default: true, i18n: duplicate }
+      - { name: image, label: "Cover image URL (https://krizaka-assets.b-cdn.net/blog/…)", widget: string, required: false, i18n: duplicate, pattern: ["^https://krizaka-assets\\.b-cdn\\.net/blog/.+", "An image on the media CDN, under blog/"] }
+      - { name: body, label: Text, widget: markdown, i18n: true, hint: "Images: upload with `node scripts/cdn-assets.mjs upload <file> --to blog/<post>` in krizaka-com, then paste the CDN URL." }

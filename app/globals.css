@@ -1,0 +1,105 @@
+@import "tailwindcss";
+/* The Krizaka preset: @krizaka/tokens (every --kz-* colour, radius, shadow, font of both themes — dark on :root, light on
+   html.light) mapped to the Tailwind theme. The blog dogfoods it, like every Krizaka site. */
+@import "@krizaka/tailwind";
+/* The classes the @krizaka/ui primitives use, read from the built package. */
+@import "@krizaka/ui/tailwind.css";
+
+/* The Krizaka typography: the files of @krizaka/fonts, loaded by next/font/local (app/fonts.ts), in the token roles. */
+:root {
+  --kz-font-sans: var(--font-kz-text), Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --kz-font-display: var(--font-kz-display), "Plus Jakarta Sans", var(--font-kz-text), system-ui, sans-serif;
+  --kz-font-mono: var(--font-kz-mono), "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-display: var(--kz-font-display);
+  --font-mono: var(--kz-font-mono);
+  /* One frame for the bar, the pages and the footer (the blocks' contract). */
+  --kz-page-max: 72rem;
+  --kz-hero-top: clamp(112px, 14vw, 156px);
+  --kz-anchor-offset: 96px;
+}
+
+@layer base {
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body {
+  background: var(--kz-surface-0);
+  color: var(--kz-text-primary);
+  font-family: var(--kz-font-sans);
+  letter-spacing: -0.011em;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+::selection { background: hsla(217, 92%, 60%, 0.25); }
+html.light ::selection { background: hsla(217, 92%, 50%, 0.18); }
+:focus-visible { outline: 2px solid var(--kz-accent); outline-offset: 2px; border-radius: var(--kz-radius-sm, 6px); }
+:focus:not(:focus-visible) { outline: none; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+/* ─── The bar (@krizaka/ui NavBar): as wide as the page under it ─── */
+.kz-site-bar-wrap { padding-inline: var(--kz-page-gutter, clamp(16px, 3.2vw, 32px)); }
+.kz-site-bar, .kz-site-bar[data-compact] { max-width: var(--kz-page-max); }
+
+/* ─── Reading pages: the article, its meta line, its prose ─── */
+.bl-meta { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; font-family: var(--kz-font-mono); font-size: 0.8125rem; color: var(--kz-text-secondary); }
+.bl-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; }
+.bl-article { max-width: 44rem; margin-inline: auto; }
+.bl-cover { display: block; width: 100%; height: auto; border-radius: var(--kz-radius-lg, 16px); border: 1px solid var(--kz-border-default); margin-bottom: 2rem; }
+.bl-prose { font-size: 1.0625rem; line-height: 1.75; color: var(--kz-text-primary); }
+.bl-prose > * + * { margin-top: 1.25rem; }
+.bl-prose h2 { font-family: var(--kz-font-display); font-size: 1.625rem; line-height: 1.25; font-weight: 700; margin-top: 2.75rem; letter-spacing: -0.02em; scroll-margin-top: 96px; }
+.bl-prose h3 { font-family: var(--kz-font-display); font-size: 1.25rem; line-height: 1.3; font-weight: 700; margin-top: 2rem; scroll-margin-top: 96px; }
+.bl-prose p, .bl-prose li { color: var(--kz-text-primary); }
+.bl-prose ul, .bl-prose ol { padding-inline-start: 1.5rem; }
+.bl-prose li + li { margin-top: 0.5rem; }
+.bl-prose a { color: var(--kz-accent-text); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.bl-prose strong { font-weight: 650; }
+.bl-prose blockquote { border-inline-start: 3px solid var(--kz-accent); padding: 0.25rem 0 0.25rem 1.25rem; color: var(--kz-text-secondary); }
+.bl-prose code { font-family: var(--kz-font-mono); font-size: 0.875em; padding: 0.0625rem 0.375rem; border-radius: 6px; background: var(--kz-surface-2); }
+.bl-prose pre { overflow-x: auto; padding: 1rem 1.25rem; border-radius: var(--kz-radius-md, 12px); background: var(--kz-surface-1); border: 1px solid var(--kz-border-default); font-size: 0.875rem; line-height: 1.6; }
+.bl-prose pre code { padding: 0; background: none; }
+.bl-prose img { max-width: 100%; height: auto; border-radius: var(--kz-radius-md, 12px); border: 1px solid var(--kz-border-default); }
+.bl-prose hr { border: 0; border-top: 1px solid var(--kz-border-default); margin-block: 2.5rem; }
+.bl-prose .bl-table { overflow-x: auto; border: 1px solid var(--kz-border-subtle); border-radius: var(--kz-radius-md, 12px); }
+.bl-prose table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+.bl-prose th, .bl-prose td { text-align: start; vertical-align: top; padding: 0.625rem 0.75rem; border-bottom: 1px solid var(--kz-border-subtle); line-height: 1.5; }
+.bl-prose thead th { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--kz-text-secondary); background: var(--kz-surface-1); }
+.bl-prose tbody tr:last-child > * { border-bottom: 0; }
+.bl-draft { margin-bottom: 1.5rem; padding: 0.625rem 1rem; border: 1px dashed var(--kz-border-strong); border-radius: 10px; color: var(--kz-text-secondary); font-size: 0.9375rem; }
+.bl-note { margin: 1.5rem 0; padding: 0.875rem 1rem; border: 1px solid var(--kz-border-default); border-inline-start: 3px solid var(--kz-accent); border-radius: 11px; background: var(--kz-surface-1); font-size: 0.9375rem; }
+
+/* ─── Search ─── */
+.bl-search { display: grid; gap: 1.5rem; }
+.bl-search input { width: 100%; min-height: 48px; padding: 0 1rem; border-radius: 12px; border: 1px solid var(--kz-border-strong); background: var(--kz-surface-1); color: var(--kz-text-primary); font: inherit; font-size: 1.0625rem; }
+.bl-search input::placeholder { color: var(--kz-text-tertiary, var(--kz-text-secondary)); }
+.bl-search ul { list-style: none; display: grid; gap: 0.75rem; }
+.bl-status { color: var(--kz-text-secondary); font-size: 0.9375rem; }
+
+/* ─── Footer ─── */
+.kz-footer {
+  max-width: var(--kz-page-max);
+  margin-inline: auto;
+  width: 100%;
+  padding: 2rem var(--kz-page-gutter, clamp(16px, 3.2vw, 32px)) 2.5rem;
+  display: flex; flex-wrap: wrap; gap: 0.75rem 2rem; justify-content: space-between;
+  border-top: 1px solid var(--kz-border-default);
+  color: var(--kz-text-secondary); font-size: 0.875rem;
+}
+.kz-footer nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
+.kz-footer a { color: var(--kz-text-secondary); }
+.kz-footer a:hover { color: var(--kz-text-primary); }
+.kz-skip { position: fixed; left: 12px; top: -64px; z-index: 100; padding: 8px 14px; border-radius: 10px; background: var(--kz-accent); color: var(--kz-on-accent); font-weight: 600; }
+.kz-skip:focus { top: 12px; }
+
+/* ─── 404 ─── */
+.kz-404 { min-height: 100dvh; display: grid; place-content: center; gap: 1rem; padding: 2rem; text-align: center; }
+.kz-404 h1, .kz-404 h2 { font-family: var(--kz-font-display); font-size: clamp(2rem, 6vw, 3rem); }
+.kz-404 a { color: var(--kz-accent-text); font-weight: 600; }

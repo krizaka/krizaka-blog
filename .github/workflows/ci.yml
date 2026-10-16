@@ -1,0 +1,53 @@
+# Lint, tests and the static build on every pull request. The deployment is DigitalOcean App Platform's (.do/app.yaml):
+# it rebuilds and publishes on every push to main. The site is built twice: closed (noindex, no draft — what is served
+# until the first post is published) and open (indexing on, drafts in, so every kind of page exists) for the family's
+# SEO contract (scripts/check-seo-family.mjs).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  site:
+    name: Lint, tests, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - name: Build, closed (what is served before the first post)
+        run: npm run build
+      - name: Closed means closed
+        run: |
+          grep -q "Disallow: /$" out/robots.txt
+          grep -q 'name="robots" content="noindex' out/index.html
+          test -f out/index.html && test -f out/fr/index.html && test -f out/feed.xml && test -f out/fr/atom.xml && test -f out/llms.txt && test -f out/sitemap.xml && test -f out/admin/index.html && test -f out/admin/config.yml
+      - name: Build, open, with the drafts (every page exists)
+        env:
+          APP_INDEXING_ENABLED: "true"
+          APP_SHOW_DRAFTS: "1"
+        run: npm run build
+      - name: The family's SEO contract
+        run: |
+          npx --yes serve@14 out -l 3000 >/dev/null 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://localhost:3000/robots.txt >/dev/null && break; sleep 1; done
+          node scripts/check-seo-family.mjs --base http://localhost:3000 --host https://blog.krizaka.com --index on --limit 60
+      - name: Every post has its Open Graph image and both feeds list it
+        run: |
+          test -f out/og/measured-not-promised.png && test -f out/fr/og/measured-not-promised.png
+          grep -q "measured-not-promised" out/feed.xml && grep -q "measured-not-promised" out/fr/atom.xml

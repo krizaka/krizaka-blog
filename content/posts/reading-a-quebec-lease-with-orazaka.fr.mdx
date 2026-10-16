@@ -1,0 +1,51 @@
+---
+title: "Lire un bail québécois avec Orazaka"
+description: "Un bail type de Montréal, vérifié règle par règle contre le Code civil du Québec par Yomizaka et Orazaka : ce qui est revenu, comment le vérifier, et ce que cela ne prouve pas."
+date: 2026-10-16
+tags: [yomizaka, orazaka, documents, law]
+author: krizaka
+draft: true
+---
+
+[Yomizaka](https://dev.yomizaka.com) lit un bail avant que vous le signiez. Il ne donne pas d'opinion : il remet le bail à [Orazaka](https://dev.orazaka.com), applique un ensemble de règles de la juridiction du bail, et montre chaque constat à côté des mots exacts sur lesquels il repose. Ce billet suit une vraie exécution sur un bail type, parce qu'une telle affirmation ne vaut que si l'on peut regarder la preuve.
+
+## Le document
+
+Un bail de logement type pour un 4½ à Montréal : douze mois du 1er juillet 2026 au 30 juin 2027, un loyer mensuel de 1 450 $, un dépôt de sécurité de 1 450 $ à la signature, douze chèques postdatés, et une clause qui interdit les enfants dans le logement. Le reste est trente lignes de clauses génériques. Nous l'avons écrit pour contenir quatre problèmes connus ; ce n'est pas le document d'un client.
+
+## L'exécution
+
+Le bail a été envoyé au Studio de conformité d'Orazaka sur dev.orazaka.com, avec les règles québécoises du 21 février 2024 (`qc-residential-lease`). L'exécution est revenue avec **neuf vérifications : cinq non conformes, quatre conformes**, et l'identifiant d'exécution `de62fe0d-16ec-44c6-8b32-751607e17cdf`.
+
+## Les constats
+
+| Constat | Règle | Passage cité |
+|:---|:---|:---|
+| Dépôt de garantie interdit : seul le premier mois peut être exigé d'avance | C.c.Q., art. 1904, al. 1 | « depot de securite de 1 450 $ » |
+| Chèques postdatés interdits | C.c.Q., art. 1904, al. 2 | « cheques postdates » |
+| Refus des enfants sans effet | C.c.Q., art. 1899 | « interdit d'avoir des enfants » |
+| Avis du loyer le plus bas des douze derniers mois | C.c.Q., art. 1896 et règlement sur les formulaires de bail obligatoires, section G | — |
+| Clause abusive | C.c.Q., art. 1901 | « Il est interdit d'avoir des enfants dans le logement. » |
+
+Quatre des cinq constats non conformes pointent des mots du bail. Le cinquième est d'une autre nature : le bail ne dit rien du loyer le plus bas des douze derniers mois, et la règle exige qu'il le dise. Un constat peut être une absence, et le rapport le montre aussi. Quatre autres vérifications, dont l'identification du locateur et du locataire, étaient conformes.
+
+## Comment le vérifier
+
+Chaque chiffre ci-dessus est sur le site de dev, et rien n'est une capture d'écran.
+
+- L'**identifiant d'exécution** est conservé avec le résultat et affiché.
+- Le **SHA-256 du document** et celui du fichier sont enregistrés : un autre document ne peut pas passer pour celui-ci.
+- Le **rapport signé** est un fichier HTML signé avec une clé Ed25519. Changez un caractère et la vérification échoue ; le site a une page pour le vérifier vous-même.
+
+## Ce que cela ne prouve pas
+
+Nous préférons le dire nous-mêmes.
+
+- **Ce n'est pas un avis juridique**, et cela ne prouve pas que les constats sont juridiquement justes. Orazaka applique les règles qu'on lui donne.
+- **Les règles québécoises attendent encore la revue d'un avocat.** Le rapport le dit dès sa première page.
+- La signature prouve que le rapport n'a pas changé et que Krizaka l'a émis. Il n'y a ni horodatage indépendant ni chaîne de blocs ; ce à quoi vous faites confiance, c'est Krizaka, détenteur de la clé.
+- L'exécution est sur un **environnement de développement**. Yomizaka est en développement et l'inscription est fermée.
+
+## Pourquoi nous montrons une exécution
+
+Un outil de conformité peut dire « faites-moi confiance » ou montrer son travail. Nous avons choisi la seconde voie, et nous pensons que c'est la seule qu'un locataire, un locateur ou un avocat puisse raisonnablement accepter.

@@ -1,0 +1,110 @@
+{
+  "site": {
+    "name": "Blogue Krizaka",
+    "tagline": "Des notes de ceux qui construisent Krizaka.",
+    "description": "Le blogue de Krizaka : comment nous construisons une IA souveraine à Montréal, ce qu'elle coûte vraiment, et ce que nos produits font sur de vrais documents. Sobre, factuel, en français et en anglais.",
+    "project": "La voix de Krizaka"
+  },
+  "bar": {
+    "aria": "Navigation principale",
+    "posts": "Billets",
+    "tags": "Sujets",
+    "search": "Rechercher",
+    "searchAria": "Rechercher dans les billets",
+    "rssAria": "S'abonner (RSS)",
+    "github": "GitHub",
+    "githubAria": "Le code source du blogue sur GitHub",
+    "company": "krizaka.com",
+    "theme": "Thème",
+    "toLight": "Passer au thème clair",
+    "toDark": "Passer au thème sombre",
+    "switchLanguage": "Switch to English",
+    "languageShort": "EN",
+    "menu": "Menu",
+    "skip": "Aller au contenu"
+  },
+  "footer": {
+    "aria": "Pied de page",
+    "project": "Une publication de Krizaka",
+    "license": "Billets et code sous Apache-2.0",
+    "krizaka": "krizaka.com",
+    "ui": "Krizaka UI",
+    "java": "Krizaka Java",
+    "source": "Code source",
+    "rss": "RSS",
+    "atom": "Atom",
+    "location": "Montréal, Québec"
+  },
+  "home": {
+    "eyebrow": "Blogue",
+    "title": "Des notes de ceux qui construisent Krizaka",
+    "lead": "Comment nous construisons une IA souveraine à Montréal, ce qu'elle coûte vraiment, et ce que nos produits font sur de vrais documents. Sobre, factuel, vérifié contre ce qui tourne.",
+    "latest": "Derniers billets",
+    "latestLead": "Du plus récent au plus ancien. Chaque chiffre d'un billet vient d'une exécution ou d'une mesure que nous pouvons montrer.",
+    "emptyTitle": "Les premiers billets s'écrivent",
+    "emptyBody": "Rien n'est encore publié. Le blogue s'ouvrira sur quelques notes sur l'IA souveraine, les coûts mesurés et une vraie exécution sur un document — abonnez-vous au fil pour les voir arriver.",
+    "emptyAction": "S'abonner (RSS)",
+    "topics": "Sujets",
+    "elsewhereTitle": "Là où vit le travail",
+    "elsewhereLead": "Le blogue raconte ; les produits et les projets open source montrent.",
+    "company": "Krizaka",
+    "companyBody": "La compagnie, ses produits et son histoire.",
+    "ui": "Krizaka UI",
+    "uiBody": "Le kit de composants open source avec lequel tous les sites Krizaka sont faits.",
+    "java": "Krizaka Java",
+    "javaBody": "Les briques Spring Boot open source de tous les services Krizaka.",
+    "open": "Ouvrir"
+  },
+  "post": {
+    "back": "Tous les billets",
+    "by": "Par {author}",
+    "readingTime": "{minutes} min de lecture",
+    "updated": "Mis à jour le {date}",
+    "readInOther": "Read in English",
+    "otherLabel": "This post is available in English",
+    "topics": "Sujets",
+    "moreTitle": "À lire aussi",
+    "next": "Billet suivant",
+    "share": "Abonnez-vous au fil pour suivre les nouveaux billets",
+    "draftNotice": "Brouillon — non publié."
+  },
+  "tags": {
+    "title": "Sujets",
+    "lead": "Chaque billet est classé sous les sujets dont il parle.",
+    "oneTitle": "Billets sur {tag}",
+    "oneLead": "Tout ce que nous avons écrit sur ce sujet, du plus récent au plus ancien.",
+    "count": "{count} billets",
+    "none": "Aucun billet sur ce sujet pour l'instant.",
+    "back": "Tous les sujets",
+    "names": {
+      "sovereignty": "Souveraineté",
+      "ai": "IA",
+      "montreal": "Montréal",
+      "costs": "Coûts",
+      "orazaka": "Orazaka",
+      "measurements": "Mesures",
+      "yomizaka": "Yomizaka",
+      "documents": "Documents",
+      "law": "Droit"
+    },
+    "countOne": "1 billet"
+  },
+  "search": {
+    "title": "Rechercher dans les billets",
+    "lead": "Titres, résumés, sujets et texte, dans la langue que vous lisez.",
+    "label": "Rechercher",
+    "placeholder": "Un mot, un sujet, un chiffre…",
+    "results": "{count} résultats",
+    "noResults": "Aucun billet ne correspond. Essayez un mot plus court.",
+    "hint": "Tapez pour chercher."
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "body": "Cette page n'existe pas sur le blogue Krizaka.",
+    "back": "Retour au blogue"
+  },
+  "authors": {
+    "krizaka": "L'équipe Krizaka",
+    "oussama": "Oussama Abid"
+  }
+}

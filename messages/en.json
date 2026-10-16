@@ -1,0 +1,110 @@
+{
+  "site": {
+    "name": "Krizaka Blog",
+    "tagline": "Notes from the people who build Krizaka.",
+    "description": "The Krizaka blog: how we build sovereign AI in Montréal, what it really costs, and what our products do on real documents. Sober, factual, in English and French.",
+    "project": "The voice of Krizaka"
+  },
+  "bar": {
+    "aria": "Main navigation",
+    "posts": "Posts",
+    "tags": "Topics",
+    "search": "Search",
+    "searchAria": "Search the posts",
+    "rssAria": "Subscribe (RSS)",
+    "github": "GitHub",
+    "githubAria": "The blog's source on GitHub",
+    "company": "krizaka.com",
+    "theme": "Theme",
+    "toLight": "Switch to the light theme",
+    "toDark": "Switch to the dark theme",
+    "switchLanguage": "Passer en français",
+    "languageShort": "FR",
+    "menu": "Menu",
+    "skip": "Skip to the content"
+  },
+  "footer": {
+    "aria": "Footer",
+    "project": "A Krizaka publication",
+    "license": "Posts and code under Apache-2.0",
+    "krizaka": "krizaka.com",
+    "ui": "Krizaka UI",
+    "java": "Krizaka Java",
+    "source": "Source code",
+    "rss": "RSS",
+    "atom": "Atom",
+    "location": "Montréal, Québec"
+  },
+  "home": {
+    "eyebrow": "Blog",
+    "title": "Notes from the people who build Krizaka",
+    "lead": "How we build sovereign AI in Montréal, what it really costs, and what our products do on real documents. Sober, factual, and checked against what runs.",
+    "latest": "Latest posts",
+    "latestLead": "Newest first. Every number in a post comes from a run or a measurement we can point to.",
+    "emptyTitle": "The first posts are being written",
+    "emptyBody": "Nothing is published yet. The blog opens with a few notes on sovereign AI, measured costs and a real document run — subscribe to the feed to see them arrive.",
+    "emptyAction": "Subscribe (RSS)",
+    "topics": "Topics",
+    "elsewhereTitle": "Where the work lives",
+    "elsewhereLead": "The blog tells; the products and the open-source projects show.",
+    "company": "Krizaka",
+    "companyBody": "The company, its products and its story.",
+    "ui": "Krizaka UI",
+    "uiBody": "The open-source component kit every Krizaka site is built with.",
+    "java": "Krizaka Java",
+    "javaBody": "The open-source Spring Boot building blocks of every Krizaka service.",
+    "open": "Open"
+  },
+  "post": {
+    "back": "All posts",
+    "by": "By {author}",
+    "readingTime": "{minutes} min read",
+    "updated": "Updated {date}",
+    "readInOther": "Lire en français",
+    "otherLabel": "Ce billet existe en français",
+    "topics": "Topics",
+    "moreTitle": "Keep reading",
+    "next": "Next post",
+    "share": "Subscribe to the feed to follow new posts",
+    "draftNotice": "Draft — not published."
+  },
+  "tags": {
+    "title": "Topics",
+    "lead": "Every post is filed under the subjects it is about.",
+    "oneTitle": "Posts about {tag}",
+    "oneLead": "Everything we have written on this subject, newest first.",
+    "count": "{count} posts",
+    "none": "No post on this subject yet.",
+    "back": "All topics",
+    "names": {
+      "sovereignty": "Sovereignty",
+      "ai": "AI",
+      "montreal": "Montréal",
+      "costs": "Costs",
+      "orazaka": "Orazaka",
+      "measurements": "Measurements",
+      "yomizaka": "Yomizaka",
+      "documents": "Documents",
+      "law": "Law"
+    },
+    "countOne": "1 post"
+  },
+  "search": {
+    "title": "Search the posts",
+    "lead": "Titles, summaries, topics and text, in the language you are reading.",
+    "label": "Search",
+    "placeholder": "A word, a topic, a number…",
+    "results": "{count} results",
+    "noResults": "No post matches. Try a shorter word.",
+    "hint": "Type to search."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "This page does not exist on the Krizaka blog.",
+    "back": "Back to the blog"
+  },
+  "authors": {
+    "krizaka": "The Krizaka team",
+    "oussama": "Oussama Abid"
+  }
+}
