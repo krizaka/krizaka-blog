@@ -24,3 +24,12 @@ test("the editor script is pinned with an integrity hash and the page is noindex
   assert.match(html, /integrity="sha384-[A-Za-z0-9+/=]{64}"/);
   assert.match(html, /noindex/);
 });
+
+test("the function's project.yml hands the two sign-in variables of the app spec to the actions", () => {
+  const project = readFileSync(new URL("../functions/project.yml", import.meta.url), "utf8");
+  const spec = readFileSync(new URL("../.do/app.yaml", import.meta.url), "utf8");
+  for (const k of ["AUTH_GITHUB_CLIENT_ID", "AUTH_GITHUB_CLIENT_SECRET"]) {
+    assert.match(project, new RegExp(`${k}: \\$\\{${k}\\}`));
+    assert.match(spec, new RegExp(`key: ${k}`));
+  }
+});
