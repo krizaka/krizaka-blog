@@ -21,7 +21,7 @@ npm run lint && npm test && npm run build
 ## What it ships
 
 Home (featured post with its cover, latest, series), posts with reading time, related posts and series navigation, topics (tags), series, search (an index built at build, no request), RSS and Atom per language, a sitemap with
-hreflang, an Open Graph image per post, `llms.txt`, JSON-LD. Noindex until the first post is published
+hreflang, an Open Graph image per post, `llms.txt`, JSON-LD. Open to search engines since the first posts were published (2026-10-16)
 (`APP_INDEXING_ENABLED`). Cost: $0/month (DigitalOcean static site; `.do/app.yaml`).
 
 Rules for contributors and agents: [AGENTS.md](AGENTS.md).

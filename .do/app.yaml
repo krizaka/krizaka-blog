@@ -1,7 +1,7 @@
 # blog.krizaka.com — the Krizaka blog on DigitalOcean App Platform (project: krizaka, region tor).
 # A static site (the free tier: no instance, no database) rebuilt on every push to main, and the editor's sign-in: two
 # small functions (/api/oauth/*, pay-per-use, inside the free allowance at this volume). Nothing else.
-# The site is noindex until the first post is published: switch APP_INDEXING_ENABLED to "true" (and redeploy) then.
+# The site is open to search engines since the first posts were published (2026-10-16): APP_INDEXING_ENABLED is "true".
 name: krizaka-blog
 region: tor
 static_sites:
@@ -17,7 +17,7 @@ static_sites:
     envs:
       - key: APP_INDEXING_ENABLED
         scope: BUILD_TIME
-        value: "false"
+        value: "true"
       # The private preview of the drafts: out/preview/<token>/ (scripts/build.mjs). `unset` here; the real value is set on the
       # app (console or doctl), never in this file.
       - key: APP_PREVIEW_TOKEN

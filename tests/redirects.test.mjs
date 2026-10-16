@@ -29,3 +29,7 @@ test("the sign-in stays under /api and the site answers the rest", () => {
   assert.match(spec, /prefix: \/ \} \}\n\s+component: \{ name: site \}/);
   assert.doesNotMatch(spec, /routes:/);
 });
+
+test("the site is open to search engines now that posts are published", () => {
+  assert.match(spec, /key: APP_INDEXING_ENABLED\n\s+scope: BUILD_TIME\n\s+value: "true"/);
+});
