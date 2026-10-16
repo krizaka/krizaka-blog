@@ -16,7 +16,7 @@ test("title, description and a real date are required", () => {
 });
 test("an image must be on the media CDN, in the cover and in the text", () => {
   assert.equal(postProblems("x.en.mdx", { ...ok, image: "/local.png" }, "").length, 1);
-  assert.deepEqual(postProblems("x.en.mdx", { ...ok, image: "https://krizaka-assets.b-cdn.net/blog/x/cover.webp" }, "![a](https://krizaka-assets.b-cdn.net/blog/x/a.webp)"), []);
+  assert.deepEqual(postProblems("x.en.mdx", { ...ok, image: "https://krizaka-assets.b-cdn.net/site/blog/x/cover.webp" }, "![a](https://krizaka-assets.b-cdn.net/site/blog/x/a.webp)"), []);
   assert.equal(postProblems("x.en.mdx", ok, "![a](/a.png)").length, 1);
 });
 test("Mermaid is refused", () => assert.equal(postProblems("x.en.mdx", ok, "```mermaid\ngraph TD\n```").length, 1));

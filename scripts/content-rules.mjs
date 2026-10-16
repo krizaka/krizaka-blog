@@ -5,7 +5,7 @@ import matter from "gray-matter";
 
 export const RESERVED_SLUGS = new Set(["site", "_"]);
 export const FILE = /^([a-z0-9]+(?:-[a-z0-9]+)*)\.(en|fr)\.mdx$/;
-export const CDN = "https://krizaka-assets.b-cdn.net/blog/";
+export const CDN = "https://krizaka-assets.b-cdn.net/site/blog/";
 
 /** The problems of one post (file name, parsed front matter, body); an empty list when it is fine. */
 export function postProblems(file, data, body) {
@@ -20,7 +20,7 @@ export function postProblems(file, data, body) {
   if (data.tags !== undefined && !Array.isArray(data.tags)) out.push(`${file}: "tags" must be a list`);
   if (data.draft !== undefined && typeof data.draft !== "boolean") out.push(`${file}: "draft" must be true or false`);
   if (data.image && !String(data.image).startsWith(CDN)) out.push(`${file}: "image" must be on the media CDN (${CDN}…), never a file of this repository`);
-  if (/!\[[^\]]*\]\((?!https:\/\/krizaka-assets\.b-cdn\.net\/blog\/)[^)]+\)/.test(body)) out.push(`${file}: images in the body must be on the media CDN (${CDN}…)`);
+  if (/!\[[^\]]*\]\((?!https:\/\/krizaka-assets\.b-cdn\.net\/site\/blog\/)[^)]+\)/.test(body)) out.push(`${file}: images in the body must be on the media CDN (${CDN}…)`);
   if (/```mermaid/.test(body)) out.push(`${file}: Mermaid is retired`);
   return out;
 }

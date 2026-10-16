@@ -21,7 +21,7 @@ locale: en
 site_url: https://blog.krizaka.com
 display_url: https://blog.krizaka.com
 logo_url: https://krizaka-assets.b-cdn.net/brand/krizaka/logo-dark.svg
-# Images are never committed (they live on the media CDN, Bunny `krizaka-assets` under `blog/`): the picker is not used,
+# Images are never committed (they live on the media CDN, Bunny `krizaka-assets` under `site/blog/`): the picker is not used,
 # each image is a URL (`image` field, or ![alt](url) in the text). The folder below only keeps Decap's config valid;
 # `npm run lint` fails if an image file lands in the repository.
 media_folder: ".cms-unused"
@@ -61,5 +61,5 @@ collections:
         default: krizaka
         i18n: duplicate
       - { name: draft, label: "Draft (not published while ticked)", widget: boolean, default: true, i18n: duplicate }
-      - { name: image, label: "Cover image URL (https://krizaka-assets.b-cdn.net/blog/…)", widget: string, required: false, i18n: duplicate, pattern: ["^https://krizaka-assets\\.b-cdn\\.net/blog/.+", "An image on the media CDN, under blog/"] }
+      - { name: image, label: "Cover image URL (https://krizaka-assets.b-cdn.net/site/blog/…)", widget: string, required: false, i18n: duplicate, pattern: ["^https://krizaka-assets\\.b-cdn\\.net/site/blog/.+", "An image on the media CDN, under blog/"] }
       - { name: body, label: Text, widget: markdown, i18n: true, hint: "Images: upload with `node scripts/cdn-assets.mjs upload <file> --to blog/<post>` in krizaka-com, then paste the CDN URL." }

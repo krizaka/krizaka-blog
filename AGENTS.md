@@ -23,7 +23,7 @@
 - **Prove, don't invent.** A figure comes from a run, a measurement or a line of code that the post can point to; what is
   not measured is said. Sober, factual, no superlatives. Yororis' lexicon applies if it is ever named.
 - **Images are never committed** (any image/video file under `content/` or `public/` fails `npm run lint`). They live on
-  Bunny `krizaka-assets` under `blog/<post>/…` (`node scripts/cdn-assets.mjs upload <file> --to blog/<post>` in krizaka-com)
+  Bunny `krizaka-assets` under `site/blog/<post>/…` (`node scripts/cdn-assets.mjs upload <file> --to blog/<post>` in krizaka-com, which writes `site/blog/<post>/<name>.<hash>.<ext>`)
   and a post names them by their CDN URL.
 - Every user-facing string of the site is in `messages/{en,fr}.json` (`krizaka-i18n check`). No `locale === "fr" ?`.
 

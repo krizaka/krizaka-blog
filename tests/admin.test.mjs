@@ -17,7 +17,7 @@ test("the editor writes the same files the site reads: <slug>.<locale>.mdx with 
 });
 test("a new post starts as a draft, and images are URLs on the media CDN", () => {
   assert.match(config, /name: draft[^\n]*default: true/);
-  assert.match(config, /krizaka-assets\\\\\.b-cdn\\\\\.net\/blog\//);
+  assert.match(config, /krizaka-assets\\\\\.b-cdn\\\\\.net\/site\/blog\//);
 });
 test("the editor script is pinned with an integrity hash and the page is noindex", () => {
   assert.match(html, /decap-cms@\d+\.\d+\.\d+\/dist\/decap-cms\.js/);

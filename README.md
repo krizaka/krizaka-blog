@@ -16,7 +16,7 @@ npm run lint && npm test && npm run build
   a pull request; publishing merges it.
 - **In Git**: add `content/posts/<slug>.en.mdx` (and `<slug>.fr.mdx`) with the front matter described in
   [AGENTS.md](AGENTS.md#2-content). `draft: true` keeps it out of the site.
-- **Images** go to the media CDN (`blog/<post>/…`), never into this repository.
+- **Images** go to the media CDN (`site/blog/<post>/…`), never into this repository.
 
 ## What it ships
 
