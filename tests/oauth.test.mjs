@@ -13,12 +13,12 @@ test("the two copies of the handshake are identical", async () => {
   const b = readFileSync(new URL("../functions/packages/oauth/callback/oauth.js", import.meta.url), "utf8");
   assert.equal(a, b);
 });
-test("a state signed with the secret is accepted, once and only fresh", () => {
+test("a state signed with the secret is accepted while fresh, refused when forged, foreign or old", () => {
   const s = makeState("secret", 1_000_000);
   assert.ok(checkState(s, "secret", 1_000_000 + 5_000));
   assert.ok(!checkState(s, "other", 1_000_000 + 5_000));
   assert.ok(!checkState(s, "secret", 1_000_000 + 11 * 60_000));
-  assert.ok(!checkState(s.slice(0, -1) + "0", "secret", 1_000_000));
+  assert.ok(!checkState(s.slice(0, -1) + (s.endsWith("0") ? "1" : "0"), "secret", 1_000_000));
   assert.ok(!checkState(undefined, "secret"));
 });
 test("the authorize URL names the client, the scope and the state", () => {
