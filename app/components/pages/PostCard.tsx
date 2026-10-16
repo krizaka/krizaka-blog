@@ -1,4 +1,3 @@
-import { blurUrl } from "@/lib/blur";
 import Link from "next/link";
 import { Card } from "@krizaka/ui/card";
 import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
@@ -29,7 +28,6 @@ export function PostCard({ post, locale, feature = false, priority = false }: { 
             loading={priority ? "eager" : "lazy"}
             decoding="async"
             fetchPriority={priority ? "high" : "auto"}
-            style={{ backgroundImage: blurUrl(cover.blur) }}
           />
         ) : (
           <Card.Image fallback={<span className="bl-cover-fallback" aria-hidden />} />
