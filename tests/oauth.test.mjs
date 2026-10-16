@@ -4,8 +4,8 @@ import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
 const { makeState, checkState, authorizeUrl, resultPage } = require("../functions/packages/oauth/auth/oauth.js");
-const { main: auth } = require("../functions/packages/oauth/auth/auth.js");
-const { main: callback } = require("../functions/packages/oauth/callback/callback.js");
+const { main: auth } = require("../functions/packages/oauth/auth/index.js");
+const { main: callback } = require("../functions/packages/oauth/callback/index.js");
 
 test("the two copies of the handshake are identical", async () => {
   const { readFileSync } = await import("node:fs");
