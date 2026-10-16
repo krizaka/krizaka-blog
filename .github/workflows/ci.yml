@@ -47,7 +47,11 @@ jobs:
           npx --yes serve@14 out -l 3000 >/dev/null 2>&1 &
           for i in $(seq 1 30); do curl -sf http://localhost:3000/robots.txt >/dev/null && break; sleep 1; done
           node scripts/check-seo-family.mjs --base http://localhost:3000 --host https://blog.krizaka.com --index on --limit 60
+      - name: The layout in a real browser (bar and h1 inside the window at 1750, 1366, 390 px; focus ring for the keyboard only)
+        run: |
+          npx playwright install --with-deps chromium
+          node scripts/check-layout.mjs --base http://localhost:3000 --path /posts/what-image-and-video-generation-costs/ --path /fr/posts/why-krizaka-builds-sovereign-ai-in-montreal/
       - name: Every post has its Open Graph image and both feeds list it
         run: |
-          test -f out/og/measured-not-promised.png && test -f out/fr/og/measured-not-promised.png
-          grep -q "measured-not-promised" out/feed.xml && grep -q "measured-not-promised" out/fr/atom.xml
+          test -f out/og/what-image-and-video-generation-costs.png && test -f out/fr/og/what-image-and-video-generation-costs.png
+          grep -q "what-image-and-video-generation-costs" out/feed.xml && grep -q "what-image-and-video-generation-costs" out/fr/atom.xml

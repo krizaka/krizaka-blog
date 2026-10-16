@@ -1,89 +1,96 @@
 ---
 title: "L'anatomie d'un prompt d'IA : ce que change vraiment chaque ligne ajoutée"
-description: "Un prompt laconique, puis trois lignes de détail, sur notre propre machine avec la même graine. Ce qui s'améliore, ce qui empire, ce qu'un prompt négatif peut et ne peut pas faire, et ce que nous n'avons pas prouvé."
+description: "Un prompt de six mots, puis trois couches de détail, sur mon Mac avec la même graine. Ce qui s'améliore, ce qui empire, ce qu'un prompt négatif peut faire, et ce que je n'ai pas prouvé."
 date: 2026-10-16
 tags: [ai, prompts, orazaka, measurements]
-author: krizaka
-draft: true
+author: oussama
+draft: false
 cover: anatomy-flux-l3
 featured: true
 series: measured
-part: 4
+part: 2
 ---
 
-L'histoire habituelle des échecs de l'IA générative veut que les gens écrivent mal leurs prompts : six mots tapés, un monstre à trois jambes, et on accuse le modèle. Nous voulions illustrer cette histoire par des images. Ce que nous avons trouvé est plus utile et moins net ; ce billet montre donc ce que nous avons réellement obtenu, avec le prompt, la graine et la durée sous chaque image, et dit où l'histoire ne tenait pas.
+J'avais l'histoire en tête avant de faire les images. On tape six mots, le modèle sort un joueur à trois jambes, et on comprend qu'il fallait mieux écrire son prompt. C'est l'histoire qu'on lit partout. Je voulais simplement l'illustrer.
+
+Le modèle n'a pas joué le jeu. Ce qu'il m'a montré est moins spectaculaire, mais plus utile. Voici donc ce que j'ai vraiment obtenu, avec le prompt, la graine et la durée sous chaque image.
 
 <Note>
-Toutes les images ont été faites aujourd'hui sur un MacBook Pro (Apple M1 Max, 64 Go) avec la ligne de commande du moteur, **une image par prompt, une graine (2026)**. C'est une démonstration, pas un banc d'essai : aucune notation, aucune répétition sur d'autres graines. Nous le redisons à la fin.
+Toutes les images ont été faites sur mon MacBook Pro (M1 Max, 64 Go) avec la ligne de commande du moteur d'images. Une image par prompt, une seule graine (2026). C'est une démonstration, pas un banc d'essai : je n'ai rien noté, rien répété sur d'autres graines.
 </Note>
 
-## Niveau 0 : le prompt laconique
+## Un prompt, c'est une commande passée à un cuisinier
 
-Le prompt : *a basketball player dunking in snow*. Neuf mots, le genre qu'un utilisateur tape.
+Avant les images, une image mentale. Quand vous commandez « un plat de pâtes », le cuisinier décide de tout le reste : la sauce, l'assiette, la quantité. Il remplit les blancs. Un modèle d'image fait pareil. Tout ce que vous ne dites pas, il le choisit à votre place.
 
-<Figure id="anatomy-flux-l0" alt="Un joueur de basketball en maillot marine qui smashe dans un parc enneigé, une colline et des arbres derrière lui" caption="Niveau 0, FLUX.2 [klein] 4B. Deux bras, deux jambes, un panier et un filet. Les lettres du maillot ne veulent rien dire." />
+La graine, c'est le point de départ du hasard. Avec la même graine et le même prompt, le modèle refait exactement la même image. C'est ce qui me permet de changer une seule chose à la fois et de voir son effet.
 
-Ce n'est pas le cauchemar anatomique que promet l'histoire habituelle. FLUX.2 [klein] 4B, un modèle ouvert sous licence permissive, a produit un smash plausible dans la neige à partir de neuf mots. Ce que le prompt laissait ouvert, le modèle l'a décidé : un maillot marine, une colline enneigée, aucune caméra précise. Ce qu'il rate est petit et typique : les lettres du maillot ne lisent rien.
+## Niveau 0 : six mots
 
-## Niveaux 1 à 3 : ajouter ce qu'on veut dire
+Le prompt : *a basketball player dunking in snow*. Le genre de phrase qu'on tape sans réfléchir.
 
-Chaque niveau ajoute une famille de détails au précédent. Même modèle, même graine, même taille, 77 à 82 secondes chacun.
+<Figure id="anatomy-flux-l0" alt="Un joueur de basketball en maillot marine qui smashe dans un parc enneigé, une colline et des arbres derrière lui" caption="Niveau 0, FLUX.2 [klein] 4B. Deux bras, deux jambes, un panier, un filet. Les lettres du maillot ne veulent rien dire." />
 
-<Row>
-<Figure id="anatomy-flux-l1" alt="Un joueur de basketball en maillot rouge qui bondit vers un panier dans une salle intérieure" caption="Niveau 1 : + qui et comment. Maillot rouge, les deux jambes visibles, le ballon au-dessus du panier." />
-<Figure id="anatomy-flux-l2" alt="Un joueur en maillot rouge qui smashe sur un terrain d'asphalte extérieur saupoudré de neige" caption="Niveau 2 : + où. Un terrain extérieur, de la neige fraîche, des flocons qui tombent." />
-<Figure id="anatomy-flux-l3" alt="Un joueur en maillot rouge qui smashe sur un terrain enneigé, lumière couverte, l'arrière-plan flou" caption="Niveau 3 : + caméra et lumière. Un plan moyen, 35 mm, f/2,2, lumière douce de ciel couvert." />
-</Row>
+Pas de monstre. FLUX.2 [klein] 4B, un modèle ouvert sous licence permissive, a produit un smash crédible dans la neige avec six mots. Ce que je n'avais pas précisé, il l'a décidé : un maillot marine, une colline, aucun cadrage particulier. Son seul raté visible est classique : les lettres du maillot ne forment aucun mot.
 
-Ce qui a changé, tel que nous le voyons :
+## Niveaux 1 à 3 : dire ce qu'on veut vraiment
 
-- **Le niveau 1 a corrigé le maillot et perdu la neige.** Nous avons décrit le joueur sans dire où, et le modèle a comblé le vide avec une salle intérieure éclairée. Un prompt est un ensemble de contraintes, et une dimension laissée libre est décidée à votre place. Ajouter du détail sur un axe peut en déloger un autre.
-- **Le niveau 2 a ramené la neige** et mis le terrain dehors, parce que nous l'avons dit.
-- **Le niveau 3 a changé le cadrage et adouci l'arrière-plan ; le contenu est resté le même.** Il n'a pas corrigé les lettres du maillot, et le panneau a un étrange second panneau sous le premier. La lumière était déjà couverte au niveau 2, puisque la scène était de la neige : nous ne pouvons pas attribuer un changement aux mots sur la lumière.
-
-Les prompts complets des quatre niveaux sont sous chaque image (ouvrez **Comment c'est fait**). Lus dans l'ordre, ils forment la recette habituelle : sujet et anatomie, décor et physique, caméra et optique.
-
-## Le prompt négatif : un outil que l'un de ces modèles n'a pas
-
-La quatrième étape de la recette habituelle est un prompt négatif (*deformed, extra limbs, bad anatomy, glitch, jitter, low quality*). FLUX.2 [klein] tourne avec un guidage de 1 et ignore un prompt négatif ; [les Studios d'Orazaka](https://dev.orazaka.com) le disent et gardent « no text, no logos » dans le prompt positif (ADR-075). L'étape négative ne peut donc pas être montrée sur ce modèle, et nous ne le prétendons pas.
-
-On peut la montrer sur Stable Diffusion 1.5, un modèle plus ancien et plus petit qui utilise un guidage (7 ici) et un prompt négatif. Ici, le prompt laconique produit bien les défauts que l'histoire promet. De gauche à droite : niveau 0, niveau 3 sans prompt négatif, niveau 3 avec. 512×512, graine 2026, 63 à 68 secondes chacune.
+À chaque niveau, j'ai ajouté une famille de détails au précédent. Même modèle, même graine, même taille. Entre 77 et 82 secondes par image.
 
 <Row>
-<Figure id="anatomy-sd15-l0" alt="Un joueur de basketball en blanc qui smashe dans la neige, un soulier rouge et un soulier gris, un poteau isolé à côté de lui" caption="SD 1.5, niveau 0 : souliers dépareillés, un poteau qui ne tient rien, lettres du maillot illisibles." />
-<Figure id="anatomy-sd15-l3" alt="Un joueur en maillot rouge sous un panier doublé, une dalle orange sous le panneau" caption="SD 1.5, niveau 3, sans prompt négatif : le panier est doublé et fond en une dalle orange." />
-<Figure id="anatomy-sd15-l3neg" alt="Un joueur en maillot rouge qui tend le bras vers un seul panier monté sur un poteau courbé, les souliers dépareillés" caption="SD 1.5, niveau 3 + prompt négatif : un seul panier, un drôle de poteau, des souliers qui ne vont toujours pas ensemble." />
+<Figure id="anatomy-flux-l1" alt="Un joueur de basketball en maillot rouge qui bondit vers un panier dans une salle intérieure" caption="Niveau 1, le joueur et son geste : maillot rouge, deux jambes visibles, ballon au-dessus du panier." />
+<Figure id="anatomy-flux-l2" alt="Un joueur en maillot rouge qui smashe sur un terrain d'asphalte extérieur saupoudré de neige" caption="Niveau 2, le lieu : un terrain extérieur, de la neige fraîche, des flocons qui tombent." />
+<Figure id="anatomy-flux-l3" alt="Un joueur en maillot rouge qui smashe sur un terrain enneigé, lumière couverte, l'arrière-plan flou" caption="Niveau 3, la caméra et la lumière : plan moyen, 35 mm, f/2,2, ciel couvert." />
 </Row>
 
-Le prompt laconique montre un poteau flottant et des souliers dépareillés, le détaillé un panier doublé. Avec le prompt négatif, il y a un seul panier, et d'autres bizarreries restent. **Une image par prompt ne peut pas vous dire que le prompt négatif a fonctionné.** C'est tout aussi probablement le hasard. Pour cette affirmation, il faut vingt graines et un décompte ; nous ne l'avons pas fait.
+Le niveau 1 m'a surpris. J'ai décrit le joueur en détail, et la neige a disparu. Le modèle l'a placé dans une salle intérieure bien éclairée. Je n'avais pas dit où, et en me concentrant sur le joueur, j'avais laissé le décor en blanc. Le cuisinier a rempli le blanc. C'est la vraie leçon de ce billet : ajouter du détail sur un point peut en faire bouger un autre.
 
-## Une liste de contrôle, et ce que les images en disent
+Le niveau 2 a ramené la neige et mis le terrain dehors, parce que je l'ai écrit.
 
-Notre liste de contrôle pour un prompt tient en cinq lettres, S.A.C.L.N. (en anglais : Subject, Action, Camera, Lighting, Negative). C'est un aide-mémoire que nous utilisons, pas un résultat, et le tableau dit ce que les images ci-dessus soutiennent ou non.
+Le niveau 3 a changé le cadrage et adouci l'arrière-plan. Le contenu, lui, n'a pas bougé. Les lettres du maillot restent illisibles, et le panneau a gagné un étrange second panneau en dessous. Quant à la lumière, elle était déjà grise au niveau 2, puisque la scène était sous la neige. Je ne peux donc pas dire que mes mots sur la lumière ont changé quoi que ce soit.
 
-| | À dire | Dans ces images |
+Les prompts complets sont sous chaque image, dans « Comment c'est fait ». Lus dans l'ordre, ils suivent la recette habituelle : le sujet, puis le décor, puis la caméra.
+
+## Le prompt négatif, et le modèle qui l'ignore
+
+La recette habituelle a une quatrième étape : le prompt négatif, la liste de ce qu'on ne veut pas (*deformed, extra limbs, bad anatomy, low quality*). Pour comprendre pourquoi ça ne marche pas partout, il faut parler du guidage.
+
+Le guidage, c'est la force avec laquelle le modèle obéit au texte. Pour l'appliquer, beaucoup de modèles calculent deux versions à chaque étape, une qui suit le prompt et une qui suit le prompt négatif, puis s'éloignent de la seconde. FLUX.2 [klein] tourne avec un guidage de 1 : il ne fait pas ce deuxième calcul. Le prompt négatif n'est donc jamais lu. Je ne peux pas montrer cette étape sur ce modèle. Dans les Studios d'[Orazaka](https://dev.orazaka.com), les exclusions comme « no text, no logos » sont écrites dans le prompt positif pour cette raison.
+
+Stable Diffusion 1.5, plus ancien et plus petit, utilise un guidage de 7 et lit le prompt négatif. Et là, le prompt de six mots produit bien les défauts promis. De gauche à droite : niveau 0, niveau 3 sans négatif, niveau 3 avec. 512×512, graine 2026, 63 à 68 secondes chacune.
+
+<Row>
+<Figure id="anatomy-sd15-l0" alt="Un joueur de basketball en blanc qui smashe dans la neige, un soulier rouge et un soulier gris, un poteau isolé à côté de lui" caption="SD 1.5, niveau 0 : deux souliers différents, un poteau qui ne tient rien." />
+<Figure id="anatomy-sd15-l3" alt="Un joueur en maillot rouge sous un panier doublé, une dalle orange sous le panneau" caption="SD 1.5, niveau 3 sans négatif : le panier est doublé et fond en une dalle orange." />
+<Figure id="anatomy-sd15-l3neg" alt="Un joueur en maillot rouge qui tend le bras vers un seul panier monté sur un poteau courbé, les souliers dépareillés" caption="SD 1.5, niveau 3 avec négatif : un seul panier, un poteau tordu, des souliers toujours dépareillés." />
+</Row>
+
+Avec le prompt négatif, il n'y a plus qu'un panier. C'est tentant d'y voir la preuve que ça marche. Je ne peux pas l'affirmer. Avec une seule image par prompt, ce changement peut tout autant venir du hasard. Pour le prouver, il faudrait vingt graines et un décompte. Je ne l'ai pas fait.
+
+## Une liste à garder sous la main
+
+J'utilise un aide-mémoire en cinq points pour écrire un prompt : le sujet, l'action, la caméra, la lumière, et ce qu'on exclut. C'est une habitude que j'ai, rien de plus. Voici ce que les images ci-dessus en disent vraiment :
+
+| À préciser | Exemple | Ce que montrent ces images |
 |:---|:---|:---|
-| **S**ujet et anatomie | Qui, la tenue, la posture | Le niveau 1 a corrigé le maillot et la pose. Il a aussi laissé le modèle choisir le lieu. |
-| **A**ction et mouvement | La trajectoire, ce qui touche quoi | Présent dès le niveau 0 (« dunking ») ; le ballon au-dessus du panier au niveau 1 a tenu. Une image fixe ne montre pas le mouvement. |
-| **C**améra et optique | Focale, ouverture, cadrage | Le niveau 3 a changé le cadrage et adouci l'arrière-plan. |
-| **L**umière et textures | Source de lumière, matières | Non isolé : la lumière était déjà couverte au niveau 2. Nous ne pouvons pas juger les textures sur quelques images. |
-| **N**égatif | Ce qu'il faut exclure | Inutilisable sur FLUX.2 [klein] (guidage 1). Non concluant sur SD 1.5 avec une graine. |
+| Sujet | Qui, la tenue, la posture | Le niveau 1 a corrigé le maillot et la pose, et laissé le modèle choisir le lieu. |
+| Action | Ce qui bouge, ce qui touche quoi | « Dunking » suffisait dès le niveau 0. Une image fixe ne montre pas le mouvement. |
+| Caméra | Focale, ouverture, cadrage | Le niveau 3 a changé le cadrage et flouté l'arrière-plan. |
+| Lumière | Source, matières | Impossible à isoler : la lumière était déjà grise au niveau 2. |
+| Exclusions | Ce qu'on ne veut pas | Ignoré par FLUX.2 [klein]. Non concluant sur SD 1.5 avec une seule graine. |
 
-## Ce que Krizaka en fait
+## Ce qu'Orazaka en fait
 
-Personne ne devrait avoir à retenir des réglages d'objectif. Les Studios de direction artistique d'Orazaka enveloppent ce qu'une personne tape dans une direction structurée (ADR-075), et les images de la galerie sont faites ainsi : le prompt ci-dessous est exactement ce qui est arrivé au modèle, le sujet de la personne d'abord, puis la direction du Studio, puis les exclusions, dans le prompt positif là où ce modèle en a besoin.
+Personne ne devrait avoir à retenir des focales pour obtenir une belle image. Les Studios de direction artistique d'Orazaka prennent ce que la personne tape et l'enveloppent dans une direction structurée. Le prompt ci-dessous est exactement ce qui est arrivé au modèle : le sujet de la personne d'abord, puis la direction du Studio, puis les exclusions, dans le prompt positif.
 
-<Figure id="gallery-tea-pour" alt="Un homme en djellaba blanche qui verse du thé à la menthe d'une théière en argent dans une tente berbère à l'heure dorée" caption="Un run d'un Studio Orazaka (art-golden-hour). Ouvrez le prompt ci-dessous pour lire le sujet, puis la direction." />
+<Figure id="gallery-tea-pour" alt="Un homme en djellaba blanche qui verse du thé à la menthe d'une théière en argent dans une tente berbère à l'heure dorée" caption="Une exécution du Studio art-golden-hour. Le prompt complet est sous l'image." />
 
-Le prompt du même Studio a aussi servi à un clip de cinq secondes, fait par un modèle vidéo hébergé :
+Le même prompt a servi à un clip de cinq secondes, fait par un modèle vidéo hébergé :
 
-<Clip id="clip-tea-pour" alt="Du thé à la menthe versé d'une théière en argent dans un petit verre sous une tente berbère, de la vapeur dans la lumière dorée" caption="Texte vers vidéo sur DigitalOcean serverless : 134 s, 0,60 $. Le prompt du clip est sous lui." />
+<Clip id="clip-tea-pour" alt="Du thé à la menthe versé d'une théière en argent dans un petit verre sous une tente berbère, de la vapeur dans la lumière dorée" caption="Texte vers vidéo hébergé : 134 s, 0,60 $." />
 
-## Ce que nous n'avons pas mesuré
+## Ce que vous pouvez en retenir
 
-- **La variance.** Une graine par prompt. Une autre graine pourrait inverser chaque conclusion sur le panier doublé ou les souliers.
-- **La qualité, notée.** Notre lecture des images est la nôtre ; les images et les prompts sont à vous de juger.
-- **La vidéo.** Nous n'avons pas de paire de clips naïf contre détaillé, donc nous n'affirmons rien sur ce qu'un prompt détaillé apporte au mouvement. Un clip hébergé coûte 0,60 $ et nous ne l'avons pas dépensé pour ceci.
-- **Un bouton « Améliorer le prompt ».** L'idée qu'un produit écrive le détail à votre place, ce sont les Studios d'Orazaka, ci-dessus. Nous ne décrivons aucune autre fonctionnalité ici.
+Un prompt n'a pas besoin d'être long. Il doit dire ce qui compte pour vous, parce que tout le reste sera décidé par le modèle. Quand vous ajoutez un détail, regardez ce qui a bougé ailleurs. Et avant d'écrire un prompt négatif, vérifiez que votre modèle le lit.
 
-Les coûts et les durées des modèles de ce billet sont dans [Ce que coûte vraiment la génération d'images et de vidéo](/fr/posts/what-image-and-video-generation-costs) ; la façon dont sont tenus les enregistrements derrière eux est dans [La vraie économie de l'IA souveraine](/fr/posts/the-real-economics-of-sovereign-ai).
+Ce que je n'ai pas mesuré : la variance (une autre graine pourrait inverser chaque conclusion), la qualité notée par d'autres que moi, et la vidéo, faute d'une paire de clips naïf et détaillé. Un clip hébergé coûte 0,60 $ et je ne l'ai pas dépensé pour ça. Les durées et les prix de ces modèles sont dans [le billet sur les coûts](/fr/posts/what-image-and-video-generation-costs).
