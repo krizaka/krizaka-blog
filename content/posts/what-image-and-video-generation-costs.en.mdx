@@ -4,7 +4,7 @@ description: "A Mac, a hosted API and a rented H100, on the same pictures and cl
 date: 2026-10-16
 tags: [costs, measurements, orazaka, ai]
 author: oussama
-draft: true
+draft: false
 cover: compare-moroccan-riad-flux
 series: measured
 part: 1
@@ -12,15 +12,15 @@ part: 1
 
 During our last video batch, the final clip came off the GPU and the pod kept running. For about two hours, an H100 rented at US$3.99 an hour sat waiting for work that would never come. It had a watchdog meant to shut it down after a while without jobs. The watchdog didn't, because destroying the pod meant calling RunPod's API, and the pod had no key to do that. A guard loop running on my Mac is what finally stopped it.
 
-Those two hours cost between $7 and $8. On a GPU bill of $23.23, that stings. It's also a good place to start talking about what generating images and video really costs.
+Those two hours cost between $7 and $8, on a GPU bill of $23.23. That stings, and it's a good place to start talking about what generating images and video really costs.
 
-Every number in this post comes from the records of [Orazaka](https://dev.orazaka.com), my AI engine: each run keeps its start, its end, its size, its seed and its outcome. The [Measured runs](https://dev.orazaka.com/docs/measured-runs) page is generated from that data. When a number comes from my notes instead, I say so.
+Every number comes from the records of [Orazaka](https://dev.orazaka.com), my AI engine, published on the [Measured runs](https://dev.orazaka.com/docs/measured-runs) page. When a number comes from my notes, I say so.
 
 ## Three ways to cook the same dish
 
-To generate an image or a video I have three options. The first is cooking at home: my MacBook Pro M1 Max, 64 GB, which I already own. The second is ordering at a restaurant: a hosted API, here DigitalOcean's serverless inference, where you pay per output. The third is renting a professional kitchen by the hour: a rented GPU, at DigitalOcean or RunPod. You pay for the time, whether the stoves are on or not.
+I have three options. Cooking at home: my MacBook Pro M1 Max, 64 GB, which I already own. Ordering at a restaurant: a hosted API, here DigitalOcean's serverless inference, paid per output. Or renting a professional kitchen by the hour: a GPU at DigitalOcean or RunPod, paid for the time, stoves on or not.
 
-Each option has its hidden price. At home, it's memory and patience. At the restaurant, it's the fixed menu. In the rented kitchen, it's the idle time.
+Each option has its hidden price: memory and patience at home, the fixed menu at the restaurant, idle time in the rented kitchen.
 
 The times below run from command to file: queueing, transfer and storage included.
 
@@ -43,7 +43,7 @@ The same prompt, three models:
 <Figure id="compare-moroccan-riad-sd15" alt="The same prompt, Stable Diffusion 1.5 on the Mac" caption="SD 1.5 on the Mac: 58 s." />
 </Row>
 
-FLUX.2's 6 out of 18 scared me at first. Reading the records, nearly every failure was my own doing. The image client gave up after about two minutes, while the engine needed 60 to 75 seconds plus the transfer of a 2.5 MB image through a tunnel. Worse: when the client gave up, it returned a transparent 1×1 pixel image, and the run reported success. I also lost two finished images, overwritten by retries that used the same file name. Since then, every download checks the file size. I still count those failures.
+FLUX.2's 6 out of 18 scared me at first. Reading the records, nearly every failure was mine. The image client gave up after two minutes, while the engine needed 60 to 75 seconds plus the image's trip through a tunnel. Worse: when it gave up, it returned a transparent 1×1 pixel image, and the run reported success. Two finished images were also overwritten by retries with the same name. Since then every download checks the file size, and I still count those failures.
 
 ## Video
 
@@ -55,13 +55,13 @@ FLUX.2's 6 out of 18 scared me at first. Reading the records, nearly every failu
 | Wan 2.2 TI2V 5B, 1280×704 | RTX 4000 Ada (DigitalOcean) | 1,106 s | $0.23 | 1 of 1 |
 | Wan 2.2 TI2V 5B, 480×832 | Mac | out of memory | — | 0 |
 
-On a rented GPU, the price of a clip is its own compute time times the hourly rate. It leaves out start-up, model loading and waiting. That's why the real bill is higher, and I'll come back to it below.
+On a rented GPU, the price of a clip is its compute time times the hourly rate, without start-up or waiting. So the real bill is higher; more on that below.
 
 <Clip id="clip-tea-pour" alt="Mint tea poured into a glass under a Berber tent, five seconds" caption="Wan 2.2 A14B, hosted: 134 s, $0.60. The prompt and seed are under the clip." />
 
 The hosted version is the simplest: $0.60 and two minutes, every time. But it sets the menu. I asked for 720×1280, 480×832, 1280×720, with and without a format parameter. Every answer came back at 832×480. No vertical, ever. So Orazaka refuses that model for 9:16, by name, rather than quietly cropping a landscape frame.
 
-Vertical and 720p are why I rented an H100. The A14B model runs there at 720p with our own settings. It doesn't fit whole on the 80 GB card: its two experts weigh 57 GB, so they get swapped with host memory at every step. About 26 seconds a step, 18 minutes a clip. More expensive than hosted, but at 720p and in the format I want.
+Vertical and 720p are why I rented an H100. The A14B model runs there with our settings, but doesn't fit whole on the 80 GB card: its two experts weigh 57 GB and get swapped with host memory. About 26 seconds a step, 18 minutes a clip. More expensive than hosted, but at 720p and in the format I want.
 
 ## What I actually paid
 
@@ -99,17 +99,11 @@ In September I changed the unit: a credit went from 1 cent to 0.1 cent. Before, 
 | followup-sequences | 3.00¢ | 1.00¢ |
 | realestate-reels | 15.00¢ | 14.00¢ |
 
-Text steps got 53 to 70% cheaper. Nothing was discounted: we just stopped billing a minimum. trade-showcase quadrupled because a 512×512 image now costs 10 cents instead of zero. The models are real, so two runs of the same workload don't use exactly the same tokens. The measured effect is a factor of two to three; the noise is a few per cent.
+Text steps got 53 to 70% cheaper. Nothing was discounted: we just stopped billing a minimum. trade-showcase quadrupled because a 512×512 image now costs 10 cents instead of zero. The models being real, two runs don't use quite the same tokens, but that noise stays at a few per cent.
 
 ## What I decided
 
-Images stay on the Mac by default. A minute on a machine I already own costs nothing. Hosted is there when eight seconds matter more than eight cents.
-
-Video goes to a GPU when you choose it: hosted for a quick landscape clip at $0.60, a rented H100 for 720p and vertical. Never the Mac.
-
-A rented GPU lives for one batch. Created when there's work, stopped when the queue is empty, with a guard that doesn't depend on my laptop.
-
-And licences are data. MMAudio, the model that adds synced sound effects to a video, has a non-commercial licence: Orazaka offers it, but never as a default.
+Images stay on the Mac by default, and hosted takes over when eight seconds matter more than eight cents. Video goes to a GPU when you choose it: hosted for a quick landscape clip, a rented H100 for 720p and vertical, never the Mac. A rented GPU lives for one batch only. And licences are data: MMAudio, which adds synced sound effects to a video, has a non-commercial licence, so Orazaka offers it but never makes it the default.
 
 ## What I haven't measured
 

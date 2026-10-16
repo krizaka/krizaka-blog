@@ -47,6 +47,15 @@ html.light ::selection { background: hsla(217, 92%, 50%, 0.18); }
 /* ─── The bar (@krizaka/ui NavBar): as wide as the page under it ─── */
 .kz-site-bar-wrap { padding-inline: var(--kz-page-gutter, clamp(16px, 3.2vw, 32px)); }
 .kz-site-bar, .kz-site-bar[data-compact] { max-width: var(--kz-page-max); }
+/* The bar and the hero always fit the window between the gutters (checked at 1750, 1366 and 390 px by scripts/check-layout.mjs):
+   the bar is never wider than its wrap and its zones may shrink; the hero title scales with the window and wraps. */
+.kz-site-bar { box-sizing: border-box; width: 100%; min-width: 0; }
+.kz-site-bar > * { min-width: 0; }
+.kz-hero > .kz-frame { box-sizing: border-box; width: 100%; }
+.kz-hero-title { font-size: clamp(1.875rem, 1.1rem + 2.6vw, 3.1rem); max-width: 100%; overflow-wrap: break-word; }
+/* The bar's focus: one ring, for the keyboard only — never after a click, a tap or a page load. */
+.kz-site-bar :is(a, button):focus:not(:focus-visible) { outline: none; box-shadow: none; }
+.kz-site-bar :is(a, button):focus-visible { outline: 2px solid var(--kz-accent); outline-offset: 2px; box-shadow: none; }
 
 /* ─── Reading pages: the article, its meta line, its prose ─── */
 .bl-meta { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; font-family: var(--kz-font-mono); font-size: 0.8125rem; color: var(--kz-text-secondary); }
