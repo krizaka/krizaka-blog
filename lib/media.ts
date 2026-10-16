@@ -32,7 +32,9 @@ export type ImageMedia = { kind: "image"; width: number; height: number; blur: s
 export type VideoMedia = { kind: "video"; width: number; height: number; blur: string; poster: string; mp4: string; webm: string; bytes?: { mp4: number; webm: number }; made?: Made };
 export type Media = ImageMedia | VideoMedia;
 
-const LIBRARY = data as unknown as Record<string, Media>;
+const BLUR = /^data:image\/webp;base64,[A-Za-z0-9+/=]+$/;
+/** The library as read, with every blur placeholder checked to be a webp data URL (it ends up in a CSS `url()`). */
+const LIBRARY: Record<string, Media> = Object.fromEntries(Object.entries(data as unknown as Record<string, Media>).map(([id, m]) => [id, { ...m, blur: BLUR.test(m.blur) ? m.blur : "" }]));
 
 export const mediaIds = (): string[] => Object.keys(LIBRARY);
 export const hasMedia = (id: string): boolean => id in LIBRARY;
