@@ -52,6 +52,8 @@ collections:
     fields:
       - { name: title, label: Title, widget: string, i18n: true }
       - { name: description, label: Summary (one or two sentences, 220 characters at most), widget: text, i18n: true, pattern: ["^.{1,220}$", "At most 220 characters"] }
+      - { name: seoTitle, label: "Search title (optional, 60 characters at most: what Google shows when the title is too long)", widget: string, required: false, i18n: true, pattern: ["^.{0,60}$", "At most 60 characters"] }
+      - { name: seoDescription, label: "Search description (optional, 155 characters at most)", widget: text, required: false, i18n: true, pattern: ["^.{0,155}$", "At most 155 characters"] }
       - { name: date, label: Date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD", picker_utc: true, i18n: duplicate }
       - { name: tags, label: Topics (lower-case ids, e.g. costs, orazaka), widget: list, i18n: true, required: false }
       - name: author

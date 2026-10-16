@@ -57,7 +57,11 @@
     "seriesTitle": "Series",
     "seriesLead": "Posts that belong together, in reading order.",
     "moreFromSeries": "Read the series",
-    "allPosts": "All posts"
+    "allPosts": "All posts",
+    "filterLabel": "Filter by topic",
+    "allTopics": "All posts",
+    "seoTitle": "Krizaka Blog — sovereign AI, local LLMs, measured costs",
+    "seoDescription": "Notes from building sovereign AI in Montréal: local LLMs, Spring AI 2, GPU and video generation costs, prompts. Real runs, measured numbers."
   },
   "post": {
     "back": "All posts",
@@ -76,7 +80,16 @@
     "seriesAll": "All posts of the series",
     "seriesNext": "Next in the series",
     "seriesPrev": "Previously in the series",
-    "featured": "Featured"
+    "featured": "Featured",
+    "toc": "On this page",
+    "code": "Code",
+    "copy": "Copy",
+    "copiedCode": "Copied",
+    "inSeries": "{series} · part {part} of {count}",
+    "prevInSeries": "Previous in the series",
+    "nextInSeries": "Next in the series",
+    "keyNumbers": "Key numbers",
+    "progress": "Reading progress"
   },
   "engage": {
     "title": "Keep it, pass it on",
@@ -129,7 +142,49 @@
       "prompts": "Prompts",
       "payments": "Payments"
     },
-    "countOne": "1 post"
+    "countOne": "1 post",
+    "seo": {
+      "sovereignty": {
+        "title": "Sovereign AI: where your data is processed — Krizaka Blog",
+        "description": "Posts on sovereign, self-hosted AI: where a document is processed, which model read it, who sees the result, and what that costs."
+      },
+      "ai": {
+        "title": "AI engineering notes from Montréal — Krizaka Blog",
+        "description": "Building an AI platform in practice: local LLMs, Spring AI, image and video models, GPUs. Real runs and measured numbers, no hype."
+      },
+      "montreal": {
+        "title": "AI in Montréal and Québec — Krizaka Blog",
+        "description": "Building AI in Montréal: Quebec's Law 25, a GPU rented in a Montréal region, and what a local company owes its customers."
+      },
+      "costs": {
+        "title": "AI costs, measured: GPUs, APIs, a Mac — Krizaka Blog",
+        "description": "What AI really costs: hosted APIs, rented H100s and a Mac compared on the same work, with the bills and the mistakes that cost money."
+      },
+      "orazaka": {
+        "title": "Orazaka: building an open-source AI engine — Krizaka Blog",
+        "description": "Notes from building Orazaka, an open-source AI engine: Spring AI 2, model routing as data, workers, GPUs, and what broke."
+      },
+      "measurements": {
+        "title": "Measured AI runs: times, costs, results — Krizaka Blog",
+        "description": "Posts built on measurements: seconds, dollars and results from recorded runs, with what was not measured said plainly."
+      },
+      "yomizaka": {
+        "title": "Yomizaka: reading documents with AI — Krizaka Blog",
+        "description": "How Yomizaka reads documents such as leases with Orazaka: findings tied to the exact words, and what a run does not prove."
+      },
+      "documents": {
+        "title": "AI document analysis, shown run by run — Krizaka Blog",
+        "description": "AI on real documents: how a lease or a contract is checked rule by rule, how to verify the result, and its limits."
+      },
+      "law": {
+        "title": "AI and the law in Québec — Krizaka Blog",
+        "description": "Where AI meets the law in Québec: the Civil Code, Law 25, and what an AI reading of a legal document can and cannot claim."
+      },
+      "prompts": {
+        "title": "Prompt engineering for image models — Krizaka Blog",
+        "description": "How prompts really steer image and video models: subject, setting, camera, negative prompts and guidance, tested with a fixed seed."
+      }
+    }
   },
   "search": {
     "title": "Search the posts",
@@ -143,7 +198,10 @@
   "notFound": {
     "title": "Page not found",
     "body": "This page does not exist on the Krizaka blog.",
-    "back": "Back to the blog"
+    "back": "Back to the blog",
+    "lead": "The address may have changed, or the post was merged into another one.",
+    "search": "Search the posts",
+    "latest": "Latest posts"
   },
   "authors": {
     "krizaka": "The Krizaka team",

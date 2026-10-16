@@ -8,7 +8,8 @@ import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
 import { postsWithTag, tagsOf } from "@/lib/posts";
 import { collectionJsonLd } from "@/lib/seo";
 import { PostList } from "./PostList";
-import { postCount, tagLabel } from "./tag-label";
+import { postCount, tagLabel, tagSeo } from "./tag-label";
+import { TopicFilter } from "./TopicFilter";
 
 export function TagsPage({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
@@ -38,9 +39,11 @@ export function TagPage({ locale, tag }: { locale: Locale; tag: string }) {
   const label = tagLabel(locale, tag);
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(collectionJsonLd(locale, `/tags/${tag}`, format(t.tags.oneTitle, { tag: label }), t.tags.oneLead)) }} />
-      <PageHero back={{ href: localizedPath(locale, "/tags"), label: t.tags.back }} linkAs={Link} eyebrow={t.tags.title} title={format(t.tags.oneTitle, { tag: label })} lead={t.tags.oneLead} backdrop="plain" />
-      <Section reveal={false}>{posts.length ? <PostList posts={posts} locale={locale} reveal={false} /> : <p className="bl-status">{t.tags.none}</p>}</Section>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(collectionJsonLd(locale, `/tags/${tag}`, format(t.tags.oneTitle, { tag: label }), tagSeo(locale, tag).description)) }} />
+      <PageHero back={{ href: localizedPath(locale, "/tags"), label: t.tags.back }} linkAs={Link} eyebrow={t.tags.title} title={format(t.tags.oneTitle, { tag: label })} lead={tagSeo(locale, tag).description} backdrop="plain" />
+      <Section reveal={false}>
+        <TopicFilter locale={locale} current={tag} />
+        {posts.length ? <PostList posts={posts} locale={locale} reveal={false} /> : <p className="bl-status">{t.tags.none}</p>}</Section>
     </>
   );
 }

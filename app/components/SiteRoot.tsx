@@ -4,6 +4,7 @@ import { SkipLink } from "@krizaka/ui/skip-link";
 import { MotionObserver } from "@krizaka/ui/motion";
 import { cn } from "@krizaka/ui/cn";
 import { getDictionary, type Locale } from "@/lib/i18n";
+import { MEDIA_CDN_URL } from "@/lib/site";
 import { displayFace, monoFace, textFace } from "../fonts";
 import { I18nProvider } from "./I18nProvider";
 import SiteFooter from "./SiteFooter";
@@ -21,6 +22,8 @@ export default function SiteRoot({ locale, children }: { locale: Locale; childre
       <head>
         <ThemeScript defaultMode="dark" />
         <meta name="theme-color" content="#0d0d0f" />
+        {/* The pictures come from the media CDN: open the connection with the page, not after it. */}
+        <link rel="preconnect" href={MEDIA_CDN_URL} />
       </head>
       <body className="flex min-h-dvh flex-col antialiased">
         <ThemeProvider defaultMode="dark">
