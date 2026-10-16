@@ -4,12 +4,15 @@ import { format, getDictionary, type Locale } from "@/lib/i18n";
 
 /* « When does a rented GPU beat the hosted price? » — one slider. The cost of a rented clip is hourly price ÷ (clips per
    busy hour × how busy the machine is). The inputs are the post's own figures (passed as props); nothing is measured here. */
-export function Utilization({ hourly, seconds, hosted, locale }: { hourly: number; seconds: number; hosted: number; locale: Locale }) {
+export function Utilization({ hourly = 3.99, seconds = 175, hosted = 0.6, locale }: { hourly?: number | string; seconds?: number | string; hosted?: number | string; locale: Locale }) {
   const t = getDictionary(locale).calc;
+  const numHourly = Number(hourly) || 3.99;
+  const numSeconds = Number(seconds) || 175;
+  const numHosted = Number(hosted) || 0.6;
   const [busy, setBusy] = useState(50);
-  const perHour = 3600 / seconds;
-  const rented = hourly / (perHour * (busy / 100));
-  const breakEven = Math.ceil((hourly / (perHour * hosted)) * 100);
+  const perHour = 3600 / numSeconds;
+  const rented = numHourly / (perHour * (busy / 100));
+  const breakEven = Math.ceil((numHourly / (perHour * numHosted)) * 100);
   const usd = (n: number) => new Intl.NumberFormat(locale === "en" ? "en-CA" : "fr-CA", { style: "currency", currency: "USD" }).format(n);
   return (
     <aside className="bl-calc" aria-labelledby="bl-calc-title">
@@ -20,10 +23,10 @@ export function Utilization({ hourly, seconds, hosted, locale }: { hourly: numbe
       </label>
       <dl>
         <div><dt>{t.perClip}</dt><dd>{usd(rented)}</dd></div>
-        <div><dt>{t.hosted}</dt><dd>{usd(hosted)}</dd></div>
+        <div><dt>{t.hosted}</dt><dd>{usd(numHosted)}</dd></div>
       </dl>
-      <p role="status" className="bl-calc-verdict">{rented < hosted ? t.verdictCheaper : t.verdictDearer} {format(t.breakEven, { percent: String(breakEven) })}</p>
-      <p className="bl-calc-note">{format(t.assumption, { hourly: usd(hourly), seconds: String(seconds) })}</p>
+      <p role="status" className="bl-calc-verdict">{rented < numHosted ? t.verdictCheaper : t.verdictDearer} {format(t.breakEven, { percent: String(breakEven) })}</p>
+      <p className="bl-calc-note">{format(t.assumption, { hourly: usd(numHourly), seconds: String(numSeconds) })}</p>
     </aside>
   );
 }
