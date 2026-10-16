@@ -1,3 +1,4 @@
+import { jsonLd } from "@/lib/json-ld";
 import Link from "next/link";
 import { PageHero } from "@krizaka/ui/page-hero";
 import { Section } from "@krizaka/ui/page";
@@ -20,7 +21,7 @@ export function SeriesIndexPage({ locale }: { locale: Locale }) {
   const all = seriesOf(locale);
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd(locale, "/series", t.series.title, t.series.lead)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(collectionJsonLd(locale, "/series", t.series.title, t.series.lead)) }} />
       <PageHero eyebrow={t.home.eyebrow} title={t.series.title} lead={t.series.lead} backdrop="plain" linkAs={Link} />
       <Section reveal={false}>
         {all.length ? (
@@ -42,7 +43,7 @@ export function SeriesPage({ locale, series }: { locale: Locale; series: string 
   const posts = postsInSeries(locale, series);
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd(locale, `/series/${series}`, seriesName(locale, series), seriesLead(locale, series))) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(collectionJsonLd(locale, `/series/${series}`, seriesName(locale, series), seriesLead(locale, series))) }} />
       <PageHero back={{ href: localizedPath(locale, "/series"), label: t.series.back }} linkAs={Link} eyebrow={`${t.series.title} · ${format(t.series.oneLead, { count: String(posts.length) })}`} title={seriesName(locale, series)} lead={seriesLead(locale, series)} backdrop="plain" />
       <Section reveal={false}>{posts.length ? <PostList posts={posts} locale={locale} reveal={false} /> : <p className="bl-status">{t.tags.none}</p>}</Section>
     </>

@@ -1,3 +1,4 @@
+import { jsonLd } from "@/lib/json-ld";
 import type { Metadata } from "next";
 import HomePage from "@/app/components/pages/HomePage";
 import { getDictionary } from "@/lib/i18n";
@@ -9,7 +10,7 @@ export const metadata: Metadata = pageMetadata({ locale: "fr", path: "/", title:
 export default function Page() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogJsonLd("fr")) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(blogJsonLd("fr")) }} />
       <HomePage locale="fr" />
     </>
   );

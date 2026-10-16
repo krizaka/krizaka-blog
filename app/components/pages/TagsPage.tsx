@@ -1,3 +1,4 @@
+import { jsonLd } from "@/lib/json-ld";
 import Link from "next/link";
 import { PageHero } from "@krizaka/ui/page-hero";
 import { Section } from "@krizaka/ui/page";
@@ -14,7 +15,7 @@ export function TagsPage({ locale }: { locale: Locale }) {
   const tags = tagsOf(locale);
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd(locale, "/tags", t.tags.title, t.tags.lead)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(collectionJsonLd(locale, "/tags", t.tags.title, t.tags.lead)) }} />
       <PageHero eyebrow={t.home.eyebrow} title={t.tags.title} lead={t.tags.lead} backdrop="plain" linkAs={Link} />
       <Section reveal={false}>
         {tags.length ? (
@@ -37,7 +38,7 @@ export function TagPage({ locale, tag }: { locale: Locale; tag: string }) {
   const label = tagLabel(locale, tag);
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd(locale, `/tags/${tag}`, format(t.tags.oneTitle, { tag: label }), t.tags.oneLead)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(collectionJsonLd(locale, `/tags/${tag}`, format(t.tags.oneTitle, { tag: label }), t.tags.oneLead)) }} />
       <PageHero back={{ href: localizedPath(locale, "/tags"), label: t.tags.back }} linkAs={Link} eyebrow={t.tags.title} title={format(t.tags.oneTitle, { tag: label })} lead={t.tags.oneLead} backdrop="plain" />
       <Section reveal={false}>{posts.length ? <PostList posts={posts} locale={locale} reveal={false} /> : <p className="bl-status">{t.tags.none}</p>}</Section>
     </>

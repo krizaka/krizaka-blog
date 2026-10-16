@@ -1,3 +1,4 @@
+import { jsonLd } from "@/lib/json-ld";
 import Link from "next/link";
 import { PageHero } from "@krizaka/ui/page-hero";
 import { Section } from "@krizaka/ui/page";
@@ -18,7 +19,7 @@ export default function SearchPage({ locale }: { locale: Locale }) {
   }));
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd(locale, "/search", t.search.title, t.search.lead)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(collectionJsonLd(locale, "/search", t.search.title, t.search.lead)) }} />
       <PageHero eyebrow={t.home.eyebrow} title={t.search.title} lead={t.search.lead} backdrop="plain" linkAs={Link} />
       <Section reveal={false}>
         <SearchBox entries={entries} />
