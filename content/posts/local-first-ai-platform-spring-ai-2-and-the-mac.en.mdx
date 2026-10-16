@@ -5,6 +5,9 @@ date: 2026-10-16
 tags: [orazaka, ai]
 author: krizaka
 draft: true
+cover: gallery-mini-souk
+series: building-orazaka
+part: 2
 ---
 
 [Orazaka](https://dev.orazaka.com) is built to run AI on infrastructure you control. For us, the first infrastructure is a MacBook Pro (M1 Max, 64 GB of unified memory). This post is what that taught us: what hurts on one machine, what we changed in the Java platform to make models a matter of data, and where the laptop stops being enough. Figures come from Orazaka's [Measured runs](https://dev.orazaka.com/docs/measured-runs), from ADRs and pull requests we link, or from our working notes, and the text says which.
@@ -51,6 +54,16 @@ Spring AI 2 options are immutable, so the code reads `options.mutate().model(mod
 ## What the Mac does well
 
 Unified memory and Metal make one machine a good place to start. In Orazaka's model catalogue the Mac runs chat through Ollama, speech with Piper, music with ACE-Step 1.5 (MIT), and images with stable-diffusion.cpp. The only image timing we have in the measurement record is FLUX.2 [klein] 4B at 1024×1024: **62 s median, command to file** (engine 72.7 s, six successful runs). ACE-Step takes about 10 to 15 seconds for a music bed on the Mac, from our working notes. None of this needs a bill, a driver or a cloud account, and a laptop is the machine a new developer already has.
+
+Three images that came out of that machine, each one an Orazaka run you can look up (open **How this was made** under a picture for the prompt, the seed, the time and the run record):
+
+<Row>
+<Figure id="gallery-mini-skating" alt="Tilt-shift miniature figurines skating on a frozen pond" caption="Tilt-shift miniature" />
+<Figure id="gallery-mini-souk" alt="Tilt-shift miniature of a souk alley with spice merchants" caption="Tilt-shift miniature" />
+<Figure id="gallery-mtl-ruelle" alt="A Plateau back alley at night after rain" caption="Montréal at night" />
+</Row>
+
+These are larger than the 1024×1024 of the median above (1024×1280 and 1360×768), and their recorded times, 75 to 109 s, are longer for it.
 
 ## What it cannot do: video
 

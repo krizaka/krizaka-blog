@@ -103,3 +103,62 @@ html.light ::selection { background: hsla(217, 92%, 50%, 0.18); }
 .kz-404 { min-height: 100dvh; display: grid; place-content: center; gap: 1rem; padding: 2rem; text-align: center; }
 .kz-404 h1, .kz-404 h2 { font-family: var(--kz-font-display); font-size: clamp(2rem, 6vw, 3rem); }
 .kz-404 a { color: var(--kz-accent-text); font-weight: 600; }
+
+/* ─── Media of a post: figures, clips, provenance ─── */
+.bl-img { display: block; width: 100%; height: auto; background-size: cover; background-position: center; background-color: var(--kz-surface-2); }
+.bl-figure { margin: 2rem 0; }
+.bl-figure .bl-img { border-radius: var(--kz-radius-md, 12px); border: 1px solid var(--kz-border-default); }
+.bl-figure figcaption { margin-top: 0.625rem; font-size: 0.875rem; line-height: 1.5; color: var(--kz-text-secondary); }
+.bl-weight { font-family: var(--kz-font-mono); font-size: 0.8125rem; }
+.bl-video { aspect-ratio: 16 / 9; object-fit: cover; }
+.bl-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem; margin: 2rem 0; }
+.bl-row .bl-figure { margin: 0; }
+.bl-how { margin-top: 0.5rem; font-size: 0.875rem; color: var(--kz-text-secondary); }
+.bl-how summary { cursor: pointer; font-weight: 600; width: fit-content; padding-block: 0.25rem; }
+.bl-how summary:hover { color: var(--kz-text-primary); }
+.bl-how dl { display: grid; gap: 0.5rem; margin-top: 0.5rem; padding: 0.75rem 1rem; border: 1px solid var(--kz-border-subtle); border-radius: 11px; background: var(--kz-surface-1); }
+.bl-how dl > div { display: grid; grid-template-columns: minmax(6rem, 9rem) 1fr; gap: 0.75rem; }
+.bl-how dt { font-family: var(--kz-font-mono); font-size: 0.75rem; letter-spacing: 0.02em; text-transform: uppercase; color: var(--kz-text-tertiary, var(--kz-text-secondary)); padding-top: 0.125rem; }
+.bl-how dd { min-width: 0; overflow-wrap: anywhere; color: var(--kz-text-primary); }
+.bl-how code { font-family: var(--kz-font-mono); font-size: 0.8125em; }
+.bl-prompt { font-style: normal; quotes: none; line-height: 1.55; }
+@media (max-width: 40rem) { .bl-how dl > div { grid-template-columns: 1fr; gap: 0.125rem; } }
+
+/* ─── Cards of posts, the series box, related ─── */
+.bl-card { position: relative; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+.bl-card .bl-cover-img { display: block; width: 100%; height: 100%; object-fit: cover; background-size: cover; background-position: center; }
+.bl-cover-fallback { display: block; width: 100%; height: 100%; background: linear-gradient(135deg, var(--kz-surface-2), var(--kz-surface-1)); }
+.bl-card-link { color: inherit; text-decoration: none; }
+.bl-card-link::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.bl-card-link:focus-visible { outline: none; }
+.bl-card:has(.bl-card-link:focus-visible) { outline: 2px solid var(--kz-accent); outline-offset: 2px; }
+.bl-card-meta { font-family: var(--kz-font-mono); font-size: 0.8125rem; color: var(--kz-text-secondary); margin-bottom: 0.375rem; }
+.bl-card-tags { display: flex; flex-wrap: wrap; gap: 0.375rem; list-style: none; margin-top: 0.875rem; }
+.bl-chip { display: inline-flex; align-items: center; height: 1.5rem; padding-inline: 0.625rem; border-radius: 999px; border: 1px solid var(--kz-border-default); font-size: 0.75rem; color: var(--kz-text-secondary); }
+@media (min-width: 64rem) {
+  .bl-card-feature { flex-direction: row; }
+  .bl-card-feature > :first-child { flex: 0 0 55%; }
+  .bl-card-feature > :first-child .bl-cover-img { aspect-ratio: auto; }
+  .bl-card-feature > :last-child { display: flex; flex-direction: column; justify-content: center; padding: 2rem; }
+  .bl-card-feature h2 { font-size: 1.875rem; line-height: 1.2; }
+}
+.bl-series { margin-bottom: 2rem; padding: 1rem 1.25rem; border: 1px solid var(--kz-border-default); border-inline-start: 3px solid var(--kz-accent); border-radius: 11px; background: var(--kz-surface-1); font-size: 0.9375rem; }
+.bl-series-title { font-family: var(--kz-font-mono); font-size: 0.8125rem; color: var(--kz-text-secondary); margin-bottom: 0.5rem; }
+.bl-series-title a, .bl-series li a { color: var(--kz-accent-text); text-decoration: underline; text-underline-offset: 3px; }
+.bl-series ol { padding-inline-start: 1.5rem; display: grid; gap: 0.25rem; list-style: decimal; }
+.bl-series li[aria-current="page"] { font-weight: 650; color: var(--kz-text-primary); }
+.bl-feed { margin-top: 2rem; font-size: 0.9375rem; }
+.bl-feed a { color: var(--kz-accent-text); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+/* ─── The utilisation calculator ─── */
+.bl-calc { margin: 2rem 0; padding: 1.25rem; border: 1px solid var(--kz-border-default); border-radius: var(--kz-radius-md, 12px); background: var(--kz-surface-1); display: grid; gap: 0.875rem; }
+.bl-calc-title { font-family: var(--kz-font-display); font-weight: 700; font-size: 1.0625rem; }
+.bl-calc label { display: grid; gap: 0.5rem; font-size: 0.9375rem; }
+.bl-calc input[type="range"] { width: 100%; accent-color: var(--kz-accent); min-height: 32px; }
+.bl-calc dl { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.bl-calc dt { font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--kz-text-secondary); font-family: var(--kz-font-mono); }
+.bl-calc dd { font-family: var(--kz-font-display); font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.bl-calc-verdict { font-weight: 600; }
+.bl-calc-note { font-size: 0.8125rem; color: var(--kz-text-secondary); line-height: 1.5; }
+.bl-card :is(h2, h3, p) { display: block; overflow: visible; white-space: normal; -webkit-line-clamp: unset; text-overflow: clip; }
+.bl-card .bl-card-meta { margin-bottom: 0.375rem; }

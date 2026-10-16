@@ -8,9 +8,11 @@ import { ChipLink } from "@krizaka/ui/chip-link";
 import { NotificationIcon } from "@krizaka/icons";
 import { Button } from "@krizaka/ui/button";
 import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
-import { postsOf, tagsOf } from "@/lib/posts";
+import { featuredPost, postsOf, seriesOf, tagsOf } from "@/lib/posts";
 import { JAVA_URL, KRIZAKA_URL, UI_URL } from "@/lib/site";
 import { PostList } from "./PostList";
+import { PostCard } from "./PostCard";
+import { seriesCount, seriesLead, seriesName } from "./SeriesPage";
 import { postCount, tagLabel } from "./tag-label";
 
 /* The home: the blog's promise, the posts (or the honest "first posts soon"), the topics, where the work lives. */
@@ -18,14 +20,22 @@ export default function HomePage({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
   const posts = postsOf(locale);
   const tags = tagsOf(locale);
+  const series = seriesOf(locale);
+  const featured = featuredPost(locale);
+  const rest = posts.filter((p) => p !== featured);
   const feed = `${locale === "en" ? "" : "/fr"}/feed.xml`;
   return (
     <>
       <PageHero eyebrow={t.home.eyebrow} title={t.home.title} lead={t.home.lead} linkAs={Link} />
-      <Section title={t.home.latest} lead={posts.length ? t.home.latestLead : undefined} reveal={false}>
-        {posts.length ? (
-          <PostList posts={posts} locale={locale} reveal={false} />
-        ) : (
+      {featured && (
+        <Section title={t.home.featuredTitle} reveal={false}>
+          <PostCard post={featured} locale={locale} feature priority />
+        </Section>
+      )}
+      <Section title={t.home.latest} lead={posts.length ? t.home.latestLead : undefined} reveal={false} divider={Boolean(featured)}>
+        {rest.length ? (
+          <PostList posts={rest} locale={locale} reveal={false} />
+        ) : posts.length ? null : (
           <EmptyState
             title={t.home.emptyTitle}
             description={t.home.emptyBody}
@@ -40,6 +50,15 @@ export default function HomePage({ locale }: { locale: Locale }) {
           />
         )}
       </Section>
+      {series.length > 0 && (
+        <Section title={t.home.seriesTitle} lead={t.home.seriesLead} divider>
+          <CardGrid min={320}>
+            {series.map(({ series: id, posts: inSeries }) => (
+              <LinkCard key={id} linkAs={Link} href={localizedPath(locale, `/series/${id}`)} title={seriesName(locale, id)} description={seriesLead(locale, id)} meta={seriesCount(locale, inSeries.length)} cta={t.home.moreFromSeries} titleAs="h3" />
+            ))}
+          </CardGrid>
+        </Section>
+      )}
       {tags.length > 0 && (
         <Section title={t.home.topics} divider>
           <ul className="bl-tags" aria-label={t.home.topics}>

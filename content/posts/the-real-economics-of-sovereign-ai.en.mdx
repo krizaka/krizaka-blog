@@ -1,0 +1,75 @@
+---
+title: "The real economics of sovereign AI: measured costs, runtimes, and when a rented GPU pays"
+description: "Every Orazaka run records its time and its price. Here are those records for images and video, three ways to run them, and the one calculation that decides between a rented GPU and a hosted API."
+date: 2026-10-16
+tags: [costs, measurements, orazaka, ai, sovereignty]
+author: krizaka
+draft: true
+cover: clip-old-port
+series: measured
+part: 3
+---
+
+Claims about the cost of generative AI are cheap; compute is not. Most platforms show a credit price and keep the real cost out of sight. Orazaka, our engine, records **how long each run took and what it cost**, and the public page [Measured runs](https://dev.orazaka.com/docs/measured-runs) is generated from those records, not typed. This post reads that page, adds the one calculation it enables, and says what it cannot tell you.
+
+<Note>
+Everything below is for one setup on 15 October 2026: a MacBook Pro (Apple M1 Max, 64 GB), DigitalOcean serverless inference, and rented GPUs. Times are measured from the command to the finished file. A figure that is derived, or comes from our working notes instead of the run records, is labelled as such.
+</Note>
+
+## What a run records
+
+Each run of an Orazaka Studio keeps its start and finish, the output file (checked with `ffprobe`), the engine's own log line, and the price when a provider charges one. The clip below is one of those runs; open **How this was made** under it to see the model, the prompt, the seed, the time, the price and the run id you can look up.
+
+<Clip id="clip-old-port" alt="A slow drone glide over the Old Port of Montréal at blue hour, five seconds" caption="Wan 2.2 A14B on DigitalOcean serverless: 5 seconds, 832×480, $0.60." />
+
+## The measured table
+
+Straight from the records of the Measured runs page (`docs/measurements/runs.json`, commit `dbe135b`):
+
+| Model | Where it ran | Runs that finished | Time, command to file (median) | Price per output |
+|:---|:---|---:|---:|---:|
+| Wan 2.2 T2V A14B, 5 s clip, 832×480 | DigitalOcean serverless | 21 of 21 | 131 s (18 timed runs) | $0.60 |
+| Stable Diffusion 3.5 Large, 1024×1024 | DigitalOcean serverless | 6 of 6 | 8 s | $0.08 |
+| FLUX.2 [klein] 4B, 1024×1024 | The Mac | 6 of 18 | 62 s (engine 72.7 s) | none billed |
+| Stable Diffusion 1.5, 512×512 | The Mac | 6 of 6 | 58 s | none billed |
+| Z-Image Turbo, 1024×1024 | The Mac | 0 of 5 | engine 157.8 s | none billed |
+
+Three things the table does not say by itself:
+
+- **"None billed" is not "free".** We did not measure the Mac's electricity or its wear, so we do not put a number on them.
+- **FLUX.2 [klein]'s 6 of 18 is mostly our plumbing.** The recorded causes are a client that gave up after about two minutes while the engine needed 60 to 75 s plus a 2.5 MB transfer, a deploy that restarted the relay, and a process mistake that overwrote two finished images. We count them anyway.
+- **Three of the 21 clips took 264 s, 439 s and 1 063 s**, because the Mac worker had lost its tunnel and the jobs waited in the queue. They are not in the median, and they are in the table's 21.
+
+## Three ways to run the same work
+
+Orazaka does not care where a model runs; it routes. That makes three archetypes comparable on one scale.
+
+1. **Your own hardware.** Open-weight models on the machine you already have. On the Mac that is one image a minute and no bill. The limit is memory: Wan 2.2 TI2V 5B ran out of memory while decoding a 480×832 clip on the 64 GB machine. For data that must not leave the premises, this is the tier where the question "who read it?" has one answer.
+2. **A hosted API, pay per output.** Eight seconds and eight cents for a 1024×1024 image; 131 seconds and sixty cents for a five-second clip. Nothing to run, nothing idle, and the price is a fixed number you can check in the table.
+3. **A rented GPU, pay per hour.** Our ledger of four DigitalOcean RTX 4000 Ada sessions on 15 October adds up to **4.26 hours, or $3.24**, at $0.76 per hour; Orazaka's watchdog destroys the machine after 30 idle minutes, because an idle GPU costs the same as a busy one.
+
+Routing between them is a data question, not code: which model, where, in what order lives in the database (a rule we apply across the platform), so adding an overflow to a hosted API is a row, not a release.
+
+## When does a rented GPU beat the hosted price?
+
+This is the one calculation the table makes possible. A rented GPU's price per clip is its hourly rate divided by the clips it makes in an hour **while busy**, divided again by how busy it actually is. Our RunPod H100 note gives 167 s of generation for a 1280×704 Wan 2.2 TI2V 5B clip at $3.99 per hour. Move the slider to see where it crosses the hosted $0.60.
+
+<Utilization hourly={3.99} seconds={167} hosted={0.6} />
+
+Read it carefully:
+
+- **It is derived, not measured.** The 167 s and the $3.99 come from our working notes, not from `runs.json`. Boot time, the weights download and idle minutes are not counted as work, which is exactly why the real number is higher.
+- **The two clips are not the same.** The hosted clip is 832×480; the rented one is 1280×704. A fair comparison needs the same clip on both, and we have not run it.
+- **What it does show** is the shape of the answer. At full load the rented GPU is about a third of the hosted price; as it idles, the advantage disappears and then reverses. That is the whole case for "zero idle": create the machine when there is work and destroy it when there is not.
+
+## What we do not claim
+
+A gross-margin figure is the number everyone wants from a post like this. We do not give one: our records hold the **cost** of each run, not the revenue, so a margin cannot be computed from them, and an unmeasured margin is just a number. What we can show is the mechanism that keeps a price tied to cost. Orazaka reserves an estimate before a run (a hold), then settles against what the run actually consumed, and a generation that returns nothing releases its hold instead of being billed at a guess ([ADR-033](https://github.com/krizaka/orazaka)). How that played out on five real workloads, before and after we changed the unit of a credit, is in [Measured, not promised](/posts/measured-not-promised).
+
+Also not measured:
+
+- The Mac's electricity and wear.
+- The cost of a clip on the hourly RTX 4000 Ada: we have its hours and dollars, not a clip time.
+- Quality. The images and clips in these posts are there for you to judge; we measured seconds and dollars.
+
+The sibling post, [What it really costs to generate images and video](/posts/what-image-and-video-generation-costs), puts the same images side by side and lists the limits we hit. When the setup changes we measure again and publish the new numbers next to these.

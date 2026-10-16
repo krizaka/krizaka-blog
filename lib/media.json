@@ -1,0 +1,1119 @@
+{
+ "gallery-tea-pour": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1280,
+  "blur": "data:image/webp;base64,UklGRhYBAABXRUJQVlA4IAoBAACQBgCdASoYAB4APuVepE2pJSMiMAwBIByJagCdMt10b0k9vsj77aCZYOZKC39YKz9xdEWQAmh3h0jWn5wAAP7ZNGlRYu93oTSFH3G+C6WwXYW0sr/YpQjh9pv+b4DjlblPsK3SFZDP8c5P3FVxOqNNfTurCtL5krkb/+TSs7A9pXSyhYjARkTS8WWxP0ydxsQ4vy18SYrY3aSjdbEaRsWSZ7GkapeUgD1WwT8WVqMdwHqdoYybHNs3r31HO2Dfy8Qz1C/2ayjgmtYueoSCLdb2KS0KRS3xZ6n0YA5md0jECf/Fx7gWEvTHe68Lk7ArHYWXpq1EGQHO7d37NkH6ZHuvjCkFXp99xgAAAA==",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-tea-pour-480.68e163c6af.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-tea-pour-960.d49ee39eb4.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-tea-pour-1024.d69c3a5700.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp on Metal, 4 steps, guidance 1.0",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "studio": "art-golden-hour",
+   "prompt": "A man in a crisp white djellaba pours mint tea from a silver teapot held high above a small engraved tea glass, a long thin amber stream in the air, inside a Berber tent in the Sahara, fresh mint and almonds on a weathered wooden table. Editorial lifestyle photograph at golden hour: warm low sunlight raking from the side, long soft shadows, dust motes glowing in the air. 85mm lens at f/2, shallow depth of field, natural skin and fabric texture, rich tactile materials — weathered wood, wool, brass, linen. Warm palette of amber, terracotta, saffron and sand, gentle film grain, refined composition with breathing space. No text, no lettering, no logos.",
+   "seed": "20261011",
+   "size": "1024×1280",
+   "seconds": 120,
+   "costUsd": 0,
+   "source": "orazaka-web-client src/features/landing/utils/gallery.ts"
+  }
+ },
+ "gallery-mini-skating": {
+  "kind": "image",
+  "width": 1360,
+  "height": 768,
+  "blur": "data:image/webp;base64,UklGRqQAAABXRUJQVlA4IJgAAACQBACdASoYAA4APu1iqU2ppaOiMAgBMB2JZgC7MoMYADeGxu4P3X7QYs3rwQAA/oZFtJL3A2AZYnK4aJfapWS+tkNkpQOCSs6sCppkT+QJpgXbWcL1tu7R26gwXIcp6bCKFLdwC4oPO+rnaL7QkZMG1QdJyA4nr8/8yrS2PLZ9Ajz4jP9WWzyZqwcmG0fDhHzXgd5xbVQAAA==",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-skating-480.213ff18a55.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-skating-960.ea8632ae6c.webp"
+   },
+   {
+    "w": 1360,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-skating-1360.dbbf977ffc.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp on Metal, 4 steps, guidance 1.0",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "studio": "art-miniature",
+   "prompt": "A tiny winter park in Montreal: figurines skating on a frozen pond, a small plain wooden cabin with a glowing window and no signboard, snow-covered spruce trees and warm string lights at dusk. Tilt-shift miniature diorama photograph: handcrafted figurines and props at 1:24 scale, macro lens, extremely shallow depth of field with a thin plane of focus, soft window light, ultra-detailed textures of felt, embroidered thread, painted resin and carved wood. Warm ochre, saffron and indigo palette, playful and tender. No text, no lettering, no logos.",
+   "seed": "1643",
+   "size": "1360×768",
+   "seconds": 75,
+   "costUsd": 0,
+   "source": "orazaka-web-client src/features/landing/utils/gallery.ts"
+  }
+ },
+ "gallery-mini-souk": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1280,
+  "blur": "data:image/webp;base64,UklGRkIBAABXRUJQVlA4IDYBAABQBgCdASoYAB4APuVcpU2pJSOiMAwBIByJbACdMzQ7LSIhOwxU5ERmoiVZrNWf/xWMYt6n/oSB2clgQAD+rImwNRZ0Dg9M8Slh7VxPkL9WLRd3o69aN7sIT6heuKPJKF87RkK+xo8pFFMXhshJshpmcK2TFM0vLhjnvQv0MML+Rq699uG1l4y59EinyWkvMfz5rsdZhqL4KrIKwtsu8ze4LLkxeRuJuW6ap7ozXNNF2/9FKNRzc3mFA2jDzbt74eeTXb5l5u8g2yjcuT0iOG6HtUIvpkwUug5OnQbQr2E85O6R/N20kIT22VAHbUP7PyQGxSVkEy9X3eM4UYOEY7d0k/ow6dBQ+XxLiUDuN1Yvzj3gbgdH5AylGUOeH+44CgR+IFNMVWacOmVorktjIV5wu7CUgAAA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-souk-480.fe05aac720.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-souk-960.0ff50b2aed.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-souk-1024.0c66cdd568.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp on Metal, 4 steps, guidance 1.0",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "studio": "art-miniature",
+   "prompt": "A tiny souk alley: figurine spice merchants behind pyramids of saffron, paprika and cumin, hanging pierced-brass lanterns, woven baskets, a cat asleep on a blue doorstep. Tilt-shift miniature diorama photograph: handcrafted figurines and props at 1:24 scale, macro lens, extremely shallow depth of field with a thin plane of focus, soft window light, ultra-detailed textures of felt, embroidered thread, painted resin and carved wood. Warm ochre, saffron and indigo palette, playful and tender. No text, no lettering, no logos.",
+   "seed": "1212",
+   "size": "1024×1280",
+   "seconds": 100,
+   "costUsd": 0,
+   "source": "orazaka-web-client src/features/landing/utils/gallery.ts"
+  }
+ },
+ "gallery-mini-ironing": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1280,
+  "blur": "data:image/webp;base64,UklGRkgBAABXRUJQVlA4IDwBAABwBgCdASoYAB4APu1kqk+ppSOiMBgIATAdiWYAnTMy7pdIdkQbkRqbir0IGye62rquWkrxrDyhuUhqpAAA/uf7xz70vbdurvbp0r04ZnBGCbpeR5s1Iobyptb80E87Lw8VTGJIB0o/nHKZAkroBu52R038dZlLwLo9eg1uGK8aJskrFLwCl5usejvOZKJdcNBUYVv4jNyt71ZUuXEtvxSZThOA6DU0pNzvVcmS1/hcwd1J/GsF7q0FAdFfc2DC6/ByfbW0sHa561sw0ElwfjPpOlHfZDykAuJI/DzFdnGVwN1zrgm7WcdMOb+wdFad27wPMwAchCBgpDXlLn2w4jykI/47l2ltct3Tpmcv6o/hvqQWehDeaCLRsjKIVn5gSvvq6Ta7iT4omvmC7Ea/1BYFZKXZ/rRMtps08AAA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-ironing-480.afbbfa4a7b.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-ironing-960.7499704882.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-ironing-1024.d3f24ed41f.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp on Metal, 4 steps, guidance 1.0",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "studio": "art-miniature",
+   "prompt": "Two grandmother figurines in richly embroidered North African kaftans and headscarves on a patterned Berber rug: one presses a large plain white linen tablecloth with a tiny old brass iron on a low woven ironing board, the other sits beside her sipping mint tea from a tiny glass, a brass teapot and a basket of oranges nearby. Tilt-shift miniature diorama photograph: handcrafted figurines and props at 1:24 scale, macro lens, extremely shallow depth of field with a thin plane of focus, soft window light, ultra-detailed textures of felt, embroidered thread, painted resin and carved wood. Warm ochre, saffron and indigo palette, playful and tender. No text, no lettering, no logos.",
+   "seed": "21",
+   "size": "1024×1280",
+   "seconds": 100,
+   "costUsd": 0,
+   "source": "orazaka-web-client src/features/landing/utils/gallery.ts"
+  }
+ },
+ "gallery-mini-picnic": {
+  "kind": "image",
+  "width": 1360,
+  "height": 768,
+  "blur": "data:image/webp;base64,UklGRroAAABXRUJQVlA4IK4AAADwBACdASoYAA4APu1iqU2ppaOiMAgBMB2JaACdMoAlshOXaXECrUqbzjTMw6sPtYAAzdhAl0wWgq7h1miApcal9y26drzyt4uN4+l/th+UXY3GnVXAf06wamyHP4O0usB36mQqAUvqYwoQx/ZDSI38HlDkNyP6C1CluiHkBsSznj3a+nBF2v+4r6frodgXWy6Dep8uC467mL/TALz9X7aHMZ4TgZYDahpa0ofAIAA=",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-picnic-480.851511db06.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-picnic-960.b11cc09180.webp"
+   },
+   {
+    "w": 1360,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-picnic-1360.680359030c.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp on Metal, 4 steps, guidance 1.0",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "studio": "art-miniature",
+   "prompt": "A family picnic in a tiny olive grove: grandfather figurine telling a story to children on a patterned rug, a tea set, oranges and bread, olive trees with silvery leaves. Tilt-shift miniature diorama photograph: handcrafted figurines and props at 1:24 scale, macro lens, extremely shallow depth of field with a thin plane of focus, soft window light, ultra-detailed textures of felt, embroidered thread, painted resin and carved wood. Warm ochre, saffron and indigo palette, playful and tender. No text, no lettering, no logos.",
+   "seed": "808",
+   "size": "1360×768",
+   "seconds": 80,
+   "costUsd": 0,
+   "source": "orazaka-web-client src/features/landing/utils/gallery.ts"
+  }
+ },
+ "gallery-mtl-ruelle": {
+  "kind": "image",
+  "width": 1360,
+  "height": 768,
+  "blur": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAADwAwCdASoYAA4APu1kqU2ppaOiMAgBMB2JQAALSQC22wWjox3EX3PAAP7w0xkMs12V/BOEDGZmiNEh0XSmlNoyGazEnKYGoUyFlXloe/xUJZQId52pYl9ws0mRUbTfcZIb++OSqztnRgAAAAA=",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mtl-ruelle-480.a0e72cf024.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mtl-ruelle-960.46624f1078.webp"
+   },
+   {
+    "w": 1360,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mtl-ruelle-1360.021f8cb018.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp on Metal, 4 steps, guidance 1.0",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "studio": "art-montreal-night",
+   "prompt": "A narrow back alley of the Plateau between plain brick walls with no signs, exterior spiral staircases, wooden balconies with potted plants and parked bicycles, a lone cyclist far away. Night street photograph in Montreal after rain: wet cobblestones and asphalt mirroring warm window light and a neon glow of magenta and teal, light mist, 35mm lens at f/1.8, cinematic colour grading, deep blacks, rich textures of old brick, wrought-iron spiral staircases and wet pavement. No readable signs, no lettering, no logos.",
+   "seed": "12",
+   "size": "1360×768",
+   "seconds": 109,
+   "costUsd": 0,
+   "source": "orazaka-web-client src/features/landing/utils/gallery.ts"
+  }
+ },
+ "gallery-mtl-snow": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1280,
+  "blur": "data:image/webp;base64,UklGRuQAAABXRUJQVlA4INgAAACwBQCdASoYAB4APu1oqk8ppiOiMBgIATAdiUATpygAB3RJ3wLkKmYj00mCzhkwH622wB+mWAAA/vESTq6T4rkm2kd3f5jldT17f0Sj3P6urxvQPjsb34Fn1c6LgkUFEviP8s6MYwqmaQvxSRMV6cxCp6ksD+1q3mUyaAcUN6VirxxZvX03mYTRncSsuLkQP6bK8Yzx2/GntqAbsfbRJTTjGKKhRP949QvxMVSvRL+DJ9Ea3Z0M4yBj7gpyQhCG3yyB3rKAdBc7HcjEdo/hhQMSfNAm5TpwAAA=",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mtl-snow-480.4405d355c8.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mtl-snow-960.4c0f7515eb.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mtl-snow-1024.e3ecb20e82.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp on Metal, 4 steps, guidance 1.0",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "studio": "art-montreal-night",
+   "prompt": "A quiet residential street in Montreal during the first snowfall at night, snow falling through warm streetlight, exterior staircases dusted with snow, footprints on the sidewalk. Night street photograph in Montreal after rain: wet cobblestones and asphalt mirroring warm window light and a neon glow of magenta and teal, light mist, 35mm lens at f/1.8, cinematic colour grading, deep blacks, rich textures of old brick, wrought-iron spiral staircases and wet pavement. No readable signs, no lettering, no logos.",
+   "seed": "2112",
+   "size": "1024×1280",
+   "seconds": 97,
+   "costUsd": 0,
+   "source": "orazaka-web-client src/features/landing/utils/gallery.ts"
+  }
+ },
+ "gallery-still-tea": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1280,
+  "blur": "data:image/webp;base64,UklGRuAAAABXRUJQVlA4INQAAACwBQCdASoYAB4APu1qrFEppaQiqAqpMB2JZQDGfdwLhKqB+GgiQSzVu2copOqV4CjfiaMFjVAA/D7Y5tt58eaJu24Uwd6nkg2EZY+K90uwi+vyDEmbVXrMixT+SGHFUb1yC5LaeVV7YZPvYaegbpdbRel/gmBLNQCpJKdgnu/cjbkNqLRv0UwT/q+b26WrjoMKHFozAW9KWdbak5UZUF9017t0Ujm8fZ/9bJZedYjUKAceVNT2kn0GzqzwcCpPZnBEAUEQhCJOXjEIIoQIxAGXArJAAA==",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-still-tea-480.341211dcd9.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-still-tea-960.77d5a34fbd.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-still-tea-1024.1961ed0f48.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp on Metal, 4 steps, guidance 1.0",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "studio": "art-still-life",
+   "prompt": "A hammered copper teapot, two engraved tea glasses, fresh figs and dates on a crumpled linen cloth, a sprig of mint. Artisanal still life photograph on a weathered table: side light from a single window, deep soft shadows, chiaroscuro, 100mm macro lens at f/4, tactile textures of hand-thrown ceramics, hammered copper, linen and fresh produce. Muted earthy palette of clay, olive, cream and deep brown, quiet and timeless, painterly. No text, no lettering, no logos.",
+   "seed": "99",
+   "size": "1024×1280",
+   "seconds": 103,
+   "costUsd": 0,
+   "source": "orazaka-web-client src/features/landing/utils/gallery.ts"
+  }
+ },
+ "compare-moroccan-riad-flux": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1024,
+  "blur": "data:image/webp;base64,UklGRtYAAABXRUJQVlA4IMoAAABwBQCdASoYABgAPu1ur1IppiQiqAgBMB2JZACxHw6Bf+Jy3xC0Vi+avCZNKwrjivFSKKAAAMk1JEdA+Z/BKXWsiyLGkngur69LsCmk6IY0Bfq/qhqC/4nKPuPPea9Fn+KN1EO1apFxjuHtXtCXJgMu5Y6RoavUa0rAPpx2dRrMSbLj5jjtvMdULHAgep5RnDVezvEjCJ8lJqFYVwhJSFN6ThUHQv7zH6ICU+YnQXI6ZOmRG4o3Q7IKASsQtRNKXZzKz2vllkrBkAAA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-moroccan-riad-flux-480.8d0665c056.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-moroccan-riad-flux-960.a5d5573f05.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-moroccan-riad-flux-1024.3ef96eafe6.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp on Metal, 4 steps",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "costUsd": 0,
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "prompt": "A Moroccan riad courtyard in the late afternoon: a zellige tile fountain, orange trees, carved plaster arches, shafts of warm light. Editorial architecture photograph, 24mm lens, soft shadows, natural textures. No text, no lettering, no logos.",
+   "seed": "20261011",
+   "size": "1024×1024",
+   "seconds": 61,
+   "runId": "352eb15f-9022-4a56-a921-5f74a270250a",
+   "source": "orazaka-web-client model-compare.ts"
+  }
+ },
+ "compare-moroccan-riad-sd15": {
+  "kind": "image",
+  "width": 512,
+  "height": 512,
+  "blur": "data:image/webp;base64,UklGRvoAAABXRUJQVlA4IO4AAAAwBgCdASoYABgAPu1urVIppiQiqAgBMB2JbACdMoR5mPwIgAeIAT/GYfuTkeeCKlCK61IRhVVnrqegAP7ulA8JAM5V2IRzRJUwzgNCKjzzSgmQfK9ID8QAND0pFBWDj/ft1OEhnSt9HGSqOgk8unKTfilqgVvQMoHcTyJR241D6UbaNPGJmtSly1xNmwIeoeUnkAKjZAWg8q2FSPk9Hjg8osTWvTrbn0i+E2IjjKKiuE00ZXS2ENpKJp0iFp4HLSmB4IIfbejVEyCQs1dv11/ezkijM2O9kSFG4G4rQfODQJfag7Vq6w2akNx9AAAA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-moroccan-riad-sd15-480.12b8e6653c.webp"
+   },
+   {
+    "w": 512,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-moroccan-riad-sd15-512.3f6d038efb.webp"
+   }
+  ],
+  "made": {
+   "model": "Stable Diffusion 1.5",
+   "licence": "CreativeML OpenRAIL-M",
+   "engine": "stable-diffusion.cpp on Metal, 20 steps, guidance 7",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "costUsd": 0,
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "prompt": "A Moroccan riad courtyard in the late afternoon: a zellige tile fountain, orange trees, carved plaster arches, shafts of warm light. Editorial architecture photograph, 24mm lens, soft shadows, natural textures. No text, no lettering, no logos.",
+   "seed": "20261011",
+   "size": "512×512",
+   "seconds": 58,
+   "runId": "8e149fac-9a97-4552-98a8-e318444787da",
+   "source": "orazaka-web-client model-compare.ts"
+  }
+ },
+ "compare-moroccan-riad-sd35": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1024,
+  "blur": "data:image/webp;base64,UklGRtYAAABXRUJQVlA4IMoAAAAwBQCdASoYABgAPu1urlIppiQiqAgBMB2JQBTigWjfSQv+AUYTteO0Va5mLFmX193gAAD+0I8Gt22bdRHRGvJZw72+7YGBOD8yy1xtrK8om3WqmIfeYUme63l46HlfnE9j6EXLsI0CbUN9T6dw0kEgSx/WV31noU0dO9I4bHL6X/ZJu2DIxHofiv88EnlLPWU3G2sgVz0wSRihoqssZs3qv3kBUH55MS0CJv3oUDSnbjVISy01RYR7MNPOzAyg8PZCxLUHNe5AXAAA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-moroccan-riad-sd35-480.236997e071.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-moroccan-riad-sd35-960.d39ca3fe74.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-moroccan-riad-sd35-1024.e880488448.webp"
+   }
+  ],
+  "made": {
+   "model": "Stable Diffusion 3.5 Large",
+   "licence": "Stability AI Community Licence",
+   "engine": "hosted: DigitalOcean serverless inference (steps and guidance not exposed; seed not honoured)",
+   "machine": null,
+   "costUsd": 0.08,
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "prompt": "A Moroccan riad courtyard in the late afternoon: a zellige tile fountain, orange trees, carved plaster arches, shafts of warm light. Editorial architecture photograph, 24mm lens, soft shadows, natural textures. No text, no lettering, no logos.",
+   "seed": "20261011",
+   "size": "1024×1024",
+   "seconds": 8,
+   "runId": "64269eeb-f6e3-46c4-8421-fe9136672186",
+   "source": "orazaka-web-client model-compare.ts"
+  }
+ },
+ "compare-neon-arcade-flux": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1024,
+  "blur": "data:image/webp;base64,UklGRugAAABXRUJQVlA4INwAAACQBQCdASoYABgAPu1ur1IppiQiqAgBMB2JQBadO4Fwdlw7aLFnru9w1EibfKgbpIS1BLSIAAD+vJpiNPfCz6YZ+8b27Y3IEfiO2varNZ2bhzfdlXYmIqAmjDuQVvyoTBVY/w4MpFWnU6SyeWXBEf7YI7LbHnYsqzgYU1U8b0mwEHQxeyIkPaXMK+zYMs77Hxswfk+o/lfzy1pMiw1OoKq1oARsMP0xi21ii9dxyJxRTJj4bbjZL+goWCsO+/iu3TUKrqIp8eGm5oneCejkqcZg2Ys7awwgWztAAAAA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-neon-arcade-flux-480.02b08e9732.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-neon-arcade-flux-960.fc1ee5202e.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-neon-arcade-flux-1024.df54cc7895.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp on Metal, 4 steps",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "costUsd": 0,
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "prompt": "A 1990s arcade at night, rows of glowing cabinets, a player's hands on a joystick and buttons seen from behind, neon magenta and cyan, haze. Cinematic photograph, 35mm lens, shallow depth of field. No text, no lettering, no logos, no characters on the screens.",
+   "seed": "20261011",
+   "size": "1024×1024",
+   "seconds": 61,
+   "runId": "437e0c13-f122-4fac-aeba-3b1cf569010c",
+   "source": "orazaka-web-client model-compare.ts"
+  }
+ },
+ "compare-neon-arcade-sd15": {
+  "kind": "image",
+  "width": 512,
+  "height": 512,
+  "blur": "data:image/webp;base64,UklGRmQBAABXRUJQVlA4IFgBAADwBwCdASoYABgAPu1mqk8ppaOiKA1RMB2JbACdMoSBD6TxVThvWTy/nqvQBvAG8pERgGIwNyJtvDfvPLeN2T9f9MW47w1JjgAA/u9oX9D0TLIt9iyjx67qsqITcSvJRdqMyKYzQMGJa1U/+XhCPUELxKl7STmbsf5L8EbRSpf3qH6yjvWcHwH2z551dY9vo6qf/g57kLONBbzLqepr0aFqQ/PhFtjSvtKpnaOcnlDKxjEwhBzEcimykzSXu7wHlnb4RviSj58NAgXV29BhW8/LPQDuv1s/nGKIolpTd1Yk63qJozuDsOBzxKr+k4Jqg+k/3jMkbxFR7oHq98X8wsoEXu1wYa9Y8w/9KGydq/3C9xMAqmlxQgqm2ANjt2qlDHBilUj5GSWAw/7F0ynbQzec8/Y+/I7eQ+pZ+Pwkrn/j1v8d/1/Bx+ZLuu9MXuCn/9zG9i/vrdgAAA==",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-neon-arcade-sd15-480.238df1c088.webp"
+   },
+   {
+    "w": 512,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-neon-arcade-sd15-512.efa7c33477.webp"
+   }
+  ],
+  "made": {
+   "model": "Stable Diffusion 1.5",
+   "licence": "CreativeML OpenRAIL-M",
+   "engine": "stable-diffusion.cpp on Metal, 20 steps, guidance 7",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "costUsd": 0,
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "prompt": "A 1990s arcade at night, rows of glowing cabinets, a player's hands on a joystick and buttons seen from behind, neon magenta and cyan, haze. Cinematic photograph, 35mm lens, shallow depth of field. No text, no lettering, no logos, no characters on the screens.",
+   "seed": "20261011",
+   "size": "512×512",
+   "seconds": 58,
+   "runId": "d1ea2b40-5193-4965-bbff-2e6d7b50aa7a",
+   "source": "orazaka-web-client model-compare.ts"
+  }
+ },
+ "compare-neon-arcade-sd35": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1024,
+  "blur": "data:image/webp;base64,UklGRtoAAABXRUJQVlA4IM4AAABwBQCdASoYABgAPu1ur1KppiQiqAgBMB2JZACsITvcAAmCztAIqA52TVi9fIlsg6dzWHoAAP7mtFv1cLcgQy7Hcdx64jPJbzaLDmlTw/AqtbwJZmJr2rWpotk6qub1LxNcdlMUAVzz5RS+FRHg3y0W9EtGXi6yyrmvGI9EW67shl2vTgB2urJ5OY2r8BbUO2XxddNK5K21ZJ/9CLSmfpAxWVPjdO8hObIKASwrIjBLpaEqHu+hX0nnHGGx2Ae8lzPZaEssGi0cGEmzQAAAAA==",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-neon-arcade-sd35-480.a5c595ba09.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-neon-arcade-sd35-960.d1e4b25155.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-neon-arcade-sd35-1024.88fb970a3e.webp"
+   }
+  ],
+  "made": {
+   "model": "Stable Diffusion 3.5 Large",
+   "licence": "Stability AI Community Licence",
+   "engine": "hosted: DigitalOcean serverless inference (steps and guidance not exposed; seed not honoured)",
+   "machine": null,
+   "costUsd": 0.08,
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "prompt": "A 1990s arcade at night, rows of glowing cabinets, a player's hands on a joystick and buttons seen from behind, neon magenta and cyan, haze. Cinematic photograph, 35mm lens, shallow depth of field. No text, no lettering, no logos, no characters on the screens.",
+   "seed": "20261011",
+   "size": "1024×1024",
+   "seconds": 8,
+   "runId": "fa9ea84b-4ea6-4cde-9786-1b3c0920bd00",
+   "source": "orazaka-web-client model-compare.ts"
+  }
+ },
+ "compare-montreal-winter-flux": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1024,
+  "blur": "data:image/webp;base64,UklGRu4AAABXRUJQVlA4IOIAAADQBQCdASoYABgAPu1sq1EppaOiqAqpMB2JZACxHzL0eBAkEQelXiBmRp2g5X6QFt8mZQqFMHZAAP7slds8+6yJ1ksVC+OjVIg4B9fXNjkbZqlmXNLnz5utz3cRsIllZ7i0caeVCaB7I06Z6l29Onh8alW0msaHCo1xvM4UBAbfRLKKrVplGAEZ8lWaGbA7qOkqjDrY5qW3MgSY7w/TTkhSQEDoL66nEFCLC2U6UjE3PVaMF4UU+6IdETP9JMkbEbBgxGYLq7ldT6LlWGrW5fAIOHQmHb35pr9cKR6kX94Y62AA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-montreal-winter-flux-480.339b763516.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-montreal-winter-flux-960.f7a9d48a8b.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-montreal-winter-flux-1024.c141d84ef2.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp on Metal, 4 steps",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "costUsd": 0,
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "prompt": "A quiet street of the Plateau in Montréal on a winter night, outside spiral staircases, warm lit windows, snow falling through the streetlight, steam from a street vent. Cinematic photograph, 35mm lens, shallow depth of field, rich colour grade. No text, no lettering, no logos.",
+   "seed": "20261011",
+   "size": "1024×1024",
+   "seconds": 66,
+   "runId": "6a4c4310-5970-4502-86c3-c4791bca3566",
+   "source": "orazaka-web-client model-compare.ts"
+  }
+ },
+ "compare-montreal-winter-sd15": {
+  "kind": "image",
+  "width": 512,
+  "height": 512,
+  "blur": "data:image/webp;base64,UklGRtIAAABXRUJQVlA4IMYAAAAQBQCdASoYABgAPu1sq1EppaOiqAqpMB2JaQAALb0V37iWF6giJto2uTKvSaHB+d5AAP7xgZmEMG/YeWuXCIw7iOB4cdKoZ3ryNcDp6/9g8IUT1WK9OHITfYfwYUG7WDjcR9CRu5eLs2HnU76UXUrP/5JIuRS5BghbI5nEd6VxL9fLozh8VO0gW82aQhkr+ldYyWMqNUZZXJ7n3s9KkyEMe/G2lRVhCYhC/L+dTAShdDkwKW1XcXn5q5P34A/K5lrli0KAAAA=",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-montreal-winter-sd15-480.c96b4b4cb6.webp"
+   },
+   {
+    "w": 512,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-montreal-winter-sd15-512.696ae95143.webp"
+   }
+  ],
+  "made": {
+   "model": "Stable Diffusion 1.5",
+   "licence": "CreativeML OpenRAIL-M",
+   "engine": "stable-diffusion.cpp on Metal, 20 steps, guidance 7",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "costUsd": 0,
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "prompt": "A quiet street of the Plateau in Montréal on a winter night, outside spiral staircases, warm lit windows, snow falling through the streetlight, steam from a street vent. Cinematic photograph, 35mm lens, shallow depth of field, rich colour grade. No text, no lettering, no logos.",
+   "seed": "20261011",
+   "size": "512×512",
+   "seconds": 58,
+   "runId": "5b4ef17f-2af4-4800-ac5d-c98645b74baf",
+   "source": "orazaka-web-client model-compare.ts"
+  }
+ },
+ "compare-montreal-winter-sd35": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1024,
+  "blur": "data:image/webp;base64,UklGRpQAAABXRUJQVlA4IIgAAADwBACdASoYABgAPu1qrVEppaQiqAqpMB2JZQCnFA0QPuFLxVaZYabgZkx8AuATiwAA/nF/76nLTseBQ6Ls8Z81OY+VJ/Kd5nR7QVFzuOVq0IGkUGQ5ntHgH1oROWyKIg8Psbs1jMEa9jquHj4yKGuwfKwI4BMqWLFtEcMnpMrs7PTrKVDdk7gA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-montreal-winter-sd35-480.b4ee6d3ee1.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-montreal-winter-sd35-960.6691a60aeb.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-montreal-winter-sd35-1024.f0724fd72f.webp"
+   }
+  ],
+  "made": {
+   "model": "Stable Diffusion 3.5 Large",
+   "licence": "Stability AI Community Licence",
+   "engine": "hosted: DigitalOcean serverless inference (steps and guidance not exposed; seed not honoured)",
+   "machine": null,
+   "costUsd": 0.08,
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "prompt": "A quiet street of the Plateau in Montréal on a winter night, outside spiral staircases, warm lit windows, snow falling through the streetlight, steam from a street vent. Cinematic photograph, 35mm lens, shallow depth of field, rich colour grade. No text, no lettering, no logos.",
+   "seed": "20261011",
+   "size": "1024×1024",
+   "seconds": 8,
+   "runId": "3961f27e-e269-413f-817b-9b166579554e",
+   "source": "orazaka-web-client model-compare.ts"
+  }
+ },
+ "compare-alps-dawn-flux": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1024,
+  "blur": "data:image/webp;base64,UklGRqwAAABXRUJQVlA4IKAAAAAwBQCdASoYABgAPu1oqVAppaOiqA1RMB2JQBOmZi3/wD0RuII94CrtOnFS+jwJy1QZAAD94pZXcF/Tt1BP+gjqeNTIQquozvKoPlQgMeE4+7XbNdqbtAj/nFZRqFDMvz+/pKcFpD9RcK98cbK62QQHKUkCc+ts+I6pXmRIkV44q08nwSOh/tDfQQBUox88Lswa0eqz9y4pDII59MhC7IAA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-alps-dawn-flux-480.91a8b908c0.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-alps-dawn-flux-960.77e31c4501.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-alps-dawn-flux-1024.8e5c7a81ec.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp on Metal, 4 steps",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "costUsd": 0,
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "prompt": "The Alps at dawn above a valley in mist: snow-capped peaks glowing pink, a cable car gliding over the pine forest, first light. Aerial landscape photograph, telephoto lens, crisp detail, cinematic colour grade. No text, no lettering, no logos.",
+   "seed": "20261011",
+   "size": "1024×1024",
+   "seconds": 62,
+   "runId": "ecfdbd20-0abc-4b65-8ff1-42d52e5c3957",
+   "source": "orazaka-web-client model-compare.ts"
+  }
+ },
+ "compare-alps-dawn-sd15": {
+  "kind": "image",
+  "width": 512,
+  "height": 512,
+  "blur": "data:image/webp;base64,UklGRrQAAABXRUJQVlA4IKgAAADwBACdASoYABgAPu1srVEppaQiqAqpMB2JQAHQgDxRC1KgIZE/HtYbAVTNFEhKstAA/ie46qIwKcEhsNIAN53/lNkM4fF6H3J6zdoT1Av+JpkFp6jwO4DRwBFFJYyPQ4DVSoHL5R0+iD10YcGHYS1iE1MRVTQdIerE0MzIpVx40cmX/gjK/TnJY19SNbsCV8sKZ5BSwHbTfRpBxGRBVIxHvCJSj0yAAAA=",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-alps-dawn-sd15-480.c3a73e0dbd.webp"
+   },
+   {
+    "w": 512,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-alps-dawn-sd15-512.39869c1b2d.webp"
+   }
+  ],
+  "made": {
+   "model": "Stable Diffusion 1.5",
+   "licence": "CreativeML OpenRAIL-M",
+   "engine": "stable-diffusion.cpp on Metal, 20 steps, guidance 7",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "costUsd": 0,
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "prompt": "The Alps at dawn above a valley in mist: snow-capped peaks glowing pink, a cable car gliding over the pine forest, first light. Aerial landscape photograph, telephoto lens, crisp detail, cinematic colour grade. No text, no lettering, no logos.",
+   "seed": "20261011",
+   "size": "512×512",
+   "seconds": 58,
+   "runId": "609b48cc-905b-4cc6-a961-db146fc77ceb",
+   "source": "orazaka-web-client model-compare.ts"
+  }
+ },
+ "compare-alps-dawn-sd35": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1024,
+  "blur": "data:image/webp;base64,UklGRqQAAABXRUJQVlA4IJgAAAAQBQCdASoYABgAPu1oqU8ppiOiKA1RMB2JZQDCgBEYVUADWiyG4Z8bXJ3WnI/I2hIAAP5ZC3obmh4cmnadI1QstF4ZzDH138BShsPpHPWWqmpt9UiYehwFKDaa818Pts/at2TF8Eeo8lmaOXODQh2aXASAy7XsRBEsXseHmHRrAhfL/xuwNoBA4VQPmTiSbnzrHu+a0AAAAA==",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-alps-dawn-sd35-480.f25bd517ac.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-alps-dawn-sd35-960.c7fe034e5d.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-alps-dawn-sd35-1024.d2f910bbaf.webp"
+   }
+  ],
+  "made": {
+   "model": "Stable Diffusion 3.5 Large",
+   "licence": "Stability AI Community Licence",
+   "engine": "hosted: DigitalOcean serverless inference (steps and guidance not exposed; seed not honoured)",
+   "machine": null,
+   "costUsd": 0.08,
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "prompt": "The Alps at dawn above a valley in mist: snow-capped peaks glowing pink, a cable car gliding over the pine forest, first light. Aerial landscape photograph, telephoto lens, crisp detail, cinematic colour grade. No text, no lettering, no logos.",
+   "seed": "20261011",
+   "size": "1024×1024",
+   "seconds": 9,
+   "runId": "357ec8f9-932c-4be7-bfec-e281da332927",
+   "source": "orazaka-web-client model-compare.ts"
+  }
+ },
+ "clip-tea-pour": {
+  "kind": "video",
+  "width": 1280,
+  "height": 738,
+  "blur": "data:image/webp;base64,UklGRm4AAABXRUJQVlA4IGIAAACwAwCdASoYAA4APu1iqU2ppaOiMAgBMB2JQBYdhEQvXvi3/BwFAAD+8Nj9PNWhyecJwR1Tc3ck9SvR1hLPG7E9mJhMwbFat7LFo7uPEm+2dPh6VhAyemU4JamF58wGvUAAAA==",
+  "poster": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-tea-pour-poster.8a062e63c2.webp",
+  "mp4": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-tea-pour.8e75296dbd.mp4",
+  "webm": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-tea-pour.8129ccb79d.webm",
+  "bytes": {
+   "mp4": 382988,
+   "webm": 207689
+  },
+  "made": {
+   "model": "Wan 2.2 T2V A14B",
+   "licence": "Apache-2.0",
+   "engine": "hosted: DigitalOcean serverless inference (steps and guidance not exposed)",
+   "machine": null,
+   "via": "orazaka video --model wan2-2-t2v-a14b, routed by Orazaka",
+   "prompt": "Extreme close-up, slow motion: a stream of amber mint tea pours from a silver teapot held high into a small engraved glass, steam curling through a shaft of golden-hour light inside a Berber tent, dust motes floating, shallow depth of field, anamorphic lens flare, 35mm film grain, cinematic color grade.",
+   "seed": "20261011",
+   "size": "832×480",
+   "fps": 16,
+   "durationSeconds": 5.06,
+   "seconds": 134,
+   "costUsd": 0.6,
+   "runId": "25948442-7c68-4e66-94d6-39cd8b96438d",
+   "sound": "music bed made by Orazaka (Studio video-sound, ACE-Step 1.5, MIT), -14 LUFS, AAC",
+   "source": "orazaka-web-client gallery-clips.ts"
+  }
+ },
+ "clip-assistant": {
+  "kind": "video",
+  "width": 1280,
+  "height": 738,
+  "blur": "data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAACwAwCdASoYAA4APu1iqU2ppaQiMAgBMB2JYwCdACIj9wp+KKOgxAD+9Cp55r8MBWC3SYeLyuPpm3HzKw7LHoQqykX0E244P9NmY7LJ5N/71NnyMZgDwT1ht7xahAgA",
+  "poster": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-assistant-poster.fc37abd8c7.webp",
+  "mp4": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-assistant.268e83d44e.mp4",
+  "webm": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-assistant.4c6e592e06.webm",
+  "bytes": {
+   "mp4": 552342,
+   "webm": 397976
+  },
+  "made": {
+   "model": "Wan 2.2 T2V A14B",
+   "licence": "Apache-2.0",
+   "engine": "hosted: DigitalOcean serverless inference (steps and guidance not exposed)",
+   "machine": null,
+   "via": "orazaka video --model wan2-2-t2v-a14b, routed by Orazaka",
+   "prompt": "A genius engineer's workshop at night, a floating holographic interface of orange light blooms in mid-air and organises blueprints of a machine, sparks from a welding arm in the background, reflections on brushed metal, volumetric haze, cinematic sci-fi, no person's face. No text, no lettering, no logos.",
+   "seed": "20261011",
+   "size": "832×480",
+   "fps": 16,
+   "durationSeconds": 5.06,
+   "seconds": 130,
+   "costUsd": 0.6,
+   "runId": "53ca1083-cdc5-47d3-a923-5092016db13b",
+   "sound": "music bed made by Orazaka (Studio video-sound, ACE-Step 1.5, MIT), -14 LUFS, AAC",
+   "source": "orazaka-web-client gallery-clips.ts"
+  }
+ },
+ "clip-old-port": {
+  "kind": "video",
+  "width": 832,
+  "height": 480,
+  "blur": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAABQBACdASoYAA4APu1iqU2ppaQiMAgBMB2JbACdHX/3Tbf/AbDx+J4vQS1KAP7O4Uqam3cEtrso3UOtf/5yOqnVa/6ULIQStm2hPxi6RxydPYsTS5WALjUY+JzzYdPxwj+A1YSJXZd0UjMmmgD7buK1fu82WDSvTdVH3qiwAAA=",
+  "poster": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-old-port-poster.754b514ac3.webp",
+  "mp4": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-old-port.916c681e0d.mp4",
+  "webm": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-old-port.fa3632c0d4.webm",
+  "bytes": {
+   "mp4": 674472,
+   "webm": 589333
+  },
+  "made": {
+   "model": "Wan 2.2 T2V A14B",
+   "licence": "Apache-2.0",
+   "engine": "hosted: DigitalOcean serverless inference (steps and guidance not exposed)",
+   "machine": null,
+   "via": "orazaka video --model wan2-2-t2v-a14b, routed by Orazaka",
+   "prompt": "Smooth cinematic drone glide forward over the Old Port of Montréal at blue hour, the cobblestone quay and the Clock Tower lit in warm lights against a deep blue sky, the St. Lawrence river reflecting the city, a few people strolling, soft haze, single continuous shot, no cuts. No text, no lettering, no logos.",
+   "seed": "20261015",
+   "size": "832×480",
+   "fps": 16,
+   "durationSeconds": 5.06,
+   "seconds": 135,
+   "costUsd": 0.6,
+   "runId": "bd30798f-12fb-4d5b-95ed-cfe0414f37ee",
+   "sound": "music bed made by Orazaka (Studio video-sound, ACE-Step 1.5, MIT), -14 LUFS, AAC",
+   "source": "orazaka-web-client gallery-clips.ts"
+  }
+ },
+ "clip-montreal": {
+  "kind": "video",
+  "width": 1280,
+  "height": 738,
+  "blur": "data:image/webp;base64,UklGRn4AAABXRUJQVlA4IHIAAADwAwCdASoYAA4APu1iqU2ppaOiMAgBMB2JYwC7ACHf8zrnVCNkchbgAP70IlXG6AA9PO8ulpTsFaueb0OvrK/q5rOkkd7aJSgHO3Bgw62v8TVogRKMcr7czkgO0oeDDifGrNPyaZAlFs1iFtW+kg5foAA=",
+  "poster": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-montreal-poster.a4a1ba348c.webp",
+  "mp4": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-montreal.b4afdc844b.mp4",
+  "webm": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-montreal.038ad543d2.webm",
+  "bytes": {
+   "mp4": 515734,
+   "webm": 263817
+  },
+  "made": {
+   "model": "Wan 2.2 T2V A14B",
+   "licence": "Apache-2.0",
+   "engine": "hosted: DigitalOcean serverless inference (steps and guidance not exposed)",
+   "machine": null,
+   "via": "orazaka video --model wan2-2-t2v-a14b, routed by Orazaka",
+   "prompt": "Winter night in Montréal, slow tracking shot along a snowy street of the Plateau with outside spiral staircases, warm windows glowing, snowflakes in streetlight, steam from a vent, cinematic 35mm, shallow depth of field. No text, no lettering, no logos.",
+   "seed": "20261011",
+   "size": "832×480",
+   "fps": 16,
+   "durationSeconds": 5.06,
+   "seconds": 132,
+   "costUsd": 0.6,
+   "runId": "0515ce61-0e91-4fe9-a0bf-2ca2838f74e3",
+   "sound": "music bed made by Orazaka (Studio video-sound, ACE-Step 1.5, MIT), -14 LUFS, AAC",
+   "source": "orazaka-web-client gallery-clips.ts"
+  }
+ },
+ "clip-maroc": {
+  "kind": "video",
+  "width": 1280,
+  "height": 738,
+  "blur": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAAAQBACdASoYAA4APu1iqU2ppaQiMAgBMB2JZgCdMoADECBxytF2Ink9XAD+0fDhp8F3ugscMfuEaamYi86o/naijMv52g+LR1xQRSFjz4AKRJ2iInxnF+8R4SmfoXzeJy8b07KgnQK440RF1iYbRyXttQZAAA==",
+  "poster": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-maroc-poster.05a5b7aedf.webp",
+  "mp4": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-maroc.9a0d086504.mp4",
+  "webm": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-maroc.7f61872f56.webm",
+  "bytes": {
+   "mp4": 974978,
+   "webm": 592913
+  },
+  "made": {
+   "model": "Wan 2.2 T2V A14B",
+   "licence": "Apache-2.0",
+   "engine": "hosted: DigitalOcean serverless inference (steps and guidance not exposed)",
+   "machine": null,
+   "via": "orazaka video --model wan2-2-t2v-a14b, routed by Orazaka",
+   "prompt": "Golden hour drone glide over the blue alleys of Chefchaouen into the Rif mountains, then a slow push into a riad courtyard with a zellige fountain, orange trees, light shafts, cinematic. No text, no lettering, no logos.",
+   "seed": "20261011",
+   "size": "832×480",
+   "fps": 16,
+   "durationSeconds": 5.06,
+   "seconds": null,
+   "costUsd": 0.6,
+   "runId": "bfaae551-3c58-4d18-b93b-f16911acf4e5",
+   "sound": "music bed made by Orazaka (Studio video-sound, ACE-Step 1.5, MIT), -14 LUFS, AAC",
+   "source": "orazaka-web-client gallery-clips.ts"
+  }
+ },
+ "clip-grenoble": {
+  "kind": "video",
+  "width": 1280,
+  "height": 738,
+  "blur": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAABwBACdASoYAA4APu1iqU2ppaQiMAgBMB2JZgCdMoMYJn/Ab5JudhHFHnWCSAD3H3dDOYEr0s2OY1vb2C+aJ2jGG9CeBREcymXAZNsN9lLKTHof2LIHl2sIV7uyRiyww5LydhZ0U97QAA==",
+  "poster": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-grenoble-poster.e06265752d.webp",
+  "mp4": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-grenoble.351464f2cb.mp4",
+  "webm": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-grenoble.6f1df61ca9.webm",
+  "bytes": {
+   "mp4": 383178,
+   "webm": 169283
+  },
+  "made": {
+   "model": "Wan 2.2 T2V A14B",
+   "licence": "Apache-2.0",
+   "engine": "hosted: DigitalOcean serverless inference (steps and guidance not exposed)",
+   "machine": null,
+   "via": "orazaka video --model wan2-2-t2v-a14b, routed by Orazaka",
+   "prompt": "Dawn over Grenoble, the spherical cable-car cabins of the Bastille gliding up above the city, snow-capped Alps glowing pink behind, mist in the valley, aerial cinematic. No text, no lettering, no logos.",
+   "seed": "20261011",
+   "size": "832×480",
+   "fps": 16,
+   "durationSeconds": 5.06,
+   "seconds": null,
+   "costUsd": 0.6,
+   "runId": "1842dbfa-587f-4846-adb0-0cac8866a507",
+   "sound": "music bed made by Orazaka (Studio video-sound, ACE-Step 1.5, MIT), -14 LUFS, AAC",
+   "source": "orazaka-web-client gallery-clips.ts"
+  }
+ },
+ "clip-arcade": {
+  "kind": "video",
+  "width": 1280,
+  "height": 738,
+  "blur": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAADwAwCdASoYAA4APu1iqU2ppaQiMAgBMB2JQBOmUABpyplHxhy3BgAAAP7ypeh2n0PjjvDYU6KnSBbZ/fYhtSNiCsOjYX1OSEeKbFZYn7hgSgHf+mCdSO7+kLHAU6JVamv2tp2LnkOoAAAA",
+  "poster": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-arcade-poster.13293319e4.webp",
+  "mp4": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-arcade.a3e08b96b2.mp4",
+  "webm": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-arcade.9379eaf2db.webm",
+  "bytes": {
+   "mp4": 450889,
+   "webm": 199927
+  },
+  "made": {
+   "model": "Wan 2.2 T2V A14B",
+   "licence": "Apache-2.0",
+   "engine": "hosted: DigitalOcean serverless inference (steps and guidance not exposed)",
+   "machine": null,
+   "via": "orazaka video --model wan2-2-t2v-a14b, routed by Orazaka",
+   "prompt": "1990s arcade at night, rows of glowing cabinets, a two-player fighting-game duel reflected in a player's hands on the joystick and buttons (no screen detail, no characters), neon magenta and cyan, smoke, CRT glow, slow dolly, cinematic. No text, no lettering, no logos.",
+   "seed": "20261011",
+   "size": "832×480",
+   "fps": 16,
+   "durationSeconds": 5.06,
+   "seconds": null,
+   "costUsd": 0.6,
+   "runId": "0494384e-c8d0-473a-9a9e-b91f5f1b1946",
+   "sound": "music bed made by Orazaka (Studio video-sound, ACE-Step 1.5, MIT), -14 LUFS, AAC",
+   "source": "orazaka-web-client gallery-clips.ts"
+  }
+ },
+ "clip-yomizaka-contracts": {
+  "kind": "video",
+  "width": 1280,
+  "height": 738,
+  "blur": "data:image/webp;base64,UklGRqAAAABXRUJQVlA4IJQAAADQBACdASoYAA4APu1iqU2ppaOiMAgBMB2JbACdMoAluBgG95bv2euQvxsqXAjYmAD+9Cs4tz4toEZ+yp3nQod6oMCjht1JAgtaqMjyPL2Vs+2xSHifIhku3ATw/yG0zaZRRd1Q1fnDE+YX5i76lw13cP8QHHSrY+dJjWELvD5nIBgqj5qLdlipQqJHeTE55x/QgAAA",
+  "poster": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-yomizaka-contracts-poster.ee187b8922.webp",
+  "mp4": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-yomizaka-contracts.19c62c1e68.mp4",
+  "webm": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-yomizaka-contracts.d1f2aadcec.webm",
+  "bytes": {
+   "mp4": 179872,
+   "webm": 77552
+  },
+  "made": {
+   "model": "Wan 2.2 T2V A14B",
+   "licence": "Apache-2.0",
+   "engine": "hosted: DigitalOcean serverless inference (steps and guidance not exposed)",
+   "machine": null,
+   "via": "orazaka video --model wan2-2-t2v-a14b, routed by Orazaka",
+   "prompt": "Macro shot, a stack of paper contracts on a walnut desk at blue hour, a thin line of warm light sweeps slowly across the pages, highlighting passages, fountain pen and a cup of coffee steaming, soft window light, Montréal snowfall outside, shallow depth of field, cinematic, calm. No text, no lettering, no logos.",
+   "seed": "20261012",
+   "size": "832×480",
+   "fps": 16,
+   "durationSeconds": 5.06,
+   "seconds": 131,
+   "costUsd": 0.6,
+   "runId": "57ccad61-e1dd-4ff2-aeab-2c9645908a70",
+   "sound": "music bed made by Orazaka (Studio video-sound, ACE-Step 1.5, MIT), -14 LUFS, AAC",
+   "source": "orazaka-web-client gallery-clips.ts"
+  }
+ },
+ "anatomy-flux-l0": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1024,
+  "blur": "data:image/webp;base64,UklGRuYAAABXRUJQVlA4INoAAADQBQCdASoYABgAPu1ur1IppiQiqAgBMB2JYwDGfdwLf1O+8tT9A/BfVsBjlNmRevCBPQJxqSAAAP4AeT24bTFtO7Uy58gX9EObPNEFU91rOw/XCrwwV1Q0oanVql12GxLAor6Qsf1uGB5F/2MWo+3RJlGY24npSY8bQP8WuXwunJ0i7awHthBAx+QiLFPAYEuTdkwaGojMaXajlcatA0Ch9UH27cZuU4LtYwcK+SASx0J9hrmjl4ncg22hee3MNqXPd1gm31iEHMgsW+vqFed3NGHThA1deAAAAA==",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/anatomy-of-an-ai-prompt/anatomy-flux-l0-480.3bacc58c99.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/anatomy-of-an-ai-prompt/anatomy-flux-l0-960.dce140afc8.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/anatomy-of-an-ai-prompt/anatomy-flux-l0-1024.269fb95249.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024×1024",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "a basketball player dunking in snow",
+   "seed": "2026",
+   "size": "1024×1024",
+   "seconds": 77,
+   "costUsd": 0,
+   "note": "Made today with the engine's command line (sd-cli), not through an Orazaka Studio: there is no run id. Same seed for every picture of the ladder."
+  }
+ },
+ "anatomy-flux-l1": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1024,
+  "blur": "data:image/webp;base64,UklGRsQAAABXRUJQVlA4ILgAAAAQBQCdASoYABgAPu1orlCppaQiqAqpMB2JQBl8O4AJlaFOrRduonSXwaJqrYSldXmAAP7qMaEBpFl53uEZPj+P1T1Dswww65xFXdy2PpeNdE7tJTQSy4x4uZL1ymQwCr0Z9psa7AyKpLq4ushR7aofPfyjsQ2nKPhrH4DP6hxIJR55K853pX9KtlvfJDvFZ/mApwn+F2FBK7jxi8cs368/KQWmjf+nYnhnPXbNt7UJjPJfwT2o8AAA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/anatomy-of-an-ai-prompt/anatomy-flux-l1-480.c8e2df16f5.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/anatomy-of-an-ai-prompt/anatomy-flux-l1-960.cbd23bd548.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/anatomy-of-an-ai-prompt/anatomy-flux-l1-1024.5ac359e699.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024×1024",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "A professional male athletic basketball player in a red numbered jersey leaping gracefully toward the rim, one arm extended with the ball above the hoop, both legs visible and anatomically correct, a steel rim with a white net",
+   "seed": "2026",
+   "size": "1024×1024",
+   "seconds": 80,
+   "costUsd": 0,
+   "note": "Made today with the engine's command line (sd-cli), not through an Orazaka Studio: there is no run id. Same seed for every picture of the ladder."
+  }
+ },
+ "anatomy-flux-l2": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1024,
+  "blur": "data:image/webp;base64,UklGRswAAABXRUJQVlA4IMAAAACQBQCdASoYABgAPu1qrVEppaQiqAqpMB2JYwCw7BItq8IeLGwQvwEv5MHAqX5MwOS8r2kDAAD+6o8p/IOy673v11Jla96AJzsSAZdNWdtajuUy2BcT3lK2tX/VD/Oq2RPIfW0xqHAqTTQvAdS9TVt/LRYdbUq9FvjjDpBXqJekkcamNk70ghVIawV5eE4vpKkWPbD4G5f2weH2yNlA2U18z/HvTSZmlE7nXHJb0DZirwRNOBTgGTvsT4N4wAAAAAA=",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/anatomy-of-an-ai-prompt/anatomy-flux-l2-480.49ed09e1ad.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/anatomy-of-an-ai-prompt/anatomy-flux-l2-960.31c4928aa6.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/anatomy-of-an-ai-prompt/anatomy-flux-l2-1024.3e1f5ecd29.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024×1024",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "A professional male athletic basketball player in a red numbered jersey leaping gracefully toward the rim, one arm extended with the ball above the hoop, both legs visible and anatomically correct, a steel rim with a white net, on an outdoor asphalt court dusted with fresh snow, gentle snowflakes drifting through cold winter air, breath visible in the cold",
+   "seed": "2026",
+   "size": "1024×1024",
+   "seconds": 81,
+   "costUsd": 0,
+   "note": "Made today with the engine's command line (sd-cli), not through an Orazaka Studio: there is no run id. Same seed for every picture of the ladder."
+  }
+ },
+ "anatomy-flux-l3": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1024,
+  "blur": "data:image/webp;base64,UklGRsAAAABXRUJQVlA4ILQAAAAQBQCdASoYABgAPu1qrFEppaQiqAqpMB2JQBf9geGTwjbYptKvUh5CdHpm1luiun5AAP7nSAOVsYW7nNuQswXMMv+/E20KZ3vaiWpJFgE7etIW3XXTmHRFuOsz3grn9jgWfLXCu/byygufp9oRpwWnEiBwH0hSXkn32tyDqGDyKfWi+tr7nYaJVM1/+WRjY3mKNQUaolj5KOQxyeRTcesotmxdyRNN6PgLBAHyCeJ1xf6AAAA=",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/anatomy-of-an-ai-prompt/anatomy-flux-l3-480.747a5524e5.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/anatomy-of-an-ai-prompt/anatomy-flux-l3-960.22e94f84c9.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/anatomy-of-an-ai-prompt/anatomy-flux-l3-1024.9d061b3427.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024×1024",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "A professional male athletic basketball player in a red numbered jersey leaping gracefully toward the rim, one arm extended with the ball above the hoop, both legs visible and anatomically correct, a steel rim with a white net, on an outdoor asphalt court dusted with fresh snow, gentle snowflakes drifting through cold winter air, breath visible in the cold, cinematic medium shot, captured on a 35mm lens, f/2.2 shallow depth of field, natural soft overcast daylight, sharp focus",
+   "seed": "2026",
+   "size": "1024×1024",
+   "seconds": 82,
+   "costUsd": 0,
+   "note": "Made today with the engine's command line (sd-cli), not through an Orazaka Studio: there is no run id. Same seed for every picture of the ladder."
+  }
+ },
+ "anatomy-sd15-l0": {
+  "kind": "image",
+  "width": 512,
+  "height": 512,
+  "blur": "data:image/webp;base64,UklGRtYAAABXRUJQVlA4IMoAAABQBQCdASoYABgAPu1ur1IppiQiqAgBMB2JYwDKAdwAfJ33aaelXCp/DQTtu1cegsq1UAAA/pG+MeAog7qnEx7vfJw9YXQFajnohQf7Az+xdfbRIbai6cBKgE41iqeBRxEpBAiCbLDPtAl8NqiuCfblQfF1sHC1Yq7wuw5A5TWt4iRUzTjdaaNKC1lutcQ6IVc2IVBwc3tyJ6D2tX2AhOOiSIQo3x8ikexEcLPZWQSN4HJF2gCrPJRZMroUBREuZdubBvXcS9OReAAA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/anatomy-of-an-ai-prompt/anatomy-sd15-l0-480.48d78a000f.webp"
+   },
+   {
+    "w": 512,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/anatomy-of-an-ai-prompt/anatomy-sd15-l0-512.b2a6ae1783.webp"
+   }
+  ],
+  "made": {
+   "model": "Stable Diffusion 1.5",
+   "licence": "CreativeML OpenRAIL-M",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 20 steps, guidance 7, Euler a, 512×512",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "a basketball player dunking in snow",
+   "seed": "2026",
+   "size": "512×512",
+   "seconds": 65,
+   "costUsd": 0,
+   "note": "Made today with the engine's command line (sd-cli), not through an Orazaka Studio: there is no run id. Same seed for every picture of the ladder."
+  }
+ },
+ "anatomy-sd15-l3": {
+  "kind": "image",
+  "width": 512,
+  "height": 512,
+  "blur": "data:image/webp;base64,UklGRs4AAABXRUJQVlA4IMIAAAAwBQCdASoYABgAPu1urlKppiQiqAgBMB2JQBg5gX+jezSExDNHiyEDQ7Ir+7PbnQiAAAD+7hsXk9Zdi2LZaFn3XsCwFqcfcjzzfNKZ/1wDizbFP8X1dJZR6HfOBpeznt3JbTSCFOl4i1IWt8ggG+wYoOFsRf8qsv4GZLo6SLCz38LG7+OoiXtUA5aUep4u0iT9hfqd5+olhwpNdxe6Zebt923+LyX85Ra6E+A1PSluk7E7KgF7+l09QQRDhupub3AAAA==",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/anatomy-of-an-ai-prompt/anatomy-sd15-l3-480.731a5eb14f.webp"
+   },
+   {
+    "w": 512,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/anatomy-of-an-ai-prompt/anatomy-sd15-l3-512.def03a48f3.webp"
+   }
+  ],
+  "made": {
+   "model": "Stable Diffusion 1.5",
+   "licence": "CreativeML OpenRAIL-M",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 20 steps, guidance 7, Euler a, 512×512",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "A professional male athletic basketball player in a red numbered jersey leaping gracefully toward the rim, one arm extended with the ball above the hoop, both legs visible and anatomically correct, a steel rim with a white net, on an outdoor asphalt court dusted with fresh snow, gentle snowflakes drifting through cold winter air, breath visible in the cold, cinematic medium shot, captured on a 35mm lens, f/2.2 shallow depth of field, natural soft overcast daylight, sharp focus",
+   "seed": "2026",
+   "size": "512×512",
+   "seconds": 63,
+   "costUsd": 0,
+   "note": "Made today with the engine's command line (sd-cli), not through an Orazaka Studio: there is no run id. Same seed for every picture of the ladder."
+  }
+ },
+ "anatomy-sd15-l3neg": {
+  "kind": "image",
+  "width": 512,
+  "height": 512,
+  "blur": "data:image/webp;base64,UklGRsYAAABXRUJQVlA4ILoAAAAQBQCdASoYABgAPu1qqVAppiOiqA1RMB2JQBergQAU4ctGMU6XNDeF0lZjWBJL71wAAP7tUTKzZGZry05NnqIqMUgBCTfdJIxj2Z8bMbk/o92KvGTbPmRzzESBaKam13p0Wd/hJVYQvfag0RGge1o13K1/ruXulIk0fiOisEh0Bq8+gfmug/+a7/rHoUDr7AW6/KnhluSCsQIT2DlSe39sb7PHO7sZ/aj6uPNcatX7Itz6OrPaSQeAAAA=",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/anatomy-of-an-ai-prompt/anatomy-sd15-l3neg-480.82cafd1c70.webp"
+   },
+   {
+    "w": 512,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/anatomy-of-an-ai-prompt/anatomy-sd15-l3neg-512.a577adf037.webp"
+   }
+  ],
+  "made": {
+   "model": "Stable Diffusion 1.5",
+   "licence": "CreativeML OpenRAIL-M",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 20 steps, guidance 7, Euler a, 512×512",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "A professional male athletic basketball player in a red numbered jersey leaping gracefully toward the rim, one arm extended with the ball above the hoop, both legs visible and anatomically correct, a steel rim with a white net, on an outdoor asphalt court dusted with fresh snow, gentle snowflakes drifting through cold winter air, breath visible in the cold, cinematic medium shot, captured on a 35mm lens, f/2.2 shallow depth of field, natural soft overcast daylight, sharp focus",
+   "negativePrompt": "deformed, extra limbs, bad anatomy, glitch, jitter, low quality",
+   "seed": "2026",
+   "size": "512×512",
+   "seconds": 68,
+   "costUsd": 0,
+   "note": "Made today with the engine's command line (sd-cli), not through an Orazaka Studio: there is no run id. Same seed for every picture of the ladder."
+  }
+ }
+}

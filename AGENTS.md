@@ -18,13 +18,23 @@
 
 - A post is `content/posts/<slug>.<en|fr>.mdx`: front matter `title`, `description` (≤ 220), `date` (YYYY-MM-DD),
   `tags` (lower-case ids; their names are `tags.names.*` in the messages), `author` (`authors.*`), `draft`, optional
-  `image`. A post may exist in one language only; in both, they share the slug and name each other (hreflang).
+  `cover` (a media id, below), `featured` (the home's first card), `series` (an id of `series.names.*`: `building-orazaka`,
+  `measured`) with its `part` (a post's place; unique per series and language), optional `image`. A post may exist in one language only; in both, they share the slug and name each other (hreflang).
 - **`draft: true` is not published**: the build leaves it out (`APP_SHOW_DRAFTS=1` previews it). Publishing = `draft: false`.
 - **Prove, don't invent.** A figure comes from a run, a measurement or a line of code that the post can point to; what is
   not measured is said. Sober, factual, no superlatives. Yororis' lexicon applies if it is ever named.
 - **Images are never committed** (any image/video file under `content/` or `public/` fails `npm run lint`). They live on
   Bunny `krizaka-assets` under `site/blog/<post>/…` (`node scripts/cdn-assets.mjs upload <file> --to blog/<post>` in krizaka-com, which writes `site/blog/<post>/<name>.<hash>.<ext>`)
   and a post names them by their CDN URL.
+- **The media library** is `lib/media.json`: every image and clip a post shows, by id, with the CDN URLs (`site/blog/…`),
+  the sizes, a blur placeholder and the **provenance** of the result (model, prompt, seed, machine, time, cost, Orazaka run
+  id). A post uses `<Figure id alt caption?/>` (responsive `srcset`, blur-up, size reserved, lazy), `<Clip id alt
+  caption?/>` (a light native player: muted loop while on screen, poster first, controls, never autostarts under
+  `prefers-reduced-motion`) and `<Row>`; both show « How this was made » from the entry. Entries are produced, not typed:
+  the Orazaka results come from `orazaka-web-client` (`gallery.ts`, `gallery-clips.ts`, `model-compare.ts`) and `orazaka`
+  `docs/measurements/runs.json`; a result made outside an Orazaka run says so in `made.note`. `npm run lint` fails on an
+  unknown id, an image without size or blur, a URL off the blog's CDN prefix, or a cover/clip mix-up. Never hot-link an
+  original: files are sized webp (480/960/full) and mp4/webm with a poster.
 - Every user-facing string of the site is in `messages/{en,fr}.json` (`krizaka-i18n check`). No `locale === "fr" ?`.
 
 ## 3. Writing & users
@@ -46,3 +56,13 @@
 
 `npm run lint`, `npm test` and `npm run build` green; the change reads correctly in dark and light and at phone width;
 a feature or a fix ships with its test (`tests/*.test.mjs`); CI green before merge, squash only.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

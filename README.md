@@ -16,11 +16,11 @@ npm run lint && npm test && npm run build
   a pull request; publishing merges it.
 - **In Git**: add `content/posts/<slug>.en.mdx` (and `<slug>.fr.mdx`) with the front matter described in
   [AGENTS.md](AGENTS.md#2-content). `draft: true` keeps it out of the site.
-- **Images** go to the media CDN (`site/blog/<post>/…`), never into this repository.
+- **Images and clips** go to the media CDN (`site/blog/<post>/…`, with `cdn-assets` in krizaka-com), never into this repository; a post names them by id from `lib/media.json`, which also carries how each was made.
 
 ## What it ships
 
-Home, posts, topics (tags), search (an index built at build, no request), RSS and Atom per language, a sitemap with
+Home (featured post with its cover, latest, series), posts with reading time, related posts and series navigation, topics (tags), series, search (an index built at build, no request), RSS and Atom per language, a sitemap with
 hreflang, an Open Graph image per post, `llms.txt`, JSON-LD. Noindex until the first post is published
 (`APP_INDEXING_ENABLED`). Cost: $0/month (DigitalOcean static site; `.do/app.yaml`).
 

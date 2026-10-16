@@ -53,7 +53,12 @@
     "uiBody": "Le kit de composants open source avec lequel tous les sites Krizaka sont faits.",
     "java": "Krizaka Java",
     "javaBody": "Les briques Spring Boot open source de tous les services Krizaka.",
-    "open": "Ouvrir"
+    "open": "Ouvrir",
+    "featuredTitle": "À la une",
+    "seriesTitle": "Séries",
+    "seriesLead": "Des billets qui vont ensemble, dans l'ordre de lecture.",
+    "moreFromSeries": "Lire la série",
+    "allPosts": "Tous les billets"
   },
   "post": {
     "back": "Tous les billets",
@@ -66,7 +71,13 @@
     "moreTitle": "À lire aussi",
     "next": "Billet suivant",
     "share": "Abonnez-vous au fil pour suivre les nouveaux billets",
-    "draftNotice": "Brouillon — non publié."
+    "draftNotice": "Brouillon — non publié.",
+    "related": "Billets liés",
+    "seriesPart": "Partie {part} de la série",
+    "seriesAll": "Tous les billets de la série",
+    "seriesNext": "Suite de la série",
+    "seriesPrev": "Précédemment dans la série",
+    "featured": "À la une"
   },
   "tags": {
     "title": "Sujets",
@@ -85,7 +96,8 @@
       "measurements": "Mesures",
       "yomizaka": "Yomizaka",
       "documents": "Documents",
-      "law": "Droit"
+      "law": "Droit",
+      "prompts": "Prompts"
     },
     "countOne": "1 billet"
   },
@@ -106,5 +118,60 @@
   "authors": {
     "krizaka": "L'équipe Krizaka",
     "oussama": "Oussama Abid"
+  },
+  "media": {
+    "how": "Comment c'est fait",
+    "model": "Modèle",
+    "licence": "Licence",
+    "prompt": "Prompt",
+    "seed": "Graine (seed)",
+    "size": "Taille",
+    "engine": "Moteur",
+    "machine": "Machine",
+    "via": "Via",
+    "time": "Durée",
+    "cost": "Coût",
+    "run": "Run Orazaka",
+    "sound": "Son",
+    "studio": "Studio",
+    "notRecorded": "non enregistré",
+    "timeValue": "{seconds} s, telles qu'enregistrées par le run",
+    "timeInterrupted": "non enregistrée (le run a été interrompu, sa durée serait trompeuse)",
+    "costFree": "aucun coût en argent (matériel à nous ; électricité non mesurée)",
+    "costValue": "{amount} US$ (le prix du fournisseur)",
+    "hostedMachine": "hébergé par le fournisseur (pas notre machine)",
+    "frames": "{fps} images/s, {duration} s",
+    "play": "Lire",
+    "reducedMotion": "Animations réduites : le clip attend que vous appuyiez sur lecture.",
+    "videoLabel": "Vidéo : {alt}",
+    "fileSize": "{mb} Mo",
+    "negative": "Prompt négatif",
+    "note": "Note"
+  },
+  "series": {
+    "title": "Séries",
+    "lead": "Des billets qui vont ensemble, dans l'ordre de lecture.",
+    "oneLead": "{count} billets, dans l'ordre de lecture.",
+    "back": "Toutes les séries",
+    "countOne": "1 billet",
+    "count": "{count} billets",
+    "names": {
+      "building-orazaka": "Construire Orazaka",
+      "measured": "Mesuré"
+    },
+    "leads": {
+      "building-orazaka": "Comment un moteur d'IA souverain se construit sur un Mac et quelques GPU loués : les choix, les migrations, ce qui a cassé.",
+      "measured": "Coûts, durées et résultats tirés de vrais runs, avec les enregistrements pour les vérifier. Ce que nous n'avons pas mesuré est dit."
+    }
+  },
+  "calc": {
+    "title": "Quand un GPU loué bat-il le prix hébergé ?",
+    "busy": "Taux d'occupation du GPU loué",
+    "perClip": "Un clip loué coûte alors",
+    "hosted": "Prix hébergé d'un clip",
+    "verdictCheaper": "Le GPU loué est moins cher à cette charge.",
+    "verdictDearer": "L'API hébergée est moins chère à cette charge.",
+    "breakEven": "Seuil : {percent} % d'occupation.",
+    "assumption": "Dérivé, non mesuré : {hourly} par heure ÷ ({seconds} s de génération par clip), calcul seul — ni démarrage, ni téléchargement, ni minute d'attente comptée comme travail. Les deux clips n'ont pas la même taille (voir le texte)."
   }
 }

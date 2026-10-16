@@ -53,7 +53,12 @@
     "uiBody": "The open-source component kit every Krizaka site is built with.",
     "java": "Krizaka Java",
     "javaBody": "The open-source Spring Boot building blocks of every Krizaka service.",
-    "open": "Open"
+    "open": "Open",
+    "featuredTitle": "Featured",
+    "seriesTitle": "Series",
+    "seriesLead": "Posts that belong together, in reading order.",
+    "moreFromSeries": "Read the series",
+    "allPosts": "All posts"
   },
   "post": {
     "back": "All posts",
@@ -66,7 +71,13 @@
     "moreTitle": "Keep reading",
     "next": "Next post",
     "share": "Subscribe to the feed to follow new posts",
-    "draftNotice": "Draft — not published."
+    "draftNotice": "Draft — not published.",
+    "related": "Related posts",
+    "seriesPart": "Part {part} of the series",
+    "seriesAll": "All posts of the series",
+    "seriesNext": "Next in the series",
+    "seriesPrev": "Previously in the series",
+    "featured": "Featured"
   },
   "tags": {
     "title": "Topics",
@@ -85,7 +96,8 @@
       "measurements": "Measurements",
       "yomizaka": "Yomizaka",
       "documents": "Documents",
-      "law": "Law"
+      "law": "Law",
+      "prompts": "Prompts"
     },
     "countOne": "1 post"
   },
@@ -106,5 +118,60 @@
   "authors": {
     "krizaka": "The Krizaka team",
     "oussama": "Oussama Abid"
+  },
+  "media": {
+    "how": "How this was made",
+    "model": "Model",
+    "licence": "Licence",
+    "prompt": "Prompt",
+    "seed": "Seed",
+    "size": "Size",
+    "engine": "Engine",
+    "machine": "Machine",
+    "via": "Through",
+    "time": "Time",
+    "cost": "Cost",
+    "run": "Orazaka run",
+    "sound": "Sound",
+    "studio": "Studio",
+    "notRecorded": "not recorded",
+    "timeValue": "{seconds} s, as recorded by the run",
+    "timeInterrupted": "not recorded (the run was interrupted, its time would mislead)",
+    "costFree": "no cash cost (own hardware; electricity not metered)",
+    "costValue": "US${amount} (the provider's price)",
+    "hostedMachine": "hosted by the provider (not our machine)",
+    "frames": "{fps} fps, {duration} s",
+    "play": "Play",
+    "reducedMotion": "Motion reduced: the clip waits for you to press play.",
+    "videoLabel": "Video: {alt}",
+    "fileSize": "{mb} MB",
+    "negative": "Negative prompt",
+    "note": "Note"
+  },
+  "series": {
+    "title": "Series",
+    "lead": "Posts that belong together, in reading order.",
+    "oneLead": "{count} posts, in reading order.",
+    "back": "All series",
+    "countOne": "1 post",
+    "count": "{count} posts",
+    "names": {
+      "building-orazaka": "Building Orazaka",
+      "measured": "Measured"
+    },
+    "leads": {
+      "building-orazaka": "How a sovereign AI engine gets built on one Mac and a few rented GPUs: the choices, the migrations, what broke.",
+      "measured": "Costs, times and results taken from real runs, with the records to check them. What we did not measure is said."
+    }
+  },
+  "calc": {
+    "title": "When does a rented GPU beat the hosted price?",
+    "busy": "How busy the rented GPU is",
+    "perClip": "A rented clip then costs",
+    "hosted": "Hosted price of a clip",
+    "verdictCheaper": "The rented GPU is cheaper at this load.",
+    "verdictDearer": "The hosted API is cheaper at this load.",
+    "breakEven": "Break-even: {percent}% busy.",
+    "assumption": "Derived, not measured: {hourly} per hour ÷ ({seconds} s of generation per clip), compute only — no boot, no download, no idle minute counted as work. The two clips are not the same size (see the text)."
   }
 }
