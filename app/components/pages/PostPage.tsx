@@ -14,6 +14,8 @@ import { PostList, formatDate } from "./PostList";
 import { tagLabel } from "./tag-label";
 import { mdxComponentsFor } from "./mdx";
 import { seriesName } from "./SeriesPage";
+import { PostEngage } from "../engage/PostEngage";
+import { SaveButton } from "../engage/SaveButton";
 
 /* One post: the hero (back link, topics, title, summary, date · author · reading time), the cover, the body, the other
    language when it exists, and the next posts. */
@@ -46,6 +48,9 @@ export default function PostPage({ post }: { post: Post }) {
             </Link>
           )}
         </p>
+        <div className="bl-hero-actions">
+          <SaveButton slug={post.slug} />
+        </div>
       </PageHero>
       <Section reveal={false}>
         <article className="bl-article">
@@ -83,6 +88,7 @@ export default function PostPage({ post }: { post: Post }) {
               ))}
             </ul>
           )}
+          <PostEngage slug={post.slug} title={post.title} locale={locale} />
           <p className="bl-feed">
             <Link href={`${locale === "en" ? "" : "/fr"}/feed.xml`}>{t.post.share}</Link>
           </p>
