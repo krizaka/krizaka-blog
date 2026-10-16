@@ -47,7 +47,7 @@ jobs:
           npx --yes serve@14 out -l 3000 >/dev/null 2>&1 &
           for i in $(seq 1 30); do curl -sf http://localhost:3000/robots.txt >/dev/null && break; sleep 1; done
           node scripts/check-seo-family.mjs --base http://localhost:3000 --host https://blog.krizaka.com --index on --limit 60
-      - name: The layout in a real browser (every post, both languages: nothing past the window at 1750, 1366, 390 px; focus ring for the keyboard only)
+      - name: The layout in a real browser (every post, both languages — nothing past the window at 1750, 1366, 390 px — focus ring for the keyboard only)
         run: |
           npx playwright install --with-deps chromium
           node scripts/check-layout.mjs --base http://localhost:3000 --posts out
