@@ -1,0 +1,63 @@
+---
+title: "Building a local-first AI platform: hungry models, Spring AI 2, and why the Mac is still the simplest place to start"
+description: "What running generative models on one laptop taught us: memory pressure, a migration to Spring Boot 4 and Spring AI 2 with the model routing in the database, and why video is the one thing the Mac cannot do."
+date: 2026-10-16
+tags: [orazaka, ai]
+author: krizaka
+draft: true
+---
+
+[Orazaka](https://dev.orazaka.com) is built to run AI on infrastructure you control. For us, the first infrastructure is a MacBook Pro (M1 Max, 64 GB of unified memory). This post is what that taught us: what hurts on one machine, what we changed in the Java platform to make models a matter of data, and where the laptop stops being enough. Figures come from Orazaka's [Measured runs](https://dev.orazaka.com/docs/measured-runs), from ADRs and pull requests we link, or from our working notes, and the text says which.
+
+## The Mac is hungry, and so are the models
+
+A local AI platform is a lot of processes at once: a database, a broker, an LLM server, an image engine, a media worker, and the services of the platform itself. On one laptop they compete for the same memory.
+
+- **Memory pressure.** The Mac swapped when several of our sessions ran in parallel (working notes). Our fix is blunt: a heavy lock that serialises the heavy jobs, which is why a pull request of ours says its "full-module verify waited on the heavy lock" ([orazaka-ai-engine#13](https://github.com/krizaka/orazaka-ai-engine/pull/13)).
+- **Video models eat what is left.** Wan 2.2 TI2V 5B on the Mac ran out of memory while decoding at 480×832 and 25 frames (26 GiB of MPS requested, 62 GiB already held on a 64 GB machine, from Measured runs). Our notes add an out-of-memory at 704×1280 and about 32 seconds per step at 480×832.
+- **JVM sprawl.** Orazaka has up to eleven Spring Boot services. The open proposal [orazaka#132](https://github.com/krizaka/orazaka/issues/132) estimates 350 to 600 MB per JVM and 4 to 6 GB idle, and suggests a single-JVM development profile. It is a proposal, not shipped, and its figures are the issue's estimates, not measurements.
+- **A disk that forgets.** On dev.orazaka.com, generated media was written to the App Platform container disk, which is wiped at every deploy: rows survived, files did not. The fix is a durable asset store with a Bunny adapter ([orazaka-ai-engine#21](https://github.com/krizaka/orazaka-ai-engine/pull/21)), and [orazaka-job-service#23](https://github.com/krizaka/orazaka-job-service/pull/23) makes job outputs use it.
+- **A tunnel between dev and the Mac.** The platform runs on DigitalOcean; the Mac's workers (and the rented GPU's) dial out to a relay. Every deploy restarts the relay and drops the tunnel, and a clip in flight (up to 18 minutes of GPU) used to be lost and rendered again from zero. [orazaka-worker-media#24](https://github.com/krizaka/orazaka-worker-media/pull/24) reconnects with a capped backoff and never renders a redelivered job twice. The relay itself is ADR-077 ([orazaka#71](https://github.com/krizaka/orazaka/pull/71)).
+
+## Spring Boot 4, Spring AI 2, Jackson 3
+
+On 16 June 2026 ([ADR-030](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-030-spring-ai-2-universal-proxy-dynamic-router.md)) we moved from Spring Boot 3.5 and Spring AI 1.1.6 to **Spring Boot 4.0.0 and Spring AI 2.0.0**, which require Spring Framework 7 and Jackson 3. What we gained is less the version than the shape of it:
+
+- **Provider starters are gone.** Spring AI 2 builds its OpenAI, Anthropic and Gemini integrations on the vendors' official SDKs, and its model classes have builders. We dropped the provider starters and the `spring.ai.*` block in `application.yml`: nothing is auto-configured behind our back.
+- **Providers and models are rows.** `ai_providers` holds a base URL and a key; `orazaka_models` binds a model name to a provider and a category, with an `is_default` flag. A `DynamicModelRouter` resolves a client per call from those rows and caches it per base URL and model. An admin edits a row and the runtime follows, with no redeploy.
+- **One client reaches every local provider.** Ollama and LocalAI both speak the OpenAI protocol, so a single OpenAI-compatible client, pointed at a base URL read from the database, is enough.
+- **Jackson 3** moves `com.fasterxml.jackson` to `tools.jackson`; annotations keep their package.
+
+The part that bit us is a type. Everything goes through the OpenAI-compatible client, whose request builder casts the prompt's options to `OpenAiChatOptions`, while earlier stages of our pipeline tag a local provider with `OllamaChatOptions`. Result: a `ClassCastException` and no chat. The fix in `RoutedChatModel` converts the options before the call:
+
+```java
+static Prompt toOpenAiPrompt(Prompt prompt) {
+  ChatOptions options = prompt.getOptions();
+  if (options == null || options instanceof OpenAiChatOptions) {
+    return prompt;
+  }
+  OpenAiChatOptions.Builder builder =
+      OpenAiChatOptions.builder()
+          .model(options.getModel())
+          .temperature(options.getTemperature())
+          .maxTokens(options.getMaxTokens());
+  // ...tool callbacks, when present
+  return new Prompt(prompt.getInstructions(), builder.build());
+}
+```
+
+Spring AI 2 options are immutable, so the code reads `options.mutate().model(model).build()` where it used to set a field. And routing is now the catalogue's binding from a model to its provider, not a global default: a Studio step that named `qwen2.5:7b` once went to serverless inference because the model was dropped unless the provider was `ollama` or `openai`. [orazaka-ai-engine#13](https://github.com/krizaka/orazaka-ai-engine/pull/13) fixed that, and a model whose provider refuses the connection now fails with a `ModelUnavailableException` that names the model and its provider.
+
+## What the Mac does well
+
+Unified memory and Metal make one machine a good place to start. In Orazaka's model catalogue the Mac runs chat through Ollama, speech with Piper, music with ACE-Step 1.5 (MIT), and images with stable-diffusion.cpp. The only image timing we have in the measurement record is FLUX.2 [klein] 4B at 1024×1024: **62 s median, command to file** (engine 72.7 s, six successful runs). ACE-Step takes about 10 to 15 seconds for a music bed on the Mac, from our working notes. None of this needs a bill, a driver or a cloud account, and a laptop is the machine a new developer already has.
+
+## What it cannot do: video
+
+Video is where the laptop gives up. Hosted, Wan 2.2 A14B at 832×480 took a median of **131 s** per 5-second clip on DigitalOcean serverless (21 runs). On the Mac, the 5B model ran out of memory and our notes put it at minutes per second of clip. So Orazaka routes video to a GPU when you choose it: DigitalOcean serverless, an hourly DigitalOcean droplet that a watchdog destroys after 30 idle minutes (ADR-077), or a rented H100. The numbers, prices and limits of that choice are in [What it really costs to generate images and video](/posts/what-image-and-video-generation-costs).
+
+## What we have not measured
+
+- The Mac's swap and memory use over a working day: we describe it, we did not log it.
+- The idle memory of the JVM services: the figures in orazaka#132 are estimates.
+- Chat and embedding speed on the Mac. We say they run well because we use them daily; there is no run record for them yet.
