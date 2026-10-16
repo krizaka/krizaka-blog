@@ -1,89 +1,96 @@
 ---
 title: "The anatomy of an AI prompt: what each added line really changes"
-description: "One terse prompt, then three more lines of detail, run on our own machine with the same seed. What got better, what got worse, what a negative prompt can and cannot do, and what we did not prove."
+description: "A six-word prompt, then three layers of detail, on my Mac with the same seed. What gets better, what gets worse, what a negative prompt can do, and what I didn't prove."
 date: 2026-10-16
 tags: [ai, prompts, orazaka, measurements]
-author: krizaka
+author: oussama
 draft: true
 cover: anatomy-flux-l3
 featured: true
 series: measured
-part: 4
+part: 2
 ---
 
-The usual story about generative AI failing is that people prompt badly: type six words, get a monster with three legs, blame the model. We set out to show that story with pictures. What we found is more useful and less tidy, so this post shows what we actually got, with the prompt, the seed and the time under every picture, and says where the story did not hold.
+I had the story in my head before I made the pictures. You type six words, the model gives you a three-legged player, and you learn you should have written a better prompt. It's the story you read everywhere. I only wanted to illustrate it.
+
+The model didn't play along. What it showed me was less dramatic, and more useful. So here is what I actually got, with the prompt, the seed and the time under every picture.
 
 <Note>
-Every picture here was made today on one MacBook Pro (Apple M1 Max, 64 GB) with the engine's command line, **one image per prompt, one seed (2026)**. That is a demonstration, not a benchmark: no scoring, no repetition across seeds. We say so again at the end.
+Every picture was made on my MacBook Pro (M1 Max, 64 GB) with the image engine's command line. One picture per prompt, a single seed (2026). This is a demonstration, not a benchmark: I scored nothing and repeated nothing on other seeds.
 </Note>
 
-## Level 0: the terse prompt
+## A prompt is an order you give a cook
 
-The prompt: *a basketball player dunking in snow*. Nine words, the kind a user types.
+Before the pictures, a mental picture. When you order "a plate of pasta", the cook decides everything else: the sauce, the plate, the portion. They fill in the blanks. An image model does the same. Whatever you don't say, it chooses for you.
 
-<Figure id="anatomy-flux-l0" alt="A basketball player in a navy jersey dunking in a snowy park, a hillside with trees behind" caption="Level 0, FLUX.2 [klein] 4B. Two arms, two legs, a rim and a net. The jersey lettering is gibberish." />
+The seed is where the randomness starts. With the same seed and the same prompt, the model makes exactly the same picture again. That's what lets me change one thing at a time and see its effect.
 
-This is not the anatomical nightmare the usual story promises. FLUX.2 [klein] 4B, an open model released with a permissive licence, produced a plausible dunk in snow from nine words. What the prompt left open, the model decided: a navy jersey, a snowy hillside, no particular camera. What it got wrong is small and typical: the letters on the jersey read as nothing.
+## Level 0: six words
 
-## Levels 1 to 3: adding what you mean
+The prompt: *a basketball player dunking in snow*. The kind of line you type without thinking.
 
-Each level adds one family of detail to the one before. Same model, same seed, same size, 77 to 82 seconds each.
+<Figure id="anatomy-flux-l0" alt="A basketball player in a navy jersey dunking in a snowy park, a hill and trees behind" caption="Level 0, FLUX.2 [klein] 4B. Two arms, two legs, a hoop, a net. The letters on the jersey spell nothing." />
 
-<Row>
-<Figure id="anatomy-flux-l1" alt="A basketball player in a red jersey leaping toward a rim inside an indoor arena" caption="Level 1: + who and how. Red jersey, both legs visible, ball above the hoop." />
-<Figure id="anatomy-flux-l2" alt="A basketball player in a red jersey dunking on an outdoor asphalt court dusted with snow" caption="Level 2: + where. An outdoor court, fresh snow, falling flakes." />
-<Figure id="anatomy-flux-l3" alt="A red-jersey player dunking on a snowy court, overcast light, the background softly out of focus" caption="Level 3: + camera and light. A medium shot, 35 mm, f/2.2, soft overcast daylight." />
-</Row>
+No monster. FLUX.2 [klein] 4B, an open model with a permissive licence, made a believable dunk in the snow from six words. What I hadn't specified, it decided: a navy jersey, a hill, no particular framing. Its one visible miss is a classic: the letters on the jersey don't form a word.
 
-What changed, as we see it:
+## Levels 1 to 3: saying what you actually mean
 
-- **Level 1 fixed the jersey and lost the snow.** We described the player and said nothing of the place, so the model filled the gap with a lit indoor arena. A prompt is a set of constraints, and a dimension you leave free is decided for you. Adding detail on one axis can displace what you had before.
-- **Level 2 brought the snow back** and put the court outdoors, because we now said so.
-- **Level 3 changed the frame and softened the background; the content stayed the same.** It did not fix the lettering on the jersey, and the backboard has an odd second panel under the first. The light was already overcast at Level 2, since the scene was snow, so we cannot credit the lighting words with a change.
-
-The full prompts of the four levels are under each picture (open **How this was made**). Read in order they are the usual recipe: subject and anatomy, setting and physics, camera and optics.
-
-## The negative prompt: a tool one of these models does not have
-
-The fourth step of the usual recipe is a negative prompt (*deformed, extra limbs, bad anatomy, glitch, jitter, low quality*). FLUX.2 [klein] runs at guidance 1 and ignores a negative prompt; [Orazaka's Studios](https://dev.orazaka.com) say so and keep "no text, no logos" in the positive prompt instead (ADR-075). So the negative step cannot be shown on this model, and we do not pretend to.
-
-It can be shown on Stable Diffusion 1.5, an older and smaller model that does use guidance (7 here) and a negative prompt. Here the terse prompt does produce the failures the story promises. Left to right: Level 0, Level 3 without a negative prompt, Level 3 with it. 512×512, seed 2026, 63 to 68 seconds each.
+At each level I added one family of detail to the previous one. Same model, same seed, same size. Between 77 and 82 seconds a picture.
 
 <Row>
-<Figure id="anatomy-sd15-l0" alt="A basketball player in white dunking in the snow, one red shoe and one grey shoe, a pole standing alone beside him" caption="SD 1.5, Level 0: mismatched shoes, a pole that holds nothing, garbled jersey lettering." />
-<Figure id="anatomy-sd15-l3" alt="A red-jersey player under a doubled hoop, an orange slab beneath the backboard" caption="SD 1.5, Level 3, no negative prompt: the hoop is doubled and melts into an orange slab." />
-<Figure id="anatomy-sd15-l3neg" alt="A red-jersey player reaching for a single hoop mounted on a bent post, the shoes not matching" caption="SD 1.5, Level 3 + negative prompt: a single hoop, a strange post, shoes that still do not match." />
+<Figure id="anatomy-flux-l1" alt="A basketball player in a red jersey leaping at a hoop in an indoor gym" caption="Level 1, the player and the move: red jersey, both legs visible, ball above the rim." />
+<Figure id="anatomy-flux-l2" alt="A player in a red jersey dunking on an outdoor asphalt court dusted with snow" caption="Level 2, the place: an outdoor court, fresh snow, flakes falling." />
+<Figure id="anatomy-flux-l3" alt="A player in a red jersey dunking on a snowy court, overcast light, background blurred" caption="Level 3, camera and light: medium shot, 35 mm, f/2.2, overcast sky." />
 </Row>
 
-The terse prompt shows a floating pole and mismatched shoes, and the detailed one shows a doubled hoop. With the negative prompt there is one hoop, and other oddities remain. **One image per prompt cannot tell you the negative prompt worked.** It is as likely to be the dice. If you want that claim, run it on twenty seeds and count; we did not.
+Level 1 surprised me. I described the player in detail, and the snow disappeared. The model put him in a brightly lit indoor hall. I hadn't said where, and by focusing on the player I'd left the setting blank. The cook filled the blank. That's the real lesson of this post: adding detail in one place can move something somewhere else.
 
-## A checklist, and what the pictures say about it
+Level 2 brought the snow back and put the court outdoors, because I wrote it.
 
-Our working checklist for a prompt has five letters, S.A.C.L.N. It is a memory aid we use, not a result, and the table says what the pictures above do and do not support.
+Level 3 changed the framing and softened the background. The content stayed put. The jersey letters are still unreadable, and the backboard grew an odd second backboard underneath. As for the light, it was already grey at level 2, since the scene was in the snow. So I can't say my words about light changed anything.
 
-| | Say | In these pictures |
+The full prompts are under each picture, in "How this was made". Read in order, they follow the usual recipe: subject, then setting, then camera.
+
+## The negative prompt, and the model that ignores it
+
+The usual recipe has a fourth step: the negative prompt, the list of what you don't want (*deformed, extra limbs, bad anatomy, low quality*). To see why it doesn't work everywhere, we need to talk about guidance.
+
+Guidance is how strongly the model obeys the text. To apply it, many models compute two versions at every step, one that follows the prompt and one that follows the negative prompt, then steer away from the second. FLUX.2 [klein] runs at a guidance of 1: it skips that second pass. So the negative prompt is never read, and I can't show that step on this model. That's also why, in [Orazaka](https://dev.orazaka.com)'s Studios, exclusions like "no text, no logos" are written into the positive prompt.
+
+Stable Diffusion 1.5, older and smaller, uses a guidance of 7 and does read the negative prompt. And there, the six-word prompt does produce the promised defects. Left to right: level 0, level 3 without a negative, level 3 with one. 512×512, seed 2026, 63 to 68 seconds each.
+
+<Row>
+<Figure id="anatomy-sd15-l0" alt="A basketball player in white dunking in snow, one red shoe and one grey shoe, a lone pole beside him" caption="SD 1.5, level 0: two different shoes, a pole holding nothing." />
+<Figure id="anatomy-sd15-l3" alt="A player in a red jersey under a doubled hoop, an orange slab under the backboard" caption="SD 1.5, level 3 without a negative: the hoop is doubled and melts into an orange slab." />
+<Figure id="anatomy-sd15-l3neg" alt="A player in a red jersey reaching for a single hoop on a bent pole, mismatched shoes" caption="SD 1.5, level 3 with a negative: one hoop, a bent pole, shoes still mismatched." />
+</Row>
+
+With the negative prompt there's only one hoop. It's tempting to call that proof it works. I can't. With one picture per prompt, the change could just as well be chance. Proving it would take twenty seeds and a count. I didn't do that.
+
+## A checklist to keep at hand
+
+I use a five-point reminder when I write a prompt: subject, action, camera, light, and what to exclude. It's a habit of mine, nothing more. Here's what the pictures above really say about it:
+
+| To specify | Example | What these pictures show |
 |:---|:---|:---|
-| **S**ubject and anatomy | Who, attire, posture | Level 1 fixed the jersey and the pose. It also let the model choose the place. |
-| **A**ction and motion | The trajectory, what touches what | Present from Level 0 ("dunking"); the ball above the hoop at Level 1 held. Stills cannot show motion. |
-| **C**amera and optics | Focal length, aperture, framing | Level 3 changed the frame and softened the background. |
-| **L**ighting and textures | Light source, materials | Not isolated: the light was already overcast at Level 2. We cannot judge textures from a handful of stills. |
-| **N**egative shield | What to exclude | Not usable on FLUX.2 [klein] (guidance 1). Inconclusive on SD 1.5 with one seed. |
+| Subject | Who, the outfit, the posture | Level 1 fixed the jersey and the pose, and let the model pick the place. |
+| Action | What moves, what touches what | "Dunking" was enough from level 0. A still picture doesn't show motion. |
+| Camera | Focal length, aperture, framing | Level 3 changed the framing and blurred the background. |
+| Light | Source, materials | Can't be isolated: the light was already grey at level 2. |
+| Exclusions | What you don't want | Ignored by FLUX.2 [klein]. Inconclusive on SD 1.5 with one seed. |
 
-## Where Krizaka puts this
+## What Orazaka does with it
 
-Nobody should have to memorise lens settings. Orazaka's art-direction Studios wrap what a person types in a structured direction (ADR-075), and the gallery images are made that way: the prompt below is exactly what reached the model, the person's subject first, then the Studio's direction, then the exclusions, in the positive prompt where this model needs them.
+Nobody should have to remember focal lengths to get a good picture. Orazaka's art-direction Studios take what a person types and wrap it in a structured direction. The prompt below is exactly what reached the model: the person's subject first, then the Studio's direction, then the exclusions, in the positive prompt.
 
-<Figure id="gallery-tea-pour" alt="A man in a white djellaba pouring mint tea from a silver teapot in a Berber tent at golden hour" caption="An Orazaka Studio run (art-golden-hour). Open the prompt below to read the subject, then the direction." />
+<Figure id="gallery-tea-pour" alt="A man in a white djellaba pouring mint tea from a silver teapot inside a Berber tent at golden hour" caption="A run of the art-golden-hour Studio. The full prompt is under the picture." />
 
-The same Studio's prompt also drove a five-second clip, made by a hosted video model:
+The same prompt was used for a five-second clip, made by a hosted video model:
 
-<Clip id="clip-tea-pour" alt="Mint tea poured from a silver teapot into a small glass inside a Berber tent, steam in golden light" caption="Text to video on DigitalOcean serverless: 134 s, $0.60. The clip's own prompt is under it." />
+<Clip id="clip-tea-pour" alt="Mint tea poured from a silver teapot into a small glass under a Berber tent, steam in the golden light" caption="Hosted text to video: 134 s, $0.60." />
 
-## What we did not measure
+## What you can take away
 
-- **Variance.** One seed per prompt. A different seed could swap every conclusion about the doubled hoop or the shoes.
-- **Quality, scored.** Our reading of the pictures is ours; the pictures and the prompts are yours to judge.
-- **Video.** We have no naive-versus-detailed pair of clips, so we claim nothing about what a detailed prompt does for motion. A hosted clip costs $0.60 and we did not spend it for this.
-- **An "Enhance prompt" button.** The idea that a product should write the detail for you is Orazaka's Studios, above. We do not describe any other feature here.
+A prompt doesn't need to be long. It needs to say what matters to you, because the model will decide everything else. When you add a detail, look at what moved elsewhere. And before you write a negative prompt, check that your model reads it.
 
-The costs and times of the models in this post are in [What it really costs to generate images and video](/posts/what-image-and-video-generation-costs); how the records behind them are kept is in [The real economics of sovereign AI](/posts/the-real-economics-of-sovereign-ai).
+What I didn't measure: variance (another seed could flip every conclusion), quality scored by anyone but me, and video, for lack of a plain-versus-detailed pair of clips. A hosted clip costs $0.60 and I didn't spend it on this. The times and prices of these models are in [the post about costs](/posts/what-image-and-video-generation-costs).

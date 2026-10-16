@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { checkDir, postProblems } from "../scripts/content-rules.mjs";
+import { checkDir, linkProblems, postProblems } from "../scripts/content-rules.mjs";
 
 const ok = { title: "T", description: "D", date: "2026-10-16", tags: ["ai"], draft: true };
 
@@ -18,6 +18,15 @@ test("an image must be on the media CDN, in the cover and in the text", () => {
   assert.equal(postProblems("x.en.mdx", { ...ok, image: "/local.png" }, "").length, 1);
   assert.deepEqual(postProblems("x.en.mdx", { ...ok, image: "https://krizaka-assets.b-cdn.net/site/blog/x/cover.webp" }, "![a](https://krizaka-assets.b-cdn.net/site/blog/x/a.webp)"), []);
   assert.equal(postProblems("x.en.mdx", ok, "![a](/a.png)").length, 1);
+});
+test("a link between posts leads to a post of that language, never from a published post to a draft", () => {
+  const post = (file, draft, body = "") => ({ file, data: { draft }, body });
+  const posts = [post("a.en.mdx", false, "See [b](/posts/b/) and [c](/fr/posts/c)."), post("b.en.mdx", false), post("c.fr.mdx", false)];
+  assert.deepEqual(linkProblems(posts), []);
+  assert.match(linkProblems([post("a.en.mdx", false, "[gone](/posts/gone)")])[0], /not a post/);
+  assert.match(linkProblems([post("a.en.mdx", false, "[b](/fr/posts/b)"), post("b.en.mdx", false)])[0], /not a post/);
+  assert.match(linkProblems([post("a.fr.mdx", false, "[d](/fr/posts/d/)"), post("d.fr.mdx", true)])[0], /draft/);
+  assert.deepEqual(linkProblems([post("a.fr.mdx", true, "[d](/fr/posts/d/)"), post("d.fr.mdx", true)]), []);
 });
 test("Mermaid is refused", () => assert.equal(postProblems("x.en.mdx", ok, "```mermaid\ngraph TD\n```").length, 1));
 test("the posts of the repository follow the rules, and no post is published without a draft decision", () => {

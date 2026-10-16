@@ -48,10 +48,13 @@ export function postProblems(file, data, body, ctx) {
 export function checkDir(dir, ctx) {
   const problems = [];
   const files = readdirSync(dir).filter((f) => f.endsWith(".mdx"));
+  const posts = [];
   for (const f of files) {
     const { data, content } = matter(readFileSync(join(dir, f), "utf8"));
     problems.push(...postProblems(f, data, content, ctx));
+    posts.push({ file: f, data, body: content });
   }
+  problems.push(...linkProblems(posts));
   return { files, problems };
 }
 
@@ -73,6 +76,25 @@ export function mediaProblems(media) {
     if (m.made) {
       if (!m.made.model) out.push(`media ${id}: made.model is required`);
       if (m.made.runId && !/^[0-9a-f-]{36}$/.test(m.made.runId)) out.push(`media ${id}: made.runId is not a run id`);
+    }
+  }
+  return out;
+}
+
+/** Links between posts (`/posts/<slug>` and `/fr/posts/<slug>`): each one leads to a post of that language, and a published
+    post never links to a draft (the reader would land on a 404). `posts` is [{ file, data, body }]. */
+export function linkProblems(posts) {
+  const out = [];
+  const known = new Map();
+  for (const p of posts) {
+    const m = p.file.match(FILE);
+    if (m) known.set(`${m[2]}:${m[1]}`, p.data.draft === true);
+  }
+  for (const p of posts) {
+    for (const l of p.body.matchAll(/\]\((\/fr)?\/posts\/([a-z0-9-]+)\/?(?:#[^)]*)?\)/g)) {
+      const key = `${l[1] ? "fr" : "en"}:${l[2]}`;
+      if (!known.has(key)) out.push(`${p.file}: links to ${l[0].slice(2, -1)}, which is not a post`);
+      else if (p.data.draft !== true && known.get(key)) out.push(`${p.file}: a published post links to the draft ${l[0].slice(2, -1)}`);
     }
   }
   return out;
