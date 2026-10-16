@@ -33,3 +33,11 @@ test("the function's project.yml hands the two sign-in variables of the app spec
     assert.match(spec, new RegExp(`key: ${k}`));
   }
 });
+
+test("each function action has an index.js entry (the runtime's default main) next to its handshake copy", async () => {
+  const { existsSync } = await import("node:fs");
+  for (const a of ["auth", "callback"]) {
+    assert.ok(existsSync(new URL(`../functions/packages/oauth/${a}/index.js`, import.meta.url)), a);
+    assert.ok(existsSync(new URL(`../functions/packages/oauth/${a}/oauth.js`, import.meta.url)), a);
+  }
+});
