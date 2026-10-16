@@ -4,6 +4,7 @@
    (`orazaka-web-client` gallery.ts · gallery-clips.ts · model-compare.ts, `orazaka` docs/measurements/runs.json).
    A figure of a post is `<Figure id="…" alt="…" />`; a clip is `<Clip id="…" alt="…" />`. Nothing here is typed by hand. */
 import data from "./media.json";
+import { BLUR } from "./blur";
 
 export type Made = {
   model: string;
@@ -32,7 +33,6 @@ export type ImageMedia = { kind: "image"; width: number; height: number; blur: s
 export type VideoMedia = { kind: "video"; width: number; height: number; blur: string; poster: string; mp4: string; webm: string; bytes?: { mp4: number; webm: number }; made?: Made };
 export type Media = ImageMedia | VideoMedia;
 
-const BLUR = /^data:image\/webp;base64,[A-Za-z0-9+/=]+$/;
 /** The library as read, with every blur placeholder checked to be a webp data URL (it ends up in a CSS `url()`). */
 const LIBRARY: Record<string, Media> = Object.fromEntries(Object.entries(data as unknown as Record<string, Media>).map(([id, m]) => [id, { ...m, blur: BLUR.test(m.blur) ? m.blur : "" }]));
 

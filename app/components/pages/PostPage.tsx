@@ -1,3 +1,4 @@
+import { blurUrl } from "@/lib/blur";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
@@ -50,7 +51,7 @@ export default function PostPage({ post }: { post: Post }) {
         <article className="bl-article">
           {post.draft && <p className="bl-draft">{t.post.draftNotice}</p>}
           {cover ? (
-            <img className="bl-cover bl-img" src={cover.src} srcSet={cover.srcSet} sizes="(min-width: 48rem) 704px, calc(100vw - 32px)" width={cover.width} height={cover.height} alt="" fetchPriority="high" decoding="async" style={{ backgroundImage: `url(${cover.blur})` }} />
+            <img className="bl-cover bl-img" src={cover.src} srcSet={cover.srcSet} sizes="(min-width: 48rem) 704px, calc(100vw - 32px)" width={cover.width} height={cover.height} alt="" fetchPriority="high" decoding="async" style={{ backgroundImage: blurUrl(cover.blur) }} />
           ) : (
             post.image && <img className="bl-cover" src={post.image} alt="" width={1200} height={630} />
           )}

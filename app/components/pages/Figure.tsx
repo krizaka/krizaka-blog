@@ -1,3 +1,4 @@
+import { blurUrl } from "@/lib/blur";
 import { mediaOf } from "@/lib/media";
 import type { Locale } from "@/lib/i18n";
 import { Provenance } from "./Provenance";
@@ -23,7 +24,7 @@ export function Figure({ id, alt, caption, locale, priority = false }: { id: str
         loading={priority ? "eager" : "lazy"}
         decoding="async"
         fetchPriority={priority ? "high" : "auto"}
-        style={{ backgroundImage: `url(${m.blur})` }}
+        style={{ backgroundImage: blurUrl(m.blur) }}
       />
       {caption && <figcaption>{caption}</figcaption>}
       {m.made && <Provenance made={m.made} locale={locale} />}

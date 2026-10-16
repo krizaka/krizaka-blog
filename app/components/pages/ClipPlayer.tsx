@@ -1,4 +1,5 @@
 "use client";
+import { blurUrl } from "@/lib/blur";
 import { useEffect, useRef } from "react";
 
 /* A light player: a native <video> — muted, looping, with its controls — that plays while it is on screen and pauses when
@@ -23,7 +24,7 @@ export function ClipPlayer({ poster, mp4, webm, width, height, blur, label }: { 
     return () => io.disconnect();
   }, []);
   return (
-    <video ref={ref} className="bl-img bl-video" width={width} height={height} poster={poster} muted loop playsInline controls preload="none" aria-label={label} style={{ backgroundImage: `url(${blur})` }}>
+    <video ref={ref} className="bl-img bl-video" width={width} height={height} poster={poster} muted loop playsInline controls preload="none" aria-label={label} style={{ backgroundImage: blurUrl(blur) }}>
       <source src={webm} type="video/webm" />
       <source src={mp4} type="video/mp4" />
     </video>
