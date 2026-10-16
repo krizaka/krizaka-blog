@@ -41,3 +41,9 @@ test("each function action has an index.js entry (the runtime's default main) ne
     assert.ok(existsSync(new URL(`../functions/packages/oauth/${a}/oauth.js`, import.meta.url)), a);
   }
 });
+
+test("a list field is i18n: true — Decap refuses `duplicate` on a list (the editor would not load)", () => {
+  const list = config.split("\n").find((l) => /widget: list/.test(l));
+  assert.match(list, /i18n: true/);
+  assert.doesNotMatch(list, /i18n: duplicate/);
+});
