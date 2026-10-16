@@ -18,7 +18,7 @@ export function mdxComponentsFor(locale: Locale) {
     Note: ({ children }: { children: React.ReactNode }) => <aside className="bl-note">{children}</aside>,
     Figure: (props: { id: string; alt: string; caption?: React.ReactNode }) => <Figure {...props} locale={locale} />,
     Clip: (props: { id: string; alt: string; caption?: React.ReactNode }) => <Clip {...props} locale={locale} />,
-    Utilization: (props: { hourly: number; seconds: number; hosted: number }) => <Utilization {...props} locale={locale} />,
+    Utilization: (props: { hourly?: number | string; seconds?: number | string; hosted?: number | string }) => <Utilization {...props} locale={locale} />,
     Row: ({ children }: { children: React.ReactNode }) => <div className="bl-row">{children}</div>,
   };
 }

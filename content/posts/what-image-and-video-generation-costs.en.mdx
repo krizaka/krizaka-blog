@@ -79,7 +79,7 @@ The failed attempts have their own story. After the first successful clip, ten c
 
 This is the calculation I care about most. The price of a clip on a rented GPU is the hourly rate, divided by the clips it makes in an hour, divided again by the share of time the machine is really working. A taxi waiting at the kerb costs as much as the same taxi driving. The slider below uses the H100's measured numbers: $3.99 an hour, 175 seconds per image-to-video clip. Move it to see where it crosses the hosted $0.60.
 
-<Utilization hourly={3.99} seconds={175} hosted={0.6} />
+<Utilization hourly="3.99" seconds="175" hosted="0.6" />
 
 Two cautions. The two clips aren't the same: hosted is text to video at 832×480, the H100 is image to video at 1280×704 with a smaller model. And the calculation assumes start-up is free, which it isn't. What it shows is the shape of the answer: fully busy, the rented GPU costs about a third of hosted. As soon as it waits, the advantage melts, then flips.
 

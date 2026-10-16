@@ -79,7 +79,7 @@ Les essais ratés ont leur histoire. Après le premier clip réussi, dix clips d
 
 C'est le calcul qui m'intéresse le plus. Le prix d'un clip sur un GPU loué, c'est le tarif horaire divisé par le nombre de clips produits en une heure, divisé encore par la part du temps où la machine travaille vraiment. Un taxi qui attend garé coûte autant que le même taxi qui roule. Le curseur ci-dessous utilise les chiffres mesurés du H100 : 3,99 $ de l'heure, 175 secondes par clip image vers vidéo. Déplacez-le pour voir où il croise les 0,60 $ de l'hébergé.
 
-<Utilization hourly={3.99} seconds={175} hosted={0.6} />
+<Utilization hourly="3.99" seconds="175" hosted="0.6" />
 
 Deux précautions. Les deux clips comparés ne sont pas les mêmes : l'hébergé fait du texte vers vidéo en 832×480, le H100 de l'image vers vidéo en 1280×704 avec un modèle plus petit. Et le calcul suppose que le démarrage est gratuit, ce qui est faux. Ce qu'il montre, c'est la forme de la réponse : à pleine charge, le GPU loué coûte environ le tiers de l'hébergé. Dès qu'il attend, l'avantage fond, puis s'inverse.
 
