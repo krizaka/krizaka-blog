@@ -2,13 +2,23 @@
 /* The layout the reader sees, in a real browser (Playwright, Chromium): at 1750, 1366 and 390 px the bar and the page's h1
    stay inside the window (nothing cut at the right edge, no sideways scroll), and the bar's links show a focus ring only to
    the keyboard (:focus-visible): none on load, none after a click, one ring (no double ring) after Tab.
-   Usage: node scripts/check-layout.mjs --base http://localhost:3000 [--path /posts/<slug>/ …] */
+   Usage: node scripts/check-layout.mjs --base http://localhost:3000 [--path /posts/<slug>/ …] [--posts out] */
+import { existsSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 import { chromium } from "playwright";
 
 const args = process.argv.slice(2);
 const base = (args[args.indexOf("--base") + 1] || "http://localhost:3000").replace(/\/$/, "");
 const paths = ["/", "/fr/"];
 args.forEach((a, i) => a === "--path" && paths.push(args[i + 1]));
+/* --posts <out dir>: every post the build wrote, in both languages (out/posts/<slug>/, out/fr/posts/<slug>/). */
+const postsDir = args.includes("--posts") ? args[args.indexOf("--posts") + 1] : undefined;
+if (postsDir) {
+  for (const prefix of ["", "fr/"]) {
+    const dir = join(postsDir, prefix, "posts");
+    if (existsSync(dir)) for (const slug of readdirSync(dir)) if (existsSync(join(dir, slug, "index.html"))) paths.push(`/${prefix}posts/${slug}/`);
+  }
+}
 const WIDTHS = [1750, 1366, 390];
 
 /** The problems of one page as laid out: boxes past the right edge, a title wider than its box, sideways scroll. */
@@ -20,6 +30,15 @@ const layoutProblems = () => {
     const r = e.getBoundingClientRect();
     if (!r.width || getComputedStyle(e).visibility === "hidden") continue;
     if (r.left < -0.5 || r.right > vw + 0.5) out.push(`${e.tagName.toLowerCase()} "${(e.textContent || e.getAttribute("aria-label") || "").trim().slice(0, 40)}" runs past the window (${Math.round(r.left)}–${Math.round(r.right)} of ${vw})`);
+  }
+  /* Nothing of the content past the right edge: a wide table or code block scrolls inside its own box (overflow-x: auto), it never
+     widens the page. Decorative backdrops (aria-hidden, clipped by their section) are not content. */
+  const scrolls = (e) => { for (let p = e.parentElement; p && p !== document.body; p = p.parentElement) if (/(auto|scroll)/.test(getComputedStyle(p).overflowX)) return true; return false; };
+  for (const e of document.querySelectorAll("main *")) {
+    if (e.closest("[aria-hidden='true']") || scrolls(e)) continue;
+    const r = e.getBoundingClientRect();
+    if (!r.width || !r.height) continue;
+    if (r.right > vw + 0.5) { out.push(`${e.tagName.toLowerCase()}.${String(e.className).split(" ")[0]} runs past the window (right ${Math.round(r.right)} of ${vw})`); break; }
   }
   const h1 = document.querySelector("h1");
   if (h1 && h1.scrollWidth > h1.clientWidth + 1) out.push(`the h1 is wider than its box (${h1.scrollWidth} > ${h1.clientWidth})`);

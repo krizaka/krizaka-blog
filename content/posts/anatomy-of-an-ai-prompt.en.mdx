@@ -55,7 +55,7 @@ The full prompts are under each picture, in "How this was made". Read in order, 
 
 The usual recipe has a fourth step: the negative prompt, the list of what you don't want (*deformed, extra limbs, bad anatomy, low quality*). To see why it doesn't work everywhere, we need to talk about guidance.
 
-Guidance is how strongly the model obeys the text. To apply it, many models compute two versions at every step, one that follows the prompt and one that follows the negative prompt, then steer away from the second. FLUX.2 [klein] runs at a guidance of 1: it skips that second pass. So the negative prompt is never read, and I can't show that step on this model. That's also why, in [Orazaka](https://dev.orazaka.com)'s Studios, exclusions like "no text, no logos" are written into the positive prompt.
+Guidance is how strongly the model obeys the text. To apply it, many models compute two versions at every step, one that follows the prompt and one that follows the negative prompt, then steer away from the second. FLUX.2 [klein] runs at a guidance of 1: it skips that second pass. So the negative prompt is never read, and I can't show that step on this model. That's also why, with a model like this one, exclusions like "no text, no logos" have to be written into the positive prompt.
 
 Stable Diffusion 1.5, older and smaller, uses a guidance of 7 and does read the negative prompt. And there, the six-word prompt does produce the promised defects. Left to right: level 0, level 3 without a negative, level 3 with one. 512×512, seed 2026, 63 to 68 seconds each.
 
@@ -79,11 +79,11 @@ I use a five-point reminder when I write a prompt: subject, action, camera, ligh
 | Light | Source, materials | Can't be isolated: the light was already grey at level 2. |
 | Exclusions | What you don't want | Ignored by FLUX.2 [klein]. Inconclusive on SD 1.5 with one seed. |
 
-## What Orazaka does with it
+## What the model actually receives
 
-Nobody should have to remember focal lengths to get a good picture. Orazaka's art-direction Studios take what a person types and wrap it in a structured direction. The prompt below is exactly what reached the model: the person's subject first, then the Studio's direction, then the exclusions, in the positive prompt.
+Nobody should have to remember focal lengths to get a good picture. You can take what a person types and wrap it in a structured direction before it reaches the model. That's what we do in [Orazaka](https://dev.orazaka.com), the open-source engine I'm building. The prompt under the picture below is exactly what the model received, in this order: the person's subject first, then the direction (light, lens, materials, palette), then the exclusions, written into the positive prompt because this model doesn't read a negative one.
 
-<Figure id="gallery-tea-pour" alt="A man in a white djellaba pouring mint tea from a silver teapot inside a Berber tent at golden hour" caption="A run of the art-golden-hour Studio. The full prompt is under the picture." />
+<Figure id="gallery-tea-pour" alt="A man in a white djellaba pouring mint tea from a silver teapot inside a Berber tent at golden hour" caption="A short subject wrapped in a golden-hour direction. The full prompt, as the model received it, is under the picture." />
 
 The same prompt was used for a five-second clip, made by a hosted video model:
 

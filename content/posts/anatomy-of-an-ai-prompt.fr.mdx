@@ -55,7 +55,7 @@ Les prompts complets sont sous chaque image, dans « Comment c'est fait ». Lus 
 
 La recette habituelle a une quatrième étape : le prompt négatif, la liste de ce qu'on ne veut pas (*deformed, extra limbs, bad anatomy, low quality*). Pour comprendre pourquoi ça ne marche pas partout, il faut parler du guidage.
 
-Le guidage, c'est la force avec laquelle le modèle obéit au texte. Pour l'appliquer, beaucoup de modèles calculent deux versions à chaque étape, une qui suit le prompt et une qui suit le prompt négatif, puis s'éloignent de la seconde. FLUX.2 [klein] tourne avec un guidage de 1 : il ne fait pas ce deuxième calcul. Le prompt négatif n'est donc jamais lu. Je ne peux pas montrer cette étape sur ce modèle. Dans les Studios d'[Orazaka](https://dev.orazaka.com), les exclusions comme « no text, no logos » sont écrites dans le prompt positif pour cette raison.
+Le guidage, c'est la force avec laquelle le modèle obéit au texte. Pour l'appliquer, beaucoup de modèles calculent deux versions à chaque étape, une qui suit le prompt et une qui suit le prompt négatif, puis s'éloignent de la seconde. FLUX.2 [klein] tourne avec un guidage de 1 : il ne fait pas ce deuxième calcul. Le prompt négatif n'est donc jamais lu. Je ne peux pas montrer cette étape sur ce modèle. C'est aussi pour ça qu'avec un modèle comme celui-ci, les exclusions comme « no text, no logos » doivent être écrites dans le prompt positif.
 
 Stable Diffusion 1.5, plus ancien et plus petit, utilise un guidage de 7 et lit le prompt négatif. Et là, le prompt de six mots produit bien les défauts promis. De gauche à droite : niveau 0, niveau 3 sans négatif, niveau 3 avec. 512×512, graine 2026, 63 à 68 secondes chacune.
 
@@ -79,11 +79,11 @@ J'utilise un aide-mémoire en cinq points pour écrire un prompt : le sujet, l'a
 | Lumière | Source, matières | Impossible à isoler : la lumière était déjà grise au niveau 2. |
 | Exclusions | Ce qu'on ne veut pas | Ignoré par FLUX.2 [klein]. Non concluant sur SD 1.5 avec une seule graine. |
 
-## Ce qu'Orazaka en fait
+## Ce qui arrive vraiment au modèle
 
-Personne ne devrait avoir à retenir des focales pour obtenir une belle image. Les Studios de direction artistique d'Orazaka prennent ce que la personne tape et l'enveloppent dans une direction structurée. Le prompt ci-dessous est exactement ce qui est arrivé au modèle : le sujet de la personne d'abord, puis la direction du Studio, puis les exclusions, dans le prompt positif.
+Personne ne devrait avoir à retenir des focales pour obtenir une belle image. On peut prendre ce que la personne tape et l'envelopper dans une direction structurée avant que ça arrive au modèle. C'est ce qu'on fait dans [Orazaka](https://dev.orazaka.com), le moteur open source que je construis. Le prompt sous l'image ci-dessous est exactement ce que le modèle a reçu, dans cet ordre : le sujet de la personne d'abord, puis la direction (lumière, objectif, matières, palette), puis les exclusions, écrites dans le prompt positif parce que ce modèle ne lit pas de prompt négatif.
 
-<Figure id="gallery-tea-pour" alt="Un homme en djellaba blanche qui verse du thé à la menthe d'une théière en argent dans une tente berbère à l'heure dorée" caption="Une exécution du Studio art-golden-hour. Le prompt complet est sous l'image." />
+<Figure id="gallery-tea-pour" alt="Un homme en djellaba blanche qui verse du thé à la menthe d'une théière en argent dans une tente berbère à l'heure dorée" caption="Un sujet court enveloppé dans une direction « heure dorée ». Le prompt complet, tel que le modèle l'a reçu, est sous l'image." />
 
 Le même prompt a servi à un clip de cinq secondes, fait par un modèle vidéo hébergé :
 
