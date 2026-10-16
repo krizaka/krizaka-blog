@@ -18,6 +18,12 @@ static_sites:
       - key: APP_INDEXING_ENABLED
         scope: BUILD_TIME
         value: "false"
+      # The private preview of the drafts: out/preview/<token>/ (scripts/build.mjs). `unset` here; the real value is set on the
+      # app (console or doctl), never in this file.
+      - key: APP_PREVIEW_TOKEN
+        scope: BUILD_TIME
+        type: SECRET
+        value: unset
 functions:
   - name: oauth
     github:

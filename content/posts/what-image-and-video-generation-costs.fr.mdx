@@ -5,6 +5,9 @@ date: 2026-10-16
 tags: [costs, measurements, orazaka, ai]
 author: krizaka
 draft: true
+cover: compare-moroccan-riad-flux
+series: measured
+part: 2
 ---
 
 Nous envoyons la génération d'images et de vidéo vers trois sortes d'endroits : le Mac du bureau, une API hébergée, ou un GPU loué. Le bon choix dépend de deux nombres, les secondes et les dollars. Nous les avons mesurés avec [Orazaka](https://dev.orazaka.com), notre moteur, et gardé les enregistrements. Chaque chiffre vient de la page [Exécutions mesurées](https://dev.orazaka.com/docs/measured-runs) (générée depuis les enregistrements d'exécution, `docs/measurements/runs.json`), de notre registre de location de GPU, ou de la grille de prix d'un fournisseur. Quand un chiffre ne vient d'aucune de ces sources, le texte le dit.
@@ -31,9 +34,11 @@ Les temps vont **de la commande au fichier** : du début de l'exécution du Stud
 
 Le même prompt, trois modèles. De haut en bas, dans l'ordre du tableau : FLUX.2 [klein] sur le Mac, Stable Diffusion 3.5 Large sur DigitalOcean, Stable Diffusion 1.5 sur le Mac.
 
-![Une cour de riad marocain, FLUX.2 klein 4B sur le Mac](https://krizaka-assets.b-cdn.net/site/blog/what-image-and-video-generation-costs/riad-flux2-klein-mac.3ef96eafe6.webp)
-![Le même prompt, Stable Diffusion 3.5 Large sur DigitalOcean serverless](https://krizaka-assets.b-cdn.net/site/blog/what-image-and-video-generation-costs/riad-sd35-large-do.e880488448.webp)
-![Le même prompt, Stable Diffusion 1.5 sur le Mac](https://krizaka-assets.b-cdn.net/site/blog/what-image-and-video-generation-costs/riad-sd15-mac.3f6d038efb.webp)
+<Row>
+<Figure id="compare-moroccan-riad-flux" alt="Une cour de riad marocain, FLUX.2 klein 4B sur le Mac" caption="FLUX.2 klein 4B, Mac" />
+<Figure id="compare-moroccan-riad-sd35" alt="Le même prompt, Stable Diffusion 3.5 Large sur DigitalOcean serverless" caption="SD 3.5 Large, DigitalOcean" />
+<Figure id="compare-moroccan-riad-sd15" alt="Le même prompt, Stable Diffusion 1.5 sur le Mac" caption="SD 1.5, Mac" />
+</Row>
 
 Ce que le tableau cache :
 
@@ -54,12 +59,9 @@ Ce que le tableau cache :
 - **H100 RunPod :** 167 s est le temps de génération d'un clip Wan 2.2 TI2V 5B en 1280×704. Les 0,19 $ sont `167 s × 3,99 $ / 3600` : temps de calcul seulement. Cela n'inclut ni le démarrage du pod, ni le téléchargement des poids, ni une minute d'inactivité : nous disons donc dérivé, pas mesuré. Le pod était encore ouvert dans notre registre à l'écriture.
 - **Le Mac** n'y est pas arrivé. En 480×832 et 25 images, Wan 2.2 TI2V 5B a manqué de mémoire au décodage (26 Gio de MPS demandés, 62 Gio déjà tenus par d'autres allocations sur une machine de 64 Go). Les 32 s par étape et le manque de mémoire en 704×1280 viennent de nos notes de travail, pas de `runs.json`.
 
-Deux clips de la galerie d'Orazaka, image vers vidéo, cinq secondes chacun (cliquez l'affiche pour lire le fichier) :
+Un des clips derrière la première ligne de ce tableau (texte vers vidéo, muet, il se lance quand il est à l'écran) :
 
-[![Un thé versé, image vers vidéo](https://krizaka-assets.b-cdn.net/site/blog/what-image-and-video-generation-costs/tea-pour-i2v-poster.8a1beb7b23.webp)](https://krizaka-assets.b-cdn.net/site/blog/what-image-and-video-generation-costs/tea-pour-i2v.0e841d251e.mp4)
-[![Un souk, image vers vidéo](https://krizaka-assets.b-cdn.net/site/blog/what-image-and-video-generation-costs/souk-i2v-poster.8917ec3867.webp)](https://krizaka-assets.b-cdn.net/site/blog/what-image-and-video-generation-costs/souk-i2v.92c863c7f1.mp4)
-
-Nous n'attribuons pas ces deux clips à une machine ici : l'enregistrement d'exécution qui les a faits est sur la galerie, pas dans ce tableau.
+<Clip id="clip-tea-pour" alt="Du thé à la menthe versé dans un verre sous une tente berbère, cinq secondes" caption="Le premier des 18 runs chronométrés : 134 s, 0,60 $. Le prompt, la graine et l'identifiant du run sont sous le clip." />
 
 ## Coût par sortie
 

@@ -20,6 +20,13 @@ export type Post = {
   draft: boolean;
   /** An absolute https URL on the media CDN (`blog/…`), never a file of this repository. */
   image?: string;
+  /** A media id of the library (`lib/media.json`): the post's picture on the home, the cards and the post (a clip shows its poster). */
+  cover?: string;
+  /** Shown first on the home when it is the newest featured post. */
+  featured: boolean;
+  /** The series it belongs to (an id of `series.names` in the messages) and its place in it. */
+  series?: string;
+  part?: number;
   body: string;
   readingMinutes: number;
 };
@@ -51,6 +58,10 @@ export function parsePost(file: string, source: string): Post {
     tags,
     author: typeof data.author === "string" ? data.author : "krizaka",
     draft: data.draft === true,
+    cover: typeof data.cover === "string" && data.cover ? data.cover : undefined,
+    featured: data.featured === true,
+    series: typeof data.series === "string" && data.series ? data.series : undefined,
+    part: typeof data.part === "number" ? data.part : undefined,
     image: typeof data.image === "string" && data.image ? data.image : undefined,
     body: content,
     readingMinutes: readingMinutes(content),
@@ -90,3 +101,28 @@ export const postsWithTag = (locale: Locale, tag: string): Post[] => postsOf(loc
 /** A plain-text version of an MDX body (search index, feeds' summaries): no markup, no code fences. */
 export const plainText = (body: string): string =>
   body.replace(/```[\s\S]*?```/g, " ").replace(/<[^>]+>/g, " ").replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1").replace(/[#>*_`|~-]+/g, " ").replace(/\s+/g, " ").trim();
+
+/** The series of a language with their posts in reading order (`part`, then date). */
+export function seriesOf(locale: Locale): { series: string; posts: Post[] }[] {
+  const by = new Map<string, Post[]>();
+  for (const p of postsOf(locale)) if (p.series) by.set(p.series, [...(by.get(p.series) ?? []), p]);
+  return [...by].map(([series, posts]) => ({ series, posts: posts.sort((a, b) => (a.part ?? 99) - (b.part ?? 99) || a.date.localeCompare(b.date)) })).sort((a, b) => b.posts.length - a.posts.length || a.series.localeCompare(b.series));
+}
+export const postsInSeries = (locale: Locale, series: string): Post[] => seriesOf(locale).find((s) => s.series === series)?.posts ?? [];
+
+/** The posts closest to one: same series first, then shared topics (most shared first), then the newest. Never the post itself. */
+export function relatedPosts(post: Post, limit = 3): Post[] {
+  const mine = new Set(post.tags.map(tagSlug));
+  return postsOf(post.locale)
+    .filter((p) => p.slug !== post.slug)
+    .map((p) => ({ p, score: (p.series && p.series === post.series ? 10 : 0) + p.tags.map(tagSlug).filter((t) => mine.has(t)).length }))
+    .sort((a, b) => b.score - a.score || b.p.date.localeCompare(a.p.date))
+    .slice(0, limit)
+    .map((x) => x.p);
+}
+
+/** The post the home puts first: the newest featured one, else the newest with a cover. */
+export function featuredPost(locale: Locale): Post | undefined {
+  const posts = postsOf(locale);
+  return posts.find((p) => p.featured && p.cover) ?? posts.find((p) => p.cover) ?? posts[0];
+}

@@ -3,10 +3,12 @@
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { readdirSync } from "node:fs";
-import { checkDir } from "./content-rules.mjs";
+import { checkDir, mediaProblems, readContext } from "./content-rules.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const { files, problems } = checkDir(join(root, "content/posts"));
+const ctx = readContext(root);
+const { files, problems } = checkDir(join(root, "content/posts"), ctx);
+problems.push(...mediaProblems(ctx.media));
 /* No media in the repository (they live on the CDN): an image file under content/ or public/ fails. */
 const IMAGE = /\.(png|jpe?g|gif|webp|avif|mp4|webm|mov)$/i;
 const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(join(d, e.name)) : [join(d, e.name)]));
