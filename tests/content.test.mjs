@@ -45,3 +45,11 @@ test("the preview build is private: token-gated, under /preview/<token>, never i
   assert.match(r(".do/app.yaml"), /APP_PREVIEW_TOKEN[\s\S]*type: SECRET[\s\S]*value: unset/);
   assert.doesNotMatch(r("app/sitemap.ts"), /preview/);
 });
+
+test("the founder's post says only what he wrote about himself (no inferred path or places)", async () => {
+  const { readFileSync } = await import("node:fs");
+  for (const l of ["en", "fr"]) {
+    const body = readFileSync(new URL(`../content/posts/why-krizaka-builds-sovereign-ai-in-montreal.${l}.mdx`, import.meta.url), "utf8");
+    assert.doesNotMatch(body, /Maroc|Morocco|Grenoble|parcours passe|path goes/);
+  }
+});
