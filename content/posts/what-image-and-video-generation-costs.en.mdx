@@ -1,0 +1,102 @@
+---
+title: "What it really costs to generate images and video: Mac, DigitalOcean and RunPod, measured"
+description: "The same prompts and clips made on a MacBook, on DigitalOcean (serverless and an hourly GPU) and on a RunPod H100: seconds, dollars, limits, licences, and what we did not measure."
+date: 2026-10-16
+tags: [costs, measurements, orazaka, ai]
+author: krizaka
+draft: true
+---
+
+We route image and video generation to three kinds of place: the Mac on the desk, a hosted API, and a rented GPU. Which one is right depends on two numbers, seconds and dollars, so we measured both with [Orazaka](https://dev.orazaka.com), our engine, and kept the records. Every figure below comes from the [Measured runs](https://dev.orazaka.com/docs/measured-runs) page (generated from the run records, `docs/measurements/runs.json`), from our GPU rental ledger, or from a provider's price list. Where a figure comes from none of these, the text says so.
+
+## The setup
+
+- **Mac:** MacBook Pro, Apple M1 Max, 64 GB unified memory (Metal), stable-diffusion.cpp for images.
+- **DigitalOcean serverless inference:** hosted models, priced per output.
+- **DigitalOcean GPU droplet:** an RTX 4000 Ada (20 GB) created on demand and destroyed after 30 idle minutes, at $0.76 per hour (ADR-077).
+- **RunPod:** one NVIDIA H100 80 GB pod (CA-MTL-1) at $3.99 per hour.
+
+Times are **command to file**: from the start of the Studio run to the finished output, queueing and transfer included.
+
+## Images
+
+| Model | Where | Time (median) | Price | Runs |
+|:---|:---|---:|---:|---:|
+| FLUX.2 [klein] 4B, 1024×1024 | Mac (Metal) | 62 s (engine 72.7 s) | free* | 6 ok of 18 |
+| Stable Diffusion 1.5, 512×512 | Mac (Metal) | 58 s | free* | 6 of 6 |
+| Z-Image Turbo, 1024×1024 | Mac (Metal) | engine 157.8 s | free* | 0 of 5 |
+| Stable Diffusion 3.5 Large, 1024×1024 | DigitalOcean serverless | 8 s | $0.08 | 6 of 6 |
+
+\*Free of any bill. The Mac's electricity was **not measured**, so we do not claim a figure.
+
+The same prompt, three models. From top to bottom, in the order of the table above: FLUX.2 [klein] on the Mac, Stable Diffusion 3.5 Large on DigitalOcean, Stable Diffusion 1.5 on the Mac.
+
+![A Moroccan riad courtyard, FLUX.2 klein 4B on the Mac](https://krizaka-assets.b-cdn.net/site/blog/what-image-and-video-generation-costs/riad-flux2-klein-mac.3ef96eafe6.webp)
+![The same prompt, Stable Diffusion 3.5 Large on DigitalOcean serverless](https://krizaka-assets.b-cdn.net/site/blog/what-image-and-video-generation-costs/riad-sd35-large-do.e880488448.webp)
+![The same prompt, Stable Diffusion 1.5 on the Mac](https://krizaka-assets.b-cdn.net/site/blog/what-image-and-video-generation-costs/riad-sd15-mac.3f6d038efb.webp)
+
+What the table hides:
+
+- **Eight seconds against a minute.** Serverless SD 3.5 Large is about eight times quicker than FLUX.2 [klein] on the Mac, for eight cents.
+- **Failures were mostly ours.** FLUX.2 [klein] shows 6 successes out of 18. The causes recorded: the image client gave up waiting through the relay (about two minutes) while the engine needed 60 to 75 s plus the transfer of a 2.5 MB image; a deploy restarted the relay and dropped the tunnel; and two finished images were overwritten by placeholders because of a process mistake, now guarded by checking the size of each download. None of those is the model's fault, and we count them anyway.
+- **Z-Image Turbo was dropped** at 1024×1024: about 157 s per image (8 steps at roughly 18 s), longer than the client waits.
+- **Seeds:** honoured by the Mac engines, ignored by the DigitalOcean image endpoint.
+
+## Video
+
+| Model | Where | Time | Price per clip |
+|:---|:---|---:|---:|
+| Wan 2.2 T2V A14B, 832×480, 81 frames, 5.06 s | DigitalOcean serverless | 131 s median (129 to 203, 18 runs) | $0.60 |
+| Wan 2.2 TI2V 5B, 1280×704 | RunPod H100 | about 167 s | about $0.19, derived |
+| Wan 2.2 TI2V 5B, 480×832 | Mac (Metal) | 32 s **per step** (session notes) | no clip finished |
+
+- **DigitalOcean serverless** made 21 clips out of 21, $12.60 in total. Three took 264 s, 439 s and 1 063 s because the Mac worker had lost its tunnel and the jobs waited in the queue; they are left out of the median.
+- **RunPod H100:** 167 s is the generation time of one Wan 2.2 TI2V 5B clip at 1280×704. The $0.19 is `167 s × $3.99 / 3600`: compute time only. It does not include the pod's boot, the weights download or any idle minute, which is why we call it derived and not measured. The pod was still open in our ledger when we wrote this.
+- **The Mac** could not do it. At 480×832 and 25 frames, Wan 2.2 TI2V 5B ran out of memory while decoding (26 GiB of MPS asked for, 62 GiB already held by other allocations on a 64 GB machine). The 32 s per step and the out-of-memory at 704×1280 come from our working notes, not from `runs.json`.
+
+Two clips from Orazaka's gallery, image to video, five seconds each (click a poster to play the file):
+
+[![A tea pour, image to video](https://krizaka-assets.b-cdn.net/site/blog/what-image-and-video-generation-costs/tea-pour-i2v-poster.8a1beb7b23.webp)](https://krizaka-assets.b-cdn.net/site/blog/what-image-and-video-generation-costs/tea-pour-i2v.0e841d251e.mp4)
+[![A souk, image to video](https://krizaka-assets.b-cdn.net/site/blog/what-image-and-video-generation-costs/souk-i2v-poster.8917ec3867.webp)](https://krizaka-assets.b-cdn.net/site/blog/what-image-and-video-generation-costs/souk-i2v.92c863c7f1.mp4)
+
+We do not attribute these two clips to one machine here: the run record that made them is on the gallery, not in this table.
+
+## Cost per output
+
+![Bar chart of the cost of one output: SD 3.5 Large on DigitalOcean $0.08, FLUX.2 klein on the Mac $0, Wan 2.2 A14B on DigitalOcean $0.60, Wan 2.2 TI2V 5B on a RunPod H100 about $0.19](https://krizaka-assets.b-cdn.net/site/blog/what-image-and-video-generation-costs/cost-per-output.b1d820ac89.svg)
+
+| Output | Cheapest measured way | Cost |
+|:---|:---|---:|
+| 1 image, 1024×1024 | Your own Mac, a minute | $0 on the bill |
+| 1 image, 1024×1024, in 8 s | DigitalOcean serverless | $0.08 |
+| 1 clip, 5 s, 832×480 | DigitalOcean serverless | $0.60 |
+| 1 clip, 1280×704 | RunPod H100 (compute only) | about $0.19 |
+
+The hourly GPUs are a different bargain: you pay for the hour, not the clip. Our ledger of four DigitalOcean RTX 4000 Ada sessions on 15 October adds up to **4.26 hours, or $3.24**. A GPU that sits waiting costs the same as one that works, which is why Orazaka's watchdog destroys the machine after 30 idle minutes.
+
+## The sound step
+
+Music is the cheap part. ACE-Step 1.5 XL turbo (MIT) takes about 10 to 15 s on the Mac for a music bed (our working notes; not yet in `runs.json`). Video-to-audio is where a licence decides: MMAudio large is CC-BY-NC-4.0, **non-commercial**, so Orazaka lists it as available and not as a default.
+
+## Limits we hit
+
+- **DigitalOcean serverless video is 832×480, full stop.** We asked for 720×1280, 480×832 and 1280×720, with and without aspect parameters; every answer was 832×480. Orazaka refuses the model for 9:16 by name rather than crop.
+- **Steps, guidance and scheduler are not exposed** by the serverless API, and SD 3.5 Large ignores the seed. Wan 2.2 A14B does honour it: four calls with the same prompt and seed gave identical frames.
+- **48 GB GPUs were sold out on DigitalOcean** when we needed one (our notes). ADR-077 had chosen a 48 GB L40S for the "big" size; we went to RunPod's H100 for the 1280×704 runs.
+- **Access:** the first call to Wan 2.2 A14B was a 403 (the key did not list the model); `openai-gpt-image-2` was refused for our subscription tier.
+
+## What we decided
+
+1. **Images stay local by default.** A minute on a Mac we already own costs no money; hosted SD 3.5 Large is there when eight seconds matter more than eight cents.
+2. **Video goes to a GPU when you choose it.** Hosted at 832×480 for $0.60, or an H100 for 1280×704, never the Mac.
+3. **Rented GPUs are hourly and short-lived.** Created on demand, destroyed after 30 idle minutes.
+4. **Licences are data.** A model with a non-commercial licence is never a default.
+
+## What we have not measured
+
+- The Mac's electricity, and the wear on the machine.
+- The H100's boot time, weights download and idle time. The $0.19 is generation time only.
+- A clip on the RTX 4000 Ada droplet: we have its hours and dollars, not a clip time, so no cost per clip.
+- **Quality.** The images above are for you to judge; we measured seconds and dollars.
+
+Every number here is for this setup, on 15 October 2026, and is measured again when the setup changes. The credit side of the same story is in [Measured, not promised](/posts/measured-not-promised); the full tables are on [Measured runs](https://dev.orazaka.com/docs/measured-runs).

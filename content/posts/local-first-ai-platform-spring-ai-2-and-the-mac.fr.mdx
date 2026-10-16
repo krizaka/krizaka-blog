@@ -1,0 +1,63 @@
+---
+title: "Construire une plateforme d'IA locale d'abord : modèles gourmands, Spring AI 2, et pourquoi le Mac reste l'endroit le plus simple pour commencer"
+description: "Ce que des modèles génératifs sur un seul portable nous ont appris : pression mémoire, Spring Boot 4 et Spring AI 2 avec le routage des modèles en base, et pourquoi la vidéo dépasse le Mac."
+date: 2026-10-16
+tags: [orazaka, ai]
+author: krizaka
+draft: true
+---
+
+[Orazaka](https://dev.orazaka.com) est construit pour faire tourner l'IA sur une infrastructure que vous contrôlez. Pour nous, la première infrastructure est un MacBook Pro (M1 Max, 64 Go de mémoire unifiée). Ce billet raconte ce que cela nous a appris : ce qui fait mal sur une seule machine, ce que nous avons changé dans la plateforme Java pour que les modèles deviennent des données, et où le portable ne suffit plus. Les chiffres viennent des [Exécutions mesurées](https://dev.orazaka.com/docs/measured-runs) d'Orazaka, d'ADR et de pull requests que nous citons, ou de nos notes de travail, et le texte dit laquelle.
+
+## Le Mac est gourmand, et les modèles aussi
+
+Une plateforme d'IA locale, ce sont beaucoup de processus à la fois : une base de données, un broker, un serveur de LLM, un moteur d'images, un worker média, et les services de la plateforme elle-même. Sur un portable, ils se disputent la même mémoire.
+
+- **Pression mémoire.** Le Mac faisait du swap quand plusieurs de nos sessions tournaient en parallèle (notes de travail). Notre réponse est brutale : un verrou « lourd » qui sérialise les tâches lourdes, d'où une pull request qui dit que sa « vérification complète du module attendait le verrou lourd » ([orazaka-ai-engine#13](https://github.com/krizaka/orazaka-ai-engine/pull/13)).
+- **Les modèles vidéo mangent le reste.** Wan 2.2 TI2V 5B sur le Mac a manqué de mémoire au décodage en 480×832 et 25 images (26 Gio de MPS demandés, 62 Gio déjà tenus sur une machine de 64 Go, d'après les Exécutions mesurées). Nos notes ajoutent un manque de mémoire en 704×1280 et environ 32 secondes par étape en 480×832.
+- **L'étalement des JVM.** Orazaka compte jusqu'à onze services Spring Boot. La proposition ouverte [orazaka#132](https://github.com/krizaka/orazaka/issues/132) estime 350 à 600 Mo par JVM et 4 à 6 Go au repos, et propose un profil de développement à JVM unique. C'est une proposition, pas une livraison, et ses chiffres sont les estimations de l'issue, pas des mesures.
+- **Un disque qui oublie.** Sur dev.orazaka.com, les médias générés étaient écrits sur le disque du conteneur App Platform, effacé à chaque déploiement : les lignes survivaient, pas les fichiers. La réponse est un stockage durable d'actifs avec un adaptateur Bunny ([orazaka-ai-engine#21](https://github.com/krizaka/orazaka-ai-engine/pull/21)), et [orazaka-job-service#23](https://github.com/krizaka/orazaka-job-service/pull/23) y fait passer les sorties des tâches.
+- **Un tunnel entre le dev et le Mac.** La plateforme tourne sur DigitalOcean ; les workers du Mac (et du GPU loué) se connectent vers un relais. Chaque déploiement redémarre le relais et coupe le tunnel, et un clip en cours (jusqu'à 18 minutes de GPU) était perdu puis refait de zéro. [orazaka-worker-media#24](https://github.com/krizaka/orazaka-worker-media/pull/24) se reconnecte avec un recul plafonné et ne rend jamais deux fois une tâche redélivrée. Le relais lui-même est l'ADR-077 ([orazaka#71](https://github.com/krizaka/orazaka/pull/71)).
+
+## Spring Boot 4, Spring AI 2, Jackson 3
+
+Le 16 juin 2026 ([ADR-030](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-030-spring-ai-2-universal-proxy-dynamic-router.md)), nous sommes passés de Spring Boot 3.5 et Spring AI 1.1.6 à **Spring Boot 4.0.0 et Spring AI 2.0.0**, qui exigent Spring Framework 7 et Jackson 3. Le gain tient moins à la version qu'à la forme :
+
+- **Les starters de fournisseurs ont disparu.** Spring AI 2 bâtit ses intégrations OpenAI, Anthropic et Gemini sur les SDK officiels des éditeurs, et ses classes de modèles ont des builders. Nous avons retiré les starters et le bloc `spring.ai.*` de `application.yml` : rien n'est auto-configuré dans notre dos.
+- **Fournisseurs et modèles sont des lignes.** `ai_providers` porte une URL de base et une clé ; `orazaka_models` lie un nom de modèle à un fournisseur et à une catégorie, avec un indicateur `is_default`. Un `DynamicModelRouter` résout un client à chaque appel depuis ces lignes et le met en cache par URL de base et modèle. Un admin modifie une ligne et l'exécution suit, sans redéploiement.
+- **Un seul client atteint tous les fournisseurs locaux.** Ollama et LocalAI parlent le protocole OpenAI : un client compatible OpenAI, pointé vers une URL de base lue en base, suffit.
+- **Jackson 3** déplace `com.fasterxml.jackson` vers `tools.jackson` ; les annotations gardent leur paquet.
+
+Ce qui nous a mordus, c'est un type. Tout passe par le client compatible OpenAI, dont le constructeur de requête convertit les options du prompt en `OpenAiChatOptions`, alors que des étapes antérieures de notre pipeline étiquettent un fournisseur local avec `OllamaChatOptions`. Résultat : une `ClassCastException` et plus de chat. Le correctif dans `RoutedChatModel` convertit les options avant l'appel :
+
+```java
+static Prompt toOpenAiPrompt(Prompt prompt) {
+  ChatOptions options = prompt.getOptions();
+  if (options == null || options instanceof OpenAiChatOptions) {
+    return prompt;
+  }
+  OpenAiChatOptions.Builder builder =
+      OpenAiChatOptions.builder()
+          .model(options.getModel())
+          .temperature(options.getTemperature())
+          .maxTokens(options.getMaxTokens());
+  // ...tool callbacks, when present
+  return new Prompt(prompt.getInstructions(), builder.build());
+}
+```
+
+Les options de Spring AI 2 sont immuables : le code écrit `options.mutate().model(model).build()` là où il positionnait un champ. Et le routage est désormais le lien du catalogue entre un modèle et son fournisseur, pas un défaut global : une étape de Studio qui nommait `qwen2.5:7b` partait un jour vers l'inférence serverless, car le modèle était ignoré sauf si le fournisseur était `ollama` ou `openai`. [orazaka-ai-engine#13](https://github.com/krizaka/orazaka-ai-engine/pull/13) l'a corrigé, et un modèle dont le fournisseur refuse la connexion échoue maintenant avec une `ModelUnavailableException` qui nomme le modèle et son fournisseur.
+
+## Ce que le Mac fait bien
+
+La mémoire unifiée et Metal font d'une seule machine un bon point de départ. Dans le catalogue de modèles d'Orazaka, le Mac fait le chat avec Ollama, la voix avec Piper, la musique avec ACE-Step 1.5 (MIT) et les images avec stable-diffusion.cpp. Le seul temps d'image de notre enregistrement de mesures est FLUX.2 [klein] 4B en 1024×1024 : **62 s en médiane, de la commande au fichier** (moteur 72,7 s, six exécutions réussies). ACE-Step prend environ 10 à 15 secondes pour un lit musical sur le Mac, d'après nos notes de travail. Rien de cela ne demande de facture, de pilote ou de compte cloud, et un portable est la machine que tout nouveau développeur a déjà.
+
+## Ce qu'il ne sait pas faire : la vidéo
+
+La vidéo est l'endroit où le portable abandonne. En hébergé, Wan 2.2 A14B en 832×480 a pris une médiane de **131 s** par clip de 5 secondes sur DigitalOcean serverless (21 exécutions). Sur le Mac, le modèle 5B a manqué de mémoire et nos notes le placent à des minutes par seconde de clip. Orazaka envoie donc la vidéo vers un GPU quand vous le choisissez : DigitalOcean serverless, un droplet DigitalOcean à l'heure qu'un chien de garde détruit après 30 minutes d'inactivité (ADR-077), ou un H100 loué. Les chiffres, les prix et les limites de ce choix sont dans [Ce que coûte vraiment la génération d'images et de vidéo](/fr/posts/what-image-and-video-generation-costs).
+
+## Ce que nous n'avons pas mesuré
+
+- Le swap et l'usage mémoire du Mac sur une journée de travail : nous les décrivons, nous ne les avons pas consignés.
+- La mémoire au repos des services JVM : les chiffres d'orazaka#132 sont des estimations.
+- La vitesse du chat et des embeddings sur le Mac. Nous disons qu'ils tournent bien parce que nous les utilisons chaque jour ; il n'existe pas encore d'enregistrement d'exécution pour eux.
