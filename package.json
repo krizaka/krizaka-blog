@@ -7,7 +7,7 @@
   "scripts": {
     "gen": "node scripts/gen-favicon.mjs",
     "dev": "npm run gen && next dev",
-    "build": "npm run gen && next build && node scripts/postbuild.mjs",
+    "build": "npm run gen && node scripts/build.mjs",
     "lint": "tsc --noEmit && krizaka-i18n check messages && node scripts/check-content.mjs",
     "test": "node --test tests/*.test.mjs"
   },

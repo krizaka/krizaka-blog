@@ -25,3 +25,14 @@ test("the posts of the repository follow the rules, and no post is published wit
   assert.deepEqual(problems, []);
   assert.ok(files.length >= 6);
 });
+
+test("the preview build is private: token-gated, under /preview/<token>, never indexable", async () => {
+  const { readFileSync } = await import("node:fs");
+  const r = (f) => readFileSync(new URL(`../${f}`, import.meta.url), "utf8");
+  assert.match(r("package.json"), /"build": "npm run gen && node scripts\/build\.mjs"/);
+  assert.match(r("scripts/build.mjs"), /out\/preview\/\$\{token\}|preview\/\$\{token\}/);
+  assert.match(r("next.config.ts"), /APP_PREVIEW_PATH/);
+  assert.match(r("lib/site.ts"), /APP_INDEXING_ENABLED === "true" && !process\.env\.APP_PREVIEW_PATH/);
+  assert.match(r(".do/app.yaml"), /APP_PREVIEW_TOKEN[\s\S]*type: SECRET[\s\S]*value: unset/);
+  assert.doesNotMatch(r("app/sitemap.ts"), /preview/);
+});

@@ -14,6 +14,6 @@ export const MEDIA_CDN_URL = "https://krizaka-assets.b-cdn.net";
 export const LOGO_URL = `${MEDIA_CDN_URL}/brand/krizaka/logo-dark.svg`;
 
 /** The site is noindex until the first post is published (APP_INDEXING_ENABLED=true at build, set in the app spec). */
-export const INDEXING_ENABLED = process.env.APP_INDEXING_ENABLED === "true";
+export const INDEXING_ENABLED = process.env.APP_INDEXING_ENABLED === "true" && !process.env.APP_PREVIEW_PATH;
 /** Drafts are in the build only for a local preview (APP_SHOW_DRAFTS=1). */
 export const SHOW_DRAFTS = process.env.APP_SHOW_DRAFTS === "1";

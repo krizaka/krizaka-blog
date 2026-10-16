@@ -5,6 +5,8 @@ import type { NextConfig } from "next";
    English is at the root, French under /fr/. */
 const nextConfig: NextConfig = {
   output: "export",
+  // The private preview build (scripts/build.mjs) lives under /preview/<token>.
+  ...(process.env.APP_PREVIEW_PATH ? { basePath: process.env.APP_PREVIEW_PATH } : {}),
   trailingSlash: true,
   poweredByHeader: false,
   reactStrictMode: true,
