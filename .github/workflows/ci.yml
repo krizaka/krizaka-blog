@@ -49,5 +49,5 @@ jobs:
           node scripts/check-seo-family.mjs --base http://localhost:3000 --host https://blog.krizaka.com --index on --limit 60
       - name: Every post has its Open Graph image and both feeds list it
         run: |
-          test -f out/og/measured-not-promised.png && test -f out/fr/og/measured-not-promised.png
-          grep -q "measured-not-promised" out/feed.xml && grep -q "measured-not-promised" out/fr/atom.xml
+          test -f out/og/what-image-and-video-generation-costs.png && test -f out/fr/og/what-image-and-video-generation-costs.png
+          grep -q "what-image-and-video-generation-costs" out/feed.xml && grep -q "what-image-and-video-generation-costs" out/fr/atom.xml
