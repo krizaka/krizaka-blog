@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Avatar } from "@krizaka/ui/avatar";
 import { KrizakaLogo } from "@krizaka/ui";
 import { ClockIcon, GlobeIcon } from "@krizaka/icons";
-import { format, getDictionary, localizedPath } from "@/lib/i18n";
+import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
 import type { Post } from "@/lib/posts";
 import { formatDate } from "./PostList";
 
@@ -19,6 +19,10 @@ const initials = (name: string) =>
    post in the other language when it exists. */
 export function Byline({ post, other }: { post: Post; other?: Post }) {
   const t = getDictionary(post.locale);
+  /* The other language's address, from known values only: one of the two locales, a slug of lower-case words. */
+  const otherLang: Locale = other?.locale === "fr" ? "fr" : "en";
+  const otherSlug = other && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(other.slug) ? other.slug : "";
+  const otherHref = localizedPath(otherLang, `/posts/${otherSlug}/`);
   const author = (t.authors as Record<string, string>)[post.author] ?? post.author;
   return (
     <div className="bl-byline">
@@ -41,7 +45,7 @@ export function Byline({ post, other }: { post: Post; other?: Post }) {
         </p>
       </div>
       {other && (
-        <Link className="bl-byline-lang" href={localizedPath(other.locale, `/posts/${/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(other.slug) ? other.slug : ""}`)} hrefLang={other.locale} lang={other.locale} title={t.post.otherLabel}>
+        <Link className="bl-byline-lang" href={otherHref} hrefLang={otherLang} lang={otherLang} title={t.post.otherLabel}>
           <GlobeIcon size={14} aria-hidden="true" />
           {t.post.readInOther}
         </Link>
