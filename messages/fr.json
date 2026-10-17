@@ -144,7 +144,8 @@
       "prompts": "Prompts",
       "payments": "Paiements",
       "basics": "Bases",
-      "ui": "Interface"
+      "ui": "Interface",
+      "security": "Sécurité"
     },
     "countOne": "1 billet",
     "seo": {
@@ -199,6 +200,10 @@
       "ui": {
         "title": "Kit d'interface et composants — Blogue Krizaka",
         "description": "Krizaka UI, un kit de composants pour le web, le mobile et le Mac : réutilisation, parité, ce qu'un correctif propage."
+      },
+      "security": {
+        "title": "Sécurité, secrets et comptes — Blogue Krizaka",
+        "description": "Garder les clés et les comptes d'une petite entreprise de logiciels hors du code, et automatiser autour avec des agents et une CI."
       }
     }
   },

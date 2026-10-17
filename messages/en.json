@@ -144,7 +144,8 @@
       "prompts": "Prompts",
       "payments": "Payments",
       "basics": "Basics",
-      "ui": "UI"
+      "ui": "UI",
+      "security": "Security"
     },
     "countOne": "1 post",
     "seo": {
@@ -199,6 +200,10 @@
       "ui": {
         "title": "UI kit and components — Krizaka Blog",
         "description": "Krizaka UI, one component kit for the web, mobile and the Mac: reuse, parity, and what one fix propagates."
+      },
+      "security": {
+        "title": "Security, secrets and accounts — Krizaka Blog",
+        "description": "Keeping a small software company's keys and accounts out of the code, and automating around them with agents and CI."
       }
     }
   },
