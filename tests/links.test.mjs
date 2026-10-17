@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { extractLinks, resolve, isInternal, isSoft, follow, checkExternal, SOFT_HOSTS } from "../scripts/check-links.mjs";
+import { decodeEntities, extractLinks, resolve, isInternal, isSoft, follow, checkExternal, SOFT_HOSTS } from "../scripts/check-links.mjs";
 
 const root = new URL("..", import.meta.url).pathname;
 const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(join(d, e.name)) : [join(d, e.name)]));
@@ -62,4 +62,9 @@ test("an external 404 is broken at once; a 503 is retried", async () => {
   const gone = await checkExternal("https://x/", { fetchImpl: fake({}), wait: 1 });
   assert.equal(gone.status, 404);
   assert.equal(gone.transient, false);
+});
+
+test("entities in an attribute are decoded (a share link with an apostrophe is not cut at &#x27;)", () => {
+  assert.equal(decodeEntities("t=L&#x27;anatomie&amp;x=1&#39;"), "t=L'anatomie&x=1'");
+  assert.deepEqual(extractLinks('<a href="https://r.example/submit?title=L&#x27;anatomie&amp;u=1">r</a>'), ["https://r.example/submit?title=L'anatomie&u=1"]);
 });

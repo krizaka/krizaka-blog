@@ -14,6 +14,16 @@ export const SOFT_HOSTS = ["www.linkedin.com", "linkedin.com", "x.com", "twitter
 /** Schemes and targets that are not fetched. */
 const SKIP = /^(mailto:|tel:|javascript:|data:|#)/i;
 
+/** The entities React writes in attributes (&amp; &quot; &#x27; &#39; …), decoded. */
+export const decodeEntities = (v) =>
+  v
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
+    .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
+
 /** Every URL a page names: href, src, srcset (each candidate), poster, content of og:image/twitter:image. */
 export function extractLinks(html) {
   const out = new Set();
@@ -21,7 +31,7 @@ export function extractLinks(html) {
   let m;
   while ((m = attr.exec(html))) {
     const name = m[1].toLowerCase();
-    const value = (m[3] ?? m[4] ?? "").replace(/&amp;/g, "&").trim();
+    const value = decodeEntities(m[3] ?? m[4] ?? "").trim();
     if (!value) continue;
     if (name === "srcset") {
       for (const part of value.split(",")) {
