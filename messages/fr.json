@@ -302,7 +302,8 @@
       "Ce blogue, c'est ce que j'apprends en construisant. Des billets courts, avec les chiffres que je peux montrer, et ce que je n'ai pas encore réglé."
     ],
     "homeTitle": "Qui écrit",
-    "homeBody": "Je m'appelle Oussama. Je vis à Montréal depuis 2018, et j'y construis Krizaka. Mon premier contact avec l'IA date de 2011, dans un labo de recherche, bien avant que le mot soit à la mode. Ici, je raconte ce que j'apprends en route.",
+    "homeBody": "Je m'appelle Oussama. Je vis à Montréal depuis 2018, et j'y construis Krizaka. Mon premier contact avec l'IA date de 2011, au {lab}, bien avant que le mot soit à la mode. Ici, je raconte ce que j'apprends en route.",
+    "homeLab": "laboratoire d'informatique de Grenoble (LIG)",
     "homeLink": "Mon parcours",
     "placesLabel": "Vit à",
     "places": [

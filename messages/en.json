@@ -302,7 +302,8 @@
       "This blog is what I learn while building. Short posts, with the numbers I can show, and what I haven't solved yet."
     ],
     "homeTitle": "Who writes",
-    "homeBody": "My name is Oussama. I have lived in Montréal since 2018, and I build Krizaka there. My first brush with AI was in 2011, in a research lab, long before the word was in fashion. Here I tell what I learn along the way.",
+    "homeBody": "My name is Oussama. I have lived in Montréal since 2018, and I build Krizaka there. My first brush with AI was in 2011, at the {lab}, long before the word was in fashion. Here I tell what I learn along the way.",
+    "homeLab": "Grenoble Informatics Laboratory (LIG)",
     "homeLink": "My path",
     "placesLabel": "Lives in",
     "places": [
