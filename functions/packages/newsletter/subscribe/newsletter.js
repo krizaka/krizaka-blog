@@ -29,11 +29,11 @@ const pickLocale = (v) => (LOCALES.includes(v) ? v : "en");
 const b64 = (s) => Buffer.from(s).toString("base64url");
 const mac = (payload, secret) => crypto.createHmac("sha256", secret).update(payload).digest("base64url");
 
-/** A signed token: `c` (confirm, expires), `r` (an unsubscribe link asked for on the site, expires) or `u` (the unsubscribe
-    link of every e-mail, never expires — CASL: it must work for 60 days at least). */
+/** A signed token: `c` (confirm, expires) or `u` (the unsubscribe link of every e-mail, never expires — CASL: it must work
+    for 60 days at least). */
 function makeToken({ email, locale, purpose, now = Date.now() }, secret) {
   const body = { e: email, l: locale, p: purpose };
-  if (purpose === "c" || purpose === "r") body.x = now + CONFIRM_TTL_MS;
+  if (purpose === "c") body.x = now + CONFIRM_TTL_MS;
   const payload = b64(JSON.stringify(body));
   return `${payload}.${mac(payload, secret)}`;
 }
@@ -54,7 +54,7 @@ function readToken(token, purpose, secret, now = Date.now()) {
     return null;
   }
   if (body.p !== purpose || !validEmail(normalizeEmail(body.e))) return null;
-  if ((purpose === "c" || purpose === "r") && !(typeof body.x === "number" && now <= body.x)) return null;
+  if (purpose === "c" && !(typeof body.x === "number" && now <= body.x)) return null;
   return { email: normalizeEmail(body.e), locale: pickLocale(body.l) };
 }
 
@@ -73,9 +73,6 @@ const WORDS = {
     why: (date) => `You receive this e-mail because you subscribed to the new posts of blog.krizaka.com${date ? ` on ${date}` : ""} and confirmed it.`,
     whyConfirm: "You receive this e-mail because this address was entered in the subscription form of blog.krizaka.com.",
     unsubscribe: (link) => `Unsubscribe in one click: ${link}`,
-    requestSubject: "Your link to unsubscribe from the Krizaka blog",
-    requestBody: (link) => `Hello,\n\nSomeone, probably you, asked to stop receiving the Krizaka blog's e-mails at this address.\n\nTo unsubscribe, open this link (valid for 48 hours):\n${link}\n\nIf it wasn't you, ignore this e-mail: nothing changes.\n\nOussama`,
-    whyRequest: "You receive this e-mail because an unsubscribe link was asked for this address on blog.krizaka.com.",
     privacy: `What we keep and why: ${SITE}/newsletter/`,
     sender: (address) => `Sent by Technologies Krizaka Inc. (Krizaka), ${address}. Contact: https://www.krizaka.com/contact`,
   },
@@ -87,9 +84,6 @@ const WORDS = {
     why: (date) => `Vous recevez ce courriel parce que vous vous êtes inscrit aux nouveaux billets de blog.krizaka.com${date ? ` le ${date}` : ""} et que vous l'avez confirmé.`,
     whyConfirm: "Vous recevez ce courriel parce que cette adresse a été saisie dans le formulaire d'inscription de blog.krizaka.com.",
     unsubscribe: (link) => `Se désinscrire en un clic : ${link}`,
-    requestSubject: "Votre lien pour vous désabonner du blogue Krizaka",
-    requestBody: (link) => `Bonjour,\n\nQuelqu'un, sans doute vous, a demandé à ne plus recevoir les courriels du blogue Krizaka à cette adresse.\n\nPour vous désabonner, ouvrez ce lien (valable 48 heures) :\n${link}\n\nSi ce n'était pas vous, ignorez ce courriel : rien ne change.\n\nOussama`,
-    whyRequest: "Vous recevez ce courriel parce qu'un lien de désabonnement a été demandé pour cette adresse sur blog.krizaka.com.",
     privacy: `Ce que nous gardons et pourquoi : ${SITE}/fr/newsletter/`,
     sender: (address) => `Envoyé par Technologies Krizaka Inc. (Krizaka), ${address}. Contact : https://www.krizaka.com/fr/contact`,
   },
@@ -118,14 +112,6 @@ function confirmationEmail({ email, locale }, env, now = Date.now()) {
   const link = actionUrl("confirm", makeToken({ email, locale, purpose: "c", now }, env.MAIL_TOKEN_SECRET), locale);
   const text = `${w.confirmBody(link)}\n${footer(locale, env, { why: w.whyConfirm })}`;
   return { to: email, subject: w.confirmSubject, text, html: toHtml(text) };
-}
-
-/** The e-mail with a one-click unsubscribe link, sent when someone asks for it on /newsletter/unsubscribe/ (48 h). */
-function unsubscribeRequestEmail({ email, locale }, env, now = Date.now()) {
-  const w = WORDS[locale];
-  const link = actionUrl("unsubscribe", makeToken({ email, locale, purpose: "r", now }, env.MAIL_TOKEN_SECRET), locale);
-  const text = `${w.requestBody(link)}\n${footer(locale, env, { why: w.whyRequest })}`;
-  return { to: email, subject: w.requestSubject, text, html: toHtml(text) };
 }
 
 function newPostEmail({ email, locale, consentedAt }, post, env) {
@@ -187,30 +173,6 @@ async function addSubscriber(sql, { email, locale }, now = new Date()) {
 /** Removes a subscriber: nothing is kept about someone who left. Already gone is fine (a link clicked twice). */
 async function removeSubscriber(sql, email) {
   await sql("delete from newsletter_subscribers where email = $1", [email]);
-}
-
-/** Whether an address is on the list. Only the server knows: the site answers the same either way. */
-async function isSubscribed(sql, email) {
-  return (await sql("select 1 from newsletter_subscribers where email = $1", [email])).length === 1;
-}
-
-/* Abuse limits of the unsubscribe-request form: technical bounds, not business rules. */
-// @fixed: abuse bound of a public form (requests per visitor address per hour)
-const LIMIT_PER_IP_PER_HOUR = 5;
-// @fixed: abuse bound of a public form (requests per e-mail address per day)
-const LIMIT_PER_ADDRESS_PER_DAY = 3;
-
-/** Counts one hit for a key in a fixed window; true while under the limit. The key is stored hashed, never in clear. */
-async function underLimit(sql, scope, value, limit, windowSeconds) {
-  const key = crypto.createHash("sha256").update(`${scope}:${value}`).digest("hex");
-  const rows = await sql(
-    "insert into newsletter_rate_limits (key, window_start, hits) values ($1, now(), 1) on conflict (key) do update set " +
-      "hits = case when newsletter_rate_limits.window_start < now() - make_interval(secs => $2) then 1 else newsletter_rate_limits.hits + 1 end, " +
-      "window_start = case when newsletter_rate_limits.window_start < now() - make_interval(secs => $2) then now() else newsletter_rate_limits.window_start end " +
-      "returning hits",
-    [key, windowSeconds],
-  );
-  return Number(rows[0]?.hits ?? 1) <= limit;
 }
 
 /** Every confirmed subscriber: [{ email, locale, consentedAt }]. */
@@ -278,7 +240,6 @@ const redirect = (location) => ({ statusCode: 303, headers: { Location: location
 module.exports = {
   SITE, LOCALES, CONFIRM_TTL_MS, configured, normalizeEmail, validEmail, pickLocale, makeToken, readToken, pageUrl, actionUrl,
   confirmationEmail, newPostEmail, footer, toHtml, sendEmail, mailConfigured, dbConfigured, connect, addSubscriber,
-  removeSubscriber, listSubscribers, claimPost, recordSent, sendPostToAll, sameSecret, unsubscribeRequestEmail, isSubscribed,
-  underLimit, LIMIT_PER_IP_PER_HOUR, LIMIT_PER_ADDRESS_PER_DAY,
+  removeSubscriber, listSubscribers, claimPost, recordSent, sendPostToAll, sameSecret,
   verifyCaptcha, captchaConfigured, clientIp, json, redirect, WORDS,
 };

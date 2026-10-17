@@ -1,7 +1,7 @@
 "use client";
 
 /* The newsletter form, compact: one short line, one row (e-mail + « M'abonner »), one small muted line (who sends, how to
-   stop, what we keep, already subscribed?). The language is the page's. → POST /api/newsletter/subscribe
+   stop: the one-click link of every e-mail, what we keep). The language is the page's. → POST /api/newsletter/subscribe
    (functions/packages/newsletter): the server checks the CAPTCHA (invisible unless Cloudflare needs an action) and e-mails a
    confirmation link; nothing is stored until it is opened (double opt-in). The consent is explicit through the button's
    words and the notice line (CASL); the full privacy note is one link away (Loi 25). */
@@ -118,8 +118,6 @@ export function SubscribeForm({ id = "nl" }: { id?: string }) {
       {status === "error" && error && <Alert tone="danger">{error}</Alert>}
       <p id={`${id}-notice`} className="bl-nl-notice">
         {n.compactConsent} <Link href={localizedPath(locale, "/newsletter")}>{n.privacyShort}</Link>
-        <span aria-hidden="true"> · </span>
-        <Link href={localizedPath(locale, "/newsletter/unsubscribe")}>{n.alreadySubscribed}</Link>
       </p>
     </form>
   );
