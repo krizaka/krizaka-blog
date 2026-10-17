@@ -1,0 +1,117 @@
+---
+title: "Comprendre l'IA avant de se lancer : les mots, sans le jargon"
+description: "Token, fenêtre de contexte, quantification, RAG, MCP, agent, diffusion. Les mots que j'utilise sans les expliquer, repris un par un avec une image simple et ce qui tourne vraiment chez nous."
+seoTitle: "Comprendre l'IA : les mots de base, sans le jargon"
+seoDescription: "Token, contexte, quantification, RAG, outils, MCP, agents, fine-tuning, diffusion : chaque mot avec une image simple et un exemple réel."
+date: 2026-10-16
+tags: [ai, basics, orazaka]
+author: oussama
+draft: false
+cover: basics-library
+series: basics
+part: 1
+---
+
+En relisant les premiers billets de ce blogue, j'ai fait la liste des mots que j'utilise sans jamais les expliquer. Token. Quantification. RAG. MCP. Agent. La liste était longue, et un peu gênante.
+
+Alors je reprends depuis le début. Un mot à la fois, avec une image simple et un exemple de ce qui tourne vraiment chez nous. Les illustrations ont été générées pour l'occasion sur mon Mac, avec FLUX.2 [klein] 4B, le modèle d'image qu'Orazaka fait tourner en local. Sous chacune, « Comment c'est fait » donne le prompt, la graine et la durée.
+
+## Un modèle de langage, c'est un très bon devin de suite
+
+Un grand modèle de langage, un LLM, fait une seule chose : il devine la suite d'un texte. On lui donne le début, il propose le morceau suivant, puis le suivant, et ainsi de suite. Tout ce qui ressemble à une conversation est construit là-dessus.
+
+Ces morceaux s'appellent des tokens. Ce ne sont ni des lettres ni des mots, plutôt des pièces de Lego : un mot courant tient en une pièce, un mot rare en demande plusieurs.
+
+<Figure id="basics-tokens" alt="Des blocs de bois colorés de tailles différentes, alignés sur un bureau, vus de dessus" caption="Des pièces de tailles différentes : c'est à peu près ce qu'un modèle voit d'une phrase." />
+
+J'ai compté sur mon Mac, avec Qwen 2.5 7B, le modèle de chat que j'utilise en local. « Je construis une IA souveraine à Montréal. » fait 12 tokens. La même phrase en anglais, « I build sovereign AI in Montréal. », en fait 8. Le français coûte plus cher en tokens, et comme les services hébergés facturent au token, ça se voit sur la facture.
+
+La fenêtre de contexte, c'est le bureau sur lequel le modèle étale ses papiers : votre question, l'historique de la conversation, les documents qu'on lui donne. Pour Qwen 2.5 7B, ce bureau fait 32 768 tokens. Ce qui ne tient pas sur le bureau, le modèle ne le voit tout simplement pas.
+
+## Entraîner, puis utiliser
+
+L'entraînement, c'est l'école. On montre au modèle des quantités énormes de texte, et on ajuste ses réglages internes jusqu'à ce qu'il devine bien la suite. Ça coûte très cher et ça se fait une fois. L'inférence, c'est le travail au quotidien : le modèle a fini l'école, on lui pose des questions. Chez nous, on ne fait que de l'inférence.
+
+Ces réglages internes s'appellent des paramètres. Qwen 2.5 7B en a 7,6 milliards. Ce sont des nombres, et c'est là que la question « est-ce que ça rentre sur mon Mac ? » devient du calcul.
+
+## La quantification, ou pourquoi un modèle rentre sur un Mac
+
+Stockés en 16 bits, 7,6 milliards de nombres pèsent environ 15 Go. La version que j'utilise est quantifiée (Q4_K_M) : chaque nombre est arrondi pour tenir en un peu plus de 4 bits, et le fichier tombe à 4,7 Go. C'est la différence entre une photo en RAW et la même photo en JPEG. On perd un peu de détail, on gagne beaucoup de place.
+
+Il faut aussi de la mémoire pour le contexte, en plus du modèle. Sur mon Mac de 64 Go, un modèle de 7 milliards de paramètres quantifié passe sans souci. Un modèle vidéo, non, et je l'ai appris à mes dépens dans [le billet sur le Mac](/fr/posts/local-first-ai-platform-spring-ai-2-and-the-mac/). Dans [Orazaka](https://dev.orazaka.com/docs/models), le moteur que je construis, chaque modèle est une ligne dans une base de données, avec sa taille et l'endroit où il tourne.
+
+## Embeddings et RAG : la bibliothèque rangée par sens
+
+Un embedding transforme un texte en une liste de nombres qui résume son sens. Deux textes qui parlent de la même chose obtiennent des listes proches, même s'ils n'utilisent pas les mêmes mots.
+
+Imaginez une bibliothèque où les livres ne sont pas rangés par ordre alphabétique, mais par sujet, au centimètre près. Vous posez une question, et le bibliothécaire va directement au bon rayon.
+
+<Figure id="basics-library" alt="Une allée de bibliothèque calme, une main qui tire un livre d'une étagère, lumière chaude" caption="Le RAG, c'est d'abord un bon bibliothécaire : il trouve les passages, le modèle répond avec eux." />
+
+J'ai fait le test avec nomic-embed-text, un petit modèle d'embedding (137 millions de paramètres) qui transforme chaque texte en 768 nombres. J'ai posé la question « À quelle date dois-je payer ? » face à quatre phrases. La plus proche, avec un score de 0,72 : « Le loyer est payable le premier jour de chaque mois. » Ensuite, l'augmentation de loyer (0,62), les animaux de compagnie (0,58) et, en dernier, une recette de pizza (0,55). Le classement est bon. Les écarts, eux, sont modestes, et c'est pour ça qu'on ne fait jamais confiance au seul score.
+
+Le RAG (retrieval-augmented generation) assemble les deux étapes : on cherche d'abord les bons passages, puis on les donne au modèle pour qu'il réponde avec eux, et qu'il puisse les citer. C'est ce qui permet à une réponse d'avoir une source. Le modèle d'embedding par défaut d'Orazaka est justement nomic-embed-text.
+
+## Les outils : le modèle demande, le code fait
+
+Un modèle ne sait rien faire d'autre que produire du texte. Il ne peut pas lire un fichier, ni chercher sur le web, ni consulter une base de données. Avec l'appel d'outils (function calling), on lui présente une liste d'outils, et quand il en a besoin, il répond par une demande structurée : « appelle tel outil avec tels arguments ». C'est notre code qui exécute, puis qui lui rend le résultat.
+
+C'est un chef qui ne quitte pas ses fourneaux. Il demande à l'aide de cuisine d'aller chercher le safran à la réserve, et il continue sa sauce.
+
+Dans Orazaka, les outils sont attachés à chaque tour de conversation, et seulement ceux dont le tour a besoin. L'outil de recherche, par exemple, interroge les sources que le service de connaissances garde pour la personne connectée. La liste est [dans la documentation](https://dev.orazaka.com/docs/tools), générée depuis le code.
+
+## MCP : une prise standard pour les outils
+
+Chaque application avait sa façon de brancher des outils sur un modèle. Le Model Context Protocol, MCP, [standardise la prise](https://modelcontextprotocol.io/specification) : un serveur MCP expose des outils et des données d'une façon connue, et un client MCP, le programme qui parle au modèle, sait s'y brancher sans code sur mesure.
+
+C'est l'adaptateur de voyage universel. On ne refait pas l'électricité de l'hôtel, on branche.
+
+<Figure id="basics-adapter" alt="Un adaptateur de voyage universel branché dans une prise murale, photo de produit en gros plan" caption="MCP standardise la prise, pas ce qu'on branche dessus." />
+
+Orazaka est un client MCP. Avant un tour, il interroge en parallèle les serveurs déclarés par l'administrateur et ceux que chaque personne a ajoutés pour elle-même. Depuis le terminal, ça ressemble à ça :
+
+```bash
+orazaka mcp list        # vos serveurs MCP privés
+orazaka mcp register    # en ajouter un
+orazaka mcp delete <id> # en retirer un
+```
+
+## Les agents : une boucle, pas de la magie
+
+Un agent, c'est un modèle qu'on laisse travailler en boucle : il fait un plan, appelle un outil, regarde le résultat, décide de la suite, et recommence jusqu'à ce que la tâche soit finie. C'est un stagiaire avec une liste de tâches et le droit d'utiliser quelques outils. Ça peut être très efficace. Il faut aussi le surveiller.
+
+Je le sais parce que Krizaka est en grande partie écrit par des agents de code que je dirige, que je relis et que je corrige. Le 12 octobre, plusieurs d'entre eux ont lancé leurs gros builds en même temps et mon Mac a saturé. La réponse a été un simple verrou : une tâche lourde à la fois.
+
+Dans Orazaka, j'ai fait un choix plus prudent pour les clients. Un Studio n'est pas un agent libre : c'est une suite d'étapes écrites à l'avance, et certaines attendent une approbation humaine avant de continuer. Moins spectaculaire, plus facile à vérifier.
+
+## Fine-tuning ou prompt : renvoyer le cuisinier à l'école, ou mieux passer la commande
+
+Le fine-tuning réentraîne une partie du modèle sur vos propres exemples. Des méthodes comme [LoRA](https://arxiv.org/abs/2106.09685) le rendent abordable en ne touchant qu'une petite partie des poids. Le prompt, lui, ne change rien au modèle : on écrit mieux la commande.
+
+Renvoyer le cuisinier à l'école, ou lui donner une commande plus précise. Chez nous, aujourd'hui, c'est toujours la commande. Ce qu'une ligne de prompt change vraiment, je l'ai mesuré dans [l'anatomie d'un prompt](/fr/posts/anatomy-of-an-ai-prompt/).
+
+## La diffusion, pour les images et la vidéo
+
+Les modèles d'image et de vidéo fonctionnent autrement. Un modèle de diffusion part d'un bruit aléatoire, comme une image de neige à la télé, et retire ce bruit petit à petit, en suivant votre texte, jusqu'à ce qu'une image apparaisse. C'est une rue qui sort du brouillard au lever du jour.
+
+<Figure id="basics-fog" alt="Une rue de Montréal avec des escaliers extérieurs qui sort d'un épais brouillard à l'aube" caption="Une image de diffusion se révèle comme une rue dans le brouillard : un peu plus nette à chaque étape." />
+
+Sur mon Mac, FLUX.2 [klein] 4B fait une image en 1024×1024 en 62 secondes en médiane. Stable Diffusion 3.5 Large, hébergé, en fait une en 8 secondes pour 0,08 $. Pour la vidéo, Wan 2.2 suit le même principe sur toutes les images du clip à la fois, et coûte 0,60 $ le clip de cinq secondes en hébergé. Les détails sont dans [le billet sur les coûts](/fr/posts/what-image-and-video-generation-costs/).
+
+## Le petit glossaire
+
+- **LLM** : un modèle qui devine la suite d'un texte.
+- **Token** : un morceau de texte, l'unité que le modèle lit et qu'on vous facture.
+- **Fenêtre de contexte** : tout ce que le modèle peut voir à la fois.
+- **Paramètres** : les nombres appris pendant l'entraînement.
+- **Entraînement / inférence** : apprendre une fois, puis répondre tous les jours.
+- **Quantification** : des nombres arrondis pour que le modèle prenne moins de place.
+- **Embedding** : une liste de nombres qui résume le sens d'un texte.
+- **RAG** : chercher les bons passages, puis répondre avec eux.
+- **Appel d'outils** : le modèle demande une action, le code l'exécute.
+- **MCP** : la prise standard entre un modèle et ses outils.
+- **Agent** : un modèle qui travaille en boucle avec des outils.
+- **Fine-tuning** : réentraîner un peu le modèle sur vos exemples.
+- **Diffusion** : partir du bruit et le retirer jusqu'à obtenir une image.
+
+Le prochain billet de cette série prend un sujet plus délicat : [pourquoi certains modèles refusent des demandes, pourquoi d'autres ne refusent rien](/fr/posts/censored-and-uncensored-models/), et ce qu'Orazaka en fait.

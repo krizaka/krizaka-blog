@@ -1,0 +1,117 @@
+---
+title: "Understanding AI before you start: the words, without the jargon"
+description: "Token, context window, quantization, RAG, MCP, agent, diffusion. The words I use without explaining them, taken one by one with a simple picture and what really runs on our side."
+seoTitle: "Understanding AI: the basic words, without the jargon"
+seoDescription: "Tokens, context, quantization, RAG, tools, MCP, agents, fine-tuning, diffusion: each word with a simple picture and a real example."
+date: 2026-10-16
+tags: [ai, basics, orazaka]
+author: oussama
+draft: false
+cover: basics-library
+series: basics
+part: 1
+---
+
+Rereading the first posts of this blog, I made a list of the words I use without ever explaining them. Token. Quantization. RAG. MCP. Agent. The list was long, and a bit embarrassing.
+
+So I'm starting over from the beginning. One word at a time, with a simple picture and an example of what really runs on our side. The illustrations were generated for the occasion on my Mac, with FLUX.2 [klein] 4B, the image model Orazaka runs locally. Under each one, "How this was made" gives the prompt, the seed and the time.
+
+## A language model is a very good guesser of what comes next
+
+A large language model, an LLM, does one thing: it guesses how a text goes on. You give it the beginning, it proposes the next piece, then the next one, and so on. Everything that looks like a conversation is built on that.
+
+Those pieces are called tokens. They are neither letters nor words, more like Lego bricks: a common word fits in one brick, a rare word takes several.
+
+<Figure id="basics-tokens" alt="Colourful wooden blocks of different sizes lined up on a desk, seen from above" caption="Bricks of different sizes: roughly what a model sees of a sentence." />
+
+I counted on my Mac with Qwen 2.5 7B, the chat model I use locally. "Je construis une IA souveraine à Montréal." is 12 tokens. The same sentence in English, "I build sovereign AI in Montréal.", is 8. French costs more tokens, and since hosted services bill by the token, it shows on the invoice.
+
+The context window is the desk on which the model spreads its papers: your question, the conversation so far, the documents you hand it. For Qwen 2.5 7B, that desk is 32,768 tokens. Whatever doesn't fit on the desk, the model simply doesn't see.
+
+## Training, then using
+
+Training is school. You show the model enormous amounts of text and adjust its internal settings until it guesses well. It's very expensive and done once. Inference is the daily job: the model is out of school, you ask it questions. On our side, we only do inference.
+
+Those internal settings are called parameters. Qwen 2.5 7B has 7.6 billion of them. They are numbers, and that's where "will it fit on my Mac?" becomes arithmetic.
+
+## Quantization, or why a model fits on a Mac
+
+Stored in 16 bits, 7.6 billion numbers weigh about 15 GB. The version I use is quantized (Q4_K_M): each number is rounded to fit in a little over 4 bits, and the file drops to 4.7 GB. It's the difference between a photo in RAW and the same photo in JPEG. You lose a little detail, you gain a lot of room.
+
+You also need memory for the context, on top of the model. On my 64 GB Mac, a quantized 7-billion-parameter model fits without trouble. A video model doesn't, and I learned that the hard way in [the post about the Mac](/posts/local-first-ai-platform-spring-ai-2-and-the-mac/). In [Orazaka](https://dev.orazaka.com/docs/models), the engine I'm building, each model is a row in a database, with its size and where it runs.
+
+## Embeddings and RAG: a library shelved by meaning
+
+An embedding turns a text into a list of numbers that sums up its meaning. Two texts about the same thing get close lists, even when they don't use the same words.
+
+Picture a library where books aren't shelved alphabetically but by subject, to the centimetre. You ask a question, and the librarian walks straight to the right shelf.
+
+<Figure id="basics-library" alt="A quiet library aisle, a hand pulling a book from a shelf, warm light" caption="RAG starts with a good librarian: it finds the passages, the model answers with them." />
+
+I tried it with nomic-embed-text, a small embedding model (137 million parameters) that turns each text into 768 numbers. I asked "À quelle date dois-je payer ?" ("On what date do I have to pay?") against four French sentences. The closest, with a score of 0.72: "Le loyer est payable le premier jour de chaque mois." (Rent is payable on the first day of each month.) Then the rent increase (0.62), pets (0.58) and, last, a pizza recipe (0.55). The ranking is right. The gaps are modest, and that's why you never trust the score alone.
+
+RAG (retrieval-augmented generation) puts the two steps together: first find the right passages, then give them to the model so it answers with them, and can cite them. That's what lets an answer have a source. Orazaka's default embedding model is nomic-embed-text.
+
+## Tools: the model asks, the code does
+
+A model can do nothing but produce text. It can't read a file, search the web or query a database. With tool calling (function calling), you show it a list of tools, and when it needs one, it answers with a structured request: "call this tool with these arguments". Our code runs it, then hands the result back.
+
+It's a chef who never leaves the stove. He asks the kitchen help to fetch the saffron from the store room, and keeps stirring his sauce.
+
+In Orazaka, tools are attached to each turn of a conversation, and only the ones that turn needs. The search tool, for example, queries the sources the knowledge service holds for the signed-in person. The list is [in the documentation](https://dev.orazaka.com/docs/tools), generated from the code.
+
+## MCP: a standard socket for tools
+
+Every application had its own way of plugging tools into a model. The Model Context Protocol, MCP, [standardizes the socket](https://modelcontextprotocol.io/specification): an MCP server exposes tools and data in a known way, and an MCP client, the program that talks to the model, knows how to plug in without custom code.
+
+It's the universal travel adapter. You don't rewire the hotel, you plug in.
+
+<Figure id="basics-adapter" alt="A universal travel adapter plugged into a wall socket, close-up product photo" caption="MCP standardizes the socket, not what you plug into it." />
+
+Orazaka is an MCP client. Before a turn, it queries in parallel the servers the administrator declared and the ones each person added for themselves. From the terminal, it looks like this:
+
+```bash
+orazaka mcp list        # your private MCP servers
+orazaka mcp register    # add one
+orazaka mcp delete <id> # remove one
+```
+
+## Agents: a loop, not magic
+
+An agent is a model you let work in a loop: it makes a plan, calls a tool, looks at the result, decides what's next, and goes again until the task is done. It's an intern with a task list and the right to use a few tools. It can be very effective. It also needs watching.
+
+I know because Krizaka is largely written by coding agents that I direct, review and correct. On 12 October, several of them started their heavy builds at the same time and my Mac choked. The answer was a simple lock: one heavy task at a time.
+
+In Orazaka, I made a more careful choice for customers. A Studio isn't a free agent: it's a sequence of steps written in advance, and some of them wait for a human approval before going on. Less spectacular, easier to check.
+
+## Fine-tuning or prompting: send the cook back to school, or place a better order
+
+Fine-tuning retrains part of the model on your own examples. Methods like [LoRA](https://arxiv.org/abs/2106.09685) make it affordable by touching only a small part of the weights. A prompt changes nothing in the model: you just write a better order.
+
+Send the cook back to school, or give a more precise order. On our side, today, it's always the order. What one line of a prompt really changes, I measured in [the anatomy of a prompt](/posts/anatomy-of-an-ai-prompt/).
+
+## Diffusion, for images and video
+
+Image and video models work differently. A diffusion model starts from random noise, like snow on an old TV, and removes that noise little by little, following your text, until an image appears. It's a street coming out of the fog at dawn.
+
+<Figure id="basics-fog" alt="A Montréal street with outdoor staircases emerging from thick fog at dawn" caption="A diffusion image shows itself like a street in the fog: a little sharper at each step." />
+
+On my Mac, FLUX.2 [klein] 4B makes a 1024×1024 image in 62 seconds at the median. Stable Diffusion 3.5 Large, hosted, makes one in 8 seconds for $0.08. For video, Wan 2.2 follows the same idea on all the frames of the clip at once, and costs $0.60 for a five-second hosted clip. The details are in [the post about costs](/posts/what-image-and-video-generation-costs/).
+
+## The short glossary
+
+- **LLM**: a model that guesses how a text goes on.
+- **Token**: a piece of text, the unit the model reads and you get billed for.
+- **Context window**: everything the model can see at once.
+- **Parameters**: the numbers learned during training.
+- **Training / inference**: learn once, then answer every day.
+- **Quantization**: rounded numbers so the model takes less room.
+- **Embedding**: a list of numbers that sums up the meaning of a text.
+- **RAG**: find the right passages, then answer with them.
+- **Tool calling**: the model asks for an action, the code runs it.
+- **MCP**: the standard socket between a model and its tools.
+- **Agent**: a model working in a loop with tools.
+- **Fine-tuning**: retraining the model a little on your examples.
+- **Diffusion**: start from noise and remove it until you get an image.
+
+The next post in this series takes on a more delicate subject: [why some models refuse requests, why others refuse nothing](/posts/censored-and-uncensored-models/), and what Orazaka does about it.

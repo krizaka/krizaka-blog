@@ -1,0 +1,92 @@
+---
+title: "Models that refuse, models that refuse nothing: what exists, why, and what Orazaka does"
+description: "Why a hosted model says no, what \"uncensored\" models are, what the law and the card networks ask of whoever runs them, and how Orazaka's content policy decides."
+seoTitle: "Censored or uncensored models: what you need to know"
+seoDescription: "Alignment, API refusals, uncensored models, the operator's duties, and Orazaka's content policy, tested without generating anything."
+date: 2026-10-16
+tags: [ai, basics, orazaka, law]
+author: oussama
+draft: false
+series: basics
+part: 2
+---
+
+On my Mac, in the list of installed models, the same 7-billion-parameter model appears twice. The original version, and a so-called "abliterated" one: the same model, with the urge to refuse taken out.
+
+That sums up the question of this post. Why some models say no, why others never do, and what you do about it when you build an AI engine that other people will run on their own machines.
+
+Let me say it right away: there is no recipe here to get around a refusal, no instruction to obtain explicit content. This post explains what exists and how we decide. And it isn't legal advice: where the law matters, I consult a lawyer.
+
+## Why a model says no
+
+A language model, at first, only guesses how a text goes on (I explain it in [the post on the basics](/posts/understanding-ai-before-you-start/)). A raw model will continue anything, politely or not.
+
+To turn it into an assistant, you train it some more, on examples of good answers, then with people who compare its answers and point to the best one. That's what [OpenAI's InstructGPT paper](https://arxiv.org/abs/2203.02155) described in 2022. It's called alignment. The model learns to follow instructions, and also to refuse some requests.
+
+It's like an employee trained in the house rules. They know the job, and they know what the house doesn't do.
+
+## Why a hosted API refuses even more
+
+When you call a hosted model, you go through two houses: the one that made the model and the one that serves it. Each has its rules.
+
+[Stability AI's use policy](https://stability.ai/use-policy), the publisher of Stable Diffusion, prohibits using its models for sexually explicit content. [DigitalOcean's](https://www.digitalocean.com/legal/acceptable-use-policy), which serves the hosted models we call, prohibits among other things child sexual abuse material, including computer-generated, whatever the intent. DigitalOcean also offers [guardrails](https://docs.digitalocean.com/products/inference/how-to/manage-agent-guardrails/) you can attach to an agent, with a content moderation filter.
+
+Our rule is simple: we never try to get past those barriers. If a provider refuses a use, that use doesn't go through that provider. It's not only a matter of principle: it's their account, their terms, and our account with them.
+
+## "Uncensored" models
+
+They exist, and it should be said. Since the weights of many models are published, anyone can modify them.
+
+In 2024, researchers showed that in many chat models, refusal runs largely through [a single direction](https://arxiv.org/abs/2406.11717) in the model's internal computations. Removing that direction from the weights is what's called "abliteration", a word popularised by [Maxime Labonne](https://huggingface.co/blog/mlabonne/abliteration). He notes himself that the operation degraded the quality of the model he treated, and that he had to train it again to recover most of it.
+
+So the trade-offs are real. Quality can drop. The model no longer refuses anything, including what it should refuse. And above all, responsibility changes hands: when the model no longer says no, it's up to the person running it to say it.
+
+## What the person running it must do
+
+That person is called the operator. And the list of their duties is long.
+
+The law first. In Canada, the Criminal Code defines [child sexual abuse and exploitation material](https://laws-lois.justice.gc.ca/eng/acts/c-46/section-163.1.html) broadly: any visual representation, "whether or not it was made by electronic or mechanical means", of a person who is or is depicted as being under eighteen. A generated image is therefore covered. The Code also prohibits [publishing intimate images without consent](https://laws-lois.justice.gc.ca/eng/acts/c-46/section-162.1.html).
+
+Then age and consent. A platform that accepts adults-only content and wants to be paid by card must follow the networks' rules: since 2021, Mastercard requires documented age and identity verification of the people depicted and of those who upload, along with their documented consent. I go into it in [the post about payments](/posts/payments-and-high-risk-industries/).
+
+Then likeness to a real person. Generating an image that looks like someone who exists, without their consent, can do them real harm, even when nothing is explicit.
+
+And one absolute line: nothing that involves minors. Ever, under any setting.
+
+## What Orazaka does
+
+Orazaka is an engine you can install on your own machines. I can't decide for every operator what is allowed on their platform, and I don't want to hide a moral filter in the code. At the same time, I refuse to let it be used to cross the one line that isn't up for debate. Hence a [content policy](https://github.com/krizaka/orazaka-studio/pull/13) that the operator configures, in three layers.
+
+Before anything else, the engine classifies the request locally: rules, in the same process, nothing is sent anywhere. It sets labels: `sexual_explicit`, `sexual_suggestive`, `minors_risk`, `violence_graphic`, `real_person_likeness`, or none.
+
+First layer: `minors_risk` is always refused. For everyone, on every provider, with no setting. It's the only rule the operator cannot change.
+
+Second layer: the operator's settings, label by label, refuse or allow. With no setting, an install is permissive: it's up to the operator to decide what their platform accepts.
+
+Third layer: the providers' terms. The operator states what each provider allows, for example no adult content for a hosted API, and a labelled request that would reach that provider is blocked or flagged. That protects their account with the provider.
+
+A refusal comes before everything else: before holding credits, before writing a single row, before calling a provider. The answer is a 422, naming the rule and the labels, never the requested text:
+
+```json
+{
+  "code": "content.policy_refused",
+  "rule": "minors_risk.always",
+  "labels": ["MINORS_RISK"]
+}
+```
+
+Every labelled decision is written to an audit log that can only grow, with the label and the rule, never the prompt. And a dry-run call, `POST /api/v1/studios/{key}/policy-check`, tells you what the policy would decide without starting anything.
+
+## What we really tested
+
+Here is exactly what was done, and nothing more.
+
+The policy was tested without generating anything. The tests run redacted examples (benign, explicit, suggestive, violent, risky for minors, real person) through the classifier and the decisions, and check that a refusal holds no credit and starts no step. No provider is called.
+
+Beyond that, we only made non-explicit test material, suggestive at most, locally. No explicit generation.
+
+And what isn't done yet, I say as well. Today the check only looks at the request, not at the image produced. Image jobs started outside a Studio don't go through this policy yet. And the classifier is made of rules, with no model. All of that is [listed in an open issue](https://github.com/krizaka/orazaka-studio/issues/12).
+
+## What you can take from it
+
+A model that refuses isn't a dumb model; it's a model that was taught a policy. A model that refuses nothing isn't a free model; it's a model that leaves you all the responsibility. If you run one, write your policy before you write your interface, keep a log of your decisions, and keep one rule nobody can switch off.
