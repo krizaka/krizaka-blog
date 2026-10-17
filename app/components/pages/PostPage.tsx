@@ -1,3 +1,4 @@
+import { jsonLd } from "@/lib/json-ld";
 import { blurUrl } from "@/lib/blur";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
@@ -30,7 +31,7 @@ export default function PostPage({ post }: { post: Post }) {
   const cover = post.cover ? coverOf(post.cover) : undefined;
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(postJsonLd(post)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(postJsonLd(post)) }} />
       <PageHero
         back={{ href: localizedPath(locale, "/"), label: t.post.back }}
         linkAs={Link}
