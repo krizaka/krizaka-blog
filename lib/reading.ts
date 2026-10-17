@@ -70,7 +70,9 @@ const plainText = (raw: string): string =>
   raw
     .replace(/<Model\b[^>]*>([\s\S]*?)<\/Model>/g, "$1")
     .replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1")
-    .replace(/<[^>]+>/g, "")
+    .replace(/<[^>]*>/g, "")
+    /* No angle bracket survives (a tag cut in two, `<<b>b>`): the text is words, never markup. */
+    .replace(/[<>]/g, "")
     .replace(/`([^`]*)`/g, "$1")
     .replace(/(\*\*|__|\*|_)(.+?)\1/g, "$2")
     .replace(/\s+/g, " ")
