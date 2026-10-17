@@ -9,6 +9,7 @@ tags: [ai, basics, orazaka]
 author: oussama
 draft: false
 cover: basics-library
+coverAlt: "A quiet library aisle, a hand pulling a book from a shelf, warm light"
 series: basics
 part: 1
 ---
@@ -44,8 +45,6 @@ You also need memory for the context, on top of the model. On my 64 GB Mac, a qu
 An embedding turns a text into a list of numbers that sums up its meaning. Two texts about the same thing get close lists, even when they don't use the same words.
 
 Picture a library where books aren't shelved alphabetically but by subject, to the centimetre. You ask a question, and the librarian walks straight to the right shelf.
-
-<Figure id="basics-library" alt="A quiet library aisle, a hand pulling a book from a shelf, warm light" caption="RAG starts with a good librarian: it finds the passages, the model answers with them." />
 
 I tried it with nomic-embed-text, a small embedding model (137 million parameters) that turns each text into 768 numbers. I asked "À quelle date dois-je payer ?" ("On what date do I have to pay?") against four French sentences. The closest, with a score of 0.72: "Le loyer est payable le premier jour de chaque mois." (Rent is payable on the first day of each month.) Then the rent increase (0.62), pets (0.58) and, last, a pizza recipe (0.55). The ranking is right. The gaps are modest, and that's why you never trust the score alone.
 

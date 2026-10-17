@@ -27,9 +27,6 @@ import { Byline } from "./Byline";
 import { Button } from "@krizaka/ui/button";
 import { RssMark } from "../RssMark";
 
-/** A transparent 1×1 GIF: what a phone gets instead of the cover. */
-const NOTHING = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
-
 /* One post, a reading page: a hairline that follows the reading, the title block (topic and series, h1, lead, who wrote it,
    when, how long), the cover, the body at a reading measure with its contents in a sticky column (desktop), the previous and next parts of its series, and related posts. */
 export default function PostPage({ post }: { post: Post }) {
@@ -41,20 +38,14 @@ export default function PostPage({ post }: { post: Post }) {
   const at = inSeries.findIndex((p) => p.slug === post.slug);
   const { prev, next } = neighbours(inSeries, post.slug);
   const cover = post.cover ? coverOf(post.cover) : undefined;
-  /* The cover's words: the alt the post itself gives that picture or clip, when it shows it. */
-  const coverAlt = post.cover ? (post.body.match(new RegExp(`<(?:Figure|Clip)\\s+id="${post.cover}"\\s+alt="([^"]+)"`))?.[1] ?? "") : "";
   const headings = headingsOf(post.body);
   const topic = post.tags.map(tagSlug)[0];
   const body = (
     <article className="bl-article">
       {post.draft && <p className="bl-draft">{t.post.draftNotice}</p>}
       {cover ? (
-        /* On a phone the post opens on its words: the cover is a picture the body shows again where the text talks about it,
-           so below 48rem nothing is downloaded (a 1-pixel source) and the box is hidden. */
-        <picture className="bl-cover-frame">
-          <source media="(max-width: 47.99rem)" srcSet={NOTHING} />
-          <img className="bl-cover bl-img" src={cover.src} srcSet={cover.srcSet} sizes="(min-width: 64rem) 680px, calc(100vw - 64px)" width={cover.width} height={cover.height} alt={coverAlt} fetchPriority="high" decoding="async" style={{ backgroundImage: blurUrl(cover.blur) }} />
-        </picture>
+        /* The cover, once: the post's hero picture (cards and Featured show it too; the body never repeats it). */
+        <img className="bl-cover bl-img" src={cover.src} srcSet={cover.srcSet} sizes="(min-width: 64rem) 680px, calc(100vw - 64px)" width={cover.width} height={cover.height} alt={post.coverAlt ?? ""} fetchPriority="high" decoding="async" style={{ backgroundImage: blurUrl(cover.blur) }} />
       ) : (
         post.image && <img className="bl-cover" src={post.image} alt="" width={1200} height={630} />
       )}

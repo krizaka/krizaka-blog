@@ -28,7 +28,8 @@ export function postProblems(file, data, body, ctx) {
     const at = typeof data.publishedAt === "string" ? data.publishedAt : "";
     if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?(Z|[+-]\d{2}:\d{2})$/.test(at)) out.push(`${file}: a published post needs "publishedAt" (quoted, e.g. "2026-10-16T21:44:17-04:00"): the order of posts of one day`);
     else if (at.slice(0, 10) !== String(date)) out.push(`${file}: "publishedAt" (${at}) is not on "date" (${date})`);
-    if (!data.cover) out.push(`${file}: a published post needs a "cover" (a media id, also shown in the body with its alt)`);
+    if (!data.cover) out.push(`${file}: a published post needs a "cover" (a media id of lib/media.json)`);
+    if (data.cover && !(typeof data.coverAlt === "string" && data.coverAlt.trim())) out.push(`${file}: a published post needs "coverAlt", the words of its cover`);
   }
   if (typeof data.description === "string" && data.description.length > 220) out.push(`${file}: "description" is over 220 characters`);
   if (data.seoTitle !== undefined && (typeof data.seoTitle !== "string" || data.seoTitle.length > 60)) out.push(`${file}: "seoTitle" must be text of at most 60 characters (what a search result shows)`);
@@ -39,7 +40,12 @@ export function postProblems(file, data, body, ctx) {
   if (/!\[[^\]]*\]\((?!https:\/\/krizaka-assets\.b-cdn\.net\/site\/blog\/)[^)]+\)/.test(body)) out.push(`${file}: images in the body must be on the media CDN (${CDN}…)`);
   if (ctx) {
     if (data.cover !== undefined && !(data.cover in ctx.media)) out.push(`${file}: "cover" ${JSON.stringify(data.cover)} is not in the media library (lib/media.json)`);
-    if (data.cover !== undefined && data.cover in ctx.media && !new RegExp(`<(Figure|Clip)\\b[^>]*\\bid="${data.cover}"`).test(body)) out.push(`${file}: the cover "${data.cover}" must also be shown in the body (a <Figure> or <Clip>): phones do not get the cover`);
+    /* The cover is shown once: as the post's hero and on its cards. A picture in the body is another, relevant one. */
+    if (data.cover !== undefined && data.cover in ctx.media) {
+      const entry = ctx.media[data.cover];
+      const urls = [...(entry.srcs ?? []).map((x) => x.url), entry.poster, entry.mp4, entry.webm].filter(Boolean);
+      if (new RegExp(`\\bid="${data.cover}"`).test(body) || urls.some((u) => body.includes(u))) out.push(`${file}: the cover "${data.cover}" is also in the body — a cover is shown once (the hero and the cards); use another, relevant picture in the text`);
+    }
     for (const m of body.matchAll(/<(Figure|Clip)\b[^>]*?\bid="([^"]+)"/g)) {
       const entry = ctx.media[m[2]];
       if (!entry) out.push(`${file}: <${m[1]} id="${m[2]}"> is not in the media library (lib/media.json)`);

@@ -28,7 +28,8 @@ test("provenance names the model, and a run id looks like one", () => {
 });
 test("a cover, a figure or a clip must exist in the library, and a clip is not a figure", () => {
   const c = { media: { "pic": image, "mov": { ...image, kind: "video" } }, series: ["measured"] };
-  assert.deepEqual(postProblems("x.en.mdx", { ...ok, cover: "pic" }, '<Figure id="pic" alt="a" />', c), []);
+  assert.deepEqual(postProblems("x.en.mdx", { ...ok, cover: "pic" }, 'text', c), []);
+  assert.deepEqual(postProblems("x.en.mdx", ok, '<Figure id="pic" alt="a" />', c), []);
   assert.equal(postProblems("x.en.mdx", { ...ok, cover: "nope" }, "", c).length, 1);
   assert.equal(postProblems("x.en.mdx", ok, '<Figure id="nope" alt="a" />', c).length, 1);
   assert.equal(postProblems("x.en.mdx", ok, '<Figure id="mov" alt="a" />', c).length, 1);

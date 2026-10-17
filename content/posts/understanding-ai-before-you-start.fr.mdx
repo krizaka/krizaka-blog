@@ -9,6 +9,7 @@ tags: [ai, basics, orazaka]
 author: oussama
 draft: false
 cover: basics-library
+coverAlt: "Une allée de bibliothèque calme, une main qui tire un livre d'une étagère, lumière chaude"
 series: basics
 part: 1
 ---
@@ -44,8 +45,6 @@ Il faut aussi de la mémoire pour le contexte, en plus du modèle. Sur mon Mac d
 Un embedding transforme un texte en une liste de nombres qui résume son sens. Deux textes qui parlent de la même chose obtiennent des listes proches, même s'ils n'utilisent pas les mêmes mots.
 
 Imaginez une bibliothèque où les livres ne sont pas rangés par ordre alphabétique, mais par sujet, au centimètre près. Vous posez une question, et le bibliothécaire va directement au bon rayon.
-
-<Figure id="basics-library" alt="Une allée de bibliothèque calme, une main qui tire un livre d'une étagère, lumière chaude" caption="Le RAG, c'est d'abord un bon bibliothécaire : il trouve les passages, le modèle répond avec eux." />
 
 J'ai fait le test avec nomic-embed-text, un petit modèle d'embedding (137 millions de paramètres) qui transforme chaque texte en 768 nombres. J'ai posé la question « À quelle date dois-je payer ? » face à quatre phrases. La plus proche, avec un score de 0,72 : « Le loyer est payable le premier jour de chaque mois. » Ensuite, l'augmentation de loyer (0,62), les animaux de compagnie (0,58) et, en dernier, une recette de pizza (0,55). Le classement est bon. Les écarts, eux, sont modestes, et c'est pour ça qu'on ne fait jamais confiance au seul score.
 

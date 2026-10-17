@@ -65,8 +65,6 @@ html.light ::selection { background: hsla(217, 92%, 50%, 0.18); }
 .bl-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; }
 .bl-article { max-width: 68ch; margin-inline: auto; }
 .bl-post-layout .bl-article { margin-inline: 0; }
-.bl-cover-frame { display: block; }
-@media (max-width: 47.99rem) { .bl-cover-frame { display: none; } }
 .bl-cover { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--kz-radius-lg, 16px); border: 1px solid var(--kz-border-default); margin-bottom: 2rem; }
 .bl-prose { font-size: 1.0938rem; line-height: 1.78; color: var(--kz-text-primary); }
 .bl-prose > * + * { margin-top: 1.25rem; }
