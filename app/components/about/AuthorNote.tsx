@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Section } from "@krizaka/ui/page";
-import { KrizakaLogo } from "@krizaka/ui";
+import { WuSamaMark } from "@krizaka/ui";
 import { getDictionary, localizedPath, type Locale } from "@/lib/i18n";
 import "./about.css";
 
@@ -15,7 +15,7 @@ export function AuthorNote({ locale }: { locale: Locale }) {
     <Section id="who-writes" title={a.homeTitle} divider>
       <div className="bl-author">
         <span className="bl-author-mark" aria-hidden="true">
-          <KrizakaLogo size={30} animated={false} />
+          <WuSamaMark size={30} />
         </span>
         <div>
           <p>

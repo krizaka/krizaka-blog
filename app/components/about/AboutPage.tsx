@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { PageHero } from "@krizaka/ui/page-hero";
 import { Section } from "@krizaka/ui/page";
-import { KrizakaLogo } from "@krizaka/ui";
+import { WuSamaMark } from "@krizaka/ui";
 import { getDictionary, type Locale } from "@/lib/i18n";
 import { jsonLd } from "@/lib/json-ld";
 import { absoluteUrl } from "@/lib/seo";
@@ -26,7 +26,7 @@ export function aboutJsonLd(locale: Locale) {
 }
 
 /* /about/: who writes the blog, as a short story (Montréal since 2018). Every fact is in
-   content/authors/oussama.json with its source; no photo until he gives one for this — the slot shows the Krizaka mark. */
+   content/authors/oussama.json with its source; no photo until he gives one for this — the slot shows the Wu-sama mark (his nickname; he does not want his photo on the blog). */
 export function AboutPage({ locale }: { locale: Locale }) {
   const a = getDictionary(locale).about;
   return (
@@ -42,7 +42,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
       <Section reveal={false}>
         <div className="bl-about">
           <figure className="bl-about-slot" aria-label={a.slot}>
-            <KrizakaLogo size={64} animated={false} />
+            <WuSamaMark size={64} />
           </figure>
           <div className="bl-about-text">
             {a.body.map((p) => (

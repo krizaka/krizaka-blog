@@ -1,22 +1,12 @@
 import Link from "next/link";
-import { Avatar } from "@krizaka/ui/avatar";
-import { KrizakaLogo } from "@krizaka/ui";
+import { KrizakaLogo, WuSamaMark } from "@krizaka/ui";
 import { Button } from "@krizaka/ui/button";
 import { ClockIcon, GlobeIcon } from "@krizaka/icons";
 import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
 import type { Post } from "@/lib/posts";
 import { formatDate } from "./PostList";
 
-/** The initials of a name ("Oussama Abid" → "OA"). */
-const initials = (name: string) =>
-  name
-    .split(/\s+/)
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-
-/* Who wrote a post and when: the author (initials, no stock photo), the date, the reading time, the update; then the
+/* Who wrote a post and when: the author (the company's mark for the team, Wu-sama's for Oussama: no photo), the date, the reading time, the update; then the
    post's actions in one row (the other language, and what the page passes: « Read later »). */
 export function Byline({ post, other, children }: { post: Post; other?: Post; children?: React.ReactNode }) {
   const t = getDictionary(post.locale);
@@ -27,7 +17,7 @@ export function Byline({ post, other, children }: { post: Post; other?: Post; ch
   const author = (t.authors as Record<string, string>)[post.author] ?? post.author;
   return (
     <div className="bl-byline">
-      {post.author === "krizaka" ? <span className="bl-byline-mark" aria-hidden="true"><KrizakaLogo size={28} animated={false} /></span> : <Avatar size="md" alt="" fallback={initials(author)} />}
+      <span className="bl-byline-mark" aria-hidden="true">{post.author === "krizaka" ? <KrizakaLogo size={28} animated={false} /> : <WuSamaMark size={28} />}</span>
       <div className="bl-byline-text">
         <p className="bl-byline-name">{author}</p>
         <p className="bl-byline-meta">
