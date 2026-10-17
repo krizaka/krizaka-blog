@@ -1,0 +1,12 @@
+/* The About page and the home's "who writes" note. Tokens only: dark and light follow the theme. */
+.bl-about { display: grid; gap: 2rem; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 768px) { .bl-about { grid-template-columns: 11rem minmax(0, 40rem); gap: 3rem; } }
+.bl-about-slot { display: grid; place-items: center; width: 9rem; aspect-ratio: 1; border-radius: 50%; border: 1px solid var(--kz-border); background: radial-gradient(circle at 30% 25%, var(--kz-surface-raised, var(--kz-surface)), var(--kz-surface)); }
+.bl-about-text { display: grid; gap: 1.1rem; font-size: 1.0625rem; line-height: 1.7; color: var(--kz-text-primary); }
+.bl-about-text p { margin: 0; }
+.bl-about-places { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: 0; padding: 0; list-style: none; font-family: var(--kz-font-mono); font-size: 0.8125rem; color: var(--kz-text-secondary); }
+.bl-about-places li + li::before { content: "→"; margin-right: 0.5rem; color: var(--kz-accent-text); }
+.bl-author { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1rem 1.25rem; align-items: start; max-width: 44rem; }
+.bl-author-mark { display: grid; place-items: center; width: 3.5rem; aspect-ratio: 1; border-radius: 50%; border: 1px solid var(--kz-border); background: var(--kz-surface); }
+.bl-author p { margin: 0 0 0.5rem; color: var(--kz-text-secondary); line-height: 1.6; }
+.bl-author a { color: var(--kz-accent-text); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }

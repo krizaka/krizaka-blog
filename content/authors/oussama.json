@@ -1,0 +1,12 @@
+{
+  "$comment": "What the blog may say about its author, and where it comes from. A place, a year or a step of his path that a post or the About page names must be listed here with its source; tests/author.test.mjs refuses anything else. Never: the name of his current employer, his birth date, photos of other people.",
+  "source": "Oussama's own profile (LinkedIn) and Facebook, shared by him on 2026-10-16 for the blog and krizaka.com/story (company records: 00_FONDATEUR/parcours-oussama.md, outside this repository).",
+  "places": ["Oujda", "Maroc", "Morocco", "Grenoble", "Montréal"],
+  "path": [
+    { "year": "2010", "fact": "Grenoble: studies at Université Grenoble Alpes (applied mathematics and computer science for the social sciences; then a master's in cognition engineering)." },
+    { "year": "2011", "fact": "Research internship in natural language processing at the LIG (Laboratoire d'informatique de Grenoble): information extraction, semantic analysis." },
+    { "year": "2012–2018", "fact": "Engineer: connected trains, healthcare mobile apps, mobile platforms for telecom operators, smart-city IoT platforms (millions of connected objects)." },
+    { "year": "2019", "fact": "Montréal: banking platforms; today a design architect for digital channels at a large Canadian bank (never named)." }
+  ],
+  "neverPublish": ["the name of his current employer", "his birth date", "photos of other people"]
+}

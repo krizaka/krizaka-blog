@@ -15,6 +15,7 @@ export default function SiteFooter() {
   return (
     <FamilyFooter current="krizaka" labels={familyLabels[locale]} aria-label={f.aria}>
       <FamilyFooter.Column title={f.project}>
+        <FamilyFooter.Link href={`${feeds}/about/`}>{f.about}</FamilyFooter.Link>
         <FamilyFooter.Link href={REPOSITORY_URL}>{f.source}</FamilyFooter.Link>
         <FamilyFooter.Link href={GITHUB_ORG_URL}>GitHub</FamilyFooter.Link>
       </FamilyFooter.Column>
