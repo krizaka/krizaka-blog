@@ -10,7 +10,6 @@ const { handle: subscribe } = require("../functions/packages/newsletter/subscrib
 const { handle: confirm } = require("../functions/packages/newsletter/confirm/index.js");
 const { handle: unsubscribe } = require("../functions/packages/newsletter/unsubscribe/index.js");
 const { handle: sendAction } = require("../functions/packages/newsletter/send/index.js");
-const { handle: unsubscribeRequest } = require("../functions/packages/newsletter/unsubscribe-request/index.js");
 
 /** A fake database: the SQL the code sends, and the subscribers / claimed posts it holds. */
 function fakeDb({ subscribers = [], claimed = [] } = {}) {
@@ -59,7 +58,7 @@ const SITEVERIFY = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
 test("every copy of the newsletter code is identical", () => {
   const read = (a) => readFileSync(new URL(`../functions/packages/newsletter/${a}/newsletter.js`, import.meta.url), "utf8");
-  for (const a of ["confirm", "unsubscribe", "send", "unsubscribe-request"]) assert.equal(read(a), read("subscribe"), a);
+  for (const a of ["confirm", "unsubscribe", "send"]) assert.equal(read(a), read("subscribe"), a);
 });
 
 test("a confirm token is accepted while fresh, refused when forged, expired or used for another purpose", () => {
@@ -264,7 +263,7 @@ test("the list's schema: one row per confirmed address with its proof of consent
 test("the newsletter actions run on Node 18 and main() ignores a second argument", async () => {
   const project = readFileSync(new URL("../functions/project.yml", import.meta.url), "utf8");
   const block = project.slice(project.indexOf("- name: newsletter"));
-  assert.equal((block.match(/runtime: "nodejs:18"/g) ?? []).length, 5);
+  assert.equal((block.match(/runtime: "nodejs:18"/g) ?? []).length, 4);
   assert.doesNotMatch(block, /nodejs:default/);
   const { main } = require("../functions/packages/newsletter/subscribe/index.js");
   const r = await main({ __ow_method: "get" }, { functionName: "subscribe" });
@@ -279,81 +278,35 @@ test("the list's connection is opened per statement and closed, never pooled", (
   assert.match(src, /await client\.end\(\)/);
 });
 
-/* « Déjà abonné ? Se désabonner » (2026-10-17). */
-const captchaOk = { "https://challenges.cloudflare.com/turnstile/v0/siteverify": { status: 200, body: { success: true } } };
-function rateDb(subscribers = [], limits = {}) {
-  const db = fakeDb({ subscribers });
-  const hits = new Map();
-  const inner = db.sql;
-  db.sql = async (text, params = []) => {
-    if (text.startsWith("insert into newsletter_rate_limits")) {
-      const n = (hits.get(params[0]) ?? 0) + 1;
-      hits.set(params[0], n);
-      return [{ hits: n }];
-    }
-    if (text.startsWith("select 1 from newsletter_subscribers")) return db.subs.has(params[0]) ? [{ "?column?": 1 }] : [];
-    return inner(text, params);
-  };
-  return db;
-}
-const ask = (email, ip = "1.2.3.4") => ({ __ow_method: "post", email, locale: "fr", captchaToken: "ok", __ow_headers: { "x-forwarded-for": ip } });
-
-test("unsubscribe request: an unknown address gets the same answer as a subscribed one, and no e-mail", async () => {
-  const known = fakeFetch(captchaOk);
-  const unknown = fakeFetch(captchaOk);
-  const db = rateDb([{ email: "a@b.co", locale: "fr" }]);
-  const r1 = await unsubscribeRequest(ask("a@b.co"), ENV, db.sql, known);
-  const r2 = await unsubscribeRequest(ask("nobody@b.co"), ENV, db.sql, unknown);
-  assert.equal(r1.statusCode, 202);
-  assert.equal(r2.statusCode, r1.statusCode);
-  assert.equal(r2.body, r1.body);
-  assert.ok(known.calls.some((c) => c.url.endsWith("/messages")), "the subscriber gets the link");
-  assert.ok(!unknown.calls.some((c) => c.url.endsWith("/messages")), "nobody else gets anything");
-  const mail = new URLSearchParams(known.calls.find((c) => c.url.endsWith("/messages")).init.body);
-  assert.match(mail.get("subject"), /désabonner/);
-  const link = mail.get("text").match(/https:\/\/blog\.krizaka\.com\/api\/newsletter\/unsubscribe\?t=([^&\s]+)&l=fr/);
-  assert.ok(link, "a one-click link, with the language");
-  assert.deepEqual(nl.readToken(decodeURIComponent(link[1]), "r", ENV.MAIL_TOKEN_SECRET), { email: "a@b.co", locale: "fr" });
-});
-
-test("unsubscribe request: the CAPTCHA is required, and the limits hold per IP (429) and per address (silent)", async () => {
-  const no = await unsubscribeRequest({ ...ask("a@b.co"), captchaToken: "" }, ENV, rateDb().sql, fakeFetch(captchaOk));
-  assert.equal(JSON.parse(no.body).error, "captcha");
-  const db = rateDb([{ email: "a@b.co", locale: "fr" }]);
-  const f = fakeFetch(captchaOk);
-  for (let i = 0; i < nl.LIMIT_PER_IP_PER_HOUR; i++) await unsubscribeRequest(ask(`x${i}@b.co`), ENV, db.sql, f);
-  assert.equal((await unsubscribeRequest(ask("y@b.co"), ENV, db.sql, f)).statusCode, 429);
-  const db2 = rateDb([{ email: "a@b.co", locale: "fr" }]);
-  const f2 = fakeFetch(captchaOk);
-  for (let i = 0; i < nl.LIMIT_PER_ADDRESS_PER_DAY + 2; i++) assert.equal((await unsubscribeRequest(ask("a@b.co", `9.9.9.${i}`), ENV, db2.sql, f2)).statusCode, 202);
-  assert.equal(f2.calls.filter((c) => c.url.endsWith("/messages")).length, nl.LIMIT_PER_ADDRESS_PER_DAY, "past the limit, nothing more is sent");
-});
-
-test("a requested link unsubscribes while valid; an expired or forged one lands on a clear page", async () => {
-  const now = Date.now();
-  const t = nl.makeToken({ email: "a@b.co", locale: "fr", purpose: "r", now }, ENV.MAIL_TOKEN_SECRET);
+/* Leaving is the one-click link of every e-mail, nothing else (Oussama, 2026-10-17). */
+test("the e-mail's link unsubscribes in one click; a forged one lands on a clear page; RFC 8058 POST works", async () => {
+  const t = nl.makeToken({ email: "a@b.co", locale: "fr", purpose: "u" }, ENV.MAIL_TOKEN_SECRET);
   const db = fakeDb({ subscribers: [{ email: "a@b.co", locale: "fr" }] });
   const ok = await unsubscribe({ t, l: "fr" }, ENV, db.sql);
   assert.equal(ok.headers.Location, "https://blog.krizaka.com/fr/newsletter/unsubscribed/");
   assert.equal(db.subs.size, 0);
-  const old = nl.makeToken({ email: "a@b.co", locale: "fr", purpose: "r", now: now - nl.CONFIRM_TTL_MS - 1000 }, ENV.MAIL_TOKEN_SECRET);
-  assert.equal((await unsubscribe({ t: old, l: "fr" }, ENV, fakeDb().sql)).headers.Location, "https://blog.krizaka.com/fr/newsletter/link-invalid/");
-  assert.equal((await unsubscribe({ t: "forged.token" }, ENV, fakeDb().sql)).headers.Location, "https://blog.krizaka.com/newsletter/link-invalid/");
+  assert.equal((await unsubscribe({ t: "forged.token", l: "fr" }, ENV, fakeDb().sql)).headers.Location, "https://blog.krizaka.com/fr/newsletter/link-invalid/");
+  const confirmToken = nl.makeToken({ email: "a@b.co", locale: "fr", purpose: "c" }, ENV.MAIL_TOKEN_SECRET);
+  assert.equal((await unsubscribe({ t: confirmToken }, ENV, fakeDb().sql)).headers.Location, "https://blog.krizaka.com/newsletter/link-invalid/", "an expired-or-other-purpose token is not an unsubscribe link");
   const viaPost = await unsubscribe({ t, __ow_method: "post", "List-Unsubscribe": "One-Click" }, ENV, fakeDb({ subscribers: [{ email: "a@b.co", locale: "fr" }] }).sql);
-  assert.equal(viaPost.statusCode, 200, "RFC 8058 one-click POST");
+  assert.equal(viaPost.statusCode, 200);
 });
 
-test("the pages: unsubscribe (form) and link-invalid exist in both languages, noindex; the form is compact and links them", () => {
-  for (const dir of ["app/(en)/newsletter", "app/fr/newsletter"]) {
-    for (const page of ["unsubscribe", "link-invalid"]) assert.match(readFileSync(new URL(`../${dir}/${page}/page.tsx`, import.meta.url), "utf8"), /robots: \{ index: false/);
-  }
+test("no lookup form: no unsubscribe-request action or page; the notice says the e-mails carry the link", () => {
+  const { existsSync } = require("node:fs");
+  assert.ok(!existsSync(new URL("../functions/packages/newsletter/unsubscribe-request", import.meta.url)));
+  assert.ok(!existsSync(new URL("../app/fr/newsletter/unsubscribe", import.meta.url)));
+  assert.ok(!existsSync(new URL("../app/(en)/newsletter/unsubscribe", import.meta.url)));
   const form = readFileSync(new URL("../app/components/newsletter/SubscribeForm.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(form, /\/newsletter\/unsubscribe/);
   assert.match(form, /n\.submitCompact/, "the button's words carry the consent (« M'abonner »)");
-  assert.match(form, /\/newsletter\/unsubscribe/, "« Déjà abonné ? Se désabonner »");
-  assert.doesNotMatch(form, /<Select|<h2|<h3/, "one line and one row, no heading, no language select");
-  for (const l of ["en", "fr"]) {
-    const n = JSON.parse(readFileSync(new URL(`../messages/${l}.json`, import.meta.url), "utf8")).newsletter;
-    assert.match(n.unsubscribeSent, l === "fr" ? /Si cette adresse est abonnée/ : /If this address is subscribed/);
+  assert.doesNotMatch(form, /<Select|<h2|<h3/, "one line and one row");
+  const fr = JSON.parse(readFileSync(new URL("../messages/fr.json", import.meta.url), "utf8")).newsletter;
+  assert.match(fr.compactConsent, /Vous pourrez vous désabonner en un clic depuis chaque courriel/);
+  for (const dir of ["app/(en)/newsletter", "app/fr/newsletter"]) {
+    for (const page of ["unsubscribed", "link-invalid"]) assert.match(readFileSync(new URL(`../${dir}/${page}/page.tsx`, import.meta.url), "utf8"), /robots: \{ index: false/);
   }
+  const pages = readFileSync(new URL("../app/components/newsletter/NewsletterPages.tsx", import.meta.url), "utf8");
+  assert.match(pages, /n\.resubscribeButton/, "« Me réabonner » on the unsubscribed page, a plain link");
   assert.match(readFileSync(new URL("../app/components/newsletter/CaptchaWidget.tsx", import.meta.url), "utf8"), /appearance: "interaction-only"/);
 });

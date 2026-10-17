@@ -42,11 +42,6 @@ packages:
         web: true
         limits:
           timeout: 20000
-      - name: unsubscribe-request
-        runtime: "nodejs:18"
-        web: true
-        limits:
-          timeout: 20000
       - name: send
         runtime: "nodejs:18"
         web: true

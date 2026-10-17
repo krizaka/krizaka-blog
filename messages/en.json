@@ -348,17 +348,10 @@
     "emailLabel": "Your e-mail",
     "emailPlaceholder": "you@example.com",
     "submitCompact": "Subscribe me",
-    "compactConsent": "One e-mail per post from Technologies Krizaka Inc. Unsubscribe in one click.",
+    "compactConsent": "One e-mail per post from Technologies Krizaka Inc. You can unsubscribe in one click from every e-mail.",
     "privacyShort": "What we keep",
-    "alreadySubscribed": "Already subscribed? Unsubscribe",
-    "unsubscribeEyebrow": "Newsletter",
-    "unsubscribeTitle": "Unsubscribe",
-    "unsubscribeLead": "Enter your e-mail: if it is subscribed, we send you a one-click unsubscribe link, valid for 48 hours.",
-    "unsubscribeSubmit": "Send me the link",
-    "unsubscribeSent": "If this address is subscribed, an unsubscribe link has just been sent.",
     "resubscribeButton": "Subscribe again",
     "invalidTitle": "This link is no longer valid",
-    "invalidLead": "It may have expired (links asked for on the site last 48 hours) or been copied incompletely. Ask for a new one below.",
-    "rateLimited": "Too many requests from here. Try again in an hour."
+    "invalidLead": "It may have been copied incompletely. Use the unsubscribe link at the bottom of the latest e-mail you received."
   }
 }

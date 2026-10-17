@@ -7,12 +7,11 @@ import { jsonLd } from "@/lib/json-ld";
 import { absoluteUrl } from "@/lib/seo";
 import { KRIZAKA_URL, ORGANIZATION_ID } from "@/lib/site";
 import { SubscribeForm } from "./SubscribeForm";
-import { UnsubscribeForm } from "./UnsubscribeForm";
 import "./newsletter.css";
 
-/* /newsletter/: the form and what is kept, and why (Loi 25). /newsletter/unsubscribe/: ask for a one-click unsubscribe
-   link. The landing pages of the e-mail links: confirmed, expired (the form again), unsubscribed (« Me réabonner », a plain
-   link: it works without JavaScript), link-invalid (ask for a new link). */
+/* /newsletter/: the form and what is kept, and why (Loi 25). The landing pages of the e-mail links: confirmed, expired
+   (the form again), unsubscribed (« Me réabonner », a plain link: it works without JavaScript), link-invalid (use the link
+   of the latest e-mail). Leaving is the one-click link of every e-mail: there is no other form. */
 /** A page of the newsletter for search engines: a WebPage of the blog, published by the Organization. */
 export function newsletterJsonLd(locale: Locale, path: string, name: string, description: string) {
   const t = getDictionary(locale);
@@ -42,19 +41,6 @@ export function NewsletterPage({ locale }: { locale: Locale }) {
   );
 }
 
-export function UnsubscribePage({ locale }: { locale: Locale }) {
-  const n = getDictionary(locale).newsletter;
-  return (
-    <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(newsletterJsonLd(locale, "/newsletter/unsubscribe", n.unsubscribeTitle, n.unsubscribeLead)) }} />
-      <PageHero eyebrow={n.unsubscribeEyebrow} title={n.unsubscribeTitle} lead={n.unsubscribeLead} backdrop="plain" linkAs={Link} />
-      <Section reveal={false}>
-        <UnsubscribeForm />
-      </Section>
-    </>
-  );
-}
-
 export type NewsletterStatus = "confirmed" | "expired" | "unsubscribed" | "link-invalid";
 
 export function NewsletterStatusPage({ locale, status }: { locale: Locale; status: NewsletterStatus }) {
@@ -79,11 +65,6 @@ export function NewsletterStatusPage({ locale, status }: { locale: Locale; statu
       {status === "expired" && (
         <Section reveal={false}>
           <SubscribeForm id="nl-expired" />
-        </Section>
-      )}
-      {status === "link-invalid" && (
-        <Section reveal={false}>
-          <UnsubscribeForm />
         </Section>
       )}
     </>
