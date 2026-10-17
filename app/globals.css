@@ -154,7 +154,6 @@ html.light ::selection { background: hsla(217, 92%, 50%, 0.18); }
 .bl-series ol { padding-inline-start: 1.5rem; display: grid; gap: 0.25rem; list-style: decimal; }
 .bl-series li[aria-current="page"] { font-weight: 650; color: var(--kz-text-primary); }
 /* Save and share (app/components/engage): Krizaka UI buttons in wrapping rows, nothing past the column on a phone. */
-.bl-hero-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
 .bl-engage { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--kz-border-subtle); display: grid; gap: 0.75rem; }
 .bl-engage-title { font-family: var(--kz-font-display); font-size: 1.125rem; font-weight: 700; color: var(--kz-text-primary); }
 .bl-engage-row, .bl-share { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
@@ -203,9 +202,10 @@ html.light ::selection { background: hsla(217, 92%, 50%, 0.18); }
 .bl-byline-name { font-weight: 650; color: var(--kz-text-primary); font-size: 0.9375rem; }
 .bl-byline-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.5rem; font-family: var(--kz-font-mono); font-size: 0.8125rem; color: var(--kz-text-secondary); }
 .bl-byline-time { display: inline-flex; align-items: center; gap: 0.3rem; }
-.bl-byline-lang { display: inline-flex; align-items: center; gap: 0.375rem; margin-inline-start: auto; min-height: 36px; padding-inline: 0.75rem; border-radius: 999px; border: 1px solid var(--kz-border-default); font-size: 0.8125rem; font-weight: 600; color: var(--kz-text-secondary); text-decoration: none; }
-.bl-byline-lang:hover { color: var(--kz-text-primary); border-color: var(--kz-border-strong); }
-@media (max-width: 40rem) { .bl-byline-lang { margin-inline-start: 0; } }
+/* The post's actions (other language, read later): one row, the same Button size, centred on the author block; on a
+   phone they wrap under the author line, aligned left. */
+.bl-byline-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-inline-start: auto; }
+@media (max-width: 40rem) { .bl-byline-actions { flex-basis: 100%; margin-inline-start: 0; } }
 
 /* ─── The body: the reading measure beside a sticky contents column (desktop); no contents row on a phone ─── */
 .bl-post-layout { grid-template-columns: 13rem minmax(0, 1fr); gap: clamp(2rem, 4vw, 4rem); }

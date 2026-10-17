@@ -99,10 +99,9 @@ export default function PostPage({ post }: { post: Post }) {
         backdrop="plain"
         className="bl-post-hero"
       >
-        <Byline post={post} other={other} />
-        <div className="bl-hero-actions">
-          <SaveButton slug={post.slug} />
-        </div>
+        <Byline post={post} other={other}>
+          <SaveButton slug={post.slug} size="sm" />
+        </Byline>
       </PageHero>
       <Section reveal={false} spacing="sm" className="bl-post-body">
         {headings.length >= 3 ? <TocLayout className="bl-post-layout" toc={<Toc label={t.post.toc} items={headings.map((h) => ({ id: h.id, label: h.text }))} />}>{body}</TocLayout> : body}

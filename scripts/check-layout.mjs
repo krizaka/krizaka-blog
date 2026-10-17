@@ -40,6 +40,12 @@ const layoutProblems = () => {
     if (!r.width || !r.height) continue;
     if (r.right > vw + 0.5) { out.push(`${e.tagName.toLowerCase()}.${String(e.className).split(" ")[0]} runs past the window (right ${Math.round(r.right)} of ${vw})`); break; }
   }
+  /* A post's actions (other language, read later): the same height and the same centre line, within 1 px. */
+  const acts = [...document.querySelectorAll(".bl-byline-actions > :is(a, button)")].map((e) => e.getBoundingClientRect()).filter((r) => r.width);
+  for (const r of acts.slice(1)) {
+    if (Math.abs(r.height - acts[0].height) > 1) out.push(`the post's actions differ in height (${Math.round(acts[0].height)} and ${Math.round(r.height)} px)`);
+    if (Math.abs(r.top + r.height / 2 - (acts[0].top + acts[0].height / 2)) > 1) out.push("the post's actions are not on one centre line");
+  }
   const h1 = document.querySelector("h1");
   if (h1 && h1.scrollWidth > h1.clientWidth + 1) out.push(`the h1 is wider than its box (${h1.scrollWidth} > ${h1.clientWidth})`);
   return out;

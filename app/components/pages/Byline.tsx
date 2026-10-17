@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Avatar } from "@krizaka/ui/avatar";
 import { KrizakaLogo } from "@krizaka/ui";
+import { Button } from "@krizaka/ui/button";
 import { ClockIcon, GlobeIcon } from "@krizaka/icons";
 import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
 import type { Post } from "@/lib/posts";
@@ -15,9 +16,9 @@ const initials = (name: string) =>
     .slice(0, 2)
     .toUpperCase();
 
-/* Who wrote a post and when: the author (initials, no stock photo), the date, the reading time, the update, and the same
-   post in the other language when it exists. */
-export function Byline({ post, other }: { post: Post; other?: Post }) {
+/* Who wrote a post and when: the author (initials, no stock photo), the date, the reading time, the update; then the
+   post's actions in one row (the other language, and what the page passes: « Read later »). */
+export function Byline({ post, other, children }: { post: Post; other?: Post; children?: React.ReactNode }) {
   const t = getDictionary(post.locale);
   /* The other language's address, from known values only: one of the two locales, a slug of lower-case words. */
   const otherLang: Locale = other?.locale === "fr" ? "fr" : "en";
@@ -44,11 +45,19 @@ export function Byline({ post, other }: { post: Post; other?: Post }) {
           )}
         </p>
       </div>
-      {other && (
-        <Link className="bl-byline-lang" href={otherHref} hrefLang={otherLang} lang={otherLang} title={t.post.otherLabel}>
-          <GlobeIcon size={14} aria-hidden="true" />
-          {t.post.readInOther}
-        </Link>
+      {/* The actions of the post, one row centred on the author block: the same Button size and family for each. */}
+      {(other || children) && (
+        <div className="bl-byline-actions">
+          {other && (
+            <Button asChild variant="secondary" size="sm">
+              <Link href={otherHref} hrefLang={otherLang} lang={otherLang} title={t.post.otherLabel}>
+                <GlobeIcon size={15} aria-hidden="true" />
+                {t.post.readInOther}
+              </Link>
+            </Button>
+          )}
+          {children}
+        </div>
       )}
     </div>
   );
