@@ -27,14 +27,10 @@
   "footer": {
     "aria": "Pied de page",
     "project": "Une publication de Krizaka",
-    "license": "Billets et code sous Apache-2.0",
-    "krizaka": "krizaka.com",
-    "ui": "Krizaka UI",
-    "java": "Krizaka Java",
     "source": "Code source",
+    "feeds": "Flux",
     "rss": "RSS",
-    "atom": "Atom",
-    "location": "Montréal, Québec"
+    "atom": "Atom"
   },
   "home": {
     "eyebrow": "Blogue",
