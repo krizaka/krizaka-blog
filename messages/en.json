@@ -30,7 +30,8 @@
     "source": "Source code",
     "feeds": "Feeds",
     "rss": "RSS",
-    "atom": "Atom"
+    "atom": "Atom",
+    "about": "About"
   },
   "home": {
     "eyebrow": "Blog",
@@ -200,5 +201,29 @@
     "verdictDearer": "The hosted API is cheaper at this load.",
     "breakEven": "Break-even: {percent}% busy.",
     "assumption": "Derived, not measured: {hourly} per hour ÷ ({seconds} s of generation per clip), compute only — no boot, no download, no idle minute counted as work. The two clips are not the same size (see the text)."
+  },
+  "about": {
+    "eyebrow": "About",
+    "title": "Who writes this blog",
+    "lead": "Oussama Abid. He left Oujda, learned in Grenoble, and builds Krizaka in Montréal.",
+    "slot": "The Krizaka mark, until there is a photo",
+    "body": [
+      "My name is Oussama, and I come from Oujda, in Morocco.",
+      "In 2010 I left to study in Grenoble. Mathematics and computer science applied to the social sciences first, then a master's with a rather long name: cognition, creation and learning engineering. Put simply, how we think, how we learn, and what a machine can do with that.",
+      "In 2011 I did my first research internship at the LIG, Grenoble's computer science lab, in natural language processing. Teaching a machine to read a sentence, pull out the facts, get at the meaning. Nobody talked about AI at parties back then. That's still where I started.",
+      "Then fifteen years building systems that run for real. Connected trains, healthcare apps for a hospital, mobile platforms for telecom operators, connected cities with millions of devices. Then banking platforms, when I arrived in Montréal in 2019.",
+      "Today I'm an architect at a large Canadian bank. And on the side I build Krizaka, here in Montréal, with AI agents that I direct, review and correct. It comes full circle, a little: I met the machine that reads a sentence in Grenoble, and now I put it to work.",
+      "When I'm not coding, I listen to jazz, go to concerts, travel when I can, and keep a game controller within reach.",
+      "This blog is what I learn while building. Short posts, with the numbers I can show, and what I haven't solved yet."
+    ],
+    "homeTitle": "Who writes",
+    "homeBody": "My name is Oussama. I left Oujda, learned in Grenoble, and build Krizaka in Montréal. My first brush with AI was in 2011, in a research lab, long before the word was in fashion. Here I tell what I learn along the way.",
+    "homeLink": "My path",
+    "placesLabel": "Three cities",
+    "places": [
+      "Oujda",
+      "Grenoble",
+      "Montréal"
+    ]
   }
 }

@@ -14,6 +14,7 @@ import { PostList } from "./PostList";
 import { PostCard } from "./PostCard";
 import { seriesCount, seriesLead, seriesName } from "./SeriesPage";
 import { postCount, tagLabel } from "./tag-label";
+import { AuthorNote } from "../about/AuthorNote";
 
 /* The home: the blog's promise, the posts (or the honest "first posts soon"), the topics, where the work lives. */
 export default function HomePage({ locale }: { locale: Locale }) {
@@ -74,6 +75,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
           </ul>
         </Section>
       )}
+      <AuthorNote locale={locale} />
       <Section title={t.home.elsewhereTitle} lead={t.home.elsewhereLead} divider>
         <CardGrid min={260}>
           <LinkCard href={KRIZAKA_URL} title={t.home.company} description={t.home.companyBody} cta={t.home.open} titleAs="h3" />
