@@ -1,0 +1,66 @@
+---
+title: "Combien de comptes et de clés faut-il pour une entreprise de logiciels d'une seule personne ?"
+description: "Douze services, plus de 80 secrets, et quelques erreurs qui m'ont appris à les ranger. Comment je les garde hors du code et des conversations, et ce que j'automatise autour avec des agents et une CI."
+seoTitle: "Comptes et clés d'API d'une entreprise d'une personne"
+seoDescription: "Douze services, plus de 80 secrets : où les ranger, comment ne jamais les afficher, et ce qu'on automatise autour avec des agents et une CI."
+date: 2026-10-17
+publishedAt: "2026-10-17T11:00:00-04:00"
+tags: [security, measurements]
+author: oussama
+draft: false
+cover: accounts-map
+coverAlt: "Schéma : douze services rangés par rôle autour d'une petite entreprise de logiciels : code et CI, paquets, cloud et bases, GPU, médias, courriel, domaines, anti-robot, applications mobiles ; au centre, plus de 80 secrets gardés hors du code"
+series: building-krizaka
+part: 3
+---
+
+Quand j'ai commencé Krizaka, je pensais avoir besoin d'un compte GitHub et d'un hébergeur. Cette semaine, j'ai fait le compte. Douze services, et plus de 80 valeurs secrètes : des clés d'API, des jetons, des mots de passe de bases de données. Pour une entreprise où je suis seul, avec des agents d'IA qui écrivent une grande partie du code.
+
+Ce billet raconte comment on en arrive là, comment je les range, et les erreurs qui m'ont appris à le faire. Il ne contient aucune clé, aucun identifiant de compte, aucun chemin de mes dossiers. C'est un peu le sujet.
+
+## Douze services, pour faire quoi
+
+Chaque service répond à un besoin simple. Le code et la CI vivent sur GitHub. Les paquets sont publiés sur npm et Maven Central, avec une clé de signature pour les seconds. Les applications et les bases tournent chez DigitalOcean. Les GPU se louent à l'heure chez RunPod. Les images et les vidéos sont servies par Bunny. Les courriels partent par Mailgun. Les noms de domaine sont chez un registraire. Cloudflare fournit la vérification anti-robot des formulaires. Pour le mobile, il faut Expo pour construire les applications, Firebase pour les notifications et un compte de développeur Apple.
+
+
+Aucun n'est un luxe. Mais chacun apporte au moins une clé, souvent plusieurs : une par environnement, une par application, une avec moins de droits pour la CI. C'est comme ça qu'on passe de douze comptes à plus de 80 secrets.
+
+## Où les ranger
+
+La règle de base, je l'ai écrite très tôt : un secret n'est jamais dans le code, jamais dans un dépôt, jamais dans une conversation. Même pas dans une conversation avec un agent d'IA, et surtout pas là.
+
+Concrètement, les secrets vivent dans un dossier privé, hors des dépôts, sur ma machine. Les applications déployées les reçoivent comme des secrets de la plateforme qui les héberge, jamais en clair dans un fichier versionné. Le fichier de configuration du dépôt, lui, contient un simple mot de remplacement à la place de chaque valeur.
+
+Pour lire un secret, il y a un petit script qui va chercher une seule clé à la fois et ne l'affiche jamais : on la met dans une variable, on l'utilise, c'est tout. Et quand je veux vérifier qu'elle est bien là, je regarde sa longueur, pas sa valeur.
+
+Les variables d'environnement sont nommées par leur rôle, pas par le fournisseur. On écrit `MAIL_PROVIDER=mailgun` plutôt qu'une variable au nom du fournisseur :
+
+```bash
+MAIL_PROVIDER=mailgun
+MAIL_API_KEY=unset
+MAIL_DOMAIN=unset
+```
+
+Changer de fournisseur, c'est alors changer une valeur, pas renommer des variables dans dix dépôts.
+
+## Les erreurs qui m'ont appris
+
+Je n'ai pas inventé ces règles par prudence. Je les ai écrites après des erreurs.
+
+Une session d'agent a affiché dans sa sortie l'adresse complète d'une base de données, mot de passe compris. Elle voulait juste vérifier une configuration. Il a fallu changer le mot de passe tout de suite. Depuis, un garde tourne avant chaque commande d'agent : si la commande pourrait afficher un fichier de secrets, elle est refusée, avec un message qui explique comment faire autrement. Même un « masquage » maison est refusé, parce que c'est souvent par là que ça fuit.
+
+Un GPU loué est resté allumé environ deux heures après la fin du travail. Entre 7 et 8 $, pour rien. Son chien de garde devait l'éteindre, mais il n'avait pas la clé pour le faire. Je le raconte dans [le billet sur les coûts](/fr/posts/what-image-and-video-generation-costs/). Depuis, une boucle de surveillance arrête la machine après vingt minutes sans travail.
+
+Un mot de passe est resté à son ancienne valeur quelque part après une rotation. La leçon : une rotation n'est finie que quand chaque endroit qui utilise la clé a la nouvelle, et on vérifie chaque endroit, pas seulement le premier.
+
+## Ce que j'automatise autour
+
+Quand on est seul, on ne peut pas tout surveiller. Alors on automatise ce qui peut l'être, avec des agents et une CI.
+
+Une pull request se fusionne toute seule quand toutes les vérifications sont vertes, et jamais avant. Un verrou empêche deux tâches lourdes de tourner en même temps sur ma machine. Un plafond limite ce que l'IA peut dépenser par jour dans l'environnement de développement. Les formulaires publics ont une vérification anti-robot. Et chaque clé a le moins de droits possible : celle qui envoie des courriels ne peut qu'envoyer, elle ne peut même pas lire une liste.
+
+Les agents écrivent du code, mais ils ne voient jamais une clé. Ils savent qu'elle existe, ils savent son nom, ils l'utilisent à travers le petit script. C'est la meilleure façon que j'aie trouvée de travailler vite sans avoir peur.
+
+## Ce que vous pouvez en retenir
+
+Faites la liste de vos comptes et de vos clés aujourd'hui, même si vous débutez : vous serez surpris du nombre. Gardez les secrets dans un endroit à part, hors des dépôts, et lisez-les une clé à la fois sans jamais les afficher. Nommez vos variables par leur rôle. Donnez à chaque clé le moins de droits possible. Et quand une erreur arrive, transformez-la tout de suite en règle, puis en outil qui l'empêche.
