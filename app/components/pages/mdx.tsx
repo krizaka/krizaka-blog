@@ -2,6 +2,7 @@ import { isValidElement, type ComponentProps, type ReactElement, type ReactNode 
 import { CodeBlock } from "@krizaka/ui/code-block";
 import { Stat } from "@krizaka/ui/stat";
 import { getDictionary, type Locale } from "@/lib/i18n";
+import { modelUrl } from "@/lib/models";
 import { Clip } from "./Clip";
 import { Figure } from "./Figure";
 import { Utilization } from "./Utilization";
@@ -17,7 +18,7 @@ function fenced(children: ReactNode): { code: string; language?: string } | unde
 
 /* What the MDX of a post may use: tables scroll at phone width, code blocks with a copy button, a <Note> callout,
    <Numbers> with <Num value label hint?/> (the key figures of a passage, set apart), and the media of the library —
-   <Figure id alt caption?/> (an image, responsive, blur-up) and <Clip id alt caption?/> (a light video player). Both
+   <Figure id alt caption?/> (an image, responsive, blur-up), <Model id> (a model's name linked to its official page) and <Clip id alt caption?/> (a light video player). Both
    show how the result was made. <Row> sets figures side by side (stacked on a phone). Nothing else — a post is prose,
    tables, code and its media. */
 export function mdxComponentsFor(locale: Locale) {
@@ -43,5 +44,11 @@ export function mdxComponentsFor(locale: Locale) {
     Clip: (props: { id: string; alt: string; caption?: React.ReactNode }) => <Clip {...props} locale={locale} />,
     Utilization: (props: { hourly?: number | string; seconds?: number | string; hosted?: number | string }) => <Utilization {...props} locale={locale} />,
     Row: ({ children }: { children: React.ReactNode }) => <div className="bl-row">{children}</div>,
+    /* A model named in a post, linked to its official page (lib/models.ts) — the first mention; the lint checks it. */
+    Model: ({ id, children }: { id: string; children: ReactNode }) => (
+      <a className="bl-model" href={modelUrl(id)} rel="external noopener">
+        {children}
+      </a>
+    ),
   };
 }

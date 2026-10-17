@@ -8,8 +8,8 @@ publishedAt: "2026-10-17T11:00:00-04:00"
 tags: [security, measurements]
 author: oussama
 draft: false
-cover: accounts-map
-coverAlt: "Diagram: twelve services grouped by role around a small software company: code and CI, packages, cloud and databases, GPU, media, e-mail, domains, anti-robot, mobile apps; in the middle, more than 80 secrets kept out of the code"
+cover: accounts-keys
+coverAlt: "A large ring of old and modern keys on a walnut desk at night, next to a closed laptop, under a desk lamp; through the window, a snowy Montréal street"
 series: building-krizaka
 part: 3
 ---
@@ -21,6 +21,8 @@ This post is about how you get there, how I keep them, and the mistakes that tau
 ## Twelve services, for what
 
 Each service answers a simple need. Code and CI live on GitHub. Packages are published on npm and Maven Central, with a signing key for the latter. The apps and the databases run at DigitalOcean. GPUs are rented by the hour at RunPod. Images and videos are served by Bunny. E-mails go out through Mailgun. The domain names sit with a registrar. Cloudflare provides the anti-robot check on forms. For mobile you need Expo to build the apps, Firebase for notifications and an Apple developer account.
+
+<Figure id="accounts-map" alt="Diagram: twelve services grouped by role around a small software company: code and CI, packages, cloud and databases, GPU, media, e-mail, domains, anti-robot, mobile apps; in the middle, more than 80 secrets kept out of the code" />
 
 
 None of them is a luxury. But each brings at least one key, often several: one per environment, one per app, one with fewer rights for CI. That's how twelve accounts become more than 80 secrets.

@@ -16,7 +16,7 @@ part: 1
 
 Rereading the first posts of this blog, I made a list of the words I use without ever explaining them. Token. Quantization. RAG. MCP. Agent. The list was long, and a bit embarrassing.
 
-So I'm starting over from the beginning. One word at a time, with a simple picture and an example of what really runs on our side. The illustrations were generated for the occasion on my Mac, with FLUX.2 [klein] 4B, the image model Orazaka runs locally. Under each one, "How this was made" gives the prompt, the seed and the time.
+So I'm starting over from the beginning. One word at a time, with a simple picture and an example of what really runs on our side. The illustrations were generated for the occasion on my Mac, with <Model id="flux2-klein-4b">FLUX.2 [klein] 4B</Model>, the image model Orazaka runs locally. Under each one, "How this was made" gives the prompt, the seed and the time.
 
 ## A language model is a very good guesser of what comes next
 
@@ -24,7 +24,7 @@ A large language model, an LLM, does one thing: it guesses how a text goes on. Y
 
 Those pieces are called tokens. They are neither letters nor words, more like Lego bricks: a common word fits in one brick, a rare word takes several.
 
-I counted on my Mac with Qwen 2.5 7B, the chat model I use locally. "Je construis une IA souveraine à Montréal." is 12 tokens. The same sentence in English, "I build sovereign AI in Montréal.", is 8. French costs more tokens, and since hosted services bill by the token, it shows on the invoice.
+I counted on my Mac with <Model id="qwen25-7b">Qwen 2.5 7B</Model>, the chat model I use locally. "Je construis une IA souveraine à Montréal." is 12 tokens. The same sentence in English, "I build sovereign AI in Montréal.", is 8. French costs more tokens, and since hosted services bill by the token, it shows on the invoice.
 
 The context window is the desk on which the model spreads its papers: your question, the conversation so far, the documents you hand it. For Qwen 2.5 7B, that desk is 32,768 tokens. Whatever doesn't fit on the desk, the model simply doesn't see.
 
@@ -46,7 +46,7 @@ An embedding turns a text into a list of numbers that sums up its meaning. Two t
 
 Picture a library where books aren't shelved alphabetically but by subject, to the centimetre. You ask a question, and the librarian walks straight to the right shelf.
 
-I tried it with nomic-embed-text, a small embedding model (137 million parameters) that turns each text into 768 numbers. I asked "À quelle date dois-je payer ?" ("On what date do I have to pay?") against four French sentences. The closest, with a score of 0.72: "Le loyer est payable le premier jour de chaque mois." (Rent is payable on the first day of each month.) Then the rent increase (0.62), pets (0.58) and, last, a pizza recipe (0.55). The ranking is right. The gaps are modest, and that's why you never trust the score alone.
+I tried it with <Model id="nomic-embed-text">nomic-embed-text</Model>, a small embedding model (137 million parameters) that turns each text into 768 numbers. I asked "À quelle date dois-je payer ?" ("On what date do I have to pay?") against four French sentences. The closest, with a score of 0.72: "Le loyer est payable le premier jour de chaque mois." (Rent is payable on the first day of each month.) Then the rent increase (0.62), pets (0.58) and, last, a pizza recipe (0.55). The ranking is right. The gaps are modest, and that's why you never trust the score alone.
 
 RAG (retrieval-augmented generation) puts the two steps together: first find the right passages, then give them to the model so it answers with them, and can cite them. That's what lets an answer have a source. Orazaka's default embedding model is nomic-embed-text.
 
@@ -94,7 +94,7 @@ Image and video models work differently. A diffusion model starts from random no
 
 <Figure id="basics-fog" alt="A Montréal street with outdoor staircases emerging from thick fog at dawn" caption="A diffusion image shows itself like a street in the fog: a little sharper at each step." />
 
-On my Mac, FLUX.2 [klein] 4B makes a 1024×1024 image in 62 seconds at the median. Stable Diffusion 3.5 Large, hosted, makes one in 8 seconds for $0.08. For video, Wan 2.2 follows the same idea on all the frames of the clip at once, and costs $0.60 for a five-second hosted clip. The details are in [the post about costs](/posts/what-image-and-video-generation-costs/).
+On my Mac, FLUX.2 [klein] 4B makes a 1024×1024 image in 62 seconds at the median. <Model id="sd35-large">Stable Diffusion 3.5 Large</Model>, hosted, makes one in 8 seconds for $0.08. For video, <Model id="wan">Wan 2.2</Model> follows the same idea on all the frames of the clip at once, and costs $0.60 for a five-second hosted clip. The details are in [the post about costs](/posts/what-image-and-video-generation-costs/).
 
 ## The short glossary
 

@@ -60,3 +60,49 @@ export function featuredOrder<T extends { slug: string; featured?: boolean; publ
   const newest = (a: T, b: T) => publishedTime(b) - publishedTime(a) || a.slug.localeCompare(b.slug);
   return [...posts.filter((p) => p.featured).sort(newest), ...posts.filter((p) => !p.featured).sort(newest)].slice(0, count);
 }
+
+export type Faq = { question: string; answer: string };
+/** The headings that open a post's questions section: its h3s are the questions, the text under each one its answer. */
+export const FAQ_HEADING = /^(questions fréquentes|foire aux questions|faq|frequently asked questions)\b/i;
+
+/** The words of a Markdown/MDX passage as a reader sees them: links and <Model> keep their text, marks and tags go. */
+const plainText = (raw: string): string =>
+  raw
+    .replace(/<Model\b[^>]*>([\s\S]*?)<\/Model>/g, "$1")
+    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/<[^>]+>/g, "")
+    .replace(/`([^`]*)`/g, "$1")
+    .replace(/(\*\*|__|\*|_)(.+?)\1/g, "$2")
+    .replace(/\s+/g, " ")
+    .trim();
+
+/** The questions and answers of a post (the h3s under its « Questions fréquentes » / « FAQ » h2), for FAQPage JSON-LD;
+    empty when the post has no such section. */
+export function faqOf(body: string): Faq[] {
+  const out: Faq[] = [];
+  let inFaq = false;
+  let fence = false;
+  let current: { question: string; lines: string[] } | undefined;
+  const flush = () => {
+    if (current && current.lines.join("").trim()) out.push({ question: plainText(current.question), answer: plainText(current.lines.join("\n")) });
+    current = undefined;
+  };
+  for (const line of body.split("\n")) {
+    if (/^\s*(```|~~~)/.test(line)) fence = !fence;
+    const h = fence ? null : line.match(/^(#{2,3})\s+(.+?)\s*#*\s*$/);
+    if (h && h[1] === "##") {
+      flush();
+      inFaq = FAQ_HEADING.test(headingText(h[2]));
+      continue;
+    }
+    if (!inFaq) continue;
+    if (h && h[1] === "###") {
+      flush();
+      current = { question: headingText(h[2]), lines: [] };
+      continue;
+    }
+    current?.lines.push(line);
+  }
+  flush();
+  return out;
+}

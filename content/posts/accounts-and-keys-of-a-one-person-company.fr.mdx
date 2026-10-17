@@ -8,8 +8,8 @@ publishedAt: "2026-10-17T11:00:00-04:00"
 tags: [security, measurements]
 author: oussama
 draft: false
-cover: accounts-map
-coverAlt: "Schéma : douze services rangés par rôle autour d'une petite entreprise de logiciels : code et CI, paquets, cloud et bases, GPU, médias, courriel, domaines, anti-robot, applications mobiles ; au centre, plus de 80 secrets gardés hors du code"
+cover: accounts-keys
+coverAlt: "Un gros trousseau de clés anciennes et modernes posé sur un bureau en noyer, la nuit, à côté d'un portable fermé, sous une lampe de bureau ; derrière la fenêtre, une rue enneigée de Montréal"
 series: building-krizaka
 part: 3
 ---
@@ -21,6 +21,8 @@ Ce billet raconte comment on en arrive là, comment je les range, et les erreurs
 ## Douze services, pour faire quoi
 
 Chaque service répond à un besoin simple. Le code et la CI vivent sur GitHub. Les paquets sont publiés sur npm et Maven Central, avec une clé de signature pour les seconds. Les applications et les bases tournent chez DigitalOcean. Les GPU se louent à l'heure chez RunPod. Les images et les vidéos sont servies par Bunny. Les courriels partent par Mailgun. Les noms de domaine sont chez un registraire. Cloudflare fournit la vérification anti-robot des formulaires. Pour le mobile, il faut Expo pour construire les applications, Firebase pour les notifications et un compte de développeur Apple.
+
+<Figure id="accounts-map" alt="Schéma : douze services rangés par rôle autour d'une petite entreprise de logiciels : code et CI, paquets, cloud et bases, GPU, médias, courriel, domaines, anti-robot, applications mobiles ; au centre, plus de 80 secrets gardés hors du code" />
 
 
 Aucun n'est un luxe. Mais chacun apporte au moins une clé, souvent plusieurs : une par environnement, une par application, une avec moins de droits pour la CI. C'est comme ça qu'on passe de douze comptes à plus de 80 secrets.

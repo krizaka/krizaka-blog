@@ -16,7 +16,7 @@ part: 1
 
 En relisant les premiers billets de ce blogue, j'ai fait la liste des mots que j'utilise sans jamais les expliquer. Token. Quantification. RAG. MCP. Agent. La liste était longue, et un peu gênante.
 
-Alors je reprends depuis le début. Un mot à la fois, avec une image simple et un exemple de ce qui tourne vraiment chez nous. Les illustrations ont été générées pour l'occasion sur mon Mac, avec FLUX.2 [klein] 4B, le modèle d'image qu'Orazaka fait tourner en local. Sous chacune, « Comment c'est fait » donne le prompt, la graine et la durée.
+Alors je reprends depuis le début. Un mot à la fois, avec une image simple et un exemple de ce qui tourne vraiment chez nous. Les illustrations ont été générées pour l'occasion sur mon Mac, avec <Model id="flux2-klein-4b">FLUX.2 [klein] 4B</Model>, le modèle d'image qu'Orazaka fait tourner en local. Sous chacune, « Comment c'est fait » donne le prompt, la graine et la durée.
 
 ## Un modèle de langage, c'est un très bon devin de suite
 
@@ -24,7 +24,7 @@ Un grand modèle de langage, un LLM, fait une seule chose : il devine la suite d
 
 Ces morceaux s'appellent des tokens. Ce ne sont ni des lettres ni des mots, plutôt des pièces de Lego : un mot courant tient en une pièce, un mot rare en demande plusieurs.
 
-J'ai compté sur mon Mac, avec Qwen 2.5 7B, le modèle de chat que j'utilise en local. « Je construis une IA souveraine à Montréal. » fait 12 tokens. La même phrase en anglais, « I build sovereign AI in Montréal. », en fait 8. Le français coûte plus cher en tokens, et comme les services hébergés facturent au token, ça se voit sur la facture.
+J'ai compté sur mon Mac, avec <Model id="qwen25-7b">Qwen 2.5 7B</Model>, le modèle de chat que j'utilise en local. « Je construis une IA souveraine à Montréal. » fait 12 tokens. La même phrase en anglais, « I build sovereign AI in Montréal. », en fait 8. Le français coûte plus cher en tokens, et comme les services hébergés facturent au token, ça se voit sur la facture.
 
 La fenêtre de contexte, c'est le bureau sur lequel le modèle étale ses papiers : votre question, l'historique de la conversation, les documents qu'on lui donne. Pour Qwen 2.5 7B, ce bureau fait 32 768 tokens. Ce qui ne tient pas sur le bureau, le modèle ne le voit tout simplement pas.
 
@@ -46,7 +46,7 @@ Un embedding transforme un texte en une liste de nombres qui résume son sens. D
 
 Imaginez une bibliothèque où les livres ne sont pas rangés par ordre alphabétique, mais par sujet, au centimètre près. Vous posez une question, et le bibliothécaire va directement au bon rayon.
 
-J'ai fait le test avec nomic-embed-text, un petit modèle d'embedding (137 millions de paramètres) qui transforme chaque texte en 768 nombres. J'ai posé la question « À quelle date dois-je payer ? » face à quatre phrases. La plus proche, avec un score de 0,72 : « Le loyer est payable le premier jour de chaque mois. » Ensuite, l'augmentation de loyer (0,62), les animaux de compagnie (0,58) et, en dernier, une recette de pizza (0,55). Le classement est bon. Les écarts, eux, sont modestes, et c'est pour ça qu'on ne fait jamais confiance au seul score.
+J'ai fait le test avec <Model id="nomic-embed-text">nomic-embed-text</Model>, un petit modèle d'embedding (137 millions de paramètres) qui transforme chaque texte en 768 nombres. J'ai posé la question « À quelle date dois-je payer ? » face à quatre phrases. La plus proche, avec un score de 0,72 : « Le loyer est payable le premier jour de chaque mois. » Ensuite, l'augmentation de loyer (0,62), les animaux de compagnie (0,58) et, en dernier, une recette de pizza (0,55). Le classement est bon. Les écarts, eux, sont modestes, et c'est pour ça qu'on ne fait jamais confiance au seul score.
 
 Le RAG (retrieval-augmented generation) assemble les deux étapes : on cherche d'abord les bons passages, puis on les donne au modèle pour qu'il réponde avec eux, et qu'il puisse les citer. C'est ce qui permet à une réponse d'avoir une source. Le modèle d'embedding par défaut d'Orazaka est justement nomic-embed-text.
 
@@ -94,7 +94,7 @@ Les modèles d'image et de vidéo fonctionnent autrement. Un modèle de diffusio
 
 <Figure id="basics-fog" alt="Une rue de Montréal avec des escaliers extérieurs qui sort d'un épais brouillard à l'aube" caption="Une image de diffusion se révèle comme une rue dans le brouillard : un peu plus nette à chaque étape." />
 
-Sur mon Mac, FLUX.2 [klein] 4B fait une image en 1024×1024 en 62 secondes en médiane. Stable Diffusion 3.5 Large, hébergé, en fait une en 8 secondes pour 0,08 $. Pour la vidéo, Wan 2.2 suit le même principe sur toutes les images du clip à la fois, et coûte 0,60 $ le clip de cinq secondes en hébergé. Les détails sont dans [le billet sur les coûts](/fr/posts/what-image-and-video-generation-costs/).
+Sur mon Mac, FLUX.2 [klein] 4B fait une image en 1024×1024 en 62 secondes en médiane. <Model id="sd35-large">Stable Diffusion 3.5 Large</Model>, hébergé, en fait une en 8 secondes pour 0,08 $. Pour la vidéo, <Model id="wan">Wan 2.2</Model> suit le même principe sur toutes les images du clip à la fois, et coûte 0,60 $ le clip de cinq secondes en hébergé. Les détails sont dans [le billet sur les coûts](/fr/posts/what-image-and-video-generation-costs/).
 
 ## Le petit glossaire
 

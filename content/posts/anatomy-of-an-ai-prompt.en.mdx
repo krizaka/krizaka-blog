@@ -34,7 +34,7 @@ The prompt: *a basketball player dunking in snow*. The kind of line you type wit
 
 <Figure id="anatomy-flux-l0" alt="A basketball player in a navy jersey dunking in a snowy park, a hill and trees behind" caption="Level 0, FLUX.2 [klein] 4B. Two arms, two legs, a hoop, a net. The letters on the jersey spell nothing." />
 
-No monster. FLUX.2 [klein] 4B, an open model with a permissive licence, made a believable dunk in the snow from six words. What I hadn't specified, it decided: a navy jersey, a hill, no particular framing. Its one visible miss is a classic: the letters on the jersey don't form a word.
+No monster. <Model id="flux2-klein-4b">FLUX.2 [klein] 4B</Model>, an open model with a permissive licence, made a believable dunk in the snow from six words. What I hadn't specified, it decided: a navy jersey, a hill, no particular framing. Its one visible miss is a classic: the letters on the jersey don't form a word.
 
 ## Levels 1 to 3: saying what you actually mean
 
@@ -60,7 +60,7 @@ The usual recipe has a fourth step: the negative prompt, the list of what you do
 
 Guidance is how strongly the model obeys the text. To apply it, many models compute two versions at every step, one that follows the prompt and one that follows the negative prompt, then steer away from the second. FLUX.2 [klein] runs at a guidance of 1: it skips that second pass. So the negative prompt is never read, and I can't show that step on this model. That's also why, with a model like this one, exclusions like "no text, no logos" have to be written into the positive prompt.
 
-Stable Diffusion 1.5, older and smaller, uses a guidance of 7 and does read the negative prompt. And there, the six-word prompt does produce the promised defects. Left to right: level 0, level 3 without a negative, level 3 with one. 512×512, seed 2026, 63 to 68 seconds each.
+<Model id="sd15">Stable Diffusion 1.5</Model>, older and smaller, uses a guidance of 7 and does read the negative prompt. And there, the six-word prompt does produce the promised defects. Left to right: level 0, level 3 without a negative, level 3 with one. 512×512, seed 2026, 63 to 68 seconds each.
 
 <Row>
 <Figure id="anatomy-sd15-l0" alt="A basketball player in white dunking in snow, one red shoe and one grey shoe, a lone pole beside him" caption="SD 1.5, level 0: two different shoes, a pole holding nothing." />

@@ -31,7 +31,8 @@ export type Made = {
 };
 /** The sizes a picture is sold in, per format (scripts/gen-renditions.mjs): AVIF for the browsers that read it, WebP for the rest. */
 export type Renditions = { avif: { w: number; url: string }[]; webp: { w: number; url: string }[] };
-export type ImageMedia = { kind: "image"; width: number; height: number; blur: string; srcs: { w: number; url: string }[]; renditions?: Renditions; made?: Made };
+/** `style: "diagram"`: a schema drawn from code (no provenance); the home shows at most one as a cover (scripts/content-rules.mjs). */
+export type ImageMedia = { kind: "image"; style?: "diagram"; width: number; height: number; blur: string; srcs: { w: number; url: string }[]; renditions?: Renditions; made?: Made };
 export type VideoMedia = { kind: "video"; width: number; height: number; blur: string; poster: string; mp4: string; webm: string; bytes?: { mp4: number; webm: number }; renditions?: Renditions; made?: Made };
 export type Media = ImageMedia | VideoMedia;
 

@@ -82,3 +82,11 @@ test("on the blog as published: the newest post is the first featured one in eac
     if (!mine.some((x) => x.featured)) assert.equal(featuredOrder(mine)[0].slug, newest.slug);
   }
 });
+
+test("a post's questions section becomes its FAQ: each h3 a question, the text under it the answer (links and <Model> keep their words)", async () => {
+  const { faqOf } = await import("../lib/reading.ts");
+  const body = "Intro\n\n### Not a question\n\ntext\n\n## Questions fréquentes\n\n### Quel GPU pour un LLM de 7B ?\n\nUn GPU de **8 Go**, voir [le billet](/fr/posts/x/) et <Model id=\"qwen25-7b\">Qwen 2.5 7B</Model>.\n\nSecond paragraphe.\n\n### Empty?\n\n## After\n\n### Not in the FAQ\n\nno\n";
+  assert.deepEqual(faqOf(body), [{ question: "Quel GPU pour un LLM de 7B ?", answer: "Un GPU de 8 Go, voir le billet et Qwen 2.5 7B. Second paragraphe." }]);
+  assert.deepEqual(faqOf("## FAQ\n\n```md\n### no\n```\n"), []);
+  assert.deepEqual(faqOf("no section"), []);
+});

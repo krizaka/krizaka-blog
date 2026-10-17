@@ -133,6 +133,10 @@ picture { display: contents; }
 /* ─── Cards of posts, the series box, related ─── */
 .bl-card { position: relative; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
 .bl-card .bl-cover-img { display: block; width: 100%; height: 100%; object-fit: cover; background-size: cover; background-position: center; }
+.bl-card-visual { position: relative; display: block; width: 100%; height: 100%; }
+.bl-card-loop { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.4s var(--kz-ease, ease); pointer-events: none; }
+.bl-card-loop[data-on] { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .bl-card-loop { display: none; } }
 .bl-cover-fallback { display: block; width: 100%; height: 100%; background: linear-gradient(135deg, var(--kz-surface-2), var(--kz-surface-1)); }
 .bl-card-link { color: inherit; text-decoration: none; }
 .bl-card-link::after { content: ""; position: absolute; inset: 0; z-index: 1; }

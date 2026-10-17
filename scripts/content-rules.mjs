@@ -2,6 +2,8 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import matter from "gray-matter";
+import { modelLinkProblems } from "../lib/models.ts";
+import { featuredOrder } from "../lib/reading.ts";
 
 export const RESERVED_SLUGS = new Set(["site", "_"]);
 export const FILE = /^([a-z0-9]+(?:-[a-z0-9]+)*)\.(en|fr)\.mdx$/;
@@ -92,6 +94,8 @@ export function postProblems(file, data, body, ctx) {
     if (data.part !== undefined && (!Number.isInteger(data.part) || data.part < 1)) out.push(`${file}: "part" must be a whole number from 1`);
     if (data.part !== undefined && data.series === undefined) out.push(`${file}: "part" needs a "series"`);
   }
+  /* A model is named with a link to its official page the first time (lib/models.ts): the reader can see what it is. */
+  out.push(...modelLinkProblems(body).map((p) => `${file}: ${p}`));
   if (/```mermaid/.test(body)) out.push(`${file}: Mermaid is retired`);
   /* Every fence names its language: CodeBlock highlights with it (`text` for plain output). Opening fences only. */
   let open = false;
@@ -117,7 +121,28 @@ export function checkDir(dir, ctx) {
     posts.push({ file: f, data, body: content });
   }
   problems.push(...linkProblems(posts));
+  if (ctx) problems.push(...homeCoverProblems(posts, ctx.media));
   return { files, problems };
+}
+
+/** How many diagram covers the home may show among its first cards: the blog tells stories, its front page is pictures and
+    clips, and a schema stays inside its post. */
+export const HOME_DIAGRAM_COVERS_MAX = 1;
+export const HOME_CARDS = 3;
+
+/** The home's first cards (lib/reading.ts featuredOrder over the published posts of each language) carry at most
+    HOME_DIAGRAM_COVERS_MAX covers whose media is a diagram (`style: "diagram"` in lib/media.json). */
+export function homeCoverProblems(posts, media) {
+  const out = [];
+  for (const locale of ["en", "fr"]) {
+    const published = posts
+      .filter((p) => p.file.endsWith(`.${locale}.mdx`) && p.data.draft !== true)
+      .map((p) => ({ slug: p.file.replace(/\.(en|fr)\.mdx$/, ""), featured: p.data.featured === true, publishedAt: p.data.publishedAt, date: String(p.data.date ?? ""), cover: p.data.cover }));
+    const first = featuredOrder(published, HOME_CARDS);
+    const diagrams = first.filter((p) => media[p.cover]?.style === "diagram");
+    if (diagrams.length > HOME_DIAGRAM_COVERS_MAX) out.push(`home (${locale}): ${diagrams.length} of the first ${HOME_CARDS} cards have a diagram as cover (${diagrams.map((p) => p.slug).join(", ")}) — at most ${HOME_DIAGRAM_COVERS_MAX}: give a post an evocative picture or clip (an Orazaka run) and keep its diagram in the text`);
+  }
+  return out;
 }
 
 /** The problems of the media library itself: every URL on the blog's CDN prefix, every entry carries what it needs. */
@@ -136,6 +161,9 @@ export function mediaProblems(media) {
     } else {
       for (const k of ["poster", "mp4", "webm"]) if (!onCdn(m[k])) out.push(`media ${id}: ${k} must be on ${CDN}`);
     }
+    /* A picture is either made (its provenance in `made`) or drawn from code as a diagram (`style: "diagram"`). */
+    if (m.style !== undefined && m.style !== "diagram") out.push(`media ${id}: style is "diagram" or absent`);
+    if (m.kind === "image" && !m.made && m.style !== "diagram") out.push(`media ${id}: a picture without provenance (made) must be a diagram drawn from code (style: "diagram")`);
     if (m.made) {
       if (!m.made.model) out.push(`media ${id}: made.model is required`);
       if (m.made.runId && !/^[0-9a-f-]{36}$/.test(m.made.runId)) out.push(`media ${id}: made.runId is not a run id`);

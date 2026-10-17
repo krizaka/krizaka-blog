@@ -32,10 +32,10 @@ The times below run from command to file: queueing, transfer and storage include
 
 | Model | Where | Time (median) | Price | Succeeded |
 |:---|:---|---:|---:|---:|
-| FLUX.2 [klein] 4B, 1024×1024 | Mac | 62 s | nothing billed | 6 of 18 |
-| Stable Diffusion 1.5, 512×512 | Mac | 58 s | nothing billed | 6 of 6 |
-| Z-Image Turbo, 1024×1024 | Mac | engine 158 s | nothing billed | 0 of 5 |
-| Stable Diffusion 3.5 Large, 1024×1024 | DigitalOcean serverless | 8 s | $0.08 | 6 of 6 |
+| <Model id="flux2-klein-4b">FLUX.2 [klein] 4B</Model>, 1024×1024 | Mac | 62 s | nothing billed | 6 of 18 |
+| <Model id="sd15">Stable Diffusion 1.5</Model>, 512×512 | Mac | 58 s | nothing billed | 6 of 6 |
+| <Model id="z-image-turbo">Z-Image Turbo</Model>, 1024×1024 | Mac | engine 158 s | nothing billed | 0 of 5 |
+| <Model id="sd35-large">Stable Diffusion 3.5 Large</Model>, 1024×1024 | DigitalOcean serverless | 8 s | $0.08 | 6 of 6 |
 
 "Nothing billed" doesn't mean free. I haven't measured the Mac's electricity or wear, so I don't put a number on it.
 
@@ -53,8 +53,8 @@ FLUX.2's 6 out of 18 scared me at first. Reading the records, nearly every failu
 
 | Model | Where | Time (median) | Price per clip | Succeeded |
 |:---|:---|---:|---:|---:|
-| Wan 2.2 A14B, text to video, 832×480 | DigitalOcean serverless | 131 s | $0.60 | 21 of 21 |
-| Wan 2.2 TI2V 5B, image to video, 1280×704 | Rented H100 (RunPod) | 175 s | $0.19 to $0.31 | 19 of 19 |
+| <Model id="wan22-t2v-a14b">Wan 2.2 A14B</Model>, text to video, 832×480 | DigitalOcean serverless | 131 s | $0.60 | 21 of 21 |
+| <Model id="wan22-ti2v-5b">Wan 2.2 TI2V 5B</Model>, image to video, 1280×704 | Rented H100 (RunPod) | 175 s | $0.19 to $0.31 | 19 of 19 |
 | Wan 2.2 A14B, text to video, 720p | Rented H100 (RunPod) | 1,111 s | $1.23 to $1.38 | 6 of 6 |
 | Wan 2.2 TI2V 5B, 1280×704 | RTX 4000 Ada (DigitalOcean) | 1,106 s | $0.23 | 1 of 1 |
 | Wan 2.2 TI2V 5B, 480×832 | Mac | out of memory | — | 0 |
@@ -114,7 +114,7 @@ Text steps got 53 to 70% cheaper. Nothing was discounted: we just stopped billin
 
 ## What I decided
 
-Images stay on the Mac by default, and hosted takes over when eight seconds matter more than eight cents. Video goes to a GPU when you choose it: hosted for a quick landscape clip, a rented H100 for 720p and vertical, never the Mac (why, in [the post about running everything on one Mac](/posts/local-first-ai-platform-spring-ai-2-and-the-mac)). A rented GPU lives for one batch only. And licences are data: MMAudio, which adds synced sound effects to a video, has a non-commercial licence, so it stays available but is never the default.
+Images stay on the Mac by default, and hosted takes over when eight seconds matter more than eight cents. Video goes to a GPU when you choose it: hosted for a quick landscape clip, a rented H100 for 720p and vertical, never the Mac (why, in [the post about running everything on one Mac](/posts/local-first-ai-platform-spring-ai-2-and-the-mac)). A rented GPU lives for one batch only. And licences are data: <Model id="mmaudio">MMAudio</Model>, which adds synced sound effects to a video, has a non-commercial licence, so it stays available but is never the default.
 
 ## What I haven't measured
 
