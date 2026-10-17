@@ -1298,5 +1298,25 @@
     "url": "https://krizaka-assets.b-cdn.net/site/blog/censored-and-uncensored-models/policy-flow-1200.97dc710c70.webp"
    }
   ]
+ },
+ "agentic-loop": {
+  "kind": "image",
+  "width": 1200,
+  "height": 800,
+  "blur": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAABQAwCdASoYABAAPu1iqU2ppaOiMAgBMB2JZQAASDGqS6TaAAD+7dDgwUbkSSpHV0f4dhg3ae7fFicwg1pOIXi4AQ7pxzpFnXSvUFPL85RnBIJ9PbQbEiGeNnA+BhtDgEvYRED2wPIwAA==",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/from-vibe-coding-to-agentic-engineering/agentic-loop-480.a7d3682f22.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/from-vibe-coding-to-agentic-engineering/agentic-loop-960.59988cef4b.webp"
+   },
+   {
+    "w": 1200,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/from-vibe-coding-to-agentic-engineering/agentic-loop-1200.095cad0b26.webp"
+   }
+  ]
  }
 }
