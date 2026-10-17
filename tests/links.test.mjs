@@ -68,3 +68,7 @@ test("entities in an attribute are decoded (a share link with an apostrophe is n
   assert.equal(decodeEntities("t=L&#x27;anatomie&amp;x=1&#39;"), "t=L'anatomie&x=1'");
   assert.deepEqual(extractLinks('<a href="https://r.example/submit?title=L&#x27;anatomie&amp;u=1">r</a>'), ["https://r.example/submit?title=L'anatomie&u=1"]);
 });
+
+test("the paths the CDN's edge injects on the live site are not crawled (Cloudflare e-mail protection)", () => {
+  assert.deepEqual(extractLinks('<a href="/cdn-cgi/l/email-protection#abc">mail</a><a href="/posts/a/">a</a>'), ["/posts/a/"]);
+});
