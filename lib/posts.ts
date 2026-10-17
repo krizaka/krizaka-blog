@@ -6,6 +6,7 @@ import { join } from "node:path";
 import matter from "gray-matter";
 import { LOCALES, type Locale } from "./i18n";
 import { SHOW_DRAFTS } from "./site";
+import { featuredOrder, publishedTime } from "./reading.ts";
 
 export type Post = {
   slug: string;
@@ -18,6 +19,8 @@ export type Post = {
   seoDescription?: string;
   /** ISO date (YYYY-MM-DD). */
   date: string;
+  /** When it went out, with the time and offset (`2026-10-16T21:44:17-04:00`): the order of posts of one day. */
+  publishedAt?: string;
   updated?: string;
   tags: string[];
   author: string;
@@ -60,6 +63,7 @@ export function parsePost(file: string, source: string): Post {
     seoTitle: typeof data.seoTitle === "string" && data.seoTitle.trim() ? data.seoTitle.trim() : undefined,
     seoDescription: typeof data.seoDescription === "string" && data.seoDescription.trim() ? data.seoDescription.trim() : undefined,
     date,
+    publishedAt: data.publishedAt instanceof Date ? data.publishedAt.toISOString() : typeof data.publishedAt === "string" ? data.publishedAt : undefined,
     updated: data.updated ? (data.updated instanceof Date ? data.updated.toISOString().slice(0, 10) : String(data.updated)) : undefined,
     tags,
     author: typeof data.author === "string" ? data.author : "krizaka",
@@ -83,7 +87,7 @@ export function allPosts(): Post[] {
   cache = files
     .map((f) => parsePost(f, readFileSync(join(DIR, f), "utf8")))
     .filter((p) => SHOW_DRAFTS || !p.draft)
-    .sort((a, b) => b.date.localeCompare(a.date) || a.slug.localeCompare(b.slug));
+    .sort((a, b) => publishedTime(b) - publishedTime(a) || a.slug.localeCompare(b.slug));
   return cache;
 }
 
@@ -127,8 +131,5 @@ export function relatedPosts(post: Post, limit = 3): Post[] {
     .map((x) => x.p);
 }
 
-/** The post the home puts first: the newest featured one, else the newest with a cover. */
-export function featuredPost(locale: Locale): Post | undefined {
-  const posts = postsOf(locale);
-  return posts.find((p) => p.featured && p.cover) ?? posts.find((p) => p.cover) ?? posts[0];
-}
+/** The posts the home puts first (three): pinned ones (`featured: true`), then the newest — lib/reading.ts featuredOrder. */
+export const featuredPosts = (locale: Locale, count = 3): Post[] => featuredOrder(postsOf(locale), count);

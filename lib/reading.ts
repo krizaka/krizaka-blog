@@ -51,3 +51,12 @@ export const titleTag = (p: { title: string; seoTitle?: string }, siteName: stri
 /** The meta description of a post: its `seoDescription` when it has one, else its lead. */
 export const metaDescription = (p: { description: string; seoDescription?: string }): string => p.seoDescription?.trim() || p.description;
 
+
+/** When a post went out: its `publishedAt` (date, time and offset), so posts of the same day keep their order. */
+export const publishedTime = (p: { publishedAt?: string; date?: string }): number => Date.parse(p.publishedAt ?? `${p.date ?? "1970-01-01"}T12:00:00Z`);
+
+/** The posts the home puts first: pinned ones (`featured: true`) newest first, then the others newest first; ties by slug. */
+export function featuredOrder<T extends { slug: string; featured?: boolean; publishedAt?: string; date?: string }>(posts: readonly T[], count = 3): T[] {
+  const newest = (a: T, b: T) => publishedTime(b) - publishedTime(a) || a.slug.localeCompare(b.slug);
+  return [...posts.filter((p) => p.featured).sort(newest), ...posts.filter((p) => !p.featured).sort(newest)].slice(0, count);
+}

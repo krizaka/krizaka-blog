@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import matter from "gray-matter";
-import { DESCRIPTION_MAX, TITLE_MAX, headingsOf, metaDescription, neighbours, titleTag } from "../lib/reading.ts";
+import { DESCRIPTION_MAX, TITLE_MAX, featuredOrder, headingsOf, metaDescription, neighbours, titleTag } from "../lib/reading.ts";
 
 /* What the post page derives from a post: its table of contents (the h2 ids rehype-slug writes), its place in a series,
    and the title tag and description the search engines read. */
@@ -65,4 +65,20 @@ test("every topic a published post wears has its own title tag and description, 
 
 test("a heading's text drops markup, even nested or broken", () => {
   assert.equal(headingsOf("## A <b>bold</b> <<i>x</i>i> word")[0].text.includes("<"), false);
+});
+
+test("featured: the newest first unless a post is pinned (featured: true), then by publication time, three at most", () => {
+  const p = (slug, publishedAt, featured = false) => ({ slug, publishedAt, featured });
+  const posts = [p("a", "2026-10-16T09:06:09-04:00"), p("b", "2026-10-16T21:44:17-04:00"), p("c", "2026-10-15T10:00:00-04:00"), p("d", "2026-10-16T09:06:09-04:00")];
+  assert.deepEqual(featuredOrder(posts).map((x) => x.slug), ["b", "a", "d"]);
+  posts[2].featured = true;
+  assert.deepEqual(featuredOrder(posts).map((x) => x.slug), ["c", "b", "a"]);
+});
+
+test("on the blog as published: the newest post is the first featured one in each language", () => {
+  for (const locale of ["en", "fr"]) {
+    const mine = published.filter((x) => x.f.endsWith(`.${locale}.mdx`)).map((x) => ({ slug: x.f.split(".")[0], publishedAt: x.data.publishedAt, featured: x.data.featured === true }));
+    const newest = [...mine].sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt))[0];
+    if (!mine.some((x) => x.featured)) assert.equal(featuredOrder(mine)[0].slug, newest.slug);
+  }
 });

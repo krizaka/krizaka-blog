@@ -23,6 +23,13 @@ export function postProblems(file, data, body, ctx) {
   for (const k of ["title", "description"]) if (typeof data[k] !== "string" || !data[k].trim()) out.push(`${file}: "${k}" is required`);
   const date = data.date instanceof Date ? data.date.toISOString().slice(0, 10) : data.date;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(date ?? ""))) out.push(`${file}: "date" must be YYYY-MM-DD`);
+  if (data.draft !== true) {
+    /* gray-matter reads an unquoted timestamp as a Date: the front matter quotes it, so the offset is kept as written. */
+    const at = typeof data.publishedAt === "string" ? data.publishedAt : "";
+    if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?(Z|[+-]\d{2}:\d{2})$/.test(at)) out.push(`${file}: a published post needs "publishedAt" (quoted, e.g. "2026-10-16T21:44:17-04:00"): the order of posts of one day`);
+    else if (at.slice(0, 10) !== String(date)) out.push(`${file}: "publishedAt" (${at}) is not on "date" (${date})`);
+    if (!data.cover) out.push(`${file}: a published post needs a "cover" (a media id, also shown in the body with its alt)`);
+  }
   if (typeof data.description === "string" && data.description.length > 220) out.push(`${file}: "description" is over 220 characters`);
   if (data.seoTitle !== undefined && (typeof data.seoTitle !== "string" || data.seoTitle.length > 60)) out.push(`${file}: "seoTitle" must be text of at most 60 characters (what a search result shows)`);
   if (data.seoDescription !== undefined && (typeof data.seoDescription !== "string" || data.seoDescription.length > 155)) out.push(`${file}: "seoDescription" must be text of at most 155 characters`);

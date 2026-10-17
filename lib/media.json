@@ -1275,5 +1275,40 @@
    "costUsd": 0,
    "note": "Made for this post with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id."
   }
+ },
+ "payments-terminal-ledger": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1024,
+  "blur": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAAAwBACdASoYABgAPuVgpU2pJaOiN/VYASAciWUAuDAW6650tbWrPdQIfAAA/tnVhi1lTt9UQvJLVumkulx2xcZptpjp38H80pl6Bgvu8G52X8sCw2fFwDyIIAAAAA==",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/payments-and-high-risk-industries/payments-terminal-ledger-480.2b4aadcc01.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/payments-and-high-risk-industries/payments-terminal-ledger-960.d31aeea834.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/payments-and-high-risk-industries/payments-terminal-ledger-1024.2eae317861.webp"
+   }
+  ],
+  "made": {
+   "model": "Stable Diffusion 3.5 Large",
+   "licence": "Stability AI Community Licence",
+   "engine": "hosted: DigitalOcean serverless inference (steps and guidance not exposed)",
+   "machine": null,
+   "costUsd": 0.08,
+   "via": "Orazaka Studio run on dev.orazaka.com",
+   "studio": "image-generation",
+   "prompt": "Minimalist flat vector illustration, editorial style: a single card payment terminal standing on a plain deep navy background, beside it a closed ledger notebook, a few thin cobalt-blue lines with small round nodes connect them like a network diagram. Clean geometric shapes, two-tone navy and cobalt blue with soft white highlights, lots of empty space, centered composition, matte, calm. No people, no hands, no text, no letters, no numbers, no logos.",
+   "seed": "721081288",
+   "size": "1024×1024",
+   "seconds": 7.5,
+   "runId": "87694bea-beb7-48c4-8baf-979f7d01422a",
+   "note": "The cover of this post; a first run of the same Studio (0fdc980b-1ba6-4ff8-8a8e-b9093b465030, 512×512, a busier prompt) was not kept."
+  }
  }
 }
