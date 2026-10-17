@@ -126,7 +126,8 @@
       "yomizaka": "Yomizaka",
       "documents": "Documents",
       "law": "Droit",
-      "prompts": "Prompts"
+      "prompts": "Prompts",
+      "payments": "Paiements"
     },
     "countOne": "1 billet"
   },
@@ -186,11 +187,13 @@
     "count": "{count} billets",
     "names": {
       "building-orazaka": "Construire Orazaka",
-      "measured": "Mesuré"
+      "measured": "Mesuré",
+      "building-krizaka": "Construire Krizaka"
     },
     "leads": {
       "building-orazaka": "Comment un moteur d'IA souverain se construit sur un Mac et quelques GPU loués : les choix, les migrations, ce qui a cassé.",
-      "measured": "Coûts, durées et résultats tirés de vrais runs, avec les enregistrements pour les vérifier. Ce que nous n'avons pas mesuré est dit."
+      "measured": "Coûts, durées et résultats tirés de vrais runs, avec les enregistrements pour les vérifier. Ce que nous n'avons pas mesuré est dit.",
+      "building-krizaka": "Ce qui entoure le code d'une petite entreprise de logiciels, l'argent et le droit d'abord. Raconté au fil de l'eau, avec ce qui n'est pas encore décidé."
     }
   },
   "calc": {

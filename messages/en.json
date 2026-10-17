@@ -126,7 +126,8 @@
       "yomizaka": "Yomizaka",
       "documents": "Documents",
       "law": "Law",
-      "prompts": "Prompts"
+      "prompts": "Prompts",
+      "payments": "Payments"
     },
     "countOne": "1 post"
   },
@@ -186,11 +187,13 @@
     "count": "{count} posts",
     "names": {
       "building-orazaka": "Building Orazaka",
-      "measured": "Measured"
+      "measured": "Measured",
+      "building-krizaka": "Building Krizaka"
     },
     "leads": {
       "building-orazaka": "How a sovereign AI engine gets built on one Mac and a few rented GPUs: the choices, the migrations, what broke.",
-      "measured": "Costs, times and results taken from real runs, with the records to check them. What we did not measure is said."
+      "measured": "Costs, times and results taken from real runs, with the records to check them. What we did not measure is said.",
+      "building-krizaka": "What surrounds the code of a small software company, money and law first. Told as it happens, with what isn't decided yet."
     }
   },
   "calc": {
