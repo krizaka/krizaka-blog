@@ -78,3 +78,7 @@ test("a preconnect or dns-prefetch hint is not a link (its origin need not answe
   const html = '<link rel="preconnect" href="https://cdn.example.com"/><link rel="dns-prefetch" href="https://x.example.com"><link rel="stylesheet" href="/a.css">';
   assert.deepEqual(extractLinks(html), ["/a.css"]);
 });
+
+test("the paths the CDN's edge injects on the live site are not crawled (Cloudflare e-mail protection)", () => {
+  assert.deepEqual(extractLinks('<a href="/cdn-cgi/l/email-protection#abc">mail</a><a href="/posts/a/">a</a>'), ["/posts/a/"]);
+});
