@@ -1243,5 +1243,37 @@
    "costUsd": 0,
    "note": "Made for this post with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Time measured on a busy machine."
   }
+ },
+ "refusals-doors": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1024,
+  "blur": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAADQBACdASoYABgAPu1eqE4ppKOiMBgMATAdiWMAtsgQ74N2tEgzABaw740f3VDGAAD+i2bo/BkUo89nwf8rZg2rzptSKyO6Mb4l7DwV/cUniOwKudVBOekgj/W/sW/dpCPoMgb3XmF9qdwqjNh3cPV2K+wAAA==",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/censored-and-uncensored-models/refusals-doors-480.bb3e6851ee.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/censored-and-uncensored-models/refusals-doors-960.89a53a9319.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/censored-and-uncensored-models/refusals-doors-1024.5b8e34465d.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024×1024",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "Two plain wooden doors side by side in a quiet white corridor, the left one closed with a small brass lock, the right one slightly open with soft daylight coming through the gap, minimal editorial architecture photograph, calm, symmetrical. No people, no text, no lettering, no logos.",
+   "seed": "2026",
+   "size": "1024×1024",
+   "seconds": 89,
+   "costUsd": 0,
+   "note": "Made for this post with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id."
+  }
  }
 }
