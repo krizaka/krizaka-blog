@@ -6,7 +6,7 @@ import { Button } from "@krizaka/ui/button";
 import { CardGrid } from "@krizaka/ui/card-grid";
 import { EmptyState } from "@krizaka/ui/empty-state";
 import { LinkCard } from "@krizaka/ui/link-card";
-import { format } from "@/lib/i18n";
+import { format } from "@/lib/locale";
 import { useI18n } from "../I18nProvider";
 import { useSaved } from "./useSaved";
 

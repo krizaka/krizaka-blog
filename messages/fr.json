@@ -357,12 +357,19 @@
     "invalidLead": "Il a peut-être été copié en partie. Utilisez le lien de désabonnement au bas du dernier courriel reçu."
   },
   "feedPage": {
-    "title": "Ceci est le flux du Blogue Krizaka",
-    "lead": "Un flux se lit dans un lecteur de flux : il montre chaque nouveau billet dès sa publication, sans compte et sans pistage.",
-    "copy": "Copiez cette adresse dans votre lecteur (Feedly, NetNewsWire, Inoreader, Thunderbird…) :",
+    "eyebrow": "Suivre",
+    "title": "Suivre le Blog Krizaka",
+    "lead": "Recevez chaque nouveau billet par courriel, ou ajoutez le flux à un lecteur. Sans compte et sans pistage, dans les deux cas.",
+    "emailTitle": "Par courriel",
+    "emailLead": "Un courriel quand un billet est publié, dans votre langue. Rien d'autre, et vous partez en un clic.",
+    "rssTitle": "Avec le RSS",
+    "rssWhat": "Le RSS est un format ouvert : un lecteur de flux (Feedly, NetNewsWire, Inoreader, Thunderbird…) va chercher chaque nouveau billet pour vous, sans compte chez nous. Collez cette adresse dans votre lecteur.",
+    "addressLabel": "Adresse du flux (RSS)",
+    "copy": "Copier",
+    "copied": "Copié",
+    "copyFallback": "Copiez l'adresse du flux :",
+    "atom": "La version Atom du flux",
     "latest": "Derniers billets",
-    "back": "← Retour au blogue",
-    "email": "Plutôt par courriel ? S'abonner",
-    "reader": "C'est quoi, un lecteur de flux ?"
+    "reader": "Qu'est-ce qu'un lecteur de flux ?"
   }
 }

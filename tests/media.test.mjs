@@ -4,12 +4,13 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
-import { CDN, mediaProblems, postProblems, readContext } from "../scripts/content-rules.mjs";
+import { CDN, mediaProblems, postProblems, readContext, renditionProblems, renditionWidths } from "../scripts/content-rules.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ctx = readContext(root);
 const ok = { title: "T", description: "D", date: "2026-10-16", tags: ["ai"], draft: true };
-const image = { kind: "image", width: 960, height: 1200, blur: "data:image/webp;base64,AAAA", srcs: [{ w: 480, url: `${CDN}shared/a-480.0123456789.webp` }], made: { model: "M", runId: "25948442-7c68-4e66-94d6-39cd8b96438d" } };
+const renditions = { avif: [480, 768, 960].map((w) => ({ w, url: `${CDN}shared/a-${w}.0123456789.avif` })), webp: [480, 768, 960].map((w) => ({ w, url: `${CDN}shared/a-${w}.0123456789.webp` })) };
+const image = { kind: "image", width: 960, height: 1200, blur: "data:image/webp;base64,AAAA", srcs: [{ w: 480, url: `${CDN}shared/a-480.0123456789.webp` }], renditions, made: { model: "M", runId: "25948442-7c68-4e66-94d6-39cd8b96438d" } };
 
 test("the media library of the repository follows its rules", () => assert.deepEqual(mediaProblems(ctx.media), []));
 test("an image needs its size (no layout shift), a blur placeholder and CDN urls", () => {
@@ -69,4 +70,30 @@ test("every post that names a media wears it in both languages", () => {
     const ids = (s) => [...s.matchAll(/<(?:Figure|Clip)\b[^>]*?\bid="([^"]+)"/g)].map((m) => m[1]).sort();
     assert.deepEqual(ids(readFileSync(fr, "utf8")), ids(readFileSync(join(dir, f), "utf8")), f);
   }
+});
+
+test("renditions: 480, 768, 1200 and 1600 where the source is that wide, then its own width, never upscaled", () => {
+  assert.deepEqual(renditionWidths(1024), [480, 768, 1024]);
+  assert.deepEqual(renditionWidths(1200), [480, 768, 1200]);
+  assert.deepEqual(renditionWidths(1280), [480, 768, 1200, 1280]);
+  assert.deepEqual(renditionWidths(2000), [480, 768, 1200, 1600, 2000]);
+  assert.deepEqual(renditionWidths(512), [480, 512]);
+});
+test("a rendition set needs both formats at exactly those widths, on the CDN", () => {
+  assert.deepEqual(renditionProblems("a-b", image), []);
+  assert.equal(renditionProblems("a-b", { ...image, renditions: undefined }).length, 1);
+  assert.equal(renditionProblems("a-b", { ...image, renditions: { webp: renditions.webp } }).length, 1);
+  assert.equal(renditionProblems("a-b", { ...image, renditions: { ...renditions, avif: renditions.avif.slice(1) } }).length, 1);
+  assert.equal(renditionProblems("a-b", { ...image, renditions: { ...renditions, avif: renditions.avif.map((x) => ({ ...x, url: x.url.replace("avif", "webp") })) } }).length, 3);
+  assert.equal(renditionProblems("a-b", { ...image, width: 1360 }).length, 2);
+});
+test("a post whose cover has no renditions is refused", () => {
+  const c = { media: { pic: { ...image, renditions: undefined } }, series: [] };
+  assert.equal(postProblems("x.en.mdx", { ...ok, cover: "pic" }, "text", c).length, 1);
+});
+test("every cover of the repository has its renditions (so the page can emit a srcset)", () => {
+  const dir = join(root, "content/posts");
+  const covers = new Set(readdirSync(dir).map((f) => matter(readFileSync(join(dir, f), "utf8")).data.cover).filter(Boolean));
+  assert.ok(covers.size > 0);
+  for (const id of covers) assert.deepEqual(renditionProblems(id, ctx.media[id]), []);
 });

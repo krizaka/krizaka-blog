@@ -27,3 +27,17 @@ test("a NaN or an undefined in the text is refused (not in scripts)", () => {
   assert.match(metaProblems(page({ body: "<h1>T</h1><p>(undefined s of generation)</p>" }))[0], /undefined/);
   assert.deepEqual(metaProblems(page({ body: '<h1>T</h1><script>self.x = undefined</script>' })), []);
 });
+
+/* The cover is the LCP of a post: responsive (`srcset` + `sizes`), AVIF first, fetched at high priority and preloaded. */
+import { coverProblems } from "../scripts/check-meta.mjs";
+const avif = "https://c.example/blog/a-480.1.avif 480w, https://c.example/blog/a-768.2.avif 768w, https://c.example/blog/a-1024.3.avif 1024w";
+const webp = avif.replaceAll("avif", "webp");
+const good = `<html><head><link rel="preload" as="image" imagesrcset="${avif}" imagesizes="100vw" type="image/avif" fetchpriority="high"/></head><body><article><picture><source type="image/avif" srcSet="${avif}" sizes="100vw"/><img class="bl-cover bl-img" src="https://c.example/blog/a-768.2.webp" srcSet="${webp}" sizes="100vw" width="1024" height="1024" alt="x" fetchPriority="high"/></picture></article></body></html>`;
+test("a post's cover with AVIF and WebP renditions, high priority and a preload has no problem", () => assert.deepEqual(coverProblems(good), []));
+test("a cover without a srcset, an AVIF source, a high priority or a preload is reported", () => {
+  assert.equal(coverProblems(good.replace(/ srcSet="[^"]*webp 1024w"/, "")).length, 1);
+  assert.equal(coverProblems(good.replace(/<source[^>]*>/, "")).length, 1);
+  assert.equal(coverProblems(good.replace('fetchPriority="high"', "")).length, 1);
+  assert.equal(coverProblems(good.replace(/<link[^>]*>/, "")).length, 1);
+  assert.equal(coverProblems("<html><body><h1>x</h1></body></html>").length, 1, "a post page has a cover");
+});

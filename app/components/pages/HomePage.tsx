@@ -25,7 +25,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
   /* Three posts first: the newest (or a pinned one, `featured: true`) as the large card, the next two beside it. */
   const [featured, ...second] = featuredPosts(locale, 3);
   const rest = posts.filter((p) => p !== featured && !second.includes(p));
-  const feed = `${locale === "en" ? "" : "/fr"}/feed.xml`;
+  const feed = `${locale === "en" ? "" : "/fr"}/feed/`;
   return (
     <>
       <PageHero eyebrow={t.home.eyebrow} title={t.home.title} lead={t.home.lead} linkAs={Link} />

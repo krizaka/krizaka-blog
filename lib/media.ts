@@ -29,8 +29,10 @@ export type Made = {
   note?: string;
   source?: string;
 };
-export type ImageMedia = { kind: "image"; width: number; height: number; blur: string; srcs: { w: number; url: string }[]; made?: Made };
-export type VideoMedia = { kind: "video"; width: number; height: number; blur: string; poster: string; mp4: string; webm: string; bytes?: { mp4: number; webm: number }; made?: Made };
+/** The sizes a picture is sold in, per format (scripts/gen-renditions.mjs): AVIF for the browsers that read it, WebP for the rest. */
+export type Renditions = { avif: { w: number; url: string }[]; webp: { w: number; url: string }[] };
+export type ImageMedia = { kind: "image"; width: number; height: number; blur: string; srcs: { w: number; url: string }[]; renditions?: Renditions; made?: Made };
+export type VideoMedia = { kind: "video"; width: number; height: number; blur: string; poster: string; mp4: string; webm: string; bytes?: { mp4: number; webm: number }; renditions?: Renditions; made?: Made };
 export type Media = ImageMedia | VideoMedia;
 
 /** The library as read, with every blur placeholder checked to be a webp data URL (it ends up in a CSS `url()`). */
@@ -43,10 +45,19 @@ export function mediaOf(id: string): Media {
   if (!m) throw new Error(`lib/media.json has no media "${id}"`);
   return m;
 }
-/** The image a card or a hero shows for a media id: the picture itself, or a clip's poster. */
-export function coverOf(id: string): { src: string; srcSet?: string; width: number; height: number; blur: string } {
+export type Cover = { src: string; srcSet?: string; avifSrcSet?: string; width: number; height: number; blur: string };
+const set = (l: { w: number; url: string }[]) => l.map((s) => `${s.url} ${s.w}w`).join(", ");
+/** The image a card or a hero shows for a media id: the picture itself, or a clip's poster. With renditions, `srcSet` is the WebP set,
+    `avifSrcSet` the AVIF one (a <picture> offers it first) and `src` the WebP at 768 px (the fallback); without, the library's own sizes. */
+export function coverOf(id: string): Cover {
   const m = mediaOf(id);
+  const r = m.renditions;
+  if (r && r.webp.length > 0) {
+    const webp = [...r.webp].sort((a, b) => a.w - b.w);
+    const src = (webp.find((s) => s.w >= 768) ?? webp[webp.length - 1]).url;
+    return { src, srcSet: set(webp), avifSrcSet: r.avif.length ? set([...r.avif].sort((a, b) => a.w - b.w)) : undefined, width: m.width, height: m.height, blur: m.blur };
+  }
   if (m.kind === "video") return { src: m.poster, width: m.width, height: m.height, blur: m.blur };
   const sorted = [...m.srcs].sort((a, b) => a.w - b.w);
-  return { src: (sorted.find((s) => s.w >= 960) ?? sorted[sorted.length - 1]).url, srcSet: sorted.map((s) => `${s.url} ${s.w}w`).join(", "), width: m.width, height: m.height, blur: m.blur };
+  return { src: (sorted.find((s) => s.w >= 960) ?? sorted[sorted.length - 1]).url, srcSet: set(sorted), width: m.width, height: m.height, blur: m.blur };
 }

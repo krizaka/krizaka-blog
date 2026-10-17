@@ -53,6 +53,24 @@ export function metaProblems(html) {
   return out;
 }
 
+/** A post page's cover (the LCP): inside a <picture> whose AVIF source and WebP <img> both carry a srcset of at least three widths and a
+    sizes, fetched at high priority and preloaded in the head. The problems; an empty list when it is fine. */
+export function coverProblems(html) {
+  const img = html.match(/<img\b[^>]*\bclass="[^"]*\bbl-cover\b[^"]*"[^>]*>/i)?.[0];
+  if (!img) return ["no cover image (img.bl-cover)"];
+  const out = [];
+  const attr = (tag, name) => tag.match(new RegExp(`\\s${name}="([^"]*)"`, "i"))?.[1];
+  const widths = (set) => (set ?? "").split(",").filter((c) => /\s\d+w\s*$/.test(c)).length;
+  if (widths(attr(img, "srcset")) < 3) out.push("the cover's <img> needs a srcset of at least three widths");
+  if (!attr(img, "sizes")) out.push("the cover's <img> needs sizes");
+  if (!/^high$/i.test(attr(img, "fetchpriority") ?? "")) out.push('the cover is the LCP: fetchpriority="high"');
+  const source = html.match(/<source\b[^>]*type="image\/avif"[^>]*>/i)?.[0];
+  if (!source || widths(attr(source, "srcset")) < 3) out.push("the cover needs an AVIF <source> with a srcset of at least three widths");
+  const link = html.match(/<link\b[^>]*rel="preload"[^>]*as="image"[^>]*>/i)?.[0];
+  if (!link || widths(attr(link, "imagesrcset")) < 3) out.push("the cover is preloaded in the head (imagesrcset)");
+  return out;
+}
+
 function* pages(dir, root = dir) {
   for (const name of readdirSync(dir)) {
     const p = join(dir, name);
@@ -69,7 +87,10 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   let n = 0;
   for (const file of pages(dir)) {
     n++;
-    for (const p of metaProblems(readFileSync(file, "utf8"))) problems.push(`/${relative(dir, file).replace(/index\.html$/, "")}: ${p}`);
+    const html = readFileSync(file, "utf8");
+    const rel = `/${relative(dir, file).replace(/index\.html$/, "")}`;
+    for (const p of metaProblems(html)) problems.push(`${rel}: ${p}`);
+    if (/^\/(fr\/)?posts\/[^/]+\/$/.test(rel)) for (const p of coverProblems(html)) problems.push(`${rel}: ${p}`);
   }
   if (problems.length) {
     console.error(problems.join("\n"));

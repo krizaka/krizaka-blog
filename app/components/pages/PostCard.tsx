@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Card } from "@krizaka/ui/card";
-import { LazyImg } from "./LazyImg";
+import { CoverImage } from "./CoverImage";
 import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
 import { coverOf } from "@/lib/media";
 import type { Post } from "@/lib/posts";
@@ -16,23 +16,17 @@ import { seriesName } from "./SeriesPage";
 export function PostCard({ post, locale, feature = false, priority = false }: { post: Post; locale: Locale; feature?: boolean; priority?: boolean }) {
   const t = getDictionary(locale);
   const cover = post.cover ? coverOf(post.cover) : undefined;
-  /* The featured card's picture is the page's first: fetched at once. The others when they come near the window. */
-  const Img = priority ? "img" : LazyImg;
+  /* The featured card's picture is the page's first: fetched at once (and preloaded). The others when they come near the window. */
   return (
     <Card.Root className={`bl-card${feature ? " bl-card-feature" : ""}`}>
       <Card.Media aspect="video">
         {cover ? (
-          <Img
+          <CoverImage
             className="bl-cover-img"
-            src={cover.src}
-            srcSet={cover.srcSet}
+            cover={cover}
             sizes={feature ? "(min-width: 64rem) 640px, 100vw" : "(min-width: 64rem) 360px, (min-width: 40rem) 50vw, 100vw"}
-            width={cover.width}
-            height={cover.height}
             alt=""
-            loading={priority ? "eager" : "lazy"}
-            decoding="async"
-            fetchPriority={priority ? "high" : "low"}
+            priority={priority}
           />
         ) : (
           <Card.Image fallback={<span className="bl-cover-fallback" aria-hidden />} />

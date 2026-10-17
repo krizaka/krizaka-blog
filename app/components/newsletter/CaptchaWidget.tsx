@@ -3,9 +3,12 @@
 /* The CAPTCHA of the newsletter form (Cloudflare Turnstile, managed mode, widget `krizaka-forms`), the same widget as
    krizaka.com's contact form (krizaka-com app/components/CaptchaWidget.tsx). Renders nothing when no site key is configured
    (local dev, tests). The token goes up through `onToken` (null when it expires); the server verifies it
-   (lib/captcha.ts). The widget's theme follows the site's: `html.light` or dark. */
+   (lib/captcha.ts). The widget's theme follows the site's: `html.light` or dark.
+   **Nothing loads with the page**: Cloudflare's script (and the challenge frame it opens, ~150 KB and a dozen requests) is
+   fetched only when the form scrolls into view or takes focus (`whenWanted`), never at the first request. */
 
 import { useEffect, useRef } from "react";
+import { whenWanted } from "@/lib/when-wanted";
 
 export const CAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_ABUSE_CAPTCHA_SITE_KEY ?? "";
 
@@ -62,16 +65,24 @@ export default function CaptchaWidget({ onToken, label, language }: { onToken: (
         "error-callback": () => onToken(null),
       });
     };
-    loadScript().then(mount, () => onToken(null));
-    // The theme toggle flips `html.light`: draw the widget again in the other theme.
-    const watcher = new MutationObserver(() => {
-      onToken(null);
-      mount();
-    });
-    watcher.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    let watcher: MutationObserver | null = null;
+    const start = () => {
+      loadScript().then(() => {
+        mount();
+        // The theme toggle flips `html.light`: draw the widget again in the other theme.
+        if (cancelled) return;
+        watcher = new MutationObserver(() => {
+          onToken(null);
+          mount();
+        });
+        watcher.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+      }, () => onToken(null));
+    };
+    const stopWaiting = whenWanted(el.closest("form") ?? el, start);
     return () => {
       cancelled = true;
-      watcher.disconnect();
+      stopWaiting();
+      watcher?.disconnect();
       if (id && window.turnstile) window.turnstile.remove(id);
     };
   }, [language, onToken]);

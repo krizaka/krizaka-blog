@@ -167,6 +167,44 @@
    "seconds": 80,
    "costUsd": 0,
    "source": "orazaka-web-client src/features/landing/utils/gallery.ts"
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-picnic-480.21c9b3c327.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-picnic-768.b88a42c1f2.avif"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-picnic-1200.b97462be9a.avif"
+    },
+    {
+     "w": 1360,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-picnic-1360.fea68d65d1.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-picnic-480.d8e4de8b50.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-picnic-768.738d2970f6.webp"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-picnic-1200.9f37770535.webp"
+    },
+    {
+     "w": 1360,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-picnic-1360.77e68c6282.webp"
+    }
+   ]
   }
  },
  "gallery-mtl-ruelle": {
@@ -269,6 +307,36 @@
    "seconds": 103,
    "costUsd": 0,
    "source": "orazaka-web-client src/features/landing/utils/gallery.ts"
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-still-tea-480.9cff62a3ce.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-still-tea-768.0a780992f2.avif"
+    },
+    {
+     "w": 1024,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-still-tea-1024.9f6b751837.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-still-tea-480.3a8eee1b3c.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-still-tea-768.d0deb961cf.webp"
+    },
+    {
+     "w": 1024,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-still-tea-1024.d58f104dbd.webp"
+    }
+   ]
   }
  },
  "compare-moroccan-riad-flux": {
@@ -563,6 +631,36 @@
    "seconds": 8,
    "runId": "3961f27e-e269-413f-817b-9b166579554e",
    "source": "orazaka-web-client model-compare.ts"
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-montreal-winter-sd35-480.e33b3d4c01.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-montreal-winter-sd35-768.dcc70922e8.avif"
+    },
+    {
+     "w": 1024,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-montreal-winter-sd35-1024.67c25f1c71.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-montreal-winter-sd35-480.24eef16e66.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-montreal-winter-sd35-768.dabe6a24bb.webp"
+    },
+    {
+     "w": 1024,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/compare-montreal-winter-sd35-1024.4b557ca458.webp"
+    }
+   ]
   }
  },
  "compare-alps-dawn-flux": {
@@ -751,6 +849,36 @@
    "runId": "bd30798f-12fb-4d5b-95ed-cfe0414f37ee",
    "sound": "music bed made by Orazaka (Studio video-sound, ACE-Step 1.5, MIT), -14 LUFS, AAC",
    "source": "orazaka-web-client gallery-clips.ts"
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-old-port-480.c24c063536.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-old-port-768.93f08ff14f.avif"
+    },
+    {
+     "w": 832,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-old-port-832.3b48435782.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-old-port-480.69e43c77ff.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-old-port-768.fa16e5e94a.webp"
+    },
+    {
+     "w": 832,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-old-port-832.82488428e5.webp"
+    }
+   ]
   }
  },
  "clip-montreal": {
@@ -901,6 +1029,44 @@
    "runId": "57ccad61-e1dd-4ff2-aeab-2c9645908a70",
    "sound": "music bed made by Orazaka (Studio video-sound, ACE-Step 1.5, MIT), -14 LUFS, AAC",
    "source": "orazaka-web-client gallery-clips.ts"
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-yomizaka-contracts-480.e81d71b2d2.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-yomizaka-contracts-768.9dfb444955.avif"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-yomizaka-contracts-1200.dd1493c4bb.avif"
+    },
+    {
+     "w": 1280,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-yomizaka-contracts-1280.3166e1a6c2.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-yomizaka-contracts-480.280d99fd88.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-yomizaka-contracts-768.505eb92245.webp"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-yomizaka-contracts-1200.6a8d8f87dd.webp"
+    },
+    {
+     "w": 1280,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/clip-yomizaka-contracts-1280.dbcd1fbe4e.webp"
+    }
+   ]
   }
  },
  "anatomy-flux-l0": {
@@ -1146,6 +1312,36 @@
    "seconds": 89,
    "costUsd": 0,
    "note": "Made for this post with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Time measured on a busy machine."
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/understanding-ai-before-you-start/basics-library-480.2af0db237c.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/understanding-ai-before-you-start/basics-library-768.2c46c59b06.avif"
+    },
+    {
+     "w": 1024,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/understanding-ai-before-you-start/basics-library-1024.6db7b17e06.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/understanding-ai-before-you-start/basics-library-480.428873a03a.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/understanding-ai-before-you-start/basics-library-768.731f870b24.webp"
+    },
+    {
+     "w": 1024,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/understanding-ai-before-you-start/basics-library-1024.2cac3218d0.webp"
+    }
+   ]
   }
  },
  "basics-adapter": {
@@ -1245,6 +1441,36 @@
    "seconds": 7.5,
    "runId": "87694bea-beb7-48c4-8baf-979f7d01422a",
    "note": "The cover of this post; a first run of the same Studio (0fdc980b-1ba6-4ff8-8a8e-b9093b465030, 512×512, a busier prompt) was not kept."
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/payments-and-high-risk-industries/payments-terminal-ledger-480.631e85c88a.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/payments-and-high-risk-industries/payments-terminal-ledger-768.71a6a82a6f.avif"
+    },
+    {
+     "w": 1024,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/payments-and-high-risk-industries/payments-terminal-ledger-1024.8c984924f6.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/payments-and-high-risk-industries/payments-terminal-ledger-480.4e470aa35f.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/payments-and-high-risk-industries/payments-terminal-ledger-768.f5519b7afb.webp"
+    },
+    {
+     "w": 1024,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/payments-and-high-risk-industries/payments-terminal-ledger-1024.1f45df8b00.webp"
+    }
+   ]
   }
  },
  "refusals-robots": {
@@ -1277,6 +1503,36 @@
    "seconds": 88,
    "costUsd": 0,
    "note": "Made for this post with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id."
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/censored-and-uncensored-models/refusals-robots-480.6fde47b090.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/censored-and-uncensored-models/refusals-robots-768.f318aec2db.avif"
+    },
+    {
+     "w": 1024,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/censored-and-uncensored-models/refusals-robots-1024.89d81fa319.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/censored-and-uncensored-models/refusals-robots-480.09a7f8571f.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/censored-and-uncensored-models/refusals-robots-768.4f732568ba.webp"
+    },
+    {
+     "w": 1024,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/censored-and-uncensored-models/refusals-robots-1024.839c2c15f4.webp"
+    }
+   ]
   }
  },
  "policy-flow": {
@@ -1317,6 +1573,36 @@
     "w": 1200,
     "url": "https://krizaka-assets.b-cdn.net/site/blog/from-vibe-coding-to-agentic-engineering/agentic-loop-1200.095cad0b26.webp"
    }
-  ]
+  ],
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/from-vibe-coding-to-agentic-engineering/agentic-loop-480.ffccfdb84e.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/from-vibe-coding-to-agentic-engineering/agentic-loop-768.f720ef8973.avif"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/from-vibe-coding-to-agentic-engineering/agentic-loop-1200.3f32f321cc.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/from-vibe-coding-to-agentic-engineering/agentic-loop-480.def9e4b854.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/from-vibe-coding-to-agentic-engineering/agentic-loop-768.3c084d71aa.webp"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/from-vibe-coding-to-agentic-engineering/agentic-loop-1200.c5fb772bb3.webp"
+    }
+   ]
+  }
  }
 }
