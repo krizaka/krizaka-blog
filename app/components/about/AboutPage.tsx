@@ -25,7 +25,7 @@ export function aboutJsonLd(locale: Locale) {
   };
 }
 
-/* /about/: who writes the blog, as a short story (Oujda → Grenoble → Montréal). Every fact is in
+/* /about/: who writes the blog, as a short story (Montréal since 2018). Every fact is in
    content/authors/oussama.json with its source; no photo until he gives one for this — the slot shows the Krizaka mark. */
 export function AboutPage({ locale }: { locale: Locale }) {
   const a = getDictionary(locale).about;
