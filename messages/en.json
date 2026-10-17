@@ -145,7 +145,8 @@
       "payments": "Payments",
       "basics": "Basics",
       "ui": "UI",
-      "security": "Security"
+      "security": "Security",
+      "integration": "Integration"
     },
     "countOne": "1 post",
     "seo": {
@@ -204,6 +205,10 @@
       "security": {
         "title": "Security, secrets and accounts — Krizaka Blog",
         "description": "Keeping a small software company's keys and accounts out of the code, and automating around them with agents and CI."
+      },
+      "integration": {
+        "title": "AI engine integration: connectors, APIs, MCP — Krizaka Blog",
+        "description": "How a product plugs into an AI engine: APIs, webhooks, MCP, OAuth, what the industry does and what really runs on our side."
       }
     }
   },

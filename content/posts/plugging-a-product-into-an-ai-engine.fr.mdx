@@ -1,0 +1,114 @@
+---
+title: "Brancher un produit sur un moteur d'IA : les connecteurs, sans magie"
+description: "Comment Yomizaka parle à Orazaka : ce qui part, ce qui revient, ce qui est difficile (versions, jobs longs, pannes, vie privée), le côté analyste, ce que fait l'industrie, et ce que nous avons choisi."
+seoTitle: "Brancher un produit sur un moteur d'IA : connecteurs, MCP"
+seoDescription: "Intégration IA : API, webhooks, MCP, OAuth. Comment un produit et un moteur d'IA se parlent, ce qui est difficile, et ce qui tourne vraiment chez nous."
+date: 2026-10-17
+publishedAt: "2026-10-17T16:50:00-04:00"
+tags: [orazaka, yomizaka, ai, integration]
+author: oussama
+draft: false
+cover: connectors-patchbay
+coverAlt: "Un panneau de brassage de studio, des câbles de couleurs différentes branchés avec soin dans des rangées de prises, lumière chaude"
+---
+
+Dans le code de Yomizaka, il n'y a aucun appel à un modèle d'IA. Pas un seul. Pourtant, Yomizaka lit un bail et vous dit quelles clauses posent problème. Ce n'est pas un oubli, c'est la règle que je me suis donnée dès le début : un produit ne parle jamais à un modèle. Il parle à un moteur, et le moteur, [Orazaka](https://dev.orazaka.com), choisit le modèle.
+
+Les raisons sont simples. Un modèle coûte de l'argent, et quelqu'un doit en tenir le compte. Un modèle change : celui d'aujourd'hui ne sera pas celui de dans six mois, et je ne veux pas rouvrir cinq produits pour ça. Un document de locataire ne doit pas partir n'importe où. Et quand on demande « qu'est-ce qui a vraiment tourné ? », il faut une réponse écrite.
+
+Voici comment les deux se branchent, ce qui a été dur, et comment les autres font. Je ne décris que ce qui tourne, et je dis « pas encore » sinon.
+
+## Ce qui part, ce qui revient
+
+<Figure id="connectors-flow" alt="Schéma de deux boîtes, le produit et le moteur, reliées par quatre flèches : le produit lance un Studio avec ses entrées ; le moteur répond avec un identifiant d'exécution, que le produit interroge jusqu'à la fin ; le produit envoie des événements anonymisés ; le moteur rend des indicateurs. Les webhooks et les flux d'événements de progression sont marqués « pas encore »" />
+
+Du produit vers le moteur, c'est un appel HTTPS ordinaire. Yomizaka envoie au moteur le texte du bail, la juridiction et une date, « les règles en vigueur le ». Cette date compte : rejouer une exécution avec la même date rejoue les mêmes règles, et un bail signé en 2025 est jugé avec les règles de 2025. L'appel porte une clé de service, propre au produit, que le point d'entrée du moteur échange contre une session. Une clé peut être limitée à des chemins précis (une méthode, un chemin, et tout le reste est refusé). Une clé révoquée cesse de marcher tout de suite, parce que cet échange n'est volontairement pas mis en cache.
+
+Voici l'essentiel du client de Yomizaka, raccourci. C'est le seul endroit du produit qui parle au moteur.
+
+```ts
+const base = "https://dev.orazaka.com/edge";
+const headers = {
+  authorization: `Bearer ${process.env.AI_API_KEY}`, // clé de service, jamais dans le code
+  "content-type": "application/json",
+};
+
+// 1. Lancer une exécution du Studio « compliance-check »
+const started = await fetch(`${base}/api/v1/studios/compliance-check/runs`, {
+  method: "POST",
+  headers,
+  body: JSON.stringify({
+    inputs: { document: leaseText, jurisdiction: "QC", asOf: "2026-10-17" },
+  }),
+  signal: AbortSignal.timeout(20_000),
+});
+const run = runSchema.parse(await started.json()); // refusé si la forme n'est pas celle attendue
+
+// 2. Garder l'identifiant et la version du Studio, puis interroger plus tard
+await save({ runId: run.id, blueprintVersion: run.blueprintVersion });
+const current = await fetch(`${base}/api/v1/studios/runs/${run.id}`, { headers });
+```
+
+Du moteur vers le produit, la réponse arrive tout de suite avec un identifiant d'exécution et un statut. Le produit garde cet identifiant, affiche l'identifiant à l'écran, puis redemande l'exécution tant qu'elle n'est pas terminée. Sur dev, une exécution de contrôle d'un bail, enregistrée sur notre site, a pris environ quatre secondes : trois étapes, dont une seule appelle un modèle.
+
+Ce qui revient est lu avec prudence. Le produit vérifie la forme du rapport avec un schéma, et une forme qu'il ne reconnaît pas devient « rien », jamais une supposition.
+
+Deux choses ne sont pas là, et il vaut mieux le dire. Le moteur ne pousse pas encore ses événements : pas de flux de progression, pas de webhooks signés pour dire « c'est fini ». C'est une demande ouverte ([orazaka#189](https://github.com/krizaka/orazaka/issues/189)), le produit interroge donc. Et l'appel qui lance une exécution n'a pas encore de clé d'idempotence : si le réseau coupe après que le moteur a accepté, une exécution peut exister sans que le produit le sache. Yomizaka se protège d'un double clic (une seule analyse en cours par document et par Studio), pas de ça.
+
+Enfin, les Studios sont des données. Un Studio est un fichier qui déclare ses entrées dans un schéma. Quand un champ est un choix de modèle, il ne contient pas la liste : il dit « un des modèles du catalogue pour ce type » (une clé `x-options`) et le moteur remplit le menu. Ajouter un modèle en base le fait apparaître dans les formulaires, sans nouvelle version. Ajouter une juridiction, c'est un fichier de règles, pas une ligne de moteur.
+
+## Ce qui est difficile
+
+**Les versions.** Un Studio a des versions. Quand un produit installe un Studio, il épingle la plus récente, et la montée de version n'est jamais automatique. Chaque analyse de Yomizaka garde la version qui l'a produite. C'est le côté serveur à serveur ; pour les applications mobiles, une règle de version minimale et de mise à jour forcée est encore une proposition ([.github#75](https://github.com/krizaka/.github/issues/75)).
+
+**Les jobs longs.** Un contrôle de bail dure quatre secondes, une vidéo dure des minutes. L'interrogation tient pour l'un et pas pour l'autre : pendant le remplissage de la base d'Orochia, interroger environ 360 exécutions par passage aurait dépassé le quota de la clé. C'est la raison de la demande de flux et de webhooks.
+
+**Les pannes, et qui paie.** J'ai appris celle-ci à mes dépens. Le contrôle de conformité avait une étape de jugement par modèle, réglée pour continuer si le modèle tombait, afin de garder un rapport presque entièrement calculé par des règles. Le défaut : un refus volontaire du modèle ressemblait exactement à une panne, et était avalé dans un rapport que l'utilisateur croirait complet. Depuis, un échec dit pourquoi ([ADR-053](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-053-typed-failure-cause.md)), et la règle de facturation tient en une phrase : on facture le travail bien fait, jamais notre propre échec. Une panne du moteur rend les crédits. Côté produit, chaque refus devient un code stable, et le client d'Orochia cesse d'appeler pendant une minute après trois échecs de suite : l'IA est un plus, jamais une dépendance. Ce que coûte un résultat raté, et qui le paie, j'en parle dans [le vrai coût d'une image](/fr/posts/real-cost-of-an-image-paying-for-intent/).
+
+**La vie privée.** Ce qui quitte le produit, c'est le texte du bail (ou un PDF d'au plus 1 Mo pour l'authenticité). Yomizaka garde le document chez lui et ne conserve, pour chaque analyse, que les paramètres, pas le texte. Côté moteur, le Studio de conformité est classé « sensible », et la durée de conservation suit cette classe jusqu'aux tâches ([ADR-065](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-065-retention-by-class-and-assets-by-id.md)). La durée exacte sur le moteur de dev, je ne l'ai pas mesurée : je ne l'écris pas.
+
+**Tester entre dépôts.** Ce qui se casse le plus sournoisement, c'est ce qui change d'un côté sans que l'autre le sache. Nous avons connu la version bête : une mise à jour d'un composant qui désynchronise le fichier de verrouillage de tout l'espace de travail ([orazaka#64](https://github.com/krizaka/orazaka/issues/64)). Pour l'API, un fichier de contrat enregistré est gardé en deux exemplaires, côté moteur et côté Orochia ; chacun a ses tests contre ce fichier, et leurs empreintes sont aujourd'hui identiques. Aucun test ne compare encore les deux copies : c'est une convention. Ce qui nous protège davantage, c'est le pipeline du moteur, qui clone tous les dépôts et construit l'ensemble d'un coup, la nuit aussi. Et Yomizaka refuse de se construire sans ses exécutions enregistrées.
+
+**Voir ce qui a tourné.** Chaque exécution a un identifiant, un état par étape avec son nombre de tentatives, et la version du Studio. L'écran de Yomizaka montre l'identifiant, et le journal des requêtes du moteur est gardé trente jours.
+
+## Le côté de l'analyste
+
+Un produit n'a pas seulement besoin de faire lire des documents, il veut savoir ce que ses gens font. Chez nous, ça passe par le même moteur ([ADR-081](https://github.com/krizaka/orazaka-packs/blob/main/docs/adr/ADR-081-analytics-service.md)). Le produit envoie des événements, et il n'envoie jamais un identifiant d'utilisateur : il envoie un pseudonyme, une empreinte HMAC calculée avec une clé que lui seul détient. Le moteur ne peut pas la défaire.
+
+```json
+{
+  "events": [
+    { "id": "evt-8c1f", "kind": "view", "user": "3f1d2a9c…", "item": "video-12", "value": 80, "at": "2026-10-17T12:00:00Z" }
+  ]
+}
+```
+
+Les événements partent par lots (500 au plus), le moteur ignore ceux qu'il a déjà reçus (même `id`), et le produit les écrit dans une file locale dans la même transaction que l'action, pour ne rien perdre. En retour, l'analyste obtient des chiffres calculés à la lecture : indicateurs avec la période précédente, courbe par jour, éléments les plus aimés, cohortes par semaine, entonnoirs de deux à six étapes. Aucun chiffre n'est rendu pour moins de trois personnes différentes (k ≥ 3) : il est marqué comme supprimé, pas affiché petit. Les événements vieux de plus de 180 jours sont effacés, et un pseudonyme peut être effacé à la demande.
+
+Ce que l'analyste peut demander est donc limité, et c'est voulu : ces cinq formes, sur une période d'au plus un an, pour le produit lui-même. Pas de SQL libre, jamais deux produits croisés. Pour le reste, un Studio du même pack prend un CSV ou un JSON collé (20 000 caractères) et une question, puis répond en texte et en tableau de bord. Le modèle n'écrit jamais de code : il décrit l'interface en données (A2UI, version 0.9), avec un catalogue fermé de composants, et le client la valide avant de la dessiner ([ADR-082](https://github.com/krizaka/orazaka-packs/blob/main/docs/adr/ADR-082-data-driven-ui.md)). Là aussi, honnêtement : sur l'enregistrement que nous avons fait, le modèle par défaut a mal nommé des jours et écrit « 5x » pour un rapport de 15. Le rendu vérifie les formes, pas la vérité.
+
+Yomizaka n'envoie pas encore d'événements. Orochia est le premier à le faire.
+
+## Comment l'industrie fait
+
+Il y a sept réponses, et chacune est bonne quelque part.
+
+| Approche | Bonne pour | Là où ça fait mal | Chez nous |
+|:---|:---|:---|:---|
+| API REST décrite en [OpenAPI](https://spec.openapis.org/oas/latest.html), SDK | Un appel clair, outillé, typé | Le SDK vieillit, et il faut le tenir à jour dans chaque langage | Oui : un petit client par produit, pas de SDK partagé |
+| Webhooks ([Stripe](https://docs.stripe.com/webhooks)) | Être prévenu sans interroger | Doublons, ordre non garanti, signature à vérifier, reprises pendant des jours | Pas encore pour les exécutions |
+| Bus d'événements ([CloudEvents](https://cloudevents.io/), [AsyncAPI](https://www.asyncapi.com/docs)) | Plusieurs abonnés, découplage | Un composant de plus à exploiter | Un courtier interne entre services, jamais exposé |
+| iPaaS ([Zapier](https://zapier.com/apps), Make, [n8n](https://docs.n8n.io/)) | Brancher vite, sans développeur | La logique se cache dans des boîtes que personne ne versionne | Non |
+| Connecteurs ELT ([Airbyte](https://docs.airbyte.com/platform/understanding-airbyte/airbyte-protocol), [Fivetran](https://www.fivetran.com/connectors)) | Copier des tables vers un entrepôt | Ça déplace des données, ça ne répond pas à une question | Non |
+| [MCP](https://modelcontextprotocol.io/specification/2025-06-18) | Donner des outils et du contexte à un modèle | Chaque outil est du code qui s'exécute : consentement et confiance à gérer | Orazaka est un client MCP |
+| [OAuth 2.0](https://datatracker.ietf.org/doc/html/rfc6749) | Agir au nom d'un utilisateur, avec sa permission | Jetons à renouveler, consentement à expliquer | Pour la connexion des personnes ; les produits ont des clés de service |
+
+Un mot sur MCP, dont tout le monde parle : c'est un protocole (messages JSON-RPC 2.0) où un serveur offre des outils, des ressources et des modèles de requêtes, et où un client les branche à un modèle. La spécification dit elle-même que les outils sont de l'exécution de code arbitraire et que leurs descriptions ne sont pas dignes de confiance tant que le serveur ne l'est pas. Chez nous, Orazaka est un client MCP : avant un tour de conversation, il interroge les serveurs que l'administrateur a déclarés, et ceux de l'utilisateur. Je n'ai pas trouvé, dans le code et la documentation que j'ai relus, de serveur MCP qui exposerait nos Studios : un produit appelle le moteur par l'API de plus haut.
+
+## Comment nous faisons, et pourquoi
+
+Nous avons choisi une API HTTPS simple, avec une clé de service qui ne peut faire que ce qu'on lui a déclaré, des entrées décrites par un schéma, des réponses vérifiées à la frontière du produit, et l'interrogation pour attendre. C'est ennuyeux, et c'est voulu : n'importe quel produit peut s'y brancher avec un `fetch`.
+
+Nous avons refusé que le produit appelle un modèle, pour les quatre raisons du début. Nous avons refusé, pour l'instant, les webhooks et les flux : il faut les concevoir pour de bon (signatures, reprises, doublons), et la demande est ouverte. Nous avons refusé un SDK partagé entre dépôts : le moteur copie la forme d'une réponse au lieu de dépendre d'une bibliothèque commune, parce que deux dépôts liés par une dépendance se déploient ensemble, et nous voulons pouvoir les déployer séparément. Nous avons refusé les outils d'automatisation et les connecteurs de copie de tables, parce qu'aucun n'est conçu pour « fais tourner ce Studio et donne-moi la preuve ».
+
+Ce que ça coûte, je le sais. L'interrogation fait du bruit et ralentit les jobs longs. Une forme copiée peut dériver sans que personne le voie, d'où les tests des deux côtés, et le test de comparaison que je n'ai pas encore écrit. Et sans clé d'idempotence, une coupure au mauvais moment laisse une exécution orpheline. Si vous branchez un produit sur un moteur, écrivez d'abord ce que vous ne ferez pas, et vérifiez chaque réponse à la porte. Le reste se rajoute.
