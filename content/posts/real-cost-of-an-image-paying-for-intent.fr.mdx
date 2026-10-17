@@ -1,0 +1,101 @@
+---
+title: "Le vrai coût d'une image : payer l'intention, pas l'exécution"
+description: "Un ami m'a fait remarquer que je mesurais les exécutions, pas les résultats. Le coût d'un résultat accepté, la boucle d'un workflow, qui la paie, et mes chiffres mesurés."
+seoTitle: "Coût d'une image IA : payer le résultat accepté"
+seoDescription: "Coût par résultat accepté, boucle de workflow IA, LLM-as-judge et humain dans la boucle : combien coûte vraiment une image ou un clip, chiffres mesurés."
+date: 2026-10-17
+tags: [costs, measurements, orazaka, ai]
+author: oussama
+draft: true
+cover: gallery-mini-ironing
+coverAlt: "Deux figurines de grands-mères en kaftans brodés sur un tapis berbère : l'une repasse une nappe de lin blanc avec un petit fer en laiton, l'autre boit du thé à la menthe, un panier d'oranges à côté"
+series: measured
+part: 3
+---
+
+Un ami m'a écrit sur WhatsApp après avoir lu [mon billet sur ce que coûte la génération d'images et de vidéo](/fr/posts/what-image-and-video-generation-costs/). Il l'a trouvé intéressant, puis il a posé la question qui dérange : tu mesures l'exécution, pas le fait que le résultat corresponde à ce que tu voulais. Qui prend en charge le nombre d'exécutions, la fameuse boucle ? Si ton workflow fait cinq générations pour en rendre une, l'utilisateur, lui, a demandé une seule exécution. Alors le coût avec workflow, le coût sans workflow, et ce que l'applicatif ajoute, c'est quoi ?
+
+Il a raison. Dans mon tableau, la colonne « Réussies » voulait dire « le fichier est sorti », pas « c'est ce que je voulais ». Voici ma réponse, avec ce que j'ai vraiment mesuré, et ce que je n'ai pas mesuré.
+
+## Deux prix qu'on confond
+
+Le premier prix est celui d'une exécution : ce que facture l'API, ou le temps du GPU multiplié par son tarif. C'est celui de mon billet précédent, et il est facile à lire sur une facture.
+
+Le second est celui d'un résultat accepté, c'est-à-dire d'une image ou d'un clip dont la personne dit « oui, c'est ça ». Si une sortie sur *N* convient, on en fait en moyenne *N* pour en garder une. Et chaque sortie doit être regardée, par un modèle, par des règles ou par un humain.
+
+```text
+coût d'un résultat accepté = (coût d'une exécution + coût de la vérification) ÷ p
+nombre moyen d'essais      = 1 ÷ p          (p : la part des sorties qui conviennent)
+```
+
+Je choisis ici des p pour montrer la formule, je ne les ai pas mesurés. Avec les prix de mon billet : une image hébergée de <Model id="sd35-large">Stable Diffusion 3.5 Large</Model> coûte 0,08 $ et prend 8 secondes. Si une image sur trois convient, la bonne revient à 0,24 $ et 24 secondes de machine, sans compter les trois regards de la personne. Un clip hébergé de <Model id="wan22-t2v-a14b">Wan 2.2 A14B</Model> coûte 0,60 $ et 131 secondes. Si un clip sur quatre convient, on est à 2,40 $ et environ 9 minutes d'attente.
+
+Les dollars sont petits. Ce qui pèse, c'est l'attention : quatre clips regardés un par un, c'est quatre fois « je décris, j'attends, je juge ». Cette part, aucune facture d'API ne la montre.
+
+## La boucle, et ce qu'elle change
+
+Un workflow fait ce que ferait la personne à sa place : générer, comparer à l'intention, reprendre si ça ne va pas, s'arrêter quand c'est bon ou quand le budget est atteint.
+
+<Figure id="intent-loop" alt="Schéma de la boucle : l'intention mène à générer, puis à vérifier. Si la vérification passe, on obtient le résultat accepté. Sinon on reprend en corrigeant, avec un plafond d'essais qui s'arrête et rend la main à la personne." />
+
+La boucle coûte plus cher par requête. Elle peut coûter moins cher par bon résultat, à une condition : que la vérification soit beaucoup moins chère que ce qu'elle évite. La bonne place pour vérifier est avant l'étape chère : un aperçu rapide avant le clip complet, une image fixe avant la vidéo.
+
+Un exemple avec des prix que j'ai mesurés. Sur un H100 loué, un clip <Model id="wan22-i2v-a14b">Wan 2.2 I2V A14B</Model> prend 18 minutes et coûte 1,20 $. L'aperçu de <Model id="ltx-video">LTX-Video</Model> prend 14 secondes, soit 1 à 2 cents de temps de calcul. Je suppose, pour l'exemple, qu'un départ sur quatre donne le bon mouvement.
+
+| | Sans workflow | Avec workflow |
+|:---|---:|---:|
+| Clips complets (1,20 $, 18 min) | 4 | 1 |
+| Aperçus rapides (≈ 0,02 $, 14 s) | 0 | 4 |
+| Qui juge | la personne, quatre fois, après 18 minutes | un modèle ou des règles sur les aperçus, la personne sur le résultat |
+| Calcul | 4,80 $ | 1,28 $ |
+| Attente de la personne | environ 72 min | environ 19 min |
+
+Ce que l'application ajoute ici, ce sont les quatre aperçus : 0,08 $, environ 6 % du total, plus le coût du juge, que je n'ai pas mesuré. Le tableau est avantageux parce que je suppose que l'aperçu prédit le clip final, et ce n'est pas toujours vrai. Dans mon banc d'essai, LTX-Video a obéi à un travelling avant que Wan a presque ignoré. Un aperçu peut approuver un plan que le modèle final ne tournera pas. Il faut donc regarder aussi le résultat final.
+
+## Plus on attrape l'erreur tard, plus elle coûte
+
+J'ai un cas réel pour ça. Pour tester une chaîne de production, j'ai fait un court film de démonstration de 40 secondes, 10 plans, avec [Orazaka](https://dev.orazaka.com), mon moteur d'IA. Le fichier de production donne le temps de chaque étape. Avec le tarif de 3,99 $ de l'heure du H100, ça fait à peu près :
+
+<Numbers>
+<Num value="≈ 0,01 $" label="Une image clé" hint="9 s, FLUX.2 klein" />
+<Num value="≈ 0,36 $" label="Un plan vidéo" hint="328 s, Wan 2.2 en 4 étapes" />
+<Num value="≈ 1,57 $" label="Un passage de montage" hint="1 420 s, deux passages faits" />
+</Numbers>
+
+Une erreur trouvée sur l'image clé coûte un cent. Trouvée dans le plan, 36 cents. Trouvée au montage, 157 fois l'image. La boucle doit donc vérifier tôt, pas seulement à la fin.
+
+Sur ce film, 12 plans ont été tournés pour 10 gardés. À 0,36 $ le plan, cela donne 0,44 $ par plan gardé, soit 1,2 fois le prix d'une exécution : exactement 1 ÷ p, avec p = 10 sur 12. Pour les 35 exécutions du film, dont 5 en échec, le calcul GPU est d'environ 7,89 $. Je ne peux pas donner un coût par film : la facture du pod, 23,62 $, mélange plusieurs travaux, et je ne la mets pas sur un seul film pour avoir un chiffre propre.
+
+## Deux fois où je n'avais pas de boucle
+
+Le premier cas, c'est la première série de clips de la vitrine d'Orazaka. J'avais donné à Wan une image portrait recadrée en 16:9, et un prompt qui décrivait un mouvement en boucle. Les clips étaient mauvais. Chaque clip coûte environ 1,20 $ et 18 minutes de H100, donc les cinq que je dois refaire représentent à peu près 6 $ et une heure et demie de GPU qui n'ont rien produit de publiable. La correction tient en deux lignes : des images faites à la proportion de la vidéo, et un prompt qui ne décrit que le mouvement.
+
+Personne ne regardait l'image avant de lancer 18 minutes de GPU. Depuis, le moteur de génération écrit dans ses métriques `imageKept`, la part de l'image de départ que le cadre a gardée (un portrait coupé en 16:9 en garde un tiers). Ça ne dit pas si le résultat est bon, seulement qu'il part avec un handicap, mais ça prévient avant de payer.
+
+Le second cas, ce sont les oiseaux. Pour le film de la tournée, chaque image clé est comparée au dessin de l'oiseau fait dans le code. Il y a eu des images refusées : un faucon, un hibou et un canard dupliqués, un public d'humains, un oiseau fantôme en trop. L'image clé verticale de la fin a été refusée trois fois. Je n'ai pas insisté : la version verticale montre le plan horizontal sur son propre fond flouté. C'est le plafond d'essais de ma boucle, tenu à la main. Mais je n'ai pas gardé le compte des prises refusées ni la dépense GPU de ce film : je ne peux pas vous donner un coût par plan gardé, et c'est la leçon de ce billet.
+
+## Qui paie la boucle ?
+
+Il y a trois façons de répartir le risque.
+
+Facturer à l'exécution : l'utilisateur porte le risque, chaque relance est payée. C'est simple et honnête sur le calcul, mais il paie les ratés du modèle.
+
+Facturer au résultat accepté : la plateforme porte le risque et l'inclut dans le prix. Pour l'utilisateur, c'est le plus lisible. Pour la plateforme, c'est un pari sur son taux d'acceptation, et il faut un moyen de définir « accepté » qui ne puisse pas être détourné.
+
+Un mélange avec plafond : la plateforme absorbe les reprises internes jusqu'à un nombre fixé, puis rend la main, ou facture la suite. C'est ce qui me paraît le plus juste, à condition d'être transparent : montrer les essais, rembourser les échecs, laisser un plafond de budget.
+
+Dans Orazaka, un crédit est réservé avant l'exécution, et si elle échoue la réserve est libérée : une exécution ratée n'est pas facturée. Ce que je n'ai pas, c'est un juge qui relance tout seul sur la qualité. Aujourd'hui le juge, c'est moi, devant une grille d'images, et je n'ai pas mesuré combien de reprises un utilisateur ordinaire ferait.
+
+## Comment mesurer « c'est ce que je voulais »
+
+Quatre mesures, de la plus simple à la plus fine. Le taux d'acceptation : sorties gardées divisé par sorties générées. Un score de juge : un modèle de vision lit l'image et le brief, et note l'écart (on appelle ça « LLM-as-judge »). Il faut le calibrer sur un échantillon regardé par un humain, parce qu'un juge est indulgent avec lui-même. Les signaux « gardé » : téléchargé, publié, réutilisé sans retouche. C'est un signal faible, on garde ce qui est acceptable, pas toujours ce qui est bon. Et le temps jusqu'au premier bon résultat, celui que la personne ressent vraiment.
+
+Dans tous les cas, l'humain dans la boucle reste le dernier juge. Les modèles servent à lui épargner les regards évidents, pas à décider à sa place.
+
+## Ce que je mesure, et ce que je ne mesure pas
+
+Je mesure aujourd'hui, par exécution : le temps, le coût de calcul, les échecs, et `imageKept` pour les clips à partir d'une image. Ce sont des mesures d'exécution, celles que mon ami me reprochait de ne regarder que seules.
+
+Je ne mesure pas un taux d'acceptation dans le produit, ni un juge automatique, ni le temps de la personne. Les verdicts de ma vitrine sont les miens, au regard. Et mes p ci-dessus sont des exemples, sauf le 10 sur 12 du film.
+
+Si je dois retenir une chose : ne demandez pas ce que coûte une exécution, demandez ce que coûte un résultat dont vous voudriez. Chaque chiffre vaut pour ce montage, le 17 octobre 2026.
