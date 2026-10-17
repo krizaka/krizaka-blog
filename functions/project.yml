@@ -28,22 +28,22 @@ packages:
       ABUSE_CAPTCHA_SECRET_KEY: ${ABUSE_CAPTCHA_SECRET_KEY}
     actions:
       - name: subscribe
-        runtime: "nodejs:default"
+        runtime: "nodejs:18"
         web: true
         limits:
           timeout: 20000
       - name: confirm
-        runtime: "nodejs:default"
+        runtime: "nodejs:18"
         web: true
         limits:
           timeout: 20000
       - name: unsubscribe
-        runtime: "nodejs:default"
+        runtime: "nodejs:18"
         web: true
         limits:
           timeout: 20000
       - name: send
-        runtime: "nodejs:default"
+        runtime: "nodejs:18"
         web: true
         limits:
           timeout: 600000

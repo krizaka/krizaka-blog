@@ -6,7 +6,7 @@ const nl = require("./newsletter.js");
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const versionOk = (v) => v && typeof v.title === "string" && typeof v.description === "string" && typeof v.url === "string" && v.url.startsWith(`${nl.SITE}/`);
 
-async function main(args = {}, env = process.env, sql = null, send = undefined) {
+async function handle(args = {}, env = process.env, sql = null, send = undefined) {
   if (String(args.__ow_method ?? "post").toLowerCase() !== "post") return nl.json(405, { error: "method" });
   const bearer = String(args.__ow_headers?.authorization ?? "").replace(/^Bearer\s+/i, "");
   if (!nl.sameSecret(bearer, env.MAIL_SEND_TOKEN)) return nl.json(401, { error: "unauthorized" });
@@ -19,4 +19,7 @@ async function main(args = {}, env = process.env, sql = null, send = undefined) 
   await nl.recordSent(db, args.slug, result.sent, result.failed);
   return nl.json(200, result);
 }
-exports.main = main;
+/* The platform calls main(args) — and may pass a context object second — so the injections (environment, database,
+   fetch, clock) only go through handle(), which the tests call. */
+const main = (args) => handle(args);
+module.exports = { main, handle };
