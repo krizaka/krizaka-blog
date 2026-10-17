@@ -23,8 +23,6 @@ Un grand modèle de langage, un LLM, fait une seule chose : il devine la suite d
 
 Ces morceaux s'appellent des tokens. Ce ne sont ni des lettres ni des mots, plutôt des pièces de Lego : un mot courant tient en une pièce, un mot rare en demande plusieurs.
 
-<Figure id="basics-tokens" alt="Des blocs de bois colorés de tailles différentes, alignés sur un bureau, vus de dessus" caption="Des pièces de tailles différentes : c'est à peu près ce qu'un modèle voit d'une phrase." />
-
 J'ai compté sur mon Mac, avec Qwen 2.5 7B, le modèle de chat que j'utilise en local. « Je construis une IA souveraine à Montréal. » fait 12 tokens. La même phrase en anglais, « I build sovereign AI in Montréal. », en fait 8. Le français coûte plus cher en tokens, et comme les services hébergés facturent au token, ça se voit sur la facture.
 
 La fenêtre de contexte, c'est le bureau sur lequel le modèle étale ses papiers : votre question, l'historique de la conversation, les documents qu'on lui donne. Pour Qwen 2.5 7B, ce bureau fait 32 768 tokens. Ce qui ne tient pas sur le bureau, le modèle ne le voit tout simplement pas.
