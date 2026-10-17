@@ -67,13 +67,31 @@ An error found on the key image costs one cent. Found in the shot, 36 cents. Fou
 
 On this film, 12 shots were filmed for 10 kept. At $0.36 a shot, that's $0.44 per kept shot, 1.2 times the price of one run: exactly 1 ÷ p, with p = 10 out of 12. For the film's 35 runs, 5 of them failed, the GPU compute comes to about $7.89. I can't give you a cost per film: the pod's bill, $23.62, mixes several jobs, and I won't pin it on a single film to get a clean number.
 
+The film, as I shot it:
+
+<Clip id="nova-ardent-short" alt="A 40-second vertical demonstration short film, 10 shots" caption="The 40-second film, 10 shots kept out of 12 filmed. The GPU time of its runs: 7,115 s, $7.89." />
+
 ## Two times I had no loop
 
 The first is the first batch of clips for Orazaka's showcase. I had given Wan a portrait image cropped to 16:9, and a prompt that described a looping movement. The clips were bad. Each clip costs about $1.20 and 18 minutes of H100, so the five I have to redo represent roughly $6 and an hour and a half of GPU that produced nothing publishable. The fix fits in two lines: images made at the video's own proportions, and a prompt that only describes the motion.
 
 Nobody looked at the image before 18 minutes of GPU were launched. Since then, the generation engine writes `imageKept` in its metrics: the share of the starting image the frame kept (a portrait cut to 16:9 keeps a third). It doesn't say whether the result is good, only that it starts with a handicap, but it warns before you pay.
 
-The second is the birds. For the tour film, every key image is compared with the bird's drawing made in code. Some images were rejected: a duplicated falcon, owl and duck, an audience of humans, a phantom extra bird. The vertical key image of the finale was rejected three times. I didn't insist: the vertical version shows the horizontal shot over its own blurred background. That's my loop's retry cap, held by hand. But I didn't keep the count of rejected takes nor this film's GPU spend, so I can't give you a cost per kept shot, and that's the lesson of this post.
+Here is the same shot before and after, at the middle frame of each clip:
+
+<Figure id="bakeoff-before-after" alt="Three frames of a cable car in the Alps at dawn. Left, before: a portrait image cut to 16:9, Wan 2.2 A14B, a muddled clip. Middle, after: an image made at 16:9, LTX-Video in 14 seconds, sharp. Right, after: the same image with Wan 2.2 I2V A14B at 40 steps, 18 minutes." caption="Before: 18 minutes of H100 for an unusable clip. After: 14 seconds for LTX-Video (about $0.01), 18 minutes and $1.20 for Wan." />
+
+The second is the birds. For "Le monde de Krizaka : la tournée", every key image is compared with the bird's drawing made in code. Some images were rejected: a duplicated falcon, owl and duck, an audience of humans, a phantom extra bird.
+
+<Figure id="birds-rejected-keyframes" alt="Two rows of the key-image review sheet. On the left, the reference drawing made in code. On the right, three tries for each row. First row: the falcon appears twice in all three tries. Second row: an audience of humans was added behind the birds." caption="Rejected: the doubled falcon (top row) and the audience of humans (bottom row). On the left, the drawing the image has to respect." />
+
+The vertical key image of the finale was rejected three times. I didn't insist: the vertical version shows the horizontal shot over its own blurred background. That's my loop's retry cap, held by hand.
+
+The finished film is 78 seconds long. You can watch it here, or [on Orochia](https://dev.orochia.com/watch/a7f32d84-e3b7-49e9-8e14-21c11781bdcf).
+
+<Clip id="birds-film" alt="Le monde de Krizaka : la tournée, a 78-second film in which the Krizaka birds go through five moods, with captions" caption="Le monde de Krizaka : la tournée, v1, 78 s." />
+
+This time the numbers exist, from the report of the session that made the film: 28 video clips generated, 24 upscaled, about $9.4 of GPU for this first version, and 17 shots kept in the cut. That's 28 ÷ 17, or 1.65 clips per kept shot (p ≈ 0.6), and about $0.55 per kept shot, everything included (upscaling and pod time too). The key-image rejections happened before the video, which is the right place for them. I don't have the time of each take, so I don't split that cost between generation and upscaling.
 
 ## Who pays for the loop?
 
@@ -97,6 +115,6 @@ In every case, the human in the loop stays the last judge. Models are there to s
 
 Today I measure, per run: the time, the compute cost, the failures, and `imageKept` for clips made from an image. Those are execution measures, the ones my friend reproached me for looking at alone.
 
-I don't measure an acceptance rate in the product, nor an automatic judge, nor the person's time. The verdicts on my showcase are mine, by eye. And my p values above are examples, except the 10 out of 12 of the film.
+I don't measure an acceptance rate in the product, nor an automatic judge, nor the person's time. The verdicts on my showcase are mine, by eye. And my p values above are examples, except the 10 out of 12 of the short film and the 17 out of 28 of the birds film.
 
 If I had to keep one thing: don't ask what an execution costs, ask what a result you'd actually want costs. Every figure holds for this setup, on 17 October 2026.
