@@ -73,3 +73,20 @@ test("a post that tells the author's path names only sourced places, says 2018 a
     assert.match(content, f.endsWith(".fr.mdx") ? /\]\(\/fr\/about\/?\)/ : /\]\(\/about\/?\)/, `${f} tells the path: it links to the About page`);
   }
 });
+
+test("the author is shown by the Wu-sama mark, never a photo: AuthorNote, the About page and the byline", () => {
+  for (const f of ["app/components/about/AuthorNote.tsx", "app/components/about/AboutPage.tsx", "app/components/pages/Byline.tsx"]) {
+    assert.match(read(f), /WuSamaMark/, `${f} draws the Wu-sama mark`);
+    assert.doesNotMatch(read(f), /<(img|Image)\b|@krizaka\/ui\/avatar/, `${f} shows no photo or avatar image`);
+  }
+  assert.doesNotMatch(read("app/components/about/AuthorNote.tsx"), /KrizakaLogo/);
+  assert.doesNotMatch(read("app/components/about/AboutPage.tsx"), /KrizakaLogo/);
+});
+
+test("the About page says « Wu-sama » once in the bio and the mark's label names it, in both languages", () => {
+  for (const l of ["en", "fr"]) {
+    const a = messages(l).about;
+    assert.equal(a.body.join("\n").match(/Wu-sama/g)?.length, 1, `${l}: the nickname is said once`);
+    assert.match(a.slot, /Wu-sama/, `${l}: the mark's label`);
+  }
+});

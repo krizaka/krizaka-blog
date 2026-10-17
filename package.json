@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "license": "Apache-2.0",
-  "description": "blog.krizaka.com \u2014 the Krizaka company blog: a static site built from MDX posts, edited by GitHub accounts.",
+  "description": "blog.krizaka.com — the Krizaka company blog: a static site built from MDX posts, edited by GitHub accounts.",
   "scripts": {
     "gen": "node scripts/gen-favicon.mjs",
     "dev": "npm run gen && next dev",
@@ -18,7 +18,7 @@
     "@krizaka/icons": "^0.5.1",
     "@krizaka/tailwind": "^3.18.2",
     "@krizaka/tokens": "^3.18.2",
-    "@krizaka/ui": "^3.18.2",
+    "@krizaka/ui": "^3.24.0",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",
     "next": "^16.3.8",
