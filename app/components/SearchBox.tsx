@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { CardGrid } from "@krizaka/ui/card-grid";
 import { LinkCard } from "@krizaka/ui/link-card";
-import { format } from "@/lib/i18n";
+import { format } from "@/lib/locale";
 import { useI18n } from "./I18nProvider";
 
 export type SearchEntry = { href: string; title: string; description: string; tags: string[]; text: string };

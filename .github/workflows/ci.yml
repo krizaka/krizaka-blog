@@ -55,13 +55,12 @@ jobs:
         run: |
           npx playwright install --with-deps chromium
           node scripts/check-layout.mjs --base http://localhost:3000 --posts out
-      - name: The feeds are XML a reader accepts, and a browser gets the styled page (XSLT)
+      - name: The feeds are pure XML a reader accepts (no XSLT), and /feed/ is the human page
         run: |
-          for f in out/feed.xml out/fr/feed.xml out/atom.xml out/fr/atom.xml out/feed.xsl; do python3 -c "import sys, xml.dom.minidom as m; m.parse(sys.argv[1])" "$f"; done
-          grep -q '<?xml-stylesheet type="text/xsl" href="/feed.xsl"?>' out/feed.xml
-          grep -q '<?xml-stylesheet type="text/xsl" href="/feed.xsl"?>' out/fr/feed.xml
-          command -v xsltproc >/dev/null || sudo apt-get install -y -qq xsltproc
-          xsltproc out/feed.xsl out/feed.xml | grep -q '#subscribe'
+          for f in out/feed.xml out/fr/feed.xml out/atom.xml out/fr/atom.xml; do python3 -c "import sys, xml.dom.minidom as m; m.parse(sys.argv[1])" "$f"; done
+          ! grep -q 'xml-stylesheet' out/feed.xml out/fr/feed.xml out/atom.xml out/fr/atom.xml
+          test ! -e out/feed.xsl
+          for p in out/feed/index.html out/fr/feed/index.html; do grep -q 'id="subscribe"' "$p"; grep -q 'feed.xml' "$p"; done
           grep -q 'href="#subscribe"' out/posts/what-image-and-video-generation-costs/index.html
           grep -q 'id="subscribe"' out/posts/what-image-and-video-generation-costs/index.html
       - name: Every post has its Open Graph image and both feeds list it

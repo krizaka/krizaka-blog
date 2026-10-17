@@ -21,7 +21,7 @@ export default function SiteFooter() {
       </FamilyFooter.Column>
       <FamilyFooter.Column title={f.feeds}>
         <FamilyFooter.Link href={`${feeds}/newsletter/`}>{f.newsletter}</FamilyFooter.Link>
-        <FamilyFooter.Link href={`${feeds}/feed.xml`}>{f.rss}</FamilyFooter.Link>
+        <FamilyFooter.Link href={`${feeds}/feed/`}>{f.rss}</FamilyFooter.Link>
         <FamilyFooter.Link href={`${feeds}/atom.xml`}>{f.atom}</FamilyFooter.Link>
       </FamilyFooter.Column>
     </FamilyFooter>

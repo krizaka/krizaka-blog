@@ -47,6 +47,12 @@
   `docs/measurements/runs.json`; a result made outside an Orazaka run says so in `made.note`. `npm run lint` fails on an
   unknown id, an image without size or blur, a URL off the blog's CDN prefix, or a cover/clip mix-up. Never hot-link an
   original: files are sized webp (480/960/full) and mp4/webm with a poster.
+- **Covers ship in renditions.** Bunny's Optimizer is not enabled (no width parameter), so every cover is made once at 480, 768, 1200 and
+  1600 px where its source is that wide, and at its own width, in AVIF and WebP: `node scripts/gen-renditions.mjs <dir>` writes the files and
+  records their CDN URLs in `lib/media.json` (`renditions: { avif, webp }`), then they are uploaded with krizaka-com's `cdn-assets.mjs upload`.
+  `npm run lint` fails on a cover without them. The page emits a `<picture>` (AVIF source, WebP `<img>`, `srcset` + `sizes`); the page's LCP
+  cover is `fetchpriority="high"` and preloaded, every other cover waits until it is near the window (`CoverImage`, `LazyImg`;
+  `scripts/check-meta.mjs` checks the built post pages).
 - Every user-facing string of the site is in `messages/{en,fr}.json` (`krizaka-i18n check`). No `locale === "fr" ?`.
 
 ## 3. Writing & users
@@ -60,6 +66,7 @@
 
 - A subscribe form (`app/components/newsletter/`: e-mail + language, Turnstile, honeypot) on the home, at the end of every
   post and on `/newsletter/` (with what is kept and why — Loi 25). It posts to `/api/newsletter/subscribe`.
+- **The CAPTCHA never loads with the page**: Cloudflare's script (and its challenge frame) is fetched when the form is on screen or takes focus (`lib/when-wanted.ts`).
 - **Double opt-in, nothing stored before the click**: the function e-mails a signed link (HMAC, `MAIL_TOKEN_SECRET`, 48 h);
   `/api/newsletter/confirm` adds the address to `newsletter_subscribers` (database `krizaka_newsletter` on the cluster
   `krizaka-dev-pg`, its own role, `db/newsletter.sql`, set up by `scripts/newsletter-db.mjs`; this app is a trusted source)
@@ -73,6 +80,8 @@
   JavaScript); a bad link lands on `/newsletter/link-invalid/`.
 - The form is compact (one line, one row: e-mail + « M'abonner », one muted notice line); the language is the page's; the
   CAPTCHA is invisible unless Cloudflare needs an action (`appearance: interaction-only`).
+- **/feed/** (EN and FR) is the human page about the feeds: the e-mail form first, then what RSS is, the address to copy and the latest posts; every
+  human-facing « RSS » link goes there. `/feed.xml` and `/atom.xml` are pure XML for readers (no XSLT: Chrome is removing it).
 - **New post e-mail**: `.github/workflows/newsletter.yml` runs `scripts/newsletter-send.mjs` after a push to main that
   publishes a post (draft → published, or new and published): it waits for the page to be live, then calls
   `/api/newsletter/send` (bearer `MAIL_SEND_TOKEN`, the repository's only secret for this), which claims the post in

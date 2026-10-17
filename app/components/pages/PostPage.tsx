@@ -26,6 +26,7 @@ import { SaveButton } from "../engage/SaveButton";
 import { Byline } from "./Byline";
 import { Button } from "@krizaka/ui/button";
 import { RssMark } from "../RssMark";
+import { CoverImage } from "./CoverImage";
 
 /* One post, a reading page: a hairline that follows the reading, the title block (topic and series, h1, lead, who wrote it,
    when, how long), the cover, the body at a reading measure with its contents in a sticky column (desktop), the previous and next parts of its series, and related posts. */
@@ -45,7 +46,7 @@ export default function PostPage({ post }: { post: Post }) {
       {post.draft && <p className="bl-draft">{t.post.draftNotice}</p>}
       {cover ? (
         /* The cover, once: the post's hero picture (cards and Featured show it too; the body never repeats it). */
-        <img className="bl-cover bl-img" src={cover.src} srcSet={cover.srcSet} sizes="(min-width: 64rem) 680px, calc(100vw - 64px)" width={cover.width} height={cover.height} alt={post.coverAlt ?? ""} fetchPriority="high" decoding="async" style={{ backgroundImage: blurUrl(cover.blur) }} />
+        <CoverImage className="bl-cover bl-img" cover={cover} sizes="(min-width: 64rem) 680px, calc(100vw - 64px)" alt={post.coverAlt ?? ""} priority style={{ backgroundImage: blurUrl(cover.blur) }} />
       ) : (
         post.image && <img className="bl-cover" src={post.image} alt="" width={1200} height={630} />
       )}
@@ -64,17 +65,17 @@ export default function PostPage({ post }: { post: Post }) {
         </ul>
       )}
       <PostEngage slug={post.slug} title={post.title} locale={locale} />
-      {/* The way to follow: the e-mail form (the newsletter's, further down the page) first, the feed as a quiet second.
-          A feed is a file, not a page: a plain link (next/link would fetch it as a route). */}
+      {/* The way to follow: the e-mail form (the newsletter's, further down the page) first, the feed page as a quiet second
+          (/feed/: what RSS is and the address to copy; the feed file itself is for readers). */}
       <p className="bl-follow">
         <Button asChild variant="primary" size="md" shape="cut">
           <a href="#subscribe">{t.post.subscribe}</a>
         </Button>
         <Button asChild variant="ghost" size="md">
-          <a href={`${locale === "en" ? "" : "/fr"}/feed.xml`} type="application/rss+xml">
+          <Link href={localizedPath(locale, "/feed")}>
             <RssMark size={14} />
             {t.post.rssFeed}
-          </a>
+          </Link>
         </Button>
       </p>
     </article>

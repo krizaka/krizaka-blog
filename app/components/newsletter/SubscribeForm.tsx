@@ -12,7 +12,7 @@ import { Input } from "@krizaka/ui/field";
 import { Button } from "@krizaka/ui/button";
 import { Alert } from "@krizaka/ui/alert";
 import { format } from "@krizaka/i18n";
-import { localizedPath } from "@/lib/i18n";
+import { localizedPath } from "@/lib/locale";
 import { useI18n } from "../I18nProvider";
 import CaptchaWidget, { CAPTCHA_SITE_KEY } from "./CaptchaWidget";
 import "./newsletter.css";

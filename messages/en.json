@@ -357,12 +357,19 @@
     "invalidLead": "It may have been copied incompletely. Use the unsubscribe link at the bottom of the latest e-mail you received."
   },
   "feedPage": {
-    "title": "This is the Krizaka Blog's feed",
-    "lead": "A feed is for a feed reader: it shows each new post as soon as it is published, with no account and no tracking.",
-    "copy": "Copy this address into your reader (Feedly, NetNewsWire, Inoreader, Thunderbird…):",
+    "eyebrow": "Follow",
+    "title": "Follow the Krizaka Blog",
+    "lead": "Get each new post by e-mail, or add the feed to a reader. No account, no tracking either way.",
+    "emailTitle": "By e-mail",
+    "emailLead": "One e-mail when a post is published, in your language. Nothing else, and you leave in one click.",
+    "rssTitle": "With RSS",
+    "rssWhat": "RSS is an open format: a feed reader (Feedly, NetNewsWire, Inoreader, Thunderbird…) fetches each new post for you, with no account on our side. Paste this address into your reader.",
+    "addressLabel": "Feed address (RSS)",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyFallback": "Copy the feed address:",
+    "atom": "The Atom version of the feed",
     "latest": "Latest posts",
-    "back": "← Back to the blog",
-    "email": "Prefer e-mail? Subscribe",
     "reader": "What is a feed reader?"
   }
 }

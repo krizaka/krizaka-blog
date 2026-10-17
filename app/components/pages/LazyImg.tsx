@@ -6,7 +6,7 @@
    <noscript> copy loads as usual. */
 import { useEffect, useRef, useState, type ComponentProps } from "react";
 
-export function LazyImg({ src, srcSet, ...props }: ComponentProps<"img">) {
+export function LazyImg({ src, srcSet, avifSrcSet, ...props }: ComponentProps<"img"> & { avifSrcSet?: string }) {
   const ref = useRef<HTMLImageElement>(null);
   const [near, setNear] = useState(false);
   useEffect(() => {
@@ -23,11 +23,27 @@ export function LazyImg({ src, srcSet, ...props }: ComponentProps<"img">) {
     io.observe(el);
     return () => io.disconnect();
   }, []);
+  /* With an AVIF set the image sits in a <picture>: the source gets its srcset at the same moment as the <img>. */
+  const sizes = props.sizes;
   return (
     <>
-      <img ref={ref} {...props} src={near ? src : undefined} srcSet={near ? srcSet : undefined} />
+      {avifSrcSet ? (
+        <picture>
+          <source type="image/avif" srcSet={near ? avifSrcSet : undefined} sizes={sizes} />
+          <img ref={ref} {...props} src={near ? src : undefined} srcSet={near ? srcSet : undefined} />
+        </picture>
+      ) : (
+        <img ref={ref} {...props} src={near ? src : undefined} srcSet={near ? srcSet : undefined} />
+      )}
       <noscript>
-        <img {...props} src={src} srcSet={srcSet} />
+        {avifSrcSet ? (
+          <picture>
+            <source type="image/avif" srcSet={avifSrcSet} sizes={sizes} />
+            <img {...props} src={src} srcSet={srcSet} />
+          </picture>
+        ) : (
+          <img {...props} src={src} srcSet={srcSet} />
+        )}
       </noscript>
     </>
   );

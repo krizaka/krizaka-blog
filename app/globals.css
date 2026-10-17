@@ -109,6 +109,8 @@ html.light ::selection { background: hsla(217, 92%, 50%, 0.18); }
 .kz-404-fr { display: block; margin-top: 0.75rem; color: var(--kz-text-secondary); }
 
 /* ─── Media of a post: figures, clips, provenance ─── */
+/* A cover sits in a <picture> (AVIF source + WebP img): the wrapper is transparent to layout, the img keeps its own box. */
+picture { display: contents; }
 .bl-img { display: block; width: 100%; height: auto; background-size: cover; background-position: center; background-color: var(--kz-surface-2); }
 .bl-figure { margin: 2rem 0; }
 .bl-figure .bl-img { border-radius: var(--kz-radius-md, 12px); border: 1px solid var(--kz-border-default); }

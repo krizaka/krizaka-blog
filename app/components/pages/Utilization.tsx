@@ -1,11 +1,12 @@
 "use client";
 import { useState } from "react";
-import { format, getDictionary, type Locale } from "@/lib/i18n";
+import { format, type Locale } from "@/lib/locale";
+import { useI18n } from "../I18nProvider";
 
 /* « When does a rented GPU beat the hosted price? » — one slider. The cost of a rented clip is hourly price ÷ (clips per
    busy hour × how busy the machine is). The inputs are the post's own figures (passed as props); nothing is measured here. */
 export function Utilization({ hourly = 3.99, seconds = 175, hosted = 0.6, locale }: { hourly?: number | string; seconds?: number | string; hosted?: number | string; locale: Locale }) {
-  const t = getDictionary(locale).calc;
+  const t = useI18n().t.calc;
   const numHourly = Number(hourly) || 3.99;
   const numSeconds = Number(seconds) || 175;
   const numHosted = Number(hosted) || 0.6;

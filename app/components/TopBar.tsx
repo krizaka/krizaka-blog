@@ -10,7 +10,7 @@ import { GlobeIcon, MoonIcon, SearchIcon, SunIcon } from "@krizaka/icons";
 import { KrizakaLogo } from "@krizaka/ui";
 import { Button } from "@krizaka/ui/button";
 import { NavBar } from "@krizaka/ui/nav-bar";
-import { localizedPath, splitLocale } from "@/lib/i18n";
+import { localizedPath, splitLocale } from "@/lib/locale";
 import { GITHUB_ORG_URL, KRIZAKA_URL, REPOSITORY_URL } from "@/lib/site";
 import { GitHubMark } from "./GitHubMark";
 import { useI18n } from "./I18nProvider";
@@ -27,7 +27,7 @@ export default function TopBar() {
   const tags = localizedPath(locale, "/tags");
   const search = localizedPath(locale, "/search");
   const saved = localizedPath(locale, "/saved");
-  const feed = `${locale === "en" ? "" : "/fr"}/feed.xml`;
+  const feed = localizedPath(locale, "/feed");
   /* The language switch lands on the same page when it exists in the other language, else on that language's home. */
   const switchTo = clean.startsWith("/posts/") ? localizedPath(other, "/") : localizedPath(other, clean);
 
@@ -84,7 +84,7 @@ export default function TopBar() {
             <MobileLink href={tags}>{b.tags}</MobileLink>
             <MobileLink href={search}>{b.search}</MobileLink>
             <MobileLink href={saved}>{b.saved}</MobileLink>
-            <MobileLink href={feed} external>{b.rssAria}</MobileLink>
+            <MobileLink href={feed}>{b.rssAria}</MobileLink>
             <MobileLink href={KRIZAKA_URL} external>{b.company}</MobileLink>
             <MobileLink href={GITHUB_ORG_URL} external>{b.github}</MobileLink>
             <div className="mt-2 flex gap-2 border-t border-border-subtle pt-3">

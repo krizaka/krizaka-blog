@@ -310,3 +310,71 @@ test("no lookup form: no unsubscribe-request action or page; the notice says the
   assert.match(pages, /n\.resubscribeButton/, "« Me réabonner » on the unsubscribed page, a plain link");
   assert.match(readFileSync(new URL("../app/components/newsletter/CaptchaWidget.tsx", import.meta.url), "utf8"), /appearance: "interaction-only"/);
 });
+
+/* The CAPTCHA is not part of the page load: Cloudflare's script (and the challenge frame, ~150 KB) is fetched when the form is
+   on screen or takes focus (Lighthouse mobile: the eager script cost the home and post pages points of performance). */
+import { whenWanted } from "../lib/when-wanted.ts";
+
+function fakeForm() {
+  const handlers = new Map();
+  return { addEventListener: (t, h) => handlers.set(t, h), removeEventListener: (t) => handlers.delete(t), fire: (t) => handlers.get(t)?.(), handlers };
+}
+function withObserver(fn) {
+  const real = globalThis.IntersectionObserver;
+  const made = [];
+  globalThis.IntersectionObserver = class {
+    constructor(cb) { this.cb = cb; this.disconnected = false; made.push(this); }
+    observe() {}
+    disconnect() { this.disconnected = true; }
+  };
+  try { return fn(made); } finally { globalThis.IntersectionObserver = real; }
+}
+
+test("nothing is requested until the form is seen or focused", () =>
+  withObserver((made) => {
+    const form = fakeForm();
+    let calls = 0;
+    whenWanted(form, () => calls++);
+    assert.equal(calls, 0);
+    made[0].cb([{ isIntersecting: false }]);
+    assert.equal(calls, 0);
+    made[0].cb([{ isIntersecting: true }]);
+    assert.equal(calls, 1);
+    assert.equal(made[0].disconnected, true);
+    assert.equal(form.handlers.size, 0);
+  }));
+
+test("focusing the form is enough, and it fires once", () =>
+  withObserver((made) => {
+    const form = fakeForm();
+    let calls = 0;
+    whenWanted(form, () => calls++);
+    form.fire("focusin");
+    made[0].cb([{ isIntersecting: true }]);
+    assert.equal(calls, 1);
+  }));
+
+test("without IntersectionObserver the focus still loads it; the cleanup cancels a pending load", () => {
+  const real = globalThis.IntersectionObserver;
+  delete globalThis.IntersectionObserver;
+  try {
+    const form = fakeForm();
+    let calls = 0;
+    whenWanted(form, () => calls++)();
+    form.fire("focusin");
+    assert.equal(calls, 0);
+  } finally {
+    globalThis.IntersectionObserver = real;
+  }
+});
+
+test("the widget only loads Cloudflare's script from the wait, never straight from the effect", () => {
+  const src = readFileSync(new URL("../app/components/newsletter/CaptchaWidget.tsx", import.meta.url), "utf8");
+  assert.match(src, /whenWanted\(/);
+  const effect = src.slice(src.indexOf("useEffect("));
+  const calls = [...effect.matchAll(/loadScript\(\)/g)];
+  assert.equal(calls.length, 1);
+  assert.ok(effect.indexOf("loadScript()") < effect.indexOf("whenWanted("), "loadScript() is inside start, defined before the wait");
+  assert.match(effect.slice(effect.indexOf("const start")), /^const start = \(\) => \{\s*loadScript\(\)/);
+  assert.doesNotMatch(src, /<script[^>]*challenges\.cloudflare/);
+});
