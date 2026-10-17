@@ -278,24 +278,22 @@
   "about": {
     "eyebrow": "À propos",
     "title": "Qui écrit ce blogue",
-    "lead": "Oussama Abid. Parti d'Oujda, formé à Grenoble, il construit Krizaka à Montréal.",
+    "lead": "Oussama Abid. Il vit à Montréal depuis 2018, et il y construit Krizaka.",
     "slot": "Le symbole de Krizaka, en attendant une photo",
     "body": [
-      "Je m'appelle Oussama, et je viens d'Oujda, au Maroc.",
-      "En 2010, je suis parti étudier à Grenoble. Des mathématiques et de l'informatique appliquées aux sciences sociales d'abord, puis un master au nom un peu long : ingénierie de la cognition, de la création et des apprentissages. En clair, comment on pense, comment on apprend, et ce qu'une machine peut en faire.",
-      "En 2011, j'ai fait mon premier stage de recherche au LIG, le laboratoire d'informatique de Grenoble, en traitement automatique des langues. Apprendre à une machine à lire une phrase, à en sortir les informations, à en saisir le sens. Personne ne parlait d'IA dans les soirées. C'est pourtant là que j'ai commencé.",
-      "Ensuite, quinze ans à construire des systèmes qui tournent pour de vrai. Des trains connectés, des applications de soins pour un hôpital, des plateformes mobiles pour des opérateurs, des villes connectées avec des millions d'objets. Puis des plateformes bancaires, quand je suis arrivé à Montréal en 2019.",
-      "Aujourd'hui, je suis architecte dans une grande banque canadienne. Et à côté, je construis Krizaka, ici à Montréal, avec des agents d'IA que je dirige, que je relis et que je corrige. Le cercle se referme un peu : la machine qui lit une phrase, je l'ai rencontrée à Grenoble, et je la fais travailler aujourd'hui.",
+      "Je m'appelle Oussama. Je vis à Montréal depuis 2018.",
+      "J'ai étudié les mathématiques et l'informatique, puis je me suis orienté vers les mathématiques et l'informatique appliquées aux sciences cognitives. En clair, comment on pense, comment on apprend, et ce qu'une machine peut en faire.",
+      "En 2011, j'ai fait mon premier stage de recherche dans un laboratoire, en traitement automatique des langues. Apprendre à une machine à lire une phrase, à en sortir les informations, à en saisir le sens. Personne ne parlait d'IA dans les soirées. C'est pourtant là que j'ai commencé.",
+      "Ensuite, quinze ans à construire des systèmes qui tournent pour de vrai. Des trains connectés, des applications de soins pour un hôpital, des plateformes mobiles pour des opérateurs, des villes connectées avec des millions d'objets. Puis des plateformes bancaires, quand je suis arrivé à Montréal.",
+      "Aujourd'hui, je suis architecte dans une grande banque canadienne. Et à côté, je construis Krizaka, ici à Montréal, avec des agents d'IA que je dirige, que je relis et que je corrige. Le cercle se referme un peu : la machine qui lit une phrase, je l'ai rencontrée au laboratoire, et je la fais travailler aujourd'hui.",
       "Quand je ne code pas, j'écoute du jazz, je vais voir des concerts, je voyage quand je peux, et je garde une manette pas loin.",
       "Ce blogue, c'est ce que j'apprends en construisant. Des billets courts, avec les chiffres que je peux montrer, et ce que je n'ai pas encore réglé."
     ],
     "homeTitle": "Qui écrit",
-    "homeBody": "Je m'appelle Oussama. Je suis parti d'Oujda, j'ai appris à Grenoble, et je construis Krizaka à Montréal. Mon premier contact avec l'IA date de 2011, dans un labo de recherche, bien avant que le mot soit à la mode. Ici, je raconte ce que j'apprends en route.",
+    "homeBody": "Je m'appelle Oussama. Je vis à Montréal depuis 2018, et j'y construis Krizaka. Mon premier contact avec l'IA date de 2011, dans un labo de recherche, bien avant que le mot soit à la mode. Ici, je raconte ce que j'apprends en route.",
     "homeLink": "Mon parcours",
-    "placesLabel": "Trois villes",
+    "placesLabel": "Vit à",
     "places": [
-      "Oujda",
-      "Grenoble",
       "Montréal"
     ]
   },
