@@ -57,24 +57,36 @@ test("a component prop written as a JS expression is refused: the renderer drops
   assert.deepEqual(postProblems("x.en.mdx", ok, '<Utilization hourly="3.99" seconds="175" hosted="0.6" />\n\n```js\nconst a = {b: 1};\n```'), []);
 });
 
-test("a cover is also shown in the body (a phone does not get the cover: it reads the picture where the text is)", () => {
-  const ctx = { media: { a: { kind: "image" } }, series: [] };
-  assert.match(postProblems("x.en.mdx", { ...ok, cover: "a" }, "text only", ctx).join(" "), /cover/);
-  assert.deepEqual(postProblems("x.en.mdx", { ...ok, cover: "a" }, '<Figure id="a" alt="A picture" />', ctx), []);
+test("a cover is shown once: never again in the body, by id or by URL", () => {
+  const ctx = { media: { a: { kind: "image", srcs: [{ w: 480, url: "https://krizaka-assets.b-cdn.net/site/blog/x/a-480.webp" }] }, b: { kind: "image" } }, series: [] };
+  assert.match(postProblems("x.en.mdx", { ...ok, cover: "a" }, '<Figure id="a" alt="A picture" />', ctx).join(" "), /cover "a" is also in the body/);
+  assert.match(postProblems("x.en.mdx", { ...ok, cover: "a" }, "![a](https://krizaka-assets.b-cdn.net/site/blog/x/a-480.webp)", ctx).join(" "), /also in the body/);
+  assert.deepEqual(postProblems("x.en.mdx", { ...ok, cover: "a" }, '<Figure id="b" alt="Another picture" />', ctx), []);
 });
-
 test("every code fence declares its language (highlighting needs it; `text` for plain output)", () => {
   assert.match(postProblems("x.en.mdx", ok, "Intro\n\n```\nnpm ci\n```\n")[0], /language/);
   assert.deepEqual(postProblems("x.en.mdx", ok, "```bash\nnpm ci\n```\n\n```text\nok\n```\n"), []);
 });
 
-test("a published post has a publishedAt (date, time, offset) on its date, and a cover", () => {
-  const pub = { ...ok, draft: false, date: "2026-10-16", publishedAt: "2026-10-16T21:44:17-04:00", cover: "a" };
+test("a published post has a publishedAt (date, time, offset) on its date, and a cover with its words", () => {
+  const pub = { ...ok, draft: false, date: "2026-10-16", publishedAt: "2026-10-16T21:44:17-04:00", cover: "a", coverAlt: "A picture" };
   const ctx = { media: { a: { kind: "image" } }, series: [] };
-  const body = '<Figure id="a" alt="A picture" />';
-  assert.deepEqual(postProblems("x.en.mdx", pub, body, ctx), []);
-  assert.match(postProblems("x.en.mdx", { ...pub, publishedAt: undefined }, body, ctx).join(" "), /publishedAt/);
-  assert.match(postProblems("x.en.mdx", { ...pub, publishedAt: "2026-10-17T01:00:00Z" }, body, ctx).join(" "), /publishedAt/);
-  assert.match(postProblems("x.en.mdx", { ...pub, cover: undefined }, body, ctx).join(" "), /cover/);
+  assert.deepEqual(postProblems("x.en.mdx", pub, "text", ctx), []);
+  assert.match(postProblems("x.en.mdx", { ...pub, publishedAt: undefined }, "text", ctx).join(" "), /publishedAt/);
+  assert.match(postProblems("x.en.mdx", { ...pub, publishedAt: "2026-10-17T01:00:00Z" }, "text", ctx).join(" "), /publishedAt/);
+  assert.match(postProblems("x.en.mdx", { ...pub, cover: undefined }, "text", ctx).join(" "), /cover/);
+  assert.match(postProblems("x.en.mdx", { ...pub, coverAlt: " " }, "text", ctx).join(" "), /coverAlt/);
   assert.deepEqual(postProblems("x.en.mdx", { ...ok, draft: true }, "", ctx), []);
+});
+test("the cover's picture under another id (same run, or another rendition of the same file) is refused in the body too", () => {
+  const u = (n) => `https://krizaka-assets.b-cdn.net/site/blog/x/${n}`;
+  const ctx = { series: [], media: {
+    a: { kind: "image", srcs: [{ w: 480, url: u("terminal-480.0123456789.webp") }], made: { runId: "11111111-1111-1111-1111-111111111111" } },
+    crop: { kind: "image", srcs: [{ w: 960, url: u("terminal-960.abcdefabcd.webp") }] },
+    rerun: { kind: "image", srcs: [{ w: 960, url: u("other-960.abcdefabcd.webp") }], made: { runId: "11111111-1111-1111-1111-111111111111" } },
+    other: { kind: "image", srcs: [{ w: 960, url: u("ledger-960.abcdefabcd.webp") }], made: { runId: "22222222-2222-2222-2222-222222222222" } },
+  } };
+  assert.match(postProblems("x.en.mdx", { ...ok, cover: "a" }, '<Figure id="crop" alt="A" />', ctx).join(" "), /under another id/);
+  assert.match(postProblems("x.en.mdx", { ...ok, cover: "a" }, '<Figure id="rerun" alt="A" />', ctx).join(" "), /under another id/);
+  assert.deepEqual(postProblems("x.en.mdx", { ...ok, cover: "a" }, '<Figure id="other" alt="A" />', ctx), []);
 });

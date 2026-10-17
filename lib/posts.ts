@@ -29,6 +29,8 @@ export type Post = {
   image?: string;
   /** A media id of the library (`lib/media.json`): the post's picture on the home, the cards and the post (a clip shows its poster). */
   cover?: string;
+  /** The words of the cover (its alt on the post page). */
+  coverAlt?: string;
   /** Shown first on the home when it is the newest featured post. */
   featured: boolean;
   /** The series it belongs to (an id of `series.names` in the messages) and its place in it. */
@@ -69,6 +71,7 @@ export function parsePost(file: string, source: string): Post {
     author: typeof data.author === "string" ? data.author : "krizaka",
     draft: data.draft === true,
     cover: typeof data.cover === "string" && data.cover ? data.cover : undefined,
+    coverAlt: typeof data.coverAlt === "string" && data.coverAlt.trim() ? data.coverAlt.trim() : undefined,
     featured: data.featured === true,
     series: typeof data.series === "string" && data.series ? data.series : undefined,
     part: typeof data.part === "number" ? data.part : undefined,

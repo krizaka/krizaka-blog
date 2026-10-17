@@ -7,6 +7,7 @@ date: 2026-10-16
 publishedAt: "2026-10-16T21:44:17-04:00"
 tags: [payments, law]
 cover: payments-terminal-ledger
+coverAlt: "A flat blue illustration: a card payment terminal and a ledger on a pale blue background, joined by thin network lines"
 author: oussama
 draft: false
 series: building-krizaka
@@ -16,8 +17,6 @@ part: 1
 On 15 October I reread the payments code of Orochia, our creator video platform. I landed on a sixty-line function that did everything at once: validate, lock, apply the rules, move the credits, write the ledger. It worked. It still scared me, and I opened [an issue](https://github.com/krizaka/orochia/issues/209) to rewrite it.
 
 Reading that code, I realised the real question wasn't in it. The code already talks to four payment gateways. None of them has agreed to work with us yet. And for some of our products, that is not a given.
-
-<Figure id="payments-terminal-ledger" alt="A flat blue illustration: a card payment terminal and a ledger on a pale blue background, joined by thin network lines" caption="An illustration made for this post with Orazaka (Stable Diffusion 3.5 Large, hosted). Not a real terminal, no real brand." />
 
 ## The question
 
