@@ -10,3 +10,40 @@ packages:
       - name: callback
         runtime: "nodejs:default"
         web: true
+  # The newsletter (double opt-in): /api/newsletter/subscribe, /confirm, /unsubscribe, /send. Signed links, a small
+  # table on the Postgres cluster, Mailgun to send; nothing stored before the confirmation
+  # (functions/packages/newsletter/subscribe/newsletter.js).
+  - name: newsletter
+    environment:
+      MAIL_API_KEY: ${MAIL_API_KEY}
+      MAIL_API_URL: ${MAIL_API_URL}
+      MAIL_DOMAIN: ${MAIL_DOMAIN}
+      MAIL_FROM: ${MAIL_FROM}
+      MAIL_TOKEN_SECRET: ${MAIL_TOKEN_SECRET}
+      MAIL_SEND_TOKEN: ${MAIL_SEND_TOKEN}
+      MAIL_SENDER_ADDRESS: ${MAIL_SENDER_ADDRESS}
+      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_CA_CERT: ${DATABASE_CA_CERT}
+      ABUSE_CAPTCHA_PROVIDER: ${ABUSE_CAPTCHA_PROVIDER}
+      ABUSE_CAPTCHA_SECRET_KEY: ${ABUSE_CAPTCHA_SECRET_KEY}
+    actions:
+      - name: subscribe
+        runtime: "nodejs:default"
+        web: true
+        limits:
+          timeout: 20000
+      - name: confirm
+        runtime: "nodejs:default"
+        web: true
+        limits:
+          timeout: 20000
+      - name: unsubscribe
+        runtime: "nodejs:default"
+        web: true
+        limits:
+          timeout: 20000
+      - name: send
+        runtime: "nodejs:default"
+        web: true
+        limits:
+          timeout: 600000

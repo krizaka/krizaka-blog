@@ -1,0 +1,49 @@
+# The "new post" e-mail (scripts/newsletter-send.mjs). After a push to main that publishes a post (draft → published, or
+# a new published post), wait until the post is live on blog.krizaka.com, then ask the send action
+# (/api/newsletter/send, bearer MAIL_SEND_TOKEN) to e-mail the confirmed subscribers. The action claims the post in the
+# database first: a re-run, a manual run or a second push never sends the same post twice.
+# By hand: Actions → Newsletter → Run workflow, with the slug (still at most once).
+name: Newsletter
+
+on:
+  push:
+    branches: [main]
+    paths: ["content/posts/**"]
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "The post's slug (content/posts/<slug>.<en|fr>.mdx)"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: newsletter
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Send the new posts (once)
+        env:
+          MAIL_SEND_TOKEN: ${{ secrets.MAIL_SEND_TOKEN }}
+          SLUG: ${{ github.event.inputs.slug }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          if [ -n "$SLUG" ]; then
+            node scripts/newsletter-send.mjs --slug "$SLUG"
+          else
+            node scripts/newsletter-send.mjs --before "$BEFORE" --after "$AFTER"
+          fi

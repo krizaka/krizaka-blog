@@ -31,7 +31,8 @@
     "feeds": "Flux",
     "rss": "RSS",
     "atom": "Atom",
-    "about": "À propos"
+    "about": "À propos",
+    "newsletter": "Infolettre"
   },
   "home": {
     "eyebrow": "Blogue",
@@ -225,5 +226,53 @@
       "Grenoble",
       "Montréal"
     ]
+  },
+  "newsletter": {
+    "eyebrow": "Infolettre",
+    "title": "Les nouveaux billets, par courriel",
+    "lead": "Un courriel quand un nouveau billet est publié, dans votre langue. Rien d'autre, aucun pistage, et vous partez en un clic.",
+    "email": "Votre courriel",
+    "emailHint": "Nous envoyons un lien pour confirmer que c'est bien vous. Rien n'est enregistré avant que vous cliquiez.",
+    "language": "Langue des courriels",
+    "languages": {
+      "en": "English",
+      "fr": "Français"
+    },
+    "submit": "S'inscrire",
+    "sending": "Envoi…",
+    "consent": "En vous inscrivant, vous acceptez de recevoir un courriel de Technologies Krizaka inc. (Krizaka, Montréal) chaque fois qu'un billet est publié sur blog.krizaka.com. Vous pouvez retirer votre consentement à tout moment avec le lien au bas de chaque courriel.",
+    "privacyLink": "Ce que nous gardons et pourquoi",
+    "captcha": "Vérification anti-robot",
+    "sentTitle": "Regardez votre boîte de réception",
+    "sentBody": "Si {email} peut recevoir des courriels, un lien de confirmation est en route. Il est valable 48 heures. Rien n'est enregistré avant que vous cliquiez.",
+    "again": "Utiliser une autre adresse",
+    "errors": {
+      "email": "Entrez une adresse courriel valide.",
+      "captcha": "La vérification anti-robot n'est pas passée. Réessayez.",
+      "unavailable": "Les inscriptions sont fermées pour le moment. Réessayez plus tard.",
+      "other": "Quelque chose n'a pas marché. Réessayez dans une minute."
+    },
+    "formTitle": "S'inscrire",
+    "endOfPostTitle": "Recevoir le prochain billet par courriel",
+    "endOfPostLead": "Un courriel par nouveau billet, dans votre langue. Vous partez en un clic.",
+    "homeTitle": "Recevoir les nouveaux billets par courriel",
+    "homeLead": "Un courriel par billet, dans votre langue. Aucun pistage. Vous partez en un clic.",
+    "privacyTitle": "Ce que nous gardons, et pourquoi",
+    "privacy": [
+      "Qui : Technologies Krizaka inc., qui exerce sous le nom Krizaka, Montréal (Québec), Canada. Contact : le formulaire de www.krizaka.com/fr/contact.",
+      "Pourquoi : seulement pour vous envoyer un courriel quand un nouveau billet paraît sur ce blogue. Jamais vendu, jamais partagé, jamais utilisé pour autre chose.",
+      "Quoi : votre adresse courriel, la langue choisie, et la date et la façon dont vous avez donné votre consentement (le lien de confirmation). Rien n'est enregistré avant que vous cliquiez sur ce lien.",
+      "Où : la liste et les courriels passent par Mailgun (Sinch), dont les serveurs sont aux États-Unis. La vérification anti-robot est Cloudflare Turnstile.",
+      "Combien de temps : jusqu'à votre désinscription. Se désinscrire supprime aussitôt votre adresse de la liste.",
+      "Vos droits : accès, rectification, suppression et retrait du consentement, à tout moment, par le formulaire de contact. Au sens de la Loi sur la protection des renseignements personnels dans le secteur privé (Loi 25), la personne responsable est Oussama Abid."
+    ],
+    "confirmedTitle": "Vous êtes inscrit",
+    "confirmedLead": "Merci. Vous recevrez un courriel à la publication du prochain billet. Chaque courriel a un lien de désinscription en un clic.",
+    "expiredTitle": "Ce lien a expiré",
+    "expiredLead": "Les liens de confirmation sont valables 48 heures. Remplissez de nouveau le formulaire et vous en recevrez un autre.",
+    "unsubscribedTitle": "Vous êtes désinscrit",
+    "unsubscribedLead": "Votre adresse a été retirée de la liste. Vous ne recevrez plus de courriels du blogue.",
+    "backToBlog": "Retour au blogue",
+    "resubscribe": "Se réinscrire"
   }
 }

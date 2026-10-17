@@ -16,6 +16,7 @@ import { tagLabel } from "./tag-label";
 import { mdxComponentsFor } from "./mdx";
 import { seriesName } from "./SeriesPage";
 import { PostEngage } from "../engage/PostEngage";
+import { NewsletterSection } from "../newsletter/NewsletterSection";
 import { SaveButton } from "../engage/SaveButton";
 
 /* One post: the hero (back link, topics, title, summary, date · author · reading time), the cover, the body, the other
@@ -96,6 +97,7 @@ export default function PostPage({ post }: { post: Post }) {
           </p>
         </article>
       </Section>
+      <NewsletterSection locale={locale} where="post" />
       {more.length > 0 && (
         <Section title={t.post.related} divider>
           <PostList posts={more} locale={locale} />

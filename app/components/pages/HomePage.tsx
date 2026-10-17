@@ -14,6 +14,7 @@ import { PostList } from "./PostList";
 import { PostCard } from "./PostCard";
 import { seriesCount, seriesLead, seriesName } from "./SeriesPage";
 import { postCount, tagLabel } from "./tag-label";
+import { NewsletterSection } from "../newsletter/NewsletterSection";
 import { AuthorNote } from "../about/AuthorNote";
 
 /* The home: the blog's promise, the posts (or the honest "first posts soon"), the topics, where the work lives. */
@@ -51,6 +52,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
           />
         )}
       </Section>
+      <NewsletterSection locale={locale} where="home" />
       {series.length > 0 && (
         <Section title={t.home.seriesTitle} lead={t.home.seriesLead} divider>
           <CardGrid min={320}>

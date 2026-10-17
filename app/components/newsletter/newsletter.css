@@ -1,0 +1,16 @@
+/* The newsletter form (SubscribeForm) and its pages. Tokens only (var(--kz-*)): dark and light follow the theme. */
+.bl-nl { display: grid; gap: 0.75rem; max-width: 40rem; }
+.bl-nl-card { border: 1px solid var(--kz-border); border-radius: var(--kz-radius-lg, 12px); background: var(--kz-surface); padding: clamp(1rem, 3vw, 1.75rem); }
+.bl-nl-title { font-size: 1.25rem; font-weight: 650; color: var(--kz-text-primary); margin: 0; }
+.bl-nl-lead { color: var(--kz-text-secondary); margin: 0; }
+.bl-nl-form { display: grid; gap: 1rem; }
+.bl-nl-row { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 640px) { .bl-nl-row { grid-template-columns: minmax(0, 1fr) 11rem; align-items: start; } }
+.bl-nl-consent { font-size: 0.8125rem; line-height: 1.5; color: var(--kz-text-secondary); margin: 0; }
+.bl-nl-consent a { color: var(--kz-accent-text); text-decoration: underline; text-underline-offset: 3px; }
+.bl-nl-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.bl-nl-done { display: grid; gap: 0.75rem; justify-items: start; outline: none; }
+.bl-nl-captcha { min-height: 65px; max-width: 100%; overflow: hidden; }
+.bl-nl-hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.bl-nl-privacy { display: grid; gap: 0.75rem; max-width: 44rem; padding-left: 1.25rem; color: var(--kz-text-secondary); }
+.bl-nl-privacy li::marker { color: var(--kz-text-tertiary, var(--kz-text-secondary)); }

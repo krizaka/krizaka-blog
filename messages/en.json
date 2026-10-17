@@ -31,7 +31,8 @@
     "feeds": "Feeds",
     "rss": "RSS",
     "atom": "Atom",
-    "about": "About"
+    "about": "About",
+    "newsletter": "Newsletter"
   },
   "home": {
     "eyebrow": "Blog",
@@ -225,5 +226,53 @@
       "Grenoble",
       "Montréal"
     ]
+  },
+  "newsletter": {
+    "eyebrow": "Newsletter",
+    "title": "New posts, by e-mail",
+    "lead": "One e-mail when a new post is published, in your language. Nothing else, no tracking, and you leave in one click.",
+    "email": "Your e-mail",
+    "emailHint": "We'll send a link to confirm it's you. Nothing is recorded until you click it.",
+    "language": "Language of the e-mails",
+    "languages": {
+      "en": "English",
+      "fr": "Français"
+    },
+    "submit": "Subscribe",
+    "sending": "Sending…",
+    "consent": "By subscribing, you agree to receive an e-mail from Technologies Krizaka Inc. (Krizaka, Montréal) each time a post is published on blog.krizaka.com. You can withdraw your consent at any time with the link at the bottom of every e-mail.",
+    "privacyLink": "What we keep and why",
+    "captcha": "Anti-robot check",
+    "sentTitle": "Check your inbox",
+    "sentBody": "If {email} can receive e-mail, a confirmation link is on its way. It is valid for 48 hours. Nothing is recorded until you click it.",
+    "again": "Use another address",
+    "errors": {
+      "email": "Enter a valid e-mail address.",
+      "captcha": "The anti-robot check didn't pass. Try again.",
+      "unavailable": "Subscriptions are closed for the moment. Try again later.",
+      "other": "Something went wrong. Try again in a minute."
+    },
+    "formTitle": "Subscribe",
+    "endOfPostTitle": "Get the next post by e-mail",
+    "endOfPostLead": "One e-mail per new post, in your language. You leave in one click.",
+    "homeTitle": "Get the new posts by e-mail",
+    "homeLead": "One e-mail per post, in your language. No tracking. You leave in one click.",
+    "privacyTitle": "What we keep, and why",
+    "privacy": [
+      "Who: Technologies Krizaka Inc., doing business as Krizaka, Montréal (Québec), Canada. Contact: the form at www.krizaka.com/contact.",
+      "Why: only to send you an e-mail when a new post is published on this blog. Never sold, never shared, never used for anything else.",
+      "What: your e-mail address, the language you chose, and the date and way you gave your consent (the confirmation link). Nothing is recorded before you click that link.",
+      "Where: the list and the e-mails go through Mailgun (Sinch), whose servers are in the United States. The anti-robot check is Cloudflare Turnstile.",
+      "How long: until you unsubscribe. Unsubscribing deletes your address from the list at once.",
+      "Your rights: access, correction, deletion and withdrawal of consent, at any time, through the contact form. Under Québec's Act respecting the protection of personal information in the private sector (Law 25), the person in charge is Oussama Abid."
+    ],
+    "confirmedTitle": "You're subscribed",
+    "confirmedLead": "Thank you. You'll get one e-mail when the next post is published. Every e-mail has a one-click unsubscribe link.",
+    "expiredTitle": "This link has expired",
+    "expiredLead": "Confirmation links are valid for 48 hours. Fill in the form again and you'll get a new one.",
+    "unsubscribedTitle": "You're unsubscribed",
+    "unsubscribedLead": "Your address has been removed from the list. You won't receive any more e-mails from the blog.",
+    "backToBlog": "Back to the blog",
+    "resubscribe": "Subscribe again"
   }
 }
