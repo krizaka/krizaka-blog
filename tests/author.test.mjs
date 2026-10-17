@@ -11,6 +11,8 @@ const facts = JSON.parse(readFileSync(new URL("../content/authors/oussama.json",
 const messages = (l) => JSON.parse(readFileSync(new URL(`../messages/${l}.json`, import.meta.url), "utf8"));
 const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
 const PATH_PLACES = /\b(Oujda|Maroc|Morocco|Grenoble|Casablanca|Rabat|Fès|Fez|Paris|Lyon)\b/g;
+// Grenoble may appear only inside the 2011 lab's name (the LIG), as Oussama asked on 2026-10-17.
+const LAB = /laboratoire d'informatique de Grenoble \(LIG\)|Grenoble Informatics Laboratory \(LIG\)/gi;
 const FORBIDDEN = /Oujda|Grenoble|Maroc|Morocco|Java and Spring|Java et Spring|linkedin\.com/i;
 const BANKS = /\b(RBC|Royal Bank|Banque Royale|TD Bank|Banque TD|BMO|Bank of Montreal|Banque de Montréal|Scotiabank|CIBC|Banque Nationale|National Bank|Desjardins|Laurentienne|Laurentian)\b/i;
 const BIRTH = /\b(né le|née le|born on|date de naissance|date of birth)\b/i;
@@ -30,6 +32,8 @@ test("the About page and the home note tell the sourced path, and never the empl
   for (const l of ["en", "fr"]) {
     const a = messages(l).about;
     const text = [a.lead, ...a.body, a.homeBody, ...a.places].join("\n");
+    assert.ok(a.homeBody.includes("{lab}"), `${l}: the home note names the 2011 lab`);
+    assert.match(a.homeLab, new RegExp(LAB.source, "i"), `${l}: the lab is named as the LIG`);
     for (const [place] of text.matchAll(PATH_PLACES)) assert.ok(facts.places.includes(place), `${l}: ${place} is not sourced`);
     assert.doesNotMatch(text, FORBIDDEN, `${l}: forbidden in the bio`);
     assert.match(text, /2018/, `${l}: the bio says since 2018`);
@@ -39,6 +43,12 @@ test("the About page and the home note tell the sourced path, and never the empl
     assert.doesNotMatch(text, BANKS);
     assert.doesNotMatch(text, BIRTH);
   }
+});
+
+test("the home note links the 2011 lab, the LIG, and its name is the only place Grenoble appears", () => {
+  assert.equal(facts.lab.url, "https://www.liglab.fr/");
+  assert.match(read("app/components/about/AuthorNote.tsx"), /https:\/\/www\.liglab\.fr\//);
+  for (const l of ["en", "fr"]) assert.doesNotMatch(messages(l).about.homeLab.replace(LAB, ""), FORBIDDEN);
 });
 
 test("the Person JSON-LD of the About page names no former city and no LinkedIn profile", () => {
