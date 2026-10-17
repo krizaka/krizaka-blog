@@ -2340,7 +2340,6 @@
    "engine": "RunPod H100 80 GB, 720p, SeedVR2 3B to 1080p; keyframes FLUX.2 [klein] 4B; ACE-Step music; Kokoro voice",
    "via": "orazaka cinema, every step an ordinary Studio run",
    "size": "1080×1920, shown here at 540×960",
-   "durationSeconds": 40.5,
    "seconds": 7115,
    "costUsd": 7.89,
    "note": "10 shots (2 reshot), 12 video runs, 35 runs of which 5 failed; GPU time of its runs 7,115 s, $7.89 at $3.99/h.",
