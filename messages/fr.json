@@ -177,12 +177,16 @@
         "description": "L'IA sur de vrais documents : comment un bail ou un contrat est vérifié règle par règle, comment vérifier le résultat, et ses limites."
       },
       "law": {
-        "title": "L'IA et le droit au Québec — Blogue Krizaka",
-        "description": "Là où l'IA rencontre le droit au Québec : le Code civil, la Loi 25, et ce qu'une lecture par l'IA d'un document juridique peut affirmer."
+        "title": "Droit, règles et IA au Québec — Blogue Krizaka",
+        "description": "Les règles d'une entreprise logicielle au Québec : Loi 25, Code civil, règles des réseaux de cartes, et ce qu'une lecture par l'IA peut affirmer."
       },
       "prompts": {
         "title": "Écrire des prompts pour les modèles d'image",
         "description": "Comment un prompt guide vraiment un modèle d'image ou de vidéo : sujet, lieu, caméra, prompt négatif et guidage, testés avec une graine fixe."
+      },
+      "payments": {
+        "title": "Paiements pour un produit logiciel — Blogue Krizaka",
+        "description": "Encaisser comme petite entreprise logicielle : ce que Stripe, PayPal et Square refusent, ce qu'exigent les réseaux de cartes, l'effet sur le code."
       }
     }
   },

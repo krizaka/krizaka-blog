@@ -177,12 +177,16 @@
         "description": "AI on real documents: how a lease or a contract is checked rule by rule, how to verify the result, and its limits."
       },
       "law": {
-        "title": "AI and the law in Québec — Krizaka Blog",
-        "description": "Where AI meets the law in Québec: the Civil Code, Law 25, and what an AI reading of a legal document can and cannot claim."
+        "title": "Law, rules and AI in Québec — Krizaka Blog",
+        "description": "The rules a Québec software company works under: Law 25, the Civil Code, card-network rules, and what an AI reading of a legal text can claim."
       },
       "prompts": {
         "title": "Prompt engineering for image models — Krizaka Blog",
         "description": "How prompts really steer image and video models: subject, setting, camera, negative prompts and guidance, tested with a fixed seed."
+      },
+      "payments": {
+        "title": "Payments for software products — Krizaka Blog",
+        "description": "Taking payments as a small software company: what Stripe, PayPal and Square refuse, what card networks require, and how it shapes the code."
       }
     }
   },
