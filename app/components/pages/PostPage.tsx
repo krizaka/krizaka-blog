@@ -91,7 +91,8 @@ export default function PostPage({ post }: { post: Post }) {
           )}
           <PostEngage slug={post.slug} title={post.title} locale={locale} />
           <p className="bl-feed">
-            <Link href={`${locale === "en" ? "" : "/fr"}/feed.xml`}>{t.post.share}</Link>
+            {/* A feed is a file, not a page: a plain link (next/link would fetch it as a route). */}
+            <a href={`${locale === "en" ? "" : "/fr"}/feed.xml`}>{t.post.share}</a>
           </p>
         </article>
       </Section>
