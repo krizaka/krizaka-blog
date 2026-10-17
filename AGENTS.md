@@ -53,6 +53,19 @@
   `npm run lint` fails on a cover without them. The page emits a `<picture>` (AVIF source, WebP `<img>`, `srcset` + `sizes`); the page's LCP
   cover is `fetchpriority="high"` and preloaded, every other cover waits until it is near the window (`CoverImage`, `LazyImg`;
   `scripts/check-meta.mjs` checks the built post pages).
+- **A model is named with its link.** The first mention of a known model in a post (Wan 2.2 A14B, FLUX.2 [klein], SD 3.5,
+  Qwen, DeepSeek, Llama, Mistral, GLM, Kimi, ACE-Step, MMAudio, SeedVR2, Real-ESRGAN, LTX…) is `<Model id="…">its name</Model>`,
+  which links its official Hugging Face page (or its own site when it is not there). The map is `lib/models.ts` (id, name,
+  URL checked 200, name patterns; a family entry links the organisation and is covered by a link to one of its models);
+  `npm run lint` refuses an unlinked first mention, an unknown id or a `<Model>` around another model's name.
+  `node scripts/link-models.mjs --write` wraps the first mentions. A new model is added to the map with a checked URL.
+- **The home is pictures, not schemas.** A picture of `lib/media.json` either has its provenance (`made`) or is a diagram
+  drawn from code (`style: "diagram"`); at most **one** of the home's first three cards may have a diagram cover (lint). A
+  diagram stays inside its post; a cover is an evocative still or a short clip. A clip cover shows its poster first and plays
+  its muted loop only on hover (or, on a touch screen, while well in view after the page loaded), never under reduced motion
+  or Save-Data (`CardLoop`).
+- **Questions sections answer search engines too**: a post's h2 « Questions fréquentes » / « Frequently asked questions »
+  (or « FAQ ») turns its h3s and their text into FAQPage JSON-LD (`faqOf` in `lib/reading.ts`).
 - Every user-facing string of the site is in `messages/{en,fr}.json` (`krizaka-i18n check`). No `locale === "fr" ?`.
 
 ## 3. Writing & users

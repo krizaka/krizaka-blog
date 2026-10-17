@@ -2,7 +2,8 @@ import Link from "next/link";
 import { Card } from "@krizaka/ui/card";
 import { CoverImage } from "./CoverImage";
 import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
-import { coverOf } from "@/lib/media";
+import { coverOf, mediaOf } from "@/lib/media";
+import { CardLoop } from "./CardLoop";
 import type { Post } from "@/lib/posts";
 import { postPath } from "@/lib/seo";
 import { formatDate } from "./PostList";
@@ -16,18 +17,23 @@ import { seriesName } from "./SeriesPage";
 export function PostCard({ post, locale, feature = false, priority = false }: { post: Post; locale: Locale; feature?: boolean; priority?: boolean }) {
   const t = getDictionary(locale);
   const cover = post.cover ? coverOf(post.cover) : undefined;
+  const clip = post.cover ? mediaOf(post.cover) : undefined;
   /* The featured card's picture is the page's first: fetched at once (and preloaded). The others when they come near the window. */
   return (
     <Card.Root className={`bl-card${feature ? " bl-card-feature" : ""}`}>
       <Card.Media aspect="video">
         {cover ? (
-          <CoverImage
-            className="bl-cover-img"
-            cover={cover}
-            sizes={feature ? "(min-width: 64rem) 640px, 100vw" : "(min-width: 64rem) 360px, (min-width: 40rem) 50vw, 100vw"}
-            alt=""
-            priority={priority}
-          />
+          <span className="bl-card-visual">
+            <CoverImage
+              className="bl-cover-img"
+              cover={cover}
+              sizes={feature ? "(min-width: 64rem) 640px, 100vw" : "(min-width: 64rem) 360px, (min-width: 40rem) 50vw, 100vw"}
+              alt=""
+              priority={priority}
+            />
+            {/* A clip cover: the poster above, its muted loop on hover or in view (CardLoop). */}
+            {clip?.kind === "video" && <CardLoop mp4={clip.mp4} webm={clip.webm} />}
+          </span>
         ) : (
           <Card.Image fallback={<span className="bl-cover-fallback" aria-hidden />} />
         )}

@@ -28,7 +28,7 @@ The Java services take their share too. Orazaka has up to eleven Spring Boot ser
 
 ## The video model that doesn't fit
 
-I tried generating video locally with Wan 2.2 TI2V 5B, vertical, 480×832 and 25 frames. The model ran out of memory while decoding: it asked for 26 GiB while 62 GiB were already taken on a 64 GB machine. At 704×1280, same story. When it did move, each step took about 32 seconds, according to my working notes.
+I tried generating video locally with <Model id="wan22-ti2v-5b">Wan 2.2 TI2V 5B</Model>, vertical, 480×832 and 25 frames. The model ran out of memory while decoding: it asked for 26 GiB while 62 GiB were already taken on a 64 GB machine. At 704×1280, same story. When it did move, each step took about 32 seconds, according to my working notes.
 
 The lesson is plain: the Mac's unified memory is generous for images, not for video. More on that below.
 
@@ -76,7 +76,7 @@ Second: every deploy restarts the relay and drops the tunnel. A clip halfway thr
 
 ## What the Mac does well
 
-For everything else, the Mac is a great place to start. It runs chat with Ollama, voice with Piper, music with ACE-Step and images with stable-diffusion.cpp. A FLUX.2 [klein] 4B image at 1024×1024 takes 62 seconds at the median, command to file. No bill, no cloud account, no driver to install. And every new developer already has a laptop.
+For everything else, the Mac is a great place to start. It runs chat with Ollama, voice with Piper, music with <Model id="ace-step">ACE-Step</Model> and images with stable-diffusion.cpp. A <Model id="flux2-klein-4b">FLUX.2 [klein] 4B</Model> image at 1024×1024 takes 62 seconds at the median, command to file. No bill, no cloud account, no driver to install. And every new developer already has a laptop.
 
 Three pictures from that machine. Under each, "How this was made" gives the prompt, the seed, the time and the Orazaka run that produced it. What each line of such a prompt really changes is [a post of its own](/posts/anatomy-of-an-ai-prompt).
 
@@ -90,7 +90,7 @@ They're bigger than 1024×1024, hence 75 to 109 seconds each.
 
 ## Where the laptop gives up
 
-Video goes elsewhere. Hosted, a five-second Wan 2.2 A14B clip at 832×480 takes 131 seconds at the median. On a rented H100 we get to 720p. So video goes to a GPU when I choose to send it, and the rest of the work stays on the laptop. The numbers, the bills and the mistakes behind that choice are in [the post about costs](/posts/what-image-and-video-generation-costs).
+Video goes elsewhere. Hosted, a five-second <Model id="wan22-t2v-a14b">Wan 2.2 A14B</Model> clip at 832×480 takes 131 seconds at the median. On a rented H100 we get to 720p. So video goes to a GPU when I choose to send it, and the rest of the work stays on the laptop. The numbers, the bills and the mistakes behind that choice are in [the post about costs](/posts/what-image-and-video-generation-costs).
 
 ## What you can take away
 

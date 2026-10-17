@@ -28,7 +28,7 @@ Les services Java ont aussi leur part. Orazaka compte jusqu'à onze services Spr
 
 ## Le modèle vidéo qui ne rentre pas
 
-J'ai voulu générer de la vidéo en local avec Wan 2.2 TI2V 5B, en format vertical 480×832 et 25 images. Le modèle a manqué de mémoire au moment de décoder : il demandait 26 Gio alors que 62 Gio étaient déjà occupés sur une machine de 64 Go. En 704×1280, même résultat. Quand ça avançait, chaque étape prenait environ 32 secondes, d'après mes notes de travail.
+J'ai voulu générer de la vidéo en local avec <Model id="wan22-ti2v-5b">Wan 2.2 TI2V 5B</Model>, en format vertical 480×832 et 25 images. Le modèle a manqué de mémoire au moment de décoder : il demandait 26 Gio alors que 62 Gio étaient déjà occupés sur une machine de 64 Go. En 704×1280, même résultat. Quand ça avançait, chaque étape prenait environ 32 secondes, d'après mes notes de travail.
 
 La leçon est claire : la mémoire unifiée du Mac est généreuse pour l'image, pas pour la vidéo. On y reviendra.
 
@@ -76,7 +76,7 @@ Le second : chaque déploiement redémarre le relais et coupe le tunnel. Un clip
 
 ## Ce que le Mac fait bien
 
-Pour tout le reste, le Mac est un très bon point de départ. Il fait le chat avec Ollama, la voix avec Piper, la musique avec ACE-Step et les images avec stable-diffusion.cpp. Une image FLUX.2 [klein] 4B en 1024×1024 prend 62 secondes en médiane, de la commande au fichier. Pas de facture, pas de compte cloud, pas de pilote à installer. Et tout nouveau développeur a déjà un portable.
+Pour tout le reste, le Mac est un très bon point de départ. Il fait le chat avec Ollama, la voix avec Piper, la musique avec <Model id="ace-step">ACE-Step</Model> et les images avec stable-diffusion.cpp. Une image <Model id="flux2-klein-4b">FLUX.2 [klein] 4B</Model> en 1024×1024 prend 62 secondes en médiane, de la commande au fichier. Pas de facture, pas de compte cloud, pas de pilote à installer. Et tout nouveau développeur a déjà un portable.
 
 Trois images sorties de cette machine. Sous chacune, « Comment c'est fait » donne le prompt, la graine, la durée et l'exécution Orazaka qui l'a produite. Ce que change vraiment chaque ligne d'un tel prompt fait l'objet d'[un billet à part](/fr/posts/anatomy-of-an-ai-prompt).
 
@@ -90,7 +90,7 @@ Elles sont plus grandes que 1024×1024, d'où des durées de 75 à 109 secondes.
 
 ## Où le portable abandonne
 
-La vidéo part ailleurs. En hébergé, un clip de cinq secondes de Wan 2.2 A14B en 832×480 prend 131 secondes en médiane. Sur un H100 loué, on monte en 720p. La vidéo part donc vers un GPU quand je choisis de l'y envoyer, et le reste du travail reste sur le portable. Les chiffres, les factures et les erreurs de ce choix sont dans [le billet sur les coûts](/fr/posts/what-image-and-video-generation-costs).
+La vidéo part ailleurs. En hébergé, un clip de cinq secondes de <Model id="wan22-t2v-a14b">Wan 2.2 A14B</Model> en 832×480 prend 131 secondes en médiane. Sur un H100 loué, on monte en 720p. La vidéo part donc vers un GPU quand je choisis de l'y envoyer, et le reste du travail reste sur le portable. Les chiffres, les factures et les erreurs de ce choix sont dans [le billet sur les coûts](/fr/posts/what-image-and-video-generation-costs).
 
 ## Ce que vous pouvez en retenir
 

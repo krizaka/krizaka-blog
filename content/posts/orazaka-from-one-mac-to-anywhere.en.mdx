@@ -8,8 +8,8 @@ publishedAt: "2026-10-17T12:00:00-04:00"
 tags: [orazaka, ai]
 author: oussama
 draft: false
-cover: orazaka-portability
-coverAlt: "Five-step diagram: one Mac on its own, then services, then containers and a command line, then a dev environment with hourly GPUs, then installation at a client's; each step carries its main question"
+cover: portability-port
+coverAlt: "The Port of Montréal at dawn: a gantry crane above stacked shipping containers, the St. Lawrence and the city in the haze"
 series: building-orazaka
 part: 4
 ---
@@ -17,6 +17,8 @@ part: 4
 At first, Orazaka was a discovery. A personal project, on my MacBook, to understand what you can do with AI models running at home. Ollama for text, the Mac's GPU (Metal) for images, a database and a few services started by hand. If someone had taken the laptop, there would have been no Orazaka left.
 
 Then the project took shape, and I decided to share it as open source. From there, one question took all the room: how do you run elsewhere what only ran on my machine? This post tells that industrialisation, step by step, with the options I weighed. I only talk here about choices written down in our architecture decisions or our documentation.
+
+<Figure id="orazaka-portability" alt="Five-step diagram: one Mac on its own, then services, then containers and a command line, then a dev environment with hourly GPUs, then installation at a client's; each step carries its main question" />
 
 ## Step 1: a monolith on a laptop
 

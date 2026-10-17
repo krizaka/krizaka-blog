@@ -3,7 +3,7 @@
 import type { Metadata } from "next";
 import { getDictionary, localizedPath, type Locale } from "./i18n";
 import type { Post } from "./posts";
-import { metaDescription, titleTag } from "./reading.ts";
+import { faqOf, metaDescription, titleTag } from "./reading.ts";
 import { INDEXING_ENABLED, ORGANIZATION_ID, SITE_URL } from "./site";
 
 export const absoluteUrl = (locale: Locale, path: string) => `${SITE_URL}${localizedPath(locale, path)}`;
@@ -100,6 +100,25 @@ export function postJsonLd(post: Post, topic?: { name: string; path: string }) {
       author: authorNode(post),
       isPartOf: { "@type": "Blog", "@id": blogId(post.locale), name: t.site.name, url: absoluteUrl(post.locale, "/"), publisher: org },
       publisher,
+    },
+    ...faqJsonLd(post, url),
+  ];
+}
+
+/** A post with a questions section (lib/reading.ts faqOf) also answers as a FAQPage of the same page. */
+function faqJsonLd(post: Post, url: string) {
+  const faq = faqOf(post.body);
+  if (faq.length === 0) return [];
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "@id": `${url}#faq`,
+      url,
+      inLanguage: post.locale,
+      isPartOf: { "@id": `${url}#article` },
+      publisher,
+      mainEntity: faq.map((q) => ({ "@type": "Question", name: q.question, acceptedAnswer: { "@type": "Answer", text: q.answer } })),
     },
   ];
 }

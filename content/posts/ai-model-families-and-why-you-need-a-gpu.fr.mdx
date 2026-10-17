@@ -1,0 +1,144 @@
+---
+title: "Les modèles, leurs familles, et pourquoi il faut un GPU"
+description: "Les familles de modèles que j'ai mis des mois à démêler, du LLM à la vidéo, et pourquoi chacune doit tenir dans la mémoire d'un GPU. Avec nos temps mesurés."
+seoTitle: "Quel GPU pour faire tourner un LLM ? Familles et VRAM"
+seoDescription: "Familles de modèles d'IA, paramètres, quantification, VRAM nécessaire, GPU vs CPU et Apple Silicon, expliqués simplement avec nos temps mesurés."
+date: 2026-10-17
+publishedAt: "2026-10-17T13:00:00-04:00"
+tags: [ai, basics, measurements, costs]
+author: oussama
+draft: false
+cover: gpu-kitchen
+coverAlt: "Une immense cuisine de restaurant la nuit : des dizaines de cuisiniers en veste blanche, alignés en longues rangées, dressent la même assiette au même moment sous des lampes en cuivre et la vapeur"
+series: basics
+part: 4
+---
+
+Pendant des semaines, j'ai eu un vrai mal de tête avec les modèles. Je lisais « 7B », « A14B », « Q4_K_M », « MoE 235B-A22B », « FP8 », et je hochais la tête sans être sûr de comprendre. Puis j'ai voulu faire une vidéo sur mon Mac, et le modèle a planté en me disant qu'il lui manquait 26 Gio de mémoire. Ce jour-là, j'ai compris que la vraie question n'était pas « quel modèle est le meilleur ? » mais « est-ce que ce modèle et cette machine vont ensemble ? ».
+
+Ce billet est celui que j'aurais voulu lire avant de commencer. Les familles de modèles, ce que veulent dire les chiffres dans leurs noms, et pourquoi presque tout se joue dans la mémoire du GPU. Si les mots token, paramètre ou quantification sont nouveaux pour vous, [le premier billet de la série](/fr/posts/understanding-ai-before-you-start/) les reprend un par un.
+
+## Les familles de modèles d'IA
+
+Un modèle, c'est un fichier de nombres et une recette pour s'en servir. Ce qui change d'une famille à l'autre, c'est ce qui entre et ce qui sort.
+
+Les LLM, les grands modèles de langage, reçoivent du texte et rendent du texte. C'est la famille la plus connue, et celle où les tailles varient le plus : de 1 milliard de paramètres, qui tient sur un téléphone, à plus de 600 milliards. Le modèle de chat que j'utilise tous les jours sur mon Mac, <Model id="qwen25-7b">Qwen 2.5 7B</Model>, en a 7,6 milliards.
+
+Les modèles d'embedding ne répondent pas. Ils transforment un texte en une liste de nombres, une sorte d'adresse dans un espace où les phrases qui parlent de la même chose sont voisines. C'est ce qui permet de chercher par le sens. Celui d'Orazaka, <Model id="nomic-embed-text">nomic-embed-text</Model>, a 137 millions de paramètres : cinquante fois moins qu'un petit LLM. Il tourne partout.
+
+Les modèles vision-langage lisent une image et en parlent. On leur montre une photo de bail, ils disent ce qu'ils voient. <Model id="llava">LLaVA</Model> ou <Model id="qwen25-vl-7b">Qwen2.5-VL 7B</Model> ont la taille d'un petit LLM, avec un œil en plus.
+
+Les modèles de diffusion d'images partent d'un bruit de télévision et le nettoient étape par étape jusqu'à obtenir l'image décrite. <Model id="flux2-klein-4b">FLUX.2 [klein] 4B</Model>, qui a fait la couverture de ce billet, et <Model id="sd35-large">Stable Diffusion 3.5 Large</Model> sont de cette famille.
+
+Les modèles de diffusion vidéo font la même chose, mais sur toutes les images d'un clip à la fois. Il y en a deux sortes. Le texte vers vidéo (T2V) part d'une phrase. L'image vers vidéo (I2V) part d'une photo et la met en mouvement. Chez <Model id="wan">Wan 2.2</Model>, ça donne <Model id="wan22-t2v-a14b">Wan 2.2 T2V A14B</Model>, <Model id="wan22-i2v-a14b">Wan 2.2 I2V A14B</Model>, et un plus petit qui sait faire les deux, <Model id="wan22-ti2v-5b">Wan 2.2 TI2V 5B</Model>.
+
+Les modèles audio font de la musique, des voix ou des bruitages. La musique de nos clips vient d'<Model id="ace-step">ACE-Step</Model>. <Model id="mmaudio">MMAudio</Model> regarde une vidéo et invente le son qui va avec : des pas, une porte, la pluie.
+
+Enfin, les upscalers ne créent rien. Ils agrandissent une image ou une vidéo en inventant les détails qui manquent, pour passer de 720p à 1080p par exemple. <Model id="real-esrgan">Real-ESRGAN</Model> est le classique, <Model id="seedvr2">SeedVR2</Model> le plus récent. Je ne les ai pas encore mesurés chez nous, donc je n'en dis pas plus.
+
+## Les paramètres, ou ce que veut dire « 7B »
+
+Le chiffre dans le nom d'un modèle, c'est son nombre de paramètres. 7B, c'est 7 milliards (B pour *billion* en anglais). Chaque paramètre est un nombre que le modèle a appris pendant son entraînement, et chaque nombre prend de la place.
+
+Le calcul est simple. En 16 bits (FP16), un paramètre pèse 2 octets. En 8 bits (FP8 ou Q8), 1 octet. En 4 bits (INT4, ou les fichiers GGUF en Q4), un demi-octet. Qwen 2.5 7B pèse donc environ 15 Go en 16 bits, et le fichier que j'utilise, quantifié en Q4_K_M, fait 4,7 Go.
+
+La quantification, c'est arrondir chaque nombre pour qu'il prenne moins de place. Comme passer une photo de RAW à JPEG : on perd un peu de détail, on gagne beaucoup de place. Le format GGUF, celui de llama.cpp et d'Ollama, est fait pour ça, et c'est pour ça qu'on voit des noms comme `Q4_K_M` ou `Q8_0` au bout des fichiers.
+
+## Dense ou MoE : pourquoi « A14B » et « A22B »
+
+Dans un modèle **dense**, tous les paramètres travaillent pour chaque token. <Model id="llama31-405b">Llama 3.1 405B</Model> est dense : 405 milliards de nombres à lire pour chaque morceau de mot.
+
+Un modèle **MoE** (*mixture of experts*, un mélange d'experts) range ses paramètres en équipes de spécialistes, et un aiguilleur n'en réveille que quelques-uns à chaque token. <Model id="qwen3-235b">Qwen3 235B-A22B</Model> a 235 milliards de paramètres en tout, mais seulement 22 milliards actifs à la fois : c'est le « A22B ». <Model id="deepseek-v3">DeepSeek-V3</Model> en a 671 milliards, dont 37 milliards actifs. <Model id="kimi-k2">Kimi K2</Model> dépasse les mille milliards, avec 32 milliards actifs.
+
+Le piège, c'est que le MoE va plus vite, mais ne prend pas moins de place. Tous les experts doivent être chargés en mémoire, même ceux qui dorment. Un DeepSeek-V3 demande la mémoire d'un modèle de 671 milliards, et la vitesse d'un modèle de 37 milliards.
+
+Wan 2.2 A14B fait un peu la même chose pour la vidéo. Il a deux experts de 14 milliards de paramètres : un qui dessine les grandes formes au début, quand l'image est encore du bruit, et un qui soigne les détails à la fin. En 16 bits, les deux pèsent 57 Go.
+
+## La VRAM : un modèle doit tenir dans la mémoire du GPU
+
+La VRAM, c'est la mémoire du GPU. Elle est séparée de la mémoire de l'ordinateur, plus petite et beaucoup plus rapide. Pour qu'un modèle tourne bien, ses paramètres doivent y tenir en entier, avec en plus la place du travail en cours : le contexte d'une conversation, ou les images d'une vidéo pendant qu'elle se fabrique.
+
+Une règle de poche pour un LLM : la taille du fichier, plus 20 à 30 % pour le travail. Qwen 2.5 7B en Q4 tient dans un GPU de 8 Go. Un modèle de 70 milliards en Q4 pèse autour de 40 Go, donc il faut un GPU de 48 Go, ou deux. Et <Model id="gpt-oss-120b">gpt-oss-120b</Model>, avec ses 117 milliards de paramètres quantifiés en 4 bits, a été conçu pour tenir dans un seul GPU de 80 Go.
+
+Quand ça ne tient pas, le modèle ne refuse pas toujours de tourner. Il fait de l'*offloading* : il garde une partie de lui-même dans la mémoire de l'ordinateur et la fait passer dans le GPU quand il en a besoin. Ça marche, mais c'est comme cuisiner avec la moitié des ingrédients dans le garage. Chaque aller-retour coûte.
+
+Je l'ai vécu. Sur un H100 de 80 Go loué chez RunPod, Wan 2.2 A14B en 720p ne tient pas : les deux experts font 57 Go, et les images du clip en cours remplissent le reste. Les experts font donc la navette entre la carte et la mémoire de la machine. Résultat : environ 26 secondes par étape, et 18 minutes et demie pour un clip de cinq secondes. Le même modèle en 832×480, hébergé chez DigitalOcean, rend un clip en un peu plus de deux minutes.
+
+Même chose avec le petit Wan 2.2 TI2V 5B. Sur une RTX 4000 Ada de 20 Go, il tient de justesse, avec l'offloading activé : 19,7 Go utilisés au pic, et 1 106 secondes pour un clip. Sur le H100, où il tient sans effort, 175 secondes. Six fois plus vite, pour un GPU qui coûtait cinq fois plus cher à l'heure.
+
+## Pourquoi l'IA a besoin d'un GPU, et pas d'un CPU
+
+J'ai longtemps cru que c'était une question de puissance brute. C'est plutôt une question d'organisation.
+
+Imaginez une cuisine. Le CPU, c'est un grand chef. Il sait tout faire, très vite, une chose après l'autre : il peut improviser une sauce, changer de recette, gérer une commande compliquée. Mon Mac a dix de ces chefs. Le GPU, c'est une brigade de milliers de cuisiniers qui ne savent faire qu'une chose simple, mais tous en même temps. Un H100 a 16 896 cœurs de calcul, plus 528 « tensor cores » faits uniquement pour multiplier des tableaux de nombres.
+
+Un modèle d'IA, c'est exactement ce travail-là : des milliards de multiplications identiques, indépendantes les unes des autres. Mille cuisiniers qui coupent chacun une carotte iront toujours plus vite qu'un chef génial qui en coupe mille.
+
+<Figure id="gpu-card" alt="Gros plan sur une carte graphique posée sur un établi sombre : les caloducs en cuivre et les ailettes de refroidissement accrochent une lumière ambrée" caption="Une carte graphique, vue de près. Ses ailettes évacuent la chaleur de milliers de petits calculs faits en même temps." />
+
+Il y a une deuxième raison, moins connue : la vitesse de la mémoire. Pour écrire un seul token, un LLM doit lire tous ses paramètres actifs, une fois. Les 4,7 Go de Qwen 2.5 7B, pour chaque morceau de mot. Ce qui limite la vitesse, c'est donc souvent la vitesse à laquelle on peut lire la mémoire, plus que le calcul. La mémoire d'un H100 se lit à 3,35 To par seconde. Celle de mon M1 Max, à 400 Go par seconde.
+
+J'ai mesuré la différence sur mon Mac, avec le même modèle et la même question. Qwen 2.5 7B sur le GPU du Mac (Metal) écrit 34 tokens par seconde, en médiane de trois essais. Forcé à n'utiliser que le CPU, 18. Pour écrire, le CPU n'est que deux fois plus lent : sur un Mac, il puise dans la même mémoire que le GPU, et l'écriture est surtout limitée par la mémoire. Pour lire la question, là où tout est calcul, l'écart se creuse : 425 tokens par seconde sur le GPU, 80 sur le CPU. Cinq fois plus. Sur un long document à résumer, c'est cette lecture qui compte. (Le Mac n'était pas au repos pendant la mesure, d'autres programmes tournaient.)
+
+## Apple Silicon, le cas à part
+
+Sur un PC, la mémoire de l'ordinateur et celle du GPU sont deux mondes séparés, reliés par un tuyau étroit. Sur un Mac avec une puce Apple, il n'y a qu'une seule mémoire, partagée par le CPU et le GPU. C'est la mémoire unifiée. Mon M1 Max a 64 Go, et le GPU peut en utiliser la plus grande partie.
+
+C'est pour ça qu'un Mac fait tourner des modèles qu'aucune carte graphique grand public de 24 Go n'accepterait. FLUX.2 [klein] 4B y utilise 8,3 Go et fait une image 1024×1024 en 62 secondes. <Model id="z-image-turbo">Z-Image Turbo</Model> y tient avec 10,5 Go.
+
+Mais la mémoire unifiée n'est pas magique. Le GPU d'un Mac est bien plus lent qu'un H100, et la mémoire est partagée avec tout le reste : le système, le navigateur, les autres programmes. Le jour où j'ai voulu faire de la vidéo en local avec Wan 2.2 TI2V 5B, 62 Gio étaient déjà occupés, il en demandait 26 de plus pour décoder les images, et tout s'est arrêté. J'ai raconté cette soirée dans [le billet sur le Mac](/fr/posts/local-first-ai-platform-spring-ai-2-and-the-mac/), et la suite, quand Orazaka a appris à envoyer la vidéo vers des GPU loués à l'heure, dans [le billet sur la portabilité](/fr/posts/orazaka-from-one-mac-to-anywhere/).
+
+## Nos temps mesurés : quel GPU pour quel modèle
+
+Voici ce que nos propres runs ont donné. Le « plus petit GPU » est le plus petit sur lequel nous avons vu le modèle tourner, pas une limite théorique. Les temps vont de la commande au fichier, et viennent des [exécutions mesurées](https://dev.orazaka.com/docs/measured-runs) d'Orazaka, le moteur sur lequel tournent nos IA, du 15 octobre 2026. La ligne du LLM a été mesurée le 17 octobre.
+
+| Modèle | Famille | Plus petit GPU qui l'a fait tourner chez nous | Temps mesuré |
+| --- | --- | --- | --- |
+| Qwen 2.5 7B, Q4_K_M | LLM dense | Mac M1 Max 64 Go (Metal) | 34 tokens/s (CPU seul : 18) |
+| <Model id="sd15">Stable Diffusion 1.5</Model>, 512×512 | Image | Mac M1 Max 64 Go (Metal) | 58 s |
+| FLUX.2 [klein] 4B, Q8, 1024×1024 | Image | Mac M1 Max 64 Go (Metal), 8,3 Go | 62 s |
+| Z-Image Turbo, Q8, 1024×1024 | Image | Mac M1 Max 64 Go (Metal), 10,5 Go | 158 s (moteur) |
+| Stable Diffusion 3.5 Large, 1024×1024 | Image | hébergé (DigitalOcean) | 8 s, 0,08 $ |
+| Wan 2.2 TI2V 5B, 1280×704, 5 s | Vidéo (I2V) | RTX 4000 Ada 20 Go, avec offloading | 1 106 s ; 175 s sur H100 |
+| Wan 2.2 T2V A14B, 832×480, 5 s | Vidéo (T2V) | hébergé (DigitalOcean) | 131 s, 0,60 $ |
+| Wan 2.2 T2V A14B, 1280×720, 5 s | Vidéo (T2V) | H100 80 Go, experts déchargés | 1 111 s |
+
+Ce que ce tableau dit, au fond : le texte et les images tiennent sur un bon portable. La vidéo demande une vraie carte, et beaucoup de mémoire.
+
+## Où louer un GPU, et combien ça coûte
+
+Quand le Mac ne suffit plus, on loue. Voici les fournisseurs que je connais ou que j'ai regardés, avec leurs prix publics en date du 17 octobre 2026. Aucun de ces liens n'est affilié. Les prix changent souvent : la page de chaque fournisseur fait foi.
+
+| Fournisseur | Ce qu'on loue | Prix public, en date du 17 octobre 2026 |
+| --- | --- | --- |
+| [RunPod](https://www.runpod.io/pricing) | GPU à l'heure (pods) ou à la seconde (serverless) | H100 SXM 3,99 $/h (Secure Cloud), L40S 1,09 $/h, RTX 4090 0,89 $/h ; serverless H100 4,79 $/h |
+| [DigitalOcean GPU Droplets](https://www.digitalocean.com/pricing/gpu-droplets) | une machine avec GPU, à l'heure | H100 4,41 $/h, L40S 1,57 $/h, RTX 4000 Ada 0,76 $/h |
+| [DigitalOcean, inférence serverless](https://docs.digitalocean.com/products/gradient-ai-platform/details/pricing/) | un appel de modèle, sans machine | Stable Diffusion 3.5 Large 0,08 $ l'image, Wan2.2-T2V-A14B 0,60 $ la vidéo, <Model id="gpt-oss-20b">gpt-oss-20b</Model> 0,05 $ / 0,45 $ par million de tokens (entrée / sortie) |
+| [Hugging Face Inference Endpoints](https://huggingface.co/docs/inference-endpoints/pricing) | un modèle de Hugging Face déployé sur un GPU dédié | L4 0,80 $/h, L40S 1,80 $/h, A100 80 Go 2,50 $/h (sur AWS) |
+| [Lambda](https://lambda.ai/pricing) | GPU à l'heure | H100 SXM 4,29 $/h, H100 PCIe 3,29 $/h, A10 1,29 $/h |
+| [Modal](https://modal.com/pricing) | du code Python sur GPU, facturé à la seconde | H100 0,001097 $/s (environ 3,95 $/h), L4 0,000222 $/s |
+| [Vast.ai](https://vast.ai/pricing) | une place de marché de GPU de particuliers et de centres de données | pas de prix fixe : il dépend des offres du moment |
+
+Chez nous, la vidéo en 720p passe sur un H100 RunPod à 3,99 $ l'heure, et le détail de ce que ça coûte vraiment, pannes comprises, est dans [le billet sur les coûts](/fr/posts/what-image-and-video-generation-costs/). La leçon que j'en garde : un GPU loué coûte surtout quand il attend. On l'allume pour un lot, on l'éteint quand la file est vide.
+
+## Questions fréquentes
+
+### Quel GPU faut-il pour faire tourner un LLM ?
+
+Ça dépend de sa taille et de sa quantification. Comptez la taille du fichier plus 20 à 30 %. Un modèle de 7 à 8 milliards de paramètres en 4 bits tient dans 8 Go de VRAM. Un modèle de 70 milliards en 4 bits demande environ 48 Go. Un Mac avec beaucoup de mémoire unifiée fait aussi l'affaire, plus lentement.
+
+### Combien de VRAM pour un modèle de 7B ?
+
+En 16 bits, environ 15 Go pour les seuls paramètres. En 8 bits, environ 8 Go. En 4 bits (Q4), autour de 5 Go, et Qwen 2.5 7B en Q4_K_M pèse 4,7 Go. Ajoutez de la place pour le contexte de la conversation.
+
+### Peut-on faire tourner une IA sans GPU, sur le CPU ?
+
+Oui, mais lentement. Sur mon Mac, le même modèle écrit 18 tokens par seconde sur le CPU contre 34 sur le GPU, et lit la question cinq fois moins vite. Pour un petit modèle d'embedding, le CPU suffit. Pour la génération d'images ou de vidéo, il faut un GPU.
+
+### Qu'est-ce qu'un modèle MoE ?
+
+Un modèle « mélange d'experts » qui n'active qu'une partie de ses paramètres à chaque token. Il calcule aussi vite qu'un petit modèle, mais il doit être entièrement chargé en mémoire, comme un gros.
+
+### Un Mac Apple Silicon peut-il remplacer un GPU NVIDIA ?
+
+Pour le texte et les images, souvent, grâce à la mémoire unifiée. Pour la vidéo, pas chez nous : Wan 2.2 TI2V 5B a manqué de mémoire sur un Mac de 64 Go, et la vidéo part sur un GPU loué.

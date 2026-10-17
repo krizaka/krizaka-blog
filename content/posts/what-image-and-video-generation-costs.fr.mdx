@@ -32,10 +32,10 @@ Les temps qui suivent vont de la commande au fichier : file d'attente, transfert
 
 | Modèle | Où | Temps (médiane) | Prix | Réussies |
 |:---|:---|---:|---:|---:|
-| FLUX.2 [klein] 4B, 1024×1024 | Mac | 62 s | rien de facturé | 6 sur 18 |
-| Stable Diffusion 1.5, 512×512 | Mac | 58 s | rien de facturé | 6 sur 6 |
-| Z-Image Turbo, 1024×1024 | Mac | moteur 158 s | rien de facturé | 0 sur 5 |
-| Stable Diffusion 3.5 Large, 1024×1024 | DigitalOcean serverless | 8 s | 0,08 $ | 6 sur 6 |
+| <Model id="flux2-klein-4b">FLUX.2 [klein] 4B</Model>, 1024×1024 | Mac | 62 s | rien de facturé | 6 sur 18 |
+| <Model id="sd15">Stable Diffusion 1.5</Model>, 512×512 | Mac | 58 s | rien de facturé | 6 sur 6 |
+| <Model id="z-image-turbo">Z-Image Turbo</Model>, 1024×1024 | Mac | moteur 158 s | rien de facturé | 0 sur 5 |
+| <Model id="sd35-large">Stable Diffusion 3.5 Large</Model>, 1024×1024 | DigitalOcean serverless | 8 s | 0,08 $ | 6 sur 6 |
 
 « Rien de facturé » ne veut pas dire gratuit. Je n'ai pas mesuré l'électricité du Mac ni son usure, donc je n'avance aucun chiffre.
 
@@ -53,8 +53,8 @@ Le 6 sur 18 de FLUX.2 m'a d'abord fait peur. En lisant les enregistrements, pres
 
 | Modèle | Où | Temps (médiane) | Prix par clip | Réussis |
 |:---|:---|---:|---:|---:|
-| Wan 2.2 A14B, texte vers vidéo, 832×480 | DigitalOcean serverless | 131 s | 0,60 $ | 21 sur 21 |
-| Wan 2.2 TI2V 5B, image vers vidéo, 1280×704 | H100 loué (RunPod) | 175 s | 0,19 à 0,31 $ | 19 sur 19 |
+| <Model id="wan22-t2v-a14b">Wan 2.2 A14B</Model>, texte vers vidéo, 832×480 | DigitalOcean serverless | 131 s | 0,60 $ | 21 sur 21 |
+| <Model id="wan22-ti2v-5b">Wan 2.2 TI2V 5B</Model>, image vers vidéo, 1280×704 | H100 loué (RunPod) | 175 s | 0,19 à 0,31 $ | 19 sur 19 |
 | Wan 2.2 A14B, texte vers vidéo, 720p | H100 loué (RunPod) | 1 111 s | 1,23 à 1,38 $ | 6 sur 6 |
 | Wan 2.2 TI2V 5B, 1280×704 | RTX 4000 Ada (DigitalOcean) | 1 106 s | 0,23 $ | 1 sur 1 |
 | Wan 2.2 TI2V 5B, 480×832 | Mac | manque de mémoire | — | 0 |
@@ -114,7 +114,7 @@ Les étapes de texte sont devenues 53 à 70 % moins chères. Rien n'a été remi
 
 ## Ce que j'ai décidé
 
-Les images restent sur le Mac par défaut, et l'hébergé prend le relais quand huit secondes comptent plus que huit cents. La vidéo part sur un GPU quand on le choisit : l'hébergé pour un clip horizontal rapide, un H100 loué pour le 720p et le vertical, jamais le Mac (pourquoi, dans [le billet sur la plateforme qui tourne sur un seul Mac](/fr/posts/local-first-ai-platform-spring-ai-2-and-the-mac)). Un GPU loué ne vit que le temps d'un lot. Et les licences sont des données : MMAudio, qui ajoute des bruitages synchronisés à une vidéo, est sous licence non commerciale, donc il reste disponible sans jamais être le choix par défaut.
+Les images restent sur le Mac par défaut, et l'hébergé prend le relais quand huit secondes comptent plus que huit cents. La vidéo part sur un GPU quand on le choisit : l'hébergé pour un clip horizontal rapide, un H100 loué pour le 720p et le vertical, jamais le Mac (pourquoi, dans [le billet sur la plateforme qui tourne sur un seul Mac](/fr/posts/local-first-ai-platform-spring-ai-2-and-the-mac)). Un GPU loué ne vit que le temps d'un lot. Et les licences sont des données : <Model id="mmaudio">MMAudio</Model>, qui ajoute des bruitages synchronisés à une vidéo, est sous licence non commerciale, donc il reste disponible sans jamais être le choix par défaut.
 
 ## Ce que je n'ai pas mesuré
 

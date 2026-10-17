@@ -34,7 +34,7 @@ Le prompt : *a basketball player dunking in snow*. Le genre de phrase qu'on tape
 
 <Figure id="anatomy-flux-l0" alt="Un joueur de basketball en maillot marine qui smashe dans un parc enneigé, une colline et des arbres derrière lui" caption="Niveau 0, FLUX.2 [klein] 4B. Deux bras, deux jambes, un panier, un filet. Les lettres du maillot ne veulent rien dire." />
 
-Pas de monstre. FLUX.2 [klein] 4B, un modèle ouvert sous licence permissive, a produit un smash crédible dans la neige avec six mots. Ce que je n'avais pas précisé, il l'a décidé : un maillot marine, une colline, aucun cadrage particulier. Son seul raté visible est classique : les lettres du maillot ne forment aucun mot.
+Pas de monstre. <Model id="flux2-klein-4b">FLUX.2 [klein] 4B</Model>, un modèle ouvert sous licence permissive, a produit un smash crédible dans la neige avec six mots. Ce que je n'avais pas précisé, il l'a décidé : un maillot marine, une colline, aucun cadrage particulier. Son seul raté visible est classique : les lettres du maillot ne forment aucun mot.
 
 ## Niveaux 1 à 3 : dire ce qu'on veut vraiment
 
@@ -60,7 +60,7 @@ La recette habituelle a une quatrième étape : le prompt négatif, la liste de 
 
 Le guidage, c'est la force avec laquelle le modèle obéit au texte. Pour l'appliquer, beaucoup de modèles calculent deux versions à chaque étape, une qui suit le prompt et une qui suit le prompt négatif, puis s'éloignent de la seconde. FLUX.2 [klein] tourne avec un guidage de 1 : il ne fait pas ce deuxième calcul. Le prompt négatif n'est donc jamais lu. Je ne peux pas montrer cette étape sur ce modèle. C'est aussi pour ça qu'avec un modèle comme celui-ci, les exclusions comme « no text, no logos » doivent être écrites dans le prompt positif.
 
-Stable Diffusion 1.5, plus ancien et plus petit, utilise un guidage de 7 et lit le prompt négatif. Et là, le prompt de six mots produit bien les défauts promis. De gauche à droite : niveau 0, niveau 3 sans négatif, niveau 3 avec. 512×512, graine 2026, 63 à 68 secondes chacune.
+<Model id="sd15">Stable Diffusion 1.5</Model>, plus ancien et plus petit, utilise un guidage de 7 et lit le prompt négatif. Et là, le prompt de six mots produit bien les défauts promis. De gauche à droite : niveau 0, niveau 3 sans négatif, niveau 3 avec. 512×512, graine 2026, 63 à 68 secondes chacune.
 
 <Row>
 <Figure id="anatomy-sd15-l0" alt="Un joueur de basketball en blanc qui smashe dans la neige, un soulier rouge et un soulier gris, un poteau isolé à côté de lui" caption="SD 1.5, niveau 0 : deux souliers différents, un poteau qui ne tient rien." />
