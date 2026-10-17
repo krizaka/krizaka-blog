@@ -340,9 +340,25 @@
     "confirmedLead": "Merci. Vous recevrez un courriel à la publication du prochain billet. Chaque courriel a un lien de désinscription en un clic.",
     "expiredTitle": "Ce lien a expiré",
     "expiredLead": "Les liens de confirmation sont valables 48 heures. Remplissez de nouveau le formulaire et vous en recevrez un autre.",
-    "unsubscribedTitle": "Vous êtes désinscrit",
+    "unsubscribedTitle": "Vous êtes désabonné",
     "unsubscribedLead": "Votre adresse a été retirée de la liste. Vous ne recevrez plus de courriels du blogue.",
     "backToBlog": "Retour au blogue",
-    "resubscribe": "Se réinscrire"
+    "resubscribe": "Se réinscrire",
+    "compactLead": "Recevoir les prochains billets par courriel.",
+    "emailLabel": "Votre courriel",
+    "emailPlaceholder": "vous@exemple.com",
+    "submitCompact": "M'abonner",
+    "compactConsent": "Un courriel par billet, de Technologies Krizaka inc. Désabonnement en un clic.",
+    "privacyShort": "Ce que nous gardons",
+    "alreadySubscribed": "Déjà abonné ? Se désabonner",
+    "unsubscribeEyebrow": "Infolettre",
+    "unsubscribeTitle": "Se désabonner",
+    "unsubscribeLead": "Entrez votre courriel : s'il est abonné, nous vous envoyons un lien de désabonnement en un clic, valable 48 heures.",
+    "unsubscribeSubmit": "M'envoyer le lien",
+    "unsubscribeSent": "Si cette adresse est abonnée, un lien de désabonnement vient d'être envoyé.",
+    "resubscribeButton": "Me réabonner",
+    "invalidTitle": "Ce lien n'est plus valide",
+    "invalidLead": "Il a peut-être expiré (les liens demandés sur le site durent 48 heures) ou été copié en partie. Demandez-en un nouveau ci-dessous.",
+    "rateLimited": "Trop de demandes depuis cet endroit. Réessayez dans une heure."
   }
 }

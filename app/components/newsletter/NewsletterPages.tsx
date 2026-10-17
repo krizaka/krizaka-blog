@@ -7,10 +7,12 @@ import { jsonLd } from "@/lib/json-ld";
 import { absoluteUrl } from "@/lib/seo";
 import { KRIZAKA_URL, ORGANIZATION_ID } from "@/lib/site";
 import { SubscribeForm } from "./SubscribeForm";
+import { UnsubscribeForm } from "./UnsubscribeForm";
 import "./newsletter.css";
 
-/* /newsletter/: the form and what is kept, and why (Loi 25). The three landing pages of the e-mail links: confirmed,
-   expired (the form again), unsubscribed. */
+/* /newsletter/: the form and what is kept, and why (Loi 25). /newsletter/unsubscribe/: ask for a one-click unsubscribe
+   link. The landing pages of the e-mail links: confirmed, expired (the form again), unsubscribed (« Me réabonner », a plain
+   link: it works without JavaScript), link-invalid (ask for a new link). */
 /** A page of the newsletter for search engines: a WebPage of the blog, published by the Organization. */
 export function newsletterJsonLd(locale: Locale, path: string, name: string, description: string) {
   const t = getDictionary(locale);
@@ -26,7 +28,7 @@ export function NewsletterPage({ locale }: { locale: Locale }) {
       <PageHero eyebrow={n.eyebrow} title={n.title} lead={n.lead} backdrop="plain" linkAs={Link} />
       <Section reveal={false}>
         <div className="bl-nl-card">
-          <SubscribeForm title={n.formTitle} showPrivacyLink={false} />
+          <SubscribeForm id="nl-page" />
         </div>
       </Section>
       <Section id="privacy" title={n.privacyTitle} divider reveal={false}>
@@ -40,25 +42,48 @@ export function NewsletterPage({ locale }: { locale: Locale }) {
   );
 }
 
-export type NewsletterStatus = "confirmed" | "expired" | "unsubscribed";
+export function UnsubscribePage({ locale }: { locale: Locale }) {
+  const n = getDictionary(locale).newsletter;
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(newsletterJsonLd(locale, "/newsletter/unsubscribe", n.unsubscribeTitle, n.unsubscribeLead)) }} />
+      <PageHero eyebrow={n.unsubscribeEyebrow} title={n.unsubscribeTitle} lead={n.unsubscribeLead} backdrop="plain" linkAs={Link} />
+      <Section reveal={false}>
+        <UnsubscribeForm />
+      </Section>
+    </>
+  );
+}
+
+export type NewsletterStatus = "confirmed" | "expired" | "unsubscribed" | "link-invalid";
 
 export function NewsletterStatusPage({ locale, status }: { locale: Locale; status: NewsletterStatus }) {
   const n = getDictionary(locale).newsletter;
-  const title = { confirmed: n.confirmedTitle, expired: n.expiredTitle, unsubscribed: n.unsubscribedTitle }[status];
-  const lead = { confirmed: n.confirmedLead, expired: n.expiredLead, unsubscribed: n.unsubscribedLead }[status];
+  const title = { confirmed: n.confirmedTitle, expired: n.expiredTitle, unsubscribed: n.unsubscribedTitle, "link-invalid": n.invalidTitle }[status];
+  const lead = { confirmed: n.confirmedLead, expired: n.expiredLead, unsubscribed: n.unsubscribedLead, "link-invalid": n.invalidLead }[status];
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(newsletterJsonLd(locale, `/newsletter/${status}`, title, lead)) }} />
       <PageHero eyebrow={n.eyebrow} title={title} lead={lead} backdrop="plain" linkAs={Link}>
-        <Button asChild variant={status === "confirmed" ? "primary" : "secondary"} shape="cut">
-          <Link href={localizedPath(locale, "/")}>{n.backToBlog}</Link>
-        </Button>
+        <div className="bl-nl-actions">
+          {status === "unsubscribed" && (
+            <Button asChild variant="primary" shape="cut">
+              <Link href={localizedPath(locale, "/newsletter")}>{n.resubscribeButton}</Link>
+            </Button>
+          )}
+          <Button asChild variant={status === "confirmed" ? "primary" : "secondary"} shape="cut">
+            <Link href={localizedPath(locale, "/")}>{n.backToBlog}</Link>
+          </Button>
+        </div>
       </PageHero>
-      {status !== "confirmed" && (
+      {status === "expired" && (
         <Section reveal={false}>
-          <div className="bl-nl-card">
-            <SubscribeForm title={status === "expired" ? n.formTitle : n.resubscribe} />
-          </div>
+          <SubscribeForm id="nl-expired" />
+        </Section>
+      )}
+      {status === "link-invalid" && (
+        <Section reveal={false}>
+          <UnsubscribeForm />
         </Section>
       )}
     </>

@@ -53,6 +53,8 @@ export default function CaptchaWidget({ onToken, label, language }: { onToken: (
       if (id) window.turnstile.remove(id);
       id = window.turnstile.render(el, {
         sitekey: CAPTCHA_SITE_KEY,
+        // Invisible unless Cloudflare needs the visitor to act (then the box appears in place).
+        appearance: "interaction-only",
         theme: currentTheme(),
         language,
         callback: (token: string) => onToken(token),
