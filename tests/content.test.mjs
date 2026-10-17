@@ -46,3 +46,24 @@ test("the preview build is private: token-gated, under /preview/<token>, never i
   assert.doesNotMatch(r("app/sitemap.ts"), /preview/);
 });
 
+test("a search title is at most 60 characters and a search description at most 155", () => {
+  assert.deepEqual(postProblems("x.en.mdx", { ...ok, seoTitle: "a".repeat(60), seoDescription: "b".repeat(155) }, ""), []);
+  assert.match(postProblems("x.en.mdx", { ...ok, seoTitle: "a".repeat(61) }, "")[0], /seoTitle/);
+  assert.match(postProblems("x.en.mdx", { ...ok, seoDescription: "b".repeat(156) }, "")[0], /seoDescription/);
+});
+
+test("a component prop written as a JS expression is refused: the renderer drops it silently (the calculator showed NaN)", () => {
+  assert.match(postProblems("x.en.mdx", ok, "<Utilization hourly={3.99} seconds={175} hosted={0.6} />")[0], /expression/);
+  assert.deepEqual(postProblems("x.en.mdx", ok, '<Utilization hourly="3.99" seconds="175" hosted="0.6" />\n\n```js\nconst a = {b: 1};\n```'), []);
+});
+
+test("a cover is also shown in the body (a phone does not get the cover: it reads the picture where the text is)", () => {
+  const ctx = { media: { a: { kind: "image" } }, series: [] };
+  assert.match(postProblems("x.en.mdx", { ...ok, cover: "a" }, "text only", ctx).join(" "), /cover/);
+  assert.deepEqual(postProblems("x.en.mdx", { ...ok, cover: "a" }, '<Figure id="a" alt="A picture" />', ctx), []);
+});
+
+test("every code fence declares its language (highlighting needs it; `text` for plain output)", () => {
+  assert.match(postProblems("x.en.mdx", ok, "Intro\n\n```\nnpm ci\n```\n")[0], /language/);
+  assert.deepEqual(postProblems("x.en.mdx", ok, "```bash\nnpm ci\n```\n\n```text\nok\n```\n"), []);
+});

@@ -12,6 +12,10 @@ export type Post = {
   locale: Locale;
   title: string;
   description: string;
+  /** The title tag when the h1 is too long for a search result (≤ 60 characters, tests/reading.test.mjs). */
+  seoTitle?: string;
+  /** The meta description when the lead is too long for a search result (≤ 155 characters). */
+  seoDescription?: string;
   /** ISO date (YYYY-MM-DD). */
   date: string;
   updated?: string;
@@ -53,6 +57,8 @@ export function parsePost(file: string, source: string): Post {
     locale: m[2] as Locale,
     title: need("title"),
     description: need("description"),
+    seoTitle: typeof data.seoTitle === "string" && data.seoTitle.trim() ? data.seoTitle.trim() : undefined,
+    seoDescription: typeof data.seoDescription === "string" && data.seoDescription.trim() ? data.seoDescription.trim() : undefined,
     date,
     updated: data.updated ? (data.updated instanceof Date ? data.updated.toISOString().slice(0, 10) : String(data.updated)) : undefined,
     tags,

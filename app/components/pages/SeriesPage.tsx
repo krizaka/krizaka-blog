@@ -25,7 +25,7 @@ export function SeriesIndexPage({ locale }: { locale: Locale }) {
       <PageHero eyebrow={t.home.eyebrow} title={t.series.title} lead={t.series.lead} backdrop="plain" linkAs={Link} />
       <Section reveal={false}>
         {all.length ? (
-          <CardGrid min={320} reveal={false}>
+          <CardGrid light={false} min={320} reveal={false}>
             {all.map(({ series, posts }) => (
               <LinkCard key={series} linkAs={Link} href={localizedPath(locale, `/series/${series}`)} title={seriesName(locale, series)} description={seriesLead(locale, series)} meta={seriesCount(locale, posts.length)} titleAs="h2" />
             ))}

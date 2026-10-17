@@ -63,9 +63,12 @@ html.light ::selection { background: hsla(217, 92%, 50%, 0.18); }
 /* ─── Reading pages: the article, its meta line, its prose ─── */
 .bl-meta { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; font-family: var(--kz-font-mono); font-size: 0.8125rem; color: var(--kz-text-secondary); }
 .bl-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; }
-.bl-article { max-width: 44rem; margin-inline: auto; }
-.bl-cover { display: block; width: 100%; height: auto; border-radius: var(--kz-radius-lg, 16px); border: 1px solid var(--kz-border-default); margin-bottom: 2rem; }
-.bl-prose { font-size: 1.0625rem; line-height: 1.75; color: var(--kz-text-primary); }
+.bl-article { max-width: 68ch; margin-inline: auto; }
+.bl-post-layout .bl-article { margin-inline: 0; }
+.bl-cover-frame { display: block; }
+@media (max-width: 47.99rem) { .bl-cover-frame { display: none; } }
+.bl-cover { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--kz-radius-lg, 16px); border: 1px solid var(--kz-border-default); margin-bottom: 2rem; }
+.bl-prose { font-size: 1.0938rem; line-height: 1.78; color: var(--kz-text-primary); }
 .bl-prose > * + * { margin-top: 1.25rem; }
 .bl-prose h2 { font-family: var(--kz-font-display); font-size: 1.625rem; line-height: 1.25; font-weight: 700; margin-top: 2.75rem; letter-spacing: -0.02em; scroll-margin-top: 96px; }
 .bl-prose h3 { font-family: var(--kz-font-display); font-size: 1.25rem; line-height: 1.3; font-weight: 700; margin-top: 2rem; scroll-margin-top: 96px; }
@@ -76,12 +79,13 @@ html.light ::selection { background: hsla(217, 92%, 50%, 0.18); }
 .bl-prose strong { font-weight: 650; }
 .bl-prose blockquote { border-inline-start: 3px solid var(--kz-accent); padding: 0.25rem 0 0.25rem 1.25rem; color: var(--kz-text-secondary); }
 .bl-prose code { font-family: var(--kz-font-mono); font-size: 0.875em; padding: 0.0625rem 0.375rem; border-radius: 6px; background: var(--kz-surface-2); }
-.bl-prose pre { overflow-x: auto; padding: 1rem 1.25rem; border-radius: var(--kz-radius-md, 12px); background: var(--kz-surface-1); border: 1px solid var(--kz-border-default); font-size: 0.875rem; line-height: 1.6; }
-.bl-prose pre code { padding: 0; background: none; }
+.bl-prose > pre { overflow-x: auto; padding: 1rem 1.25rem; border-radius: var(--kz-radius-md, 12px); background: var(--kz-surface-1); border: 1px solid var(--kz-border-default); font-size: 0.875rem; line-height: 1.6; }
+.bl-prose > pre code, .bl-prose .bl-code code { padding: 0; background: none; }
 .bl-prose img { max-width: 100%; height: auto; border-radius: var(--kz-radius-md, 12px); border: 1px solid var(--kz-border-default); }
 .bl-prose hr { border: 0; border-top: 1px solid var(--kz-border-default); margin-block: 2.5rem; }
 .bl-article, .bl-prose { min-width: 0; }
 .bl-prose pre { max-width: 100%; }
+.bl-prose .bl-code pre { margin: 0; }
 /* A wide table scrolls inside its own box; its cells wrap first, so it rarely needs to. It never widens the page. */
 .bl-prose td { overflow-wrap: anywhere; hyphens: auto; }
 .bl-prose .bl-table { max-width: 100%; overflow-x: auto; border: 1px solid var(--kz-border-subtle); border-radius: var(--kz-radius-md, 12px); }
@@ -102,10 +106,9 @@ html.light ::selection { background: hsla(217, 92%, 50%, 0.18); }
 .kz-skip { position: fixed; left: 12px; top: -64px; z-index: 100; padding: 8px 14px; border-radius: 10px; background: var(--kz-accent); color: var(--kz-on-accent); font-weight: 600; }
 .kz-skip:focus { top: 12px; }
 
-/* ─── 404 ─── */
-.kz-404 { min-height: 100dvh; display: grid; place-content: center; gap: 1rem; padding: 2rem; text-align: center; }
-.kz-404 h1, .kz-404 h2 { font-family: var(--kz-font-display); font-size: clamp(2rem, 6vw, 3rem); }
-.kz-404 a { color: var(--kz-accent-text); font-weight: 600; }
+/* ─── 404 (@krizaka/ui ErrorPage) ─── */
+.kz-404 { min-height: 100dvh; display: grid; place-items: center; padding: 2rem var(--kz-page-gutter, 16px); }
+.kz-404-fr { display: block; margin-top: 0.75rem; color: var(--kz-text-secondary); }
 
 /* ─── Media of a post: figures, clips, provenance ─── */
 .bl-img { display: block; width: 100%; height: auto; background-size: cover; background-position: center; background-color: var(--kz-surface-2); }
@@ -134,7 +137,7 @@ html.light ::selection { background: hsla(217, 92%, 50%, 0.18); }
 .bl-card-link { color: inherit; text-decoration: none; }
 .bl-card-link::after { content: ""; position: absolute; inset: 0; z-index: 1; }
 .bl-card-link:focus-visible { outline: none; }
-.bl-card:has(.bl-card-link:focus-visible) { outline: 2px solid var(--kz-accent); outline-offset: 2px; }
+.bl-card:has(.bl-card-link:focus-visible) { outline: 2px solid var(--kz-ring, var(--kz-accent)); outline-offset: 2px; }
 .bl-card-meta { font-family: var(--kz-font-mono); font-size: 0.8125rem; color: var(--kz-text-secondary); margin-bottom: 0.375rem; }
 .bl-card-tags { display: flex; flex-wrap: wrap; gap: 0.375rem; list-style: none; margin-top: 0.875rem; }
 .bl-chip { display: inline-flex; align-items: center; height: 1.5rem; padding-inline: 0.625rem; border-radius: 999px; border: 1px solid var(--kz-border-default); font-size: 0.75rem; color: var(--kz-text-secondary); }
@@ -173,3 +176,75 @@ html.light ::selection { background: hsla(217, 92%, 50%, 0.18); }
 .bl-calc-note { font-size: 0.8125rem; color: var(--kz-text-secondary); line-height: 1.5; }
 .bl-card :is(h2, h3, p) { display: block; overflow: visible; white-space: normal; -webkit-line-clamp: unset; text-overflow: clip; }
 .bl-card .bl-card-meta { margin-bottom: 0.375rem; }
+
+/* ─── Reading progress: a hairline under the bar that follows the scroll (CSS scroll timeline, no script). Browsers
+   without scroll timelines show nothing; under reduced motion it still tracks the position (it is not an animation the
+   reader watches, it is where they are). ─── */
+.bl-progress { display: none; }
+@supports (animation-timeline: scroll()) {
+  .bl-progress {
+    display: block; position: fixed; inset: 0 0 auto 0; height: 2px; z-index: 60; pointer-events: none;
+    background: var(--kz-accent); transform-origin: 0 50%; transform: scaleX(0);
+    animation: bl-progress linear both; animation-timeline: scroll(root block);
+  }
+  @keyframes bl-progress { to { transform: scaleX(1); } }
+  @media (prefers-reduced-motion: reduce) { .bl-progress { animation-duration: auto !important; } }
+}
+
+/* ─── The post's title block ─── */
+.bl-eyebrow { display: inline-flex; flex-wrap: wrap; gap: 0.25rem 0.625rem; }
+.bl-eyebrow a { color: inherit; text-decoration: none; }
+.bl-eyebrow a:hover { color: var(--kz-text-primary); text-decoration: underline; text-underline-offset: 3px; }
+.bl-eyebrow a + a::before { content: "·"; margin-inline-end: 0.625rem; color: var(--kz-text-secondary); }
+.bl-post-hero .kz-hero-title { max-width: 22ch; }
+.bl-byline { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; margin-top: 0.5rem; }
+.bl-byline-mark { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 999px; border: 1px solid var(--kz-border-default); background: var(--kz-surface-1); }
+.bl-byline-text { display: grid; gap: 0.125rem; min-width: 0; }
+.bl-byline-name { font-weight: 650; color: var(--kz-text-primary); font-size: 0.9375rem; }
+.bl-byline-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.5rem; font-family: var(--kz-font-mono); font-size: 0.8125rem; color: var(--kz-text-secondary); }
+.bl-byline-time { display: inline-flex; align-items: center; gap: 0.3rem; }
+.bl-byline-lang { display: inline-flex; align-items: center; gap: 0.375rem; margin-inline-start: auto; min-height: 36px; padding-inline: 0.75rem; border-radius: 999px; border: 1px solid var(--kz-border-default); font-size: 0.8125rem; font-weight: 600; color: var(--kz-text-secondary); text-decoration: none; }
+.bl-byline-lang:hover { color: var(--kz-text-primary); border-color: var(--kz-border-strong); }
+@media (max-width: 40rem) { .bl-byline-lang { margin-inline-start: 0; } }
+
+/* ─── The body: the reading measure beside a sticky contents column (desktop); no contents row on a phone ─── */
+.bl-post-layout { grid-template-columns: 13rem minmax(0, 1fr); gap: clamp(2rem, 4vw, 4rem); }
+@media (max-width: 63.99rem) {
+  .bl-post-layout { grid-template-columns: minmax(0, 1fr); }
+  .bl-post-layout > .kz-toc-aside { display: none; }
+}
+.bl-post-layout .kz-toc-aside { max-height: calc(100dvh - var(--kz-anchor-offset, 96px) - 2rem); overflow-y: auto; scrollbar-width: thin; }
+.bl-post-layout .kz-toc a { font-weight: 500; line-height: 1.35; padding-block: 6px; }
+.bl-prose h2 { scroll-margin-top: var(--kz-anchor-offset, 96px); }
+.bl-prose > p:first-child { font-size: 1.1875rem; line-height: 1.7; color: var(--kz-text-primary); }
+.bl-prose figure, .bl-prose .bl-figure { margin-block: 2.25rem; }
+.bl-post-tags { margin-top: 2.5rem; }
+
+/* Code: @krizaka/ui CodeBlock (language, copy). */
+.bl-prose .bl-code { margin-block: 1.75rem; }
+
+/* Key numbers of a passage (<Numbers><Num/></Numbers>): @krizaka/ui Stat tiles set apart from the prose. */
+.bl-numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr)); gap: 0.75rem; margin-block: 2rem; padding: 1rem; border: 1px solid var(--kz-border-default); border-inline-start: 3px solid var(--kz-accent); border-radius: var(--kz-radius-md, 12px); background: var(--kz-surface-1); }
+.bl-numbers > * + * { margin-top: 0; }
+.bl-num { min-width: 0; }
+
+/* ─── Home: topic filters, cards, who writes ─── */
+.bl-filter { margin-bottom: 1.5rem; }
+.bl-count { font-family: var(--kz-font-mono); font-size: 0.75em; color: var(--kz-text-secondary); margin-inline-start: 0.25rem; }
+.bl-card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.375rem 0.75rem; }
+.bl-topic { margin-inline-end: 0.5rem; display: inline-flex; align-items: center; height: 1.375rem; padding-inline: 0.5rem; border-radius: 6px; background: var(--kz-accent-soft); color: var(--kz-accent-text); font-family: var(--kz-font-sans); font-size: 0.75rem; font-weight: 650; letter-spacing: 0; }
+.bl-card .bl-card-hook { font-size: 0.9375rem; line-height: 1.55; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+.bl-card-feature .bl-card-hook { -webkit-line-clamp: unset; line-clamp: none; display: block; font-size: 1rem; line-height: 1.6; }
+.bl-card-series { margin-top: 0.75rem; font-family: var(--kz-font-mono); font-size: 0.75rem; color: var(--kz-text-secondary); }
+.bl-card h3 { font-size: 1.125rem; line-height: 1.35; }
+/* A restrained hover (Oussama, 2026-10-16: no coloured glow, no blue halo): the card lifts 2 px, its surface one step
+   lighter, its hairline one step stronger, the title underlined. Same in dark and light; no lift under reduced motion. */
+.bl-card { transition: transform 0.25s var(--kz-ease, ease), background-color 0.25s, border-color 0.25s; }
+.bl-card:hover, .bl-card:has(.bl-card-link:focus-visible) { background-color: var(--kz-surface-2); border-color: var(--kz-border-strong); }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) { .bl-card:hover { transform: translateY(-2px); } }
+.bl-card :is(h2, h3), .bl-card:hover :is(h2, h3) { color: var(--kz-text-primary); }
+.bl-card:hover .bl-card-link { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+/* Text links: an underline on hover, never a glow. */
+.bl-eyebrow a:hover, .bl-byline-lang:hover, .bl-feed a:hover, .bl-series-title a:hover { text-decoration: underline; text-underline-offset: 3px; box-shadow: none; }
+
+.kz-404-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }

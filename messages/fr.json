@@ -57,7 +57,11 @@
     "seriesTitle": "Séries",
     "seriesLead": "Des billets qui vont ensemble, dans l'ordre de lecture.",
     "moreFromSeries": "Lire la série",
-    "allPosts": "Tous les billets"
+    "allPosts": "Tous les billets",
+    "filterLabel": "Filtrer par sujet",
+    "allTopics": "Tous les billets",
+    "seoTitle": "Blogue Krizaka — IA souveraine, LLM locaux, coûts mesurés",
+    "seoDescription": "Notes de construction d'une IA souveraine à Montréal : LLM locaux, Spring AI 2, coûts des GPU et de la vidéo, prompts. Des chiffres mesurés."
   },
   "post": {
     "back": "Tous les billets",
@@ -76,7 +80,16 @@
     "seriesAll": "Tous les billets de la série",
     "seriesNext": "Suite de la série",
     "seriesPrev": "Précédemment dans la série",
-    "featured": "À la une"
+    "featured": "À la une",
+    "toc": "Dans ce billet",
+    "code": "Code",
+    "copy": "Copier",
+    "copiedCode": "Copié",
+    "inSeries": "{series} · partie {part} sur {count}",
+    "prevInSeries": "Précédent dans la série",
+    "nextInSeries": "Suivant dans la série",
+    "keyNumbers": "Chiffres clés",
+    "progress": "Progression de la lecture"
   },
   "engage": {
     "title": "À garder, à partager",
@@ -129,7 +142,53 @@
       "prompts": "Prompts",
       "payments": "Paiements"
     },
-    "countOne": "1 billet"
+    "countOne": "1 billet",
+    "seo": {
+      "sovereignty": {
+        "title": "IA souveraine : où vos données sont traitées",
+        "description": "Billets sur l'IA souveraine et auto-hébergée : où un document est traité, quel modèle l'a lu, qui voit le résultat, et ce que ça coûte."
+      },
+      "ai": {
+        "title": "Notes d'ingénierie IA, de Montréal — Blogue Krizaka",
+        "description": "Construire une plateforme d'IA en vrai : LLM locaux, Spring AI, modèles d'image et de vidéo, GPU. De vraies exécutions, des chiffres mesurés."
+      },
+      "montreal": {
+        "title": "L'IA à Montréal et au Québec — Blogue Krizaka",
+        "description": "Construire de l'IA à Montréal : la Loi 25, un GPU loué dans une région de Montréal, et ce qu'une entreprise d'ici doit à ses clients."
+      },
+      "costs": {
+        "title": "Coûts de l'IA mesurés : GPU, API, Mac — Blogue Krizaka",
+        "description": "Ce que coûte vraiment l'IA : API hébergées, H100 loués et un Mac comparés sur le même travail, avec les factures et les erreurs."
+      },
+      "orazaka": {
+        "title": "Orazaka : construire un moteur d'IA open source",
+        "description": "Notes de construction d'Orazaka, un moteur d'IA open source : Spring AI 2, le routage des modèles en données, les workers, les GPU, ce qui a cassé."
+      },
+      "measurements": {
+        "title": "Exécutions d'IA mesurées — Blogue Krizaka",
+        "description": "Des billets fondés sur des mesures : secondes, dollars et résultats d'exécutions enregistrées, et ce qui n'a pas été mesuré, dit clairement."
+      },
+      "yomizaka": {
+        "title": "Yomizaka : lire des documents avec l'IA",
+        "description": "Comment Yomizaka lit des documents comme un bail avec Orazaka : des constats liés aux mots exacts, et ce qu'une exécution ne prouve pas."
+      },
+      "documents": {
+        "title": "Analyse de documents par l'IA — Blogue Krizaka",
+        "description": "L'IA sur de vrais documents : comment un bail ou un contrat est vérifié règle par règle, comment vérifier le résultat, et ses limites."
+      },
+      "law": {
+        "title": "Droit, règles et IA au Québec — Blogue Krizaka",
+        "description": "Les règles d'une entreprise logicielle au Québec : Loi 25, Code civil, règles des réseaux de cartes, et ce qu'une lecture par l'IA peut affirmer."
+      },
+      "prompts": {
+        "title": "Écrire des prompts pour les modèles d'image",
+        "description": "Comment un prompt guide vraiment un modèle d'image ou de vidéo : sujet, lieu, caméra, prompt négatif et guidage, testés avec une graine fixe."
+      },
+      "payments": {
+        "title": "Paiements pour un produit logiciel — Blogue Krizaka",
+        "description": "Encaisser comme petite entreprise logicielle : ce que Stripe, PayPal et Square refusent, ce qu'exigent les réseaux de cartes, l'effet sur le code."
+      }
+    }
   },
   "search": {
     "title": "Rechercher dans les billets",
@@ -143,7 +202,10 @@
   "notFound": {
     "title": "Page introuvable",
     "body": "Cette page n'existe pas sur le blogue Krizaka.",
-    "back": "Retour au blogue"
+    "back": "Retour au blogue",
+    "lead": "L'adresse a peut-être changé, ou le billet a été fusionné avec un autre.",
+    "search": "Chercher dans les billets",
+    "latest": "Derniers billets"
   },
   "authors": {
     "krizaka": "L'équipe Krizaka",

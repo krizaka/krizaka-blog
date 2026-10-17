@@ -68,3 +68,13 @@ test("entities in an attribute are decoded (a share link with an apostrophe is n
   assert.equal(decodeEntities("t=L&#x27;anatomie&amp;x=1&#39;"), "t=L'anatomie&x=1'");
   assert.deepEqual(extractLinks('<a href="https://r.example/submit?title=L&#x27;anatomie&amp;u=1">r</a>'), ["https://r.example/submit?title=L'anatomie&u=1"]);
 });
+
+test("srcset is read as the HTML spec reads it: a data: URL's comma does not split a candidate", () => {
+  const html = '<source srcset="data:image/gif;base64,R0lGODlh,AQAB"><img srcset="/a-480.webp 480w, /a-960.webp 960w">';
+  assert.deepEqual(extractLinks(html).sort(), ["/a-480.webp", "/a-960.webp"]);
+});
+
+test("a preconnect or dns-prefetch hint is not a link (its origin need not answer a page)", () => {
+  const html = '<link rel="preconnect" href="https://cdn.example.com"/><link rel="dns-prefetch" href="https://x.example.com"><link rel="stylesheet" href="/a.css">';
+  assert.deepEqual(extractLinks(html), ["/a.css"]);
+});

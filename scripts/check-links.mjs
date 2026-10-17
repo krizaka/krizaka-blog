@@ -24,21 +24,39 @@ export const decodeEntities = (v) =>
     .replace(/&gt;/g, ">")
     .replace(/&amp;/g, "&");
 
+/** The URLs of a srcset, read as the HTML spec reads them: a URL runs to the next whitespace (a data: URL keeps its
+    comma), then its descriptor runs to the next comma. */
+export function srcsetUrls(value) {
+  const urls = [];
+  let i = 0;
+  while (i < value.length) {
+    while (i < value.length && /[\s,]/.test(value[i])) i++;
+    let j = i;
+    while (j < value.length && !/\s/.test(value[j])) j++;
+    let url = value.slice(i, j);
+    const endsWithComma = url.endsWith(",");
+    url = url.replace(/,+$/, "");
+    if (url) urls.push(url);
+    i = j;
+    if (!endsWithComma) {
+      while (i < value.length && value[i] !== ",") i++;
+    }
+  }
+  return urls;
+}
+
 /** Every URL a page names: href, src, srcset (each candidate), poster, content of og:image/twitter:image. */
 export function extractLinks(html) {
   const out = new Set();
+  /* Resource hints name an origin to warm up, not a page or a file: their href is not checked. */
+  html = html.replace(/<link\b[^>]*\brel\s*=\s*["'](?:preconnect|dns-prefetch)["'][^>]*>/gi, "");
   const attr = /\s(href|src|poster|srcset|content)\s*=\s*("([^"]*)"|'([^']*)')/gi;
   let m;
   while ((m = attr.exec(html))) {
     const name = m[1].toLowerCase();
     const value = decodeEntities(m[3] ?? m[4] ?? "").trim();
     if (!value) continue;
-    if (name === "srcset") {
-      for (const part of value.split(",")) {
-        const u = part.trim().split(/\s+/)[0];
-        if (u) out.add(u);
-      }
-    } else if (name === "content") {
+    if (name === "srcset") for (const u of srcsetUrls(value)) out.add(u); else if (name === "content") {
       if (/^https?:\/\//.test(value) && !/\s/.test(value)) out.add(value);
     } else out.add(value);
   }

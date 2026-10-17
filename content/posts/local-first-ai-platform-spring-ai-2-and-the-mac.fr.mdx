@@ -1,6 +1,8 @@
 ---
 title: "Une plateforme d'IA sur un seul Mac : ce qui casse, ce que Spring AI 2 a changé, et où le portable abandonne"
 description: "Un Mac à bout de souffle, une ClassCastException qui coupe le chat, des modèles qui deviennent des lignes en base. Ce que j'ai appris en faisant tourner Orazaka sur un portable."
+seoTitle: "Spring AI 2 et LLM locaux sur un seul Mac : ce qui casse"
+seoDescription: "Une plateforme d'IA sur un Mac : Spring Boot 4 et Spring AI 2, une ClassCastException qui coupe le chat, des modèles en base de données."
 date: 2026-10-16
 tags: [orazaka, ai]
 author: oussama
@@ -74,7 +76,7 @@ Le second : chaque déploiement redémarre le relais et coupe le tunnel. Un clip
 
 Pour tout le reste, le Mac est un très bon point de départ. Il fait le chat avec Ollama, la voix avec Piper, la musique avec ACE-Step et les images avec stable-diffusion.cpp. Une image FLUX.2 [klein] 4B en 1024×1024 prend 62 secondes en médiane, de la commande au fichier. Pas de facture, pas de compte cloud, pas de pilote à installer. Et tout nouveau développeur a déjà un portable.
 
-Trois images sorties de cette machine. Sous chacune, « Comment c'est fait » donne le prompt, la graine, la durée et l'exécution Orazaka qui l'a produite.
+Trois images sorties de cette machine. Sous chacune, « Comment c'est fait » donne le prompt, la graine, la durée et l'exécution Orazaka qui l'a produite. Ce que change vraiment chaque ligne d'un tel prompt fait l'objet d'[un billet à part](/fr/posts/anatomy-of-an-ai-prompt).
 
 <Row>
 <Figure id="gallery-mini-skating" alt="Figurines miniatures en tilt-shift qui patinent sur un étang gelé" caption="Patineurs miniatures, 75 s sur le Mac." />

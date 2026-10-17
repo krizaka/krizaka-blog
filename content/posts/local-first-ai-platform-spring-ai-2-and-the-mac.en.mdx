@@ -1,6 +1,8 @@
 ---
 title: "An AI platform on one Mac: what breaks, what Spring AI 2 changed, and where the laptop gives up"
 description: "A Mac out of breath, a ClassCastException that killed the chat, models that became database rows. What I learned running Orazaka on a laptop."
+seoTitle: "Spring AI 2 and local LLMs on one Mac: what breaks"
+seoDescription: "Running an AI platform on a Mac: Spring Boot 4 and Spring AI 2, a ClassCastException that killed the chat, models as database rows."
 date: 2026-10-16
 tags: [orazaka, ai]
 author: oussama
@@ -74,7 +76,7 @@ Second: every deploy restarts the relay and drops the tunnel. A clip halfway thr
 
 For everything else, the Mac is a great place to start. It runs chat with Ollama, voice with Piper, music with ACE-Step and images with stable-diffusion.cpp. A FLUX.2 [klein] 4B image at 1024×1024 takes 62 seconds at the median, command to file. No bill, no cloud account, no driver to install. And every new developer already has a laptop.
 
-Three pictures from that machine. Under each, "How this was made" gives the prompt, the seed, the time and the Orazaka run that produced it.
+Three pictures from that machine. Under each, "How this was made" gives the prompt, the seed, the time and the Orazaka run that produced it. What each line of such a prompt really changes is [a post of its own](/posts/anatomy-of-an-ai-prompt).
 
 <Row>
 <Figure id="gallery-mini-skating" alt="Tilt-shift miniature figures skating on a frozen pond" caption="Miniature skaters, 75 s on the Mac." />

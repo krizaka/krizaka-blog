@@ -10,7 +10,7 @@ export const formatDate = (iso: string, locale: Locale): string =>
 export function PostList({ posts, locale, reveal = true }: { posts: Post[]; locale: Locale; reveal?: boolean }) {
   const t = getDictionary(locale);
   return (
-    <CardGrid min={320} reveal={reveal} aria-label={t.home.latest}>
+    <CardGrid light={false} min={320} reveal={reveal} aria-label={t.home.latest}>
       {posts.map((p) => (
         <PostCard key={p.slug} post={p} locale={locale} />
       ))}

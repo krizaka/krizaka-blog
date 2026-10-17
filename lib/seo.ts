@@ -3,6 +3,7 @@
 import type { Metadata } from "next";
 import { getDictionary, localizedPath, type Locale } from "./i18n";
 import type { Post } from "./posts";
+import { metaDescription, titleTag } from "./reading.ts";
 import { INDEXING_ENABLED, ORGANIZATION_ID, SITE_URL } from "./site";
 
 export const absoluteUrl = (locale: Locale, path: string) => `${SITE_URL}${localizedPath(locale, path)}`;
@@ -10,10 +11,11 @@ export const postPath = (slug: string) => `/posts/${slug}`;
 export const ogUrl = (locale: Locale, slug: string) => `${SITE_URL}${locale === "en" ? "" : "/fr"}/og/${slug}.png`;
 export const DEFAULT_OG = `${SITE_URL}/og/site.png`;
 
-export function pageMetadata(opts: { locale: Locale; path: string; title: string; description: string; alternates?: Locale[]; image?: string; type?: "website" | "article"; published?: string }): Metadata {
+export function pageMetadata(opts: { locale: Locale; path: string; title: string; description: string; alternates?: Locale[]; image?: string; type?: "website" | "article"; published?: string; modified?: string; absoluteTitle?: boolean; tags?: string[] }): Metadata {
   const { locale, path, title, description, type = "website" } = opts;
   const t = getDictionary(locale);
-  const fullTitle = path === "/" ? title : `${title} — ${t.site.name}`;
+  /* The title tag: the page's own words, then the blog's name — unless the page already gives a complete one (≤ 60). */
+  const fullTitle = path === "/" || opts.absoluteTitle ? title : `${title} — ${t.site.name}`;
   const url = absoluteUrl(locale, path);
   const langs = opts.alternates ?? [locale];
   const image = opts.image ?? DEFAULT_OG;
@@ -38,46 +40,65 @@ export function pageMetadata(opts: { locale: Locale; path: string; title: string
       url,
       locale: locale === "en" ? "en_US" : "fr_CA",
       images: [{ url: image, width: 1200, height: 630 }],
-      ...(type === "article" && opts.published ? { publishedTime: opts.published } : {}),
+      ...(type === "article" && opts.published ? { publishedTime: opts.published, modifiedTime: opts.modified ?? opts.published, authors: [absoluteUrl(locale, "/")], tags: opts.tags } : {}),
     },
     twitter: { card: "summary_large_image", title: fullTitle, description, images: [image] },
     icons: { icon: "/favicon.svg" },
   };
 }
 
+const org = { "@id": ORGANIZATION_ID };
 const publisher = { "@type": "Organization", "@id": ORGANIZATION_ID, name: "Krizaka", url: "https://www.krizaka.com" };
+export const blogId = (locale: Locale) => `${absoluteUrl(locale, "/")}#blog`;
+export const authorId = (author: string) => `${SITE_URL}/#author-${author}`;
+
+/** The metadata of a post's page: the short title tag and description when the post gives them, the full title in Open Graph. */
+export function postMetadata(post: Post, alternates: Locale[]): Metadata {
+  const t = getDictionary(post.locale);
+  const meta = pageMetadata({ locale: post.locale, path: postPath(post.slug), title: titleTag(post, t.site.name), absoluteTitle: true, description: metaDescription(post), type: "article", published: post.date, modified: post.updated, image: post.image ?? ogUrl(post.locale, post.slug), alternates, tags: post.tags });
+  return { ...meta, authors: [{ name: (t.authors as Record<string, string>)[post.author] ?? post.author }], keywords: post.tags };
+}
+
+/** The writer of a post: Oussama is a Person who founded Krizaka; « the Krizaka team » is the Organization itself. */
+function authorNode(post: Post) {
+  const t = getDictionary(post.locale);
+  if (post.author === "krizaka") return publisher;
+  return { "@type": "Person", "@id": authorId(post.author), name: (t.authors as Record<string, string>)[post.author] ?? post.author, url: absoluteUrl(post.locale, "/"), worksFor: org };
+}
 
 export function blogJsonLd(locale: Locale) {
   const t = getDictionary(locale);
-  return { "@context": "https://schema.org", "@type": "Blog", name: t.site.name, description: t.site.description, url: absoluteUrl(locale, "/"), inLanguage: locale, publisher };
+  return { "@context": "https://schema.org", "@type": "Blog", "@id": blogId(locale), name: t.site.name, description: t.site.description, url: absoluteUrl(locale, "/"), inLanguage: locale, publisher };
 }
 
-export function postJsonLd(post: Post) {
+export function postJsonLd(post: Post, topic?: { name: string; path: string }) {
   const t = getDictionary(post.locale);
   const url = absoluteUrl(post.locale, postPath(post.slug));
+  const crumbs = [{ name: t.site.name, item: absoluteUrl(post.locale, "/") }, ...(topic ? [{ name: topic.name, item: absoluteUrl(post.locale, topic.path) }] : []), { name: post.title, item: url }];
   return [
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: t.site.name, item: absoluteUrl(post.locale, "/") },
-        { "@type": "ListItem", position: 2, name: post.title, item: url },
-      ],
+      "@id": `${url}#breadcrumb`,
+      itemListElement: crumbs.map((c, i) => ({ "@type": "ListItem", position: i + 1, ...c })),
     },
     {
       "@context": "https://schema.org",
       "@type": "BlogPosting",
+      "@id": `${url}#article`,
       headline: post.title,
       description: post.description,
       url,
-      mainEntityOfPage: url,
+      mainEntityOfPage: { "@type": "WebPage", "@id": url, breadcrumb: { "@id": `${url}#breadcrumb` }, isPartOf: { "@id": blogId(post.locale) }, publisher: org },
       inLanguage: post.locale,
       datePublished: post.date,
       dateModified: post.updated ?? post.date,
       image: post.image ?? ogUrl(post.locale, post.slug),
       keywords: post.tags.join(", "),
-      author: { "@type": "Person", name: t.authors[post.author as keyof typeof t.authors] ?? post.author },
-      isPartOf: { "@type": "Blog", name: t.site.name, url: absoluteUrl(post.locale, "/") },
+      wordCount: post.body.split(/\s+/).filter(Boolean).length,
+      timeRequired: `PT${post.readingMinutes}M`,
+      author: authorNode(post),
+      isPartOf: { "@type": "Blog", "@id": blogId(post.locale), name: t.site.name, url: absoluteUrl(post.locale, "/"), publisher: org },
       publisher,
     },
   ];

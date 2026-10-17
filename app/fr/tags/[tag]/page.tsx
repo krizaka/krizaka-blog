@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { TagPage } from "@/app/components/pages/TagsPage";
-import { tagLabel } from "@/app/components/pages/tag-label";
-import { format, getDictionary } from "@/lib/i18n";
+import { tagSeo } from "@/app/components/pages/tag-label";
 import { tagsOf } from "@/lib/posts";
+import { LOCALES } from "@/lib/i18n";
 import { pageMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ tag: string }> };
@@ -12,8 +12,8 @@ export const generateStaticParams = () => (tagsOf("fr").length ? tagsOf("fr").ma
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { tag } = await params;
-  const t = getDictionary("fr");
-  return pageMetadata({ locale: "fr", path: "/tags/" + tag, title: format(t.tags.oneTitle, { tag: tagLabel("fr", tag) }), description: t.tags.oneLead });
+  const seo = tagSeo("fr", tag);
+  return pageMetadata({ locale: "fr", path: "/tags/" + tag, title: seo.title, absoluteTitle: seo.absolute, description: seo.description, alternates: LOCALES.filter((l) => tagsOf(l).some((x) => x.tag === tag)) });
 }
 
 export default async function Page({ params }: Props) {

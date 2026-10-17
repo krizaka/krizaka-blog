@@ -20,6 +20,14 @@
   `tags` (lower-case ids; their names are `tags.names.*` in the messages), `author` (`authors.*`), `draft`, optional
   `cover` (a media id, below), `featured` (the home's first card), `series` (an id of `series.names.*`: `building-orazaka`,
   `measured`) with its `part` (a post's place; unique per series and language), optional `image`. A post may exist in one language only; in both, they share the slug and name each other (hreflang).
+- **Search**: optional `seoTitle` (≤ 60 characters, the whole title tag) and `seoDescription` (≤ 155) when the title or the
+  lead is too long for a search result; the h1 and the lead stay the post's own words. Every topic has `tags.seo.<tag>`
+  (title, description) in both languages. `scripts/check-meta.mjs out` (CI) refuses a built page over those limits, without
+  exactly one h1, with an image without `alt`, or showing NaN/undefined. No promotional block or call to action inside a
+  post: a product is named plainly, once, with one link — the posts teach, they do not sell.
+- **MDX props are strings** (`<Utilization hourly="3.99" />`): next-mdx-remote drops JavaScript expressions (`={…}`), and
+  `npm run lint` refuses them. Code fences become `CodeBlock` (copy); `<Numbers><Num value label hint/></Numbers>` sets the
+  key figures of a passage apart (only figures the text already gives).
 - **`draft: true` is not published**: the build leaves it out (`APP_SHOW_DRAFTS=1` previews it). Publishing = `draft: false`.
 - **Prove, don't invent.** A figure comes from a run, a measurement or a line of code that the post can point to; what is
   not measured is said. Sober, factual, no superlatives. Yororis' lexicon applies if it is ever named.

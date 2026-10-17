@@ -1,6 +1,8 @@
 ---
 title: "Ce que coûte vraiment la génération d'images et de vidéo : mes factures, mesurées"
 description: "Un Mac, une API hébergée et un H100 loué, sur les mêmes images et les mêmes clips. Les secondes, les dollars, les erreurs qui ont coûté cher, et un petit calcul pour savoir quand louer un GPU."
+seoTitle: "Ce que coûte la génération d'images et vidéo par IA"
+seoDescription: "Un Mac, une API hébergée et un H100 loué sur les mêmes images et clips Wan 2.2 : secondes, dollars, erreurs, et quand louer un GPU."
 date: 2026-10-16
 tags: [costs, measurements, orazaka, ai]
 author: oussama
@@ -24,7 +26,7 @@ Chaque option a son prix caché : la mémoire et la patience chez soi, le menu i
 
 Les temps qui suivent vont de la commande au fichier : file d'attente, transfert et stockage compris.
 
-## Les images
+## Les images, sur le Mac et par API
 
 | Modèle | Où | Temps (médiane) | Prix | Réussies |
 |:---|:---|---:|---:|---:|
@@ -45,7 +47,7 @@ Le même prompt, trois modèles :
 
 Le 6 sur 18 de FLUX.2 m'a d'abord fait peur. En lisant les enregistrements, presque tous les échecs venaient de moi. Le client d'images abandonnait après deux minutes, alors que le moteur avait besoin de 60 à 75 secondes plus le transfert de l'image dans un tunnel. Pire : en abandonnant, il renvoyait une image transparente de 1×1 pixel, et le traitement se déclarait réussi. Deux images terminées ont aussi été écrasées par des reprises du même nom. Depuis, chaque téléchargement vérifie la taille du fichier, et je compte ces échecs quand même.
 
-## Les vidéos
+## Les vidéos : Wan 2.2, hébergé ou sur un GPU loué
 
 | Modèle | Où | Temps (médiane) | Prix par clip | Réussis |
 |:---|:---|---:|---:|---:|
@@ -62,6 +64,13 @@ Sur le GPU loué, le prix d'un clip est son temps de calcul multiplié par le ta
 La version hébergée est la plus simple : 0,60 $ et deux minutes, à chaque fois. Mais elle impose son menu. J'ai demandé du 720×1280, du 480×832, du 1280×720, avec et sans paramètre de format. Chaque réponse est revenue en 832×480. Impossible d'obtenir du vertical. Orazaka refuse donc ce modèle pour le 9:16, par son nom, plutôt que de recadrer une image horizontale en cachette.
 
 C'est pour le vertical et le 720p que j'ai loué un H100. Le modèle A14B y tourne avec nos réglages, mais ne tient pas entier sur la carte de 80 Go : ses deux experts pèsent 57 Go et sont échangés avec la mémoire de l'hôte. Environ 26 secondes par étape, 18 minutes par clip. Plus cher que l'hébergé, mais en 720p et dans le format que je veux.
+
+<Numbers>
+<Num value="0,08 $" label="Image hébergée, SD 3.5 Large" hint="8 s, 1024×1024" />
+<Num value="0,60 $" label="Clip hébergé, Wan 2.2 A14B" hint="131 s en médiane, 832×480" />
+<Num value="0,19 à 0,31 $" label="Clip sur un H100 loué" hint="Wan 2.2 TI2V 5B, 1280×704" />
+<Num value="3,99 $/h" label="Le H100, occupé ou pas" hint="RunPod, 80 Go" />
+</Numbers>
 
 ## Ce que j'ai vraiment payé
 
@@ -103,7 +112,7 @@ Les étapes de texte sont devenues 53 à 70 % moins chères. Rien n'a été remi
 
 ## Ce que j'ai décidé
 
-Les images restent sur le Mac par défaut, et l'hébergé prend le relais quand huit secondes comptent plus que huit cents. La vidéo part sur un GPU quand on le choisit : l'hébergé pour un clip horizontal rapide, un H100 loué pour le 720p et le vertical, jamais le Mac. Un GPU loué ne vit que le temps d'un lot. Et les licences sont des données : MMAudio, qui ajoute des bruitages synchronisés à une vidéo, est sous licence non commerciale, donc il reste disponible sans jamais être le choix par défaut.
+Les images restent sur le Mac par défaut, et l'hébergé prend le relais quand huit secondes comptent plus que huit cents. La vidéo part sur un GPU quand on le choisit : l'hébergé pour un clip horizontal rapide, un H100 loué pour le 720p et le vertical, jamais le Mac (pourquoi, dans [le billet sur la plateforme qui tourne sur un seul Mac](/fr/posts/local-first-ai-platform-spring-ai-2-and-the-mac)). Un GPU loué ne vit que le temps d'un lot. Et les licences sont des données : MMAudio, qui ajoute des bruitages synchronisés à une vidéo, est sous licence non commerciale, donc il reste disponible sans jamais être le choix par défaut.
 
 ## Ce que je n'ai pas mesuré
 

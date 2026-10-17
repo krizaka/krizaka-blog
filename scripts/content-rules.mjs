@@ -24,12 +24,15 @@ export function postProblems(file, data, body, ctx) {
   const date = data.date instanceof Date ? data.date.toISOString().slice(0, 10) : data.date;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(date ?? ""))) out.push(`${file}: "date" must be YYYY-MM-DD`);
   if (typeof data.description === "string" && data.description.length > 220) out.push(`${file}: "description" is over 220 characters`);
+  if (data.seoTitle !== undefined && (typeof data.seoTitle !== "string" || data.seoTitle.length > 60)) out.push(`${file}: "seoTitle" must be text of at most 60 characters (what a search result shows)`);
+  if (data.seoDescription !== undefined && (typeof data.seoDescription !== "string" || data.seoDescription.length > 155)) out.push(`${file}: "seoDescription" must be text of at most 155 characters`);
   if (data.tags !== undefined && !Array.isArray(data.tags)) out.push(`${file}: "tags" must be a list`);
   if (data.draft !== undefined && typeof data.draft !== "boolean") out.push(`${file}: "draft" must be true or false`);
   if (data.image && !String(data.image).startsWith(CDN)) out.push(`${file}: "image" must be on the media CDN (${CDN}…), never a file of this repository`);
   if (/!\[[^\]]*\]\((?!https:\/\/krizaka-assets\.b-cdn\.net\/site\/blog\/)[^)]+\)/.test(body)) out.push(`${file}: images in the body must be on the media CDN (${CDN}…)`);
   if (ctx) {
     if (data.cover !== undefined && !(data.cover in ctx.media)) out.push(`${file}: "cover" ${JSON.stringify(data.cover)} is not in the media library (lib/media.json)`);
+    if (data.cover !== undefined && data.cover in ctx.media && !new RegExp(`<(Figure|Clip)\\b[^>]*\\bid="${data.cover}"`).test(body)) out.push(`${file}: the cover "${data.cover}" must also be shown in the body (a <Figure> or <Clip>): phones do not get the cover`);
     for (const m of body.matchAll(/<(Figure|Clip)\b[^>]*?\bid="([^"]+)"/g)) {
       const entry = ctx.media[m[2]];
       if (!entry) out.push(`${file}: <${m[1]} id="${m[2]}"> is not in the media library (lib/media.json)`);
@@ -41,6 +44,16 @@ export function postProblems(file, data, body, ctx) {
     if (data.part !== undefined && data.series === undefined) out.push(`${file}: "part" needs a "series"`);
   }
   if (/```mermaid/.test(body)) out.push(`${file}: Mermaid is retired`);
+  /* Every fence names its language: CodeBlock highlights with it (`text` for plain output). Opening fences only. */
+  let open = false;
+  for (const line of body.split("\n")) {
+    const m = line.match(/^\s*(```|~~~)\s*([\w+-]*)/);
+    if (!m) continue;
+    if (!open && !m[2]) out.push(`${file}: a code fence without a language (\`\`\`java, ts, bash, yaml, json, sql, xml, properties, text…)`);
+    open = !open;
+  }
+  /* next-mdx-remote blocks JavaScript in posts (blockJS): `prop={3.99}` reaches the component as nothing. Props are strings. */
+  for (const m of body.replace(/```[\s\S]*?```/g, "").matchAll(/<([A-Z]\w*)\b[^>]*?\s(\w+)=\{/g)) out.push(`${file}: <${m[1]} ${m[2]}={…}> is a JavaScript expression, which the renderer drops — write ${m[2]}="…"`);
   return out;
 }
 

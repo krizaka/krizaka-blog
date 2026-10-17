@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PostPage from "@/app/components/pages/PostPage";
 import { postOf, postsOf, translationOf } from "@/lib/posts";
-import { ogUrl, pageMetadata, postPath } from "@/lib/seo";
+import { postMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
 export const dynamicParams = false;
@@ -13,7 +13,7 @@ export const generateStaticParams = () => (postsOf("en").length ? postsOf("en").
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = postOf("en", (await params).slug);
   if (!post) return {};
-  return pageMetadata({ locale: "en", path: postPath(post.slug), title: post.title, description: post.description, type: "article", published: post.date, image: post.image ?? ogUrl("en", post.slug), alternates: translationOf(post) ? ["en", "fr"] : ["en"] });
+  return postMetadata(post, translationOf(post) ? ["en", "fr"] : ["en"]);
 }
 
 export default async function Page({ params }: Props) {

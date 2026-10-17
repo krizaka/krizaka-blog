@@ -42,6 +42,8 @@ jobs:
           APP_INDEXING_ENABLED: "true"
           APP_SHOW_DRAFTS: "1"
         run: npm run build
+      - name: What search engines read on every page (title ≤ 60, description ≤ 155, one h1, alt on every image, no NaN)
+        run: node scripts/check-meta.mjs out
       - name: The family's SEO contract
         run: |
           npx --yes serve@14 out -l 3000 >/dev/null 2>&1 &

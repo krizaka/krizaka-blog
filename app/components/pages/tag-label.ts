@@ -11,3 +11,10 @@ export function postCount(locale: Locale, count: number): string {
   const t = getDictionary(locale).tags;
   return count === 1 ? t.countOne : format(t.count, { count: String(count) });
 }
+
+/** A topic page's title tag and description (`tags.seo.<tag>`), else the generic ones. */
+export function tagSeo(locale: Locale, tag: string): { title: string; description: string; absolute: boolean } {
+  const t = getDictionary(locale).tags;
+  const seo = (t.seo as Record<string, { title: string; description: string } | undefined>)[tag];
+  return seo ? { ...seo, absolute: true } : { title: format(t.oneTitle, { tag: tagLabel(locale, tag) }), description: t.oneLead, absolute: false };
+}

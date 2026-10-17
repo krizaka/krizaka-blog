@@ -1,6 +1,8 @@
 ---
 title: "What it really costs to generate images and video: my bills, measured"
 description: "A Mac, a hosted API and a rented H100, on the same pictures and clips. The seconds, the dollars, the mistakes that cost money, and a small calculation for when renting a GPU pays off."
+seoTitle: "What AI image and video generation costs: Mac, API, H100"
+seoDescription: "A Mac, a hosted API and a rented H100 on the same images and Wan 2.2 clips: seconds, dollars, costly mistakes, and when a GPU pays off."
 date: 2026-10-16
 tags: [costs, measurements, orazaka, ai]
 author: oussama
@@ -24,7 +26,7 @@ Each option has its hidden price: memory and patience at home, the fixed menu at
 
 The times below run from command to file: queueing, transfer and storage included.
 
-## Images
+## Images, on the Mac and through an API
 
 | Model | Where | Time (median) | Price | Succeeded |
 |:---|:---|---:|---:|---:|
@@ -45,7 +47,7 @@ The same prompt, three models:
 
 FLUX.2's 6 out of 18 scared me at first. Reading the records, nearly every failure was mine. The image client gave up after two minutes, while the engine needed 60 to 75 seconds plus the image's trip through a tunnel. Worse: when it gave up, it returned a transparent 1×1 pixel image, and the run reported success. Two finished images were also overwritten by retries with the same name. Since then every download checks the file size, and I still count those failures.
 
-## Video
+## Video: Wan 2.2, hosted or on a rented GPU
 
 | Model | Where | Time (median) | Price per clip | Succeeded |
 |:---|:---|---:|---:|---:|
@@ -62,6 +64,13 @@ On a rented GPU, the price of a clip is its compute time times the hourly rate, 
 The hosted version is the simplest: $0.60 and two minutes, every time. But it sets the menu. I asked for 720×1280, 480×832, 1280×720, with and without a format parameter. Every answer came back at 832×480. No vertical, ever. So Orazaka refuses that model for 9:16, by name, rather than quietly cropping a landscape frame.
 
 Vertical and 720p are why I rented an H100. The A14B model runs there with our settings, but doesn't fit whole on the 80 GB card: its two experts weigh 57 GB and get swapped with host memory. About 26 seconds a step, 18 minutes a clip. More expensive than hosted, but at 720p and in the format I want.
+
+<Numbers>
+<Num value="$0.08" label="Hosted image, SD 3.5 Large" hint="8 s, 1024×1024" />
+<Num value="$0.60" label="Hosted clip, Wan 2.2 A14B" hint="131 s median, 832×480" />
+<Num value="$0.19 to $0.31" label="Clip on a rented H100" hint="Wan 2.2 TI2V 5B, 1280×704" />
+<Num value="$3.99/h" label="The H100, busy or not" hint="RunPod, 80 GB" />
+</Numbers>
 
 ## What I actually paid
 
@@ -103,7 +112,7 @@ Text steps got 53 to 70% cheaper. Nothing was discounted: we just stopped billin
 
 ## What I decided
 
-Images stay on the Mac by default, and hosted takes over when eight seconds matter more than eight cents. Video goes to a GPU when you choose it: hosted for a quick landscape clip, a rented H100 for 720p and vertical, never the Mac. A rented GPU lives for one batch only. And licences are data: MMAudio, which adds synced sound effects to a video, has a non-commercial licence, so it stays available but is never the default.
+Images stay on the Mac by default, and hosted takes over when eight seconds matter more than eight cents. Video goes to a GPU when you choose it: hosted for a quick landscape clip, a rented H100 for 720p and vertical, never the Mac (why, in [the post about running everything on one Mac](/posts/local-first-ai-platform-spring-ai-2-and-the-mac)). A rented GPU lives for one batch only. And licences are data: MMAudio, which adds synced sound effects to a video, has a non-commercial licence, so it stays available but is never the default.
 
 ## What I haven't measured
 
