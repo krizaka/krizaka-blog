@@ -1,0 +1,86 @@
+---
+title: "Chaque app a son métier : choisir ses fournisseurs, puis fixer un prix"
+description: "GPU, vidéo, courriel, cartes, données sportives, vérification d'identité : chaque produit a ses fournisseurs. Comment je choisis, comment je passe du coût unitaire au prix, et le rapport de coûts qui m'évite de deviner."
+seoTitle: "Choisir ses fournisseurs cloud et fixer un prix SaaS"
+seoDescription: "Choisir un fournisseur cloud, calculer un coût unitaire, passer au prix SaaS : GPU, vidéo, cartes, licences, et le rapport de coûts que j'utilise."
+date: 2026-10-17
+publishedAt: "2026-10-17T19:45:00-04:00"
+tags: [costs, measurements, integration]
+author: oussama
+draft: false
+cover: gallery-mini-souk
+coverAlt: "Une ruelle de souk en miniature, photographiée en tilt-shift : des marchands de figurines derrière des pyramides de safran, de paprika et de cumin, des lanternes en laiton ajouré suspendues, un chat endormi sur un seuil bleu"
+series: building-krizaka
+part: 4
+---
+
+L'autre soir, je voulais répondre à une question qui a l'air simple : combien je dois facturer pour ça ? Je n'ai pas pu. Pas parce que le calcul est difficile, mais parce que je n'avais pas encore le prix de revient. Et pour l'avoir, il faut d'abord savoir qui fait le travail derrière chaque bouton.
+
+Chaque produit de Krizaka a son métier. L'un fabrique de la vidéo, un autre lit des documents, un autre affiche des matchs, un autre synchronise les fiches d'un commerce. Chaque métier a ses fournisseurs, avec leurs prix par unité, leurs licences, leurs minimums et leurs formulaires d'approbation. Ce billet raconte comment je choisis, comment je passe d'un coût à un prix, et l'outil qui m'évite de deviner.
+
+## Un métier, des fournisseurs
+
+Pour le calcul, c'est le GPU qui m'a le plus appris. Quand j'ai voulu générer des clips, le quota de GPU chez DigitalOcean était à zéro, le temps qu'un ticket soit traité. J'ai quand même testé une carte RTX 4000 Ada de 20 Go chez eux : le clip de 1280 par 704 tient en mémoire, mais il prend 18 minutes. Sur un H100 loué à l'heure chez RunPod, 3,99 $, le même type de clip avec <Model id="wan22-ti2v-5b">Wan 2.2 TI2V 5B</Model> prend entre 170 et 280 secondes et coûte de 0,19 à 0,31 $. J'ai donc loué chez RunPod. Pas parce que c'est « le meilleur », mais parce que c'est ce que j'ai mesuré sur mon travail.
+
+Pour les médias, l'idée est de ne pas coller le code à un fournisseur. Les boucles courtes de cinq secondes vont sur Bunny Storage, les longues vidéos sur Bunny Stream, et j'ai écrit la décision de mettre une porte devant, pour pouvoir changer. Ce mois-ci, Bunny pèse environ 1 $ sur ma facture : ce n'est pas là qu'il faut chercher à économiser. Pour le courriel, c'est Mailgun, avec une clé qui ne sait qu'envoyer. Pour les cartes, j'ai une règle de la maison : MapLibre et un fond Protomaps tiré d'OpenStreetMap, jamais Mapbox ni Google Maps.
+
+Les données sportives m'ont appris autre chose. [Kachizaka](https://github.com/krizaka/kachizaka) affiche des matchs et des résultats. Pour deux ligues de football, openfootball est sous licence CC0 : on peut s'en servir librement. Pour la LNH, il n'y a que l'API web publique de la ligue, et elle n'a aucune licence publiée. Alors on l'appelle côté serveur, avec un cache de dix minutes, seulement en développement, jamais en production, et derrière un adaptateur qu'on peut remplacer. Pour la NBA, la MLS et la Ligue des champions, je n'ai pas trouvé de source dont les conditions permettent notre usage : ces compétitions ne sont pas offertes. Une règle écrite dans le dépôt : si les conditions d'un fournisseur interdisent l'usage, on ne montre pas la compétition.
+
+Pour la vérification d'identité et de solvabilité de [Yomizaka](https://dev.yomizaka.com), je n'ai encore rien choisi. J'ai écrit la liste des options et une règle : les renseignements personnels restent dans un seul endroit, avec le consentement et la Loi 25 d'abord, le prix ensuite. Pour les paiements dans les industries à risque, j'ai [un billet à part](/fr/posts/payments-and-high-risk-industries/).
+
+Il y a enfin les fournisseurs qui ne se choisissent pas avec une carte de crédit. Pour synchroniser la fiche Google et les pages Meta d'un commerce, [Akinaza](https://github.com/krizaka/akinaza) a besoin d'un accès API approuvé. Google demande une fiche d'entreprise vérifiée depuis plus de 60 jours et un site web, puis un formulaire d'accès. Meta demande la vérification de l'entreprise et une revue de l'application, avec une capture vidéo du parcours. C'est gratuit, mais ça coûte du temps, et le temps entre dans le calendrier avant d'entrer dans le prix.
+
+## Comment je choisis
+
+Mes critères sont toujours les mêmes, dans cet ordre. D'abord la licence et ce que le fournisseur a le droit de faire de nos données. Puis où elles vivent, parce qu'un client québécois ne veut pas toujours qu'elles partent. Ensuite le prix par unité et les minimums. Puis les approbations à obtenir. Puis le verrouillage : combien ça me coûterait de partir. Enfin la qualité, que je mesure sur mon propre travail au lieu de la croire sur parole.
+
+| Métier | Choisi | Écarté ou mis de côté | Parce que | Ce que ça coûte |
+|:---|:---|:---|:---|:---|
+| GPU à l'heure | RunPod, H100 à 3,99 $/h | RTX 4000 Ada chez DigitalOcean | 18 min par clip contre 3 à 5 min | Un GPU oublié : près de 96 $ par jour |
+| Vidéo et médias | Bunny, une porte devant | Rien d'exclu, un secours prévu | Stream pour le long, Storage pour les boucles | Dépendre d'un fournisseur de plus |
+| Courriel | Mailgun, clé d'envoi seule | Une clé aux droits larges | Une fuite ne peut qu'envoyer | La liste d'abonnés vit dans notre base |
+| Cartes | MapLibre et Protomaps | Mapbox, Google Maps | Ouvert, nos tuiles sur notre CDN | Styler la carte nous-mêmes |
+| Données sportives | openfootball (CC0) | NBA, MLS : pas offertes | Conditions absentes ou floues | Des compétitions qu'on ne montre pas |
+| Identité, crédit | Rien de choisi | Tout, pour l'instant | Consentement et loi d'abord | On attend |
+
+Ce tableau est honnête sur un point : la colonne de droite n'est jamais vide. Chaque choix coûte quelque chose, et la question est de savoir quoi avant de signer.
+
+## Du coût unitaire au prix
+
+Une fois le fournisseur choisi, il faut un chiffre par action de l'utilisateur. Pas par exécution, par action : un clip gardé, un bail lu, un gigaoctet servi. Chaque métier a sa propre unité, et c'est ce qui rend la tarification si étrange d'un produit à l'autre.
+
+Je pars du billet sur [le vrai coût d'une image](/fr/posts/real-cost-of-an-image-paying-for-intent/). Une exécution coûte un certain prix, mais ce que la personne veut, c'est un résultat accepté. Si seulement une sortie sur trois convient, la bonne revient trois fois plus cher.
+
+```text
+coût par résultat accepté = (coût d'une exécution + vérification) ÷ p
+coût complet              = coût par résultat accepté + frais
+prix                      = coût complet ÷ (1 − marge)
+```
+
+Un exemple, avec un seul chiffre mesuré. Un clip hébergé de <Model id="wan22-t2v-a14b">Wan 2.2 A14B</Model> coûte 0,60 $ l'exécution. Je suppose que deux clips sur trois conviennent : le résultat accepté revient à 0,90 $. J'ajoute 10 % de frais, pour le stockage, le paiement et le support : environ 1 $. Avec une marge de 50 %, le prix est de 2 $. Les deux hypothèses (p et les frais) ne sont pas mesurées, et la marge n'est pas un calcul, c'est une décision.
+
+<Figure id="unit-cost-to-price" alt="Schéma en quatre étapes, de gauche à droite : le coût d'une exécution, 0,60 $, devient 0,90 $ par résultat accepté en divisant par la part de sorties qui conviennent, puis environ 1 $ avec 10 % de frais, puis 2 $ de prix avec une marge de 50 %" />
+
+Il reste les frais fixes, qui ne dépendent d'aucune action : les applications, la base de données, le courtier de messages. Chez nous, c'est une centaine de dollars par mois, sans compter le GPU à l'heure. Tant qu'il n'y a presque pas d'utilisateurs, c'est une dépense, pas un coût unitaire. Ils entrent dans le prix quand il y a du volume : frais fixes divisés par le nombre d'actions du mois.
+
+## Le rapport qui m'évite de deviner
+
+Pour que ces chiffres ne restent pas dans ma tête, j'ai écrit une petite commande, `./couts`. Elle est en lecture seule. Elle interroge la facturation officielle de DigitalOcean, de Bunny et de RunPod, ajoute mes abonnements et mes noms de domaine, et écrit un rapport daté. On y trouve les dépenses par fournisseur et par produit, les dix plus grosses lignes, la tendance des quatre derniers mois, un plafond par fournisseur avec la projection du mois, et une section « où économiser ».
+
+Les clés sont lues au moment de l'exécution et jamais écrites. Avant d'enregistrer un rapport, la commande le relit et refuse de l'écrire si quelque chose ressemble à une clé. Ce billet en montre un extrait arrondi, sans identifiant, sans nom de ressource et sans solde.
+
+| Poste, à mi-octobre | Dépensé à ce jour | Part |
+|:---|---:|---:|
+| GPU à l'heure (RunPod) | ≈ 83 $ | 78 % |
+| Applications et bases (DigitalOcean, estimé) | ≈ 14 $ | 13 % |
+| Abonnements et frais fixes | ≈ 8 $ | 8 % |
+| Médias (Bunny) | ≈ 1 $ | 1 % |
+| Total, 17 jours sur 31 | ≈ 107 $ | 100 % |
+
+Ce qui me saute aux yeux : le GPU, c'est près de 80 % de la dépense, et environ 85 % du total va au moteur d'IA, le reste se partage entre l'infrastructure commune et les autres produits. La plus grosse ligne du mois est un pod H100 de cinq heures facturées, une vingtaine de dollars, resté allumé sans travailler. Le jour où j'ai lancé le rapport, il marquait aussi en rouge un pod encore allumé à 0 % d'activité, avec le coût d'une journée si on l'oublie. Dans la section « où économiser », il propose aussi de fusionner deux petites applications d'administration, pour 10 $ par mois. C'est le genre de chose que je ne remarquerais pas en regardant une facture à la fois.
+
+Ce qu'il ne couvre pas encore : Claude et Gemini. Pour Claude, il manque une clé d'administration de l'API. Pour Gemini, il faut activer l'export de facturation vers BigQuery. Et la ligne DigitalOcean est une estimation, faite avec l'inventaire et la grille de prix, parce que mon jeton ne donne pas accès à la facturation. Le rapport l'écrit : une source indisponible est marquée « non disponible », jamais devinée.
+
+## Ce que vous pouvez en retenir
+
+Choisissez le fournisseur sur votre propre travail, pas sur son site : mesurez une dizaine de cas réels. Écrivez la licence et le coût de chaque choix à côté du nom, avant de signer. Calculez le coût par action, pas par exécution, et dites quelles hypothèses vous avez ajoutées. Mettez une porte devant les fournisseurs que vous pourriez quitter. Et automatisez la lecture de vos factures : un pod oublié coûte plus cher qu'un après-midi passé à écrire le script. Pour aller plus loin sur les chiffres, il y a [ce que coûte la génération d'images et de vidéo](/fr/posts/what-image-and-video-generation-costs/), et [mes comptes et mes clés](/fr/posts/accounts-and-keys-of-a-one-person-company/).

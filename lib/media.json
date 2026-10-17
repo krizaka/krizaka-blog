@@ -99,6 +99,36 @@
    "seconds": 100,
    "costUsd": 0,
    "source": "orazaka-web-client src/features/landing/utils/gallery.ts"
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-souk-480.538359df21.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-souk-768.355e607529.avif"
+    },
+    {
+     "w": 1024,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-souk-1024.951756d69c.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-souk-480.481aab073c.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-souk-768.5bba740a27.webp"
+    },
+    {
+     "w": 1024,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/shared/gallery-mini-souk-1024.08d6397a73.webp"
+    }
+   ]
   }
  },
  "gallery-mini-ironing": {
@@ -2426,5 +2456,26 @@
    "note": "Le monde de Krizaka : la tournée, v1. Every bird starts from the code render of the Mascot; 28 video clips, 24 upscales, about $9.4 of GPU in all, 17 shots kept in the cut. The site cut, without captions.",
    "source": "krizaka-ui tools/brand-films/epic"
   }
+ },
+ "unit-cost-to-price": {
+  "kind": "image",
+  "style": "diagram",
+  "width": 1200,
+  "height": 620,
+  "blur": "data:image/webp;base64,UklGRm4AAABXRUJQVlA4IGIAAABwAwCdASoYAAwAPxF0tFEsJqUisAgBgCIJZx9AAA1cajZjEeAA/ve+P3snZffLLhhNUsaEH0lAPRq5pJchwXFNuzcp4iM8OPzW5wX+mCPkXOM3k1cQzVUDbJFV70WUZDoAAA==",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/choosing-providers-when-every-app-has-its-own-trade/unit-cost-to-price-480.f8506bdc08.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/choosing-providers-when-every-app-has-its-own-trade/unit-cost-to-price-960.db7df83441.webp"
+   },
+   {
+    "w": 1200,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/choosing-providers-when-every-app-has-its-own-trade/unit-cost-to-price-1200.27f8ef39d4.webp"
+   }
+  ]
  }
 }
