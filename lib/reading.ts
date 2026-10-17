@@ -12,7 +12,9 @@ const headingText = (raw: string): string =>
     .replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1")
     .replace(/`([^`]*)`/g, "$1")
     .replace(/(\*\*|__|\*|_)(.+?)\1/g, "$2")
-    .replace(/<[^>]+>/g, "")
+    .split(/[<>]/)
+    .filter((_, i) => i % 2 === 0)
+    .join("")
     .trim();
 
 /** The h2s of an MDX body, in order, with their anchors. Headings inside code fences are not headings. */
@@ -48,3 +50,4 @@ export const titleTag = (p: { title: string; seoTitle?: string }, siteName: stri
 
 /** The meta description of a post: its `seoDescription` when it has one, else its lead. */
 export const metaDescription = (p: { description: string; seoDescription?: string }): string => p.seoDescription?.trim() || p.description;
+

@@ -110,7 +110,7 @@ export default function PostPage({ post }: { post: Post }) {
       <NewsletterSection locale={locale} where="post" />
       {(prev || next) && post.series && (
         <Section title={seriesName(locale, post.series)} divider reveal={false}>
-          <CardGrid min={280} reveal={false} className="bl-series-nav">
+          <CardGrid light={false} min={280} reveal={false} className="bl-series-nav">
             {prev && <LinkCard linkAs={Link} href={localizedPath(locale, postPath(prev.slug))} meta={t.post.prevInSeries} title={prev.title} icon={<BackIcon size={18} />} titleAs="h3" />}
             {next && <LinkCard linkAs={Link} href={localizedPath(locale, postPath(next.slug))} meta={t.post.nextInSeries} title={next.title} icon={<ForwardIcon size={18} />} titleAs="h3" className="bl-series-next" />}
           </CardGrid>

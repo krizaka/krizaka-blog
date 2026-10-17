@@ -19,7 +19,7 @@ export function PostCard({ post, locale, feature = false, priority = false }: { 
   /* The featured card's picture is the page's first: fetched at once. The others when they come near the window. */
   const Img = priority ? "img" : LazyImg;
   return (
-    <Card.Root interactive className={`bl-card${feature ? " bl-card-feature" : ""}`}>
+    <Card.Root className={`bl-card${feature ? " bl-card-feature" : ""}`}>
       <Card.Media aspect="video">
         {cover ? (
           <Img

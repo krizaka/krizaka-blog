@@ -62,3 +62,8 @@ test("a cover is also shown in the body (a phone does not get the cover: it read
   assert.match(postProblems("x.en.mdx", { ...ok, cover: "a" }, "text only", ctx).join(" "), /cover/);
   assert.deepEqual(postProblems("x.en.mdx", { ...ok, cover: "a" }, '<Figure id="a" alt="A picture" />', ctx), []);
 });
+
+test("every code fence declares its language (highlighting needs it; `text` for plain output)", () => {
+  assert.match(postProblems("x.en.mdx", ok, "Intro\n\n```\nnpm ci\n```\n")[0], /language/);
+  assert.deepEqual(postProblems("x.en.mdx", ok, "```bash\nnpm ci\n```\n\n```text\nok\n```\n"), []);
+});

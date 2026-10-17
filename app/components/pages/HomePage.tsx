@@ -55,7 +55,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
       <NewsletterSection locale={locale} where="home" />
       {series.length > 0 && (
         <Section title={t.home.seriesTitle} lead={t.home.seriesLead} divider>
-          <CardGrid min={320}>
+          <CardGrid light={false} min={320}>
             {series.map(({ series: id, posts: inSeries }) => (
               <LinkCard key={id} linkAs={Link} href={localizedPath(locale, `/series/${id}`)} title={seriesName(locale, id)} description={seriesLead(locale, id)} meta={seriesCount(locale, inSeries.length)} cta={t.home.moreFromSeries} titleAs="h3" />
             ))}
@@ -64,7 +64,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
       )}
       <AuthorNote locale={locale} />
       <Section title={t.home.elsewhereTitle} lead={t.home.elsewhereLead} divider>
-        <CardGrid min={260}>
+        <CardGrid light={false} min={260}>
           <LinkCard href={KRIZAKA_URL} title={t.home.company} description={t.home.companyBody} cta={t.home.open} titleAs="h3" />
           <LinkCard href={UI_URL} title={t.home.ui} description={t.home.uiBody} cta={t.home.open} titleAs="h3" />
           <LinkCard href={JAVA_URL} title={t.home.java} description={t.home.javaBody} cta={t.home.open} titleAs="h3" />

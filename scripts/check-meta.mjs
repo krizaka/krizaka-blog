@@ -13,6 +13,29 @@ export const DESCRIPTION_MAX = 155;
 const decode = (s) =>
   s.replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16))).replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d))).replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
 
+/** The text between tags, outside <script> and <style> (a scan, not a sanitizer: the build's own HTML, read for a check). */
+export function visibleText(html) {
+  const out = [];
+  let skip = "";
+  for (const part of html.split("<").slice(1)) {
+    const close = part.indexOf(">");
+    if (close < 0) continue;
+    const tag = part.slice(0, close).toLowerCase();
+    const name = tag.match(/^\/?([a-z0-9-]+)/)?.[1] ?? "";
+    if (skip) {
+      if (tag.startsWith("/") && name === skip) skip = "";
+      continue;
+    }
+    if ((name === "script" || name === "style") && !tag.startsWith("/")) {
+      skip = name;
+      continue;
+    }
+    const text = part.slice(close + 1);
+    if (text.trim()) out.push(text);
+  }
+  return out;
+}
+
 /** The problems of one page's HTML; an empty list when it is fine. */
 export function metaProblems(html) {
   const out = [];
@@ -26,7 +49,7 @@ export function metaProblems(html) {
   if (h1 !== 1) out.push(`${h1} h1 (one expected)`);
   for (const img of html.match(/<img\b[^>]*>/g) ?? []) if (!/\balt=/.test(img)) out.push(`an image without alt: ${img.slice(0, 80)}`);
   /* A number that failed to compute (a prop the renderer dropped) must never reach a reader. */
-  if (/>[^<]*\b(NaN|undefined)\b[^<]*</.test(html.replace(/<script[\s\S]*?<\/script>/g, ""))) out.push("the page shows NaN or undefined");
+  if (visibleText(html).some((t) => /\b(NaN|undefined)\b/.test(t))) out.push("the page shows NaN or undefined");
   return out;
 }
 

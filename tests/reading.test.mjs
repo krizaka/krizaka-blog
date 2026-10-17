@@ -62,3 +62,7 @@ test("every topic a published post wears has its own title tag and description, 
   }
 });
 
+
+test("a heading's text drops markup, even nested or broken", () => {
+  assert.equal(headingsOf("## A <b>bold</b> <<i>x</i>i> word")[0].text.includes("<"), false);
+});

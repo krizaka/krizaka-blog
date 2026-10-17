@@ -44,6 +44,14 @@ export function postProblems(file, data, body, ctx) {
     if (data.part !== undefined && data.series === undefined) out.push(`${file}: "part" needs a "series"`);
   }
   if (/```mermaid/.test(body)) out.push(`${file}: Mermaid is retired`);
+  /* Every fence names its language: CodeBlock highlights with it (`text` for plain output). Opening fences only. */
+  let open = false;
+  for (const line of body.split("\n")) {
+    const m = line.match(/^\s*(```|~~~)\s*([\w+-]*)/);
+    if (!m) continue;
+    if (!open && !m[2]) out.push(`${file}: a code fence without a language (\`\`\`java, ts, bash, yaml, json, sql, xml, properties, text…)`);
+    open = !open;
+  }
   /* next-mdx-remote blocks JavaScript in posts (blockJS): `prop={3.99}` reaches the component as nothing. Props are strings. */
   for (const m of body.replace(/```[\s\S]*?```/g, "").matchAll(/<([A-Z]\w*)\b[^>]*?\s(\w+)=\{/g)) out.push(`${file}: <${m[1]} ${m[2]}={…}> is a JavaScript expression, which the renderer drops — write ${m[2]}="…"`);
   return out;

@@ -41,7 +41,7 @@ export function Byline({ post, other }: { post: Post; other?: Post }) {
         </p>
       </div>
       {other && (
-        <Link className="bl-byline-lang" href={localizedPath(other.locale, `/posts/${other.slug}`)} hrefLang={other.locale} lang={other.locale} title={t.post.otherLabel}>
+        <Link className="bl-byline-lang" href={localizedPath(other.locale, `/posts/${/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(other.slug) ? other.slug : ""}`)} hrefLang={other.locale} lang={other.locale} title={t.post.otherLabel}>
           <GlobeIcon size={14} aria-hidden="true" />
           {t.post.readInOther}
         </Link>
