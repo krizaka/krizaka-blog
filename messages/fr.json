@@ -140,7 +140,8 @@
       "documents": "Documents",
       "law": "Droit",
       "prompts": "Prompts",
-      "payments": "Paiements"
+      "payments": "Paiements",
+      "basics": "Bases"
     },
     "countOne": "1 billet",
     "seo": {
@@ -187,6 +188,10 @@
       "payments": {
         "title": "Paiements pour un produit logiciel — Blogue Krizaka",
         "description": "Encaisser comme petite entreprise logicielle : ce que Stripe, PayPal et Square refusent, ce qu'exigent les réseaux de cartes, l'effet sur le code."
+      },
+      "basics": {
+        "title": "Les bases de l'IA, mot par mot — Blogue Krizaka",
+        "description": "Token, contexte, quantification, RAG, outils, MCP, agents, diffusion : les mots de l'IA expliqués simplement, avec ce qui tourne vraiment."
       }
     }
   },
@@ -250,12 +255,14 @@
     "names": {
       "building-orazaka": "Construire Orazaka",
       "measured": "Mesuré",
-      "building-krizaka": "Construire Krizaka"
+      "building-krizaka": "Construire Krizaka",
+      "basics": "Les bases"
     },
     "leads": {
       "building-orazaka": "Comment un moteur d'IA souverain se construit sur un Mac et quelques GPU loués : les choix, les migrations, ce qui a cassé.",
       "measured": "Coûts, durées et résultats tirés de vrais runs, avec les enregistrements pour les vérifier. Ce que nous n'avons pas mesuré est dit.",
-      "building-krizaka": "Ce qui entoure le code d'une petite entreprise de logiciels, l'argent et le droit d'abord. Raconté au fil de l'eau, avec ce qui n'est pas encore décidé."
+      "building-krizaka": "Ce qui entoure le code d'une petite entreprise de logiciels, l'argent et le droit d'abord. Raconté au fil de l'eau, avec ce qui n'est pas encore décidé.",
+      "basics": "Les mots de l'IA, un à la fois, avec une image simple et ce qui tourne vraiment chez nous."
     }
   },
   "calc": {

@@ -140,7 +140,8 @@
       "documents": "Documents",
       "law": "Law",
       "prompts": "Prompts",
-      "payments": "Payments"
+      "payments": "Payments",
+      "basics": "Basics"
     },
     "countOne": "1 post",
     "seo": {
@@ -187,6 +188,10 @@
       "payments": {
         "title": "Payments for software products — Krizaka Blog",
         "description": "Taking payments as a small software company: what Stripe, PayPal and Square refuse, what card networks require, and how it shapes the code."
+      },
+      "basics": {
+        "title": "AI basics, word by word — Krizaka Blog",
+        "description": "Tokens, context, quantization, RAG, tools, MCP, agents, diffusion: the words of AI explained simply, with what really runs."
       }
     }
   },
@@ -250,12 +255,14 @@
     "names": {
       "building-orazaka": "Building Orazaka",
       "measured": "Measured",
-      "building-krizaka": "Building Krizaka"
+      "building-krizaka": "Building Krizaka",
+      "basics": "The basics"
     },
     "leads": {
       "building-orazaka": "How a sovereign AI engine gets built on one Mac and a few rented GPUs: the choices, the migrations, what broke.",
       "measured": "Costs, times and results taken from real runs, with the records to check them. What we did not measure is said.",
-      "building-krizaka": "What surrounds the code of a small software company, money and law first. Told as it happens, with what isn't decided yet."
+      "building-krizaka": "What surrounds the code of a small software company, money and law first. Told as it happens, with what isn't decided yet.",
+      "basics": "The words of AI, one at a time, with a simple picture and what really runs on our side."
     }
   },
   "calc": {

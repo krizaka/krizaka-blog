@@ -66,6 +66,6 @@ collections:
       - { name: image, label: "Cover image URL (https://krizaka-assets.b-cdn.net/site/blog/…)", widget: string, required: false, i18n: duplicate, pattern: ["^https://krizaka-assets\\.b-cdn\\.net/site/blog/.+", "An image on the media CDN, under blog/"] }
       - { name: cover, label: "Cover (an id of the media library, lib/media.json — e.g. gallery-tea-pour)", widget: string, required: false, i18n: duplicate }
       - { name: featured, label: "Featured (shown first on the home)", widget: boolean, default: false, required: false, i18n: duplicate }
-      - { name: series, label: "Series (building-orazaka, building-krizaka, measured)", widget: string, required: false, i18n: duplicate }
+      - { name: series, label: "Series (basics, building-orazaka, building-krizaka, measured)", widget: string, required: false, i18n: duplicate }
       - { name: part, label: "Place in the series", widget: number, value_type: int, min: 1, required: false, i18n: duplicate }
       - { name: body, label: Text, widget: markdown, i18n: true, hint: "Images: upload with `node scripts/cdn-assets.mjs upload <file> --to blog/<post>` in krizaka-com, then paste the CDN URL." }

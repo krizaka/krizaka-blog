@@ -1115,5 +1115,133 @@
    "costUsd": 0,
    "note": "Made today with the engine's command line (sd-cli), not through an Orazaka Studio: there is no run id. Same seed for every picture of the ladder."
   }
+ },
+ "basics-tokens": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1024,
+  "blur": "data:image/webp;base64,UklGRqQAAABXRUJQVlA4IJgAAACwBACdASoYABgAPu1iqk+ppSOiMBgIATAdiWoAsOwQ72matirNebEC/iicbkwAAP7epOI7hZInrACHQMgB8mvlB+tOqOZ3VLgIXRWq9ZvCmf5DBjwF/6uOd/AAs7zN991LTc+mmTY5X5Nc8Jdn+P+VO6IqHFxfJ7Pv5atn/cBg3SCYxDTbh26vcHEJ01nFGyTQJATHjUAAAA==",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/understanding-ai-before-you-start/basics-tokens-480.33e8f6eec2.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/understanding-ai-before-you-start/basics-tokens-960.8dfd7a9bfb.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/understanding-ai-before-you-start/basics-tokens-1024.2e6a6559cc.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024×1024",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "Colourful wooden toy building blocks of different sizes lined up in a single row on a light oak desk, seen from directly above, soft daylight, minimal editorial still life photograph, plenty of empty space. No text, no letters, no logos.",
+   "seed": "2026",
+   "size": "1024×1024",
+   "seconds": 88,
+   "costUsd": 0,
+   "note": "Made for this post with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Time measured on a busy machine."
+  }
+ },
+ "basics-library": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1024,
+  "blur": "data:image/webp;base64,UklGRgYBAABXRUJQVlA4IPoAAAAQBgCdASoYABgAPu1ur1IppiQiqAgBMB2JYgC7MwoOAhEdZKPhzZ+Rsn+KB49wFBzdzdWRIPmmUlAA/uj8/aBbN5BNejfIhdmQdQ1TR+vUEmGjgnD4IwVOuWwT2GACb72x+alhMrDJ/CQitIrRLeIwlozjb5V83qqcGyt1Bs+TRqVXyFxVDkZeKbapvLK2K6aIMJfHef5/uaeqnXM/yckTByzgpxX7UN+9xbhs/vWndFwZYoxtRm0MLJ/ckB4TiiNPJlOhqZGIE6WeJ63kpWLZVeqWqpd8o0wlebkyF55hfhmO8kbi+N0LgqIWgDfExgUQ3ycLwJXuHKAA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/understanding-ai-before-you-start/basics-library-480.95d02af126.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/understanding-ai-before-you-start/basics-library-960.661dbcdd08.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/understanding-ai-before-you-start/basics-library-1024.82fcf082f3.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024×1024",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "A quiet library aisle with tall wooden shelves of books, a hand gently pulling one book from a shelf, warm late-afternoon light, shallow depth of field, editorial photograph. No text, no lettering, no logos.",
+   "seed": "2026",
+   "size": "1024×1024",
+   "seconds": 89,
+   "costUsd": 0,
+   "note": "Made for this post with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Time measured on a busy machine."
+  }
+ },
+ "basics-adapter": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1024,
+  "blur": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAADQBACdASoYABgAPu1eqE4ppKOiMBgMATAdiWkA0JAQ76eFfR46YwRXB3LLOIvQAAD+UifsC/w/B+LvASAFtqrnNadMoo+RME100aAEKWmCmWgoloBecAbVMWURmNcQV0yNcnWm6MGUAAAA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/understanding-ai-before-you-start/basics-adapter-480.a131cf53dd.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/understanding-ai-before-you-start/basics-adapter-960.9cf5f23a9f.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/understanding-ai-before-you-start/basics-adapter-1024.6abaa794b2.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024×1024",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "A universal travel power adapter plugged into a white wall socket, close-up product photograph, neutral grey background, soft studio light, crisp detail. No text, no lettering, no logos.",
+   "seed": "2026",
+   "size": "1024×1024",
+   "seconds": 89,
+   "costUsd": 0,
+   "note": "Made for this post with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Time measured on a busy machine."
+  }
+ },
+ "basics-fog": {
+  "kind": "image",
+  "width": 1024,
+  "height": 1024,
+  "blur": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAAAwBQCdASoYABgAPtVao02oJaMiN+gBABqJZwDOdDOuTJzXJIutBBJ5uzNJTtEV7YoqAAD+2V+Cr9YPHKcvkbVp2oYGgRCAkS5/dR01J+mFeysL4jVmVXIQAqZFItSZfnqKpLAIvF5DYZy8QwOS2vLJC1c31Tg95YH7gaja8AA=",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/understanding-ai-before-you-start/basics-fog-480.14aef2c745.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/understanding-ai-before-you-start/basics-fog-960.61e714b6b3.webp"
+   },
+   {
+    "w": 1024,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/understanding-ai-before-you-start/basics-fog-1024.90844f3c26.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024×1024",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "A Montreal residential street with exterior spiral staircases and brick triplexes emerging from thick morning fog at dawn, soft diffused light, muted colours, quiet atmosphere, editorial photograph. No people, no text, no lettering.",
+   "seed": "2026",
+   "size": "1024×1024",
+   "seconds": 110,
+   "costUsd": 0,
+   "note": "Made for this post with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Time measured on a busy machine."
+  }
  }
 }
