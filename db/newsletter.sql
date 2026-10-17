@@ -18,3 +18,11 @@ create table if not exists newsletter_posts (
   sent integer,
   failed integer
 );
+
+-- The limits of the « unsubscribe me » form (per visitor address per hour, per e-mail address per day). The key is a
+-- SHA-256 of the scope and the value: no address or IP is kept in clear.
+create table if not exists newsletter_rate_limits (
+  key text primary key check (length(key) = 64),
+  window_start timestamptz not null,
+  hits integer not null
+);

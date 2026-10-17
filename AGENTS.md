@@ -64,6 +64,13 @@
   (`MAIL_SENDER_ADDRESS`), why it is received, and links the privacy note. No tracking (`o:tracking=no`, no pixel).
   Mailgun only sends (the account's key is a sending key; it cannot hold lists). ADR-001 (accounts) links an account to
   this subscription; it does not keep a second list.
+- **Leaving**: every e-mail has a one-click link (`u` token, never expires) and the RFC 8058 header; the form's « Déjà
+  abonné ? Se désabonner » leads to `/newsletter/unsubscribe/`, which e-mails a one-click link (`r` token, 48 h) only if the
+  address is on the list and always answers the same neutral sentence (`/api/newsletter/unsubscribe-request`: Turnstile,
+  limits per IP per hour and per address per day, hashed keys in `newsletter_rate_limits`). A bad or expired link lands on
+  `/newsletter/link-invalid/`; « Me réabonner » on `/newsletter/unsubscribed/` is a plain link (works without JavaScript).
+- The form is compact (one line, one row: e-mail + « M'abonner », one muted notice line); the language is the page's; the
+  CAPTCHA is invisible unless Cloudflare needs an action (`appearance: interaction-only`).
 - **New post e-mail**: `.github/workflows/newsletter.yml` runs `scripts/newsletter-send.mjs` after a push to main that
   publishes a post (draft → published, or new and published): it waits for the page to be live, then calls
   `/api/newsletter/send` (bearer `MAIL_SEND_TOKEN`, the repository's only secret for this), which claims the post in
