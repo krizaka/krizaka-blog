@@ -16,7 +16,7 @@ export function rss(locale: Locale, posts: Post[]): string {
       return `    <item>\n      <title>${esc(p.title)}</title>\n      <link>${url}</link>\n      <guid isPermaLink="true">${url}</guid>\n      <pubDate>${new Date(iso(p.date)).toUTCString()}</pubDate>\n      <description>${esc(p.description)}</description>\n${p.tags.map((c) => `      <category>${esc(c)}</category>`).join("\n")}\n    </item>`;
     })
     .join("\n");
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n  <channel>\n    <title>${esc(t.site.name)}</title>\n    <link>${absoluteUrl(locale, "/")}</link>\n    <description>${esc(t.site.description)}</description>\n    <language>${locale === "en" ? "en" : "fr-CA"}</language>\n    <atom:link href="${SITE_URL}${prefix(locale)}/feed.xml" rel="self" type="application/rss+xml"/>\n${items}\n  </channel>\n</rss>\n`;
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<?xml-stylesheet type="text/xsl" href="/feed.xsl"?>\n<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n  <channel>\n    <title>${esc(t.site.name)}</title>\n    <link>${absoluteUrl(locale, "/")}</link>\n    <description>${esc(t.site.description)}</description>\n    <language>${locale === "en" ? "en" : "fr-CA"}</language>\n    <atom:link href="${SITE_URL}${prefix(locale)}/feed.xml" rel="self" type="application/rss+xml"/>\n${items}\n  </channel>\n</rss>\n`;
 }
 
 export function atom(locale: Locale, posts: Post[]): string {

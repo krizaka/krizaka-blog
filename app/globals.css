@@ -251,3 +251,7 @@ html.light ::selection { background: hsla(217, 92%, 50%, 0.18); }
 
 /* The home's Featured block: the newest post large, the next two as medium cards side by side (stacked on a phone). */
 .bl-featured-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 1rem; margin-top: 1rem; }
+
+/* Following a post: e-mail first (the newsletter form, #subscribe), the RSS feed as a quiet second. */
+.bl-follow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; margin-top: 2rem; }
+#subscribe { scroll-margin-top: var(--kz-anchor-offset, 96px); }

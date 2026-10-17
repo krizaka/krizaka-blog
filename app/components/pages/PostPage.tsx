@@ -24,6 +24,8 @@ import { PostEngage } from "../engage/PostEngage";
 import { NewsletterSection } from "../newsletter/NewsletterSection";
 import { SaveButton } from "../engage/SaveButton";
 import { Byline } from "./Byline";
+import { Button } from "@krizaka/ui/button";
+import { RssMark } from "../RssMark";
 
 /** A transparent 1×1 GIF: what a phone gets instead of the cover. */
 const NOTHING = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
@@ -71,9 +73,18 @@ export default function PostPage({ post }: { post: Post }) {
         </ul>
       )}
       <PostEngage slug={post.slug} title={post.title} locale={locale} />
-      <p className="bl-feed">
-        {/* A feed is a file, not a page: a plain link (next/link would fetch it as a route). */}
-        <a href={`${locale === "en" ? "" : "/fr"}/feed.xml`}>{t.post.share}</a>
+      {/* The way to follow: the e-mail form (the newsletter's, further down the page) first, the feed as a quiet second.
+          A feed is a file, not a page: a plain link (next/link would fetch it as a route). */}
+      <p className="bl-follow">
+        <Button asChild variant="primary" size="md" shape="cut">
+          <a href="#subscribe">{t.post.subscribe}</a>
+        </Button>
+        <Button asChild variant="ghost" size="md">
+          <a href={`${locale === "en" ? "" : "/fr"}/feed.xml`} type="application/rss+xml">
+            <RssMark size={14} />
+            {t.post.rssFeed}
+          </a>
+        </Button>
       </p>
     </article>
   );
