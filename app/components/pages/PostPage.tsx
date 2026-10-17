@@ -84,7 +84,8 @@ export default function PostPage({ post }: { post: Post }) {
             </ul>
           )}
           <p className="bl-feed">
-            <Link href={`${locale === "en" ? "" : "/fr"}/feed.xml`}>{t.post.share}</Link>
+            {/* A feed is a file, not a page: a plain link (next/link would fetch it as a route). */}
+            <a href={`${locale === "en" ? "" : "/fr"}/feed.xml`}>{t.post.share}</a>
           </p>
         </article>
       </Section>

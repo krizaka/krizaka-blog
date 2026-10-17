@@ -3,13 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "license": "Apache-2.0",
-  "description": "blog.krizaka.com — the Krizaka company blog: a static site built from MDX posts, edited by GitHub accounts.",
+  "description": "blog.krizaka.com \u2014 the Krizaka company blog: a static site built from MDX posts, edited by GitHub accounts.",
   "scripts": {
     "gen": "node scripts/gen-favicon.mjs",
     "dev": "npm run gen && next dev",
     "build": "npm run gen && node scripts/build.mjs",
     "lint": "tsc --noEmit && krizaka-i18n check messages && node scripts/check-content.mjs",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "links": "node scripts/check-links.mjs --base http://localhost:3000 --external"
   },
   "dependencies": {
     "@krizaka/fonts": "^0.2.1",
