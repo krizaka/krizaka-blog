@@ -67,3 +67,14 @@ test("every code fence declares its language (highlighting needs it; `text` for 
   assert.match(postProblems("x.en.mdx", ok, "Intro\n\n```\nnpm ci\n```\n")[0], /language/);
   assert.deepEqual(postProblems("x.en.mdx", ok, "```bash\nnpm ci\n```\n\n```text\nok\n```\n"), []);
 });
+
+test("a published post has a publishedAt (date, time, offset) on its date, and a cover", () => {
+  const pub = { ...ok, draft: false, date: "2026-10-16", publishedAt: "2026-10-16T21:44:17-04:00", cover: "a" };
+  const ctx = { media: { a: { kind: "image" } }, series: [] };
+  const body = '<Figure id="a" alt="A picture" />';
+  assert.deepEqual(postProblems("x.en.mdx", pub, body, ctx), []);
+  assert.match(postProblems("x.en.mdx", { ...pub, publishedAt: undefined }, body, ctx).join(" "), /publishedAt/);
+  assert.match(postProblems("x.en.mdx", { ...pub, publishedAt: "2026-10-17T01:00:00Z" }, body, ctx).join(" "), /publishedAt/);
+  assert.match(postProblems("x.en.mdx", { ...pub, cover: undefined }, body, ctx).join(" "), /cover/);
+  assert.deepEqual(postProblems("x.en.mdx", { ...ok, draft: true }, "", ctx), []);
+});

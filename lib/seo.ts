@@ -91,7 +91,7 @@ export function postJsonLd(post: Post, topic?: { name: string; path: string }) {
       url,
       mainEntityOfPage: { "@type": "WebPage", "@id": url, breadcrumb: { "@id": `${url}#breadcrumb` }, isPartOf: { "@id": blogId(post.locale) }, publisher: org },
       inLanguage: post.locale,
-      datePublished: post.date,
+      datePublished: post.publishedAt ?? post.date,
       dateModified: post.updated ?? post.date,
       image: post.image ?? ogUrl(post.locale, post.slug),
       keywords: post.tags.join(", "),

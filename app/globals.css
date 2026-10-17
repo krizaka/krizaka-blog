@@ -248,3 +248,6 @@ html.light ::selection { background: hsla(217, 92%, 50%, 0.18); }
 .bl-eyebrow a:hover, .bl-byline-lang:hover, .bl-feed a:hover, .bl-series-title a:hover { text-decoration: underline; text-underline-offset: 3px; box-shadow: none; }
 
 .kz-404-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+
+/* The home's Featured block: the newest post large, the next two as medium cards side by side (stacked on a phone). */
+.bl-featured-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 1rem; margin-top: 1rem; }

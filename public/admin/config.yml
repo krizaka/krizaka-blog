@@ -55,6 +55,7 @@ collections:
       - { name: seoTitle, label: "Search title (optional, 60 characters at most: what Google shows when the title is too long)", widget: string, required: false, i18n: true, pattern: ["^.{0,60}$", "At most 60 characters"] }
       - { name: seoDescription, label: "Search description (optional, 155 characters at most)", widget: text, required: false, i18n: true, pattern: ["^.{0,155}$", "At most 155 characters"] }
       - { name: date, label: Date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD", picker_utc: true, i18n: duplicate }
+      - { name: publishedAt, label: "Published at (date, time and offset, e.g. 2026-10-16T21:44:17-04:00): the order of posts of one day", widget: string, required: false, i18n: duplicate, pattern: ["^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2})?(Z|[+-]\\d{2}:\\d{2})$", "Date, time and offset"] }
       - { name: tags, label: Topics (lower-case ids, e.g. costs, orazaka), widget: list, i18n: true, required: false }
       - name: author
         label: Author

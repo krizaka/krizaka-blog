@@ -7,7 +7,7 @@ import { EmptyState } from "@krizaka/ui/empty-state";
 import { NotificationIcon } from "@krizaka/icons";
 import { Button } from "@krizaka/ui/button";
 import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
-import { featuredPost, postsOf, seriesOf } from "@/lib/posts";
+import { featuredPosts, postsOf, seriesOf } from "@/lib/posts";
 import { JAVA_URL, KRIZAKA_URL, UI_URL } from "@/lib/site";
 import { PostList } from "./PostList";
 import { PostCard } from "./PostCard";
@@ -16,14 +16,15 @@ import { NewsletterSection } from "../newsletter/NewsletterSection";
 import { AuthorNote } from "../about/AuthorNote";
 import { TopicFilter } from "./TopicFilter";
 
-/* The home: the blog's promise, the newest featured post large, the topics as filters (each one its own page), the other
+/* The home: the blog's promise, three posts first (the newest large, the next two medium), the topics as filters (each one its own page), the other
    posts as cards, the series, and where the work lives. */
 export default function HomePage({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
   const posts = postsOf(locale);
   const series = seriesOf(locale);
-  const featured = featuredPost(locale);
-  const rest = posts.filter((p) => p !== featured);
+  /* Three posts first: the newest (or a pinned one, `featured: true`) as the large card, the next two beside it. */
+  const [featured, ...second] = featuredPosts(locale, 3);
+  const rest = posts.filter((p) => p !== featured && !second.includes(p));
   const feed = `${locale === "en" ? "" : "/fr"}/feed.xml`;
   return (
     <>
@@ -31,6 +32,13 @@ export default function HomePage({ locale }: { locale: Locale }) {
       {featured && (
         <Section title={t.home.featuredTitle} reveal={false}>
           <PostCard post={featured} locale={locale} feature priority />
+          {second.length > 0 && (
+            <div className="bl-featured-pair">
+              {second.map((p) => (
+                <PostCard key={p.slug} post={p} locale={locale} />
+              ))}
+            </div>
+          )}
         </Section>
       )}
       <Section title={t.home.latest} lead={posts.length ? t.home.latestLead : undefined} reveal={false} divider={Boolean(featured)}>

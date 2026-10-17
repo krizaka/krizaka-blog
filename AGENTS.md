@@ -28,6 +28,10 @@
 - **MDX props are strings** (`<Utilization hourly="3.99" />`): next-mdx-remote drops JavaScript expressions (`={…}`), and
   `npm run lint` refuses them. Code fences become `CodeBlock` (copy); `<Numbers><Num value label hint/></Numbers>` sets the
   key figures of a passage apart (only figures the text already gives).
+- **A published post has a `publishedAt`** (quoted date, time and offset, e.g. `"2026-10-16T21:44:17-04:00"`, on its `date`):
+  posts of one day keep their order. The home shows **three posts first**: pinned ones (`featured: true`) then the newest,
+  the first as the large card. **A published post has a `cover`**, also shown in the body with its alt (phones read it
+  there). A cover is made, not found: an Orazaka Studio run (provenance in `lib/media.json`), never a stock photo.
 - **`draft: true` is not published**: the build leaves it out (`APP_SHOW_DRAFTS=1` previews it). Publishing = `draft: false`.
 - **Prove, don't invent.** A figure comes from a run, a measurement or a line of code that the post can point to; what is
   not measured is said. Sober, factual, no superlatives. Yororis' lexicon applies if it is ever named.
