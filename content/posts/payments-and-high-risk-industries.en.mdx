@@ -1,0 +1,82 @@
+---
+title: "Taking a payment: the question I keep asking, and what a \"high-risk industry\" means"
+description: "Before the first invoice, you need to know who will agree to move the money. What Stripe, PayPal and Square refuse, what the card networks require, and how it changes the code of our products."
+seoTitle: "Payments and \"high-risk\" industries: how I think it through"
+seoDescription: "What Stripe, PayPal and Square refuse, what Mastercard requires, and how it shapes the code of our products. And what isn't decided."
+date: 2026-10-16
+tags: [payments, law]
+author: oussama
+draft: false
+series: building-krizaka
+part: 1
+---
+
+On 15 October I reread the payments code of Orochia, our creator video platform. I landed on a sixty-line function that did everything at once: validate, lock, apply the rules, move the credits, write the ledger. It worked. It still scared me, and I opened [an issue](https://github.com/krizaka/orochia/issues/209) to rewrite it.
+
+Reading that code, I realised the real question wasn't in it. The code already talks to four payment gateways. None of them has agreed to work with us yet. And for some of our products, that is not a given.
+
+## The question
+
+When you build software that takes money, you think about the checkout screen first. The button, the amount, the receipt. The first question is somewhere else: which company will agree to move this money for you?
+
+A payment processor is a bit like a landlord renting out a shop. They don't rent to just anyone. They look at what you do, they ask themselves what it will cost them if things go wrong, and they set their terms. Some businesses they turn down. Others they accept with a big deposit.
+
+That's what people call "high-risk industries".
+
+## What the big three say
+
+I read the lists of the three names everyone knows. They are public, and I'd advise you to read them before you write a line of code.
+
+Stripe's [list of restricted businesses](https://stripe.com/legal/restricted-businesses) prohibits pornography and other mature audience content, including when an AI generated it. It also prohibits games of chance, and that line covers contests and fantasy sports.
+
+PayPal's [acceptable use policy](https://www.paypal.com/us/legalhub/paypal/acceptableuse-full) prohibits "certain sexually oriented materials or services". For gambling, sports betting and fantasy sports, it asks for pre-approval.
+
+Square's [Canadian page](https://squareup.com/help/ca/en/article/5089-prohibited-goods-and-services-with-square-point-of-sale) lists adult entertainment "in any medium" and betting among its unsupported industries.
+
+These aren't moral judgements. They are risk sums. When a customer disputes a payment with their bank, that's a chargeback: the money goes back, and fees come on top. In some categories, disputes happen more often. The processor protects itself.
+
+## The ones who say yes, and at what price
+
+Specialist processors exist. [CCBill](https://www.ccbill.com/), for example, presents itself as payments "for mainstream and adult content platforms". I don't know their rates yet: there is no public price list, it's negotiated case by case. So I won't invent a number here.
+
+What I do know is the mechanism that comes up everywhere: the reserve. The processor keeps part of every payment for a while, in case disputes come in. Stripe [explains it](https://stripe.com/resources/more/rolling-reserves-101-what-they-are-why-they-matter) itself: usually 5 to 15% of each transaction, held over a rolling period, for example 180 days. And it's often required of businesses with no history. A new company in a watched category is exactly us.
+
+In practice, if you take $1,000 on a Monday with a 10% reserve, $100 stays locked for six months. For a small company that's not a detail. It's cash that sleeps.
+
+## Above the processors, the card networks
+
+The processor doesn't have the last word. Above it sit Visa and Mastercard.
+
+In April 2021, Mastercard [tightened its rules](https://www.mastercard.com/global/en/news-and-trends/perspectives/2021/protecting-our-network-protecting-you-preventing-illegal-adult-content-on-our-network.html) for adult content sites. The banks that connect those sites to its network must certify that they have controls to monitor, block and take down illegal content. They also need documented age and identity verification for the people who appear and for those who upload, and clear, documented consent.
+
+A few months later, in August 2021, OnlyFans announced a ban on sexually explicit content, citing pressure from its banking partners, then [reversed it](https://ia.acs.org.au/article/2021/onlyfans-reverses-sexual-content-ban.html) within a week after getting "assurances" from those same partners. I keep one thing from that story: even a huge platform depends on the goodwill of a few banks.
+
+## What it changes in our code
+
+Orochia is a creator video platform, and part of what it will allow is for adults only. So it sits in that zone, and I knew it from day one. [The merchant accounts issue](https://github.com/krizaka/orochia/issues/31) says it plainly: adult content excludes Stripe. So the code talks to CCBill, Segpay, a crypto gateway, and to Stripe only for tests and deployments without adult content ([orochia#7](https://github.com/krizaka/orochia/issues/7)).
+
+That changed the design in a few ways.
+
+Auctions are paid in held credits. When you bid, your credits are set aside. If someone outbids you, they come back. If you win, they are spent. [The auctions documentation](https://github.com/krizaka/orochia/blob/main/docs/AUCTIONS.md) sums it up in one line: the winner has always already paid, with no chargeback race at the end.
+
+Money moves once. Every movement carries a unique reference, and a payment settles only when the gateway's signed message arrives. If the message arrives twice, the second one does nothing.
+
+Chargebacks must reach the balance. An audit found a hole ([orochia#167](https://github.com/krizaka/orochia/issues/167)): a creator's balance didn't subtract disputed payments. Someone could ask for a payout before the dispute arrived, and the platform would have paid twice. It's not fixed yet, and it has to be before the first real dollar. The payout rules, like the minimum amount, are also leaving the code to become versioned data that can be adjusted without a redeploy ([orochia#205](https://github.com/krizaka/orochia/issues/205)).
+
+And age and identity checks aren't an option we'll add later. Under Mastercard's rules, they are a condition for existing at all.
+
+For [Kachizaka](https://github.com/krizaka/kachizaka), our predictions game between friends, I made the opposite call: points, never money. The moment you add a stake and a prize, you enter Stripe's "games of chance" line and PayPal's "pre-approval" box. I'd rather that product never goes there.
+
+## What isn't decided
+
+A lot, and I'd rather say so.
+
+No merchant account is open. To apply for one, the company first needs its registration numbers and a bank account, and that's still in progress. I don't know which processor will say yes, with what reserve, or at what rate.
+
+I also don't know how long proofs of age and identity must be kept, or in what form. Those are legal questions. I'll ask a lawyer before launching anything, and this post isn't legal advice: it's me thinking out loud.
+
+## What you can take from it
+
+If your product comes anywhere near one of these categories, read the processors' lists before you write the payments code. Plan for money staying locked for months. Make sure no payout leaves before disputes have had time to arrive. And keep your money rules in data, because you will change them.
+
+This post opens a new series, "Building Krizaka", about what surrounds the code: money, law, the company. The technical posts about the engine go on in "Building Orazaka".
