@@ -2,22 +2,21 @@
 /* The "new post" e-mail. When a post goes from draft to published (or arrives published), each confirmed subscriber gets
    one e-mail, in their language when the post exists in it (else in the language it has).
 
-   Never twice: before sending anything for a post, the script pushes the git tag `newsletter/<slug>` to origin. A tag
-   cannot be created twice, so a second run (a re-run of the workflow, a manual run, two pushes in a row) finds it and
-   sends nothing. If the sending fails after the tag, nothing is retried automatically: the log says who was not reached.
+   This script finds the posts a push published, waits until they are live, then asks the send action
+   (POST /api/newsletter/send, Authorization: Bearer MAIL_SEND_TOKEN) to e-mail the list. The action claims the post first
+   (table newsletter_posts, primary key = slug): a re-run, a manual run or two pushes in a row never send it twice.
 
    Usage (.github/workflows/newsletter.yml runs the first form after a push to main):
      node scripts/newsletter-send.mjs --before <sha> --after <sha>      the posts published by these commits
      node scripts/newsletter-send.mjs --slug <slug>                     one post, by hand (still at most once)
-     add --dry-run to print what would be sent without tagging or sending.
-   Needs MAIL_API_KEY, MAIL_DOMAIN, MAIL_FROM, MAIL_NEWSLETTER_LIST, MAIL_TOKEN_SECRET (+ MAIL_API_URL, MAIL_SENDER_ADDRESS). */
+     add --dry-run to print what would be sent without calling the action. */
 import { execFileSync } from "node:child_process";
-import { createRequire } from "node:module";
 import { pathToFileURL } from "node:url";
 import matter from "gray-matter";
 
-const require = createRequire(import.meta.url);
-const nl = require("../functions/packages/newsletter/subscribe/newsletter.js");
+const SITE = "https://blog.krizaka.com";
+const LOCALES = ["en", "fr"];
+const pageUrl = (locale, path) => `${SITE}${locale === "fr" ? "/fr" : ""}${path}`;
 const FILE = /^content\/posts\/([a-z0-9]+(?:-[a-z0-9]+)*)\.(en|fr)\.mdx$/;
 const ZERO = /^0+$/;
 
@@ -46,35 +45,21 @@ export function publishedBetween(changed, read) {
 /** The post's versions at a commit: { en?, fr? } with title, description and the public URL. Only published versions. */
 export function versionsOf(slug, read) {
   const out = {};
-  for (const locale of nl.LOCALES) {
+  for (const locale of LOCALES) {
     const source = read(`content/posts/${slug}.${locale}.mdx`);
     if (!isPublished(source)) continue;
     const { data } = matter(source);
-    out[locale] = { title: String(data.title), description: String(data.description), url: nl.pageUrl(locale, `/posts/${slug}/`) };
+    out[locale] = { title: String(data.title), description: String(data.description), url: pageUrl(locale, `/posts/${slug}/`) };
   }
   return out;
 }
 
-/** The version a subscriber gets: their language, else the other one. */
-export const versionFor = (versions, locale) => versions[locale] ?? versions[nl.LOCALES.find((l) => versions[l])];
-
-/** Claims the post: true the first time, false when the tag already exists on origin. */
-export function claim(slug, run = git) {
-  const tag = `newsletter/${slug}`;
-  try {
-    run("tag", tag);
-  } catch {
-    /* a local tag from an earlier fetch: the push decides */
-  }
-  try {
-    run("push", "origin", `refs/tags/${tag}`);
-    return true;
-  } catch (e) {
-    // Refused: either the tag is already on origin (sent before) or the push itself failed (rights, network) — ask origin.
-    const remote = run("ls-remote", "--tags", "origin", `refs/tags/${tag}`);
-    if (String(remote).trim()) return false;
-    throw e;
-  }
+/** Asks the send action to e-mail the list; it answers {sent, failed, total} or {already: true}. */
+export async function requestSend(slug, versions, token, fetchImpl = fetch) {
+  const res = await fetchImpl(`${SITE}/api/newsletter/send`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify({ slug, versions }) });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(`newsletter: the send action answered ${res.status} ${body.error ?? ""}`.trim());
+  return body;
 }
 
 async function waitLive(url, minutes = 20) {
@@ -84,22 +69,6 @@ async function waitLive(url, minutes = 20) {
     await new Promise((r) => setTimeout(r, 30_000));
   }
   return false;
-}
-
-export async function sendPost(slug, versions, env, { members, send, log = console.log }) {
-  let sent = 0;
-  const failed = [];
-  for (const m of members) {
-    const post = versionFor(versions, m.locale);
-    try {
-      await send(nl.newPostEmail({ email: m.email, locale: m.locale, consentedAt: m.consentedAt }, post, env), env);
-      sent++;
-    } catch (e) {
-      failed.push(`${m.email.replace(/^(.).*@/, "$1…@")}: ${e.message}`);
-    }
-  }
-  log(`newsletter: ${slug} sent to ${sent} of ${members.length}${failed.length ? `; not reached: ${failed.join(", ")}` : ""}`);
-  return { sent, failed };
 }
 
 async function cli() {
@@ -116,12 +85,14 @@ async function cli() {
     slugs = [arg("--slug")];
   }
   else {
-    const changed = ZERO.test(before ?? "0") ? git("ls-tree", "-r", "--name-only", after, "content/posts").split("\n") : git("diff", "--name-only", before, after, "--", "content/posts").split("\n");
+    // No "before" (a new branch, a forced history): nothing can be told apart, so nothing is sent automatically.
+    if (!before || ZERO.test(before)) return console.log("newsletter: no previous commit to compare with; use --slug to send by hand");
+    const changed = git("diff", "--name-only", before, after, "--", "content/posts").split("\n");
     slugs = publishedBetween(changed.filter(Boolean), { before: (p) => show(before, p), after: (p) => show(after, p) });
   }
   if (!slugs.length) return console.log("newsletter: no post published by these commits");
-  const env = process.env;
-  if (!dry && !nl.mailConfigured(env)) throw new Error("newsletter: MAIL_* is not configured");
+  const token = process.env.MAIL_SEND_TOKEN;
+  if (!dry && !token) throw new Error("newsletter: MAIL_SEND_TOKEN is not set");
   for (const slug of slugs) {
     const versions = versionsOf(slug, (p) => show(after, p));
     if (!Object.keys(versions).length) {
@@ -133,12 +104,8 @@ async function cli() {
       continue;
     }
     for (const v of Object.values(versions)) if (!(await waitLive(v.url))) throw new Error(`newsletter: ${v.url} is not live after 20 minutes; nothing sent`);
-    if (!claim(slug)) {
-      console.log(`newsletter: ${slug} was already sent (tag newsletter/${slug} exists)`);
-      continue;
-    }
-    const members = await nl.listMembers(env);
-    await sendPost(slug, versions, env, { members, send: (m, e) => nl.sendEmail(m, e) });
+    const r = await requestSend(slug, versions, token);
+    console.log(r.already ? `newsletter: ${slug} was already sent` : `newsletter: ${slug} sent to ${r.sent} of ${r.total}${r.failed ? ` (${r.failed} not reached)` : ""}`);
   }
 }
 

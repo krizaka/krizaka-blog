@@ -1,7 +1,8 @@
 # blog.krizaka.com — the Krizaka blog on DigitalOcean App Platform (project: krizaka, region tor).
 # A static site (the free tier: no instance, no database) rebuilt on every push to main, and the editor's sign-in: two
-# small functions (/api/oauth/*, pay-per-use, inside the free allowance at this volume), and the newsletter's three
-# (/api/newsletter/*, same allowance; the list and the e-mails are Mailgun's, the account krizaka.com already uses).
+# small functions (/api/oauth/*, pay-per-use, inside the free allowance at this volume), and the newsletter's four
+# (/api/newsletter/*, same allowance; a small table on the existing Postgres cluster, e-mails through the Mailgun account
+# krizaka.com already uses: $0 more).
 # The site is open to search engines since the first posts were published (2026-10-16): APP_INDEXING_ENABLED is "true".
 name: krizaka-blog
 region: tor
@@ -49,15 +50,18 @@ functions:
         scope: RUN_AND_BUILD_TIME
         type: SECRET
         value: unset
-      # The newsletter (functions/packages/newsletter): Mailgun (the MAIL_ context, same account as krizaka.com), its
-      # mailing list, the key that signs the confirm/unsubscribe links, the postal address printed in every e-mail
-      # (CASL), and the CAPTCHA's secret. Set on the app, never here.
+      # The newsletter (functions/packages/newsletter): Mailgun to send (the MAIL_ context, same account as krizaka.com),
+      # the key that signs the confirm/unsubscribe links, the bearer of the send action, the postal address printed in
+      # every e-mail (CASL), the list's database (krizaka_newsletter on krizaka-dev-pg, its own role; this app is a
+      # trusted source) and the CAPTCHA's secret. Set on the app, never here.
       - { key: MAIL_API_KEY, scope: RUN_AND_BUILD_TIME, type: SECRET, value: unset }
       - { key: MAIL_API_URL, scope: RUN_AND_BUILD_TIME, value: "https://api.mailgun.net" }
       - { key: MAIL_DOMAIN, scope: RUN_AND_BUILD_TIME, value: mg.krizaka.com }
       - { key: MAIL_FROM, scope: RUN_AND_BUILD_TIME, value: "Oussama, Krizaka Blog <blog@mg.krizaka.com>" }
-      - { key: MAIL_NEWSLETTER_LIST, scope: RUN_AND_BUILD_TIME, value: blog@mg.krizaka.com }
       - { key: MAIL_TOKEN_SECRET, scope: RUN_AND_BUILD_TIME, type: SECRET, value: unset }
+      - { key: MAIL_SEND_TOKEN, scope: RUN_AND_BUILD_TIME, type: SECRET, value: unset }
+      - { key: DATABASE_URL, scope: RUN_AND_BUILD_TIME, type: SECRET, value: unset }
+      - { key: DATABASE_CA_CERT, scope: RUN_AND_BUILD_TIME, type: SECRET, value: unset }
       - { key: MAIL_SENDER_ADDRESS, scope: RUN_AND_BUILD_TIME, value: "Montréal (Québec), Canada" }
       - { key: ABUSE_CAPTCHA_PROVIDER, scope: RUN_AND_BUILD_TIME, value: turnstile }
       - { key: ABUSE_CAPTCHA_SECRET_KEY, scope: RUN_AND_BUILD_TIME, type: SECRET, value: unset }

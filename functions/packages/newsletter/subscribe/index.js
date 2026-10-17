@@ -5,7 +5,7 @@ const nl = require("./newsletter.js");
 
 async function main(args = {}, env = process.env, fetchImpl = fetch) {
   if (args.__ow_method && args.__ow_method.toLowerCase() !== "post") return nl.json(405, { error: "method" });
-  if (!nl.mailConfigured(env) || !nl.captchaConfigured(env)) return nl.json(503, { error: "unavailable" });
+  if (!nl.mailConfigured(env) || !nl.dbConfigured(env) || !nl.captchaConfigured(env)) return nl.json(503, { error: "unavailable" });
   // The honeypot: a field people never see. Filled = a robot; answer as if all went well.
   if (typeof args.website === "string" && args.website.trim()) return nl.json(202, { ok: true });
   const email = nl.normalizeEmail(args.email);

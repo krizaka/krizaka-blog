@@ -3,12 +3,13 @@
    on /newsletter/expired/, where the form can be filled again. */
 const nl = require("./newsletter.js");
 
-async function main(args = {}, env = process.env, fetchImpl = fetch, now = Date.now()) {
-  if (!nl.mailConfigured(env)) return nl.redirect(nl.pageUrl("en", "/newsletter/expired/"));
+async function main(args = {}, env = process.env, sql = null, now = Date.now()) {
+  const lang = nl.pickLocale(args.l);
+  if (!nl.configured(env.MAIL_TOKEN_SECRET) || !nl.dbConfigured(env)) return nl.redirect(nl.pageUrl(lang, "/newsletter/expired/"));
   const who = nl.readToken(args.t, "c", env.MAIL_TOKEN_SECRET, now);
-  if (!who) return nl.redirect(nl.pageUrl(nl.pickLocale(args.l), "/newsletter/expired/"));
+  if (!who) return nl.redirect(nl.pageUrl(lang, "/newsletter/expired/"));
   try {
-    await nl.addMember(who, env, new Date(now), fetchImpl);
+    await nl.addSubscriber(sql ?? nl.connect(env), who, new Date(now));
   } catch {
     return nl.redirect(nl.pageUrl(who.locale, "/newsletter/expired/"));
   }

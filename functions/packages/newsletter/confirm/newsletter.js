@@ -2,14 +2,15 @@
    new-post sender (scripts/newsletter-send.mjs). Copied next to each action, identical (tests/newsletter.test.mjs).
 
    Double opt-in, with nothing stored before the confirmation: the form sends a signed, expiring token by e-mail; only
-   the click on it writes the address to the mailing list (Mailgun list, MAIL_NEWSLETTER_LIST), with the language and
-   the date and source of the consent (CASL keeps the proof of consent). Unsubscribing removes the address from the
-   list: nothing is kept about someone who left (Loi 25: keep only what is needed).
+   the click on it writes the address to the list (table newsletter_subscribers, database krizaka_newsletter on the
+   Postgres cluster), with the language and the date and source of the consent (CASL: the proof of consent).
+   Unsubscribing deletes the row: nothing is kept about someone who left (Loi 25: keep only what is needed). Mailgun only
+   sends.
 
    Environment (bounded contexts, set on the functions component of .do/app.yaml, secrets never in the repository):
-   MAIL_API_KEY, MAIL_DOMAIN, MAIL_API_URL (default https://api.mailgun.net), MAIL_FROM, MAIL_NEWSLETTER_LIST,
-   MAIL_TOKEN_SECRET (signs the links), MAIL_SENDER_ADDRESS (the postal address in every e-mail),
-   ABUSE_CAPTCHA_PROVIDER=turnstile + ABUSE_CAPTCHA_SECRET_KEY. */
+   MAIL_API_KEY, MAIL_DOMAIN, MAIL_API_URL (default https://api.mailgun.net), MAIL_FROM, MAIL_TOKEN_SECRET (signs the
+   links), MAIL_SEND_TOKEN (the bearer of the send action), MAIL_SENDER_ADDRESS (the postal address in every e-mail),
+   DATABASE_URL + DATABASE_CA_CERT (the newsletter role), ABUSE_CAPTCHA_PROVIDER=turnstile + ABUSE_CAPTCHA_SECRET_KEY. */
 const crypto = require("node:crypto");
 
 const SITE = "https://blog.krizaka.com";
@@ -125,10 +126,11 @@ function newPostEmail({ email, locale, consentedAt }, post, env) {
   };
 }
 
-/* ---- Mailgun, through fetch (no SDK) ---- */
+/* ---- Mailgun (sending only), through fetch (no SDK) ---- */
 const api = (env) => (configured(env.MAIL_API_URL) ? env.MAIL_API_URL.trim() : "https://api.mailgun.net").replace(/\/$/, "");
 const auth = (env) => `Basic ${Buffer.from(`api:${env.MAIL_API_KEY}`).toString("base64")}`;
-const mailConfigured = (env) => ["MAIL_API_KEY", "MAIL_DOMAIN", "MAIL_FROM", "MAIL_NEWSLETTER_LIST", "MAIL_TOKEN_SECRET"].every((k) => configured(env[k]));
+const mailConfigured = (env) => ["MAIL_API_KEY", "MAIL_DOMAIN", "MAIL_FROM", "MAIL_TOKEN_SECRET"].every((k) => configured(env[k]));
+const dbConfigured = (env) => configured(env.DATABASE_URL);
 
 async function sendEmail(message, env, fetchImpl = fetch) {
   const form = new URLSearchParams({ from: env.MAIL_FROM, to: message.to, subject: message.subject, text: message.text, html: message.html, "o:tracking": "no" });
@@ -137,34 +139,74 @@ async function sendEmail(message, env, fetchImpl = fetch) {
   if (!res.ok) throw new Error(`mail ${res.status}`);
 }
 
-/** Adds (or updates) a confirmed subscriber, with the proof of consent. */
-async function addMember({ email, locale }, env, now = new Date(), fetchImpl = fetch) {
-  const vars = { locale, consentedAt: now.toISOString(), source: "blog.krizaka.com form, double opt-in" };
-  const form = new URLSearchParams({ address: email, subscribed: "yes", upsert: "yes", vars: JSON.stringify(vars) });
-  const res = await fetchImpl(`${api(env)}/v3/lists/${env.MAIL_NEWSLETTER_LIST}/members`, { method: "POST", headers: { Authorization: auth(env), "Content-Type": "application/x-www-form-urlencoded" }, body: form.toString() });
-  if (!res.ok) throw new Error(`list ${res.status}`);
+/* ---- The list: one small table in the Postgres cluster (database krizaka_newsletter, its own role; db/newsletter.sql).
+   `sql(text, params)` returns the rows; the actions get it from connect(env), the tests pass a fake. ---- */
+
+/** A query function over one pooled connection (the action's container may be reused between calls). */
+let pool = null;
+function connect(env) {
+  if (!pool) {
+    const { Pool } = require("pg");
+    const ca = configured(env.DATABASE_CA_CERT) ? env.DATABASE_CA_CERT.replace(/\\n/g, "\n") : undefined;
+    const url = new URL(env.DATABASE_URL);
+    url.searchParams.delete("sslmode");
+    pool = new Pool({ connectionString: url.toString(), max: 1, idleTimeoutMillis: 10_000, connectionTimeoutMillis: 8_000, ssl: ca ? { ca, rejectUnauthorized: true } : { rejectUnauthorized: true } });
+  }
+  return async (text, params = []) => (await pool.query(text, params)).rows;
 }
 
-/** Removes a subscriber. Already gone is fine (the link may be clicked twice). */
-async function removeMember(email, env, fetchImpl = fetch) {
-  const res = await fetchImpl(`${api(env)}/v3/lists/${env.MAIL_NEWSLETTER_LIST}/members/${encodeURIComponent(email)}`, { method: "DELETE", headers: { Authorization: auth(env) } });
-  if (!res.ok && res.status !== 404) throw new Error(`list ${res.status}`);
+/** Adds (or renews) a confirmed subscriber, with the proof of consent (date and source). */
+async function addSubscriber(sql, { email, locale }, now = new Date()) {
+  await sql(
+    "insert into newsletter_subscribers (email, locale, consented_at, consent_source) values ($1, $2, $3, $4) on conflict (email) do update set locale = excluded.locale, consented_at = excluded.consented_at, consent_source = excluded.consent_source",
+    [email, locale, now.toISOString(), "blog.krizaka.com form, double opt-in (confirmation link)"],
+  );
+}
+
+/** Removes a subscriber: nothing is kept about someone who left. Already gone is fine (a link clicked twice). */
+async function removeSubscriber(sql, email) {
+  await sql("delete from newsletter_subscribers where email = $1", [email]);
 }
 
 /** Every confirmed subscriber: [{ email, locale, consentedAt }]. */
-async function listMembers(env, fetchImpl = fetch) {
-  const out = [];
-  let url = `${api(env)}/v3/lists/${env.MAIL_NEWSLETTER_LIST}/members/pages?subscribed=yes&limit=100`;
-  for (let page = 0; page < 1000 && url; page++) {
-    const res = await fetchImpl(url, { headers: { Authorization: auth(env) } });
-    if (!res.ok) throw new Error(`list ${res.status}`);
-    const data = await res.json();
-    if (!data.items?.length) break;
-    for (const m of data.items) out.push({ email: m.address, locale: pickLocale(m.vars?.locale), consentedAt: m.vars?.consentedAt ?? null });
-    url = data.paging?.next ?? null;
-  }
-  return out;
+async function listSubscribers(sql) {
+  const rows = await sql("select email, locale, consented_at from newsletter_subscribers order by consented_at");
+  return rows.map((r) => ({ email: r.email, locale: pickLocale(r.locale), consentedAt: r.consented_at instanceof Date ? r.consented_at.toISOString() : String(r.consented_at) }));
 }
+
+/** Claims a post for sending: true the first time only (the primary key is the lock — never sent twice). */
+async function claimPost(sql, slug) {
+  const rows = await sql("insert into newsletter_posts (slug) values ($1) on conflict (slug) do nothing returning slug", [slug]);
+  return rows.length === 1;
+}
+
+async function recordSent(sql, slug, sent, failed) {
+  await sql("update newsletter_posts set sent = $2, failed = $3, finished_at = now() where slug = $1", [slug, sent, failed]);
+}
+
+/** Sends a post to every subscriber, in their language when it exists in it; one failure does not stop the others. */
+async function sendPostToAll(sql, versions, env, send = sendEmail) {
+  const members = await listSubscribers(sql);
+  let sent = 0;
+  let failed = 0;
+  for (const m of members) {
+    const post = versions[m.locale] ?? versions[LOCALES.find((l) => versions[l])];
+    try {
+      await send(newPostEmail(m, post, env), env);
+      sent++;
+    } catch {
+      failed++;
+    }
+  }
+  return { sent, failed, total: members.length };
+}
+
+const sameSecret = (given, expected) => {
+  if (typeof given !== "string" || !configured(expected)) return false;
+  const a = crypto.createHash("sha256").update(given).digest();
+  const b = crypto.createHash("sha256").update(expected).digest();
+  return crypto.timingSafeEqual(a, b);
+};
 
 const SITEVERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 const captchaConfigured = (env) => env.ABUSE_CAPTCHA_PROVIDER?.trim().toLowerCase() === "turnstile" && configured(env.ABUSE_CAPTCHA_SECRET_KEY);
@@ -190,6 +232,7 @@ const redirect = (location) => ({ statusCode: 303, headers: { Location: location
 
 module.exports = {
   SITE, LOCALES, CONFIRM_TTL_MS, configured, normalizeEmail, validEmail, pickLocale, makeToken, readToken, pageUrl, actionUrl,
-  confirmationEmail, newPostEmail, footer, toHtml, sendEmail, addMember, removeMember, listMembers, mailConfigured,
+  confirmationEmail, newPostEmail, footer, toHtml, sendEmail, mailConfigured, dbConfigured, connect, addSubscriber,
+  removeSubscriber, listSubscribers, claimPost, recordSent, sendPostToAll, sameSecret,
   verifyCaptcha, captchaConfigured, clientIp, json, redirect, WORDS,
 };

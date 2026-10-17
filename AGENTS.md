@@ -49,15 +49,18 @@
 - A subscribe form (`app/components/newsletter/`: e-mail + language, Turnstile, honeypot) on the home, at the end of every
   post and on `/newsletter/` (with what is kept and why — Loi 25). It posts to `/api/newsletter/subscribe`.
 - **Double opt-in, nothing stored before the click**: the function e-mails a signed link (HMAC, `MAIL_TOKEN_SECRET`, 48 h);
-  `/api/newsletter/confirm` adds the address to the Mailgun list `MAIL_NEWSLETTER_LIST` with the language and the date and
-  source of the consent (CASL's proof). `/api/newsletter/unsubscribe` (link in every e-mail + RFC 8058 one-click header)
-  removes it. Every e-mail says who sends it, the postal address (`MAIL_SENDER_ADDRESS`), why it is received, and links the
-  privacy note. No tracking (`o:tracking=no`, no pixel). Storage moves to the accounts' Postgres (`newsletter_subscribers`)
-  if that database lands; until then the list is Mailgun's (no extra cost).
+  `/api/newsletter/confirm` adds the address to `newsletter_subscribers` (database `krizaka_newsletter` on the cluster
+  `krizaka-dev-pg`, its own role, `db/newsletter.sql`, set up by `scripts/newsletter-db.mjs`; this app is a trusted source)
+  with the language and the date and source of the consent (CASL's proof). `/api/newsletter/unsubscribe` (link in every
+  e-mail + RFC 8058 one-click header) deletes the row. Every e-mail says who sends it, the postal address
+  (`MAIL_SENDER_ADDRESS`), why it is received, and links the privacy note. No tracking (`o:tracking=no`, no pixel).
+  Mailgun only sends (the account's key is a sending key; it cannot hold lists). ADR-001 (accounts) links an account to
+  this subscription; it does not keep a second list.
 - **New post e-mail**: `.github/workflows/newsletter.yml` runs `scripts/newsletter-send.mjs` after a push to main that
-  publishes a post (draft → published, or new and published): it waits for the page to be live, claims the git tag
-  `newsletter/<slug>` (a tag exists once: never sent twice), then e-mails each confirmed subscriber in their language.
-  Manual: Actions → Newsletter → Run workflow (slug). Secrets `MAIL_API_KEY`, `MAIL_TOKEN_SECRET` in the repository.
+  publishes a post (draft → published, or new and published): it waits for the page to be live, then calls
+  `/api/newsletter/send` (bearer `MAIL_SEND_TOKEN`, the repository's only secret for this), which claims the post in
+  `newsletter_posts` (primary key: never sent twice) and e-mails each confirmed subscriber in their language.
+  Manual: Actions → Newsletter → Run workflow (slug).
 
 ## 4. Indexing
 
