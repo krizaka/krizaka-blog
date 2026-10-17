@@ -142,17 +142,23 @@ async function sendEmail(message, env, fetchImpl = fetch) {
 /* ---- The list: one small table in the Postgres cluster (database krizaka_newsletter, its own role; db/newsletter.sql).
    `sql(text, params)` returns the rows; the actions get it from connect(env), the tests pass a fake. ---- */
 
-/** A query function over one pooled connection (the action's container may be reused between calls). */
-let pool = null;
+/** A query function that opens a connection, runs one statement and closes it. Never a pool: the cluster has 25
+    connections for every service, and a warm function container would keep an idle one (the platform freezes it between
+    calls, so no idle timer ever fires). These actions are rare; one short connection per statement is the right size. */
 function connect(env) {
-  if (!pool) {
-    const { Pool } = require("pg");
-    const ca = configured(env.DATABASE_CA_CERT) ? env.DATABASE_CA_CERT.replace(/\\n/g, "\n") : undefined;
-    const url = new URL(env.DATABASE_URL);
-    url.searchParams.delete("sslmode");
-    pool = new Pool({ connectionString: url.toString(), max: 1, idleTimeoutMillis: 10_000, connectionTimeoutMillis: 8_000, ssl: ca ? { ca, rejectUnauthorized: true } : { rejectUnauthorized: true } });
-  }
-  return async (text, params = []) => (await pool.query(text, params)).rows;
+  const { Client } = require("pg");
+  const ca = configured(env.DATABASE_CA_CERT) ? env.DATABASE_CA_CERT.replace(/\\n/g, "\n") : undefined;
+  const url = new URL(env.DATABASE_URL);
+  url.searchParams.delete("sslmode");
+  return async (text, params = []) => {
+    const client = new Client({ connectionString: url.toString(), connectionTimeoutMillis: 8_000, ssl: ca ? { ca, rejectUnauthorized: true } : { rejectUnauthorized: true } });
+    await client.connect();
+    try {
+      return (await client.query(text, params)).rows;
+    } finally {
+      await client.end().catch(() => {});
+    }
+  };
 }
 
 /** Adds (or renews) a confirmed subscriber, with the proof of consent (date and source). */

@@ -269,3 +269,11 @@ test("the newsletter actions run on Node 18 and main() ignores a second argument
   const r = await main({ __ow_method: "get" }, { functionName: "subscribe" });
   assert.equal(r.statusCode, 405);
 });
+
+/* The finding of 2026-10-17: the cluster refused new connections (25 in all, most reserved by the services' pools) and
+   the warm newsletter actions held three idle ones. A statement opens and closes its own connection; no pool is kept. */
+test("the list's connection is opened per statement and closed, never pooled", () => {
+  const src = readFileSync(new URL("../functions/packages/newsletter/subscribe/newsletter.js", import.meta.url), "utf8");
+  assert.doesNotMatch(src, /new Pool\(|\bPool\b\s*}/);
+  assert.match(src, /await client\.end\(\)/);
+});
