@@ -89,7 +89,9 @@
     "prevInSeries": "Précédent dans la série",
     "nextInSeries": "Suivant dans la série",
     "keyNumbers": "Chiffres clés",
-    "progress": "Progression de la lecture"
+    "progress": "Progression de la lecture",
+    "subscribe": "S'abonner par courriel",
+    "rssFeed": "Flux RSS"
   },
   "engage": {
     "title": "À garder, à partager",
@@ -353,5 +355,14 @@
     "resubscribeButton": "Me réabonner",
     "invalidTitle": "Ce lien n'est plus valide",
     "invalidLead": "Il a peut-être été copié en partie. Utilisez le lien de désabonnement au bas du dernier courriel reçu."
+  },
+  "feedPage": {
+    "title": "Ceci est le flux du Blogue Krizaka",
+    "lead": "Un flux se lit dans un lecteur de flux : il montre chaque nouveau billet dès sa publication, sans compte et sans pistage.",
+    "copy": "Copiez cette adresse dans votre lecteur (Feedly, NetNewsWire, Inoreader, Thunderbird…) :",
+    "latest": "Derniers billets",
+    "back": "← Retour au blogue",
+    "email": "Plutôt par courriel ? S'abonner",
+    "reader": "C'est quoi, un lecteur de flux ?"
   }
 }

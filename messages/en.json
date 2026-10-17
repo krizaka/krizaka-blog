@@ -89,7 +89,9 @@
     "prevInSeries": "Previous in the series",
     "nextInSeries": "Next in the series",
     "keyNumbers": "Key numbers",
-    "progress": "Reading progress"
+    "progress": "Reading progress",
+    "subscribe": "Subscribe by e-mail",
+    "rssFeed": "RSS feed"
   },
   "engage": {
     "title": "Keep it, pass it on",
@@ -353,5 +355,14 @@
     "resubscribeButton": "Subscribe again",
     "invalidTitle": "This link is no longer valid",
     "invalidLead": "It may have been copied incompletely. Use the unsubscribe link at the bottom of the latest e-mail you received."
+  },
+  "feedPage": {
+    "title": "This is the Krizaka Blog's feed",
+    "lead": "A feed is for a feed reader: it shows each new post as soon as it is published, with no account and no tracking.",
+    "copy": "Copy this address into your reader (Feedly, NetNewsWire, Inoreader, Thunderbird…):",
+    "latest": "Latest posts",
+    "back": "← Back to the blog",
+    "email": "Prefer e-mail? Subscribe",
+    "reader": "What is a feed reader?"
   }
 }

@@ -7,7 +7,7 @@ import "./newsletter.css";
 export function NewsletterSection({ locale, where }: { locale: Locale; where: "home" | "post" }) {
   const n = getDictionary(locale).newsletter;
   return (
-    <aside className="bl-nl-foot" aria-label={n.formTitle}>
+    <aside id="subscribe" className="bl-nl-foot" aria-label={n.formTitle}>
       <SubscribeForm id={`nl-${where}`} />
     </aside>
   );
