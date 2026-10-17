@@ -1,0 +1,96 @@
+---
+title: "Modèles qui refusent, modèles qui ne refusent rien : ce qui existe, pourquoi, et ce que fait Orazaka"
+description: "Pourquoi un modèle hébergé dit non, ce que sont les modèles « non censurés », ce que la loi et les réseaux de cartes exigent de celui qui les fait tourner, et comment la politique de contenu d'Orazaka décide."
+seoTitle: "Modèles censurés ou non censurés : ce qu'il faut savoir"
+seoDescription: "Alignement, refus des API, modèles non censurés, devoirs de l'opérateur, et la politique de contenu d'Orazaka, testée sans rien générer."
+date: 2026-10-16
+publishedAt: 2026-10-17T00:00:00-04:00
+tags: [ai, basics, orazaka, law]
+author: oussama
+draft: false
+cover: refusals-doors
+series: basics
+part: 2
+---
+
+Sur mon Mac, dans la liste des modèles installés, il y a deux fois le même modèle de 7 milliards de paramètres. La version d'origine, et une version dite « abliterated » : la même, à qui on a retiré l'envie de refuser.
+
+Ça résume bien la question de ce billet. Pourquoi certains modèles disent non, pourquoi d'autres ne disent jamais non, et qu'est-ce qu'on fait de ça quand on construit un moteur d'IA que d'autres vont faire tourner chez eux.
+
+Je préviens tout de suite : il n'y a ici aucune recette pour contourner un refus, aucune instruction pour obtenir du contenu explicite. Ce billet explique ce qui existe et comment on décide. Et ce n'est pas un avis juridique : là où le droit compte, je consulte un avocat.
+
+<Figure id="refusals-doors" alt="Deux portes en bois côte à côte dans un couloir blanc ; celle de gauche est fermée, autour de celle de droite filtre la lumière du jour" caption="Deux portes, deux politiques : un modèle qui refuse, un modèle qui laisse passer. Dans les deux cas, quelqu'un a décidé." />
+
+## Pourquoi un modèle dit non
+
+Un modèle de langage, au départ, ne fait que deviner la suite d'un texte (je l'explique dans [le billet sur les bases](/fr/posts/understanding-ai-before-you-start/)). Un modèle brut continue n'importe quoi, poliment ou pas.
+
+Pour en faire un assistant, on l'entraîne encore, sur des exemples de bonnes réponses, puis avec des personnes qui comparent ses réponses et indiquent la meilleure. C'est ce que décrit [l'article InstructGPT d'OpenAI](https://arxiv.org/abs/2203.02155), en 2022. On appelle ça l'alignement. Le modèle apprend à suivre les instructions, et aussi à refuser certaines demandes.
+
+C'est comme un employé formé à la politique de la maison. Il connaît le travail, et il sait ce que la maison ne fait pas.
+
+## Pourquoi une API hébergée refuse encore plus
+
+Quand vous appelez un modèle hébergé, vous passez par deux maisons : celle qui a fait le modèle, et celle qui le sert. Chacune a ses règles.
+
+[La politique d'utilisation de Stability AI](https://stability.ai/use-policy), qui publie Stable Diffusion, interdit d'utiliser ses modèles pour du contenu sexuellement explicite. [Celle de DigitalOcean](https://www.digitalocean.com/legal/acceptable-use-policy), qui sert les modèles hébergés que nous appelons, interdit entre autres le matériel d'abus sexuel d'enfants, y compris généré par ordinateur, quelle que soit l'intention. DigitalOcean propose aussi des [garde-fous](https://docs.digitalocean.com/products/inference/how-to/manage-agent-guardrails/) qu'on peut attacher à un agent, avec un filtre de modération du contenu.
+
+Notre règle est simple : on ne cherche jamais à passer ces barrières. Si un fournisseur refuse un usage, cet usage ne passe pas par ce fournisseur. Ce n'est pas seulement une question de principe : c'est son compte, ses conditions, et notre compte chez lui.
+
+## Les modèles « non censurés »
+
+Ils existent, et il faut le dire. Comme les poids de beaucoup de modèles sont publiés, n'importe qui peut les modifier.
+
+En 2024, des chercheurs ont montré que, dans de nombreux modèles de chat, le refus passe en grande partie par [une seule direction](https://arxiv.org/abs/2406.11717) dans les calculs internes du modèle. Retirer cette direction des poids, c'est ce qu'on appelle l'« abliteration », un mot popularisé par [Maxime Labonne](https://huggingface.co/blog/mlabonne/abliteration). Il note lui-même que l'opération a dégradé la qualité du modèle qu'il a traité, et qu'il a dû le réentraîner pour en récupérer l'essentiel.
+
+Les compromis sont donc réels. La qualité peut baisser. Le modèle ne refuse plus rien, y compris ce qu'il devrait refuser. Et surtout, la responsabilité change de main : quand le modèle ne dit plus non, c'est à la personne qui le fait tourner de le dire.
+
+## Ce que doit faire celui qui le fait tourner
+
+Cette personne, on l'appelle l'opérateur. Et la liste de ses devoirs est longue.
+
+La loi d'abord. Au Canada, le Code criminel définit le [matériel d'abus et d'exploitation pédosexuels](https://laws-lois.justice.gc.ca/fra/lois/c-46/section-163.1.html) de façon large : toute représentation visuelle, « faite ou non par des moyens électroniques ou mécaniques », d'une personne âgée de moins de dix-huit ans ou présentée comme telle. Une image générée est donc visée. Le Code interdit aussi la [diffusion d'images intimes sans consentement](https://laws-lois.justice.gc.ca/fra/lois/c-46/section-162.1.html).
+
+Ensuite l'âge et le consentement. Une plateforme qui accepte du contenu réservé aux adultes et veut être payée par carte doit suivre les règles des réseaux : depuis 2021, Mastercard exige une vérification documentée de l'âge et de l'identité des personnes représentées et de celles qui téléversent, ainsi que leur consentement documenté. J'en parle plus longuement dans [le billet sur les paiements](/fr/posts/payments-and-high-risk-industries/).
+
+Puis la ressemblance avec une vraie personne. Générer une image qui ressemble à quelqu'un d'existant, sans son accord, peut lui faire un tort réel, même quand rien n'est explicite.
+
+Et une ligne absolue : rien qui touche à des mineurs. Jamais, dans aucun réglage.
+
+## Ce que fait Orazaka
+
+Orazaka est un moteur qu'on peut installer chez soi. Je ne peux pas décider à la place de chaque opérateur de ce qui est permis sur sa plateforme, et je ne veux pas cacher un filtre moral dans le code. En même temps, je refuse qu'il puisse servir à franchir la seule ligne qui ne se discute pas. D'où une [politique de contenu](https://github.com/krizaka/orazaka-studio/pull/13) que l'opérateur configure, en trois couches.
+
+Avant tout le reste, le moteur classe localement ce qui est demandé : des règles, dans le même processus, rien n'est envoyé ailleurs. Il pose des étiquettes : `sexual_explicit`, `sexual_suggestive`, `minors_risk`, `violence_graphic`, `real_person_likeness`, ou aucune.
+
+Première couche : `minors_risk` est toujours refusé. Pour tous, sur tous les fournisseurs, sans réglage possible. C'est la seule règle que l'opérateur ne peut pas changer.
+
+Deuxième couche : les réglages de l'opérateur, étiquette par étiquette, refuser ou permettre. Sans réglage, une installation est permissive : c'est à l'opérateur de décider ce que sa plateforme accepte.
+
+Troisième couche : les conditions des fournisseurs. L'opérateur indique ce que chaque fournisseur permet, par exemple pas de contenu adulte pour une API hébergée, et une demande étiquetée qui irait vers ce fournisseur est bloquée ou signalée. Ça protège son compte chez le fournisseur.
+
+Un refus arrive avant tout le reste : avant de réserver des crédits, avant d'écrire la moindre ligne, avant d'appeler un fournisseur. La réponse est un code 422, qui nomme la règle et les étiquettes, jamais le texte demandé :
+
+```json
+{
+  "code": "content.policy_refused",
+  "rule": "minors_risk.always",
+  "labels": ["MINORS_RISK"]
+}
+```
+
+Chaque décision étiquetée est écrite dans un journal d'audit qu'on ne peut qu'allonger, avec l'étiquette et la règle, jamais le prompt. Et un appel à blanc, `POST /api/v1/studios/{key}/policy-check`, permet de savoir ce que la politique déciderait sans rien lancer.
+
+## Ce qu'on a vraiment testé
+
+Voici exactement ce qui a été fait, et rien de plus.
+
+La politique a été testée sans rien générer. Les tests passent des exemples caviardés (anodin, explicite, suggestif, violent, à risque pour des mineurs, personne réelle) dans le classifieur et dans les décisions, et vérifient qu'un refus ne réserve aucun crédit et ne lance aucune étape. Aucun fournisseur n'est appelé.
+
+Pour le reste, on a fait uniquement du matériel de test non explicite, suggestif tout au plus, en local. Aucune génération explicite.
+
+Et ce qui n'est pas encore fait, je le dis aussi. Le contrôle ne regarde aujourd'hui que la demande, pas l'image produite. Les tâches d'image lancées hors d'un Studio ne passent pas encore par cette politique. Et le classifieur est fait de règles, sans modèle. Tout ça est [listé dans un ticket ouvert](https://github.com/krizaka/orazaka-studio/issues/12).
+
+## Ce que vous pouvez en retenir
+
+Un modèle qui refuse n'est pas un modèle bête, c'est un modèle à qui on a appris une politique. Un modèle qui ne refuse rien n'est pas un modèle libre, c'est un modèle qui vous laisse toute la responsabilité. Si vous en faites tourner un, écrivez votre politique avant d'écrire votre interface, tenez un journal de vos décisions, et gardez une règle que personne ne peut désactiver.
