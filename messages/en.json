@@ -143,7 +143,8 @@
       "law": "Law",
       "prompts": "Prompts",
       "payments": "Payments",
-      "basics": "Basics"
+      "basics": "Basics",
+      "ui": "UI"
     },
     "countOne": "1 post",
     "seo": {
@@ -194,6 +195,10 @@
       "basics": {
         "title": "AI basics, word by word — Krizaka Blog",
         "description": "Tokens, context, quantization, RAG, tools, MCP, agents, diffusion: the words of AI explained simply, with what really runs."
+      },
+      "ui": {
+        "title": "UI kit and components — Krizaka Blog",
+        "description": "Krizaka UI, one component kit for the web, mobile and the Mac: reuse, parity, and what one fix propagates."
       }
     }
   },

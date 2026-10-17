@@ -143,7 +143,8 @@
       "law": "Droit",
       "prompts": "Prompts",
       "payments": "Paiements",
-      "basics": "Bases"
+      "basics": "Bases",
+      "ui": "Interface"
     },
     "countOne": "1 billet",
     "seo": {
@@ -194,6 +195,10 @@
       "basics": {
         "title": "Les bases de l'IA, mot par mot — Blogue Krizaka",
         "description": "Token, contexte, quantification, RAG, outils, MCP, agents, diffusion : les mots de l'IA expliqués simplement, avec ce qui tourne vraiment."
+      },
+      "ui": {
+        "title": "Kit d'interface et composants — Blogue Krizaka",
+        "description": "Krizaka UI, un kit de composants pour le web, le mobile et le Mac : réutilisation, parité, ce qu'un correctif propage."
       }
     }
   },
