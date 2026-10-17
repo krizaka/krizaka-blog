@@ -82,7 +82,13 @@ export function resolve(link, from, base, host) {
 
 export const isInternal = (url, base) => new URL(url).origin === new URL(base).origin;
 export const isSoft = (url) => SOFT_HOSTS.includes(new URL(url).hostname);
-const isPage = (url, type) => /text\/html|xml/.test(type ?? "") || /\/$|\.html$|\.xml$/.test(new URL(url).pathname);
+/** A document whose links are followed: HTML, a feed, a sitemap — not an XSLT stylesheet, whose `{link}` are templates
+    filled in by the browser (the stylesheet itself is still checked: it must answer). */
+export const isPage = (url, type) => {
+  const path = new URL(url).pathname;
+  if (/\.xslt?$/.test(path) || /xsl/.test(type ?? "")) return false;
+  return /text\/html|xml/.test(type ?? "") || /\/$|\.html$|\.xml$/.test(path);
+};
 
 /** Follows redirects by hand: the final status, or `loop` / `too many`. */
 export async function follow(url, { method = "GET", fetchImpl = fetch, timeout = 15000, max = 10 } = {}) {

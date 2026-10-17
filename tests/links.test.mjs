@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { decodeEntities, extractLinks, resolve, isInternal, isSoft, follow, checkExternal, SOFT_HOSTS } from "../scripts/check-links.mjs";
+import { decodeEntities, extractLinks, resolve, isInternal, isPage, isSoft, follow, checkExternal, SOFT_HOSTS } from "../scripts/check-links.mjs";
 
 const root = new URL("..", import.meta.url).pathname;
 const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(join(d, e.name)) : [join(d, e.name)]));
@@ -81,4 +81,11 @@ test("a preconnect or dns-prefetch hint is not a link (its origin need not answe
 
 test("the paths the CDN's edge injects on the live site are not crawled (Cloudflare e-mail protection)", () => {
   assert.deepEqual(extractLinks('<a href="/cdn-cgi/l/email-protection#abc">mail</a><a href="/posts/a/">a</a>'), ["/posts/a/"]);
+});
+
+test("an XSLT stylesheet is checked but not crawled: its {link} are templates, not addresses", () => {
+  assert.equal(isPage("http://localhost:3000/feed.xsl", "application/xslt+xml"), false);
+  assert.equal(isPage("http://localhost:3000/feed.xsl", "text/xsl; charset=utf-8"), false);
+  assert.equal(isPage("http://localhost:3000/feed.xml", "application/rss+xml"), true);
+  assert.equal(isPage("http://localhost:3000/posts/a/", "text/html"), true);
 });
