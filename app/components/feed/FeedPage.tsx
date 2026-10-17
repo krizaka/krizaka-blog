@@ -4,6 +4,8 @@ import { Section } from "@krizaka/ui/page";
 import { getDictionary, localizedPath, type Locale } from "@/lib/i18n";
 import { postsOf } from "@/lib/posts";
 import { absoluteUrl, postPath } from "@/lib/seo";
+import { jsonLd } from "@/lib/json-ld";
+import { newsletterJsonLd } from "../newsletter/NewsletterPages";
 import { SubscribeForm } from "../newsletter/SubscribeForm";
 import { PostList } from "../pages/PostList";
 import { RssMark } from "../RssMark";
@@ -22,6 +24,7 @@ export default function FeedPage({ locale }: { locale: Locale }) {
   const atomUrl = absoluteUrl(locale, "/atom.xml").replace(/\/$/, "");
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(newsletterJsonLd(locale, "/feed", f.title, f.lead)) }} />
       <PageHero eyebrow={f.eyebrow} title={f.title} lead={f.lead} backdrop="plain" linkAs={Link} />
       <Section id="subscribe" title={f.emailTitle} lead={f.emailLead} reveal={false}>
         <div className="bl-nl-card">
