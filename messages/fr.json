@@ -145,7 +145,8 @@
       "payments": "Paiements",
       "basics": "Bases",
       "ui": "Interface",
-      "security": "Sécurité"
+      "security": "Sécurité",
+      "integration": "Intégration"
     },
     "countOne": "1 billet",
     "seo": {
@@ -204,6 +205,10 @@
       "security": {
         "title": "Sécurité, secrets et comptes — Blogue Krizaka",
         "description": "Garder les clés et les comptes d'une petite entreprise de logiciels hors du code, et automatiser autour avec des agents et une CI."
+      },
+      "integration": {
+        "title": "Intégration d'un moteur d'IA : connecteurs, API, MCP — Blogue Krizaka",
+        "description": "Comment un produit se branche sur un moteur d'IA : API, webhooks, MCP, OAuth, ce que fait l'industrie et ce qui tourne vraiment chez nous."
       }
     }
   },
