@@ -6,7 +6,7 @@
 ## 1. What this repo is
 
 - A **Next.js static export** (`output: "export"`, `out/`), English at the root, French under `/fr/`. No server, no
-  database, no function except the editor's sign-in (`functions/`). Hosting: DigitalOcean App Platform static site
+  database; the only functions are the editor's sign-in and the newsletter (`functions/`). Hosting: DigitalOcean App Platform static site
   (free tier, `.do/app.yaml`), DNS Porkbun. **Monthly cost: $0** — add no paid resource without Oussama's written decision.
 - Pages are the `@krizaka/ui` page blocks (`Page`, `PageHero`, `Section`, `CardGrid`, `LinkCard`…), tokens through
   `@krizaka/tailwind`, faces `@krizaka/fonts` (`next/font/local`), motion `MotionObserver`. **Dark and light are both
@@ -43,6 +43,21 @@
   this repository, a draft is a branch and a pull request (editorial workflow), publishing merges it after CI. The
   sign-in is the small function in `functions/` (`AUTH_GITHUB_CLIENT_ID` / `AUTH_GITHUB_CLIENT_SECRET`, DO secrets, from a
   GitHub OAuth App whose callback is `https://blog.krizaka.com/api/oauth/callback`). No password database exists.
+
+## 3.1 Newsletter
+
+- A subscribe form (`app/components/newsletter/`: e-mail + language, Turnstile, honeypot) on the home, at the end of every
+  post and on `/newsletter/` (with what is kept and why — Loi 25). It posts to `/api/newsletter/subscribe`.
+- **Double opt-in, nothing stored before the click**: the function e-mails a signed link (HMAC, `MAIL_TOKEN_SECRET`, 48 h);
+  `/api/newsletter/confirm` adds the address to the Mailgun list `MAIL_NEWSLETTER_LIST` with the language and the date and
+  source of the consent (CASL's proof). `/api/newsletter/unsubscribe` (link in every e-mail + RFC 8058 one-click header)
+  removes it. Every e-mail says who sends it, the postal address (`MAIL_SENDER_ADDRESS`), why it is received, and links the
+  privacy note. No tracking (`o:tracking=no`, no pixel). Storage moves to the accounts' Postgres (`newsletter_subscribers`)
+  if that database lands; until then the list is Mailgun's (no extra cost).
+- **New post e-mail**: `.github/workflows/newsletter.yml` runs `scripts/newsletter-send.mjs` after a push to main that
+  publishes a post (draft → published, or new and published): it waits for the page to be live, claims the git tag
+  `newsletter/<slug>` (a tag exists once: never sent twice), then e-mails each confirmed subscriber in their language.
+  Manual: Actions → Newsletter → Run workflow (slug). Secrets `MAIL_API_KEY`, `MAIL_TOKEN_SECRET` in the repository.
 
 ## 4. Indexing
 

@@ -1,0 +1,56 @@
+# The "new post" e-mail (scripts/newsletter-send.mjs). After a push to main that publishes a post (draft → published, or
+# a new published post), wait until the post is live on blog.krizaka.com, then e-mail the confirmed subscribers once.
+# The lock is the git tag newsletter/<slug>: a re-run, a manual run or a second push never sends the same post twice.
+# By hand: Actions → Newsletter → Run workflow, with the slug (still at most once).
+name: Newsletter
+
+on:
+  push:
+    branches: [main]
+    paths: ["content/posts/**"]
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "The post's slug (content/posts/<slug>.<en|fr>.mdx)"
+        required: true
+
+permissions:
+  contents: write # the newsletter/<slug> tag, nothing else
+
+concurrency:
+  group: newsletter
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Send the new posts (once)
+        env:
+          MAIL_API_KEY: ${{ secrets.MAIL_API_KEY }}
+          MAIL_TOKEN_SECRET: ${{ secrets.MAIL_TOKEN_SECRET }}
+          MAIL_API_URL: https://api.mailgun.net
+          MAIL_DOMAIN: mg.krizaka.com
+          MAIL_FROM: "Oussama, Krizaka Blog <blog@mg.krizaka.com>"
+          MAIL_NEWSLETTER_LIST: blog@mg.krizaka.com
+          MAIL_SENDER_ADDRESS: ${{ vars.MAIL_SENDER_ADDRESS }}
+          SLUG: ${{ github.event.inputs.slug }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          git config user.name "krizaka-blog-newsletter"
+          git config user.email "newsletter@blog.krizaka.com"
+          if [ -n "$SLUG" ]; then
+            node scripts/newsletter-send.mjs --slug "$SLUG"
+          else
+            node scripts/newsletter-send.mjs --before "$BEFORE" --after "$AFTER"
+          fi

@@ -10,3 +10,26 @@ packages:
       - name: callback
         runtime: "nodejs:default"
         web: true
+  # The newsletter (double opt-in): /api/newsletter/subscribe, /confirm, /unsubscribe. Mailgun list + signed links;
+  # nothing stored before the confirmation (functions/packages/newsletter/subscribe/newsletter.js).
+  - name: newsletter
+    environment:
+      MAIL_API_KEY: ${MAIL_API_KEY}
+      MAIL_API_URL: ${MAIL_API_URL}
+      MAIL_DOMAIN: ${MAIL_DOMAIN}
+      MAIL_FROM: ${MAIL_FROM}
+      MAIL_NEWSLETTER_LIST: ${MAIL_NEWSLETTER_LIST}
+      MAIL_TOKEN_SECRET: ${MAIL_TOKEN_SECRET}
+      MAIL_SENDER_ADDRESS: ${MAIL_SENDER_ADDRESS}
+      ABUSE_CAPTCHA_PROVIDER: ${ABUSE_CAPTCHA_PROVIDER}
+      ABUSE_CAPTCHA_SECRET_KEY: ${ABUSE_CAPTCHA_SECRET_KEY}
+    actions:
+      - name: subscribe
+        runtime: "nodejs:default"
+        web: true
+      - name: confirm
+        runtime: "nodejs:default"
+        web: true
+      - name: unsubscribe
+        runtime: "nodejs:default"
+        web: true
