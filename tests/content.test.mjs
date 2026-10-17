@@ -78,3 +78,15 @@ test("a published post has a publishedAt (date, time, offset) on its date, and a
   assert.match(postProblems("x.en.mdx", { ...pub, coverAlt: " " }, "text", ctx).join(" "), /coverAlt/);
   assert.deepEqual(postProblems("x.en.mdx", { ...ok, draft: true }, "", ctx), []);
 });
+test("the cover's picture under another id (same run, or another rendition of the same file) is refused in the body too", () => {
+  const u = (n) => `https://krizaka-assets.b-cdn.net/site/blog/x/${n}`;
+  const ctx = { series: [], media: {
+    a: { kind: "image", srcs: [{ w: 480, url: u("terminal-480.0123456789.webp") }], made: { runId: "11111111-1111-1111-1111-111111111111" } },
+    crop: { kind: "image", srcs: [{ w: 960, url: u("terminal-960.abcdefabcd.webp") }] },
+    rerun: { kind: "image", srcs: [{ w: 960, url: u("other-960.abcdefabcd.webp") }], made: { runId: "11111111-1111-1111-1111-111111111111" } },
+    other: { kind: "image", srcs: [{ w: 960, url: u("ledger-960.abcdefabcd.webp") }], made: { runId: "22222222-2222-2222-2222-222222222222" } },
+  } };
+  assert.match(postProblems("x.en.mdx", { ...ok, cover: "a" }, '<Figure id="crop" alt="A" />', ctx).join(" "), /under another id/);
+  assert.match(postProblems("x.en.mdx", { ...ok, cover: "a" }, '<Figure id="rerun" alt="A" />', ctx).join(" "), /under another id/);
+  assert.deepEqual(postProblems("x.en.mdx", { ...ok, cover: "a" }, '<Figure id="other" alt="A" />', ctx), []);
+});

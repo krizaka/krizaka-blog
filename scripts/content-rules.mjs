@@ -44,6 +44,11 @@ export function postProblems(file, data, body, ctx) {
     if (data.cover !== undefined && data.cover in ctx.media) {
       const entry = ctx.media[data.cover];
       const urls = [...(entry.srcs ?? []).map((x) => x.url), entry.poster, entry.mp4, entry.webm].filter(Boolean);
+      /* The same picture under another id counts too: the same Orazaka run, or the same file stem on the CDN. */
+      const stem = (u) => u.split("/").pop().replace(/(-\d+)?\.[0-9a-f]{10}\.\w+$/, "").replace(/-poster$/, "");
+      const stems = new Set(urls.map(stem));
+      const same = (e) => e && ((entry.made?.runId && e.made?.runId === entry.made.runId) || [...(e.srcs ?? []).map((x) => x.url), e.poster].filter(Boolean).some((u) => stems.has(stem(u))));
+      for (const m of body.matchAll(/<(?:Figure|Clip)\b[^>]*?\bid="([^"]+)"/g)) if (m[1] !== data.cover && same(ctx.media[m[1]])) out.push(`${file}: <… id="${m[1]}"> is the cover's picture under another id — a cover is shown once`);
       if (new RegExp(`\\bid="${data.cover}"`).test(body) || urls.some((u) => body.includes(u))) out.push(`${file}: the cover "${data.cover}" is also in the body — a cover is shown once (the hero and the cards); use another, relevant picture in the text`);
     }
     for (const m of body.matchAll(/<(Figure|Clip)\b[^>]*?\bid="([^"]+)"/g)) {
