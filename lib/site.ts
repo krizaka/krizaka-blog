@@ -17,3 +17,6 @@ export const LOGO_URL = `${MEDIA_CDN_URL}/brand/krizaka/logo-dark.svg`;
 export const INDEXING_ENABLED = process.env.APP_INDEXING_ENABLED === "true" && !process.env.APP_PREVIEW_PATH;
 /** Drafts are in the build only for a local preview (APP_SHOW_DRAFTS=1). */
 export const SHOW_DRAFTS = process.env.APP_SHOW_DRAFTS === "1";
+
+/** The path of the changelog in a language (a page of its own). */
+export const changelogHref = (locale: "en" | "fr") => (locale === "en" ? "/changelog/" : "/fr/changelog/");

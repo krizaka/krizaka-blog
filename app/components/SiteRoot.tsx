@@ -5,6 +5,7 @@ import { MotionObserver } from "@krizaka/ui/motion";
 import { cn } from "@krizaka/ui/cn";
 import { getDictionary, type Locale } from "@/lib/i18n";
 import { clientMessages } from "@/lib/client-messages";
+import { buildVersion, uiVersion } from "@/lib/platform";
 import { MEDIA_CDN_URL } from "@/lib/site";
 import { displayFace, monoFace, textFace } from "../fonts";
 import { I18nProvider } from "./I18nProvider";
@@ -36,7 +37,7 @@ export default function SiteRoot({ locale, children }: { locale: Locale; childre
             <main id="main" className="flex-1">
               {children}
             </main>
-            <SiteFooter />
+            <SiteFooter version={buildVersion()} ui={uiVersion()} />
           </I18nProvider>
         </ThemeProvider>
       </body>
