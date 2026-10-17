@@ -23,8 +23,6 @@ A large language model, an LLM, does one thing: it guesses how a text goes on. Y
 
 Those pieces are called tokens. They are neither letters nor words, more like Lego bricks: a common word fits in one brick, a rare word takes several.
 
-<Figure id="basics-tokens" alt="Colourful wooden blocks of different sizes lined up on a desk, seen from above" caption="Bricks of different sizes: roughly what a model sees of a sentence." />
-
 I counted on my Mac with Qwen 2.5 7B, the chat model I use locally. "Je construis une IA souveraine à Montréal." is 12 tokens. The same sentence in English, "I build sovereign AI in Montréal.", is 8. French costs more tokens, and since hosted services bill by the token, it shows on the invoice.
 
 The context window is the desk on which the model spreads its papers: your question, the conversation so far, the documents you hand it. For Qwen 2.5 7B, that desk is 32,768 tokens. Whatever doesn't fit on the desk, the model simply doesn't see.

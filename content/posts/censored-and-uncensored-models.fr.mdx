@@ -8,7 +8,7 @@ publishedAt: "2026-10-16T22:31:17-04:00"
 tags: [ai, basics, orazaka, law]
 author: oussama
 draft: false
-cover: refusals-doors
+cover: refusals-robots
 series: basics
 part: 2
 ---
@@ -19,7 +19,7 @@ Sur mon Mac, dans la liste des modèles installés, il y a deux fois le même mo
 
 Je préviens tout de suite : il n'y a ici aucune recette pour contourner un refus, aucune instruction pour obtenir du contenu explicite. Ce billet explique ce qui existe et comment on décide. Et ce n'est pas un avis juridique : là où le droit compte, je consulte un avocat.
 
-<Figure id="refusals-doors" alt="Deux portes en bois côte à côte dans un couloir blanc ; celle de gauche est fermée, autour de celle de droite filtre la lumière du jour" caption="Deux portes, deux politiques : un modèle qui refuse, un modèle qui laisse passer. Dans les deux cas, quelqu'un a décidé." />
+<Figure id="refusals-robots" alt="Deux petits robots blancs identiques côte à côte ; celui de gauche tient contre lui un gros cadenas fermé, celui de droite a les mains vides" caption="Le même modèle, deux politiques : l'un a appris à refuser, l'autre non. Dans les deux cas, quelqu'un a décidé." />
 
 ## Pourquoi un modèle dit non
 
@@ -60,6 +60,8 @@ Et une ligne absolue : rien qui touche à des mineurs. Jamais, dans aucun régla
 ## Ce que fait Orazaka
 
 Orazaka est un moteur qu'on peut installer chez soi. Je ne peux pas décider à la place de chaque opérateur de ce qui est permis sur sa plateforme, et je ne veux pas cacher un filtre moral dans le code. En même temps, je refuse qu'il puisse servir à franchir la seule ligne qui ne se discute pas. D'où une [politique de contenu](https://github.com/krizaka/orazaka-studio/pull/13) que l'opérateur configure, en trois couches.
+
+<Figure id="policy-flow" alt="Schéma de la politique de contenu : la demande est classée localement ; minors_risk mène toujours au refus 422 ; sinon les réglages de l'opérateur, puis les conditions du fournisseur, décident entre refus et exécution ; chaque décision va au journal d'audit" caption="La politique de contenu d'Orazaka, dans l'ordre où elle décide (schéma bilingue)." />
 
 Avant tout le reste, le moteur classe localement ce qui est demandé : des règles, dans le même processus, rien n'est envoyé ailleurs. Il pose des étiquettes : `sexual_explicit`, `sexual_suggestive`, `minors_risk`, `violence_graphic`, `real_person_likeness`, ou aucune.
 

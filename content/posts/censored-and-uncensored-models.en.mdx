@@ -8,7 +8,7 @@ publishedAt: "2026-10-16T22:31:17-04:00"
 tags: [ai, basics, orazaka, law]
 author: oussama
 draft: false
-cover: refusals-doors
+cover: refusals-robots
 series: basics
 part: 2
 ---
@@ -19,7 +19,7 @@ That sums up the question of this post. Why some models say no, why others never
 
 Let me say it right away: there is no recipe here to get around a refusal, no instruction to obtain explicit content. This post explains what exists and how we decide. And it isn't legal advice: where the law matters, I consult a lawyer.
 
-<Figure id="refusals-doors" alt="Two wooden doors side by side in a white corridor; the left one is closed, daylight shows around the right one" caption="Two doors, two policies: a model that refuses, a model that lets through. Either way, someone decided." />
+<Figure id="refusals-robots" alt="Two identical small white robots side by side; the left one holds a big closed padlock against its chest, the right one has empty hands" caption="The same model, two policies: one learned to refuse, the other didn't. Either way, someone decided." />
 
 ## Why a model says no
 
@@ -60,6 +60,8 @@ And one absolute line: nothing that involves minors. Ever, under any setting.
 ## What Orazaka does
 
 Orazaka is an engine you can install on your own machines. I can't decide for every operator what is allowed on their platform, and I don't want to hide a moral filter in the code. At the same time, I refuse to let it be used to cross the one line that isn't up for debate. Hence a [content policy](https://github.com/krizaka/orazaka-studio/pull/13) that the operator configures, in three layers.
+
+<Figure id="policy-flow" alt="Content policy diagram: the request is labelled locally; minors_risk always leads to the 422 refusal; otherwise the operator's settings, then the provider's terms, decide between refusal and running; every decision goes to the audit log" caption="Orazaka's content policy, in the order it decides (bilingual diagram)." />
 
 Before anything else, the engine classifies the request locally: rules, in the same process, nothing is sent anywhere. It sets labels: `sexual_explicit`, `sexual_suggestive`, `minors_risk`, `violence_graphic`, `real_person_likeness`, or none.
 
