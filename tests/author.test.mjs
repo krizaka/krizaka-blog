@@ -39,7 +39,8 @@ test("the About page and the home note tell the sourced path, and never the empl
     assert.match(text, /2018/, `${l}: the bio says since 2018`);
     assert.match(text, /Montréal/);
     assert.ok(text.includes(EDU[l]), `${l}: the education is worded as he gave it`);
-    assert.match(text, l === "fr" ? /grande banque canadienne/ : /large Canadian bank/);
+    // His current job is never told, even unnamed (Oussama, 2026-10-17).
+    assert.doesNotMatch(text, /banque canadienne|Canadian bank|bancaire|banking|architecte dans|architect at/i, `${l}: the current job is not told`);
     assert.doesNotMatch(text, BANKS);
     assert.doesNotMatch(text, BIRTH);
   }
