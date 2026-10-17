@@ -67,13 +67,31 @@ Une erreur trouvée sur l'image clé coûte un cent. Trouvée dans le plan, 36 c
 
 Sur ce film, 12 plans ont été tournés pour 10 gardés. À 0,36 $ le plan, cela donne 0,44 $ par plan gardé, soit 1,2 fois le prix d'une exécution : exactement 1 ÷ p, avec p = 10 sur 12. Pour les 35 exécutions du film, dont 5 en échec, le calcul GPU est d'environ 7,89 $. Je ne peux pas donner un coût par film : la facture du pod, 23,62 $, mélange plusieurs travaux, et je ne la mets pas sur un seul film pour avoir un chiffre propre.
 
+Le film, tel que je l'ai tourné :
+
+<Clip id="nova-ardent-short" alt="Un court film vertical de démonstration de 40 secondes, 10 plans" caption="Le film de 40 secondes, 10 plans gardés sur 12 tournés. Le calcul GPU de ses exécutions : 7 115 s, 7,89 $." />
+
 ## Deux fois où je n'avais pas de boucle
 
 Le premier cas, c'est la première série de clips de la vitrine d'Orazaka. J'avais donné à Wan une image portrait recadrée en 16:9, et un prompt qui décrivait un mouvement en boucle. Les clips étaient mauvais. Chaque clip coûte environ 1,20 $ et 18 minutes de H100, donc les cinq que je dois refaire représentent à peu près 6 $ et une heure et demie de GPU qui n'ont rien produit de publiable. La correction tient en deux lignes : des images faites à la proportion de la vidéo, et un prompt qui ne décrit que le mouvement.
 
 Personne ne regardait l'image avant de lancer 18 minutes de GPU. Depuis, le moteur de génération écrit dans ses métriques `imageKept`, la part de l'image de départ que le cadre a gardée (un portrait coupé en 16:9 en garde un tiers). Ça ne dit pas si le résultat est bon, seulement qu'il part avec un handicap, mais ça prévient avant de payer.
 
-Le second cas, ce sont les oiseaux. Pour le film de la tournée, chaque image clé est comparée au dessin de l'oiseau fait dans le code. Il y a eu des images refusées : un faucon, un hibou et un canard dupliqués, un public d'humains, un oiseau fantôme en trop. L'image clé verticale de la fin a été refusée trois fois. Je n'ai pas insisté : la version verticale montre le plan horizontal sur son propre fond flouté. C'est le plafond d'essais de ma boucle, tenu à la main. Mais je n'ai pas gardé le compte des prises refusées ni la dépense GPU de ce film : je ne peux pas vous donner un coût par plan gardé, et c'est la leçon de ce billet.
+Voici le même plan avant et après, à l'image du milieu de chaque clip :
+
+<Figure id="bakeoff-before-after" alt="Trois images d'un téléphérique dans les Alpes à l'aube. À gauche, avant : une image portrait recadrée en 16:9, Wan 2.2 A14B, un clip brouillé. Au milieu, après : une image faite en 16:9, LTX-Video en 14 secondes, nette. À droite, après : la même image avec Wan 2.2 I2V A14B en 40 étapes, 18 minutes." caption="Avant : 18 minutes de H100 pour un clip inutilisable. Après : 14 secondes pour LTX-Video (à peu près 0,01 $), 18 minutes et 1,20 $ pour Wan." />
+
+Le second cas, ce sont les oiseaux. Pour « Le monde de Krizaka : la tournée », chaque image clé est comparée au dessin de l'oiseau fait dans le code. Il y a eu des images refusées : un faucon, un hibou et un canard dupliqués, un public d'humains, un oiseau fantôme en trop.
+
+<Figure id="birds-rejected-keyframes" alt="Deux lignes de la feuille de revue des images clés. À gauche, le dessin de référence fait dans le code. À droite, trois essais pour chaque ligne. Première ligne : le faucon apparaît en double dans les trois essais. Deuxième ligne : un public d'humains a été ajouté derrière les oiseaux." caption="Refusées : le faucon en double (ligne du haut) et le public d'humains (ligne du bas). À gauche, le dessin que l'image doit respecter." />
+
+L'image clé verticale de la fin a été refusée trois fois. Je n'ai pas insisté : la version verticale montre le plan horizontal sur son propre fond flouté. C'est le plafond d'essais de ma boucle, tenu à la main.
+
+Le film fini fait 78 secondes. Vous pouvez le regarder ici, ou [sur Orochia](https://dev.orochia.com/watch/a7f32d84-e3b7-49e9-8e14-21c11781bdcf).
+
+<Clip id="birds-film" alt="Le monde de Krizaka : la tournée, un film de 78 secondes où les oiseaux de Krizaka traversent cinq ambiances, avec des sous-titres" caption="« Le monde de Krizaka : la tournée », v1, 78 s." />
+
+Cette fois, les chiffres existent, d'après le rapport de la session qui a fait le film : 28 clips vidéo générés, 24 passés à l'upscale, environ 9,4 $ de GPU pour cette première version, et 17 plans gardés dans le montage. Cela fait 28 ÷ 17, soit 1,65 clip par plan gardé (p ≈ 0,6), et environ 0,55 $ par plan gardé, tout compris (upscale et temps du pod inclus). Les refus d'images clés se sont faits avant la vidéo, ce qui est la bonne place pour les faire. Je n'ai pas le détail du temps de chaque prise, donc je ne coupe pas ce coût entre génération et upscale.
 
 ## Qui paie la boucle ?
 
@@ -97,6 +115,6 @@ Dans tous les cas, l'humain dans la boucle reste le dernier juge. Les modèles s
 
 Je mesure aujourd'hui, par exécution : le temps, le coût de calcul, les échecs, et `imageKept` pour les clips à partir d'une image. Ce sont des mesures d'exécution, celles que mon ami me reprochait de ne regarder que seules.
 
-Je ne mesure pas un taux d'acceptation dans le produit, ni un juge automatique, ni le temps de la personne. Les verdicts de ma vitrine sont les miens, au regard. Et mes p ci-dessus sont des exemples, sauf le 10 sur 12 du film.
+Je ne mesure pas un taux d'acceptation dans le produit, ni un juge automatique, ni le temps de la personne. Les verdicts de ma vitrine sont les miens, au regard. Et mes p ci-dessus sont des exemples, sauf le 10 sur 12 du court film et le 17 sur 28 du film des oiseaux.
 
 Si je dois retenir une chose : ne demandez pas ce que coûte une exécution, demandez ce que coûte un résultat dont vous voudriez. Chaque chiffre vaut pour ce montage, le 17 octobre 2026.
