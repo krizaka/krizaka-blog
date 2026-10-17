@@ -32,7 +32,7 @@ export default function SiteRoot({ locale, children }: { locale: Locale; childre
             <main id="main" className="flex-1">
               {children}
             </main>
-            <SiteFooter locale={locale} />
+            <SiteFooter />
           </I18nProvider>
         </ThemeProvider>
       </body>
