@@ -3,7 +3,7 @@
    on /newsletter/expired/, where the form can be filled again. */
 const nl = require("./newsletter.js");
 
-async function main(args = {}, env = process.env, sql = null, now = Date.now()) {
+async function handle(args = {}, env = process.env, sql = null, now = Date.now()) {
   const lang = nl.pickLocale(args.l);
   if (!nl.configured(env.MAIL_TOKEN_SECRET) || !nl.dbConfigured(env)) return nl.redirect(nl.pageUrl(lang, "/newsletter/expired/"));
   const who = nl.readToken(args.t, "c", env.MAIL_TOKEN_SECRET, now);
@@ -15,4 +15,7 @@ async function main(args = {}, env = process.env, sql = null, now = Date.now()) 
   }
   return nl.redirect(nl.pageUrl(who.locale, "/newsletter/confirmed/"));
 }
-exports.main = main;
+/* The platform calls main(args) — and may pass a context object second — so the injections (environment, database,
+   fetch, clock) only go through handle(), which the tests call. */
+const main = (args) => handle(args);
+module.exports = { main, handle };

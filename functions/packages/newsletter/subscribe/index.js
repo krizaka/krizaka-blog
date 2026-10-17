@@ -3,7 +3,7 @@
    The answer is the same whether the address is new or already subscribed (nobody learns who is on the list). */
 const nl = require("./newsletter.js");
 
-async function main(args = {}, env = process.env, fetchImpl = fetch) {
+async function handle(args = {}, env = process.env, fetchImpl = fetch) {
   if (args.__ow_method && args.__ow_method.toLowerCase() !== "post") return nl.json(405, { error: "method" });
   if (!nl.mailConfigured(env) || !nl.dbConfigured(env) || !nl.captchaConfigured(env)) return nl.json(503, { error: "unavailable" });
   // The honeypot: a field people never see. Filled = a robot; answer as if all went well.
@@ -19,4 +19,7 @@ async function main(args = {}, env = process.env, fetchImpl = fetch) {
   }
   return nl.json(202, { ok: true });
 }
-exports.main = main;
+/* The platform calls main(args) — and may pass a context object second — so the injections (environment, database,
+   fetch, clock) only go through handle(), which the tests call. */
+const main = (args) => handle(args);
+module.exports = { main, handle };

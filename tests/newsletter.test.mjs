@@ -6,10 +6,10 @@ import { publishedBetween, versionsOf, requestSend } from "../scripts/newsletter
 
 const require = createRequire(import.meta.url);
 const nl = require("../functions/packages/newsletter/subscribe/newsletter.js");
-const { main: subscribe } = require("../functions/packages/newsletter/subscribe/index.js");
-const { main: confirm } = require("../functions/packages/newsletter/confirm/index.js");
-const { main: unsubscribe } = require("../functions/packages/newsletter/unsubscribe/index.js");
-const { main: sendAction } = require("../functions/packages/newsletter/send/index.js");
+const { handle: subscribe } = require("../functions/packages/newsletter/subscribe/index.js");
+const { handle: confirm } = require("../functions/packages/newsletter/confirm/index.js");
+const { handle: unsubscribe } = require("../functions/packages/newsletter/unsubscribe/index.js");
+const { handle: sendAction } = require("../functions/packages/newsletter/send/index.js");
 
 /** A fake database: the SQL the code sends, and the subscribers / claimed posts it holds. */
 function fakeDb({ subscribers = [], claimed = [] } = {}) {
@@ -256,4 +256,16 @@ test("the list's schema: one row per confirmed address with its proof of consent
   assert.match(sql, /consented_at timestamptz not null/);
   assert.match(sql, /consent_source text not null/);
   assert.match(sql, /create table if not exists newsletter_posts \(\s+slug text primary key/);
+});
+
+/* The bug of 2026-10-17: the actions ran on nodejs:default (Node 14, no global fetch) and subscribe crashed (204, no
+   body). The newsletter actions pin a runtime with fetch, and main(args, context) never lets a context replace the env. */
+test("the newsletter actions run on Node 18 and main() ignores a second argument", async () => {
+  const project = readFileSync(new URL("../functions/project.yml", import.meta.url), "utf8");
+  const block = project.slice(project.indexOf("- name: newsletter"));
+  assert.equal((block.match(/runtime: "nodejs:18"/g) ?? []).length, 4);
+  assert.doesNotMatch(block, /nodejs:default/);
+  const { main } = require("../functions/packages/newsletter/subscribe/index.js");
+  const r = await main({ __ow_method: "get" }, { functionName: "subscribe" });
+  assert.equal(r.statusCode, 405);
 });
