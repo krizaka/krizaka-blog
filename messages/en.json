@@ -188,6 +188,10 @@
       "payments": {
         "title": "Payments for software products — Krizaka Blog",
         "description": "Taking payments as a small software company: what Stripe, PayPal and Square refuse, what card networks require, and how it shapes the code."
+      },
+      "basics": {
+        "title": "AI basics, word by word — Krizaka Blog",
+        "description": "Tokens, context, quantization, RAG, tools, MCP, agents, diffusion: the words of AI explained simply, with what really runs."
       }
     }
   },

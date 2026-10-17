@@ -188,6 +188,10 @@
       "payments": {
         "title": "Paiements pour un produit logiciel — Blogue Krizaka",
         "description": "Encaisser comme petite entreprise logicielle : ce que Stripe, PayPal et Square refusent, ce qu'exigent les réseaux de cartes, l'effet sur le code."
+      },
+      "basics": {
+        "title": "Les bases de l'IA, mot par mot — Blogue Krizaka",
+        "description": "Token, contexte, quantification, RAG, outils, MCP, agents, diffusion : les mots de l'IA expliqués simplement, avec ce qui tourne vraiment."
       }
     }
   },
