@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CardGrid } from "@krizaka/ui/card-grid";
 import { LinkCard } from "@krizaka/ui/link-card";
 import { format } from "@/lib/locale";
@@ -28,6 +28,12 @@ export function searchEntries(entries: SearchEntry[], query: string): SearchEntr
 export function SearchBox({ entries }: { entries: SearchEntry[] }) {
   const { t } = useI18n();
   const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const q = new URLSearchParams(window.location.search).get("q");
+    if (q) setQuery(q);
+  }, []);
   const results = useMemo(() => searchEntries(entries, query), [entries, query]);
   return (
     <div className="bl-search">

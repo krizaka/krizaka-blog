@@ -83,10 +83,10 @@ test("the author is shown by the Wu-sama mark, never a photo: AuthorNote, the Ab
   assert.doesNotMatch(read("app/components/about/AboutPage.tsx"), /KrizakaLogo/);
 });
 
-test("the About page says « Wu-sama » once in the bio and the mark's label names it, in both languages", () => {
+test("the About page mark's label names « Wu-sama », and the bio body keeps it retired", () => {
   for (const l of ["en", "fr"]) {
     const a = messages(l).about;
-    assert.equal(a.body.join("\n").match(/Wu-sama/g)?.length, 1, `${l}: the nickname is said once`);
+    assert.equal(a.body.join("\n").match(/Wu-sama/g)?.length ?? 0, 0, `${l}: the nickname is not in the bio text`);
     assert.match(a.slot, /Wu-sama/, `${l}: the mark's label`);
   }
 });

@@ -299,10 +299,10 @@
     "slot": "La marque Wu-sama, mon surnom, à la place d'une photo",
     "role": "Fondateur",
     "body": [
-      "Je m'appelle Oussama (Wu-sama). Je vis à Montréal depuis 2018, où je développe Krizaka.",
+      "Je m'appelle Oussama. Je vis à Montréal depuis 2018, où je développe Krizaka.",
       "J'ai étudié les mathématiques et l'informatique, puis je me suis orienté vers les mathématiques et l'informatique appliquées aux sciences cognitives.",
-      "En 2011, j'ai débuté en traitement automatique des langues par un stage de recherche en extraction d'information et analyse sémantique. Durant les quinze années suivantes, j'ai conçu et déployé des systèmes distribués en production : transports connectés, santé, télécoms et réseaux IoT de plusieurs millions d'objets.",
-      "Aujourd'hui, je développe Krizaka ici à Montréal, en pilotant et supervisant des agents d'IA autonomes.",
+      "Mon parcours a débuté en 2011 en traitement automatique des langues et analyse sémantique. Au fil des quinze années suivantes, j'ai conçu et déployé des systèmes distribués en production dans les transports connectés, la santé, les télécoms et les réseaux IoT à l'échelle de millions d'objets.",
+      "Aujourd'hui, je développe Krizaka ici à Montréal, en orchestrant des agents d'IA autonomes et en explorant la rencontre entre modèles modernes et ingénierie logicielle robuste.",
       "Ce blogue est un carnet d'ingénierie : mesures réelles, choix d'architecture, enseignements de la production et défis encore ouverts."
     ],
     "homeTitle": "Qui écrit",

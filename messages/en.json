@@ -299,10 +299,10 @@
     "slot": "The Wu-sama mark, my nickname, in place of a photo",
     "role": "Founder",
     "body": [
-      "My name is Oussama (Wu-sama). I have lived in Montréal since 2018, where I build Krizaka.",
+      "My name is Oussama. I have lived in Montréal since 2018, where I build Krizaka.",
       "I studied mathematics and computer science, then turned to mathematics and computing applied to cognitive science.",
-      "In 2011, I started in natural language processing with a research internship in information extraction and semantic analysis. Over the following fifteen years, I architected and built distributed systems in production: connected transit, healthcare, telecom platforms, and IoT networks scaling to millions of devices.",
-      "Today, I build Krizaka here in Montréal, directing and reviewing autonomous AI agents.",
+      "My journey began in 2011 in natural language processing and semantic analysis. Over the following fifteen years, I designed and built distributed systems in production across connected transit, healthcare, telecom platforms, and IoT networks scaling to millions of devices.",
+      "Today, I build Krizaka here in Montréal, orchestrating autonomous AI agents and exploring where modern models meet robust software engineering.",
       "This blog is an engineering log: concrete benchmarks, architectural choices, lessons from production, and problems still open."
     ],
     "homeTitle": "Who writes",

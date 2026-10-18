@@ -4,7 +4,7 @@ import { Section } from "@krizaka/ui/page";
 import { Card } from "@krizaka/ui/card";
 import { Badge } from "@krizaka/ui/badge";
 import { Separator } from "@krizaka/ui/separator";
-import { WuSamaMark } from "@krizaka/ui";
+import { WuSamaMark } from "./WuSamaMark";
 import { getDictionary, type Locale } from "@/lib/i18n";
 import { jsonLd } from "@/lib/json-ld";
 import { absoluteUrl } from "@/lib/seo";
