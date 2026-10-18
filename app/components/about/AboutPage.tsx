@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { PageHero } from "@krizaka/ui/page-hero";
 import { Section } from "@krizaka/ui/page";
+import { Card } from "@krizaka/ui/card";
+import { Badge } from "@krizaka/ui/badge";
+import { Separator } from "@krizaka/ui/separator";
 import { WuSamaMark } from "@krizaka/ui";
 import { getDictionary, type Locale } from "@/lib/i18n";
 import { jsonLd } from "@/lib/json-ld";
@@ -25,10 +28,12 @@ export function aboutJsonLd(locale: Locale) {
   };
 }
 
-/* /about/: who writes the blog, as a short story (Montréal since 2018). Every fact is in
-   content/authors/oussama.json with its source; no photo until he gives one for this — the slot shows the Wu-sama mark (his nickname; he does not want his photo on the blog). */
+/* /about/: who writes the blog (Montréal since 2018). The author is shown by the Wu-sama mark. */
 export function AboutPage({ locale }: { locale: Locale }) {
   const a = getDictionary(locale).about;
+  const bio = a.body.slice(0, -1);
+  const mission = a.body[a.body.length - 1];
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(aboutJsonLd(locale)) }} />
@@ -40,16 +45,39 @@ export function AboutPage({ locale }: { locale: Locale }) {
         </ul>
       </PageHero>
       <Section reveal={false}>
-        <div className="bl-about">
-          <figure className="bl-about-slot" aria-label={a.slot}>
-            <WuSamaMark size={64} />
-          </figure>
-          <div className="bl-about-text">
-            {a.body.map((p) => (
-              <p key={p}>{p}</p>
-            ))}
-          </div>
-        </div>
+        <Card.Root tone="elevated" radius="xl" className="bl-about-card">
+          <Card.Body padding="lg" className="bl-about-card-body">
+            <div className="bl-about">
+              <aside className="bl-about-sidebar">
+                <figure className="bl-about-slot" aria-label={a.slot}>
+                  <WuSamaMark size={104} />
+                </figure>
+                <div className="bl-about-profile">
+                  <h2 className="bl-about-name">Oussama Abid</h2>
+                  <div className="bl-about-badges">
+                    <Badge tone="accent" size="sm">
+                      {a.role}
+                    </Badge>
+                    <Badge tone="neutral" size="sm">
+                      {a.places[0]}
+                    </Badge>
+                  </div>
+                </div>
+              </aside>
+              <div className="bl-about-content">
+                <div className="bl-about-text">
+                  {bio.map((p) => (
+                    <p key={p}>{p}</p>
+                  ))}
+                </div>
+                <Separator className="bl-about-separator" />
+                <div className="bl-about-mission">
+                  <p className="bl-about-mission-text">{mission}</p>
+                </div>
+              </div>
+            </div>
+          </Card.Body>
+        </Card.Root>
       </Section>
     </>
   );

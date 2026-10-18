@@ -297,14 +297,13 @@
     "title": "Qui écrit ce blogue",
     "lead": "Oussama Abid. Il vit à Montréal depuis 2018, et il y construit Krizaka.",
     "slot": "La marque Wu-sama, mon surnom, à la place d'une photo",
+    "role": "Fondateur",
     "body": [
-      "Je m'appelle Oussama (Wu-sama, pour les amis). Je vis à Montréal depuis 2018.",
-      "J'ai étudié les mathématiques et l'informatique, puis je me suis orienté vers les mathématiques et l'informatique appliquées aux sciences cognitives. En clair, comment on pense, comment on apprend, et ce qu'une machine peut en faire.",
-      "En 2011, j'ai fait mon premier stage de recherche dans un laboratoire, en traitement automatique des langues. Apprendre à une machine à lire une phrase, à en sortir les informations, à en saisir le sens. Personne ne parlait d'IA dans les soirées. C'est pourtant là que j'ai commencé.",
-      "Ensuite, quinze ans à construire des systèmes qui tournent pour de vrai. Des trains connectés, des applications de soins pour un hôpital, des plateformes mobiles pour des opérateurs, des villes connectées avec des millions d'objets.",
-      "Aujourd'hui, je construis Krizaka, ici à Montréal, avec des agents d'IA que je dirige, que je relis et que je corrige. Le cercle se referme un peu : la machine qui lit une phrase, je l'ai rencontrée au laboratoire, et je la fais travailler aujourd'hui.",
-      "Quand je ne code pas, j'écoute du jazz, je vais voir des concerts, je voyage quand je peux, et je garde une manette pas loin.",
-      "Ce blogue, c'est ce que j'apprends en construisant. Des billets courts, avec les chiffres que je peux montrer, et ce que je n'ai pas encore réglé."
+      "Je m'appelle Oussama (Wu-sama). Je vis à Montréal depuis 2018, où je développe Krizaka.",
+      "J'ai étudié les mathématiques et l'informatique, puis je me suis orienté vers les mathématiques et l'informatique appliquées aux sciences cognitives.",
+      "En 2011, j'ai débuté en traitement automatique des langues par un stage de recherche en extraction d'information et analyse sémantique. Durant les quinze années suivantes, j'ai conçu et déployé des systèmes distribués en production : transports connectés, santé, télécoms et réseaux IoT de plusieurs millions d'objets.",
+      "Aujourd'hui, je développe Krizaka ici à Montréal, en pilotant et supervisant des agents d'IA autonomes.",
+      "Ce blogue est un carnet d'ingénierie : mesures réelles, choix d'architecture, enseignements de la production et défis encore ouverts."
     ],
     "homeTitle": "Qui écrit",
     "homeBody": "Je m'appelle Oussama. Je vis à Montréal depuis 2018, et j'y construis Krizaka. Mon premier contact avec l'IA date de 2011, au {lab}, bien avant que le mot soit à la mode. Ici, je raconte ce que j'apprends en route.",
