@@ -1,12 +1,195 @@
 /* The About page and the home's "who writes" note. Tokens only: dark and light follow the theme. */
-.bl-about { display: grid; gap: 2rem; grid-template-columns: minmax(0, 1fr); align-items: start; }
-@media (min-width: 768px) { .bl-about { grid-template-columns: 11rem minmax(0, 40rem); gap: 3rem; } }
-.bl-about-slot { display: grid; place-items: center; width: 9rem; aspect-ratio: 1; border-radius: 50%; border: 1px solid var(--kz-border); background: radial-gradient(circle at 30% 25%, var(--kz-surface-raised, var(--kz-surface)), var(--kz-surface)); }
-.bl-about-text { display: grid; gap: 1.1rem; font-size: 1.0625rem; line-height: 1.7; color: var(--kz-text-primary); }
-.bl-about-text p { margin: 0; }
-.bl-about-places { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: 0; padding: 0; list-style: none; font-family: var(--kz-font-mono); font-size: 0.8125rem; color: var(--kz-text-secondary); }
-.bl-about-places li + li::before { content: "→"; margin-right: 0.5rem; color: var(--kz-accent-text); }
-.bl-author { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1rem 1.25rem; align-items: start; max-width: 44rem; }
-.bl-author-mark { display: grid; place-items: center; width: 3.5rem; aspect-ratio: 1; border-radius: 50%; border: 1px solid var(--kz-border); background: var(--kz-surface); }
-.bl-author p { margin: 0 0 0.5rem; color: var(--kz-text-secondary); line-height: 1.6; }
-.bl-author a { color: var(--kz-accent-text); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.bl-about-card {
+  max-width: 58rem;
+  margin: 0 auto;
+  border-color: var(--kz-border);
+  background: var(--kz-surface-1, var(--kz-surface));
+}
+
+.bl-about-card-body {
+  padding: 2.25rem;
+}
+
+@media (max-width: 640px) {
+  .bl-about-card-body {
+    padding: 1.25rem;
+  }
+}
+
+.bl-about {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+@media (min-width: 768px) {
+  .bl-about {
+    grid-template-columns: 12.5rem minmax(0, 1fr);
+    gap: 3rem;
+  }
+}
+
+.bl-about-sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .bl-about-sidebar {
+    align-items: flex-start;
+    text-align: left;
+    position: sticky;
+    top: var(--kz-anchor-offset, 5rem);
+  }
+}
+
+.bl-about-slot {
+  display: grid;
+  place-items: center;
+  width: 9.5rem;
+  aspect-ratio: 1;
+  border-radius: 1.25rem;
+  border: 1px solid var(--kz-border);
+  background: radial-gradient(circle at 35% 30%, var(--kz-surface-raised, var(--kz-surface)), var(--kz-surface));
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.bl-about-slot:hover {
+  border-color: var(--kz-accent);
+  transform: translateY(-2px);
+}
+
+.bl-about-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .bl-about-profile {
+    align-items: flex-start;
+  }
+}
+
+.bl-about-name {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--kz-text-primary);
+}
+
+.bl-about-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .bl-about-badges {
+    justify-content: flex-start;
+  }
+}
+
+.bl-about-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.bl-about-text {
+  display: grid;
+  gap: 1.15rem;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--kz-text-primary);
+}
+
+.bl-about-text p {
+  margin: 0;
+}
+
+.bl-about-text p:first-child {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--kz-text-primary);
+}
+
+.bl-about-separator {
+  margin: 0.5rem 0;
+  background-color: var(--kz-border-subtle, var(--kz-border));
+}
+
+.bl-about-mission {
+  padding: 1.125rem 1.35rem;
+  border-radius: 0.75rem;
+  background: var(--kz-surface-raised, var(--kz-surface));
+  border-left: 3px solid var(--kz-accent);
+  border-top: 1px solid var(--kz-border);
+  border-right: 1px solid var(--kz-border);
+  border-bottom: 1px solid var(--kz-border);
+}
+
+.bl-about-mission-text {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.65;
+  color: var(--kz-text-primary);
+}
+
+.bl-about-places {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--kz-font-mono);
+  font-size: 0.8125rem;
+  color: var(--kz-text-secondary);
+}
+
+.bl-about-places li + li::before {
+  content: "→";
+  margin-right: 0.5rem;
+  color: var(--kz-accent-text);
+}
+
+.bl-author {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1rem 1.25rem;
+  align-items: start;
+  max-width: 44rem;
+}
+
+.bl-author-mark {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid var(--kz-border);
+  background: var(--kz-surface);
+}
+
+.bl-author p {
+  margin: 0 0 0.5rem;
+  color: var(--kz-text-secondary);
+  line-height: 1.6;
+}
+
+.bl-author a {
+  color: var(--kz-accent-text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
