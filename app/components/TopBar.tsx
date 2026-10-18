@@ -5,11 +5,12 @@
    way back to krizaka.com. Below md: the mark and the mobile panel's toggle. */
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { GlobeIcon, MoonIcon, SearchIcon, SunIcon } from "@krizaka/icons";
 import { KrizakaLogo } from "@krizaka/ui";
 import { Button } from "@krizaka/ui/button";
 import { NavBar } from "@krizaka/ui/nav-bar";
+import { SearchField } from "@krizaka/ui/search-field";
 import { localizedPath, splitLocale } from "@/lib/locale";
 import { GITHUB_ORG_URL, KRIZAKA_URL, REPOSITORY_URL } from "@/lib/site";
 import { GitHubMark } from "./GitHubMark";
@@ -17,6 +18,7 @@ import { useI18n } from "./I18nProvider";
 import { useSiteTheme } from "./SiteTheme";
 
 export default function TopBar() {
+  const router = useRouter();
   const { locale, t } = useI18n();
   const b = t.bar;
   const { theme, toggleTheme } = useSiteTheme();
@@ -48,16 +50,26 @@ export default function TopBar() {
           <NavBar.Link asChild active={clean.startsWith("/tags")}>
             <Link href={tags}>{b.tags}</Link>
           </NavBar.Link>
-          <NavBar.Link asChild active={clean === "/search"}>
-            <Link href={search}>{b.search}</Link>
-          </NavBar.Link>
           <NavBar.Link asChild active={clean === "/saved"}>
             <Link href={saved}>{b.saved}</Link>
           </NavBar.Link>
         </NavBar.Items>
 
-        <NavBar.Actions className="gap-1">
-          <Button asChild variant="ghost" size="icon" shape="pill" className="h-9 w-9 lg:hidden">
+        <NavBar.Actions className="gap-1.5">
+          <div className="hidden md:flex items-center">
+            <SearchField
+              size="sm"
+              label={b.searchAria}
+              placeholder={b.search}
+              shortcut="k"
+              onSubmit={(q) => {
+                const query = q.trim();
+                router.push(query ? `${search}?q=${encodeURIComponent(query)}` : search);
+              }}
+              className="w-36 lg:w-48"
+            />
+          </div>
+          <Button asChild variant="ghost" size="icon" shape="pill" className="h-9 w-9 md:hidden">
             <Link href={search} aria-label={b.searchAria}>
               <SearchIcon size={15} />
             </Link>

@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { KrizakaLogo, WuSamaMark } from "@krizaka/ui";
+import { KrizakaLogo } from "@krizaka/ui";
+import { WuSamaMark } from "../about/WuSamaMark";
 import { Button } from "@krizaka/ui/button";
 import { ClockIcon, GlobeIcon } from "@krizaka/icons";
 import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";

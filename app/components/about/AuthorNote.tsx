@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Section } from "@krizaka/ui/page";
-import { WuSamaMark } from "@krizaka/ui";
+import { WuSamaMark } from "./WuSamaMark";
 import { getDictionary, localizedPath, type Locale } from "@/lib/i18n";
 import "./about.css";
 
@@ -15,17 +15,20 @@ export function AuthorNote({ locale }: { locale: Locale }) {
     <Section id="who-writes" title={a.homeTitle} divider>
       <div className="bl-author">
         <span className="bl-author-mark" aria-hidden="true">
-          <WuSamaMark size={30} />
+          <WuSamaMark size={32} />
         </span>
-        <div>
-          <p>
+        <div className="bl-author-body">
+          <p className="bl-author-text">
             {before}
-            <a href={LIG_URL} rel="noopener">
+            <a href={LIG_URL} rel="noopener" className="bl-author-link">
               {a.homeLab}
             </a>
             {after}
           </p>
-          <Link href={localizedPath(locale, "/about")}>{a.homeLink}</Link>
+          <Link href={localizedPath(locale, "/about")} className="bl-author-more">
+            <span>{a.homeLink}</span>
+            <span aria-hidden="true" className="bl-author-arrow">→</span>
+          </Link>
         </div>
       </div>
     </Section>
