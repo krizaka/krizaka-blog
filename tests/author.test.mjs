@@ -4,7 +4,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import matter from "gray-matter";
 
 /* What the blog says about its author comes from a source he gave (content/authors/oussama.json). His public bio says only
-   that he has lived in Montréal since 2018, the education in his own words, and his work without his employer's name.
+   that he builds Krizaka in Montréal, the education in his own words, and his work without his employer's name.
    It never names his city of origin or his city of studies, never calls him a Java and Spring engineer, never links LinkedIn.
    (2026-10-17, Oussama's correction.) */
 const facts = JSON.parse(readFileSync(new URL("../content/authors/oussama.json", import.meta.url), "utf8"));
@@ -36,7 +36,6 @@ test("the About page and the home note tell the sourced path, and never the empl
     assert.match(a.homeLab, new RegExp(LAB.source, "i"), `${l}: the lab is named as the LIG`);
     for (const [place] of text.matchAll(PATH_PLACES)) assert.ok(facts.places.includes(place), `${l}: ${place} is not sourced`);
     assert.doesNotMatch(text, FORBIDDEN, `${l}: forbidden in the bio`);
-    assert.match(text, /2018/, `${l}: the bio says since 2018`);
     assert.match(text, /Montréal/);
     assert.ok(text.includes(EDU[l]), `${l}: the education is worded as he gave it`);
     // His current job is never told, even unnamed (Oussama, 2026-10-17).
@@ -57,7 +56,7 @@ test("the Person JSON-LD of the About page names no former city and no LinkedIn 
   assert.doesNotMatch(read("app/components/about/AuthorNote.tsx"), FORBIDDEN);
 });
 
-test("a post that tells the author's path names only sourced places, says 2018 and links to the About page", () => {
+test("a post that tells the author's path names only sourced places and links to the About page", () => {
   for (const f of posts) {
     const { content } = matter(read(`content/posts/${f}`));
     const named = [...content.matchAll(PATH_PLACES)].map((m) => m[0]);
@@ -67,7 +66,6 @@ test("a post that tells the author's path names only sourced places, says 2018 a
     for (const p of named) assert.ok(facts.places.includes(p), `${f}: ${p} is not sourced`);
     assert.doesNotMatch(content, FORBIDDEN, `${f}: forbidden in a public post`);
     assert.doesNotMatch(content, /Java et Spring|Java and Spring/);
-    assert.match(content, /2018/, `${f} says since 2018`);
     assert.match(content, /Montréal/, `${f} says Montréal`);
     assert.ok(content.includes(f.endsWith(".fr.mdx") ? EDU.fr : EDU.en), `${f}: the education is worded as he gave it`);
     assert.match(content, f.endsWith(".fr.mdx") ? /\]\(\/fr\/about\/?\)/ : /\]\(\/about\/?\)/, `${f} tells the path: it links to the About page`);

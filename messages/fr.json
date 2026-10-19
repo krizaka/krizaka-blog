@@ -295,20 +295,20 @@
   "about": {
     "eyebrow": "À propos",
     "title": "Qui écrit ce blogue",
-    "lead": "Oussama Abid. Il vit à Montréal depuis 2018, et il y construit Krizaka.",
+    "lead": "Oussama Abid. Il construit Krizaka à Montréal.",
     "slot": "La marque Wu-sama, mon surnom, à la place d'une photo",
     "role": "Fondateur",
     "body": [
-      "Je m'appelle Oussama. Je vis à Montréal depuis 2018, où je développe Krizaka.",
+      "Je m'appelle Oussama, et je développe Krizaka à Montréal.",
       "J'ai étudié les mathématiques et l'informatique, puis je me suis orienté vers les mathématiques et l'informatique appliquées aux sciences cognitives.",
       "Mon parcours a débuté en 2011 en traitement automatique des langues et analyse sémantique. Au fil des quinze années suivantes, j'ai conçu et déployé des systèmes distribués en production dans les transports connectés, la santé, les télécoms et les réseaux IoT à l'échelle de millions d'objets.",
       "Aujourd'hui, je développe Krizaka ici à Montréal, en orchestrant des agents d'IA autonomes et en explorant la rencontre entre modèles modernes et ingénierie logicielle robuste.",
       "Ce blogue est un carnet d'ingénierie : mesures réelles, choix d'architecture, enseignements de la production et défis encore ouverts."
     ],
     "homeTitle": "Qui écrit",
-    "homeBody": "Je m'appelle Oussama. Je vis à Montréal depuis 2018, et j'y construis Krizaka. Mon premier contact avec l'IA date de 2011, au {lab}, bien avant que le mot soit à la mode. Ici, je raconte ce que j'apprends en route.",
+    "homeBody": "Je m'appelle Oussama, et je construis Krizaka à Montréal. Mon premier contact avec l'IA date de 2011, au {lab}, bien avant que le mot soit à la mode. Ici, je raconte ce que j'apprends en route.",
     "homeLab": "laboratoire d'informatique de Grenoble (LIG)",
-    "homeLink": "Mon parcours",
+    "homeLink": "À propos de l'auteur",
     "placesLabel": "Vit à",
     "places": [
       "Montréal"

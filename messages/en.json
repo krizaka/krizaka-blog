@@ -295,20 +295,20 @@
   "about": {
     "eyebrow": "About",
     "title": "Who writes this blog",
-    "lead": "Oussama Abid. He has lived in Montréal since 2018, and builds Krizaka there.",
+    "lead": "Oussama Abid. He builds Krizaka in Montréal.",
     "slot": "The Wu-sama mark, my nickname, in place of a photo",
     "role": "Founder",
     "body": [
-      "My name is Oussama. I have lived in Montréal since 2018, where I build Krizaka.",
+      "My name is Oussama, and I build Krizaka in Montréal.",
       "I studied mathematics and computer science, then turned to mathematics and computing applied to cognitive science.",
       "My journey began in 2011 in natural language processing and semantic analysis. Over the following fifteen years, I designed and built distributed systems in production across connected transit, healthcare, telecom platforms, and IoT networks scaling to millions of devices.",
       "Today, I build Krizaka here in Montréal, orchestrating autonomous AI agents and exploring where modern models meet robust software engineering.",
       "This blog is an engineering log: concrete benchmarks, architectural choices, lessons from production, and problems still open."
     ],
     "homeTitle": "Who writes",
-    "homeBody": "My name is Oussama. I have lived in Montréal since 2018, and I build Krizaka there. My first brush with AI was in 2011, at the {lab}, long before the word was in fashion. Here I tell what I learn along the way.",
+    "homeBody": "My name is Oussama, and I build Krizaka in Montréal. My first brush with AI was in 2011, at the {lab}, long before the word was in fashion. Here I tell what I learn along the way.",
     "homeLab": "Grenoble Informatics Laboratory (LIG)",
-    "homeLink": "My path",
+    "homeLink": "About the author",
     "placesLabel": "Lives in",
     "places": [
       "Montréal"

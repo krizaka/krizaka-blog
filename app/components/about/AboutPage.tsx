@@ -28,7 +28,7 @@ export function aboutJsonLd(locale: Locale) {
   };
 }
 
-/* /about/: who writes the blog (Montréal since 2018). The author is shown by the Wu-sama mark. */
+/* /about/: who writes the blog. The author is shown by the Wu-sama mark. */
 export function AboutPage({ locale }: { locale: Locale }) {
   const a = getDictionary(locale).about;
   const bio = a.body.slice(0, -1);
