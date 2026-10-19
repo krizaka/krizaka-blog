@@ -89,5 +89,5 @@ test("a post's questions section becomes its FAQ: each h3 a question, the text u
   assert.deepEqual(faqOf(body), [{ question: "Quel GPU pour un LLM de 7B ?", answer: "Un GPU de 8 Go, voir le billet et Qwen 2.5 7B. Second paragraphe." }]);
   assert.deepEqual(faqOf("## FAQ\n\n```md\n### no\n```\n"), []);
   assert.deepEqual(faqOf("no section"), []);
-  assert.deepEqual(faqOf("## FAQ\n\n### Q\n\nA <<script>script>x 3 > 2\n"), [{ question: "Q", answer: "A scriptx 3 2" }]);
+  assert.deepEqual(faqOf("## FAQ\n\n### Q\n\nA <<script>script>x 3 > 2\n"), [{ question: "Q", answer: "A x 3 2" }]);
 });
