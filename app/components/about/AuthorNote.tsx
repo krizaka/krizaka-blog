@@ -20,12 +20,12 @@ export function AuthorNote({ locale }: { locale: Locale }) {
         <div className="bl-author-body">
           <p className="bl-author-text">
             {before}
-            <a href={LIG_URL} rel="noopener" className="bl-author-link">
+            <a href={LIG_URL} rel="noopener" className="bl-author-link no-underline hover:no-underline">
               {a.homeLab}
             </a>
             {after}
           </p>
-          <Link href={localizedPath(locale, "/about")} className="bl-author-more">
+          <Link href={localizedPath(locale, "/about")} className="bl-author-more no-underline hover:no-underline">
             <span>{a.homeLink}</span>
             <span aria-hidden="true" className="bl-author-arrow">→</span>
           </Link>

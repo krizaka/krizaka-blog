@@ -218,16 +218,22 @@
   line-height: 1.65;
 }
 
+.bl-author a,
+.bl-author a:hover,
+.bl-author a:focus {
+  text-decoration: none !important;
+}
+
 .bl-author-link {
   color: var(--kz-accent);
   font-weight: 500;
-  text-decoration: none;
+  text-decoration: none !important;
   transition: color 0.15s ease;
 }
 
 .bl-author-link:hover {
   color: var(--kz-accent-hover, #3b82f6);
-  text-decoration: none;
+  text-decoration: none !important;
 }
 
 .bl-author-more {
@@ -237,7 +243,7 @@
   font-weight: 600;
   font-size: 0.875rem;
   color: var(--kz-accent);
-  text-decoration: none;
+  text-decoration: none !important;
   transition: gap 0.15s ease, color 0.15s ease;
   width: fit-content;
 }
@@ -245,7 +251,7 @@
 .bl-author-more:hover {
   gap: 0.55rem;
   color: var(--kz-accent-hover, #3b82f6);
-  text-decoration: none;
+  text-decoration: none !important;
 }
 
 .bl-author-arrow {
