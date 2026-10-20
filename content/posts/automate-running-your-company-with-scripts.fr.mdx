@@ -120,7 +120,7 @@ Trois choses sont importantes dans ce petit rapport. Une source qui ne répond p
 
 Mon dossier privé répond à « où en est l'entreprise ». GitHub répond à « où en est le travail », et là aussi, tout ce qui peut tourner seul tourne seul.
 
-La feuille de route de l'organisation est un projet GitHub. Je ne la mets pas à jour à la main. Un workflow quotidien lit l'état des tickets et des pull requests : un ticket fermé passe à « Done », une pull request ouverte à « In review », un brouillon à « In progress », et tout ticket ouvert de l'organisation est ajouté au tableau. Chaque pull request écrit `Closes` suivi du ticket qu'elle règle, et le tableau suit.
+La feuille de route de l'organisation est un projet GitHub. Je ne la mets pas à jour à la main : des automatisations et des agents tiennent le tableau à jour. Les flux intégrés des projets GitHub déplacent une carte quand un ticket se ferme ou qu'une pull request est fusionnée, mes sessions d'agents la font avancer pendant le travail, et un petit script planifié peut compléter le reste, par exemple ajouter au tableau les tickets ouverts. Chaque pull request écrit `Closes` suivi du ticket qu'elle règle : le tableau suit ces `Closes #…`.
 
 D'autres automatisations font leur part :
 

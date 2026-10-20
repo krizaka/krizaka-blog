@@ -120,7 +120,7 @@ Three things matter in this small report. A source that does not answer is writt
 
 My private folder answers « where is the company ». GitHub answers « where is the work », and there too, whatever can run alone runs alone.
 
-The organisation's roadmap is a GitHub project. I do not update it by hand. A daily workflow reads the state of issues and pull requests: a closed issue goes to « Done », an open pull request to « In review », a draft to « In progress », and every open issue of the organisation is added to the board. Each pull request writes `Closes` followed by the issue it settles, and the board follows.
+The organisation's roadmap is a GitHub project. I do not update it by hand: automations and agents keep the board up to date. GitHub's built-in project workflows move a card when an issue closes or a pull request merges, my agent sessions move it along while they work, and a small scheduled script can fill in the rest, for example adding open issues to the board. Each pull request writes `Closes` followed by the issue it settles: the board follows those `Closes #…`.
 
 Other automations do their part:
 
