@@ -31,8 +31,10 @@ export const MODELS: readonly ModelLink[] = [
   { id: "ltx-2", name: "LTX-2", url: `${HF}Lightricks/LTX-2`, group: "ltx", patterns: ["LTX-2\\b"] },
   { id: "ltx-video", name: "LTX-Video", url: `${HF}Lightricks/LTX-Video`, group: "ltx", family: true, patterns: ["LTX-Video", "\\bLTX\\b(?!-)"] },
   /* Images. */
+  { id: "flux2-klein-9b", name: "FLUX.2 [klein] 9B", url: `${HF}black-forest-labs/FLUX.2-klein-9B`, group: "flux", patterns: ["FLUX\\.2 \\[?klein\\]? 9B"] },
   { id: "flux2-klein-4b", name: "FLUX.2 [klein] 4B", url: `${HF}black-forest-labs/FLUX.2-klein-4B`, group: "flux", patterns: ["FLUX\\.2 \\[?klein\\]?(?: 4B)?"] },
   { id: "flux2-dev", name: "FLUX.2 [dev]", url: `${HF}black-forest-labs/FLUX.2-dev`, group: "flux", patterns: ["FLUX\\.2 \\[?dev\\]?"] },
+  { id: "flux1-schnell", name: "FLUX.1 [schnell]", url: `${HF}black-forest-labs/FLUX.1-schnell`, group: "flux", patterns: ["FLUX\\.1 \\[?schnell\\]?"] },
   { id: "flux1-dev", name: "FLUX.1 [dev]", url: `${HF}black-forest-labs/FLUX.1-dev`, group: "flux", patterns: ["FLUX\\.1(?: \\[?dev\\]?)?"] },
   { id: "flux", name: "FLUX", url: `${HF}black-forest-labs`, group: "flux", family: true, patterns: ["\\bFLUX\\b(?!\\.)"] },
   { id: "sd35-large", name: "Stable Diffusion 3.5 Large", url: `${HF}stabilityai/stable-diffusion-3.5-large`, group: "sd", patterns: ["Stable Diffusion 3\\.5(?: Large)?", "\\bSD ?3\\.5(?: Large)?"] },
@@ -40,12 +42,17 @@ export const MODELS: readonly ModelLink[] = [
   { id: "sd15", name: "Stable Diffusion 1.5", url: `${HF}stable-diffusion-v1-5/stable-diffusion-v1-5`, group: "sd", patterns: ["Stable Diffusion 1\\.5", "\\bSD ?1\\.5"] },
   { id: "stable-diffusion", name: "Stable Diffusion", url: `${HF}stabilityai`, group: "sd", family: true, patterns: ["Stable Diffusion(?! ?[0-9X])"] },
   { id: "z-image-turbo", name: "Z-Image Turbo", url: `${HF}Tongyi-MAI/Z-Image-Turbo`, group: "z-image", patterns: ["Z-Image(?: Turbo)?"] },
+  { id: "hunyuanvideo", name: "HunyuanVideo", url: `${HF}tencent/HunyuanVideo`, group: "hunyuan", patterns: ["Hunyuan ?Video"] },
   /* Upscalers. */
   { id: "seedvr2", name: "SeedVR2", url: `${HF}ByteDance-Seed/SeedVR2-7B`, group: "seedvr2", patterns: ["\\bSeedVR2?\\b"] },
   { id: "real-esrgan", name: "Real-ESRGAN", url: "https://github.com/xinntao/Real-ESRGAN", group: "real-esrgan", patterns: ["Real-ESRGAN"] },
   /* Audio and music. */
   { id: "ace-step", name: "ACE-Step", url: `${HF}ACE-Step/Ace-Step1.5`, group: "ace-step", patterns: ["ACE-Step(?: 1\\.5| v1)?"] },
   { id: "mmaudio", name: "MMAudio", url: `${HF}hkchengrex/MMAudio`, group: "mmaudio", patterns: ["\\bMMAudio\\b"] },
+  { id: "stable-audio-open", name: "Stable Audio Open 1.0", url: `${HF}stabilityai/stable-audio-open-1.0`, group: "stable-audio", patterns: ["Stable Audio Open"] },
+  { id: "xtts", name: "XTTS-v2", url: `${HF}coqui/XTTS-v2`, group: "xtts", patterns: ["XTTS(?:-v2)?"] },
+  { id: "kokoro", name: "Kokoro", url: `${HF}hexgrad/Kokoro-82M`, group: "kokoro", patterns: ["\\bKokoro\\b"] },
+  { id: "piper", name: "Piper voices", url: `${HF}rhasspy/piper-voices`, group: "piper", patterns: ["\\bPiper\\b"] },
   { id: "whisper", name: "Whisper large-v3", url: `${HF}openai/whisper-large-v3`, group: "whisper", patterns: ["\\bWhisper\\b"] },
   /* Language models. */
   { id: "qwen25-7b", name: "Qwen2.5 7B Instruct", url: `${HF}Qwen/Qwen2.5-7B-Instruct`, group: "qwen", patterns: ["Qwen ?2\\.5 7B(?! ?VL)"] },

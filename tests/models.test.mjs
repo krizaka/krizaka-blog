@@ -77,3 +77,11 @@ test("a picture without provenance is a diagram drawn from code, said so", () =>
   assert.deepEqual(mediaProblems({ a: { ...base, style: "diagram" } }), []);
   assert.match(mediaProblems({ a: { ...base, style: "chart" } }).join(), /style is "diagram"/);
 });
+
+test("the licence models are told apart from their siblings, and each has its checked page", () => {
+  const ids = (s) => mentionsOf(s).map((m) => m.id);
+  assert.deepEqual(ids("FLUX.1 [schnell], FLUX.1 [dev], FLUX.2 [klein] 9B and FLUX.2 [klein] 4B."), ["flux1-schnell", "flux1-dev", "flux2-klein-9b", "flux2-klein-4b"]);
+  assert.deepEqual(ids("HunyuanVideo, XTTS-v2, Kokoro, Piper and Stable Audio Open."), ["hunyuanvideo", "xtts", "kokoro", "piper", "stable-audio-open"]);
+  assert.equal(modelUrl("hunyuanvideo"), "https://huggingface.co/tencent/HunyuanVideo");
+  assert.equal(modelUrl("xtts"), "https://huggingface.co/coqui/XTTS-v2");
+});

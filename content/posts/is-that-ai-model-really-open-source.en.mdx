@@ -1,0 +1,104 @@
+---
+title: "Is that AI model really open source? What the licence actually says"
+description: "Open source, open weights, source-available: what these words promise, what a licence really controls, and what I read while choosing the image, video and voice models behind our products."
+seoTitle: "Open source or open weights AI model: read the licence"
+seoDescription: "Open source, open weights, OSAID, the Llama licence, Apache 2.0: what an AI model's licence really allows, with examples checked at the source."
+date: 2026-10-20
+publishedAt: "2026-10-20T01:45:00-04:00"
+tags: [ai, basics, law]
+author: oussama
+draft: false
+cover: licence-magnifier
+coverAlt: "On a walnut desk, a brass magnifying glass beside a stack of folded papers sealed with red wax, an old key and an open wooden box, under a warm lamp"
+series: basics
+part: 5
+---
+
+On 15 October I checked that none of the default models in [our AI engine](https://github.com/krizaka/orazaka) carried a non-commercial licence, since we sell to companies. The default English voice was called Ryan. It was a <Model id="piper">Piper</Model> voice, free, published "as open source". When I opened its card, I read: CC BY-NC-SA 4.0. The "NC" means non-commercial.
+
+The program is free, the model weights can be downloaded, everyone says "open source". But the voice was trained on a dataset that forbids commercial use, and that restriction follows the voice. Ryan stayed available, never as a default, and a public-domain voice took its place.
+
+Since then I no longer choose a model on the word "open". I read the licence. Here is what I learned, with examples I opened myself at the source. And right away: I am an engineer, not a lawyer. This post is an engineer's reading, not legal advice. For a decision that binds your company, have someone whose job it is read the licence.
+
+## Three words people mix up
+
+**Open source** has a precise meaning. The [Open Source Initiative](https://opensource.org/osd) (OSI) defines what a licence must allow: use, study, modify and share, for any purpose. Its definition even forbids discriminating against a field of endeavour. A licence that says "not for this industry" is not open source, whatever the label.
+
+**Open weights** means something more modest: the file of the model's parameters can be downloaded. You can run it at home. But the training data and the training code are not necessarily there, and the licence can set conditions. The OSI wrote a whole piece about it, ["Open Weights: not quite what you've been told"](https://opensource.org/ai/open-weights).
+
+**Source-available** describes what you can read without having the right to do everything with it. Handy for understanding, less so for building a product.
+
+In October 2024 the OSI published its [Open Source AI Definition](https://opensource.org/ai/open-source-ai-definition) (OSAID 1.0). It takes the four freedoms of free software and asks for three things from an AI system: the parameters, the code to train and run it, and enough detail about the data that a skilled person could rebuild an equivalent system. By that rule, many models called "open" are open-weights models. They are useful, often generous, but it is not the same promise.
+
+## What a licence can control
+
+We first think of "commercial or not". It is the best known, but not the only one.
+
+A usage threshold: the licence of <Model id="llama">Llama</Model> 3.1 asks you to request a licence from Meta if your products pass 700 million monthly active users. A revenue threshold: the one of <Model id="ltx-video">LTX-Video</Model> asks for a paid licence from 10 million dollars in annual revenue.
+
+A field of use: the Llama licence incorporates an acceptable use policy, a list of what is forbidden, which you must follow. A geography: as we will see, a licence can exclude whole countries. The outputs: some licences say what you may do with what the model produces, for example forbidding you to use it to train another model. Attribution: Llama asks you to display "Built with Llama". Redistribution: if you fine-tune a model, what must you pass on, and under which terms? And the acceptance gate on Hugging Face, where you must click to get the files. Clicking is signing.
+
+<Numbers>
+<Num value="700 M" label="Monthly active users" hint="Llama 3.1, above it: ask Meta for a licence" />
+<Num value="$10 M" label="Annual revenue" hint="LTX-Video, above it: paid commercial licence" />
+<Num value="$1 M" label="Annual revenue" hint="Stable Audio Open, above it: paid licence from Stability AI" />
+</Numbers>
+
+## What I read while choosing our models
+
+Each time I opened the licence file or the model card, not an article about it.
+
+**Video.** The licence of <Model id="hunyuanvideo">HunyuanVideo</Model> opens with a sentence in capitals: it does not apply in the European Union, the United Kingdom and South Korea. Further down, it also forbids using the model's outputs outside the covered territory, and using them to improve another model. Our site is public: anyone in Europe can open it. It was dropped in our video bake-off, and the licence is the reason we wrote down.
+
+<Model id="wan22-t2v-a14b">Wan 2.2 A14B</Model> is under Apache 2.0, an OSI-approved licence, with no threshold and no territory. It makes our clips. LTX-Video, in its 0.9.8 version, has a revenue threshold of 10 million dollars. We are very far below it, so we can use it for previews. But the licence also asks you to pass its use restrictions on to your own users. I did not keep <Model id="ltx-2">LTX-2</Model>: the disk space, and the same revenue condition.
+
+**Images.** With <Model id="flux1-dev">FLUX.1 [dev]</Model>, the licence is non-commercial: you cannot run the model for a commercial activity, even though the images it produces can be used for anything, and content filters are required. <Model id="flux1-schnell">FLUX.1 [schnell]</Model>, from the same publisher, is under Apache 2.0. Same family, two regimes. It continues with the next generation: <Model id="flux2-klein-4b">FLUX.2 [klein] 4B</Model> is under Apache 2.0, but <Model id="flux2-klein-9b">FLUX.2 [klein] 9B</Model> is under a non-commercial licence. We use the 4B. To raise resolution, <Model id="seedvr2">SeedVR2</Model> is under Apache 2.0.
+
+**Voices.** This is where I learned the most. <Model id="xtts">XTTS-v2</Model> is under Coqui's CPML licence, which, in its own text, "allows only non-commercial use of a machine learning model and its outputs". Its code is under MPL 2.0, though; the model's licence is another one. And the page the model card cites to read it, coqui.ai/cpml, answers 404 today: the text now only exists in the repository's file. Keep a copy of the licence at the moment you choose. <Model id="kokoro">Kokoro</Model> is under Apache 2.0, and we use it.
+
+Piper shows that a model's licence can come from its data. The voices of the `piper-voices` repository each have their own card: Ryan under CC BY-NC-SA 4.0, Siwis (French) under CC BY 4.0, LJSpeech (English) in the public domain, Tom (French) under AGPL-3.0. Since then, the model catalogue has a `commercial_use` column (yes, with conditions, no), filled from these cards.
+
+**Audio.** <Model id="mmaudio">MMAudio</Model>, which invents the sound of a video, is published under CC BY-NC 4.0: non-commercial, so not for a product. The music in our clips comes from <Model id="ace-step">ACE-Step</Model>, under MIT. <Model id="stable-audio-open">Stable Audio Open</Model> is under Stability AI's community licence: you have to register, and it is free only below one million dollars of annual revenue.
+
+| Model | Licence | Commercial use | Good to know | Here |
+| :--- | :--- | :--- | :--- | :--- |
+| HunyuanVideo | Tencent Hunyuan Community | Outside the EU, UK, South Korea | Outputs included in the restriction | Dropped |
+| Wan 2.2 A14B | Apache 2.0 | Yes | None | Used |
+| LTX-Video 0.9.8 | LTX Open Weights | Under $10 M revenue | Restrictions to pass on | Used for previews |
+| FLUX.1 [dev] | FLUX.1 [dev] non-commercial | Not for the model | Outputs usable, filters required | No |
+| FLUX.1 [schnell] | Apache 2.0 | Yes | None | Possible |
+| FLUX.2 [klein] 4B | Apache 2.0 | Yes | None | Used |
+| FLUX.2 [klein] 9B | FLUX non-commercial | No | Filters required | No |
+| SeedVR2 | Apache 2.0 | Yes | None | Used |
+| XTTS-v2 | CPML (Coqui) | No | Text offline | No |
+| Kokoro | Apache 2.0 | Yes | None | Used |
+| Piper, voice by voice | CC BY, CC BY-NC-SA, public, AGPL | Depends on the voice | Data matters | Siwis, LJSpeech |
+| MMAudio | CC BY-NC 4.0 | No | None | No |
+| Stable Audio Open | Stability AI Community | Under $1 M revenue | Registration required | No |
+
+## The weights are only one piece
+
+A model is not just a file. When you run it, there is the inference code, with its own licence: Piper's engine, for example, was under MIT, its original repository is archived, and its successor is under GPL-3.0. There are the libraries all of it depends on, each with its own. There is the training data, whose licence can travel up to you, as with Ryan. And there is where the model runs: on your machine, you are bound by the model's licence; through a provider's API, you are also bound by its terms of use, which can be stricter. I wrote about it in [the post on uncensored models](/posts/censored-and-uncensored-models/).
+
+## My list before choosing
+
+1. Open the model's licence file, not its summary. Copy it with the date.
+2. Search for the words: commercial, revenue, users, territory, outputs, forbidden.
+3. Read the acceptable use policy, if there is one, and ask whether your customers will respect it.
+4. Check the territory: where are your users?
+5. Look at the licence of the data or of the exact variant (the voice, the size, the version).
+6. Read the licence of the inference code and of the dependencies.
+7. Write down the revenue threshold, and the day you will pass it.
+8. If you fine-tune the model, read what you must pass on to your own users.
+9. If you go through an API, read its provider's terms too.
+10. Write the result next to the model's name. I do it in a column, for each one. It joins what I said in [the post on providers](/posts/choosing-providers-when-every-app-has-its-own-trade/): the licence comes before the price.
+
+<Note>
+Licences change, and so do links. Everything written here was read at the source on 20 October 2026, in the licence files or the model cards. Check again before relying on it.
+</Note>
+
+## What to take away
+
+"Open source" is often a label, and the licence is the contract. Two models of the same family, in the same week, can have very different rights. Read the file, not the article, write down what you read, and do it again when the model changes version.
+
+For what it costs to run these models, see [the post on model families and the GPU](/posts/ai-model-families-and-why-you-need-a-gpu/) and [the one on the real cost of an image](/posts/real-cost-of-an-image-paying-for-intent/).
