@@ -45,12 +45,12 @@ export function WuSamaMark({ size = 32, title, className }: WuSamaMarkProps) {
           <stop offset="100%" stopColor="var(--kz-text-primary, #0f172a)" />
         </linearGradient>
         <linearGradient id={blueId} gradientUnits="userSpaceOnUse" x1={180} y1={180} x2={300} y2={60}>
-          <stop offset="0%" stopColor="#196df5" />
+          <stop offset="0%" stopColor="#3e76a8" />
           <stop offset="100%" stopColor="#5696fa" />
         </linearGradient>
         <radialGradient id={glowId} cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#196df5" stopOpacity={0.16} />
-          <stop offset="100%" stopColor="#196df5" stopOpacity={0} />
+          <stop offset="0%" stopColor="#3e76a8" stopOpacity={0.16} />
+          <stop offset="100%" stopColor="#3e76a8" stopOpacity={0} />
         </radialGradient>
       </defs>
 

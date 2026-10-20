@@ -45,7 +45,7 @@ export function SearchBox({ entries }: { entries: SearchEntry[] }) {
         {!query.trim() ? t.search.hint : results.length ? format(t.search.results, { count: String(results.length) }) : t.search.noResults}
       </p>
       {results.length > 0 && (
-        <CardGrid light={false} min={320} reveal={false}>
+        <CardGrid min={320} reveal={false}>
           {results.map((r) => (
             <LinkCard key={r.href} linkAs={Link} href={r.href} title={r.title} description={r.description} titleAs="h2" />
           ))}

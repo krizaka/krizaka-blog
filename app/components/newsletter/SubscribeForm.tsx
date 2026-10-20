@@ -98,7 +98,7 @@ export function SubscribeForm({ id = "nl" }: { id?: string }) {
           onBlur={() => setTouched(true)}
           className="bl-nl-input"
         />
-        <Button type="submit" variant="primary" shape="cut" size="md" loading={status === "sending"}>
+        <Button type="submit" variant="primary" size="md" loading={status === "sending"}>
           {status === "sending" ? n.sending : n.submitCompact}
         </Button>
       </div>

@@ -1,6 +1,6 @@
 /* Token colours for renderers without CSS (the Open Graph images): `hsl(H S% L% / A)` → `#rrggbb` or `rgba()`.
    scripts/gen-favicon.mjs keeps the same function for the mark (tests/og.test.mjs checks they agree). */
-/** `hsl(217 92% 53%)` or `hsl(0 0% 100% / 0.1)` → `#rrggbb` / `rgba(…)`: the renderer of the mark reads neither. */
+/** `hsl(208 46% 45%)` or `hsl(0 0% 100% / 0.1)` → `#rrggbb` / `rgba(…)`: the renderer of the mark reads neither. */
 export function hslToCss(hsl: string): string {
   const m = hsl.match(/hsl\(\s*([\d.]+)\s+([\d.]+)%\s+([\d.]+)%\s*(?:\/\s*([\d.]+))?\s*\)/);
   if (!m) return hsl;

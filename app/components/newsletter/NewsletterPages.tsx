@@ -53,11 +53,11 @@ export function NewsletterStatusPage({ locale, status }: { locale: Locale; statu
       <PageHero eyebrow={n.eyebrow} title={title} lead={lead} backdrop="plain" linkAs={Link}>
         <div className="bl-nl-actions">
           {status === "unsubscribed" && (
-            <Button asChild variant="primary" shape="cut">
+            <Button asChild variant="primary">
               <Link href={localizedPath(locale, "/newsletter")}>{n.resubscribeButton}</Link>
             </Button>
           )}
-          <Button asChild variant={status === "confirmed" ? "primary" : "secondary"} shape="cut">
+          <Button asChild variant={status === "confirmed" ? "primary" : "secondary"}>
             <Link href={localizedPath(locale, "/")}>{n.backToBlog}</Link>
           </Button>
         </div>
