@@ -43,7 +43,13 @@ export function pageMetadata(opts: { locale: Locale; path: string; title: string
       ...(type === "article" && opts.published ? { publishedTime: opts.published, modifiedTime: opts.modified ?? opts.published, authors: [absoluteUrl(locale, "/")], tags: opts.tags } : {}),
     },
     twitter: { card: "summary_large_image", title: fullTitle, description, images: [image] },
-    icons: { icon: "/favicon.svg" },
+    icons: {
+      icon: [
+        { url: "/favicon.svg", type: "image/svg+xml" },
+        { url: "/icon.png", sizes: "32x32", type: "image/png" },
+      ],
+      apple: { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+    },
   };
 }
 
