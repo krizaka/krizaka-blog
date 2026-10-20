@@ -1,5 +1,7 @@
 # Krizaka Blog
 
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/krizaka/krizaka-blog/badge)](https://scorecard.dev/viewer/?uri=github.com/krizaka/krizaka-blog)
+
 **blog.krizaka.com** — the company blog of [Krizaka](https://www.krizaka.com): notes on sovereign AI, measured costs and
 real document runs. A static site (Next.js export) of MDX posts in English and French, built with the
 [`@krizaka/ui`](https://ui.krizaka.com) page blocks. Posts and code are Apache-2.0.
