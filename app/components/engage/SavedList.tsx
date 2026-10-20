@@ -28,7 +28,7 @@ export function SavedList({ posts, homeHref }: { posts: SavedCandidate[]; homeHr
         title={e.emptyTitle}
         description={e.emptyBody}
         action={
-          <Button asChild variant="primary" size="md" shape="cut">
+          <Button asChild variant="primary" size="md">
             <Link href={homeHref}>{e.emptyAction}</Link>
           </Button>
         }

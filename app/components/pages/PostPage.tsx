@@ -68,7 +68,7 @@ export default function PostPage({ post }: { post: Post }) {
       {/* The way to follow: the e-mail form (the newsletter's, further down the page) first, the feed page as a quiet second
           (/feed/: what RSS is and the address to copy; the feed file itself is for readers). */}
       <p className="bl-follow">
-        <Button asChild variant="primary" size="md" shape="cut">
+        <Button asChild variant="primary" size="md">
           <a href="#subscribe">{t.post.subscribe}</a>
         </Button>
         <Button asChild variant="ghost" size="md">
@@ -112,7 +112,7 @@ export default function PostPage({ post }: { post: Post }) {
       <NewsletterSection locale={locale} where="post" />
       {(prev || next) && post.series && (
         <Section title={seriesName(locale, post.series)} divider reveal={false}>
-          <CardGrid light={false} min={280} reveal={false} className="bl-series-nav">
+          <CardGrid min={280} reveal={false} className="bl-series-nav">
             {prev && <LinkCard linkAs={Link} href={localizedPath(locale, postPath(prev.slug))} meta={t.post.prevInSeries} title={prev.title} icon={<BackIcon size={18} />} titleAs="h3" />}
             {next && <LinkCard linkAs={Link} href={localizedPath(locale, postPath(next.slug))} meta={t.post.nextInSeries} title={next.title} icon={<ForwardIcon size={18} />} titleAs="h3" className="bl-series-next" />}
           </CardGrid>

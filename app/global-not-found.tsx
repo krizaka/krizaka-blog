@@ -38,7 +38,7 @@ export default function GlobalNotFound() {
               }
               actions={
                 <div className="kz-404-actions">
-                  <Button asChild variant="primary" size="md" shape="cut">
+                  <Button asChild variant="primary" size="md">
                     <a href="/">{en.back}</a>
                   </Button>
                   <Button asChild variant="secondary" size="md">

@@ -87,7 +87,7 @@ export default function TopBar() {
               {b.languageShort}
             </Link>
           </Button>
-          <Button asChild variant="primary" size="sm" shape="cut" className="hidden md:inline-flex">
+          <Button asChild variant="primary" size="sm" className="hidden md:inline-flex">
             <a href={KRIZAKA_URL}>{b.company}</a>
           </Button>
 

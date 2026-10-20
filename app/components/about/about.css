@@ -65,8 +65,7 @@
 }
 
 .bl-about-slot:hover {
-  border-color: var(--kz-accent);
-  transform: translateY(-2px);
+  border-color: var(--kz-border-strong);
 }
 
 .bl-about-profile {

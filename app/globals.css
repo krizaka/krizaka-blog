@@ -248,9 +248,8 @@ picture { display: contents; }
 .bl-card h3 { font-size: 1.125rem; line-height: 1.35; }
 /* A restrained hover (Oussama, 2026-10-16: no coloured glow, no blue halo): the card lifts 2 px, its surface one step
    lighter, its hairline one step stronger. Same in dark and light; no lift under reduced motion. */
-.bl-card { transition: transform 0.25s var(--kz-ease, ease), background-color 0.25s, border-color 0.25s; }
+.bl-card { transition: background-color 150ms, border-color 150ms; }
 .bl-card:hover, .bl-card:has(.bl-card-link:focus-visible) { background-color: var(--kz-surface-2); border-color: var(--kz-border-strong); }
-@media (hover: hover) and (prefers-reduced-motion: no-preference) { .bl-card:hover { transform: translateY(-2px); } }
 /* The title never underlines (Oussama: « horrible » on large titles): on hover or keyboard focus it shifts a little
    towards the accent — a mix of the text and accent-text tokens, so its contrast stays a text contrast in both themes. */
 .bl-card :is(h2, h3) { color: var(--kz-text-primary); transition: color 0.2s var(--kz-ease, ease); }

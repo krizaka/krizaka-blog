@@ -6,7 +6,7 @@ import { hslToCss } from "../lib/color.ts";
 test("hsl() of the tokens becomes #rrggbb, and rgba() with an alpha", () => {
   assert.equal(hslToCss("hsl(0 0% 100%)"), "#ffffff");
   assert.equal(hslToCss("hsl(0 0% 0%)"), "#000000");
-  assert.equal(hslToCss("hsl(217 92% 53%)"), "#196df5");
+  assert.equal(hslToCss("hsl(208 46% 45%)"), "#3e76a8");
   assert.equal(hslToCss("hsl(0 0% 100% / 0.16)"), "rgba(255, 255, 255, 0.16)");
 });
 

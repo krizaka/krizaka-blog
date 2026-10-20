@@ -20,7 +20,7 @@ export function TagsPage({ locale }: { locale: Locale }) {
       <PageHero eyebrow={t.home.eyebrow} title={t.tags.title} lead={t.tags.lead} backdrop="plain" linkAs={Link} />
       <Section reveal={false}>
         {tags.length ? (
-          <CardGrid light={false} min={240} reveal={false}>
+          <CardGrid min={240} reveal={false}>
             {tags.map(({ tag, count }) => (
               <LinkCard key={tag} linkAs={Link} href={localizedPath(locale, `/tags/${tag}`)} title={tagLabel(locale, tag)} description={postCount(locale, count)} titleAs="h2" />
             ))}
