@@ -45,6 +45,39 @@ export function readContext(root) {
   return { media, series: Object.keys(messages.series?.names ?? {}) };
 }
 
+/** Confidentiality: what a public post never carries. `CONFIDENTIAL_ALWAYS` is checked in every post (company registration
+    numbers, the company's own e-mail addresses, the private folder's names, secret-looking values); `CONFIDENTIAL_STRICT` in a
+    post that declares `sensitive: true` in its front matter (a post about how the company is run): no amount, no tax or ledger
+    word, no variable name that gives away a provider or an account, no supplier name. Patterns, not internals. */
+export const CONFIDENTIAL_ALWAYS = [
+  [/(?<![\d.,])\d{10}(?![\d.,])/, "a 10-digit number (looks like a company registration number)"],
+  [/\b\d{4}[ -]\d{3}[ -]\d{3}\b/, "a number grouped like a company registration number"],
+  [/[\w.+-]+@krizaka\.com\b/i, "a company e-mail address"],
+  [/(^|[^\w-])(env|vault|inbox|prompts)\/[\w.-]/, "a folder name of the private workspace (env/, vault/, inbox/…)"],
+  [/Documents\/krizaka|\/Users\/[\w.-]+/, "a path on the founder's machine"],
+  [/\bsecrets\.map\b|\.local\.md\b|\bCREDENTIALS\b/, "the name of a private file"],
+  [/\b(sk|pk|rk)[-_](live|test|ant|proj)?[-_]?[A-Za-z0-9]{20,}/, "a key-looking value"],
+  [/\b(NEQ|TPS|TVQ|GST|QST|SIN|NAS)\b/, "a registration, tax or identity-number word"],
+];
+export const CONFIDENTIAL_STRICT = [
+  [/\$\s?\d|\d[\d\s.,]*\s?(\$|US\$|CAD|USD|EUR|€)(?![\w])/, "an amount of money"],
+  [/\b[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*_(?:API_KEY|KEY|TOKEN|SECRET|PASSWORD|ADMIN)\b|\bAPI_KEY\b/, "a key or variable name"],
+  [/\b(RunPod|DigitalOcean|Bunny|Mailgun|Anthropic|Cloudflare|Porkbun|Firebase|BigQuery)\b/i, "a supplier name"],
+  [/\b(grand livre|ledger|compte 2500|account 2500|incorporation|constitution|facture|invoice|comptable|accountant|bank|banque)\b/i, "a ledger, fiscal or bank word"],
+];
+
+/** The confidentiality problems of one post: `text` is the front matter's text and the body together. */
+export function confidentialityProblems(file, data, body) {
+  const out = [];
+  const text = [data.title, data.description, data.seoTitle, data.seoDescription, body].filter((x) => typeof x === "string").join("\n");
+  const rules = data.sensitive === true ? [...CONFIDENTIAL_ALWAYS, ...CONFIDENTIAL_STRICT] : CONFIDENTIAL_ALWAYS;
+  for (const [re, what] of rules) {
+    const m = text.match(re);
+    if (m) out.push(`${file}: confidential — ${what} (“${m[0].trim().slice(0, 40)}”); describe the pattern, not the internals`);
+  }
+  return out;
+}
+
 /** The problems of one post (file name, parsed front matter, body, context); an empty list when it is fine. */
 export function postProblems(file, data, body, ctx) {
   const out = [];
@@ -96,6 +129,7 @@ export function postProblems(file, data, body, ctx) {
   }
   /* A model is named with a link to its official page the first time (lib/models.ts): the reader can see what it is. */
   out.push(...modelLinkProblems(body).map((p) => `${file}: ${p}`));
+  out.push(...confidentialityProblems(file, data, body));
   if (/```mermaid/.test(body)) out.push(`${file}: Mermaid is retired`);
   /* Every fence names its language: CodeBlock highlights with it (`text` for plain output). Opening fences only. */
   let open = false;

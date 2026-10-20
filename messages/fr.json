@@ -91,7 +91,11 @@
     "keyNumbers": "Chiffres clés",
     "progress": "Progression de la lecture",
     "subscribe": "S'abonner par courriel",
-    "rssFeed": "Flux RSS"
+    "rssFeed": "Flux RSS",
+    "stepDone": "Fait",
+    "stepCurrent": "En cours",
+    "stepUpcoming": "À venir",
+    "stepError": "Échec"
   },
   "engage": {
     "title": "À garder, à partager",

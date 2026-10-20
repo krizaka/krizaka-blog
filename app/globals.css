@@ -231,6 +231,11 @@ picture { display: contents; }
 .bl-numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr)); gap: 0.75rem; margin-block: 2rem; padding: 1rem; border: 1px solid var(--kz-border-default); border-inline-start: 3px solid var(--kz-accent); border-radius: var(--kz-radius-md, 12px); background: var(--kz-surface-1); }
 .bl-numbers > * + * { margin-top: 0; }
 .bl-num { min-width: 0; }
+.bl-steps, .bl-compare, .bl-codetabs { margin-block: 2rem; }
+.bl-steps ol { margin: 0; padding-inline-start: 0; list-style: none; }
+.bl-steps li + li, .bl-prose .bl-steps li + li { margin-top: 0; }
+.bl-codetabs [role="tabpanel"] { margin-top: 0.75rem; }
+.bl-codetabs [role="tabpanel"] > * + * { margin-top: 0; }
 
 /* ─── Home: topic filters, cards, who writes ─── */
 .bl-filter { margin-bottom: 1.5rem; }

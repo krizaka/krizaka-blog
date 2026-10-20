@@ -91,7 +91,11 @@
     "keyNumbers": "Key numbers",
     "progress": "Reading progress",
     "subscribe": "Subscribe by e-mail",
-    "rssFeed": "RSS feed"
+    "rssFeed": "RSS feed",
+    "stepDone": "Done",
+    "stepCurrent": "In progress",
+    "stepUpcoming": "Upcoming",
+    "stepError": "Failed"
   },
   "engage": {
     "title": "Keep it, pass it on",

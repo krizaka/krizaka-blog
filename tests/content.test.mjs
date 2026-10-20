@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { checkDir, linkProblems, postProblems } from "../scripts/content-rules.mjs";
+import { checkDir, confidentialityProblems, linkProblems, postProblems } from "../scripts/content-rules.mjs";
 
 const ok = { title: "T", description: "D", date: "2026-10-16", tags: ["ai"], draft: true };
 
@@ -89,4 +89,46 @@ test("the cover's picture under another id (same run, or another rendition of th
   assert.match(postProblems("x.en.mdx", { ...ok, cover: "a" }, '<Figure id="crop" alt="A" />', ctx).join(" "), /under another id/);
   assert.match(postProblems("x.en.mdx", { ...ok, cover: "a" }, '<Figure id="rerun" alt="A" />', ctx).join(" "), /under another id/);
   assert.deepEqual(postProblems("x.en.mdx", { ...ok, cover: "a" }, '<Figure id="other" alt="A" />', ctx), []);
+});
+
+test("confidentiality: no registration number, company e-mail, private folder name, path or key-looking value in any post", () => {
+  const bad = [
+    "NEQ 1182652231",
+    "1182 652 231",
+    "write to contact@krizaka.com",
+    "copy env/dev.env",
+    "see vault/02_finances",
+    "drop it in inbox/prive",
+    "/Users/someone/Documents/krizaka",
+    "the file secrets.map",
+    "sk-ant-api03abcdefghijklmnopqrstu",
+    "my TVQ number",
+  ];
+  for (const text of bad) assert.ok(confidentialityProblems("x.en.mdx", { draft: true }, text).length >= 1, text);
+  assert.deepEqual(confidentialityProblems("x.en.mdx", { draft: true }, "A private folder, a script `./couts`, about 60 % GPU. Version 3.29.0 on 2026-10-20."), []);
+});
+
+test("confidentiality: a post declaring sensitive: true also refuses amounts, key and variable names, supplier names and ledger words", () => {
+  const sensitive = { draft: true, sensitive: true };
+  const bad = ["it cost $12.50", "it cost 12 $", "about 40 USD", "MAIL_API_KEY=unset", "the API_KEY", "AI_GPU_RUNPOD_API_KEY", "on RunPod", "the ledger is sorted", "le grand livre"];
+  for (const text of bad) assert.ok(confidentialityProblems("x.en.mdx", sensitive, text).length >= 1, text);
+  // the same words are fine in an ordinary post (the costs posts name their suppliers and amounts)
+  for (const text of ["it cost $12.50", "MAIL_API_KEY=unset", "on RunPod"]) assert.deepEqual(confidentialityProblems("x.en.mdx", { draft: true }, text), [], text);
+  // the front matter is read too
+  assert.ok(confidentialityProblems("x.en.mdx", { ...sensitive, description: "Paid 99 $ per month" }, "text").length >= 1);
+  // and `postProblems` runs it
+  assert.match(postProblems("x.en.mdx", ok, "write to me@krizaka.com").join("\n"), /confidential/);
+});
+
+test("the post about running the company with scripts is sensitive in both languages, shows no screenshot of real files, and uses the page components", async () => {
+  const { readFileSync } = await import("node:fs");
+  const r = (f) => readFileSync(new URL(`../${f}`, import.meta.url), "utf8");
+  for (const l of ["fr", "en"]) {
+    const f = r(`content/posts/automate-running-your-company-with-scripts.${l}.mdx`);
+    assert.match(f, /^sensitive: true$/m);
+    assert.doesNotMatch(f, /!\[/, "no screenshot of real files");
+    for (const c of ["<Numbers>", "<Steps>", "<Compare ", "<CodeTabs>"]) assert.ok(f.includes(c), `${l}: ${c}`);
+  }
+  const mdx = r("app/components/pages/mdx.tsx");
+  for (const c of ["Steps:", "Step:", "Compare:", "Case:", "CodeTabs:", "Tab:", "NumberTicker", "Stepper", "ComparisonTable"]) assert.ok(mdx.includes(c), c);
 });
