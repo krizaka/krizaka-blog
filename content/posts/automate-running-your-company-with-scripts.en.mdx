@@ -1,0 +1,157 @@
+---
+title: "Running a company with scripts: a private folder, a few npm commands and a GitHub board"
+description: "How I went from opening every console by hand to a handful of scripts: a private folder, npm commands that give the big picture, and a GitHub roadmap board that keeps itself up to date."
+seoTitle: "Automating how you run a company with scripts"
+seoDescription: "A private folder, npm commands and a GitHub board that updates itself: how a developer automates the running of a small company."
+date: 2026-10-20
+tags: [costs, security]
+author: oussama
+draft: true
+sensitive: true
+cover: automate-cover
+coverAlt: "A walnut desk at dawn: an open laptop showing a dark terminal with faint green lines, two steaming cups, a notebook with ticked boxes and a small brass clock, in front of a tall window over snowy Montreal rooftops"
+series: building-krizaka
+part: 5
+---
+
+If you work in IT, the first thing you learn is that a task you do by hand three times becomes a script. We do it for deployments, for tests, for CI. What took me longer was applying it to myself: to running my own company.
+
+This post tells what that looks like at Krizaka, where I am alone. It describes habits, not the contents of my folder: you will find no path, no amount and no account name here. That is on purpose, and it is a bit the point.
+
+<Numbers>
+  <Num value="27" label="npm commands" hint="in the private management folder" />
+  <Num value="6" label="GitHub automations" hint="in the organisation's shared repository" />
+  <Num value="1" label="command for costs" hint="read-only" />
+</Numbers>
+
+## From manual to script
+
+At first, running the company looked like what many people do when they start: one console per provider to open to see what we consume, receipts to file one by one, and dates to keep in mind. Nothing dramatic, but each task took a few minutes and asked for memory. With several services, it adds up.
+
+I moved to scripts in small steps, always the same way: I do the task by hand once, the second time I write down the steps, the third time I write the script.
+
+<Steps>
+  <Step title="I write down what I do by hand">A list of gestures: open, copy, file, check.</Step>
+  <Step title="I turn it into a small script">One file, one task, no dependency if possible.</Step>
+  <Step title="I give it a short name">An npm command that is easy to remember and stays the same when the script changes.</Step>
+  <Step title="I make it check its own work">A test, a check, a clear message when a source is unavailable.</Step>
+  <Step title="I let GitHub run it for me">What must happen every day or every week becomes a scheduled automation.</Step>
+</Steps>
+
+<Compare label="Before and after the scripts" topic="Question" before="By hand" after="With a script">
+  <Case topic="Where do I look?" before="In each service's console." after="In one command." afterDetail="It queries them for me, read-only." />
+  <Case topic="What happens when a source is down?" before="I do not notice." after="The report says so." afterDetail="“Unavailable: reason”, never a guessed figure." />
+  <Case topic="Who remembers the deadlines?" before="My memory." after="A computed calendar." afterDetail="It counts the days and flags what is coming." />
+  <Case topic="How long does it take?" before="A few minutes, every time." after="A few seconds." afterDetail="And the same result each time." />
+</Compare>
+
+## One folder, scripts, an overview
+
+Everything starts from one private folder on my machine. It is in no public repository. It holds the company's documents, a folder of scripts and a `package.json` whose commands are my dashboard.
+
+Here is an excerpt, cleaned up. The command names are the real ones, their content is not shown:
+
+<CodeTabs>
+<Tab label="package.json">
+
+```json
+{
+  "private": true,
+  "scripts": {
+    "status": "shows today's state, countdowns and alerts",
+    "calendar": "calendar of the year's deadlines",
+    "report": "readable financial summary",
+    "inbox": "files what I dropped in the inbox",
+    "couts": "this month's cost report, read-only",
+    "backup": "timestamped, encrypted backup",
+    "verify": "integrity check: must end with zero errors"
+  }
+}
+```
+
+</Tab>
+<Tab label="A day">
+
+```bash
+npm run status     # where I stand, what is coming
+npm run inbox      # I file what I received
+./couts            # what it costs this month
+npm run verify     # nothing is broken, or I fix it before I finish
+```
+
+</Tab>
+</CodeTabs>
+
+It is not elegant, and it does not need to be. The goal is that one command answers one question, that I can ask it in ten seconds and that I can trust the answer.
+
+## The inbox
+
+The script I use most is the inbox one. I drop any document in a folder and the script does the rest. Four rules, all learned by forgetting them once:
+
+- The folder has only two zones: private and not private. I do not sort by file type; the script recognises a PDF, an image, a spreadsheet or a text by itself.
+- What is private is locked down for reading on arrival, and the sensitive information it contains is masked in everything the script prints.
+- A document dropped twice is kept once. I do not want to hoard duplicates.
+- The registers stay sorted and consistent, and a verification script refuses to end in success if something is wrong.
+
+The last rule matters most. A verification script that ends in error is a small reminder to fix things before moving on.
+
+## Costs at a glance
+
+When you rent GPUs by the hour and run several services, you do not guess what you spend: you measure it. I have already written about it in [the post on the cost of images and video](/posts/what-image-and-video-generation-costs/). The `./couts` command queries each provider read-only, adds the fixed costs I gave it, projects the end of the month and writes a dated report.
+
+Here is what a run looks like. The proportions are a rounded example, not my real figures:
+
+```text
+$ ./couts
+Month report (read-only)
+
+  Hourly GPU            ██████░░░░   about 60 %
+  Hosting               ███░░░░░░░   about 30 %
+  Media                 █░░░░░░░░░   about 10 %
+  Coding assistant      unavailable: access not configured yet
+
+  ! GPU ceiling exceeded in the projection
+  ! A GPU machine is still running
+```
+
+Three things matter in this small report. A source that does not answer is written as such, with the reason, because a guessed figure is worse than a gap. A GPU machine left on is flagged separately: it is the lesson of a mistake I told in [the post on accounts and keys](/posts/accounts-and-keys-of-a-one-person-company/). And the script never reads a secret in the clear: it goes through the same small tool as everything else, and it refuses to write a report that would contain a secret value.
+
+## The GitHub side
+
+My private folder answers « where is the company ». GitHub answers « where is the work », and there too, whatever can run alone runs alone.
+
+The organisation's roadmap is a GitHub project. I do not update it by hand: automations and agents keep the board up to date. GitHub's built-in project workflows move a card when an issue closes or a pull request merges, my agent sessions move it along while they work, and a small scheduled script can fill in the rest, for example adding open issues to the board. Each pull request writes `Closes` followed by the issue it settles: the board follows those `Closes #…`.
+
+Other automations do their part:
+
+- A daily check verifies that the family's sites stay visible to search engines, and opens an issue when they are not.
+- Dependency updates arrive grouped, and the minor ones merge themselves when the checks are green. A major version stays a decision.
+- A product's « developer preview » status is not a word: it is read at the site's build from a list of criteria, and the build fails if the status is not justified.
+- The site's changelog is read from published releases, never written by hand.
+- The organisation's profile is regenerated every week from the published sites, and a new product appears there without anyone thinking of it.
+
+## What helped me most
+
+A few ideas if you want to do the same, alone or with others:
+
+1. Start with the task you hate, not the most impressive one.
+2. Give short names, and keep them stable.
+3. Make the script honest: it says when it does not know.
+4. Add a check that fails loudly, so you do not have to think of everything.
+5. Let the machine do what comes back every day. Keep the decisions for yourself.
+
+Automation does not replace judgement. It leaves me time for the choices that matter, and it spares me from forgetting what should not depend on my memory.
+
+## Frequently asked questions
+
+### Do I need to know how to program to do this?
+
+A little, yes, but not much. The first scripts are plain files that read, count and print. You learn by writing them, and a coding assistant helps a lot with the first versions.
+
+### Why npm commands rather than scattered scripts?
+
+Because a short name is easy to remember, and `package.json` is a table of contents: when I open it, I see everything I know how to do.
+
+### Are the secrets in this folder?
+
+They are read at run time, one at a time, by a small tool that never prints them. No script writes a secret value into a report.

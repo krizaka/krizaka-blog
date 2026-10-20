@@ -114,17 +114,25 @@ function confirmationEmail({ email, locale }, env, now = Date.now()) {
   return { to: email, subject: w.confirmSubject, text, html: toHtml(text) };
 }
 
+/** What the workflow puts where the reader's own values go in the e-mail it renders once per language
+    (scripts/newsletter-email.mjs, @krizaka/email): the unsubscribe token and the postal address. */
+const UNSUBSCRIBE_TOKEN = "__UNSUBSCRIBE_TOKEN__";
+const SENDER_ADDRESS = "__SENDER_ADDRESS__";
+/** The rendered e-mail of a reader: the placeholders replaced (HTML: the address escaped, the token URL-safe by nature). */
+const fillRendered = (text, { token, address }, html) => text.split(UNSUBSCRIBE_TOKEN).join(encodeURIComponent(token)).split(SENDER_ADDRESS).join(html ? escapeHtml(address) : address);
+
 function newPostEmail({ email, locale, consentedAt }, post, env) {
   const w = WORDS[locale];
-  const unsubscribeLink = actionUrl("unsubscribe", makeToken({ email, locale, purpose: "u" }, env.MAIL_TOKEN_SECRET), locale);
+  const token = makeToken({ email, locale, purpose: "u" }, env.MAIL_TOKEN_SECRET);
+  const unsubscribeLink = actionUrl("unsubscribe", token, locale);
+  const headers = { "List-Unsubscribe": `<${unsubscribeLink}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" };
+  /* The designed e-mail, rendered by the workflow with @krizaka/email: the cover, the button, dark mode, a plain-text part. */
+  if (typeof post.html === "string" && typeof post.text === "string") {
+    const reader = { token, address: senderAddress(env) };
+    return { to: email, subject: typeof post.subject === "string" && post.subject ? post.subject : w.postSubject(post.title), text: fillRendered(post.text, reader, false), html: fillRendered(post.html, reader, true), headers };
+  }
   const text = `${w.postBody(post.title, post.description, post.url)}\n${footer(locale, env, { why: w.why(consentedAt ? String(consentedAt).slice(0, 10) : ""), unsubscribeLink })}`;
-  return {
-    to: email,
-    subject: w.postSubject(post.title),
-    text,
-    html: toHtml(text),
-    headers: { "List-Unsubscribe": `<${unsubscribeLink}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" },
-  };
+  return { to: email, subject: w.postSubject(post.title), text, html: toHtml(text), headers };
 }
 
 /* ---- Mailgun (sending only), through fetch (no SDK) ---- */
@@ -239,7 +247,7 @@ const redirect = (location) => ({ statusCode: 303, headers: { Location: location
 
 module.exports = {
   SITE, LOCALES, CONFIRM_TTL_MS, configured, normalizeEmail, validEmail, pickLocale, makeToken, readToken, pageUrl, actionUrl,
-  confirmationEmail, newPostEmail, footer, toHtml, sendEmail, mailConfigured, dbConfigured, connect, addSubscriber,
+  confirmationEmail, newPostEmail, UNSUBSCRIBE_TOKEN, SENDER_ADDRESS, footer, toHtml, sendEmail, mailConfigured, dbConfigured, connect, addSubscriber,
   removeSubscriber, listSubscribers, claimPost, recordSent, sendPostToAll, sameSecret,
   verifyCaptcha, captchaConfigured, clientIp, json, redirect, WORDS,
 };

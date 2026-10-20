@@ -27,7 +27,16 @@
   post: a product is named plainly, once, with one link — the posts teach, they do not sell.
 - **MDX props are strings** (`<Utilization hourly="3.99" />`): next-mdx-remote drops JavaScript expressions (`={…}`), and
   `npm run lint` refuses them. Code fences become `CodeBlock` (copy); `<Numbers><Num value label hint/></Numbers>` sets the
-  key figures of a passage apart (only figures the text already gives).
+  key figures of a passage apart (only figures the text already gives; a whole number climbs with `NumberTicker`).
+  The page components of `@krizaka/ui` are mapped in `app/components/pages/mdx.tsx`: `<Steps><Step title>…</Step></Steps>`
+  (Stepper), `<Compare label topic before after><Case topic before after [beforeDetail afterDetail]/></Compare>`
+  (ComparisonTable, « before / after ») and `<CodeTabs><Tab label>` + a fenced block `</Tab></CodeTabs>` (Tabs over CodeBlocks); they
+  arrive with the motion system (`data-reveal`, still under reduced motion).
+- **Confidentiality** (`confidentialityProblems` in `scripts/content-rules.mjs`, run by `npm run lint` and `npm test`): no
+  post carries a 10-digit registration-like number, a company e-mail address, a folder name of the private workspace, a path
+  of the founder's machine, a private file name or a key-looking value. A post about how the company is run declares
+  `sensitive: true` and the rules add: no amount of money, no key or variable name, no supplier name, no ledger, fiscal or
+  bank word. Patterns are described, internals never.
 - **A published post has a `publishedAt`** (quoted date, time and offset, e.g. `"2026-10-16T21:44:17-04:00"`, on its `date`):
   posts of one day keep their order. The home shows **three posts first**: pinned ones (`featured: true`) then the newest,
   the first as the large card. **A published post has a `cover` and its `coverAlt`**, shown **once**: the post's hero and its
@@ -95,7 +104,15 @@
   CAPTCHA is invisible unless Cloudflare needs an action (`appearance: interaction-only`).
 - **/feed/** (EN and FR) is the human page about the feeds: the e-mail form first, then what RSS is, the address to copy and the latest posts; every
   human-facing « RSS » link goes there. `/feed.xml` and `/atom.xml` are pure XML for readers (no XSLT: Chrome is removing it).
-- **New post e-mail**: `.github/workflows/newsletter.yml` runs `scripts/newsletter-send.mjs` after a push to main that
+- **New post e-mail**: designed with `@krizaka/email` (`newPost`: the Krizaka mark, the cover, the title, the excerpt, one
+  button, the signature, the footer with the one-click unsubscribe and the postal address; tables and inline styles, dark
+  mode, a plain-text part; the reader's language). `scripts/newsletter-email.mjs` renders it once per language in the
+  workflow (the cover is the post's e-mail-sized WebP of `lib/media.json`); the function only fills the placeholders of
+  the reader's own values (their signed unsubscribe link) and the sender's postal address (`fillRendered`). Without a
+  rendered e-mail it sends the plain one. **Test**: `MAIL_SEND_TOKEN=… node scripts/newsletter-send.mjs --slug <slug>
+  --test-to <address> [--locale fr|en]` (also on a draft) sends ONE e-mail, « [Test] » in the subject, to that address only:
+  the list is not read and the post is not claimed. Screenshots of the rendered HTML go to Bunny (`pr-assets`), never the repo.
+  `.github/workflows/newsletter.yml` runs `scripts/newsletter-send.mjs` after a push to main that
   publishes a post (draft → published, or new and published): it waits for the page to be live, then calls
   `/api/newsletter/send` (bearer `MAIL_SEND_TOKEN`, the repository's only secret for this), which claims the post in
   `newsletter_posts` (primary key: never sent twice) and e-mails each confirmed subscriber in their language.

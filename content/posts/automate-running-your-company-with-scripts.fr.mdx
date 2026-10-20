@@ -1,0 +1,157 @@
+---
+title: "Gérer une entreprise avec des scripts : un dossier privé, quelques commandes npm et un tableau GitHub"
+description: "Du « j'ouvre chaque console à la main » à une poignée de scripts : un dossier privé, des commandes npm qui donnent la vue d'ensemble et un tableau de feuille de route GitHub qui se tient à jour seul."
+seoTitle: "Automatiser la gestion de son entreprise avec des scripts"
+seoDescription: "Un dossier privé, des commandes npm et un tableau GitHub qui se met à jour seul : comment un développeur automatise la gestion de sa petite entreprise."
+date: 2026-10-20
+tags: [costs, security]
+author: oussama
+draft: true
+sensitive: true
+cover: automate-cover
+coverAlt: "Un bureau en noyer à l'aube : un portable ouvert sur un terminal sombre aux lignes vertes, deux tasses fumantes, un carnet à cases cochées et un petit réveil en laiton, devant une grande fenêtre sur les toits enneigés de Montréal"
+series: building-krizaka
+part: 5
+---
+
+Quand on travaille en TI, la première chose qu'on apprend, c'est qu'une tâche qu'on fait trois fois à la main finit par devenir un script. On le fait pour les déploiements, pour les tests, pour la CI. Ce qui m'a pris plus de temps, c'est de me l'appliquer à moi-même : à la gestion de ma propre entreprise.
+
+Ce billet raconte ce que ça donne chez Krizaka, où je suis seul. Il décrit des habitudes, pas le contenu de mon dossier : vous n'y trouverez ni chemin, ni montant, ni nom de compte. C'est volontaire, et c'est un peu le sujet.
+
+<Numbers>
+  <Num value="27" label="commandes npm" hint="dans le dossier privé de gestion" />
+  <Num value="6" label="automatisations GitHub" hint="dans le dépôt commun de l'organisation" />
+  <Num value="1" label="commande pour les coûts" hint="en lecture seule" />
+</Numbers>
+
+## Du manuel au script
+
+Au début, la gestion ressemblait à ce que font beaucoup de gens qui démarrent : une console par fournisseur à ouvrir pour voir ce qu'on consomme, des reçus à classer un par un, et des dates à garder en tête. Rien de dramatique, mais chaque tâche prenait quelques minutes et demandait de la mémoire. Quand on a plusieurs services, ça s'accumule.
+
+Je suis passé aux scripts par petites étapes, toujours de la même façon : je fais la tâche une fois à la main, la deuxième fois je note les étapes, la troisième fois j'écris le script.
+
+<Steps>
+  <Step title="Je note ce que je fais à la main">Une liste de gestes : ouvrir, copier, classer, vérifier.</Step>
+  <Step title="Je l'écris en petit script">Un fichier, une tâche, aucune dépendance si possible.</Step>
+  <Step title="Je lui donne un nom court">Une commande npm facile à retenir, qui reste la même quand le script change.</Step>
+  <Step title="Je lui fais vérifier son propre travail">Un test, un contrôle, un message clair quand une source est indisponible.</Step>
+  <Step title="Je laisse GitHub la lancer à ma place">Ce qui doit se produire chaque jour ou chaque semaine devient une automatisation planifiée.</Step>
+</Steps>
+
+<Compare label="Avant et après les scripts" topic="Question" before="À la main" after="Avec un script">
+  <Case topic="Où est-ce que je regarde ?" before="Dans la console de chaque service." after="Dans une seule commande." afterDetail="Elle les interroge à ma place, en lecture seule." />
+  <Case topic="Que se passe-t-il quand une source est en panne ?" before="Je ne m'en aperçois pas." after="Le rapport le dit." afterDetail="« Non disponible : raison », jamais un chiffre deviné." />
+  <Case topic="Qui se souvient des échéances ?" before="Ma mémoire." after="Un calendrier calculé." afterDetail="Il compte les jours et signale ce qui approche." />
+  <Case topic="Combien de temps ?" before="Quelques minutes, chaque fois." after="Quelques secondes." afterDetail="Et le même résultat à chaque fois." />
+</Compare>
+
+## Un dossier, des scripts, une vue d'ensemble
+
+Tout part d'un seul dossier privé sur ma machine. Il n'est dans aucun dépôt public. Il contient les documents de l'entreprise, un dossier de scripts et un fichier `package.json` dont les commandes sont mon tableau de bord.
+
+Voici un extrait, nettoyé. Les noms des commandes sont les vrais, leur contenu n'est pas montré :
+
+<CodeTabs>
+<Tab label="package.json">
+
+```json
+{
+  "private": true,
+  "scripts": {
+    "status": "affiche l'état du jour, les décomptes et les alertes",
+    "calendar": "calendrier des échéances de l'année",
+    "report": "bilan financier lisible",
+    "inbox": "classe ce que j'ai déposé dans la boîte d'entrée",
+    "couts": "relevé des coûts du mois, en lecture seule",
+    "backup": "sauvegarde horodatée et chiffrée",
+    "verify": "contrôle d'intégrité : doit finir à zéro erreur"
+  }
+}
+```
+
+</Tab>
+<Tab label="Une journée">
+
+```bash
+npm run status     # où j'en suis, ce qui approche
+npm run inbox      # je classe ce que j'ai reçu
+./couts            # ce que ça coûte ce mois-ci
+npm run verify     # rien n'est cassé, ou je corrige avant de finir
+```
+
+</Tab>
+</CodeTabs>
+
+Ce n'est pas élégant, et ça ne doit pas l'être. Le but est qu'une commande réponde à une question, que je la pose en dix secondes et que je puisse faire confiance à la réponse.
+
+## La boîte d'entrée
+
+Le script que j'utilise le plus est celui de la boîte d'entrée. Je dépose n'importe quel document dans un dossier, et le script s'occupe du reste. Quatre règles, toutes apprises en les oubliant une fois :
+
+- Le dossier n'a que deux zones : privé et non privé. Je ne trie pas par type de fichier, le script reconnaît lui-même un PDF, une image, un tableau ou un texte.
+- Ce qui est privé est protégé en lecture dès l'arrivée, et les informations sensibles qu'il contient sont masquées dans tout ce que le script affiche.
+- Un document déposé deux fois n'est gardé qu'une fois. Je ne veux pas accumuler de doublons.
+- Les registres restent triés et cohérents, et un script de vérification refuse de se terminer en succès si quelque chose cloche.
+
+La dernière règle compte le plus. Un script de vérification qui finit en erreur, c'est un petit rappel qui me dit de corriger avant de passer à autre chose.
+
+## Les coûts, d'un coup d'œil
+
+Quand on loue des GPU à l'heure et qu'on a plusieurs services, on ne devine pas ce qu'on dépense : on le mesure. J'en ai déjà parlé dans [le billet sur les coûts de l'image et de la vidéo](/fr/posts/what-image-and-video-generation-costs/). La commande `./couts` interroge chaque fournisseur en lecture seule, ajoute les frais fixes que je lui ai donnés, projette la fin du mois et écrit un rapport daté.
+
+Voici à quoi ressemble une exécution. Les proportions sont un exemple arrondi, pas mes vrais chiffres :
+
+```text
+$ ./couts
+Relevé du mois (lecture seule)
+
+  GPU à l'heure         ██████░░░░   environ 60 %
+  Hébergement           ███░░░░░░░   environ 30 %
+  Médias                █░░░░░░░░░   environ 10 %
+  Assistant de code     non disponible : accès pas encore configuré
+
+  ! Plafond du GPU dépassé en projection
+  ! Une machine GPU est encore allumée
+```
+
+Trois choses sont importantes dans ce petit rapport. Une source qui ne répond pas est écrite telle quelle, avec la raison, parce qu'un chiffre deviné est pire qu'un trou. Une machine GPU laissée allumée est signalée à part : c'est la leçon d'une erreur que j'ai racontée dans [le billet sur les comptes et les clés](/fr/posts/accounts-and-keys-of-a-one-person-company/). Et le script ne lit jamais un secret en clair : il passe par le même petit outil que le reste, et il refuse d'écrire un rapport qui contiendrait une valeur secrète.
+
+## Le côté GitHub
+
+Mon dossier privé répond à « où en est l'entreprise ». GitHub répond à « où en est le travail », et là aussi, tout ce qui peut tourner seul tourne seul.
+
+La feuille de route de l'organisation est un projet GitHub. Je ne la mets pas à jour à la main : des automatisations et des agents tiennent le tableau à jour. Les flux intégrés des projets GitHub déplacent une carte quand un ticket se ferme ou qu'une pull request est fusionnée, mes sessions d'agents la font avancer pendant le travail, et un petit script planifié peut compléter le reste, par exemple ajouter au tableau les tickets ouverts. Chaque pull request écrit `Closes` suivi du ticket qu'elle règle : le tableau suit ces `Closes #…`.
+
+D'autres automatisations font leur part :
+
+- Un contrôle quotidien vérifie que les sites de la famille restent bien visibles des moteurs de recherche, et ouvre un ticket quand ce n'est plus le cas.
+- Les mises à jour de dépendances arrivent groupées, et celles qui sont mineures se fusionnent d'elles-mêmes quand les vérifications sont vertes. Une version majeure reste une décision.
+- Le statut « aperçu pour développeurs » d'un produit n'est pas un mot : il est lu à la construction du site dans une liste de critères, et la construction échoue si le statut n'est pas justifié.
+- Le journal des changements du site est lu à partir des versions publiées, jamais écrit à la main.
+- Le profil de l'organisation est régénéré chaque semaine à partir des sites publiés, et un nouveau produit y apparaît sans que personne n'y pense.
+
+## Ce qui m'a le plus servi
+
+Je retiens quelques idées si vous voulez faire pareil, que vous soyez seul ou à plusieurs :
+
+1. Commencez par la tâche que vous détestez, pas par la plus impressionnante.
+2. Donnez des noms courts, et gardez-les stables.
+3. Rendez le script honnête : il dit quand il ne sait pas.
+4. Ajoutez un contrôle qui échoue bruyamment, pour ne pas avoir à penser à tout.
+5. Laissez la machine faire ce qui revient chaque jour. Gardez pour vous les décisions.
+
+L'automatisation ne remplace pas le jugement. Elle me laisse du temps pour les choix qui comptent, et elle m'évite d'oublier ce qui ne devrait pas dépendre de ma mémoire.
+
+## Questions fréquentes
+
+### Faut-il savoir programmer pour faire ça ?
+
+Un peu, oui, mais pas beaucoup. Les premiers scripts sont de simples fichiers qui lisent, comptent et affichent. On apprend en les écrivant, et un assistant de code aide bien pour les premières versions.
+
+### Pourquoi des commandes npm plutôt que des scripts éparpillés ?
+
+Parce qu'un nom court se retient, et que `package.json` sert de table des matières : en l'ouvrant, je vois tout ce que je sais faire.
+
+### Est-ce que les secrets sont dans ce dossier ?
+
+Ils sont lus à l'exécution, un à la fois, par un petit outil qui ne les affiche jamais. Aucun script n'écrit une valeur secrète dans un rapport.
