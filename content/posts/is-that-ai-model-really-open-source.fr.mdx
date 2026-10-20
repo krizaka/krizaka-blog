@@ -1,0 +1,104 @@
+---
+title: "« Open source » : ce que dit vraiment la licence d'un modèle d'IA"
+description: "Open source, open weights, source-available : ce que ces mots promettent, ce qu'une licence contrôle vraiment, et ce que j'ai lu en choisissant les modèles d'images, de vidéo et de voix de nos produits."
+seoTitle: "Modèle open source ou open weights : lire la licence"
+seoDescription: "Open source, open weights, OSAID, licence Llama, Apache 2.0 : ce que la licence d'un modèle d'IA autorise vraiment, avec des exemples vérifiés à la source."
+date: 2026-10-20
+publishedAt: "2026-10-20T01:45:00-04:00"
+tags: [ai, basics, law]
+author: oussama
+draft: false
+cover: licence-magnifier
+coverAlt: "Sur un bureau en noyer, une loupe en laiton posée près d'une pile de feuilles pliées scellées à la cire rouge, une vieille clé et une boîte en bois ouverte, sous une lampe chaude"
+series: basics
+part: 5
+---
+
+Le 15 octobre, j'ai vérifié qu'aucun modèle par défaut de [notre moteur d'IA](https://github.com/krizaka/orazaka) n'avait une licence non commerciale, puisque nous vendons à des entreprises. La voix anglaise par défaut s'appelait Ryan. C'était une voix <Model id="piper">Piper</Model>, gratuite, publiée « en open source ». En ouvrant sa fiche, j'ai lu : CC BY-NC-SA 4.0. Le « NC », c'est non commercial.
+
+Le programme est libre, les poids du modèle sont téléchargeables, tout le monde dit « open source ». Mais la voix a été entraînée sur un jeu de données qui interdit l'usage commercial, et cette restriction suit la voix. Ryan est resté disponible, jamais par défaut, et c'est une voix du domaine public qui a pris sa place.
+
+Depuis, je ne choisis plus un modèle sur le mot « ouvert ». Je lis la licence. Voici ce que j'ai appris, avec des exemples que j'ai ouverts moi-même à la source. Et tout de suite : je suis ingénieur, pas avocat. Ce billet est une lecture d'ingénieur, pas un avis juridique. Pour une décision qui engage votre entreprise, faites relire la licence par une personne dont c'est le métier.
+
+## Trois mots qu'on mélange
+
+**Open source** a un sens précis. L'[Open Source Initiative](https://opensource.org/osd) (OSI) définit ce qu'une licence doit permettre : utiliser, étudier, modifier et partager, pour n'importe quel usage. Elle interdit même, dans sa définition, de discriminer selon le domaine d'activité. Une licence qui dit « pas pour tel secteur » n'est donc pas open source, quelle que soit l'étiquette.
+
+**Open weights**, ou poids ouverts, veut dire une chose plus modeste : le fichier des paramètres du modèle est téléchargeable. Vous pouvez le faire tourner chez vous. Mais ni les données d'entraînement ni le code d'entraînement ne sont forcément là, et la licence peut poser ses conditions. L'OSI a écrit un texte entier là-dessus, [« Open Weights: not quite what you've been told »](https://opensource.org/ai/open-weights).
+
+**Source-available** décrit ce qu'on peut lire sans avoir le droit de tout en faire. Pratique pour comprendre, moins pour construire un produit.
+
+En octobre 2024, l'OSI a publié sa [définition de l'IA open source](https://opensource.org/ai/open-source-ai-definition) (OSAID 1.0). Elle reprend les quatre libertés du logiciel libre et demande trois choses pour un système d'IA : les paramètres, le code pour l'entraîner et le faire tourner, et des informations assez détaillées sur les données pour qu'une personne compétente puisse reconstruire un système équivalent. Avec cette règle, beaucoup de modèles qu'on dit « ouverts » sont des modèles à poids ouverts. Ils sont utiles, souvent généreux, mais ce n'est pas la même promesse.
+
+## Ce qu'une licence peut contrôler
+
+On pense d'abord à « commercial ou pas ». C'est la plus connue, mais pas la seule.
+
+Un seuil d'usage ou de revenu : la licence de <Model id="llama">Llama</Model> 3.1 demande une licence à Meta si vos produits dépassent 700 millions d'utilisateurs actifs par mois. Un seuil de revenu : celle de <Model id="ltx-video">LTX-Video</Model> demande une licence payante à partir de 10 millions de dollars de revenus annuels.
+
+Un domaine d'usage : la licence de Llama incorpore une politique d'utilisation acceptable, une liste de ce qui est interdit, que vous devez respecter. Une géographie : on va le voir, une licence peut exclure des pays entiers. Les sorties : certaines licences disent ce que vous pouvez faire de ce que le modèle produit, par exemple interdire de s'en servir pour entraîner un autre modèle. L'attribution : Llama demande d'afficher « Built with Llama ». La redistribution : si vous affinez un modèle, que devez-vous transmettre, et sous quelles conditions ? Et le portail d'acceptation, sur Hugging Face, où il faut cliquer pour accéder aux fichiers. Cliquer, c'est signer.
+
+<Numbers>
+<Num value="700 M" label="Utilisateurs actifs par mois" hint="Llama 3.1, au-delà : licence à demander à Meta" />
+<Num value="10 M$" label="Revenu annuel" hint="LTX-Video, au-delà : licence commerciale payante" />
+<Num value="1 M$" label="Revenu annuel" hint="Stable Audio Open, au-delà : licence payante de Stability AI" />
+</Numbers>
+
+## Ce que j'ai lu en choisissant nos modèles
+
+Chaque fois, j'ai ouvert le fichier de licence ou la fiche du modèle, pas un article qui en parlait.
+
+**Vidéo.** La licence de <Model id="hunyuanvideo">HunyuanVideo</Model> commence par une phrase en majuscules : elle ne s'applique pas dans l'Union européenne, au Royaume-Uni et en Corée du Sud. Plus bas, elle interdit aussi d'utiliser les sorties du modèle hors du territoire couvert, et de s'en servir pour améliorer un autre modèle. Notre site est public : n'importe qui en Europe peut l'ouvrir. Il a été écarté lors de notre banc d'essai vidéo, et la licence est la raison que nous avons notée.
+
+<Model id="wan22-t2v-a14b">Wan 2.2 A14B</Model> est sous Apache 2.0, une licence reconnue par l'OSI, sans seuil ni territoire. C'est lui qui fait nos clips. LTX-Video, dans sa version 0.9.8, a un seuil de revenu de 10 millions de dollars. Nous en sommes très loin, donc nous pouvons l'utiliser pour des aperçus. Mais la licence demande aussi de transmettre ses restrictions d'usage à vos propres utilisateurs. Je n'ai pas retenu <Model id="ltx-2">LTX-2</Model> : le disque, et la même condition de revenu.
+
+**Images.** Chez <Model id="flux1-dev">FLUX.1 [dev]</Model>, la licence est non commerciale : on ne peut pas faire tourner le modèle pour une activité commerciale, même si les images produites peuvent servir à n'importe quoi, et il faut des filtres de contenu. <Model id="flux1-schnell">FLUX.1 [schnell]</Model>, du même éditeur, est sous Apache 2.0. Même famille, deux régimes. Ça continue avec la génération suivante : <Model id="flux2-klein-4b">FLUX.2 [klein] 4B</Model> est sous Apache 2.0, mais <Model id="flux2-klein-9b">FLUX.2 [klein] 9B</Model> est sous licence non commerciale. C'est la 4B que nous utilisons. Pour améliorer la résolution, <Model id="seedvr2">SeedVR2</Model> est sous Apache 2.0.
+
+**Voix.** C'est là que j'ai appris le plus. <Model id="xtts">XTTS-v2</Model> est sous la licence CPML de Coqui, qui, dans son texte, « n'autorise que l'usage non commercial d'un modèle d'apprentissage automatique et de ses sorties ». Son code est pourtant sous MPL 2.0, la licence du modèle est une autre. Et la page que la fiche cite pour la lire, coqui.ai/cpml, répond aujourd'hui 404 : le texte n'existe plus que dans le fichier du dépôt. Gardez une copie de la licence au moment où vous choisissez. <Model id="kokoro">Kokoro</Model>, lui, est sous Apache 2.0, et nous l'utilisons.
+
+Piper montre que la licence d'un modèle peut tenir à ses données. Les voix du dépôt `piper-voices` ont chacune leur fiche : Ryan en CC BY-NC-SA 4.0, Siwis (français) en CC BY 4.0, LJSpeech (anglais) dans le domaine public, Tom (français) en AGPL-3.0. Depuis, le catalogue de modèles a une colonne `commercial_use` (oui, sous conditions, non), remplie depuis ces fiches.
+
+**Audio.** <Model id="mmaudio">MMAudio</Model>, qui invente le son d'une vidéo, est publié en CC BY-NC 4.0 : non commercial, donc pas pour un produit. La musique de nos clips vient d'<Model id="ace-step">ACE-Step</Model>, sous MIT. <Model id="stable-audio-open">Stable Audio Open</Model> est sous la licence communautaire de Stability AI : il faut s'enregistrer, et elle ne s'applique gratuitement qu'en dessous d'un million de dollars de revenus annuels.
+
+| Modèle | Licence | Usage commercial | À savoir | Chez nous |
+| :--- | :--- | :--- | :--- | :--- |
+| HunyuanVideo | Tencent Hunyuan Community | Hors UE, Royaume-Uni, Corée du Sud | Sorties incluses dans la restriction | Écarté |
+| Wan 2.2 A14B | Apache 2.0 | Oui | Aucune | Utilisé |
+| LTX-Video 0.9.8 | LTX Open Weights | Sous 10 M$ de revenus | Restrictions à transmettre | Utilisé pour les aperçus |
+| FLUX.1 [dev] | FLUX.1 [dev] non commerciale | Non pour le modèle | Images produites utilisables, filtres exigés | Non |
+| FLUX.1 [schnell] | Apache 2.0 | Oui | Aucune | Possible |
+| FLUX.2 [klein] 4B | Apache 2.0 | Oui | Aucune | Utilisé |
+| FLUX.2 [klein] 9B | FLUX non commerciale | Non | Filtres exigés | Non |
+| SeedVR2 | Apache 2.0 | Oui | Aucune | Utilisé |
+| XTTS-v2 | CPML (Coqui) | Non | Texte hors ligne | Non |
+| Kokoro | Apache 2.0 | Oui | Aucune | Utilisé |
+| Piper, voix par voix | CC BY, CC BY-NC-SA, public, AGPL | Selon la voix | Les données comptent | Siwis, LJSpeech |
+| MMAudio | CC BY-NC 4.0 | Non | Aucune | Non |
+| Stable Audio Open | Stability AI Community | Sous 1 M$ de revenus | Inscription requise | Non |
+
+## Les poids ne sont qu'une pièce
+
+Un modèle, ce n'est pas seulement un fichier. Quand on le fait tourner, il y a le code d'inférence, avec sa licence : le moteur de Piper, par exemple, était en MIT, son dépôt d'origine est archivé, et son successeur est en GPL-3.0. Il y a les bibliothèques dont tout ça dépend, chacune avec la sienne. Il y a les données d'entraînement, dont la licence peut remonter jusqu'à vous, comme avec Ryan. Et il y a l'endroit où le modèle tourne : sur votre machine, vous êtes lié par la licence du modèle ; par l'API d'un fournisseur, vous l'êtes aussi par ses conditions d'utilisation, qui peuvent être plus strictes. J'en parle dans [le billet sur les modèles non censurés](/fr/posts/censored-and-uncensored-models/).
+
+## Ma liste avant de choisir
+
+1. Ouvrez le fichier de licence du modèle, pas son résumé. Copiez-le avec la date.
+2. Cherchez les mots : commercial, revenu, utilisateurs, territoire, sorties, interdit.
+3. Lisez la politique d'utilisation acceptable, si elle existe, et demandez-vous si vos clients la respecteront.
+4. Vérifiez le territoire : où se trouvent vos utilisateurs ?
+5. Regardez la licence des données ou de la variante précise (la voix, la taille, la version).
+6. Lisez la licence du code d'inférence et des dépendances.
+7. Notez le seuil de revenu, et le jour où vous le dépasserez.
+8. Si vous affinez le modèle, lisez ce qu'il faut transmettre à vos propres utilisateurs.
+9. Si vous passez par une API, lisez aussi les conditions de son fournisseur.
+10. Écrivez le résultat à côté du nom du modèle. Je le fais dans une colonne, pour chacun. Ça rejoint ce que je disais dans [le billet sur les fournisseurs](/fr/posts/choosing-providers-when-every-app-has-its-own-trade/) : la licence passe avant le prix.
+
+<Note>
+Les licences changent, les liens aussi. Tout ce qui est écrit ici a été lu à la source le 20 octobre 2026, dans les fichiers de licence ou les fiches des modèles. Revérifiez avant de vous y fier.
+</Note>
+
+## Ce que vous pouvez en retenir
+
+« Open source » est souvent une étiquette, et la licence est le contrat. Deux modèles de la même famille, la même semaine, peuvent avoir des droits très différents. Lisez le fichier, pas l'article, notez ce que vous avez lu, et refaites-le quand le modèle change de version.
+
+Pour ce que ça coûte de faire tourner ces modèles, voir [le billet sur les familles de modèles et le GPU](/fr/posts/ai-model-families-and-why-you-need-a-gpu/) et [celui sur le coût réel d'une image](/fr/posts/real-cost-of-an-image-paying-for-intent/).
