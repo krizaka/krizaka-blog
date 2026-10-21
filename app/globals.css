@@ -7,9 +7,9 @@
 
 /* The Krizaka typography: the files of @krizaka/fonts, loaded by next/font/local (app/fonts.ts), in the token roles. */
 :root {
-  --kz-font-sans: var(--font-kz-text), Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --kz-font-display: var(--font-kz-display), "Plus Jakarta Sans", var(--font-kz-text), system-ui, sans-serif;
-  --kz-font-mono: var(--font-kz-mono), "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --kz-font-sans: var(--font-kz-text), "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --kz-font-display: var(--font-kz-display), "Young Serif", Georgia, serif;
+  --kz-font-mono: var(--font-kz-mono), "Courier Prime", "Courier New", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-display: var(--kz-font-display);
   --font-mono: var(--kz-font-mono);
   /* One frame for the bar, the pages and the footer (the blocks' contract). */
@@ -68,8 +68,8 @@ html.light ::selection { background: hsla(217, 92%, 50%, 0.18); }
 .bl-cover { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--kz-radius-lg, 16px); border: 1px solid var(--kz-border-default); margin-bottom: 2rem; }
 .bl-prose { font-size: 1.0938rem; line-height: 1.78; color: var(--kz-text-primary); }
 .bl-prose > * + * { margin-top: 1.25rem; }
-.bl-prose h2 { font-family: var(--kz-font-display); font-size: 1.625rem; line-height: 1.25; font-weight: 700; margin-top: 2.75rem; letter-spacing: -0.02em; scroll-margin-top: 96px; }
-.bl-prose h3 { font-family: var(--kz-font-display); font-size: 1.25rem; line-height: 1.3; font-weight: 700; margin-top: 2rem; scroll-margin-top: 96px; }
+.bl-prose h2 { font-family: var(--kz-font-display); font-size: 1.625rem; line-height: 1.25; font-weight: 400; margin-top: 2.75rem; letter-spacing: -0.02em; scroll-margin-top: 96px; }
+.bl-prose h3 { font-family: var(--kz-font-display); font-size: 1.25rem; line-height: 1.3; font-weight: 400; margin-top: 2rem; scroll-margin-top: 96px; }
 .bl-prose p, .bl-prose li { color: var(--kz-text-primary); }
 .bl-prose ul, .bl-prose ol { padding-inline-start: 1.5rem; }
 .bl-prose li + li { margin-top: 0.5rem; }
@@ -89,19 +89,19 @@ html.light ::selection { background: hsla(217, 92%, 50%, 0.18); }
 .bl-prose .bl-table { max-width: 100%; overflow-x: auto; border: 1px solid var(--kz-border-subtle); border-radius: var(--kz-radius-md, 12px); }
 .bl-prose table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
 .bl-prose th, .bl-prose td { text-align: start; vertical-align: top; padding: 0.625rem 0.75rem; border-bottom: 1px solid var(--kz-border-subtle); line-height: 1.5; }
-.bl-prose thead th { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--kz-text-secondary); background: var(--kz-surface-1); }
+.bl-prose thead th { font-size: 0.75rem; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--kz-text-secondary); background: var(--kz-surface-1); }
 .bl-prose tbody tr:last-child > * { border-bottom: 0; }
-.bl-draft { margin-bottom: 1.5rem; padding: 0.625rem 1rem; border: 1px dashed var(--kz-border-strong); border-radius: 10px; color: var(--kz-text-secondary); font-size: 0.9375rem; }
-.bl-note { margin: 1.5rem 0; padding: 0.875rem 1rem; border: 1px solid var(--kz-border-default); border-inline-start: 3px solid var(--kz-accent); border-radius: 11px; background: var(--kz-surface-1); font-size: 0.9375rem; }
+.bl-draft { margin-bottom: 1.5rem; padding: 0.625rem 1rem; border: 1px dashed var(--kz-border-strong); border-radius: 0; color: var(--kz-text-secondary); font-size: 0.9375rem; }
+.bl-note { margin: 1.5rem 0; padding: 0.875rem 1rem; border: 1px solid var(--kz-border-default); border-inline-start: 3px solid var(--kz-accent); border-radius: 0; background: var(--kz-surface-1); font-size: 0.9375rem; }
 
 /* ─── Search ─── */
 .bl-search { display: grid; gap: 1.5rem; }
-.bl-search input { width: 100%; min-height: 48px; padding: 0 1rem; border-radius: 12px; border: 1px solid var(--kz-border-strong); background: var(--kz-surface-1); color: var(--kz-text-primary); font: inherit; font-size: 1.0625rem; }
+.bl-search input { width: 100%; min-height: 48px; padding: 0 1rem; border-radius: 0; border: 1px solid var(--kz-border-strong); background: var(--kz-surface-1); color: var(--kz-text-primary); font: inherit; font-size: 1.0625rem; }
 .bl-search input::placeholder { color: var(--kz-text-tertiary, var(--kz-text-secondary)); }
 .bl-search ul { list-style: none; display: grid; gap: 0.75rem; }
 .bl-status { color: var(--kz-text-secondary); font-size: 0.9375rem; }
 
-.kz-skip { position: fixed; left: 12px; top: -64px; z-index: 100; padding: 8px 14px; border-radius: 10px; background: var(--kz-accent); color: var(--kz-on-accent); font-weight: 600; }
+.kz-skip { position: fixed; left: 12px; top: -64px; z-index: 100; padding: 8px 14px; border-radius: 0; background: var(--kz-accent); color: var(--kz-on-accent); font-weight: 600; }
 .kz-skip:focus { top: 12px; }
 
 /* ─── 404 (@krizaka/ui ErrorPage) ─── */
@@ -122,9 +122,9 @@ picture { display: contents; }
 .bl-how { margin-top: 0.5rem; font-size: 0.875rem; color: var(--kz-text-secondary); }
 .bl-how summary { cursor: pointer; font-weight: 600; width: fit-content; padding-block: 0.25rem; }
 .bl-how summary:hover { color: var(--kz-text-primary); }
-.bl-how dl { display: grid; gap: 0.5rem; margin-top: 0.5rem; padding: 0.75rem 1rem; border: 1px solid var(--kz-border-subtle); border-radius: 11px; background: var(--kz-surface-1); }
+.bl-how dl { display: grid; gap: 0.5rem; margin-top: 0.5rem; padding: 0.75rem 1rem; border: 1px solid var(--kz-border-subtle); border-radius: 0; background: var(--kz-surface-1); }
 .bl-how dl > div { display: grid; grid-template-columns: minmax(6rem, 9rem) 1fr; gap: 0.75rem; }
-.bl-how dt { font-family: var(--kz-font-mono); font-size: 0.75rem; letter-spacing: 0.02em; text-transform: uppercase; color: var(--kz-text-tertiary, var(--kz-text-secondary)); padding-top: 0.125rem; }
+.bl-how dt { font-family: var(--kz-font-mono); font-size: 0.75rem; text-transform: none; color: var(--kz-text-tertiary, var(--kz-text-secondary)); padding-top: 0.125rem; }
 .bl-how dd { min-width: 0; overflow-wrap: anywhere; color: var(--kz-text-primary); }
 .bl-how code { font-family: var(--kz-font-mono); font-size: 0.8125em; }
 .bl-prompt { font-style: normal; quotes: none; line-height: 1.55; }
@@ -144,7 +144,7 @@ picture { display: contents; }
 .bl-card:has(.bl-card-link:focus-visible) { outline: 2px solid var(--kz-ring, var(--kz-accent)); outline-offset: 2px; }
 .bl-card-meta { font-family: var(--kz-font-mono); font-size: 0.8125rem; color: var(--kz-text-secondary); margin-bottom: 0.375rem; }
 .bl-card-tags { display: flex; flex-wrap: wrap; gap: 0.375rem; list-style: none; margin-top: 0.875rem; }
-.bl-chip { display: inline-flex; align-items: center; height: 1.5rem; padding-inline: 0.625rem; border-radius: 999px; border: 1px solid var(--kz-border-default); font-size: 0.75rem; color: var(--kz-text-secondary); }
+.bl-chip { display: inline-flex; align-items: center; height: 1.5rem; padding-inline: 0.625rem; border-radius: var(--kz-radius-sm, 2px); border: 1px solid var(--kz-border-default); font-size: 0.75rem; color: var(--kz-text-secondary); }
 @media (min-width: 64rem) {
   .bl-card-feature { flex-direction: row; }
   .bl-card-feature > :first-child { flex: 0 0 55%; }
@@ -152,14 +152,14 @@ picture { display: contents; }
   .bl-card-feature > :last-child { display: flex; flex-direction: column; justify-content: center; padding: 2rem; }
   .bl-card-feature h2 { font-size: 1.875rem; line-height: 1.2; }
 }
-.bl-series { margin-bottom: 2rem; padding: 1rem 1.25rem; border: 1px solid var(--kz-border-default); border-inline-start: 3px solid var(--kz-accent); border-radius: 11px; background: var(--kz-surface-1); font-size: 0.9375rem; }
+.bl-series { margin-bottom: 2rem; padding: 1rem 1.25rem; border: 1px solid var(--kz-border-default); border-inline-start: 3px solid var(--kz-accent); border-radius: 0; background: var(--kz-surface-1); font-size: 0.9375rem; }
 .bl-series-title { font-family: var(--kz-font-mono); font-size: 0.8125rem; color: var(--kz-text-secondary); margin-bottom: 0.5rem; }
 .bl-series-title a, .bl-series li a { color: var(--kz-accent-text); text-decoration: underline; text-underline-offset: 3px; }
 .bl-series ol { padding-inline-start: 1.5rem; display: grid; gap: 0.25rem; list-style: decimal; }
 .bl-series li[aria-current="page"] { font-weight: 650; color: var(--kz-text-primary); }
 /* Save and share (app/components/engage): Krizaka UI buttons in wrapping rows, nothing past the column on a phone. */
 .bl-engage { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--kz-border-subtle); display: grid; gap: 0.75rem; }
-.bl-engage-title { font-family: var(--kz-font-display); font-size: 1.125rem; font-weight: 700; color: var(--kz-text-primary); }
+.bl-engage-title { font-family: var(--kz-font-display); font-size: 1.125rem; font-weight: 400; color: var(--kz-text-primary); }
 .bl-engage-row, .bl-share { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
 .bl-saved { display: grid; gap: 1rem; }
 .bl-saved-item { display: grid; gap: 0.25rem; align-content: start; justify-items: start; }
@@ -169,12 +169,12 @@ picture { display: contents; }
 
 /* ─── The utilisation calculator ─── */
 .bl-calc { margin: 2rem 0; padding: 1.25rem; border: 1px solid var(--kz-border-default); border-radius: var(--kz-radius-md, 12px); background: var(--kz-surface-1); display: grid; gap: 0.875rem; }
-.bl-calc-title { font-family: var(--kz-font-display); font-weight: 700; font-size: 1.0625rem; }
+.bl-calc-title { font-family: var(--kz-font-display); font-weight: 400; font-size: 1.0625rem; }
 .bl-calc label { display: grid; gap: 0.5rem; font-size: 0.9375rem; }
 .bl-calc input[type="range"] { width: 100%; accent-color: var(--kz-accent); min-height: 32px; }
 .bl-calc dl { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-.bl-calc dt { font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--kz-text-secondary); font-family: var(--kz-font-mono); }
-.bl-calc dd { font-family: var(--kz-font-display); font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.bl-calc dt { font-size: 0.75rem; letter-spacing: 0; text-transform: none; color: var(--kz-text-secondary); font-family: var(--kz-font-mono); }
+.bl-calc dd { font-family: var(--kz-font-display); font-size: 1.5rem; font-weight: 400; font-variant-numeric: tabular-nums; }
 .bl-calc-verdict { font-weight: 600; }
 .bl-calc-note { font-size: 0.8125rem; color: var(--kz-text-secondary); line-height: 1.5; }
 .bl-card :is(h2, h3, p) { display: block; overflow: visible; white-space: normal; -webkit-line-clamp: unset; text-overflow: clip; }
@@ -266,3 +266,18 @@ picture { display: contents; }
 /* Following a post: e-mail first (the newsletter form, #subscribe), the RSS feed as a quiet second. */
 .bl-follow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; margin-top: 2rem; }
 #subscribe { scroll-margin-top: var(--kz-anchor-offset, 96px); }
+
+/* ═══ The reading page in the Cahier (krizaka-ui ADR-004, #417) ═══════════════════════════════════════════════════════
+   Calm long-form: every figure (image, clip) numbered in its caption, set in the typewriter like a plate's legend;
+   the footnotes (GFM `[^1]`) set as a book's notes under a short rule; every figure of a statistic or a table in lining,
+   tabular digits (--kz-figures — Young Serif draws old-style digits by default). */
+.bl-prose { counter-reset: bl-fig; }
+.bl-prose figure > figcaption { font-family: var(--kz-font-mono); font-size: 0.8125rem; line-height: 1.55; color: var(--kz-text-secondary); }
+.bl-prose figure > figcaption::before { counter-increment: bl-fig; content: "fig. " counter(bl-fig) " — "; color: var(--kz-text-primary); font-weight: 700; }
+.bl-prose table, .bl-prose .bl-num, .bl-numbers, .bl-calc dd { font-variant-numeric: var(--kz-figures, lining-nums tabular-nums); }
+.bl-prose [data-footnotes] { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--kz-border-default); max-width: 40rem; font-size: 0.875rem; line-height: 1.6; color: var(--kz-text-secondary); }
+.bl-prose [data-footnotes]::before { content: ""; display: block; width: 4rem; margin: -1rem 0 1rem; border-top: 2px solid var(--kz-paper-rule-margin, var(--kz-accent)); }
+.bl-prose [data-footnotes] ol { padding-inline-start: 1.5rem; }
+.bl-prose [data-footnotes] li::marker { font-family: var(--kz-font-mono); color: var(--kz-text-primary); }
+.bl-prose [data-footnotes] a[data-footnote-backref] { margin-inline-start: 0.375rem; font-family: var(--kz-font-mono); text-decoration: none; }
+.bl-prose sup a[data-footnote-ref] { font-family: var(--kz-font-mono); font-size: 0.75em; text-decoration: none; padding-inline: 0.125em; }

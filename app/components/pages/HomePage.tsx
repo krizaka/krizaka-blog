@@ -26,11 +26,15 @@ export default function HomePage({ locale }: { locale: Locale }) {
   const [featured, ...second] = featuredPosts(locale, 3);
   const rest = posts.filter((p) => p !== featured && !second.includes(p));
   const feed = `${locale === "en" ? "" : "/fr"}/feed/`;
+  /* The Cahier (krizaka-ui ADR-004): the sections are the notebook's pages, numbered in the red margin (§ 1, § 2…), in
+     the order they appear; the latest posts sit on its lined paper. */
+  let n = 0;
+  const no = () => `§ ${++n}`;
   return (
     <>
       <PageHero eyebrow={t.home.eyebrow} title={t.home.title} lead={t.home.lead} linkAs={Link} />
       {featured && (
-        <Section title={t.home.featuredTitle} reveal={false}>
+        <Section title={t.home.featuredTitle} reveal={false} number={no()} margin>
           <PostCard post={featured} locale={locale} feature priority />
           {second.length > 0 && (
             <div className="bl-featured-pair">
@@ -41,7 +45,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
           )}
         </Section>
       )}
-      <Section title={t.home.latest} lead={posts.length ? t.home.latestLead : undefined} reveal={false} divider={Boolean(featured)}>
+      <Section title={t.home.latest} lead={posts.length ? t.home.latestLead : undefined} reveal={false} divider={Boolean(featured)} number={no()} margin paper="lines">
         <TopicFilter locale={locale} />
         {rest.length ? (
           <PostList posts={rest} locale={locale} reveal={false} />
@@ -62,7 +66,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
       </Section>
       <NewsletterSection locale={locale} where="home" />
       {series.length > 0 && (
-        <Section title={t.home.seriesTitle} lead={t.home.seriesLead} divider>
+        <Section title={t.home.seriesTitle} lead={t.home.seriesLead} divider number={no()} margin>
           <CardGrid min={320}>
             {series.map(({ series: id, posts: inSeries }) => (
               <LinkCard key={id} linkAs={Link} href={localizedPath(locale, `/series/${id}`)} title={seriesName(locale, id)} description={seriesLead(locale, id)} meta={seriesCount(locale, inSeries.length)} cta={t.home.moreFromSeries} titleAs="h3" />
@@ -71,7 +75,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
         </Section>
       )}
       <AuthorNote locale={locale} />
-      <Section title={t.home.elsewhereTitle} lead={t.home.elsewhereLead} divider>
+      <Section title={t.home.elsewhereTitle} lead={t.home.elsewhereLead} divider number={no()} margin>
         <CardGrid min={260}>
           <LinkCard href={KRIZAKA_URL} title={t.home.company} description={t.home.companyBody} cta={t.home.open} titleAs="h3" />
           <LinkCard href={UI_URL} title={t.home.ui} description={t.home.uiBody} cta={t.home.open} titleAs="h3" />
