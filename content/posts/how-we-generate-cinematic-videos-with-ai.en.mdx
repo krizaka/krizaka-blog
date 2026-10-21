@@ -1,0 +1,163 @@
+---
+title: "How we generate cinematic videos with AI, and what we got wrong first"
+description: "Our first film was beautiful and bad: a GPS voice, aggressive music, no story. The fix was in the pipeline, not the prompt. The steps, the costs, the licences."
+seoTitle: "Cinematic AI video: what changed the result"
+seoDescription: "A beautiful, failed AI film: treatment, critique, a directed voice, music, foley, titles, 4K. The steps, the real costs and the model licences."
+date: 2026-10-21
+publishedAt: "2026-10-21T03:15:00-04:00"
+tags: [ai, measurements]
+author: oussama
+draft: false
+cover: relay-medina-cover
+coverAlt: "In a stone-arched medina courtyard lit by lanterns and a shaft of light, a purple owl holds a white sheet against itself while a turquoise pigeon raises a wing to get its attention, on a dark wooden desk"
+series: measured
+part: 4
+---
+
+On October 20, I watched our film "Le monde de Krizaka: l'aube" for the second time. It is 62 seconds in 4K, made with our birds. My verdict was short: horrible. The voices, the texts, the way the birds interact, all of it was too ugly.
+
+It was not a sloppy film, though. The picture and the light were beautiful, and I said so myself. It had cost 6.5 hours of an H200 GPU, $34.42 on the provider's invoice. But a gorgeous image does not make a film, and what I had just watched was not one.
+
+Here is what was wrong, what we changed, what it cost, and what I learned about the difference between improving a prompt and improving a production line.
+
+## What I saw, and heard
+
+I wrote my feedback point by point, because an impression cannot be fixed.
+
+The voice was mechanical and flat, a "GPS effect": no emotion, no link with the picture. The music was far too aggressive. There was no foley at all: not a wing beat, not a step, no air. The titles had nothing cinematic about them. The birds moved, but they were not alive, and what they did had nothing to do with the subject. And the story, catastrophic, did not carry anyone anywhere.
+
+<Figure id="aube-lineup" alt="Five Krizaka birds lined up facing the camera in the grass of a mountain slope at sunset, while the subtitle says « Each bird carries a promise »" caption="The shot I call the lineup: the birds in a row, facing us, waiting for the voice to finish. Nothing happens between them. Frame at 36 seconds of « l'aube » (v1)." />
+
+## The flaw was not in the prompt
+
+You might think a better prompt was all it took. Rereading how the film had been made, the cause was clear: a short brief went straight to a shot list. Nobody judged the story before shooting. Every character shot came down to "the bird moves". The voice had no direction, the music one level, the sound one bed of wind.
+
+The flaw was in the line. Here are the steps we added to it. They live in [our AI engine](https://github.com/krizaka/orazaka), because the point is not to repair one film, but not to make the same mistake on the next.
+
+### 1. A treatment before any shot
+
+Before a shot is drawn, a short brief becomes a story. A theme, an arc in four beats in order (hook, journey, turn, payoff), each character's intention taken from its promise, and for each shot a purpose, an action, a gaze, the physics of the body and what happens between two characters. Then the narrator's lines with their direction (emotion, pace, emphasis, pause), music cues for each beat and the list of sounds of each shot.
+
+### 2. An automatic critique, twice
+
+The treatment is judged by rules with no model: is the arc in order, does the turn come after the first third, does every shot have a purpose, does every line fit its shot (at most 2.6 words per second), does the music start low, peak on the turn and resolve. Then by a model that scores six axes from 1 to 5: transport, arc, characters, aliveness, topic, continuity. The story is filmed only if both accept it. Otherwise the reasons go back to the writer, twice at most.
+
+For "le relais", the new film, the treatment was 25 shots for 67 seconds. The rules gave it full marks, and the model judge gave 5 out of 5 for transport and 3 out of 5 for aliveness.
+
+### 3. Living, motivated action
+
+This is where the birds became actors. The motion of each shot is now written as a small scene: first this, then that, finally that, with the gaze and its reason, the weight of the body, the effort of a wing beat, a landing, a grip. The phrases "stands there", "looks around", "turns its head left then right" are refused by the rule, by name. Shots are shorter, 2.7 to 4 seconds.
+
+Each take is checked afterwards: faithful to the bird's drawing, and alive and on topic (the motion energy is measured frame by frame). In the scene where the owl objects and then recognises the pigeon, the arguing take moves on 59% of its frames, the laughing one on 69%.
+
+<Row>
+<Clip id="aube-owl" alt="The purple owl of the first version, speaking to the camera in a library" caption="The owl in « l'aube » (v1): it talks." />
+<Clip id="relay-medina-scene" alt="In a medina courtyard, the owl raises a wing to say wait while the pigeon pleads, then the owl recognises the pigeon, laughs and waves it on" caption="The owl in « le relais »: it objects, then recognises the pigeon. 5.4 seconds." />
+</Row>
+
+Keeping a bird faithful to its drawing took a detour. A free image edit had redrawn one of the brand's birds (the falcon had lost its visor). The keyframe now starts from the character's own render, set on an empty plate, then retouched at a strength of 0.60 for one character and 0.80 for a group: a group of five drifted at 0.60.
+
+### 4. A directed voice, chosen blind
+
+We put speech synthesis models against each other, licence first, all with the same synthetic reference voice (never a real person's voice). For each candidate we measured the movement of the voice's pitch in semitones, how well the words were understood with <Model id="whisper">Whisper</Model>, and whether the requested pace was kept.
+
+- <Model id="kokoro">Kokoro</Model>, the first version's voice: one speed, 8.6 to 11 semitones.
+- <Model id="chatterbox">Chatterbox</Model>: very expressive in English (17 to 19 semitones), but it ignores a slow pace, and its French missed words (an error rate of 0.67 on one line).
+- <Model id="zonos">Zonos</Model>: an emotion vector, a rate and a pitch variation per line, in English and French. 11.8 to 19.4 semitones, every word understood, the requested pace held. Chosen.
+- <Model id="f5-tts">F5-TTS</Model> and <Model id="xtts">XTTS-v2</Model>: refused, their weights are non-commercial.
+
+We also tried to have the voice judged by an audio model, <Model id="qwen2-audio">Qwen2-Audio</Model>. After calibrating it, we refused it: it gave about 4 out of 5 to everyone, the flat voice of the first version included, and when asked to choose between two takes it answered "A" 36 times out of 36, in both orders. A judge with a position bias judges nothing. So the voice is measured: understanding, pitch movement, pauses, pace. The measure decides.
+
+We also compared two candidates blind, the first version's voice and Zonos: each line twice, in random order, the answer hidden. The lines are the birds' promises, such as "The falcon keeps watch: security comes first" or "The pigeon delivers, every time". On the same lines, the median pitch movement goes from 9.95 semitones for the first voice to 13.6 for the second, and each take of the second is picked among six at most, first for its accuracy (a mean error of 0.033). So it was not an ear that chose, it was the measure.
+
+### 5. Music that follows the story and steps aside for the voice
+
+The first version had one music track, at the same level from start to finish, too loud. <Model id="ace-step">ACE-Step</Model> now makes one piece per beat of the story: a dark intro, a warm underscore, a build, a resolve. A mixer sets them at a level that depends on intensity (from −24 dB for 0 to −9 dB for 1, never full scale), crossfades them, and lowers the music under the voice (sidechain compression, 4 to 1, 60 ms attack, 900 ms release). The final mix is brought to −14 LUFS within 0.5, with a true peak under −1 dBTP, measured again and refused if it falls outside.
+
+On the medina test scene, the measures are −14.0 LUFS and −1.9 dBTP in English, −14.1 LUFS and −1.3 dBTP in French.
+
+### 6. Foley for every shot
+
+This is where we bumped into licences the most. Every model that makes foley from a text or a picture had an obstacle: <Model id="mmaudio">MMAudio</Model> is non-commercial, <Model id="stable-audio-open">Stable Audio Open</Model> asks for a licence acceptance that is an account decision, and the one from <Model id="hunyuanvideo">HunyuanVideo</Model> excludes the European Union, the United Kingdom and South Korea. So we chose to use no model. The foley is synthesised from noise, resonators and envelopes: 12 ambiences (rain, storm, wind, lake, waves, a room, dawn, a far city) and 20 events (wing beats, steps, rustle, paper, an object set down, a glow, chimes, bird calls, splashes, a coin, a parcel, thunder). A check makes sure no shot is silent and every character shot has its event.
+
+### 7. Film-grade titles
+
+The titles of the first version did not look like cinema. They are now set with a subtitle engine: the name in tracked capitals whose spacing slowly opens while it holds on screen, and the subtitle in a light serif italic arriving 0.45 s later. A fade in of 1.1 s, a fade out of 0.8 s. Subtitles sit higher than before (16% of the height in 16:9, 26% in vertical), with a soft halo instead of a box, two balanced lines of at most 42 characters, never in the top-left corner where the player puts its own "AI-generated" chip. Everything stays in the safe area (a 10% margin).
+
+<Figure id="relay-title" alt="The title « The World of Krizaka » in tracked capitals over an orange sunset horizon, with « The Relay » in a light italic below it, above a beach and a string of warm lights" caption="The title test for « le relais »: the spaced name, the italic subtitle that arrives after it. It is not the film yet." />
+
+### 8. 4K, and what it costs
+
+The takes are shot in 720p with <Model id="wan22-i2v-a14b">Wan 2.2 I2V A14B</Model> at 40 steps, then raised to 4K with <Model id="seedvr2">SeedVR2</Model>. The landscapes come from <Model id="ltx-video">LTX-Video</Model>, much faster. The keyframes are made with <Model id="flux2-klein-4b">FLUX.2 [klein]</Model> on a Mac, at no GPU cost.
+
+## The figures, with their context
+
+<Numbers>
+<Num value="$34.42" label="« L'aube », GPU billed" hint="6.5 h of an H200 at $5.29/h, one resume included" />
+<Num value="$33.09" label="Per minute of finished film" hint="62.5 s in 4K, 19 shots planned, 18 kept" />
+<Num value="$35.27" label="« Le relais », GPU total" hint="measured: 68 s in 4K, $31.12 a minute" />
+</Numbers>
+
+For "l'aube": 23 takes, 4 of them rejected or cut down. The runs' own compute time was 5.5 h ($29.00); the rest is setup and waiting. The keyframes, the music and the narration were made on a Mac, at $0.
+
+What we measured on a 141 GB H200: a Wan 2.2 shot of 81 frames at 720p and 40 steps takes 1,567 seconds, about 26 minutes, 36 seconds a step. On an H100, it is around 18 minutes for a 5-second clip. LTX-Video makes a clip in 11 to 20 seconds. For 4K, SeedVR2 took about 17 minutes a shot with a batch of 5, and 290 seconds with a batch of 21: which lets it run behind the generation instead of after it.
+
+For "le relais", the GPU cost $35.27 in total (measured), under a cap of $40, for 68 seconds of 4K film: $31.12 per finished minute, on an H200. About $4.1 of that total was lost during setup, to two servers the guard stopped. The proofs alone (two sessions: the voice, the titles, one full scene) had cost $6.01 before the full render. "L'aube" had cost $34.42.
+
+### What the GPU taught us about money
+
+A GPU you forget costs as much as a GPU that works. So the machine stops by itself: after 20 minutes without work, or after 6 hours at most. That guard is what cut "l'aube" at the sixth hour, and we had to resume the same server once, about 30 minutes, for a shot redone and three 4K upscales.
+
+A 200 GB network disk, to keep the models at hand, costs about $14 a month to do nothing. We decided to delete it after the last films and re-create it on demand: downloading again takes a few minutes of GPU, which is cheaper than keeping it. And on a 94 GB GPU, generation and 4K at the same time ran out of memory: they run one after the other.
+
+## The film
+
+"Le monde de Krizaka: le relais" is 68 seconds in 4K. One parcel, one question: will it arrive? The parcel passes from bird to bird, from city to city, and the music changes genre at every place. You can watch it [on krizaka.com](https://www.krizaka.com/en) and in 4K on Orochia, in [English](https://dev.orochia.com/watch/06d26934-7cef-470d-a4b8-d2d0c8d66a9b) and in [French](https://dev.orochia.com/watch/8113c7f9-b0cf-48a6-9b81-3b0f3aaade15).
+
+<Clip id="relay-film" alt="An excerpt of the film: Krizaka birds pass a parcel from place to place" caption="« Le relais », 68 s, no subtitles, muted here. The full film has its sound." />
+
+To compare the two versions shot by shot, the [A/B page](https://krizaka-assets.b-cdn.net/pr-assets/orazaka/cinema-v2-ab-v1-v2/index.html) puts « l'aube » and « le relais » side by side. In short:
+
+| Point | « L'aube » | « Le relais » |
+| :--- | :--- | :--- |
+| Story | A lineup, then dawn: no question, no stakes | A parcel and a question, a turn (the cold night) |
+| Music | One aggressive cue, at full scale | Nine original cues that change genre with each place, under the voice, at −14.1 LUFS |
+| Foley | None | Synthesised on 25 of 25 shots |
+| Voice | Flat, one register | Directed line by line |
+
+## The line not to cross
+
+These films evoke genres: a rap beat, a dinner, a match. We evoke them by original means: the light, the framing, a piece composed for the occasion (here, for example, a rap piece with oud and darbuka). No name or face of a real person, no existing song, no game, no show. The characters are original, the voice starts from a synthetic reference, the foley uses no model under a restrictive licence. The rules are in the line's data, and a check enforces them before shooting, not after.
+
+Every film is labelled as AI-generated, in the file and in the player, which shows its own chip.
+
+## The licences, one by one
+
+| Model | Use here | Licence of the weights |
+| :--- | :--- | :--- |
+| Wan 2.2 I2V A14B | Character takes | Apache 2.0 |
+| LTX-Video 0.9.8 | Landscapes | LTX Open Weights |
+| FLUX.2 [klein] 4B | Keyframes | Apache 2.0 |
+| SeedVR2 | 4K upscale | Apache 2.0 |
+| ACE-Step | Music | MIT |
+| Zonos v0.1 | Narrator | Apache 2.0 |
+| Kokoro | Synthetic reference voice | Apache 2.0 |
+| Whisper | Checking the spoken words | MIT |
+| Chatterbox | Tried, not kept | MIT |
+| F5-TTS | Refused | Non-commercial (CC BY-NC 4.0) |
+| XTTS-v2 | Refused | Non-commercial (CPML) |
+| MMAudio | Refused | Non-commercial (CC BY-NC) |
+| Stable Audio Open | Refused | Community licence, registration required |
+| HunyuanVideo (foley) | Set aside | Excludes the EU, the UK and South Korea |
+
+<Note>
+The licences were read at the source on October 20, 2026. They change, so check again before relying on them. I am not a lawyer: I read these texts as an engineer.
+</Note>
+
+To read a licence without being fooled, I wrote [that other post](/posts/is-that-ai-model-really-open-source/).
+
+## What I take from it
+
+You do not get a film with a better prompt. You get it with a line that asks questions before shooting: does the story hold, does every shot have a reason, do you hear what you see. And that measures what you cannot judge by eye, like the movement of a voice or the level of a piece of music.
+
+The rule is to find the mistake early. A failed keyframe costs a cent, a shot 36 cents, an edit far more. What we did to the pipeline is add gates, earlier and earlier.
