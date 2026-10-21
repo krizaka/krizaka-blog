@@ -3047,5 +3047,141 @@
    "note": "The reference film since 2026-10-21. 68 s in 4K for $35.27 of GPU, $31.12 per finished minute. Everything else ran on a Mac at $0.",
    "source": "krizaka/orazaka#289, krizaka/orazaka#330"
   }
+ },
+ "motion-light-bench": {
+  "kind": "image",
+  "width": 1536,
+  "height": 864,
+  "blur": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAADwAwCdASoYAA4APyV6tVIuJ6UisAgBwCSJQAALgrdIJbXwk/9gh7lQAP7o3C969DmwQmQOfOZYn8RcYdB9hPFjgHLuU7wgabbDkCKTVEHSZliV8GEZ8SSIDCKC0jNL7P2Aa3MCyu45sgAA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-light-bench-480.069fae24e4.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-light-bench-960.f6b546bb4e.webp"
+   },
+   {
+    "w": 1536,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-light-bench-1536.4b45bba4f5.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "Long-exposure light painting in a dark workshop at dusk: slender ribbons and rings of soft cyan and blue light curling in the air above an empty wooden workbench, a small brass compass and a glass of water catching the glow, no people, 35mm lens, calm, wondering mood. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No text, no letters, no numbers, no logos, no watermark.",
+   "seed": "2026",
+   "size": "1536×864",
+   "seconds": 311,
+   "costUsd": 0,
+   "note": "Made for this cover with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. One seed was drawn (2026) and kept after a review at full size. Time measured on a busy machine."
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-light-bench-480.3f9c866af2.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-light-bench-768.12d484964f.avif"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-light-bench-1200.77a5c6afa6.avif"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-light-bench-1536.1f52181191.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-light-bench-480.efcc43eaf5.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-light-bench-768.1a3097b0f4.webp"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-light-bench-1200.74eb5a4b1c.webp"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-light-bench-1536.f9e1d4f8a1.webp"
+    }
+   ]
+  }
+ },
+ "motion-engine-clip": {
+  "kind": "video",
+  "width": 960,
+  "height": 600,
+  "blur": "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAABQAwCdASoYAA8APyV8tlIuJ6UisAgBwCSJZwDG9B6RYpYWAAD+3G/nD5jHfzg+m0e33FGB3v0pNrdZAmNrYAAA",
+  "poster": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-engine-clip-poster.2fd3a4bdec.webp",
+  "mp4": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-engine-clip.2f02fdf2ca.mp4",
+  "webm": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-engine-clip.7c3eb54258.webm",
+  "bytes": {
+   "mp4": 74862,
+   "webm": 101966
+  },
+  "made": {
+   "model": "Screen recording (no model)",
+   "via": "The Krizaka Motion lab, played live in a browser",
+   "fps": 25,
+   "durationSeconds": 9,
+   "costUsd": 0,
+   "note": "The engine flow page of the lab, played live; recorded from the lab's own pages. Muted.",
+   "source": "krizaka/krizaka-motion"
+  }
+ },
+ "motion-maps-clip": {
+  "kind": "video",
+  "width": 960,
+  "height": 600,
+  "blur": "data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAAAQAwCdASoYAA8APyV8tVIuJ6UisAgBwCSJZwC/OC0HbEgA/u3Ys9+bey1ZPw7wI1tadBx9rGG0OUcrgYA/FuAAAAA=",
+  "poster": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-maps-clip-poster.33a794e3be.webp",
+  "mp4": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-maps-clip.62c48269cb.mp4",
+  "webm": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-maps-clip.8547f6bab7.webm",
+  "bytes": {
+   "mp4": 52559,
+   "webm": 65530
+  },
+  "made": {
+   "model": "Screen recording (no model)",
+   "via": "The Krizaka Motion lab, played live in a browser",
+   "fps": 25,
+   "durationSeconds": 9,
+   "costUsd": 0,
+   "note": "The maps page of the lab, played live. Muted.",
+   "source": "krizaka/krizaka-motion"
+  }
+ },
+ "motion-chat-clip": {
+  "kind": "video",
+  "width": 960,
+  "height": 600,
+  "blur": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAAAQBACdASoYAA8APyV8tFIuJ6UisAgBwCSJZwC/OCHUqA0vYcSvmJnwgAD+4tVCv9uPiHhRCL3D5Sf96UPjgwt1xXA92BNwAAA=",
+  "poster": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-chat-clip-poster.41d112cef4.webp",
+  "mp4": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-chat-clip.357f86bfcb.mp4",
+  "webm": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-motion-our-animation-lab/motion-chat-clip.20589eef07.webm",
+  "bytes": {
+   "mp4": 52052,
+   "webm": 68626
+  },
+  "made": {
+   "model": "Screen recording (no model)",
+   "via": "The Krizaka Motion lab, played live in a browser",
+   "fps": 25,
+   "durationSeconds": 9,
+   "costUsd": 0,
+   "note": "The streaming-answer page of the lab, played live. Muted.",
+   "source": "krizaka/krizaka-motion"
+  }
  }
 }
