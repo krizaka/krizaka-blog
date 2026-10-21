@@ -1,0 +1,84 @@
+---
+title: "Krizaka Motion, our animation lab"
+description: "A lab, not a product: a spark from the movies, a bug that taught us to test motion, and the little that became a system in Krizaka UI."
+seoTitle: "Krizaka Motion: our interface animation lab"
+seoDescription: "An animation lab for interfaces: the engine flow, the flock, routes on maps, text that writes itself. Quiet, tested motion that calms down when asked."
+date: 2026-10-21
+publishedAt: "2026-10-21T11:40:00-04:00"
+tags: [ui]
+author: oussama
+draft: false
+cover: motion-light-bench
+coverAlt: "In a dark workshop at dusk, ribbons of cyan light float above a worn wooden workbench, near a pair of brass dividers and a glass of water"
+series: building-krizaka
+part: 7
+---
+
+The spark is Jarvis's interface, the assistant in the Marvel films. What made me want to build something was not the story, it was what the interface does: rings that turn, lines that draw themselves when someone speaks, figures that arrive just when you need them. A living interface that looks like it is thinking with you.
+
+I did not want to copy it. I wanted to understand what makes it feel alive, and to see what you keep of it when you build real applications, with real data, for people who are tired by motion, or who have an old tablet. It became a lab: Krizaka Motion.
+
+A word on names. Marvel and Jarvis belong to their owners. We have no connection with them, and nothing in this lab comes from those films: no image, no sound, no drawing. They are only films that made me want to try.
+
+And I say it right away: this is a lab, an experiment we love, not a finished product. Nothing in it is published on npm. Here is what is inside, what went wrong, and what became solid.
+
+## The first studies
+
+The first studies were drawings on a canvas: the Orazaka engine flow with its points of light running between the products, a sphere that follows a voice, a heads-up display made of rings and reticles, liquid glass that bends light, a neural lattice. It was beautiful, and it ran on the lab's page. The lab still keeps them, on its experiments page, under names of our own.
+
+But a Krizaka site is not allowed to draw like that. Our rule is simple: one motion system, no canvas, no animation loop that runs forever. The studies stayed studies. What proved useful had to be rebuilt another way.
+
+## The bug that taught us to test
+
+On October 20, I noticed that the engine flow did not move, neither on krizaka.com nor in the lab. The points of light were there, motionless.
+
+The cause, once found, was tiny. The animation slid a stroke offset towards a value written without a unit, a bare number, while the other keyframe was a length. The browser cannot go from one to the other, so it did not animate. Each point jumped between two positions that drew it in the same place. A one-line detail in CSS ([krizaka-ui#394](https://github.com/krizaka/krizaka-ui/pull/394)).
+
+What taught me the most is why nobody had seen it. All our checks in a real browser ran with reduced motion asked for. They saw a perfectly calm page, as planned, and concluded everything was fine.
+
+Since then, motion is tested where it moves. Every animated element has two checks in a real browser: one with reduced motion off, which reads the animated property for about seven tenths of a second and demands values that are different and finite, and one with reduced motion on, which demands that everything stays at rest. And a lint rule: never an animated length without its unit.
+
+## What became a system
+
+The engine flow became [`EngineFlow`](https://ui.krizaka.com/components/engine-flow) in Krizaka UI, redrawn in SVG and CSS. The conduits are paths, the photons are zero-length dots whose offset slides. That gives us for free what a canvas does not: the pause off screen, text a screen reader can read, real buttons for the nodes, colour that comes from the tokens in both themes, and no layout shift. It weighs 2.2 kB compressed. On a phone, it turns into a column.
+
+<Clip id="motion-engine-clip" alt="Orazaka's flow in the lab: points of light go back and forth between the engine in the centre and the products around it, with the settings panel on the right" caption="The engine flow, played in the lab with its settings on the right. Muted." />
+
+Other things followed, one at a time, when a real screen needed them:
+
+- Routes on a map: a path that draws itself, a courier that travels it, pins that drop, a pulse of heat.
+- Data arriving: a row that slides in at the top of a table, a figure that climbs or rolls to its new value, a line that traces itself.
+- An answer that writes itself word by word in its message bubble, with the typing indicator holding the place before.
+- Transitions between two steps of a checkout, with the browser's view transitions.
+- The Krizaka birds on a stage: at ease, each in character. Every few seconds, two neighbours glance at each other. Every half minute, the pigeon carries its parcel to another bird. A bird looks up when you come near. The [Flock](https://ui.krizaka.com/components/flock/) page is still in beta.
+
+<Row>
+<Clip id="motion-maps-clip" alt="A map on which a path draws itself between pins, with duration settings on the right" caption="A path drawing itself on the map, and its adjustable duration." />
+<Clip id="motion-chat-clip" alt="A conversation: a customer's question, then the answer writing itself in its bubble, with speed settings" caption="An answer writing itself, and its settings. Muted." />
+</Row>
+
+Everything follows the same grammar, described on [the Motion page](https://ui.krizaka.com/foundations/motion/) of Krizaka UI: a speed, a duration, an easing, a step between items, a density, a trigger. I have to be honest: only the engine flow offers almost all of these settings today. Extending them to every element is open work ([krizaka-motion#8](https://github.com/krizaka/krizaka-motion/issues/8)).
+
+## Motion that calms down
+
+One rule rules over the others. Someone who asks their system for less motion does not get an empty page: they get the resting image, composed, with everything in place at once. EngineFlow's points stay along their conduit, the figure is written at its final value, the answer is there in full.
+
+There is a budget too. Motion goes through properties that do not make the layout work (transform, opacity, stroke offset). Loops pause off screen, and wait for the page to finish settling before they start, so they do not get in the way of the first paint. No permanent animation loop, no canvas on the sites. The proposed rule: an element above about four kB compressed has to justify itself. It is written, but the size check per element is not wired into CI yet ([#21](https://github.com/krizaka/krizaka-motion/issues/21)).
+
+## A lab you can touch, organised by task
+
+At first, the lab looked like a showcase. You looked, it was pretty, and you did not know what to do with it. That is not what a developer wants on a Tuesday afternoon. They want: "how do I make a list arrive".
+
+So the lab is now organised by task. There are six guides: animate a list arriving, show a live number, write an answer into a conversation, go from one step to the next, say an action is running and then done, draw a route and follow a courier. Each one is played on a real screen made with Krizaka UI components (a dashboard, a conversation, a checkout, a delivery). Next to it: sliders and choices to change the motion, the code to copy that follows the settings, a table of every option, and a line saying what happens when motion is reduced.
+
+The screens themselves are complete scenarios, with every motion they use. And each component's documentation lives on [ui.krizaka.com](https://ui.krizaka.com), so the lab stays the place where you play.
+
+It is all here: [krizaka.github.io/krizaka-motion](https://krizaka.github.io/krizaka-motion/). In English only for now, in dark and light.
+
+## What I take from it
+
+An interface that moves is not made to be looked at. Good motion says something: it is arriving, it is running, it is done. If it says nothing, you remove it.
+
+And motion is code like any other: it can break silently. A motionless point of light hurt nobody, but it stayed invisible as long as our tests were looking elsewhere. It is the only technical lesson of the lab I am really sure about.
+
+For what comes next, we keep going the same way: a real screen that needs it, a quiet version that passes the tests, and then we file it in Krizaka UI.
