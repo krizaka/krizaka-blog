@@ -82,7 +82,7 @@ export default function TopBar() {
           <Button type="button" variant="ghost" size="icon" shape="pill" onClick={toggleTheme} aria-label={theme === "dark" ? b.toLight : b.toDark} className="hidden h-9 w-9 md:inline-flex">
             {theme === "dark" ? <SunIcon size={16} /> : <MoonIcon size={16} />}
           </Button>
-          <Button asChild variant="outline" size="sm" className="hidden h-7 w-9 px-0 font-mono text-[11px] font-semibold tracking-wide md:inline-flex">
+          <Button asChild variant="outline" size="sm" className="hidden h-7 w-9 px-0 font-mono text-[11px] font-semibold md:inline-flex">
             <Link href={switchTo} hrefLang={other} lang={other} aria-label={b.switchLanguage}>
               {b.languageShort}
             </Link>
