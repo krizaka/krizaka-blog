@@ -85,3 +85,9 @@ test("the licence models are told apart from their siblings, and each has its ch
   assert.equal(modelUrl("hunyuanvideo"), "https://huggingface.co/tencent/HunyuanVideo");
   assert.equal(modelUrl("xtts"), "https://huggingface.co/coqui/XTTS-v2");
 });
+
+test("the voice and audio-judge models of the film post are known by their names (checked 200 on 2026-10-21)", () => {
+  const ids = (s) => mentionsOf(s).map((m) => m.id);
+  assert.deepEqual(ids("Zonos v0.1, Chatterbox, F5-TTS and Qwen2-Audio, not Qwen 2.5 7B."), ["zonos", "chatterbox", "f5-tts", "qwen2-audio", "qwen25-7b"]);
+  assert.equal(modelUrl("zonos"), "https://huggingface.co/Zyphra/Zonos-v0.1-transformer");
+});

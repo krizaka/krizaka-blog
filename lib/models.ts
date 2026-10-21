@@ -53,6 +53,10 @@ export const MODELS: readonly ModelLink[] = [
   { id: "xtts", name: "XTTS-v2", url: `${HF}coqui/XTTS-v2`, group: "xtts", patterns: ["XTTS(?:-v2)?"] },
   { id: "kokoro", name: "Kokoro", url: `${HF}hexgrad/Kokoro-82M`, group: "kokoro", patterns: ["\\bKokoro\\b"] },
   { id: "piper", name: "Piper voices", url: `${HF}rhasspy/piper-voices`, group: "piper", patterns: ["\\bPiper\\b"] },
+  { id: "zonos", name: "Zonos v0.1", url: `${HF}Zyphra/Zonos-v0.1-transformer`, group: "zonos", patterns: ["\\bZonos\\b"] },
+  { id: "chatterbox", name: "Chatterbox", url: `${HF}ResembleAI/chatterbox`, group: "chatterbox", patterns: ["\\bChatterbox\\b"] },
+  { id: "f5-tts", name: "F5-TTS", url: `${HF}SWivid/F5-TTS`, group: "f5-tts", patterns: ["F5-TTS"] },
+  { id: "qwen2-audio", name: "Qwen2-Audio 7B Instruct", url: `${HF}Qwen/Qwen2-Audio-7B-Instruct`, group: "qwen-audio", patterns: ["Qwen2-Audio"] },
   { id: "whisper", name: "Whisper large-v3", url: `${HF}openai/whisper-large-v3`, group: "whisper", patterns: ["\\bWhisper\\b"] },
   /* Language models. */
   { id: "qwen25-7b", name: "Qwen2.5 7B Instruct", url: `${HF}Qwen/Qwen2.5-7B-Instruct`, group: "qwen", patterns: ["Qwen ?2\\.5 7B(?! ?VL)"] },
