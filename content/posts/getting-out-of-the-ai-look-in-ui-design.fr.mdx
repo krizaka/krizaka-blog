@@ -1,0 +1,111 @@
+---
+title: "Sortir du look « IA » en design d'interface : ce que nous avons mesuré et changé"
+description: "Des développeurs m'ont dit que Krizaka UI faisait « projet généré par Claude ». J'ai mesuré, comparé trois directions, retiré les tics. Avec une liste à appliquer."
+seoTitle: "Interface trop « IA » : l'audit et les corrections"
+seoDescription: "Polices par défaut, hero centré, capitales, flous, rayons uniformes : l'audit du look « IA » de Krizaka UI et ce que nous avons changé."
+date: 2026-10-21
+publishedAt: "2026-10-21T09:00:00-04:00"
+tags: [ui, measurements]
+author: oussama
+draft: false
+cover: cahier-cover
+coverAlt: "Sur un bureau en noyer, un cahier d'écolier ouvert à la grille Seyès bleue et à la marge rouge : à gauche l'esquisse d'une page web barrée d'un trait d'encre, à droite la planche dessinée d'un petit oiseau avec ses légendes, une plume et un encrier"
+series: building-krizaka
+part: 6
+---
+
+Le 20 octobre, j'ai montré Krizaka UI à des développeurs de mon entourage. Leur verdict est tombé vite : « Ça fait trop IA. C'est comme tous les projets générés par Claude : le même gabarit, la même façon de faire, le même résultat au premier coup d'œil. »
+
+Ça m'a piqué, parce que c'était juste. Le kit a été écrit avec un assistant, et il en portait la signature. Chaque détail pris seul était défendable. Ensemble, ils formaient un décor qu'on a déjà vu cent fois. Je raconte ici comment nous avons mesuré le problème, ce que nous avons changé, et une liste que vous pouvez passer sur votre propre interface.
+
+## D'abord compter, ensuite juger
+
+Le même jour, un peu plus tôt, j'avais fait retirer trois choses qui m'agaçaient : les boutons à coins coupés, le bleu et les survols. Ce n'était pas la racine du problème. Avant de toucher à quoi que ce soit d'autre, j'ai demandé un audit, mesuré dans un vrai navigateur sur les sites en ligne (krizaka.com, ui.krizaka.com, et les sites de deux produits).
+
+<Figure id="audit-before-www" alt="La page d'accueil de krizaka.com avant la refonte, en thème sombre : une barre flottante arrondie, une marque centrée, une étiquette en capitales espacées, un titre centré en très gras avec un tiret long, un paragraphe centré, deux boutons, une rangée d'icônes puis quatre grands chiffres" caption="krizaka.com avant, le 20 octobre. Tout y est : le hero centré, l'étiquette en capitales, le tiret long dans le titre, les deux boutons, la rangée de chiffres." />
+
+Voici ce que l'audit a trouvé.
+
+Les polices étaient Inter, Plus Jakarta Sans en graisse 800 et JetBrains Mono : le trio par défaut des gabarits Next.js. Le hero de krizaka.com était centré, avec une étiquette en capitales mono, un titre de 64 px à tiret long, un bouton plein et un bouton fantôme. Une étiquette en capitales mono surmontait 5 titres sur 6 sur krizaka.com, 6 sur 7 sur Orazaka et sur Yomizaka (la page d'accueil de Yomizaka en comptait 25). Une bande de 3 à 4 gros chiffres qui défilent suivait chaque hero.
+
+Il y avait de fausses fenêtres de navigateur, avec leurs trois points et leur barre d'adresse, sur ui.krizaka.com, sur Orazaka et sur Yomizaka. Il y avait des éléments flous : 11 sur krizaka.com, 6 sur la page du bouton, 4 sur l'accueil de ui., 3 sur Yomizaka. Sur la seule page du bouton, 231 éléments avaient exactement le même rayon de 16 px.
+
+L'ordre des sections était celui de toutes les pages SaaS : étiquette, titre, phrase d'introduction, grille de cartes, appel à l'action, FAQ. Les icônes avaient le trait arrondi de 2 px qu'on voit partout. Dans les textes, on trouvait des tirets longs dans les titres et des phrases en trois temps. Et les oiseaux de la marque servaient de décoration, alors qu'ils auraient dû structurer quelque chose.
+
+Une remarque que je trouve juste : les mots eux-mêmes étaient précis, et ils sont restés. Le problème n'était pas le texte. C'était l'habillage.
+
+## Trois directions, une seule gagnante
+
+Plutôt que de corriger au hasard, nous avons dessiné trois directions complètes sur les mêmes écrans réels (l'accueil de krizaka.com, la page du bouton de ui., un contrôle de bail de Yomizaka), en clair et en sombre, sur ordinateur et sur téléphone.
+
+<Row>
+<Figure id="dir-cahier" alt="L'accueil de krizaka.com en direction Cahier : papier à la grille Seyès, marge rouge, titre en empattements bleu encre, une planche des cinq oiseaux avec légendes" caption="Cahier : le cahier de terrain." />
+<Figure id="dir-habitat" alt="L'accueil de krizaka.com en direction Habitat : des dalles de béton modulaires aux angles nets, des produits empilés" caption="Habitat : l'architecture modulaire." />
+<Figure id="dir-affiche" alt="L'accueil de krizaka.com en direction Affiche : des aplats de couleur, une typographie qui change de largeur, des oiseaux en autocollants" caption="Affiche : le mur d'affiches." />
+</Row>
+
+**Cahier** : la grille de cahier d'écolier français (la Seyès), une marge rouge où se notent les numéros de section, les oiseaux dessinés comme des planches de naturaliste avec leur promesse en légende. Encre bleue sur papier en clair, craie sur ardoise en sombre.
+
+**Habitat** : l'architecture modulaire de Montréal, des dalles avec une face pleine, sans flou, des produits empilés.
+
+**Affiche** : un mur d'affiches, des aplats de couleur, des titres qui changent de largeur, les oiseaux en autocollants.
+
+J'ai choisi Cahier. La raison tient en une phrase : c'est la seule direction où les oiseaux organisent le système au lieu de l'orner. Ils deviennent les planches et les légendes, et ça, une invite générique ne le produit pas toute seule. Habitat était la plus sûre, mais celle qui risquait le plus de retomber en outil de développeur banal. Affiche était la plus bruyante, difficile à garder calme sur un écran professionnel. Nous gardons de celle-là un tampon pour les grands moments.
+
+## Ce qui a changé, concrètement
+
+**Les coins coupés sont partis.** Sur chaque bouton d'action, nous avions un coin taillé à 45 degrés. Une astuce qui donnait à la commande la plus importante d'une page un air de jeu vidéo. Un seul rayon de 8 px, celui d'un champ de saisie, à la place. Puis, avec Cahier, 2 px sur les contrôles et 0 sur les cartes.
+
+**Le bleu.** L'ancien, `#196df5`, est un bleu électrique saturé : celui de presque tous les produits d'IA. Nous avons dessiné cinq candidats en pastilles, puis sur les vraies pages. Le bleu retenu est un bleu acier, `#3e76a8` en sombre et `#2a5e8d` en clair. Sa teinte (208) est exactement la complémentaire de l'orange d'Orazaka, ce qui a l'avantage d'une règle plutôt que d'un goût. Le contraste du texte blanc dessus est de 4,8 pour 1 en sombre et de 6,7 pour 1 en clair, testé.
+
+<Figure id="steel-before-after" alt="Quatre captures de la page d'accueil de krizaka.com, avant en haut et après en bas : ordinateur sombre, ordinateur clair, téléphone sombre, téléphone clair. Le bleu électrique en haut, le bleu acier en bas" caption="Avant (en haut) et après (en bas) : le bleu et les boutons. Le chiffre de téléchargements change entre les deux captures parce qu'il est lu en direct." />
+
+**Plus de lumière qui suit la souris, plus de carte qui se soulève.** Au survol, une carte montait de 3 à 4 px avec une ombre colorée, et une lueur suivait le pointeur. Le survol change maintenant une couleur, jamais une position : le fond d'une carte monte d'un cran et son filet s'accentue, en 150 ms. Un test passe le vrai pointeur sur chacune des 754 stories du Storybook et vérifie qu'aucune ne bouge.
+
+**Plus de flou.** Les ombres sont un décalage plein, comme une feuille posée un peu à côté, jamais un halo. La barre n'est plus du verre dépoli. Je viens de recompter dans un navigateur : sur krizaka.com, aucun élément flou et aucune étiquette en capitales, contre 11 flous au départ ; sur ui.krizaka.com, un seul flou. Le rayon dominant est de 2 px (70 éléments sur la page d'accueil de krizaka.com, 45 sur celle de ui.). Il reste des pastilles et quelques rayons de 12 et 14 px sur krizaka.com : ce n'est pas fini.
+
+**Les chiffres.** Notre police à empattements avait un défaut : ses chiffres par défaut sont elzéviriens, de hauteurs inégales, certains montent et d'autres descendent. Dans la rangée « 4 514 », « 39 », « 19 », ça dansait. Je l'ai vu sur krizaka.com, en français et en sombre. La correction : des chiffres alignés sur la ligne de base et de largeur fixe, partout où un chiffre est affiché.
+
+**Un seul pied de page.** Une autre remarque de ces mêmes développeurs : « le pied de page, c'est trop, on dirait qu'il y en a deux ». C'était vrai : un bloc du site, puis quatre colonnes de la famille dont une ne listait que Krizaka. Maintenant, une bande (Produits, Open source, Krizaka) puis une ligne pour la signature, la version, Montréal et les mentions légales.
+
+**Des étiquettes « démo » honnêtes.** Les planches de la page des produits montrent des écrans qui fonctionnent, mais avec des données d'exemple. Au lieu de chiffres inventés qui font vrai, chaque figure dit ce qu'elle est : « Points par journée (ligue de démo) », « Ligue entre amis, 8e journée · démo », « cité, page 3 · démo ». Et quand un calcul apparaît, il est juste : le reçu d'un salon montre 45 $ plus deux taxes de 2,25 $ et de 4,49 $, soit 51,74 $, et un test vérifie l'arithmétique au sou près.
+
+<Row>
+<Figure id="calm-before-ui" alt="La page d'accueil de ui.krizaka.com avant : un sélecteur de produits, un faux écran de console avec ses trois points, un bandeau de chiffres, un bouton bleu plein" caption="ui.krizaka.com avant." />
+<Figure id="calm-after-ui" alt="La page d'accueil de ui.krizaka.com après : un titre en empattements, une ligne d'installation, trois entrées (composants, fondations, modèles) et une recherche" caption="Après : quatre choses sur le premier écran, et rien d'autre." />
+</Row>
+
+## Une liste à passer sur votre interface
+
+Aucune de ces règles n'est interdite. C'est leur accumulation qui fait le look. Pour chaque point, comptez, ne jugez pas à l'œil.
+
+1. **Les polices.** Ouvrez l'inspecteur. Si vous trouvez Inter, Plus Jakarta Sans ou Poppins pour le texte, ce n'est pas une faute, mais c'est le premier indice. Choisissez une police pour une raison que vous savez dire.
+2. **Le hero.** Centré, titre dégradé, deux boutons ? Essayez une composition asymétrique avec une seule action.
+3. **Les étiquettes en capitales mono au-dessus des titres.** Comptez-les. Plus d'une sur trois, c'est un tic.
+4. **Les fausses fenêtres de navigateur.** Montrez le vrai composant, étiqueté « données de démonstration », ou une planche légendée.
+5. **Les flous.** Comptez les éléments qui ont un `filter` ou un `backdrop-filter` de flou. Chaque halo doit justifier sa présence.
+6. **Les rayons.** Comptez les valeurs distinctes de `border-radius` et leur répartition. Quand 231 éléments partagent le même, ce n'est pas un système, c'est un réglage par défaut.
+7. **L'ordre des sections.** Si on peut le deviner sans lire : étiquette, titre, grille de trois cartes, appel à l'action, FAQ, changez-en au moins un.
+8. **Les icônes.** Un trait de 2 px arrondi partout se reconnaît. Dessiner ou choisir un trait qui a un caractère.
+9. **Les survols.** Une carte qui se soulève et une lueur qui suit la souris, c'est devenu un réflexe de gabarit. Changer une couleur suffit.
+10. **Les textes.** Cherchez les tirets longs et les listes de trois mots. Relisez à voix haute : si ça sonne comme une brochure, réécrivez.
+11. **Les chiffres inventés.** Tout ce qui est affiché est vrai, ou dit qu'il est un exemple.
+
+Pour ceux qui veulent mesurer plutôt que deviner, voici de quoi compter dans la console d'un navigateur :
+
+```js
+const cs = [...document.querySelectorAll("body *")].map((e) => getComputedStyle(e));
+({
+  flous: cs.filter((c) => /blur/.test(c.filter + c.backdropFilter)).length,
+  capitales: cs.filter((c) => c.textTransform === "uppercase").length,
+  rayons: Object.entries(
+    cs.map((c) => c.borderTopLeftRadius).reduce((m, r) => ((m[r] = (m[r] || 0) + 1), m), {}),
+  ).sort((a, b) => b[1] - a[1]),
+});
+```
+
+## Ce que je retiens
+
+Le look IA n'est pas un défaut de l'outil. C'est ce qui arrive quand personne n'a décidé : chaque réglage par défaut est raisonnable, et leur somme est anonyme. Ce qui nous a sortis de là, c'est d'avoir d'abord des chiffres, ensuite plusieurs directions à comparer sur de vrais écrans, et enfin une idée qui part de ce que nous avons déjà : des oiseaux qui portent une promesse.
+
+Cahier peut aussi devenir mignon à force. Nous gardons la grille pour les pages de lecture et les vitrines, jamais derrière un écran d'application dense. Les sites des produits adoptent le nouveau style un par un. [Krizaka UI](https://ui.krizaka.com) l'a déjà, et les décisions sont écrites dans le dépôt du [kit](https://github.com/krizaka/krizaka-ui), avec leurs tests.
