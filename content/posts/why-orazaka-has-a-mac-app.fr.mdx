@@ -1,0 +1,75 @@
+---
+title: "Pourquoi Orazaka a une app Mac, et pas seulement un site"
+description: "Dossiers et documents sur une machine : plus simple et plus sûr dans une vraie app que dans un site. Ce que l'app fait, Tauri plutôt que du natif pur, et ce que ça coûte."
+seoTitle: "Pourquoi une app Mac pour Orazaka : dossiers et documents"
+seoDescription: "Pourquoi une app Mac pour Orazaka : accès aux dossiers, barre de menus, contrôle de l'expérience. Tauri 2 plutôt qu'Electron ou SwiftUI."
+date: 2026-10-21
+publishedAt: "2026-10-21T17:00:00-04:00"
+tags: [orazaka, ui]
+author: oussama
+draft: false
+cover: agentic-workbench
+coverAlt: "Un établi de menuisier à l'aube : un plan dessiné à la main épinglé au mur, des outils alignés, un assemblage en bois en cours, une lumière dorée par la fenêtre"
+series: building-orazaka
+part: 7
+---
+
+« Pourquoi une app Mac ? Le produit tourne déjà dans un navigateur. » C'est la bonne question, et la réponse tient dans la promesse d'Orazaka.
+
+Orazaka promet que vos documents ne partent pas de chez vous. Or ces documents sont des fichiers, dans des dossiers, sur une machine. Plus je regardais ce que cette promesse demande, plus la fenêtre d'un navigateur me paraissait le mauvais endroit pour la tenir. Ce billet explique pourquoi, ce que l'app Mac fait aujourd'hui, et ce que nous avons choisi pour la construire. Le choix n'est pas celui que ma question de départ laissait croire.
+
+## Ce qu'un site rend pénible
+
+Un site peut demander un fichier à l'utilisateur, un par un. Pour qu'un outil lise un dossier, le surveille et y écrive à côté des PDF qui arrivent, il faut autre chose : un dossier choisi une fois, une permission qui dure, une limite que le programme fait respecter lui-même.
+
+Je n'ai pas voulu bâtir une fonction centrale sur la façon dont chaque version de chaque navigateur gère les fichiers. Je ne peux pas promettre le même comportement partout, et je n'ai pas envie d'écrire du code défensif pour chaque version quand le sujet est la confiance. Une app qui parle au système directement enlève ce doute.
+
+## Ce que l'app fait aujourd'hui
+
+L'app s'appelle Orazaka Desktop. Son [README](https://github.com/krizaka/orazaka/blob/main/apps/desktop/README.md) la décrit comme une version 0.1, un build de test, pour macOS 14 et plus sur puce Apple. Elle sert à faire tourner Orazaka sur votre Mac ou à vous connecter à un Orazaka hébergé, et à lui donner accès aux dossiers que vous choisissez, et à eux seuls.
+
+Le choix des dossiers passe par le sélecteur natif du système. L'app liste et prévisualise les fichiers (texte, images, PDF), accepte le glisser-déposer, et peut surveiller un dossier pour les nouveaux fichiers. On peut révoquer un dossier, ou tous.
+
+La limite est dans le code Rust ([`scope.rs`](https://github.com/krizaka/orazaka/blob/main/apps/desktop/src-tauri/src/scope.rs)). L'app ne lit un chemin que si sa forme canonique est à l'intérieur d'un dossier accordé. Un `..` ou un lien symbolique qui sort du dossier est refusé. Et certains dossiers ne peuvent jamais être accordés : votre dossier personnel lui-même, la racine, les volumes, les dossiers du système, `~/.ssh`, `~/.aws`.
+
+La partie web de la fenêtre n'a aucune permission sur le système de fichiers. Le panneau de contrôle n'a que la capacité de base de Tauri, ni `fs`, ni `shell`, ni `opener`, et la page d'Orazaka qui s'ouvre dans l'app n'a aucune capacité, donc aucune communication avec l'app. L'interface ne peut pas lancer de shell non plus : elle nomme une commande dans une liste courte (`version`, `status`, `start`, `stop`, `doctor`, `logs`) et le Rust la transforme en arguments fixes. Je l'ai raconté de l'autre côté dans [le billet sur l'agent sur la machine de l'utilisateur](/fr/posts/running-an-agent-on-the-users-machine/).
+
+Et il y a ce qu'un site ne fait pas du tout : une icône dans la barre de menus qui montre si la pile tourne, une fermeture de fenêtre qui laisse l'app vivre, un démarrage à l'ouverture de session (éteint par défaut, et qui n'ouvre que l'app, rien d'autre).
+
+## Nous maîtrisons toute l'expérience
+
+C'est la deuxième raison. Dans un site, l'expérience dépend du navigateur, de ses extensions, de sa version, de ses réglages. Dans une app, nous choisissons la fenêtre, le menu, les raccourcis, ce qui s'ouvre où, ce que l'utilisateur voit quand une permission est demandée. Pour un produit dont l'argument est « vous gardez la main », je veux décider de cette scène.
+
+La livraison est pensée dans le même sens : [le document de livraison](https://github.com/krizaka/orazaka/blob/main/docs/DELIVERY.md) décrit une app signée avec un certificat de développeur, durcie et notarisée. C'est une décision écrite, pas encore une chose finie : d'après le README de l'app, la notarisation n'attend plus que ce certificat.
+
+## La bibliothèque : Tauri 2, pas du Swift
+
+Je dois corriger quelque chose. Quand j'ai dit « app native », j'aurais dû dire « app Mac ». Elle n'est pas écrite en SwiftUI.
+
+C'est [Tauri 2](https://tauri.app) : un programme en Rust, qui affiche l'interface dans la vue web du système (WKWebView sur macOS). Les crates qu'il utilise sont, pour l'essentiel, le sélecteur de dossiers de Tauri (`tauri-plugin-dialog`), le démarrage automatique (`tauri-plugin-autostart`) et la surveillance de dossier (`notify`). Il pilote le programme en ligne de commande d'Orazaka comme processus annexe.
+
+La décision est écrite dans [l'ADR-002 de Krizaka UI](https://github.com/krizaka/krizaka-ui/blob/main/docs/adr/ADR-002-desktop-is-the-web-in-a-window.md), avec ce que nous avons refusé. Electron : un Chromium complet à embarquer par app, son propre système de mise à jour, une surface d'attaque en plus. Une interface native en SwiftUI ou AppKit : une troisième implémentation de chaque composant, à tenir en phase avec le web et le téléphone, et qui serait déjà en retard le jour de sa sortie. Aucun autre produit Krizaka n'en a besoin.
+
+Voilà donc la vraie réponse à « pourquoi pas un site » : pas pour dessiner nos boutons autrement, mais pour tout ce qui touche à la machine. Les boutons, eux, sont ceux du web.
+
+## Krizaka UI sur le Mac
+
+On m'a demandé le nom des composants Krizaka UI pour macOS. Il n'y en a pas, et c'est voulu. Sur le Mac, le « bureau » du kit, c'est les composants web dans la fenêtre de l'app, sur les mêmes jetons, les mêmes thèmes, la même animation. Il n'y a pas de paquet pour le bureau et pas de jeu de composants natifs macOS.
+
+Ce que le kit a ajouté, c'est une forme « bureau » pour quelques composants, activée par une propriété. La plus importante est `AppShell.Root desktop` ([le code](https://github.com/krizaka/krizaka-ui/blob/main/packages/ui/src/app-shell/app-shell.tsx)). Avec elle, l'en-tête devient la barre de titre : on peut y glisser la fenêtre, jamais sur un bouton. Le haut de la page laisse la place aux trois pastilles de la fenêtre (une variable, `--kz-titlebar-inset`, de 28 px). Il n'y a plus de tiroir. La densité est celle d'un bureau : des lignes de 32 px, du texte de 13 px, un en-tête de 48 px. Et la fonction `acceleratorOf` écrit un raccourci comme un accélérateur de menu natif, `mod+k` devenant `CmdOrCtrl+K`, pour que la barre de menus de l'app réponde aux mêmes touches que la page.
+
+Un mot d'honnêteté. Dans l'app aujourd'hui, les composants du kit que je trouve dans le code sont un `Button`, un `Badge`, une `Alert`, un fil d'activité (`ActivityFeed`, `Timeline`) et la marque d'Orazaka. Je n'ai pas trouvé que l'app utilise déjà `AppShell` en forme bureau. C'est prévu par le kit, pas encore fait par l'app.
+
+## Ce que ça coûte
+
+La vue web est celle du système : le CSS de WKWebView est notre plancher sur Mac, et il est parfois un peu en retard sur Chrome. Les composants tenaient déjà aux limites de Safari sur iPhone, donc rien de nouveau.
+
+Tout ce qui est propre à la fenêtre (le menu natif, l'icône de la barre, les notifications, les dialogues de fichiers) est à l'app, via Tauri, jamais dans les composants.
+
+Et il manque des choses : les menus contextuels au clic droit, une séparation redimensionnable ([#286](https://github.com/krizaka/krizaka-ui/issues/286) et [#287](https://github.com/krizaka/krizaka-ui/issues/287)). L'ADR dit aussi à quel signal nous nous apercevrions que nous nous trompons : si l'app a besoin de plus que quelques propriétés `desktop`, ou si une deuxième app de bureau apparaît qui n'est pas une vue web.
+
+Une précision : Akinaza et Yomizaka n'ont pas d'app Mac dans leurs dépôts aujourd'hui. Je ne dis donc rien d'eux ici.
+
+## Ce que j'en retiens
+
+Une app n'est pas là pour faire joli. Elle est là quand la promesse touche à la machine de la personne : ses dossiers, ce qu'elle laisse faire, ce qu'elle peut reprendre. Et choisir de ne pas faire du natif pur n'est pas renoncer à une app : c'est choisir de ne pas écrire chaque écran trois fois.
