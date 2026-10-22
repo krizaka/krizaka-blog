@@ -3600,32 +3600,6 @@
    ]
   }
  },
- "akinaza-books-fr": {
-  "kind": "video",
-  "width": 1280,
-  "height": 800,
-  "blur": "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAAAQAwCdASoYAA8APu1iqU2ppaOiMAgBMB2JZwDKADBhegAA/u9+CXKbg3zaMcV02WBI2DEzpiAIAA==",
-  "poster": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-books-on-akinaza-contracts-on-yomizaka/akinaza-books-fr-poster.7e41cf5d00.webp",
-  "mp4": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-books-on-akinaza-contracts-on-yomizaka/akinaza-books-fr.7426e4ff5b.mp4",
-  "webm": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-books-on-akinaza-contracts-on-yomizaka/akinaza-books-fr.2108e146b4.webm",
-  "bytes": {
-   "mp4": 1233506,
-   "webm": 1028279
-  }
- },
- "yomizaka-review-fr": {
-  "kind": "video",
-  "width": 1280,
-  "height": 800,
-  "blur": "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAADQAgCdASoYAA8APu1iqU2ppaOiMAgBMB2JaQAAhAwAAP7vnBIiReQ4e/yCsEs/lTBtMZviFb6e6wAA",
-  "poster": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-books-on-akinaza-contracts-on-yomizaka/yomizaka-review-fr-poster.dca534d21f.webp",
-  "mp4": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-books-on-akinaza-contracts-on-yomizaka/yomizaka-review-fr.72d5983dba.mp4",
-  "webm": "https://krizaka-assets.b-cdn.net/site/blog/krizaka-books-on-akinaza-contracts-on-yomizaka/yomizaka-review-fr.a4f1b09ecf.webm",
-  "bytes": {
-   "mp4": 2755094,
-   "webm": 3274239
-  }
- },
  "akinaza-books-en": {
   "kind": "video",
   "width": 1280,
