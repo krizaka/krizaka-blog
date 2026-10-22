@@ -7,5 +7,5 @@ export const generateStaticParams = () => (postsOf("fr").length ? postsOf("fr").
 
 export async function GET(_: Request, { params }: { params: Promise<{ slug: string }> }) {
   const post = postOf("fr", (await params).slug.replace(/\.png$/, ""));
-  return ogImage("fr", post?.title, post ? post.tags : []);
+  return ogImage("fr", post?.title, post ? post.tags : [], post?.cover);
 }

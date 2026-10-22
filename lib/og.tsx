@@ -8,6 +8,8 @@ import { ImageResponse } from "next/og";
 import { values } from "@krizaka/tokens";
 import { getDictionary, type Locale } from "./i18n";
 import { hslToCss } from "./color.ts";
+import { mediaOf, hasMedia } from "./media";
+import { OG_HEIGHT, OG_WIDTH, widestSource } from "./og-cover.ts";
 
 const font = (name: string) => readFileSync(join(process.cwd(), "node_modules/@krizaka/fonts/files/native", name));
 
@@ -26,15 +28,37 @@ const c = {
 /** The Krizaka mark (KrizakaLogo of @krizaka/ui, still, on the ink theme), rendered by scripts/gen-favicon.mjs before the build. */
 const markDataUrl = () => `data:image/svg+xml;base64,${readFileSync(join(process.cwd(), ".cache/og-mark.svg")).toString("base64")}`;
 
-export async function ogImage(locale: Locale, title?: string, tags: string[] = []) {
+/** The post's cover, cropped to the card (1200×630) and turned into a JPEG data URL the renderer reads (it does not read WebP).
+    Null when the post has no cover or the file cannot be fetched: the card then keeps its plain ink background. */
+async function coverDataUrl(coverId?: string): Promise<string | null> {
+  if (!coverId || !hasMedia(coverId)) return null;
+  try {
+    const res = await fetch(widestSource(mediaOf(coverId)));
+    if (!res.ok) return null;
+    const sharp = (await import("sharp")).default;
+    const jpeg = await sharp(Buffer.from(await res.arrayBuffer())).resize(OG_WIDTH, OG_HEIGHT, { fit: "cover", position: "centre" }).jpeg({ quality: 82 }).toBuffer();
+    return `data:image/jpeg;base64,${jpeg.toString("base64")}`;
+  } catch {
+    return null;
+  }
+}
+
+export async function ogImage(locale: Locale, title?: string, tags: string[] = [], coverId?: string) {
   const t = getDictionary(locale);
+  const picture = await coverDataUrl(coverId);
   const heading = title ?? t.site.tagline;
   const size = heading.length > 90 ? 54 : heading.length > 60 ? 62 : 72;
   const names = t.tags.names as Record<string, string>;
   return new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", display: "flex", padding: 20, background: c.border }}>
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "56px 64px", borderRadius: 28, background: `linear-gradient(140deg, ${c.surface} 0%, ${c.raised} 55%, ${c.deep} 100%)`, color: c.text, fontFamily: "Plus Jakarta Sans" }}>
+        <div style={{ position: "relative", flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "56px 64px", borderRadius: 28, overflow: "hidden", background: `linear-gradient(140deg, ${c.surface} 0%, ${c.raised} 55%, ${c.deep} 100%)`, color: c.text, fontFamily: "Plus Jakarta Sans" }}>
+          {picture ? (
+            <>
+              <img src={picture} width={1160} height={590} alt="" style={{ position: "absolute", top: 0, left: 0, width: 1160, height: 590, objectFit: "cover" }} />
+              <div style={{ position: "absolute", top: 0, left: 0, width: 1160, height: 590, display: "flex", background: `linear-gradient(180deg, rgba(8, 12, 20, 0.35) 0%, rgba(8, 12, 20, 0.2) 35%, rgba(8, 12, 20, 0.88) 100%)` }} />
+            </>
+          ) : null}
           <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
             <img src={markDataUrl()} width={72} height={72} alt="" />
             <div style={{ display: "flex", fontSize: 32, fontWeight: 700, color: c.text }}>{t.site.name}</div>
