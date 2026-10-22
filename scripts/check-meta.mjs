@@ -37,6 +37,9 @@ export function visibleText(html) {
 }
 
 /** The problems of one page's HTML; an empty list when it is fine. */
+/** A merged post's old address (scripts/post-redirects.mjs): a refresh to the post that absorbed it, not a page to audit. */
+export const isRedirectStub = (html) => /<meta http-equiv="refresh"/.test(html);
+
 export function metaProblems(html) {
   const out = [];
   const title = decode(html.match(/<title>([^<]*)<\/title>/)?.[1] ?? "");
@@ -88,6 +91,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   for (const file of pages(dir)) {
     n++;
     const html = readFileSync(file, "utf8");
+    if (isRedirectStub(html)) continue;
     const rel = `/${relative(dir, file).replace(/index\.html$/, "")}`;
     for (const p of metaProblems(html)) problems.push(`${rel}: ${p}`);
     if (/^\/(fr\/)?posts\/[^/]+\/$/.test(rel)) for (const p of coverProblems(html)) problems.push(`${rel}: ${p}`);
