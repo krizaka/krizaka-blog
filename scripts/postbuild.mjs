@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 /* After `next build`: llms.txt (llmstxt.org) written next to the pages in out/, linking the posts and the family. */
-import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
-import { redirectPages } from "./post-redirects.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SITE = "https://blog.krizaka.com";
@@ -26,8 +25,3 @@ writeFileSync(
   `# Krizaka Blog\n\n> The company blog of Krizaka (https://www.krizaka.com): notes on sovereign AI, measured costs and real document runs. English at the root, French under ${SITE}/fr/. Feeds: ${SITE}/feed.xml, ${SITE}/atom.xml.\n\n## Posts (English)\n\n${list("en")}\n\n## Billets (français)\n\n${list("fr")}\n\n## Elsewhere\n\n- [Krizaka](https://www.krizaka.com)\n- [Krizaka UI](https://ui.krizaka.com)\n- [Krizaka Java](https://java.krizaka.com)\n- [Source](https://github.com/krizaka/krizaka-blog)\n`,
 );
 console.log(`postbuild: llms.txt (${posts.length} posts)`);
-for (const page of redirectPages(JSON.parse(readFileSync(join(root, "content/redirects.json"), "utf8")))) {
-  mkdirSync(dirname(join(root, "out", page.path)), { recursive: true });
-  writeFileSync(join(root, "out", page.path), page.html);
-}
-console.log("postbuild: redirect pages for the merged posts");

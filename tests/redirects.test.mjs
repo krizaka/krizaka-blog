@@ -2,32 +2,29 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import matter from "gray-matter";
-import { isRedirectStub, metaProblems } from "../scripts/check-meta.mjs";
-import { redirectPages } from "../scripts/post-redirects.mjs";
 
-/* A post merged into another keeps its address: the build writes a page at the old one (content/redirects.json). The ingress of
-   .do/app.yaml lists no route one by one (DigitalOcean has no regex). Every source is a post that no longer exists, every target a
-   published post of the same language. */
+/* The 308s of .do/app.yaml (ingress rules): a post merged into another keeps its address. Every source is a post that no
+   longer exists, every target a published post of the same language. */
 const spec = readFileSync(new URL("../.do/app.yaml", import.meta.url), "utf8");
-const map = JSON.parse(readFileSync(new URL("../content/redirects.json", import.meta.url), "utf8"));
-const post = (slug, lang) => new URL(`../content/posts/${slug}.${lang}.mdx`, import.meta.url);
+const rules = [...spec.matchAll(/prefix: (\/(?:fr\/)?posts\/[a-z0-9-]+) \} \}\n\s+redirect: \{ uri: (\/(?:fr\/)?posts\/([a-z0-9-]+)\/), redirect_code: (\d+) \}/g)];
+const post = (path) => {
+  const m = path.match(/^\/(fr\/)?posts\/([a-z0-9-]+)\/?$/);
+  return new URL(`../content/posts/${m[2]}.${m[1] ? "fr" : "en"}.mdx`, import.meta.url);
+};
 
-test("the merged posts point to the post that absorbed them, in both languages", () => {
-  const pages = redirectPages(map);
-  assert.equal(pages.length, 4);
-  assert.ok(pages.some((p) => p.path === "fr/posts/measured-not-promised/index.html" && p.target === "https://blog.krizaka.com/fr/posts/what-image-and-video-generation-costs/"));
-  for (const [from, to] of Object.entries(map)) {
-    for (const lang of ["en", "fr"]) {
-      assert.ok(!existsSync(post(from, lang)), `${from} (${lang}) is gone`);
-      assert.ok(existsSync(post(to, lang)), `${to} (${lang}) exists`);
-      assert.equal(matter(readFileSync(post(to, lang), "utf8")).data.draft, false, `${to} is published`);
-    }
+test("the merged posts redirect (308) to the post that absorbed them, in both languages", () => {
+  assert.equal(rules.length, 4);
+  for (const [, from, to, , code] of rules) {
+    assert.equal(code, "308");
+    assert.equal(from.startsWith("/fr/"), to.startsWith("/fr/"), `${from} and ${to} are in the same language`);
+    assert.ok(!existsSync(post(from)), `${from} is gone`);
+    const target = post(to);
+    assert.ok(existsSync(target), `${to} exists`);
+    assert.equal(matter(readFileSync(target, "utf8")).data.draft, false, `${to} is published`);
   }
-  for (const p of pages) assert.match(p.html, /http-equiv="refresh" content="0; url=https:\/\/blog\.krizaka\.com\/(fr\/)?posts\/[a-z0-9-]+\/"/);
 });
 
-test("the ingress lists no post route: the sign-in under /api, the site for the rest", () => {
-  assert.doesNotMatch(spec, /\/posts\//);
+test("the sign-in stays under /api and the site answers the rest", () => {
   assert.match(spec, /prefix: \/api \} \}\n\s+component: \{ name: oauth \}/);
   assert.match(spec, /prefix: \/ \} \}\n\s+component: \{ name: site \}/);
   assert.doesNotMatch(spec, /routes:/);
@@ -37,8 +34,12 @@ test("the site is open to search engines now that posts are published", () => {
   assert.match(spec, /key: APP_INDEXING_ENABLED\n\s+scope: BUILD_TIME\n\s+value: "true"/);
 });
 
-test("the SEO audit leaves the redirect pages alone, and still audits a real page", () => {
-  for (const p of redirectPages(map)) assert.ok(isRedirectStub(p.html), p.path);
-  assert.ok(!isRedirectStub("<html><head><title>A post</title></head><body><h1>A post</h1></body></html>"));
-  assert.ok(metaProblems("<html><head><title>x</title></head><body></body></html>").length > 0);
+test("the spec carries the captcha site key (public by design), never the secret key, and never « unset »", () => {
+  assert.match(spec, /key: NEXT_PUBLIC_ABUSE_CAPTCHA_SITE_KEY\n\s+scope: BUILD_TIME\n\s+value: 0x4[A-Za-z0-9_-]{15,}\n/);
+  assert.doesNotMatch(spec, /ABUSE_CAPTCHA_SECRET_KEY\n(\s+\w+: .*\n)*?\s+value:/);
+});
+
+test("the live-spec check is documented: `krizaka-deploy drift` (krizaka/.github) must report no difference", () => {
+  const readme = readFileSync(new URL("../AGENTS.md", import.meta.url), "utf8");
+  assert.match(readme, /krizaka-deploy drift/);
 });

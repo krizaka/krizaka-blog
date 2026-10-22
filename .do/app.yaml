@@ -30,7 +30,7 @@ static_sites:
       # blog.krizaka.com). A site key is public by design: it is inlined in the page.
       - key: NEXT_PUBLIC_ABUSE_CAPTCHA_SITE_KEY
         scope: BUILD_TIME
-        value: unset
+        value: 0x4AAAAAAFYdSDBwEHMCiX6z
 functions:
   - name: oauth
     github:
@@ -68,8 +68,15 @@ functions:
 # Who answers which path. The sign-in functions under /api, the static site everywhere else, and a 308 for each post
 # merged into another (tests/redirects.test.mjs: every target is a published post, every source is gone).
 ingress:
-  # Few rules, never one per route (DigitalOcean has no regex): the merged posts' old addresses are pages of the build (content/redirects.json).
   rules:
+    - match: { path: { prefix: /posts/measured-not-promised } }
+      redirect: { uri: /posts/what-image-and-video-generation-costs/, redirect_code: 308 }
+    - match: { path: { prefix: /fr/posts/measured-not-promised } }
+      redirect: { uri: /fr/posts/what-image-and-video-generation-costs/, redirect_code: 308 }
+    - match: { path: { prefix: /posts/the-real-economics-of-sovereign-ai } }
+      redirect: { uri: /posts/what-image-and-video-generation-costs/, redirect_code: 308 }
+    - match: { path: { prefix: /fr/posts/the-real-economics-of-sovereign-ai } }
+      redirect: { uri: /fr/posts/what-image-and-video-generation-costs/, redirect_code: 308 }
     - match: { path: { prefix: /api } }
       component: { name: oauth }
     - match: { path: { prefix: / } }
