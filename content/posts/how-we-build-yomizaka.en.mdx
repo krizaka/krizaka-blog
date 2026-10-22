@@ -1,0 +1,71 @@
+---
+title: "A pay stub on a phone, and what we are building with Yomizaka"
+description: "It started with a question asked in a café: is this PDF real? Where Yomizaka stands today, how we build it rule by rule, and what we are trying to do next."
+seoTitle: "How we build Yomizaka"
+seoDescription: "A café, a doubtful pay stub, and how we build Yomizaka: the exact line behind every finding, and what comes next."
+date: 2026-10-22
+tags: [yomizaka, documents, law]
+author: oussama
+draft: false
+publishedAt: "2026-10-22T18:45:00-04:00"
+cover: yomizaka-cafe-table
+coverAlt: "A small round marble café table by a large rainy window in Montréal: two cups of coffee, a phone lying flat and a few pages of a lease, red brick houses and an outdoor iron staircase behind the glass"
+---
+
+A few weeks ago I was in a café with a friend who manages apartment buildings in Montréal. He took out his phone, turned the screen toward me and showed me a pay stub, a PDF. An applicant for a two-bedroom had sent it the day before.
+
+"Do you see anything?"
+
+I didn't. The logo was clean, the amounts added up, the deductions looked like Québec ones. He didn't see anything either, and that was exactly what bothered him. He gets dozens of these a month. He looks at them by eye, forwards them by e-mail to the owner with the ID and the rest, and hopes.
+
+It is not a matter of bad will. It is a matter of tools. Nobody ever gave him anything but his eyes and an inbox.
+
+On the way home, I reread what Yomizaka does today, and what it does not do yet.
+
+## What Yomizaka does today
+
+The idea fits in one sentence: read before you sign. You drop a lease, a contract or an invoice, and Yomizaka reads it against the rules in force. For every finding, it shows you the exact line of the document it relies on.
+
+<Figure id="yomizaka-home" alt="Yomizaka's home page in the dark theme: the title « Lisez avant de signer. », a sign-in button, a note that sign-up is closed during trials on real Québec leases, then three columns: the exact line behind every finding, the PDF itself examined, everything found again in a second" caption="The home page as it is online today. Sign-up is closed during our trials." />
+
+Take a real test lease. When it arrives, Yomizaka first recognises what it is: a residential lease, with its dates, its rent, its deposit and its language. It also spots the personal information inside and offers you a redacted version. The document is kept in Canada, encrypted, until you delete it.
+
+<Figure id="yomizaka-lease-info" alt="A lease's page in Yomizaka: a residential lease recognised with high confidence, effective 1 July 2026, rent and deposit of $1,450, in French, two pages; a box flags one address detected and offers a redacted version; below, the document is kept in Canada, encrypted, with a button to delete it" caption="A test lease as Yomizaka reads it. The $1,450 deposit is a clue: in Québec, a landlord cannot require one." />
+
+Then comes the check. The text is read rule by rule against the Civil Code of Québec and the regulation on the mandatory lease form, as they apply on a given date. On that lease, on 17 October, three blocking issues came out of nine rules: a security deposit, post-dated cheques and a clause that forbids children. The Civil Code forbids all three, and each came back with its article and the exact sentence of the lease.
+
+<Figure id="yomizaka-lease-run" alt="The result of a check in Yomizaka: the steps reading, pre-check, rules check and report, all done; the Orazaka run id, the compliance-check Studio version 1.2.0, the qc-residential-lease rules; a warning that the Québec corpus must be reviewed by a lawyer; then 3 blocking issues out of 9 rules, each with its source in the Civil Code and the quoted passage of the lease" caption="Every finding gives its rule, the article of law, the exact passage of the lease and the id of the run that produced it." />
+
+Two things in this screenshot matter to me.
+
+The first is the yellow box. The Québec corpus has not been reviewed by a lawyer yet, and the screen says so. Until it is, this is a sorting aid, not legal advice. I would rather people read it in plain words than find it buried in the terms of use.
+
+The second is the run id. Yomizaka never calls a model itself. Orazaka, our engine, does the analysis, and every analysis keeps the trace of what ran, with which version and on which rules. If someone questions a finding in six months, we can find exactly where it came from.
+
+There is also the examination of the PDF itself, the one that would have helped my friend in the café. Yomizaka does not only look at the text, it looks at the file: which software produced it, on which dates, how many times it was saved again, which fonts it uses. Out of that come signals on three levels: observed, unusual, inconsistent. Never a "fake" stamp. A PDF that went through an editor is not necessarily a forgery, and I don't want a tool deciding in a person's place.
+
+## How we build it
+
+The least visible part is the most important one. A rule is never written from memory. We start from the text of the law, we cite the article, and if we cannot read the source, the rule waits. The rule on the notice periods for a rent increase is still waiting for that reason.
+
+Every rule comes with two examples written from the requirement: a lease that meets it, a lease that does not. Then a real run on a test lease is the acceptance test. That run, on 17 October, is the one that caught the deposit.
+
+And the rules do not live in Yomizaka. They are Orazaka's data. Yomizaka picks the ruleset, shows the findings and keeps the trace. The day a rule changes, we change a piece of data, run the examples again, and see right away what moves.
+
+It is slower than asking a model to "read the lease and say what is wrong". But an answer that does not cite its source is not one I can defend in front of someone about to sign a twelve-month lease.
+
+## What we are trying to do
+
+Thinking back to the café, I understood that the pay stub was only half of the problem. The other half is e-mail. IDs, bank statements and pay stubs travel from inbox to inbox, and stay everywhere. Under Québec's Law 25, that is exactly what should not happen.
+
+The next part of Yomizaka starts there, and it is not built yet. I want to say that clearly.
+
+First, a unique link sent to the applicant. They drop their photos and PDFs, read and sign their consent, and nothing goes through e-mail. Then a vault: the documents are examined there, then purged under a clear rule, and the owner receives a link to a report, not the documents. The report will show the effort ratio, that is the rent divided by the verified net income, as a fact with its source. Not as a score. The decision stays with the person renting.
+
+There are things we will not do until a lawyer tells us they are allowed. Criminal background checks for housing are one of them. They stay off.
+
+Further on, we want to help managers stop missing a renewal window. For a one-year lease, the rent-increase notice must go out between six and three months before the end (article 1942 of the Civil Code). With a few hundred units, it is easy to forget one.
+
+I don't know yet how long all this will take. I do know the order: what protects people first, what saves time next.
+
+If you want to see where the product stands, it is at [yomizaka.com](https://www.yomizaka.com). And if you manage buildings and have also looked at a PDF wondering whether it was real, I would really like to know how you handle it today.

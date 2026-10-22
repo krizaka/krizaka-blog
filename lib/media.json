@@ -3695,5 +3695,156 @@
     }
    ]
   }
+ },
+ "yomizaka-home": {
+  "kind": "image",
+  "width": 1600,
+  "height": 913,
+  "blur": "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAABQAwCdASoYAA4APu1iqU2ppaOiMAgBMB2JaQAAW+i73HPmQAD+7ER+R6PUAEPZpLZGKZwPYKtUQ0/bQEAAAA==",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-home-480.bba082e2b5.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-home-960.5d03e6fb52.webp"
+   },
+   {
+    "w": 1600,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-home-1600.624fdd6d41.webp"
+   }
+  ],
+  "made": {
+   "model": "none: a screenshot of the live app",
+   "engine": "Playwright (Chromium), 1280 px wide at 2x, dark theme",
+   "machine": "MacBook Pro, Apple M1 Max",
+   "costUsd": 0,
+   "note": "A screenshot of www.yomizaka.com taken on 2026-10-22, signed in with the test account (its address cropped out). Not a generated picture, not an Orazaka run; the run id visible in the picture is the real one of that check."
+  }
+ },
+ "yomizaka-lease-info": {
+  "kind": "image",
+  "width": 1600,
+  "height": 1049,
+  "blur": "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAADwAgCdASoYABAAPu1iqU2ppaQiMAgBMB2JZwDLLDBsAAD+76Z10cgmCFBri06x2PwMrnWyiVoaxQAA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-lease-info-480.b94aeaa85e.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-lease-info-960.f74caa3ce1.webp"
+   },
+   {
+    "w": 1600,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-lease-info-1600.32e1ef8f44.webp"
+   }
+  ],
+  "made": {
+   "model": "none: a screenshot of the live app",
+   "engine": "Playwright (Chromium), 1280 px wide at 2x, dark theme",
+   "machine": "MacBook Pro, Apple M1 Max",
+   "costUsd": 0,
+   "note": "A screenshot of www.yomizaka.com taken on 2026-10-22, signed in with the test account (its address cropped out). Not a generated picture, not an Orazaka run; the run id visible in the picture is the real one of that check."
+  }
+ },
+ "yomizaka-lease-run": {
+  "kind": "image",
+  "width": 1600,
+  "height": 1049,
+  "blur": "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAADwAgCdASoYABAAPu1iqU2ppaOiMAgBMB2JaQDLLDBsAAD+738520iP4IvKtVkweE3xzd5kj0AAAA==",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-lease-run-480.0f6a6140ec.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-lease-run-960.3f25876630.webp"
+   },
+   {
+    "w": 1600,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-lease-run-1600.4ae76be589.webp"
+   }
+  ],
+  "made": {
+   "model": "none: a screenshot of the live app",
+   "engine": "Playwright (Chromium), 1280 px wide at 2x, dark theme",
+   "machine": "MacBook Pro, Apple M1 Max",
+   "costUsd": 0,
+   "note": "A screenshot of www.yomizaka.com taken on 2026-10-22, signed in with the test account (its address cropped out). Not a generated picture, not an Orazaka run; the run id visible in the picture is the real one of that check."
+  }
+ },
+ "yomizaka-cafe-table": {
+  "kind": "image",
+  "width": 1536,
+  "height": 864,
+  "blur": "data:image/webp;base64,UklGRrAAAABXRUJQVlA4IKQAAADwAwCdASoYAA4APu1iqU2ppaOiMAgBMB2JYwCdAApCMXzEzTOWuwGAAPpL1xQVy3/XrCXztT2H9SVa7Iyt+UJHS6RF9GnKzf2dhziFj1v1C7HwsIaCYq/n+7EmfUSoye6DEpdVzaFSDeAnettVufYANORFXMb1EwoUZtkWuuAGwjxG5CnHiZFjIuif4UX6ByuRh0lCEG+29A5tZAADRnV2ANIAAA==",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-cafe-table-480.3875e191ff.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-cafe-table-960.cb1abc818e.webp"
+   },
+   {
+    "w": 1536,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-cafe-table-1536.14ca73dacc.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864, flash attention",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "A small round marble café table by a large window in Montréal in late autumn, two cups of coffee, one half finished, a smartphone lying face up between them with its screen softly glowing pale and blank, a folded paper lease with a pen beside it, rain drops on the glass, blurred red brick buildings and an outdoor iron staircase outside, warm afternoon light, 35mm lens, eye-level, quiet and thoughtful mood. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No people, no hands, no text, no letters, no numbers, no logos, no watermark.",
+   "seed": "1021",
+   "size": "1536×864",
+   "seconds": 103,
+   "costUsd": 0,
+   "note": "Made for this cover with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Two seeds were made (7 and 1021); seed 7 drew a cup with a spout and a garbled title on the paper, so 1021 was kept after a review at full size."
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-cafe-table-480.d4eb3acffa.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-cafe-table-768.94706ff549.avif"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-cafe-table-1200.0433c97e14.avif"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-cafe-table-1536.5f1130ef1d.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-cafe-table-480.290b23e20f.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-cafe-table-768.94f9ee33ec.webp"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-cafe-table-1200.710e9014fa.webp"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/how-we-build-yomizaka/yomizaka-cafe-table-1536.7a6c43e354.webp"
+    }
+   ]
+  }
  }
 }

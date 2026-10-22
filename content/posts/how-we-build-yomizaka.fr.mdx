@@ -1,0 +1,71 @@
+---
+title: "Un talon de paie sur un téléphone, et ce que nous construisons avec Yomizaka"
+description: "Tout est parti d'une question posée dans un café : ce PDF est-il vrai ? Où en est Yomizaka aujourd'hui, comment nous le construisons règle par règle, et ce que nous cherchons à faire ensuite."
+seoTitle: "Comment nous construisons Yomizaka"
+seoDescription: "Un café, un talon de paie douteux, et la façon dont nous construisons Yomizaka : la ligne exacte derrière chaque constat, et ce qui vient ensuite."
+date: 2026-10-22
+tags: [yomizaka, documents, law]
+author: oussama
+draft: false
+publishedAt: "2026-10-22T18:45:00-04:00"
+cover: yomizaka-cafe-table
+coverAlt: "Une petite table ronde en marbre près d'une grande fenêtre sous la pluie, à Montréal : deux tasses de café, un téléphone posé à plat et quelques feuilles d'un bail, derrière la vitre des maisons de brique et un escalier extérieur en fer"
+---
+
+Il y a quelques semaines, j'étais dans un café avec un ami qui gère des immeubles à Montréal. Il a sorti son téléphone, a tourné l'écran vers moi et m'a montré un talon de paie en PDF. Un candidat pour un 4½ le lui avait envoyé la veille.
+
+« Tu vois quelque chose, toi ? »
+
+Je ne voyais rien. Le logo était propre, les montants tombaient juste, les retenues avaient l'air québécoises. Lui non plus ne voyait rien, et c'est justement ce qui le dérangeait. Il en reçoit des dizaines par mois. Il les regarde à l'œil, il les transfère par courriel au propriétaire avec la pièce d'identité et le reste, et il espère.
+
+Ce n'est pas un problème de mauvaise volonté. C'est un problème d'outil. Personne ne lui a jamais donné autre chose que ses yeux et une boîte de courriel.
+
+En rentrant, j'ai relu ce que fait Yomizaka aujourd'hui, et ce qu'il ne fait pas encore.
+
+## Ce que Yomizaka fait aujourd'hui
+
+L'idée de départ tient en une phrase : lisez avant de signer. Vous déposez un bail, un contrat ou une facture, et Yomizaka le lit au regard des règles en vigueur. Pour chaque constat, il vous montre la ligne exacte du document sur laquelle il s'appuie.
+
+<Figure id="yomizaka-home" alt="La page d'accueil de Yomizaka en thème sombre : le titre « Lisez avant de signer. », un bouton Se connecter, la mention que les inscriptions sont fermées pendant les essais sur de vrais baux québécois, puis trois colonnes : la ligne exacte derrière chaque constat, l'examen du PDF lui-même, tout retrouver en une seconde" caption="La page d'accueil, telle qu'elle est en ligne aujourd'hui. Les inscriptions sont fermées pendant nos essais." />
+
+Prenons un vrai bail de test. Quand il arrive, Yomizaka reconnaît d'abord de quoi il s'agit : un bail de logement, avec ses dates, son loyer, son dépôt et sa langue. Il repère aussi les renseignements personnels qu'il contient, et il vous propose une version caviardée. Le document est gardé au Canada, chiffré, jusqu'à ce que vous le supprimiez.
+
+<Figure id="yomizaka-lease-info" alt="La fiche d'un bail dans Yomizaka : bail de logement reconnu avec une confiance élevée, date d'effet 1er juillet 2026, loyer et dépôt de 1 450 $, en français, deux pages ; un encadré signale une adresse détectée et propose une version caviardée ; plus bas, le document est conservé au Canada, chiffré, avec un bouton pour le supprimer" caption="Un bail de test, tel que Yomizaka le lit. Le dépôt de 1 450 $ est un indice : au Québec, le locateur ne peut pas l'exiger." />
+
+Ensuite vient la vérification. Le texte est relu règle par règle, au regard du Code civil du Québec et du règlement sur le formulaire de bail obligatoire, tels qu'ils s'appliquent à une date donnée. Sur ce bail-là, le 17 octobre, trois manquements bloquants sont sortis sur neuf règles : un dépôt de garantie, des chèques postdatés et une clause qui interdit les enfants. Les trois sont interdits par le Code civil, et chacun est revenu avec son article et la phrase exacte du bail.
+
+<Figure id="yomizaka-lease-run" alt="Le résultat d'une vérification dans Yomizaka : les étapes lecture, contrôle préalable, vérification des règles et rapport, toutes terminées ; l'identifiant d'exécution Orazaka, la version du Studio compliance-check 1.2.0, les règles qc-residential-lease ; un avertissement indique que le corpus québécois doit être relu par un avocat ; puis 3 manquements bloquants sur 9 règles, avec pour chaque règle sa source dans le Code civil et le passage cité du bail" caption="Chaque constat donne sa règle, l'article de loi, le passage exact du bail et l'identifiant de l'exécution qui l'a produit." />
+
+Deux choses sur cette capture me tiennent à cœur.
+
+La première, c'est l'encadré jaune. Le corpus québécois n'a pas encore été relu par un avocat, et l'écran le dit. Tant que ce n'est pas fait, c'est un tri, pas un avis juridique. Je préfère qu'on le lise noir sur blanc plutôt que de le cacher dans les conditions d'utilisation.
+
+La deuxième, c'est l'identifiant d'exécution. Yomizaka n'appelle jamais un modèle lui-même. C'est Orazaka, notre moteur, qui fait l'analyse, et chaque analyse garde la trace de ce qui a tourné, avec quelle version et sur quelles règles. Si quelqu'un conteste un constat dans six mois, on peut retrouver exactement d'où il vient.
+
+Il y a aussi l'examen du PDF lui-même, celui qui aurait aidé mon ami au café. Yomizaka ne regarde pas seulement le texte, il regarde le fichier : quel logiciel l'a produit, à quelles dates, combien de fois il a été réenregistré, quelles polices il utilise. Il en sort des signaux sur trois niveaux : observé, inhabituel, incohérent. Jamais un tampon « faux ». Un PDF passé dans un éditeur n'est pas forcément un faux, et je ne veux pas qu'un outil décide à la place d'une personne.
+
+## Comment nous le construisons
+
+La partie la moins visible est la plus importante. Une règle ne s'écrit jamais de mémoire. On part du texte de loi, on cite l'article, et si on n'arrive pas à lire la source, la règle attend. La règle sur les délais de l'avis d'augmentation de loyer attend encore pour cette raison.
+
+Chaque règle arrive avec deux exemples écrits à partir de l'exigence : un bail qui la respecte, un bail qui ne la respecte pas. Puis un vrai passage sur un bail d'essai sert de test d'acceptation. C'est ce passage, le 17 octobre, qui a attrapé le dépôt.
+
+Et les règles ne vivent pas dans Yomizaka. Ce sont des données d'Orazaka. Yomizaka choisit le jeu de règles, montre les constats et garde la trace. Le jour où une règle change, on change une donnée, on relance les exemples, et on sait tout de suite ce qui bouge.
+
+C'est plus lent que de demander à un modèle de « lire le bail et de dire ce qui ne va pas ». Mais une réponse qui ne cite pas sa source, je ne peux pas la défendre devant quelqu'un qui signe un bail de douze mois.
+
+## Ce que nous cherchons à faire
+
+En repensant au café, j'ai compris que le talon de paie n'était que la moitié du problème. L'autre moitié, c'est le courriel. Les pièces d'identité, les relevés bancaires et les talons passent de boîte en boîte, et restent partout. Avec la Loi 25, c'est exactement ce qu'il ne faut pas faire.
+
+La suite de Yomizaka part de là, et elle n'est pas encore construite. Je le dis clairement.
+
+D'abord, un lien unique envoyé au candidat. Il y dépose ses photos et ses PDF, il lit et signe son consentement, et rien ne passe par le courriel. Ensuite, un coffre : les pièces y sont examinées, puis purgées selon une règle claire, et le propriétaire reçoit un lien vers un rapport, pas les pièces. On y verra le taux d'effort, c'est-à-dire le loyer divisé par le revenu net vérifié, comme un fait avec sa source. Pas comme une note. La décision reste à la personne qui loue.
+
+Il y a des choses que nous ne ferons pas tant qu'un avocat ne nous aura pas dit que c'est permis. La vérification des antécédents judiciaires pour un logement en fait partie. Elle reste fermée.
+
+Plus loin, nous voulons aider les gestionnaires à ne plus rater une fenêtre de renouvellement. Pour un bail d'un an, l'avis d'augmentation doit partir entre six et trois mois avant la fin (article 1942 du Code civil). Quand on gère quelques centaines de portes, c'est facile d'en oublier une.
+
+Je ne sais pas encore combien de temps tout ça va prendre. Je sais par contre dans quel ordre le faire : ce qui protège les gens d'abord, ce qui fait gagner du temps ensuite.
+
+Si vous voulez voir où en est le produit, c'est sur [yomizaka.com](https://www.yomizaka.com). Et si vous gérez des immeubles et que vous avez, vous aussi, déjà regardé un PDF en vous demandant s'il était vrai, j'aimerais beaucoup savoir comment vous faites aujourd'hui.
