@@ -55,8 +55,8 @@ export async function ogImage(locale: Locale, title?: string, tags: string[] = [
         <div style={{ position: "relative", flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "56px 64px", borderRadius: 28, overflow: "hidden", background: `linear-gradient(140deg, ${c.surface} 0%, ${c.raised} 55%, ${c.deep} 100%)`, color: c.text, fontFamily: "Plus Jakarta Sans" }}>
           {picture ? (
             <>
-              <img src={picture} width={1160} height={590} alt="" style={{ position: "absolute", top: 0, left: 0, width: 1160, height: 590, objectFit: "cover" }} />
-              <div style={{ position: "absolute", top: 0, left: 0, width: 1160, height: 590, display: "flex", background: `linear-gradient(180deg, rgba(8, 12, 20, 0.35) 0%, rgba(8, 12, 20, 0.2) 35%, rgba(8, 12, 20, 0.88) 100%)` }} />
+              <img src={picture} width={1160} height={590} alt="" style={{ position: "absolute", top: -56, left: -64, width: 1160, height: 590, objectFit: "cover" }} />
+              <div style={{ position: "absolute", top: -56, left: -64, width: 1160, height: 590, display: "flex", background: `linear-gradient(180deg, rgba(8, 12, 20, 0.35) 0%, rgba(8, 12, 20, 0.2) 35%, rgba(8, 12, 20, 0.88) 100%)` }} />
             </>
           ) : null}
           <div style={{ display: "flex", alignItems: "center", gap: 18 }}>

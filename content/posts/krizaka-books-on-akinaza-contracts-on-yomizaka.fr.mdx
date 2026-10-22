@@ -1,0 +1,59 @@
+---
+title: "Comment Krizaka tient ses livres sur Akinaza et vérifie ses contrats avec Yomizaka"
+description: "Avant de proposer nos produits à d'autres, nous les avons essayés sur nous. Une facture, un contrat, ce qui a passé, ce qui a échoué, et ce que ça nous a appris. Données de démonstration."
+seoTitle: "Krizaka sur Akinaza et Yomizaka : ce qu'on a vérifié"
+seoDescription: "Nos factures et nos contrats passés dans nos propres produits : 8 règles sur 8, 4 sur 4, deux échecs utiles et ce qu'ils ont changé."
+date: 2026-10-21
+publishedAt: "2026-10-21T23:40:00-04:00"
+tags: [documents, law, orazaka]
+author: oussama
+draft: false
+cover: balance-desk-dusk
+coverAlt: "Une petite balance en laiton, en équilibre sur un bureau de noyer, entre une pile de papiers ficelés et un stylo-plume ; derrière la vitre, les toits enneigés de Montréal au crépuscule, sous la lumière d'une lampe"
+series: building-krizaka
+part: 8
+---
+
+Avant de proposer un outil à des gens qui ont de vrais clients et de vraies échéances, je voulais lui poser une question simple : est-ce que nous, Krizaka, nous nous en servirions ? Pas dans une démo. Pour nos propres factures et nos propres contrats.
+
+Un mot d'honnêteté d'abord. Tout ce que vous voyez dans ce billet est de la démonstration : des clients fictifs, des montants plausibles, un environnement de développement. Les modèles de documents sont ceux de Krizaka, mais nous en avons retiré tout ce qui identifie la société avant de les envoyer où que ce soit : pas de numéro d'entreprise, pas d'adresse, pas de coordonnées bancaires.
+
+## Les livres, dans Akinaza
+
+Krizaka est un petit studio de logiciel à Montréal. Il vend surtout des heures, et quelques forfaits. Éric, qui le dirige dans notre démo, voulait un seul endroit pour trois choses : les services qu'il facture, des factures que ses clients lisent en français ou en anglais, et la déclaration de taxes de vente préparée sans chiffrier.
+
+<Clip id="akinaza-books-en" alt="Dans Akinaza, la liste des factures d'un studio : chaque carte donne le client de démonstration, la langue du document, la date, l'échéance, le sous-total, les deux taxes et le total" caption="Les factures du studio dans Akinaza. Enregistrement d'écran (interface en anglais) sur notre environnement de développement, données de démonstration." />
+
+Chaque service a un nom dans les deux langues, un prix et une catégorie de taxe. Une facture sort de ces services, dans la langue du client, avec les taxes calculées une seule fois sur le total taxable, au cent près. Elle porte les numéros de taxes du fournisseur et ses conditions de paiement avec l'échéance : ce dont un acheteur a besoin pour réclamer ses crédits.
+
+Chaque facture inscrit ses taxes dans les livres dans la même étape, et la base de données refuse une écriture déséquilibrée. Je tiens à cette règle plus qu'à n'importe quelle fonction : un livre qui ne balance pas n'est pas un livre.
+
+Et la déclaration de la période est préparée à partir de ces livres, ligne par ligne, avec les documents derrière chaque chiffre. Préparée, jamais produite : Éric la relit et la dépose lui-même. Akinaza ne transmet rien à personne. C'est un choix, pas un oubli.
+
+## Les contrats et les factures, dans Yomizaka
+
+Avant que Krizaka devienne le premier client d'Akinaza, ses modèles de facture et de contrat de services sont passés par Yomizaka. Voici la vidéo du parcours, accélérée là où il faut attendre.
+
+<Clip id="yomizaka-review-en" alt="Dans Yomizaka, un contrat de services déposé à gauche et, à droite, le rapport : quatre règles évaluées, aucune défaillance bloquante, chaque règle avec son article de loi et l'identifiant de l'exécution" caption="Le contrat de services de Krizaka vérifié dans Yomizaka. Enregistrement d'écran (interface en anglais), copie caviardée, environnement de développement." />
+
+La facture : huit règles, huit réussies, chacune avec le passage du texte qui la justifie et l'article de loi derrière : la date, les numéros de taxes, le total, les taxes, les conditions de paiement. Le contrat : quatre règles, quatre réussies, sur l'intérêt de retard, le droit d'auteur, les droits moraux et la signature. Le rapport dit lui-même ce qu'il ne couvre pas : le Code civil du Québec, à faire relire par un avocat.
+
+Chaque vérification est une exécution tracée d'Orazaka, le moteur qui travaille derrière. Son identifiant est à l'écran, pour qu'on puisse la retrouver.
+
+## Ce que les échecs nous ont appris
+
+C'est la partie qui m'a le plus servi, et elle n'est pas flatteuse.
+
+Le premier essai, fait directement sur le moteur avec le texte brut de la facture, a échoué sur deux règles : le total et les taxes. Pourtant les deux lignes étaient là. Le moteur ne les retrouvait pas quand un montant était séparé de son libellé par une longue suite d'espaces, ou quand un calcul entre crochets s'intercalait. Ce n'était pas une erreur de la facture, c'était une limite du vérificateur. Dans Yomizaka, qui normalise les espaces, le même modèle passe huit sur huit. Nous avons ouvert [un ticket côté règles](https://github.com/krizaka/orazaka-packs/issues/81), et il est maintenant fermé.
+
+Le deuxième, c'est l'inverse. Nous avons passé dans Yomizaka une facture sortie d'Akinaza lui-même. Elle a échoué : il manquait les conditions de paiement. Un produit de facturation dont la propre facture est refusée par un autre de nos produits, c'est humiliant, et c'est exactement pourquoi on boucle la boucle. Le [ticket](https://github.com/krizaka/akinaza/issues/113) est fermé : la facture porte aujourd'hui son échéance et ses conditions.
+
+Quant au contrat, il passe quatre sur quatre pour une raison qui me gêne un peu : il ne cède aucun droit, donc il n'y a rien à reprocher. Le silence passe. Ce qu'aucune règle ne lit, par exemple un taux d'intérêt de retard énoncé de deux façons différentes entre le contrat et la facture, je l'ai trouvé en relisant, et je l'ai noté pour la personne qui doit trancher. Yomizaka aide, il ne remplace pas un avocat. Il le dit sur chaque écran.
+
+## Ce qui reste à faire
+
+Le passage d'un outil à l'autre est manuel aujourd'hui : c'est le texte vérifié que nous imprimons depuis Akinaza. Une importation par l'API, qui transformerait un modèle vérifié dans Yomizaka en modèle Akinaza, est [proposée](https://github.com/krizaka/akinaza/issues/115), pas construite.
+
+## Ce que vous pouvez en retenir
+
+Si vous construisez un outil pour d'autres, utilisez-le d'abord pour vous, avec vos vraies pièces (caviardées) et pas des exemples soignés. Les deux échecs de ce billet sont arrivés parce qu'on a regardé nos propres documents, et aucune démonstration ne les aurait montrés. Et gardez toujours, quelque part, une phrase honnête sur ce que l'outil ne fait pas.
