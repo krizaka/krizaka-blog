@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import matter from "gray-matter";
+import { isRedirectStub, metaProblems } from "../scripts/check-meta.mjs";
 import { redirectPages } from "../scripts/post-redirects.mjs";
 
 /* A post merged into another keeps its address: the build writes a page at the old one (content/redirects.json). The ingress of
@@ -34,4 +35,10 @@ test("the ingress lists no post route: the sign-in under /api, the site for the 
 
 test("the site is open to search engines now that posts are published", () => {
   assert.match(spec, /key: APP_INDEXING_ENABLED\n\s+scope: BUILD_TIME\n\s+value: "true"/);
+});
+
+test("the SEO audit leaves the redirect pages alone, and still audits a real page", () => {
+  for (const p of redirectPages(map)) assert.ok(isRedirectStub(p.html), p.path);
+  assert.ok(!isRedirectStub("<html><head><title>A post</title></head><body><h1>A post</h1></body></html>"));
+  assert.ok(metaProblems("<html><head><title>x</title></head><body></body></html>").length > 0);
 });
