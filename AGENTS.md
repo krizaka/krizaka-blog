@@ -8,6 +8,7 @@
 - A **Next.js static export** (`output: "export"`, `out/`), English at the root, French under `/fr/`. No server, no
   database; the only functions are the editor's sign-in and the newsletter (`functions/`). Hosting: DigitalOcean App Platform static site
   (free tier, `.do/app.yaml`), DNS Porkbun. **Monthly cost: $0** — add no paid resource without Oussama's written decision.
+- **The spec file is the live spec**: `.do/app.yaml` is applied with `krizaka-deploy deploy --apply` and checked read-only with `krizaka-deploy drift --config <config>` (krizaka/.github; context `default`) — it must report no difference. Public values (the captcha site key) are committed; secret keys never are. The renamed posts keep real 308s as ingress rules (max 10 per app, `krizaka-deploy routes`).
 - Pages are the `@krizaka/ui` page blocks (`Page`, `PageHero`, `Section`, `CardGrid`, `LinkCard`…), tokens through
   `@krizaka/tailwind`, faces `@krizaka/fonts` (`next/font/local`), motion `MotionObserver`. **Dark and light are both
   first-class**; check every view in both. No hard-coded colours (`var(--kz-*)`), no page-local button class.

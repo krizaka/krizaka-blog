@@ -30,7 +30,7 @@ static_sites:
       # blog.krizaka.com). A site key is public by design: it is inlined in the page.
       - key: NEXT_PUBLIC_ABUSE_CAPTCHA_SITE_KEY
         scope: BUILD_TIME
-        value: unset
+        value: 0x4AAAAAAFYdSDBwEHMCiX6z
 functions:
   - name: oauth
     github:
