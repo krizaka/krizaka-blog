@@ -25,9 +25,9 @@
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "via": "Orazaka Studio run on dev.orazaka.com",
    "studio": "art-golden-hour",
-   "prompt": "A man in a crisp white djellaba pours mint tea from a silver teapot held high above a small engraved tea glass, a long thin amber stream in the air, inside a Berber tent in the Sahara, fresh mint and almonds on a weathered wooden table. Editorial lifestyle photograph at golden hour: warm low sunlight raking from the side, long soft shadows, dust motes glowing in the air. 85mm lens at f/2, shallow depth of field, natural skin and fabric texture, rich tactile materials \u2014 weathered wood, wool, brass, linen. Warm palette of amber, terracotta, saffron and sand, gentle film grain, refined composition with breathing space. No text, no lettering, no logos.",
+   "prompt": "A man in a crisp white djellaba pours mint tea from a silver teapot held high above a small engraved tea glass, a long thin amber stream in the air, inside a Berber tent in the Sahara, fresh mint and almonds on a weathered wooden table. Editorial lifestyle photograph at golden hour: warm low sunlight raking from the side, long soft shadows, dust motes glowing in the air. 85mm lens at f/2, shallow depth of field, natural skin and fabric texture, rich tactile materials — weathered wood, wool, brass, linen. Warm palette of amber, terracotta, saffron and sand, gentle film grain, refined composition with breathing space. No text, no lettering, no logos.",
    "seed": "20261011",
-   "size": "1024\u00d71280",
+   "size": "1024×1280",
    "seconds": 120,
    "costUsd": 0,
    "source": "orazaka-web-client src/features/landing/utils/gallery.ts"
@@ -61,7 +61,7 @@
    "studio": "art-miniature",
    "prompt": "A tiny winter park in Montreal: figurines skating on a frozen pond, a small plain wooden cabin with a glowing window and no signboard, snow-covered spruce trees and warm string lights at dusk. Tilt-shift miniature diorama photograph: handcrafted figurines and props at 1:24 scale, macro lens, extremely shallow depth of field with a thin plane of focus, soft window light, ultra-detailed textures of felt, embroidered thread, painted resin and carved wood. Warm ochre, saffron and indigo palette, playful and tender. No text, no lettering, no logos.",
    "seed": "1643",
-   "size": "1360\u00d7768",
+   "size": "1360×768",
    "seconds": 75,
    "costUsd": 0,
    "source": "orazaka-web-client src/features/landing/utils/gallery.ts"
@@ -95,7 +95,7 @@
    "studio": "art-miniature",
    "prompt": "A tiny souk alley: figurine spice merchants behind pyramids of saffron, paprika and cumin, hanging pierced-brass lanterns, woven baskets, a cat asleep on a blue doorstep. Tilt-shift miniature diorama photograph: handcrafted figurines and props at 1:24 scale, macro lens, extremely shallow depth of field with a thin plane of focus, soft window light, ultra-detailed textures of felt, embroidered thread, painted resin and carved wood. Warm ochre, saffron and indigo palette, playful and tender. No text, no lettering, no logos.",
    "seed": "1212",
-   "size": "1024\u00d71280",
+   "size": "1024×1280",
    "seconds": 100,
    "costUsd": 0,
    "source": "orazaka-web-client src/features/landing/utils/gallery.ts"
@@ -159,7 +159,7 @@
    "studio": "art-miniature",
    "prompt": "Two grandmother figurines in richly embroidered North African kaftans and headscarves on a patterned Berber rug: one presses a large plain white linen tablecloth with a tiny old brass iron on a low woven ironing board, the other sits beside her sipping mint tea from a tiny glass, a brass teapot and a basket of oranges nearby. Tilt-shift miniature diorama photograph: handcrafted figurines and props at 1:24 scale, macro lens, extremely shallow depth of field with a thin plane of focus, soft window light, ultra-detailed textures of felt, embroidered thread, painted resin and carved wood. Warm ochre, saffron and indigo palette, playful and tender. No text, no lettering, no logos.",
    "seed": "21",
-   "size": "1024\u00d71280",
+   "size": "1024×1280",
    "seconds": 100,
    "costUsd": 0,
    "source": "orazaka-web-client src/features/landing/utils/gallery.ts"
@@ -223,7 +223,7 @@
    "studio": "art-miniature",
    "prompt": "A family picnic in a tiny olive grove: grandfather figurine telling a story to children on a patterned rug, a tea set, oranges and bread, olive trees with silvery leaves. Tilt-shift miniature diorama photograph: handcrafted figurines and props at 1:24 scale, macro lens, extremely shallow depth of field with a thin plane of focus, soft window light, ultra-detailed textures of felt, embroidered thread, painted resin and carved wood. Warm ochre, saffron and indigo palette, playful and tender. No text, no lettering, no logos.",
    "seed": "808",
-   "size": "1360\u00d7768",
+   "size": "1360×768",
    "seconds": 80,
    "costUsd": 0,
    "source": "orazaka-web-client src/features/landing/utils/gallery.ts"
@@ -295,7 +295,7 @@
    "studio": "art-montreal-night",
    "prompt": "A narrow back alley of the Plateau between plain brick walls with no signs, exterior spiral staircases, wooden balconies with potted plants and parked bicycles, a lone cyclist far away. Night street photograph in Montreal after rain: wet cobblestones and asphalt mirroring warm window light and a neon glow of magenta and teal, light mist, 35mm lens at f/1.8, cinematic colour grading, deep blacks, rich textures of old brick, wrought-iron spiral staircases and wet pavement. No readable signs, no lettering, no logos.",
    "seed": "12",
-   "size": "1360\u00d7768",
+   "size": "1360×768",
    "seconds": 109,
    "costUsd": 0,
    "source": "orazaka-web-client src/features/landing/utils/gallery.ts"
@@ -329,7 +329,7 @@
    "studio": "art-montreal-night",
    "prompt": "A quiet residential street in Montreal during the first snowfall at night, snow falling through warm streetlight, exterior staircases dusted with snow, footprints on the sidewalk. Night street photograph in Montreal after rain: wet cobblestones and asphalt mirroring warm window light and a neon glow of magenta and teal, light mist, 35mm lens at f/1.8, cinematic colour grading, deep blacks, rich textures of old brick, wrought-iron spiral staircases and wet pavement. No readable signs, no lettering, no logos.",
    "seed": "2112",
-   "size": "1024\u00d71280",
+   "size": "1024×1280",
    "seconds": 97,
    "costUsd": 0,
    "source": "orazaka-web-client src/features/landing/utils/gallery.ts"
@@ -363,7 +363,7 @@
    "studio": "art-still-life",
    "prompt": "A hammered copper teapot, two engraved tea glasses, fresh figs and dates on a crumpled linen cloth, a sprig of mint. Artisanal still life photograph on a weathered table: side light from a single window, deep soft shadows, chiaroscuro, 100mm macro lens at f/4, tactile textures of hand-thrown ceramics, hammered copper, linen and fresh produce. Muted earthy palette of clay, olive, cream and deep brown, quiet and timeless, painterly. No text, no lettering, no logos.",
    "seed": "99",
-   "size": "1024\u00d71280",
+   "size": "1024×1280",
    "seconds": 103,
    "costUsd": 0,
    "source": "orazaka-web-client src/features/landing/utils/gallery.ts"
@@ -427,7 +427,7 @@
    "via": "Orazaka Studio run on dev.orazaka.com",
    "prompt": "A Moroccan riad courtyard in the late afternoon: a zellige tile fountain, orange trees, carved plaster arches, shafts of warm light. Editorial architecture photograph, 24mm lens, soft shadows, natural textures. No text, no lettering, no logos.",
    "seed": "20261011",
-   "size": "1024\u00d71024",
+   "size": "1024×1024",
    "seconds": 61,
    "runId": "352eb15f-9022-4a56-a921-5f74a270250a",
    "source": "orazaka-web-client model-compare.ts"
@@ -457,7 +457,7 @@
    "via": "Orazaka Studio run on dev.orazaka.com",
    "prompt": "A Moroccan riad courtyard in the late afternoon: a zellige tile fountain, orange trees, carved plaster arches, shafts of warm light. Editorial architecture photograph, 24mm lens, soft shadows, natural textures. No text, no lettering, no logos.",
    "seed": "20261011",
-   "size": "512\u00d7512",
+   "size": "512×512",
    "seconds": 58,
    "runId": "8e149fac-9a97-4552-98a8-e318444787da",
    "source": "orazaka-web-client model-compare.ts"
@@ -491,7 +491,7 @@
    "via": "Orazaka Studio run on dev.orazaka.com",
    "prompt": "A Moroccan riad courtyard in the late afternoon: a zellige tile fountain, orange trees, carved plaster arches, shafts of warm light. Editorial architecture photograph, 24mm lens, soft shadows, natural textures. No text, no lettering, no logos.",
    "seed": "20261011",
-   "size": "1024\u00d71024",
+   "size": "1024×1024",
    "seconds": 8,
    "runId": "64269eeb-f6e3-46c4-8421-fe9136672186",
    "source": "orazaka-web-client model-compare.ts"
@@ -525,7 +525,7 @@
    "via": "Orazaka Studio run on dev.orazaka.com",
    "prompt": "A 1990s arcade at night, rows of glowing cabinets, a player's hands on a joystick and buttons seen from behind, neon magenta and cyan, haze. Cinematic photograph, 35mm lens, shallow depth of field. No text, no lettering, no logos, no characters on the screens.",
    "seed": "20261011",
-   "size": "1024\u00d71024",
+   "size": "1024×1024",
    "seconds": 61,
    "runId": "437e0c13-f122-4fac-aeba-3b1cf569010c",
    "source": "orazaka-web-client model-compare.ts"
@@ -555,7 +555,7 @@
    "via": "Orazaka Studio run on dev.orazaka.com",
    "prompt": "A 1990s arcade at night, rows of glowing cabinets, a player's hands on a joystick and buttons seen from behind, neon magenta and cyan, haze. Cinematic photograph, 35mm lens, shallow depth of field. No text, no lettering, no logos, no characters on the screens.",
    "seed": "20261011",
-   "size": "512\u00d7512",
+   "size": "512×512",
    "seconds": 58,
    "runId": "d1ea2b40-5193-4965-bbff-2e6d7b50aa7a",
    "source": "orazaka-web-client model-compare.ts"
@@ -589,7 +589,7 @@
    "via": "Orazaka Studio run on dev.orazaka.com",
    "prompt": "A 1990s arcade at night, rows of glowing cabinets, a player's hands on a joystick and buttons seen from behind, neon magenta and cyan, haze. Cinematic photograph, 35mm lens, shallow depth of field. No text, no lettering, no logos, no characters on the screens.",
    "seed": "20261011",
-   "size": "1024\u00d71024",
+   "size": "1024×1024",
    "seconds": 8,
    "runId": "fa9ea84b-4ea6-4cde-9786-1b3c0920bd00",
    "source": "orazaka-web-client model-compare.ts"
@@ -621,9 +621,9 @@
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "costUsd": 0,
    "via": "Orazaka Studio run on dev.orazaka.com",
-   "prompt": "A quiet street of the Plateau in Montr\u00e9al on a winter night, outside spiral staircases, warm lit windows, snow falling through the streetlight, steam from a street vent. Cinematic photograph, 35mm lens, shallow depth of field, rich colour grade. No text, no lettering, no logos.",
+   "prompt": "A quiet street of the Plateau in Montréal on a winter night, outside spiral staircases, warm lit windows, snow falling through the streetlight, steam from a street vent. Cinematic photograph, 35mm lens, shallow depth of field, rich colour grade. No text, no lettering, no logos.",
    "seed": "20261011",
-   "size": "1024\u00d71024",
+   "size": "1024×1024",
    "seconds": 66,
    "runId": "6a4c4310-5970-4502-86c3-c4791bca3566",
    "source": "orazaka-web-client model-compare.ts"
@@ -651,9 +651,9 @@
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "costUsd": 0,
    "via": "Orazaka Studio run on dev.orazaka.com",
-   "prompt": "A quiet street of the Plateau in Montr\u00e9al on a winter night, outside spiral staircases, warm lit windows, snow falling through the streetlight, steam from a street vent. Cinematic photograph, 35mm lens, shallow depth of field, rich colour grade. No text, no lettering, no logos.",
+   "prompt": "A quiet street of the Plateau in Montréal on a winter night, outside spiral staircases, warm lit windows, snow falling through the streetlight, steam from a street vent. Cinematic photograph, 35mm lens, shallow depth of field, rich colour grade. No text, no lettering, no logos.",
    "seed": "20261011",
-   "size": "512\u00d7512",
+   "size": "512×512",
    "seconds": 58,
    "runId": "5b4ef17f-2af4-4800-ac5d-c98645b74baf",
    "source": "orazaka-web-client model-compare.ts"
@@ -685,9 +685,9 @@
    "machine": null,
    "costUsd": 0.08,
    "via": "Orazaka Studio run on dev.orazaka.com",
-   "prompt": "A quiet street of the Plateau in Montr\u00e9al on a winter night, outside spiral staircases, warm lit windows, snow falling through the streetlight, steam from a street vent. Cinematic photograph, 35mm lens, shallow depth of field, rich colour grade. No text, no lettering, no logos.",
+   "prompt": "A quiet street of the Plateau in Montréal on a winter night, outside spiral staircases, warm lit windows, snow falling through the streetlight, steam from a street vent. Cinematic photograph, 35mm lens, shallow depth of field, rich colour grade. No text, no lettering, no logos.",
    "seed": "20261011",
-   "size": "1024\u00d71024",
+   "size": "1024×1024",
    "seconds": 8,
    "runId": "3961f27e-e269-413f-817b-9b166579554e",
    "source": "orazaka-web-client model-compare.ts"
@@ -751,7 +751,7 @@
    "via": "Orazaka Studio run on dev.orazaka.com",
    "prompt": "The Alps at dawn above a valley in mist: snow-capped peaks glowing pink, a cable car gliding over the pine forest, first light. Aerial landscape photograph, telephoto lens, crisp detail, cinematic colour grade. No text, no lettering, no logos.",
    "seed": "20261011",
-   "size": "1024\u00d71024",
+   "size": "1024×1024",
    "seconds": 62,
    "runId": "ecfdbd20-0abc-4b65-8ff1-42d52e5c3957",
    "source": "orazaka-web-client model-compare.ts"
@@ -781,7 +781,7 @@
    "via": "Orazaka Studio run on dev.orazaka.com",
    "prompt": "The Alps at dawn above a valley in mist: snow-capped peaks glowing pink, a cable car gliding over the pine forest, first light. Aerial landscape photograph, telephoto lens, crisp detail, cinematic colour grade. No text, no lettering, no logos.",
    "seed": "20261011",
-   "size": "512\u00d7512",
+   "size": "512×512",
    "seconds": 58,
    "runId": "609b48cc-905b-4cc6-a961-db146fc77ceb",
    "source": "orazaka-web-client model-compare.ts"
@@ -815,7 +815,7 @@
    "via": "Orazaka Studio run on dev.orazaka.com",
    "prompt": "The Alps at dawn above a valley in mist: snow-capped peaks glowing pink, a cable car gliding over the pine forest, first light. Aerial landscape photograph, telephoto lens, crisp detail, cinematic colour grade. No text, no lettering, no logos.",
    "seed": "20261011",
-   "size": "1024\u00d71024",
+   "size": "1024×1024",
    "seconds": 9,
    "runId": "357ec8f9-932c-4be7-bfec-e281da332927",
    "source": "orazaka-web-client model-compare.ts"
@@ -841,7 +841,7 @@
    "via": "orazaka video --model wan2-2-t2v-a14b, routed by Orazaka",
    "prompt": "Extreme close-up, slow motion: a stream of amber mint tea pours from a silver teapot held high into a small engraved glass, steam curling through a shaft of golden-hour light inside a Berber tent, dust motes floating, shallow depth of field, anamorphic lens flare, 35mm film grain, cinematic color grade.",
    "seed": "20261011",
-   "size": "832\u00d7480",
+   "size": "832×480",
    "fps": 16,
    "durationSeconds": 5.06,
    "seconds": 134,
@@ -871,7 +871,7 @@
    "via": "orazaka video --model wan2-2-t2v-a14b, routed by Orazaka",
    "prompt": "A genius engineer's workshop at night, a floating holographic interface of orange light blooms in mid-air and organises blueprints of a machine, sparks from a welding arm in the background, reflections on brushed metal, volumetric haze, cinematic sci-fi, no person's face. No text, no lettering, no logos.",
    "seed": "20261011",
-   "size": "832\u00d7480",
+   "size": "832×480",
    "fps": 16,
    "durationSeconds": 5.06,
    "seconds": 130,
@@ -899,9 +899,9 @@
    "engine": "hosted: DigitalOcean serverless inference (steps and guidance not exposed)",
    "machine": null,
    "via": "orazaka video --model wan2-2-t2v-a14b, routed by Orazaka",
-   "prompt": "Smooth cinematic drone glide forward over the Old Port of Montr\u00e9al at blue hour, the cobblestone quay and the Clock Tower lit in warm lights against a deep blue sky, the St. Lawrence river reflecting the city, a few people strolling, soft haze, single continuous shot, no cuts. No text, no lettering, no logos.",
+   "prompt": "Smooth cinematic drone glide forward over the Old Port of Montréal at blue hour, the cobblestone quay and the Clock Tower lit in warm lights against a deep blue sky, the St. Lawrence river reflecting the city, a few people strolling, soft haze, single continuous shot, no cuts. No text, no lettering, no logos.",
    "seed": "20261015",
-   "size": "832\u00d7480",
+   "size": "832×480",
    "fps": 16,
    "durationSeconds": 5.06,
    "seconds": 135,
@@ -959,9 +959,9 @@
    "engine": "hosted: DigitalOcean serverless inference (steps and guidance not exposed)",
    "machine": null,
    "via": "orazaka video --model wan2-2-t2v-a14b, routed by Orazaka",
-   "prompt": "Winter night in Montr\u00e9al, slow tracking shot along a snowy street of the Plateau with outside spiral staircases, warm windows glowing, snowflakes in streetlight, steam from a vent, cinematic 35mm, shallow depth of field. No text, no lettering, no logos.",
+   "prompt": "Winter night in Montréal, slow tracking shot along a snowy street of the Plateau with outside spiral staircases, warm windows glowing, snowflakes in streetlight, steam from a vent, cinematic 35mm, shallow depth of field. No text, no lettering, no logos.",
    "seed": "20261011",
-   "size": "832\u00d7480",
+   "size": "832×480",
    "fps": 16,
    "durationSeconds": 5.06,
    "seconds": 132,
@@ -991,7 +991,7 @@
    "via": "orazaka video --model wan2-2-t2v-a14b, routed by Orazaka",
    "prompt": "Golden hour drone glide over the blue alleys of Chefchaouen into the Rif mountains, then a slow push into a riad courtyard with a zellige fountain, orange trees, light shafts, cinematic. No text, no lettering, no logos.",
    "seed": "20261011",
-   "size": "832\u00d7480",
+   "size": "832×480",
    "fps": 16,
    "durationSeconds": 5.06,
    "seconds": null,
@@ -1021,7 +1021,7 @@
    "via": "orazaka video --model wan2-2-t2v-a14b, routed by Orazaka",
    "prompt": "Dawn over Grenoble, the spherical cable-car cabins of the Bastille gliding up above the city, snow-capped Alps glowing pink behind, mist in the valley, aerial cinematic. No text, no lettering, no logos.",
    "seed": "20261011",
-   "size": "832\u00d7480",
+   "size": "832×480",
    "fps": 16,
    "durationSeconds": 5.06,
    "seconds": null,
@@ -1051,7 +1051,7 @@
    "via": "orazaka video --model wan2-2-t2v-a14b, routed by Orazaka",
    "prompt": "1990s arcade at night, rows of glowing cabinets, a two-player fighting-game duel reflected in a player's hands on the joystick and buttons (no screen detail, no characters), neon magenta and cyan, smoke, CRT glow, slow dolly, cinematic. No text, no lettering, no logos.",
    "seed": "20261011",
-   "size": "832\u00d7480",
+   "size": "832×480",
    "fps": 16,
    "durationSeconds": 5.06,
    "seconds": null,
@@ -1079,9 +1079,9 @@
    "engine": "hosted: DigitalOcean serverless inference (steps and guidance not exposed)",
    "machine": null,
    "via": "orazaka video --model wan2-2-t2v-a14b, routed by Orazaka",
-   "prompt": "Macro shot, a stack of paper contracts on a walnut desk at blue hour, a thin line of warm light sweeps slowly across the pages, highlighting passages, fountain pen and a cup of coffee steaming, soft window light, Montr\u00e9al snowfall outside, shallow depth of field, cinematic, calm. No text, no lettering, no logos.",
+   "prompt": "Macro shot, a stack of paper contracts on a walnut desk at blue hour, a thin line of warm light sweeps slowly across the pages, highlighting passages, fountain pen and a cup of coffee steaming, soft window light, Montréal snowfall outside, shallow depth of field, cinematic, calm. No text, no lettering, no logos.",
    "seed": "20261012",
-   "size": "832\u00d7480",
+   "size": "832×480",
    "fps": 16,
    "durationSeconds": 5.06,
    "seconds": 131,
@@ -1151,11 +1151,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024\u00d71024",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024×1024",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "a basketball player dunking in snow",
    "seed": "2026",
-   "size": "1024\u00d71024",
+   "size": "1024×1024",
    "seconds": 77,
    "costUsd": 0,
    "note": "Made today with the engine's command line (sd-cli), not through an Orazaka Studio: there is no run id. Same seed for every picture of the ladder."
@@ -1183,11 +1183,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024\u00d71024",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024×1024",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "A professional male athletic basketball player in a red numbered jersey leaping gracefully toward the rim, one arm extended with the ball above the hoop, both legs visible and anatomically correct, a steel rim with a white net",
    "seed": "2026",
-   "size": "1024\u00d71024",
+   "size": "1024×1024",
    "seconds": 80,
    "costUsd": 0,
    "note": "Made today with the engine's command line (sd-cli), not through an Orazaka Studio: there is no run id. Same seed for every picture of the ladder."
@@ -1215,11 +1215,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024\u00d71024",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024×1024",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "A professional male athletic basketball player in a red numbered jersey leaping gracefully toward the rim, one arm extended with the ball above the hoop, both legs visible and anatomically correct, a steel rim with a white net, on an outdoor asphalt court dusted with fresh snow, gentle snowflakes drifting through cold winter air, breath visible in the cold",
    "seed": "2026",
-   "size": "1024\u00d71024",
+   "size": "1024×1024",
    "seconds": 81,
    "costUsd": 0,
    "note": "Made today with the engine's command line (sd-cli), not through an Orazaka Studio: there is no run id. Same seed for every picture of the ladder."
@@ -1247,11 +1247,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024\u00d71024",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024×1024",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "A professional male athletic basketball player in a red numbered jersey leaping gracefully toward the rim, one arm extended with the ball above the hoop, both legs visible and anatomically correct, a steel rim with a white net, on an outdoor asphalt court dusted with fresh snow, gentle snowflakes drifting through cold winter air, breath visible in the cold, cinematic medium shot, captured on a 35mm lens, f/2.2 shallow depth of field, natural soft overcast daylight, sharp focus",
    "seed": "2026",
-   "size": "1024\u00d71024",
+   "size": "1024×1024",
    "seconds": 82,
    "costUsd": 0,
    "note": "Made today with the engine's command line (sd-cli), not through an Orazaka Studio: there is no run id. Same seed for every picture of the ladder."
@@ -1275,11 +1275,11 @@
   "made": {
    "model": "Stable Diffusion 1.5",
    "licence": "CreativeML OpenRAIL-M",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 20 steps, guidance 7, Euler a, 512\u00d7512",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 20 steps, guidance 7, Euler a, 512×512",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "a basketball player dunking in snow",
    "seed": "2026",
-   "size": "512\u00d7512",
+   "size": "512×512",
    "seconds": 65,
    "costUsd": 0,
    "note": "Made today with the engine's command line (sd-cli), not through an Orazaka Studio: there is no run id. Same seed for every picture of the ladder."
@@ -1303,11 +1303,11 @@
   "made": {
    "model": "Stable Diffusion 1.5",
    "licence": "CreativeML OpenRAIL-M",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 20 steps, guidance 7, Euler a, 512\u00d7512",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 20 steps, guidance 7, Euler a, 512×512",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "A professional male athletic basketball player in a red numbered jersey leaping gracefully toward the rim, one arm extended with the ball above the hoop, both legs visible and anatomically correct, a steel rim with a white net, on an outdoor asphalt court dusted with fresh snow, gentle snowflakes drifting through cold winter air, breath visible in the cold, cinematic medium shot, captured on a 35mm lens, f/2.2 shallow depth of field, natural soft overcast daylight, sharp focus",
    "seed": "2026",
-   "size": "512\u00d7512",
+   "size": "512×512",
    "seconds": 63,
    "costUsd": 0,
    "note": "Made today with the engine's command line (sd-cli), not through an Orazaka Studio: there is no run id. Same seed for every picture of the ladder."
@@ -1331,12 +1331,12 @@
   "made": {
    "model": "Stable Diffusion 1.5",
    "licence": "CreativeML OpenRAIL-M",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 20 steps, guidance 7, Euler a, 512\u00d7512",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 20 steps, guidance 7, Euler a, 512×512",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "A professional male athletic basketball player in a red numbered jersey leaping gracefully toward the rim, one arm extended with the ball above the hoop, both legs visible and anatomically correct, a steel rim with a white net, on an outdoor asphalt court dusted with fresh snow, gentle snowflakes drifting through cold winter air, breath visible in the cold, cinematic medium shot, captured on a 35mm lens, f/2.2 shallow depth of field, natural soft overcast daylight, sharp focus",
    "negativePrompt": "deformed, extra limbs, bad anatomy, glitch, jitter, low quality",
    "seed": "2026",
-   "size": "512\u00d7512",
+   "size": "512×512",
    "seconds": 68,
    "costUsd": 0,
    "note": "Made today with the engine's command line (sd-cli), not through an Orazaka Studio: there is no run id. Same seed for every picture of the ladder."
@@ -1364,11 +1364,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024\u00d71024",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024×1024",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "A quiet library aisle with tall wooden shelves of books, a hand gently pulling one book from a shelf, warm late-afternoon light, shallow depth of field, editorial photograph. No text, no lettering, no logos.",
    "seed": "2026",
-   "size": "1024\u00d71024",
+   "size": "1024×1024",
    "seconds": 89,
    "costUsd": 0,
    "note": "Made for this post with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Time measured on a busy machine."
@@ -1426,11 +1426,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024\u00d71024",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024×1024",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "A universal travel power adapter plugged into a white wall socket, close-up product photograph, neutral grey background, soft studio light, crisp detail. No text, no lettering, no logos.",
    "seed": "2026",
-   "size": "1024\u00d71024",
+   "size": "1024×1024",
    "seconds": 89,
    "costUsd": 0,
    "note": "Made for this post with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Time measured on a busy machine."
@@ -1458,11 +1458,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024\u00d71024",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024×1024",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "A Montreal residential street with exterior spiral staircases and brick triplexes emerging from thick morning fog at dawn, soft diffused light, muted colours, quiet atmosphere, editorial photograph. No people, no text, no lettering.",
    "seed": "2026",
-   "size": "1024\u00d71024",
+   "size": "1024×1024",
    "seconds": 110,
    "costUsd": 0,
    "note": "Made for this post with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Time measured on a busy machine."
@@ -1497,10 +1497,10 @@
    "studio": "image-generation",
    "prompt": "Minimalist flat vector illustration, editorial style: a single card payment terminal standing on a plain deep navy background, beside it a closed ledger notebook, a few thin cobalt-blue lines with small round nodes connect them like a network diagram. Clean geometric shapes, two-tone navy and cobalt blue with soft white highlights, lots of empty space, centered composition, matte, calm. No people, no hands, no text, no letters, no numbers, no logos.",
    "seed": "721081288",
-   "size": "1024\u00d71024",
+   "size": "1024×1024",
    "seconds": 7.5,
    "runId": "87694bea-beb7-48c4-8baf-979f7d01422a",
-   "note": "The cover of this post; a first run of the same Studio (0fdc980b-1ba6-4ff8-8a8e-b9093b465030, 512\u00d7512, a busier prompt) was not kept."
+   "note": "The cover of this post; a first run of the same Studio (0fdc980b-1ba6-4ff8-8a8e-b9093b465030, 512×512, a busier prompt) was not kept."
   },
   "renditions": {
    "avif": [
@@ -1555,11 +1555,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024\u00d71024",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1024×1024",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "Two identical small friendly white robots standing side by side on a clean light grey studio floor, the left robot holds a large closed brass padlock against its chest, the right robot has empty open hands, soft even studio light, minimal editorial 3D illustration, calm muted palette. No text, no letters, no logos.",
    "seed": "2026",
-   "size": "1024\u00d71024",
+   "size": "1024×1024",
    "seconds": 88,
    "costUsd": 0,
    "note": "Made for this post with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id."
@@ -1880,11 +1880,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536\u00d7864",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "Wide high-angle establishing shot of a vast professional restaurant kitchen at night, dozens of cooks in white jackets working side by side in long parallel rows of identical stations, each one plating the same dish at the same moment, copper pans, steam rising through warm overhead pendant lights, volumetric haze catching the light, 35mm lens, slow crane perspective, deep perspective lines, symmetrical composition. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No text, no letters, no numbers, no logos, no watermark.",
    "seed": "1017",
-   "size": "1536\u00d7864",
+   "size": "1536×864",
    "seconds": 94,
    "costUsd": 0,
    "note": "Made for this cover with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Two seeds were made (2026 and 1017); this one was kept after a review at full size. Time measured on a busy machine."
@@ -1950,11 +1950,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536\u00d7864",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "A large old iron key ring holding many different keys, brass, steel and a few modern key fobs, resting on a dark walnut desk at night beside a closed laptop and a notebook, a single warm brass desk lamp makes a pool of light, through the window behind a snowy Montreal street glows blue, 50mm lens, low angle, bokeh of street lights, calm and secret mood. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No text, no letters, no numbers, no logos, no watermark.",
    "seed": "2026",
-   "size": "1536\u00d7864",
+   "size": "1536×864",
    "seconds": 87,
    "costUsd": 0,
    "note": "Made for this cover with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Two seeds were made (2026 and 1017); this one was kept after a review at full size. Time measured on a busy machine."
@@ -2020,11 +2020,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536\u00d7864",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "A craftsman's woodworking bench at dawn, a hand-drawn plan pinned to the wall above, chisels and a measuring square laid out in order, a half-assembled wooden joint clamped in a vise, wood shavings, soft golden light through a dusty workshop window, volumetric light rays, 40mm lens, slow dolly feeling, method and patience. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No text, no letters, no numbers, no logos, no watermark.",
    "seed": "1017",
-   "size": "1536\u00d7864",
+   "size": "1536×864",
    "seconds": 86,
    "costUsd": 0,
    "note": "Made for this cover with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Two seeds were made (2026 and 1017); this one was kept after a review at full size. Time measured on a busy machine."
@@ -2090,11 +2090,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536\u00d7864",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "On a wooden table in a bright ceramics studio, a single carved wooden stamp beside three unglazed clay pieces of different sizes, a large plate, a medium bowl and a small cup, each pressed with the exact same geometric pattern, soft north window light, gentle shadows, 50mm lens, overhead three-quarter angle, calm craftsmanship. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No text, no letters, no numbers, no logos, no watermark.",
    "seed": "2026",
-   "size": "1536\u00d7864",
+   "size": "1536×864",
    "seconds": 85,
    "costUsd": 0,
    "note": "Made for this cover with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Two seeds were made (2026 and 1017); this one was kept after a review at full size. Time measured on a busy machine."
@@ -2160,11 +2160,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536\u00d7864",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "The Port of Montreal at dawn, a gantry crane lifting a single blue shipping container high above a stacked container yard, the St. Lawrence river and the city skyline in soft haze behind, golden hour sun low on the horizon with long shadows, light mist over the water, 85mm telephoto compression, cinematic wide frame, quiet industrial beauty. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No text, no letters, no numbers, no logos, no watermark.",
    "seed": "2026",
-   "size": "1536\u00d7864",
+   "size": "1536×864",
    "seconds": 84,
    "costUsd": 0,
    "note": "Made for this cover with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Two seeds were made (2026 and 1017); this one was kept after a review at full size. Time measured on a busy machine."
@@ -2230,11 +2230,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536\u00d7864",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "Macro close-up of a graphics card on a dark workbench, the copper heat pipes and aluminium cooling fins catching a warm amber rim light from the left, cool blue key light from above, tiny dust particles floating in the light beam, 100mm macro lens, very shallow depth of field, moody, quiet, premium product photograph. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No text, no letters, no numbers, no logos, no watermark.",
    "seed": "2026",
-   "size": "1536\u00d7864",
+   "size": "1536×864",
    "seconds": 91,
    "costUsd": 0,
    "note": "Made for this post with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Two seeds were made (2026 and 1017); this one was kept after a review at full size. Time measured on a busy machine."
@@ -2304,11 +2304,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536\u00d7864",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "Close-up photograph of a recording studio patch bay, rows of sockets with braided cables of different colours plugged in neatly, shallow depth of field, warm tungsten light with a cool blue rim light, fine detail, 35mm photograph. No text, no lettering, no logos.",
    "seed": "2026",
-   "size": "1536\u00d7864",
+   "size": "1536×864",
    "seconds": 90,
    "costUsd": 0,
    "note": "Made for this post with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Time measured on a busy machine."
@@ -2369,7 +2369,7 @@
    "licence": "Apache-2.0",
    "engine": "RunPod H100 80 GB, 720p, SeedVR2 3B to 1080p; keyframes FLUX.2 [klein] 4B; ACE-Step music; Kokoro voice",
    "via": "orazaka cinema, every step an ordinary Studio run",
-   "size": "1080\u00d71920, shown here at 540\u00d7960",
+   "size": "1080×1920, shown here at 540×960",
    "seconds": 7115,
    "costUsd": 7.89,
    "note": "10 shots (2 reshot), 12 video runs, 35 runs of which 5 failed; GPU time of its runs 7,115 s, $7.89 at $3.99/h.",
@@ -2449,11 +2449,11 @@
    "licence": "Apache-2.0",
    "engine": "RunPod H100 80 GB, 720p, then SeedVR2 3B to 1080p; keyframes FLUX.2 [klein] 4B edit mode; ACE-Step medley",
    "via": "Orazaka cinema profile (Studio runs)",
-   "size": "1920\u00d71080, shown here at 960\u00d7540",
+   "size": "1920×1080, shown here at 960×540",
    "fps": 30,
    "durationSeconds": 78.3,
    "costUsd": 9.4,
-   "note": "Le monde de Krizaka : la tourn\u00e9e, v1. Every bird starts from the code render of the Mascot; 28 video clips, 24 upscales, about $9.4 of GPU in all, 17 shots kept in the cut. The site cut, without captions.",
+   "note": "Le monde de Krizaka : la tournée, v1. Every bird starts from the code render of the Mascot; 28 video clips, 24 upscales, about $9.4 of GPU in all, 17 shots kept in the cut. The site cut, without captions.",
    "source": "krizaka-ui tools/brand-films/epic"
   }
  },
@@ -2500,11 +2500,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536\u00d7864",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "A tidy walnut desk at first light, an open laptop whose screen glows with a soft dark terminal window of faint green lines, no readable text, a steaming ceramic coffee cup, a paper notebook with a neat row of ticked boxes, a small brass desk clock, through the tall window behind a snowy Montreal rooftop street turns pink and blue at dawn, 50mm lens, low angle, bokeh of street lights, calm and orderly mood. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No text, no letters, no numbers, no logos, no watermark.",
    "seed": "2026",
-   "size": "1536\u00d7864",
+   "size": "1536×864",
    "seconds": 92,
    "costUsd": 0,
    "note": "Made for this cover with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Two seeds were planned (2026 and 1020); the first was kept after a review at full size. Time measured on a busy machine."
@@ -2608,11 +2608,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536\u00d7864",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "On a dark walnut desk, a brass magnifying glass resting on a thick stack of folded cream papers sealed with a red wax seal, a small old brass key and an open wooden box beside it, warm lamp light from the left, a window with soft blue dusk light behind, 50mm lens, three-quarter angle, shallow depth of field, calm and attentive mood. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, photorealistic. No text, no letters, no numbers, no logos, no watermark.",
    "seed": "2026",
-   "size": "1536\u00d7864",
+   "size": "1536×864",
    "seconds": 95,
    "costUsd": 0,
    "note": "Made for this cover with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. One seed was made (2026) and kept after a review at full size. Time measured on a busy machine."
@@ -2678,11 +2678,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536\u00d7864",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "A French school copybook open on a walnut desk, pale blue Seyes grid ruling and a red margin line, on the left page a neat hand-drawn sketch of an interface layout crossed out with a single ink line, on the right page a calm hand-drawn plate of a small bird with fine labelled leader lines, a fountain pen and a small glass ink bottle with blue ink beside it, soft window light from the left, 50mm lens, shallow depth of field, muted blue and paper tones, quiet and orderly mood. Shot on a full-frame camera, natural film grain, photorealistic. No readable text, no letters, no numbers, no logos, no watermark.",
    "seed": "1021",
-   "size": "1536\u00d7864",
+   "size": "1536×864",
    "seconds": 120,
    "costUsd": 0,
    "note": "Made for this cover with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. One seed was drawn (1021) and kept after a review at full size."
@@ -2911,8 +2911,8 @@
    "model": "Wan 2.2 I2V A14B",
    "licence": "Apache-2.0",
    "engine": "RunPod H100, 40 steps, 720p take shown at 1080p",
-   "via": "segment proof of \u00ab le relais \u00bb (Orazaka cinema profile), frame at 2.0 s, subtitles cropped out",
-   "size": "1351\u00d7760",
+   "via": "segment proof of « le relais » (Orazaka cinema profile), frame at 2.0 s, subtitles cropped out",
+   "size": "1351×760",
    "costUsd": null,
    "note": "A frame of the Morocco proof scene, made at the final quality (40 steps) before the full render; the keyframe is the Mascot code render composited on a FLUX.2 [klein] plate. Not an Orazaka Studio run id.",
    "source": "krizaka/krizaka-ui#424"
@@ -2941,8 +2941,8 @@
    "model": "Wan 2.2 I2V A14B (40 steps)",
    "licence": "Apache-2.0",
    "engine": "RunPod H200, 720p then SeedVR2 to 4K, shown at 1536 px",
-   "via": "frame at 36 s of \u00ab Le monde de Krizaka : l'aube \u00bb (v1), withdrawn",
-   "note": "The birds in a line, facing us, while the narrator says \u00ab each bird carries a promise \u00bb: the shot Oussama's verdict called a lineup.",
+   "via": "frame at 36 s of « Le monde de Krizaka : l'aube » (v1), withdrawn",
+   "note": "The birds in a line, facing us, while the narrator says « each bird carries a promise »: the shot Oussama's verdict called a lineup.",
    "source": "krizaka/krizaka-ui#404"
   }
  },
@@ -2968,8 +2968,8 @@
   "made": {
    "model": "Title test over a plate (no model for the type)",
    "engine": "libass, Plus Jakarta Sans and Cormorant Garamond (OFL)",
-   "via": "title proof of \u00ab le relais \u00bb, frame at 3 s, 16:9",
-   "size": "1280\u00d7720",
+   "via": "title proof of « le relais », frame at 3 s, 16:9",
+   "size": "1280×720",
    "costUsd": null,
    "note": "Not a render of the film: the title test, to judge the type set like a film (a tracked name, an italic serif subtitle arriving after it).",
    "source": "krizaka/krizaka-ui#424"
@@ -2991,7 +2991,7 @@
    "model": "Wan 2.2 I2V A14B",
    "licence": "Apache-2.0",
    "engine": "RunPod H100, 40 steps, 720p take shown at 960 px; ACE-Step cue, synthesized foley, Zonos narrator",
-   "via": "segment proof of \u00ab le relais \u00bb: the owl argues, then recognises the pigeon (5.4 s)",
+   "via": "segment proof of « le relais »: the owl argues, then recognises the pigeon (5.4 s)",
    "fps": 24,
    "durationSeconds": 5.4,
    "costUsd": null,
@@ -3016,7 +3016,7 @@
    "model": "Wan 2.2 I2V A14B",
    "licence": "Apache-2.0",
    "engine": "RunPod H200, 40 steps, 720p then 4K, shown at 960 px",
-   "via": "the owl of \u00ab Le monde de Krizaka : l'aube \u00bb (v1), same promise line",
+   "via": "the owl of « Le monde de Krizaka : l'aube » (v1), same promise line",
    "fps": 24,
    "durationSeconds": 6,
    "costUsd": null,
@@ -3040,7 +3040,7 @@
    "model": "Wan 2.2 I2V A14B",
    "licence": "Apache-2.0",
    "engine": "RunPod H200, 40 steps, 720p then SeedVR2 to 4K; ACE-Step cues, synthesised foley, Zonos narrator; shown at 960 px, muted here",
-   "via": "\u00ab Le monde de Krizaka : le relais \u00bb, the site cut without captions",
+   "via": "« Le monde de Krizaka : le relais », the site cut without captions",
    "fps": 24,
    "durationSeconds": 68,
    "costUsd": 35.27,
@@ -3070,11 +3070,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536\u00d7864",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "Long-exposure light painting in a dark workshop at dusk: slender ribbons and rings of soft cyan and blue light curling in the air above an empty wooden workbench, a small brass compass and a glass of water catching the glow, no people, 35mm lens, calm, wondering mood. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No text, no letters, no numbers, no logos, no watermark.",
    "seed": "2026",
-   "size": "1536\u00d7864",
+   "size": "1536×864",
    "seconds": 311,
    "costUsd": 0,
    "note": "Made for this cover with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. One seed was drawn (2026) and kept after a review at full size. Time measured on a busy machine."
@@ -3206,11 +3206,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536\u00d7864",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "A quiet home office at night: an open laptop on a walnut desk, beside it a small brass padlock resting on a neat stack of paper folders, a warm desk lamp making a pool of light, through the window behind snowy Montreal rooftops under a dark blue sky, 50mm lens, low angle, calm and careful mood. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No text, no letters, no numbers, no logos, no watermark.",
    "seed": "2026",
-   "size": "1536\u00d7864",
+   "size": "1536×864",
    "seconds": 111,
    "costUsd": 0,
    "note": "Made for this cover with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Two seeds were made (2026 and 1021); this one was kept after a review at full size, the other drew a doubled lamp. Time measured on a busy machine."
@@ -3318,6 +3318,286 @@
    "model": "Diagram drawn from code (no model)",
    "via": "An SVG drawn by script, French and English on the same figure",
    "note": "Where an automation runs: in the cloud, on the Mac, on a compute machine."
+  }
+ },
+ "admin-door-snow": {
+  "kind": "image",
+  "width": 1536,
+  "height": 864,
+  "blur": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAADQAwCdASoYAA4APu1iqk2ppaQiMAgBMB2JZAABHxuLcGjnfbiXIAAA/v3dLSNGR7PKvbwCqYvaM8fKa/xJv0odfEwBMmaSS2T6nyF74u7yfW3PhG32kOOPA91faoZl/aQb6TR9MC2NiBfjTOl2xdXBj08wqjDRnX5qW69u7eAAAA==",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/orazaka-admin-console-who-can-open-it/admin-door-snow-480.69f7bb244e.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/orazaka-admin-console-who-can-open-it/admin-door-snow-960.ecd0d88066.webp"
+   },
+   {
+    "w": 1536,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/orazaka-admin-console-who-can-open-it/admin-door-snow-1536.325b73b15f.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "A heavy dark-green wooden workshop door with a wrought-iron latch, slightly ajar, warm lamplight spilling out onto fresh snow in a quiet Montreal courtyard at dusk, a single lantern hung beside the door, a few footprints leading in, 40mm lens, calm and watchful mood. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No text, no letters, no numbers, no logos, no watermark.",
+   "seed": "2026",
+   "size": "1536×864",
+   "seconds": 112,
+   "costUsd": 0,
+   "note": "Made for this cover with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. One seed was drawn (2026) and kept after a review at full size. Time measured on a busy machine."
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/orazaka-admin-console-who-can-open-it/admin-door-snow-480.c13076bc61.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/orazaka-admin-console-who-can-open-it/admin-door-snow-768.e9461ca79f.avif"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/orazaka-admin-console-who-can-open-it/admin-door-snow-1200.478fbdd754.avif"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/orazaka-admin-console-who-can-open-it/admin-door-snow-1536.09d0b89a55.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/orazaka-admin-console-who-can-open-it/admin-door-snow-480.9d6802087e.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/orazaka-admin-console-who-can-open-it/admin-door-snow-768.3aeaa7d191.webp"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/orazaka-admin-console-who-can-open-it/admin-door-snow-1200.6e3019ac42.webp"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/orazaka-admin-console-who-can-open-it/admin-door-snow-1536.5b66d3ecf7.webp"
+    }
+   ]
+  }
+ },
+ "mac-desk-morning": {
+  "kind": "image",
+  "width": 1536,
+  "height": 864,
+  "blur": "data:image/webp;base64,UklGRq4AAABXRUJQVlA4IKIAAAAQBACdASoYAA4APu1iqU2ppaQiMAgBMB2JYwC06YxEoM0W457Fu9MEAADhL2TAu5xfbGWvKm81wIdSVWwwn+pvkv3Qrap1CZ8UfFrMXA2Ww5pVv9nQAwVrSxiyg3xzjveDYed6R/kBep0StP0YSM2cTYGTFoKmoezt2OW1q1c+nbqx+Uze6edF6iUn+svQb0ZgyHFk/KsAQZ5lAAcVrOXwAAA=",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/why-orazaka-has-a-mac-app/mac-desk-morning-480.416e15ce78.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/why-orazaka-has-a-mac-app/mac-desk-morning-960.b07f37a97c.webp"
+   },
+   {
+    "w": 1536,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/why-orazaka-has-a-mac-app/mac-desk-morning-1536.ea9b328a0a.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "A laptop seen from behind on a pale oak desk in a bright apartment at morning, plain brushed-aluminium lid with no logo, a ceramic cup of coffee beside it, a small plant, soft sunlight through a window onto a Montreal balcony with an outdoor spiral staircase, 50mm lens, low angle, calm and welcoming mood. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No text, no letters, no numbers, no logos, no watermark.",
+   "seed": "1792633766",
+   "size": "1536×864",
+   "seconds": null,
+   "costUsd": 0,
+   "note": "Made for this cover with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. One seed was drawn (1792633766) and kept after a review at full size. The time was not recorded."
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/why-orazaka-has-a-mac-app/mac-desk-morning-480.e75c6fd15d.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/why-orazaka-has-a-mac-app/mac-desk-morning-768.0b4322f8fe.avif"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/why-orazaka-has-a-mac-app/mac-desk-morning-1200.9b2f8f47ed.avif"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/why-orazaka-has-a-mac-app/mac-desk-morning-1536.3b04816821.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/why-orazaka-has-a-mac-app/mac-desk-morning-480.6ba19ff1a9.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/why-orazaka-has-a-mac-app/mac-desk-morning-768.4c97ea8385.webp"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/why-orazaka-has-a-mac-app/mac-desk-morning-1200.4ff8f4c0ad.webp"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/why-orazaka-has-a-mac-app/mac-desk-morning-1536.94e14c413a.webp"
+    }
+   ]
+  }
+ },
+ "one-wall-three-windows": {
+  "kind": "image",
+  "width": 1536,
+  "height": 864,
+  "blur": "data:image/webp;base64,UklGRrQAAABXRUJQVlA4IKgAAADQAwCdASoYAA4APu1iqU2ppaOiMAgBMB2JYwAAPA/au3+SIoP08EAA/tIDbYsAmhYeGNEw9qLZJ0yiCFs9vhm7yu6vRvqaHqhySl9T+CPz9e5jX1rASxMYTsYFpbK/Gjux2XcMOtvHVBC1jzgDHmCKhQ17sIvjwRNgAtEflZGGpsSOdM/X7B2ZW9qoErgZwR7eAjCJ9c5fVndWtT4TxG51UHQFiBmAAAA=",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/one-interface-web-mac-android/one-wall-three-windows-480.8d31aa117c.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/one-interface-web-mac-android/one-wall-three-windows-960.db2da7f79b.webp"
+   },
+   {
+    "w": 1536,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/one-interface-web-mac-android/one-wall-three-windows-1536.ee2b585508.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "An old stone house wall with three windows of different shapes, a wide rectangular one, a tall narrow one and a small round one, all with the same white-painted wooden frame and the same grid of glazing bars, the same soft morning light in each, 40mm lens, straight-on, calm craftsmanship. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No text, no letters, no numbers, no logos, no watermark.",
+   "seed": "2026",
+   "size": "1536×864",
+   "seconds": 125,
+   "costUsd": 0,
+   "note": "Made for this cover with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Two prompts were drawn (this one, and a variant that showed only two windows); this seed (2026) was kept after a review at full size. Time measured on a busy machine."
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/one-interface-web-mac-android/one-wall-three-windows-480.d5943b66ce.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/one-interface-web-mac-android/one-wall-three-windows-768.9dfec428c3.avif"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/one-interface-web-mac-android/one-wall-three-windows-1200.b627d953a5.avif"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/one-interface-web-mac-android/one-wall-three-windows-1536.567ff20061.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/one-interface-web-mac-android/one-wall-three-windows-480.9ba65ea754.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/one-interface-web-mac-android/one-wall-three-windows-768.719e00b32a.webp"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/one-interface-web-mac-android/one-wall-three-windows-1200.0e11686c77.webp"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/one-interface-web-mac-android/one-wall-three-windows-1536.fd1361058b.webp"
+    }
+   ]
+  }
+ },
+ "nov15-pencil-line": {
+  "kind": "image",
+  "width": 1536,
+  "height": 864,
+  "blur": "data:image/webp;base64,UklGRqAAAABXRUJQVlA4IJQAAABwBACdASoYAA4APu1kqU2ppaOiMAgBMB2JZQC7ACICnFmhjOg87H3g4RFZgAD+tYKF6k6/qwOwJ+j5nEUcCremH/dCO66DtCsZUWdfnNYur+GbWEt2cigi3d3RvHBdzOiKOR27dBjuXMPRhfbf+Lzf6DYPeQcituQ+dh2Eznc8DU7+jrd2TyDOplzGNEiCUSnxIAAA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/why-we-moved-our-15-november-date/nov15-pencil-line-480.7d26939bcd.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/why-we-moved-our-15-november-date/nov15-pencil-line-960.ad7792fa01.webp"
+   },
+   {
+    "w": 1536,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/why-we-moved-our-15-november-date/nov15-pencil-line-1536.8ca1f276cd.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "A single sheet of plain cream paper on a dark wooden navigator's table by a window at dawn, one long hand-drawn pencil curve across the blank sheet, the first part of the line half-erased and ghosted, a fresh line continuing further out, brass dividers resting on the sheet, a few eraser crumbs, grey misty sea softly out of focus behind the glass, no map, no labels, 50mm lens, high three-quarter angle, patient and deliberate mood. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No text, no letters, no numbers, no logos, no watermark.",
+   "seed": "7",
+   "size": "1536×864",
+   "seconds": 130,
+   "costUsd": 0,
+   "note": "Made for this cover with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. A first prompt (a chart table) drew a map whose small labels were garbled, so it was discarded; on this simpler prompt two seeds were made (7 and 1021) and seed 7 was kept after a review at full size. Time measured on a busy machine."
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/why-we-moved-our-15-november-date/nov15-pencil-line-480.86afba38cb.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/why-we-moved-our-15-november-date/nov15-pencil-line-768.b2099089ff.avif"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/why-we-moved-our-15-november-date/nov15-pencil-line-1200.0873d6437f.avif"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/why-we-moved-our-15-november-date/nov15-pencil-line-1536.84c5fa3dbd.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/why-we-moved-our-15-november-date/nov15-pencil-line-480.bc9d7d6b5f.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/why-we-moved-our-15-november-date/nov15-pencil-line-768.ba56d70590.webp"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/why-we-moved-our-15-november-date/nov15-pencil-line-1200.11c8577452.webp"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/why-we-moved-our-15-november-date/nov15-pencil-line-1536.e91bdf8d69.webp"
+    }
+   ]
   }
  }
 }
