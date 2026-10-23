@@ -101,10 +101,18 @@ is written by joining the sentences of the posts it absorbs, under the voice rul
   - `why-we-moved-our-15-november-date`: « Ce qui m'a fait changer d'avis », and « L'infrastructure : deux mots d'ordre » in two paragraphs, with every estimate still marked « estimation »;
   - `orazaka-from-one-mac-to-anywhere`: step 4 (ADR-077), and the cold starts and the warm GPU of « Ce qui reste difficile ».
 - **Sections**:
-  1. « Trois façons de faire cuire le même plat »: the Mac, a hosted API, a rented GPU. FLUX takes 62 s, with 6 failures in 18 from client timeouts; SD 3.5 takes 8 s for 0,08 $.
+  1. « Trois façons de faire cuire le même plat »: the Mac, a hosted API, a rented GPU. FLUX takes 62 s at the median with
+     **6 successes in 18** (the post's table: « 6 sur 18 »), and the post's own account of the 12 others stays whole: nearly all
+     of them the image client giving up after two minutes and reporting a 1×1 transparent image as a success, plus two finished
+     images overwritten by retries of the same name — not all client timeouts, and still counted as failures; SD 3.5 takes
+     8 s for 0,08 $.
   2. « La vidéo, hébergée ou sur un GPU loué »: the five Wan 2.2 configurations, and ADR-077.
   3. « Ce que j'ai vraiment payé »: 17,36 $, 3,24 $ and 19,99 $, and the 11,51 $ lost. The GPU left on, told once (see § 0). The guard at 20 min or 6 h, and the `<Utilization>` slider.
-  4. « Le prix d'un résultat qu'on garde »: X ÷ p, the loop, 4,80 $ and 72 min against 1,28 $ and 19 min.
+  4. « Le prix d'un résultat qu'on garde »: X ÷ p, the loop, and the post's worked example (4,80 $ and 72 min against
+     1,28 $ and 19 min) **told as the hypothetical calculation it is**, with its stated assumptions: one acceptable start in
+     four, a preview that predicts the final clip (« ce n'est pas toujours vrai »), and the judge's cost unmeasured. Measured
+     are only the two unit prices it starts from (1,20 $ and 18 min a clip, ≈ 0,02 $ and 14 s a preview); the saving is never
+     presented as a shipped result (§ 5.5).
   5. « Choisir ses fournisseurs, puis un prix »: RunPod measured on our own work, from the unit cost to a price, and the 17-day report with the GPU at ≈ 78 %.
   6. « Pourquoi j'ai déplacé le 15 novembre »: 25 clips, 2,8 h computing and 2,2 h waiting, 57 GB loaded in 129 s. Then the order: wait, load, batch, engine. And the milestone without a date.
 - **Media**: cover `compare-montreal-winter-sd35`; a `<Row>` of `compare-moroccan-riad-flux`, `-sd35` and `-sd15`; `<Clip id="clip-tea-pour">`;
@@ -142,7 +150,9 @@ is written by joining the sentences of the posts it absorbs, under the voice rul
   - `why-orazaka-has-a-mac-app`;
   - `one-interface-web-mac-android`.
 - **Sections**:
-  1. « Un kit, trois plateformes »: 156, 79 and 112 components, 22 gaps, the fix made once (krizaka-ui#295), and 48 versions in 10 days.
+  1. « Un kit, trois plateformes »: 156, 79 and 112 components, the tab bar's unwanted vertical scrollbar fixed once in the
+     kit (krizaka-ui#295), the **22 native gaps that remain** (« 22 trous, c'est 22 endroits où une app mobile doit
+     attendre »), and 48 versions in 10 days.
   2. « D'abord compter, ensuite juger »: « Ça m'a piqué, parce que c'était juste. », the audit, Cahier, Habitat and Affiche, the steel blue, and the calm hovers.
   3. « Le bug qui nous a appris à tester »: the motionless engine flow of 20 October, and the tests that only ran with reduced motion.
   4. « Pourquoi Orazaka a une app Mac »: v0.1, the scope check, and Tauri 2 rather than Swift (ADR-002).
@@ -318,10 +328,18 @@ checks that each one exists in the built chapter.
 - **Feeds** (`/feed.xml` and `/atom.xml`, EN and FR): the 8 chapters and the 5 shelf posts, with their new URLs as ids. A
   feed reader will see them as new items once. That is the honest signal of a new blog.
 - **OG images**: `/og/<slug>` exists for the new slugs. Old OG URLs are not redirected, because social sites cache their card.
-- **Newsletter (for Oussama to decide)**: publishing 8 chapters in one push would e-mail every subscriber 8 times
-  (`newsletter.yml`).
-  - The plan claims all eight chapters in `newsletter_posts` before the merge, so nothing is sent automatically.
-  - Oussama then sends one e-mail by hand for chapter 1 (Actions → Newsletter → Run workflow), or none.
+- **Newsletter (for Oussama to decide)**: nothing is sent by itself, and nothing is pre-claimed.
+  - `newsletter.yml` runs only on a push that touches `content/posts/**`, and `publishedBetween()`
+    (`scripts/newsletter-send.mjs`) only reads `content/posts/<slug>.<locale>.mdx`: the chapters live in `content/chapters/`
+    and never trigger it (`tests/chapters.test.mjs` asserts the workflow's paths). The cutover adds no published file under
+    `content/posts/` (the shelf posts keep their files, the absorbed posts are deleted), so that push sends nothing either;
+    a test of the cutover PR runs `publishedBetween()` over its own diff and expects an empty list (§ 7).
+  - Pre-claiming would be wrong anyway: the send action answers `{already: true}` for a claimed slug without sending
+    (`functions/packages/newsletter/send/index.js`), and a manual dispatch goes through the same action, so a claimed
+    chapter 1 could never be announced. No slug is claimed before the merge.
+  - **One e-mail for chapter 1**: a manual dispatch (Actions → Newsletter → Run workflow, slug `why-krizaka`) after the
+    cutover, once the sender knows chapters (§ 6.3 and § 7: `--slug` resolves `content/chapters/<slug>` and builds
+    `/story/<slug>/`); the action claims it then, and only then. **None**: no dispatch.
 
 ## 4. The new home
 
@@ -332,8 +350,11 @@ The story comes first, and the home is the character select screen of § 5. #106
    à une mesure, à une exécution ou à une ligne de code, je ne l'écris pas. »). Its one action is « Press start », a link to
    chapter 1.
 2. **The chapters as the select screen**: `ChoiceGrid` (`@krizaka/ui/choice-grid`, `variant="arcade"`), eight tiles in
-   reading order, each a link to its chapter (§ 5.2). The latest chapter's tile carries the « New » badge, and its cover is
-   the page's LCP (AVIF/WebP, `fetchpriority="high"`); the seven other covers wait until they are near the window.
+   reading order, each a link to its chapter (§ 5.2). The latest chapter's tile carries the « New » badge, wherever it sits.
+   The page's LCP is **the first tile's cover** — the one on the first screen at every width, since on a phone the eighth
+   tile is far below the fold — so it alone is the `CoverImage` with `fetchpriority="high"` and the preload (AVIF/WebP); the
+   seven other covers, the « New » one included, wait until they are near the window (`LazyImg`). Badge and priority are
+   independent of each other.
 3. **The timeline**: `Stepper` (`@krizaka/ui/stepper`) stays on `/story/`, #106's page, which the home links under the grid
    (« Toute l'histoire, dans l'ordre »). `SpecimenTag` carries each chapter's period on its tile, and `Landscape` heads the
    grid's band.
@@ -590,11 +611,11 @@ Desktop.
 │  └────────────────┘ └────────────────┘ └────────────────┘ └────────────────┘                     │
 │                                                                                                  │
 │  CE QUI A CASSÉ / CE QUI EST SORTI                         AchievementList variant="arcade"      │
-│  ┌──────────────────────────────┐ ┌──────────────────────────────┐ ┌───────────────────────────┐ │
-│  │ ROUND 3            [SORTI]   │ │ ROUND 4            [SORTI]   │ │ ROUND 6          [SORTI]  │ │
-│  │ ~~le GPU resté allumé~~      │ │ ~~4,80 $ et 72 min~~         │ │ ~~le 15 novembre~~        │ │
-│  │ la garde à 20 min ou 6 h     │ │ 1,28 $ et 19 min             │ │ un jalon sans date        │ │
-│  └──────────────────────────────┘ └──────────────────────────────┘ └───────────────────────────┘ │
+│  ┌──────────────────────────────┐ ┌──────────────────────────────┐                               │
+│  │ ROUND 3            [SORTI]   │ │ ROUND 6            [SORTI]   │                               │
+│  │ ~~le GPU resté allumé~~      │ │ ~~le 15 novembre~~           │                               │
+│  │ la garde à 20 min ou 6 h     │ │ un jalon sans date           │                               │
+│  └──────────────────────────────┘ └──────────────────────────────┘                               │
 │  struck = what broke or what it replaced (`replaced`), plain = what shipped (`title`)            │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -618,7 +639,7 @@ Phone.
 │ │ ~~le GPU resté allumé~~  │ │
 │ │ la garde à 20 min ou 6 h │ │
 │ └──────────────────────────┘ │
-│ … 2 more                     │
+│ … 1 more                     │
 └──────────────────────────────┘
 ```
 
@@ -635,9 +656,9 @@ Rules for the stats screen:
   |---|---|---|
   | 1 | 3,99 $ US de l'heure (the H100) | the 48 GB GPU never in stock in Toronto → an H100 in CA-MTL-1 |
   | 2 | load 100–260 · 62 s (FLUX.2 [klein], median) · 26 GiB asked (Wan 2.2 5B) · 131 s hosted | the Mac of 12 October → models as data (ADR-030); the pack that failed four times → ADR-049 |
-  | 3 | 62 s · 17,36 $ · 11,51 $ lost · 2,8 h / 2,2 h | the GPU left on → the guard; 4,80 $ / 72 min → 1,28 $ / 19 min |
+  | 3 | 62 s · 17,36 $ · 11,51 $ lost · 2,8 h / 2,2 h | the GPU left on → the guard at 20 min or 6 h; the 15 November date → a milestone without a date. The 4,80 $ / 72 min → 1,28 $ / 19 min pair is the post's hypothetical example (§ 1, chapter 3, section 4): it stays in the text with its assumptions and is never a card |
   | 4 | 6 $ for 5 clips · 34,42 $ for « l'aube » · 35,27 $ and 31,12 $ per finished minute | the rejected bird keyframes → « le relais » |
-  | 5 | 156 · 79 · 112 components · 48 versions in 10 days | 22 gaps → the fix made once (krizaka-ui#295); the motionless engine flow → the tests |
+  | 5 | 156 · 79 · 112 components · 48 versions in 10 days | the tab bar's unwanted vertical scrollbar → the fix made once in the kit (krizaka-ui#295); the motionless engine flow → the tests. The 22 native gaps are still open in the post (« 22 trous… ») and stay in the text as outstanding, never a card |
   | 6 | about 4 s · 8/8 and 4/4 rules | the refusal swallowed as an outage → ADR-053; our own invoice → refused by our own tool |
   | 7 | 36 s, 13 entries · 422 | `agent listen` → closed on 17 October (orazaka-cli#54); the console → in the app on 21 October |
   | 8 | 27 commands · twelve services · about thirty agents | empty PRs and a CI that never ran → the charter and the build pack |
@@ -684,11 +705,22 @@ Desktop                                                     Phone
 
 1. Rebase on #106 once it is merged.
 2. Write the 8 chapters, FR first and then EN, two chapters per PR so that each review stays readable. Each PR description
-   lists, for every paragraph, the source post and the section it comes from.
-3. In the same PR as the last chapter:
+   lists, for every paragraph, the source post and the section it comes from. **Every chapter lands with `draft: true`**:
+   the build leaves it out (`lib/chapters.ts`, as `lib/posts.ts` does), `APP_SHOW_DRAFTS=1` previews it for the review and
+   the captures, and `tests/chapters.test.mjs` asserts the staged state. So no chapter is public beside the posts it
+   absorbs, no feed lists half a story, and the newsletter sees nothing (§ 3). With no published chapter, the chapter page
+   builds on a placeholder param that renders the 404 (`output: export` needs one).
+3. In the same PR as the last chapter, the cutover:
+   - flip the eight chapters to `draft: false`, both languages at once (the rule refuses a chapter published in one
+     language only);
    - move the shelf posts and delete the absorbed posts;
    - add `lib/redirects.json`, the function and the ingress rules;
-   - update the sitemap, the feeds, the home and the bar.
+   - update the sitemap, the feeds, the home and the bar;
+   - teach `scripts/newsletter-send.mjs` the new addresses: today `versionsOf()` builds `/posts/${slug}/` for every send,
+     the manual ones included, and `waitLive()` follows redirects and takes any 200 as live — so a dispatch for
+     `why-krizaka` would wait on a retired URL, be redirected to `/story/`, accept the index and e-mail a link to it. It must
+     build `/story/<slug>/` for a chapter (`content/chapters/`) and `/basics/<slug>/` for a shelf post, EN at the root and
+     FR under `/fr/`, and `waitLive()` must compare the final URL with the expected page (the index is a failure).
 4. The arcade screens (§ 5), in their own PR after the chapters' text is approved:
    - import `@krizaka/ui/story.css`, then the select grid, the round markers, the stats and « Continue? » with the 3.43.0 blocks;
    - the versus head, `SpeedLines`, `GradeStamp`, `Doodle` and `TapedPhoto` once krizaka/krizaka-ui#548 and #542 are released.
@@ -707,6 +739,14 @@ Desktop                                                     Phone
 - **Chapters**: every chapter exists in FR and EN, with the same slug, `chapter` and `period`. The chapter numbers run from 1 to 8 without a gap.
 - **No dead internal link**: `scripts/check-links.mjs` runs on the built `out/`, and no post body links to `/posts/…` or `/series/…`.
 - **Sitemap and feeds**: no retired URL, and every chapter and shelf post present.
+- **Staging**: before the cutover, every chapter of `content/chapters/` is `draft: true` in both languages; after it, none
+  is; a chapter that is a draft in one language only is refused.
+- **Newsletter sender**: `versionsOf()` gives the EN and FR URL of a chapter (`/story/<slug>/`, `/fr/story/<slug>/`) and of
+  a shelf post (`/basics/<slug>/`, `/fr/basics/<slug>/`), with the title and the cover of each; a retired slug is refused;
+  `waitLive()` refuses a page that redirects to `/story/` or `/`; `publishedBetween()` over the cutover's own diff is
+  empty (the merge sends nothing).
+- **Home LCP**: the first tile's cover is the home's only preloaded, `fetchpriority="high"` picture, in both languages,
+  whichever tile carries « New » (`scripts/check-meta.mjs out`).
 - **Content**:
   - `npm run lint`: check-content, confidentiality (with chapter 8 `sensitive: true`), `<Model>` links and the media rules;
   - `npm test` and `npm run build`;
@@ -737,7 +777,8 @@ For Oussama:
 1. The chapter list and its order (§ 1). Is eight right? Are chapters 1 and 8 at the right ends?
 2. The GPU left on: one incident or two, and which figure (§ 0)?
 3. The shelf's fifth slot: `payments-…` (the default) or `censored-…` (§ 2)?
-4. The newsletter: one e-mail for chapter 1, or none (§ 3)?
+4. The newsletter: one e-mail for chapter 1, sent by hand after the cutover, or none (§ 3)? Nothing is sent by itself
+   either way.
 5. The arcade: the bird of each chapter and the eight versus labels (§ 5.2).
 6. The arcade's words on screen: « Press start », « Choisis ton chapitre », « Round », « Continuer ? » (tu or vous, French or
    the genre's English) (§ 5.7).
