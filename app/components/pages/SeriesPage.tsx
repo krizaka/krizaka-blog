@@ -33,6 +33,9 @@ export function SeriesIndexPage({ locale }: { locale: Locale }) {
         ) : (
           <p className="bl-status">{t.home.emptyBody}</p>
         )}
+        <p className="bl-story-link">
+          <Link href={localizedPath(locale, "/story")}>{t.series.story}</Link>
+        </p>
       </Section>
     </>
   );
@@ -45,7 +48,11 @@ export function SeriesPage({ locale, series }: { locale: Locale; series: string 
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(collectionJsonLd(locale, `/series/${series}`, seriesName(locale, series), seriesLead(locale, series))) }} />
       <PageHero back={{ href: localizedPath(locale, "/series"), label: t.series.back }} linkAs={Link} eyebrow={`${t.series.title} · ${format(t.series.oneLead, { count: String(posts.length) })}`} title={seriesName(locale, series)} lead={seriesLead(locale, series)} backdrop="plain" />
-      <Section reveal={false}>{posts.length ? <PostList posts={posts} locale={locale} reveal={false} /> : <p className="bl-status">{t.tags.none}</p>}</Section>
+      <Section reveal={false}>{posts.length ? <PostList posts={posts} locale={locale} reveal={false} /> : <p className="bl-status">{t.tags.none}</p>}
+        <p className="bl-story-link">
+          <Link href={localizedPath(locale, "/story")}>{t.series.story}</Link>
+        </p>
+      </Section>
     </>
   );
 }
