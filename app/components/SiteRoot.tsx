@@ -4,6 +4,9 @@ import { SkipLink } from "@krizaka/ui/skip-link";
 import { MotionObserver } from "@krizaka/ui/motion";
 import { cn } from "@krizaka/ui/cn";
 import { getDictionary, type Locale } from "@/lib/i18n";
+import { chapterPath } from "@/lib/seo";
+import { chaptersOf } from "@/lib/chapters";
+import { localizedPath } from "@/lib/locale";
 import { clientMessages } from "@/lib/client-messages";
 import { postsOf, translationOf } from "@/lib/posts";
 import { MEDIA_CDN_URL } from "@/lib/site";
@@ -21,6 +24,8 @@ export default function SiteRoot({ locale, children }: { locale: Locale; childre
   const t = getDictionary(locale);
   /* The posts the language switch can land on in the other language (read at build, a few dozen slugs). */
   const translated = postsOf(locale).filter((p) => translationOf(p)).map((p) => p.slug);
+  /* The chapters of the story, for the footer (the bar keeps « L'histoire » only). */
+  const chapters = chaptersOf(locale).map((c) => ({ href: localizedPath(locale, chapterPath(c.slug)), title: c.title }));
   return (
     <html lang={locale} className={cn(textFace.variable, displayFace.variable, monoFace.variable, "h-full dark")} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
@@ -39,7 +44,7 @@ export default function SiteRoot({ locale, children }: { locale: Locale; childre
             <main id="main" className="flex-1">
               {children}
             </main>
-            <SiteFooter />
+            <SiteFooter chapters={chapters} />
           </I18nProvider>
         </ThemeProvider>
       </body>
