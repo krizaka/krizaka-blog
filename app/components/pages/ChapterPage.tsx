@@ -54,7 +54,6 @@ export default function ChapterPage({ chapter }: { chapter: Chapter }) {
   const body = (
     <article className="bl-article">
       {chapter.draft && <p className="bl-draft">{t.post.draftNotice}</p>}
-      {cover && <CoverImage className="bl-cover bl-img" cover={cover} sizes="(min-width: 64rem) 680px, calc(100vw - 64px)" alt={chapter.coverAlt ?? ""} priority style={{ backgroundImage: blurUrl(cover.blur) }} />}
       <div className="bl-prose">
         <MDXRemote source={chapter.body} components={components} options={{ mdxOptions: { remarkPlugins: [remarkGfm], rehypePlugins: [rehypeSlug, rehypeRounds] } }} />
       </div>
@@ -96,6 +95,7 @@ export default function ChapterPage({ chapter }: { chapter: Chapter }) {
           aria-label={tc.versus}
           role="group"
         />
+        {cover && <CoverImage className="bl-cover bl-img bl-versus-cover" cover={cover} sizes="(min-width: 60rem) 896px, calc(100vw - 32px)" alt={chapter.coverAlt ?? ""} priority style={{ backgroundImage: blurUrl(cover.blur) }} />}
       </header>
       <PageHero back={{ href: localizedPath(locale, "/"), label: tc.back }} linkAs={Link} title={chapter.title} lead={chapter.description} backdrop="plain" className="bl-post-hero">
         <Byline post={chapter} other={other} section="story" />
