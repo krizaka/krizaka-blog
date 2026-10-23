@@ -281,3 +281,13 @@ picture { display: contents; }
 .bl-prose [data-footnotes] li::marker { font-family: var(--kz-font-mono); color: var(--kz-text-primary); }
 .bl-prose [data-footnotes] a[data-footnote-backref] { margin-inline-start: 0.375rem; font-family: var(--kz-font-mono); text-decoration: none; }
 .bl-prose sup a[data-footnote-ref] { font-family: var(--kz-font-mono); font-size: 0.75em; text-decoration: none; padding-inline: 0.125em; }
+
+/* ═══ The Krizaka story (/story/): the posts in time ═══ */
+.bl-story-intro { display: grid; gap: 2rem; align-items: start; }
+@media (min-width: 64rem) { .bl-story-intro { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); } }
+.bl-story-period { position: relative; display: flex; align-items: flex-end; min-height: 11rem; margin-bottom: 1.5rem; overflow: hidden; }
+.bl-story-period .bl-story-landscape { position: absolute; inset: 0; height: 100%; }
+.bl-story-period .bl-story-tag { position: relative; margin-inline-start: 1rem; }
+.bl-story-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); gap: 1rem; margin-top: 2rem; }
+.bl-story-step { scroll-margin-top: var(--kz-anchor-offset, 96px); }
+.bl-story-link { margin-top: 2rem; color: var(--kz-text-secondary); } .bl-story-link a { color: var(--kz-accent-text); text-decoration: underline; text-underline-offset: 3px; }

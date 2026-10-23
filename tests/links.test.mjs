@@ -18,6 +18,15 @@ test("next/link never points at a file that is not a page (feeds, images, text)"
   assert.deepEqual(offenders, []);
 });
 
+test("the Mac-app post cites the historical scope source, not the removed main-branch file", () => {
+  const source = "https://github.com/krizaka/orazaka/blob/5d8704b0af6e751cb56aedbc0b07f6c68a379714/apps/desktop/src-tauri/src/scope.rs";
+  for (const locale of ["en", "fr"]) {
+    const post = readFileSync(join(root, `content/posts/why-orazaka-has-a-mac-app.${locale}.mdx`), "utf8");
+    const citations = [...post.matchAll(/\]\((https:\/\/github\.com\/krizaka\/orazaka\/blob\/[^)]+\/scope\.rs)\)/g)].map((m) => m[1]);
+    assert.deepEqual(citations, [source], locale);
+  }
+});
+
 test("extractLinks reads href, src, every srcset candidate, poster, absolute meta content and feed links", () => {
   const html = `<a href="/posts/a/">a</a><img src="/i.png" srcset="https://cdn/x-480.webp 480w, https://cdn/x-960.webp 960w"><video poster="/p.jpg"></video>
   <meta property="og:image" content="https://blog.krizaka.com/og/a.png"><meta name="description" content="not a url">
