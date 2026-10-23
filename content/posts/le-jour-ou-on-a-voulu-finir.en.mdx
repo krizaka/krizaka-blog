@@ -1,0 +1,64 @@
+---
+title: "The day we tried to finish"
+description: "On 23 October I wanted to finish everything. Coding agents in parallel, quotas run out twice, a CI waiting for approval, an overloaded Mac. What I keep from it."
+seoTitle: "The day we tried to finish everything"
+seoDescription: "Parallel coding agents, quotas run out, CI waiting for approval, an overloaded Mac: the day of 23 October, and the rules we took from it."
+date: 2026-10-23
+publishedAt: "2026-10-23T23:00:00-04:00"
+tags: [ai, integration]
+author: oussama
+draft: true
+cover: agent-desk-night
+coverAlt: "A home office at night: an open laptop on a walnut desk, a small brass padlock on a neat stack of paper folders beside it, a warm desk lamp making a pool of light, and through the window the snowy Montreal rooftops under a dark blue sky"
+series: building-krizaka
+part: 10
+sensitive: true
+---
+
+On 23 October I wanted to finish everything. Not a small batch of tickets: the issues open for weeks, the screens of Akinaza, the modules of Krizaka TypeScript, the timeline on the blog, Yomizaka's Mac app, the first slices of Orazaka. I thought that with coding agents working in parallel, and me reviewing, one day would be enough.
+
+It was not. But I learned things I want to write down, because they will be useful next time.
+
+## A site that keeps growing
+
+In the morning, things moved everywhere. Tickets closed and pull requests were merged. In total, at least a hundred PRs were merged that day, across more than twenty repositories.
+
+But each step opened something else to watch. Copilot took issues and opened PRs. Claude sessions worked on other branches. Each had its own context and its own limits, and for the work to move, I had to know where each one stood. Nobody else did that for me. By late afternoon I felt less like I was moving forward and more like I was running a site: everything moves, and you have to decide what to look at first.
+
+## The quotas
+
+The quotas ran out twice. Copilot's went first. From the morning on, every task failed on its first turn with a usage-limit message. It ran out a second time in the middle of the day, right after a task. The Claude sessions also hit their weekly limit, and several of them stopped.
+
+Forty-eight empty PRs were closed, each with an explanation. Their issues stayed open, in the queue. The Claude sessions saved their work and will resume with a message. Nothing was lost, but nothing moved while they were stopped.
+
+## A CI that waits
+
+Then there was the CI. A push made by an agent does not start the workflows until a human approves them. So a PR can look ready, with code and tests, while no check runs at all. That does not show up right away, and you move on quickly.
+
+Then came the review. Copilot reviewed each PR, the agent fixed things, the review started again, and we went around once more. Each round used quota, the same quota we needed for the work. I stopped the loop. It was not the setting we wanted; it was the one that lasted through the day.
+
+## The Mac
+
+In the evening, the machine said stop. Seven sessions were running at the same time, with Copilot, and some builds started in parallel, outside the lock we use to run only one heavy build at a time. The load reached 133 on 10 cores. At that level everything slows down, and the builds get in each other's way.
+
+Agents are not extra capacity. They share the same machine.
+
+## What I changed
+
+I made a few decisions, and they fit in a few words.
+
+First, three active sessions at most, and one heavy task at a time. Second, finish before starting: a study does not begin until the previous one is validated, and every ADR is validated by me before any code is written. Third, the work that is not a priority goes on pause. Each piece resumes one at a time, as soon as an active session ends, from its last state.
+
+## What I keep from it
+
+Finish before you start. An open PR, an issue in progress, a session just launched: each one takes something, quota, attention, room on the machine. Until something is merged, it is not finished. It is a debt waiting to be paid.
+
+One heavy task at a time. Three builds in parallel do not go faster than one. They slow each other down, and everyone loses time.
+
+The cheapest model that fits. A text fix or a simple test does not need the most powerful model. I keep the big models for architecture decisions, and I watch what each session costs.
+
+Automatic review on every PR. It found real bugs before they reached the main branch. It uses quota, so it has to be watched so it does not loop, but I keep it.
+
+A human decides and merges. The agents open branches, push code and answer comments. What goes into the main branch is my call, and I am the one who merges. This is not distrust of them. It is the only way to know what was checked, and by whom.
+
+We did not finish everything that day. PRs are still waiting, issues are in the queue, and some decisions come back to me. But the rule is written, and it is the one we follow now.

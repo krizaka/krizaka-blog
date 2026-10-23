@@ -1,0 +1,66 @@
+---
+title: "Le jour où on a voulu finir"
+description: "Le 23 octobre, je voulais tout finir. Des agents de code en parallèle, des quotas épuisés deux fois, une CI qui attendait une approbation, un Mac saturé. Ce que j'en retiens."
+seoTitle: "Le jour où on a voulu tout finir"
+seoDescription: "Agents de code en parallèle, quotas épuisés, CI en attente, Mac saturé : la journée du 23 octobre, et les règles qu'on en a tirées."
+date: 2026-10-23
+publishedAt: "2026-10-23T23:00:00-04:00"
+tags: [ai, integration]
+author: oussama
+draft: true
+cover: agent-desk-night
+coverAlt: "Un bureau de travail à domicile la nuit : un ordinateur portable ouvert sur un bureau en noyer, à côté un petit cadenas en laiton posé sur une pile de dossiers en papier, une lampe de bureau chaude qui fait une flaque de lumière, et derrière la fenêtre les toits enneigés de Montréal sous un ciel bleu nuit"
+series: building-krizaka
+part: 10
+sensitive: true
+---
+
+Le 23 octobre, je voulais tout finir. Pas un petit lot de tickets : les issues ouvertes depuis des semaines, les écrans d'Akinaza, les modules de Krizaka TypeScript, la frise du blog, l'app Mac de Yomizaka, les premières tranches d'Orazaka. Je me disais qu'avec des agents de code qui travaillaient en parallèle, et moi qui relisais, la journée suffirait.
+
+Ça n'a pas été le cas. Mais j'ai appris des choses que je veux écrire, parce qu'elles serviront la prochaine fois.
+
+## Un chantier qui grossit
+
+Le matin, ça avançait partout. Des tickets se fermaient, des pull requests se fusionnaient. Au total, au moins cent PR ont été fusionnées dans la journée, sur plus de vingt dépôts.
+
+Mais chaque avancée ouvrait une autre chose à surveiller. Copilot prenait des issues et ouvrait des PR. Des sessions Claude travaillaient sur d'autres branches. Chacune avait son contexte et ses limites, et pour que le travail avance, il fallait savoir où en était chacune. Personne d'autre ne le faisait à ma place. En fin d'après-midi, j'avais moins l'impression d'avancer que de gérer un chantier : tout bouge, et il faut décider quoi regarder en premier.
+
+Le travail, lui, était bien là. Les branches, les tickets et les journaux des sessions restaient en place, et c'est ce qui permettait de reprendre. Ce qui manquait, c'était une vue d'ensemble : savoir en une minute ce qui tourne, ce qui attend, et ce qui consomme.
+
+## Les quotas
+
+Les quotas se sont épuisés deux fois. Le quota de Copilot a cédé en premier : depuis le matin, chaque tâche échouait au premier tour, avec un message de limite d'usage. Il s'est épuisé une seconde fois en milieu de journée, juste après une tâche. Les sessions Claude ont aussi atteint leur limite hebdomadaire, et plusieurs se sont arrêtées.
+
+Quarante-huit PR vides ont été fermées, chacune avec une explication. Leurs issues sont restées ouvertes, en file d'attente. Les sessions Claude ont sauvegardé leur travail, et elles reprendront par un message. Rien n'a été perdu, mais rien n'avançait pendant qu'elles étaient à l'arrêt.
+
+## Une CI qui attend
+
+Il y a eu aussi la CI. Un push fait par un agent ne lance pas les workflows tant qu'un humain ne les a pas approuvés. Une PR peut donc avoir l'air prête, avec du code et des tests, sans qu'aucune vérification ne tourne. Ça ne se voit pas tout de suite, et on passe vite.
+
+Ensuite, il y a eu la relecture. Copilot relisait chaque PR, l'agent corrigeait, la relecture repartait, et on repartait pour un tour. Chaque tour consommait du quota, celui-là même dont on avait besoin pour le travail. J'ai arrêté la boucle. Ce n'était pas le réglage qu'on voulait, c'était celui qui tenait dans la journée.
+
+## Le Mac
+
+Le soir, c'est la machine qui a dit stop. Sept sessions tournaient en même temps, avec Copilot, et des builds étaient lancés en parallèle, en dehors du verrou qu'on utilise pour n'en lancer qu'un à la fois. La charge a atteint 133 sur 10 cœurs. À ce niveau, tout ralentit, et les builds se gênent entre eux.
+
+Les agents ne sont pas une capacité en plus. Ils se partagent la même machine.
+
+## Ce que j'ai changé
+
+J'ai pris quelques décisions, et elles tiennent en peu de mots.
+
+D'abord, trois sessions actives au plus, et une seule tâche lourde à la fois. Ensuite, on finit avant de commencer : une étude ne démarre pas avant que la précédente soit validée, et chaque ADR est validé par moi avant toute ligne de code. Enfin, les chantiers qui ne sont pas dans les priorités passent en pause. Ils reprennent un par un, dès qu'une session active se termine, depuis leur dernier état.
+
+## Ce que j'en retiens
+
+Finir avant de commencer. Une PR ouverte, une issue en cours, une session lancée prennent chacune quelque chose : du quota, de l'attention, de la place sur la machine. Tant que rien n'est fusionné, ce n'est pas fini. C'est une dette qui attend.
+
+Une tâche lourde à la fois. Trois builds en parallèle ne vont pas plus vite qu'un seul. Ils se gênent, et tout le monde perd du temps.
+
+Le modèle le moins cher qui suffit. Une correction de texte ou un test simple n'a pas besoin du modèle le plus puissant. Je garde les gros modèles pour les décisions d'architecture, et je regarde ce que coûte chaque session.
+
+La relecture automatique, sur chaque PR. Elle a trouvé de vrais bugs avant qu'ils n'arrivent sur la branche principale. Elle consomme du quota, donc il faut la surveiller pour qu'elle ne tourne pas en boucle, mais je la garde.
+
+Un humain décide et fusionne. Les agents ouvrent les branches, poussent le code, répondent aux commentaires. Ce qui entre dans la branche principale, c'est moi qui le décide, et c'est moi qui fusionne. Ce n'est pas de la méfiance envers eux. C'est le seul moyen de savoir ce qui a été vérifié, et par qui.
+
+On n'a pas tout fini ce jour-là. Il reste des PR en attente, des issues en file, et des décisions qui reviennent à moi. Mais la règle est écrite, et c'est elle qu'on suit maintenant.
