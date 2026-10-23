@@ -44,7 +44,7 @@ What repeats, and what the plan fixes:
 ## 1. The chapters
 
 There are eight chapters, in the order the story happened. Each chapter is one MDX file per language, with the same slug. It
-is written by joining the sentences of the posts it absorbs, under the voice rule (§ 7).
+is written by joining the sentences of the posts it absorbs, under the voice rule (§ 8).
 
 - **Length** counts French words of body text. At 220 words a minute, 1,300–2,200 words reads in 6–10 minutes.
 - **Section titles** reuse a heading of the source post wherever one fits. Their anchors are the ids `github-slugger`
@@ -277,7 +277,7 @@ One rule per address cannot fit, and a static host has no redirect file. So the 
 
 ### The map
 
-The anchors are the ids `rehype-slug` gives the chapter headings of § 1, computed with `github-slugger`. The test of § 6
+The anchors are the ids `rehype-slug` gives the chapter headings of § 1, computed with `github-slugger`. The test of § 7
 checks that each one exists in the built chapter.
 
 | Old slug (`/posts/…/` and `/fr/posts/…/`) | EN target | FR target |
@@ -325,19 +325,24 @@ checks that each one exists in the built chapter.
 
 ## 4. The new home
 
-The story comes first. #106's `/story/` page provides the data: `lib/story.ts` reads the front matter, and nothing is hand-typed. The home reuses it in this order:
+The story comes first, and the home is the character select screen of § 5. #106's `/story/` page provides the data:
+`lib/story.ts` reads the front matter, and nothing is hand-typed. The home reuses it in this order (wireframe in § 5.3):
 
 1. **`PageHero`**: the blog's title and one line in Oussama's words, taken from chapter 1 (« Si une affirmation ne remonte pas
-   à une mesure, à une exécution ou à une ligne de code, je ne l'écris pas. »).
-2. **The chapters as the timeline**:
-   - `Stepper` (`@krizaka/ui/stepper`) with eight steps. Each shows the chapter number, title and promise, and links to its chapter.
-   - `SpecimenTag` (`@krizaka/ui/specimen-tag`) carries the period of each chapter, and `Landscape` (`@krizaka/ui/landscape`) heads the section.
-   - The `Stepper` only renders content for the current step (#106), so the covers go in the next block, not in the steps.
-3. **The latest chapter**: the large `PostCard`, with its AVIF/WebP cover (`fetchpriority="high"`, the page's LCP).
-4. **The chapters' pictures**: a `PhotoGrid` (`@krizaka/ui/photo-grid`) of the eight covers, each linked. The covers move to
-   `taped-photo` once it ships (krizaka/krizaka-ui#542; it is not in `@krizaka/ui` 3.43.0). Nothing is hand-made here.
-5. **« Les bases »**: a `CardGrid` of five `LinkCard`s.
+   à une mesure, à une exécution ou à une ligne de code, je ne l'écris pas. »). Its one action is « Press start », a link to
+   chapter 1.
+2. **The chapters as the select screen**: `ChoiceGrid` (`@krizaka/ui/choice-grid`, `variant="arcade"`), eight tiles in
+   reading order, each a link to its chapter (§ 5.2). The latest chapter's tile carries the « New » badge, and its cover is
+   the page's LCP (AVIF/WebP, `fetchpriority="high"`); the seven other covers wait until they are near the window.
+3. **The timeline**: `Stepper` (`@krizaka/ui/stepper`) stays on `/story/`, #106's page, which the home links under the grid
+   (« Toute l'histoire, dans l'ordre »). `SpecimenTag` carries each chapter's period on its tile, and `Landscape` heads the
+   grid's band.
+4. **The latest chapter**: it is the select grid's « New » tile, so it is not repeated as a large `PostCard`.
+5. **« Les bases »**: a `CardGrid` of five `LinkCard`s, in the calm (`default`) look. The arcade stays with the story.
 6. **The newsletter form**, as today.
+
+The covers are shown as `TapedPhoto` once it ships (krizaka/krizaka-ui#542; it is not in `@krizaka/ui` 3.43.0). Until then
+they are the existing `<picture>` of `CoverImage`. Nothing is hand-made here.
 
 Front matter and ordering:
 
@@ -348,7 +353,334 @@ Front matter and ordering:
 
 The bar's sections become Story (`/story/`), Basics (`/basics/`), Search, Feed and About. « Series » leaves.
 
-## 5. Phase 2 — the order of work (after « validé » only)
+## 5. The art direction: an arcade hall
+
+Oussama (2026-10-23): « KOF, salle d'arcade, SNK vs Capcom ». The story is told like a night at a 90s arcade, in the
+fighting-game « versus » era, on top of the Cahier identity (paper, ink, the birds). Four screens carry it:
+
+| Screen | Where | What it shows |
+|---|---|---|
+| Character select | the home | the eight chapters as fighter cards, the chapter's bird as the fighter, its cover as the portrait, « Press start » |
+| Versus | the head of each chapter | what I faced against what we built, then « Round 1, Round 2… » before each section |
+| Stats | the end of each chapter's body | time spent, what broke, what shipped: plain figures copied from the chapter |
+| Continue? | the close of each chapter | the next chapter, and a grade stamp for what was learned |
+
+### 5.1 The pieces, and what is missing
+
+Everything comes from `@krizaka/ui`. What exists in 3.43.0 (the version this repository has) is used as is. What is not
+released yet is waited for, never hand-made here.
+
+| Piece | Package | In 3.43.0? | Used for |
+|---|---|---|---|
+| `ChoiceGrid` `variant="arcade"` | `@krizaka/ui/choice-grid` | yes | the character select grid (tiles with `visual`, `eyebrow`, `badge`, `meta`, `href`, `brand`) |
+| `StageBanner` `variant="arcade"` | `@krizaka/ui/stage-banner` | yes | « Round 1 » before each h2 (`size="sm"`), and the chapter number on the versus screen |
+| `AchievementList` / `Achievement` `variant="arcade"` | `@krizaka/ui/achievement` | yes | « what shipped », with what it replaced struck through (`replaced`) |
+| `<Numbers><Num>` (the blog's, over `NumberTicker`) | `app/components/pages/mdx.tsx` | yes | the stats screen's figures |
+| `ContinuePrompt` `variant="arcade"` | `@krizaka/ui/continue-prompt` | yes | the « Continue? » screen |
+| `Mascot` / `BirdPlate` | `@krizaka/ui/mascots`, `bird-plate` | yes | the chapter's bird |
+| `Stepper`, `Landscape`, `SpecimenTag`, `PhotoGrid` | `@krizaka/ui/*` | yes | the timeline on `/story/`, the home band, the period tag |
+| `VersusCard` | krizaka/krizaka-ui#548 | no | the versus screen |
+| `SpeedLines` | krizaka/krizaka-ui#548 | no | behind the versus screen only |
+| `GradeStamp` | krizaka/krizaka-ui#548 | no | the stamp on the continue screen |
+| `Doodle` | krizaka/krizaka-ui#548 | no | one margin mark per chapter at most (an arrow to the versus, the bird's sketch) |
+| `TapedPhoto` | krizaka/krizaka-ui#542 | no | the covers on the select tiles and the versus portraits |
+
+The `arcade` look of these blocks lives in `@krizaka/ui/story.css`, which the blog does not import yet (`SiteRoot.tsx`
+imports `blocks.css` only). Phase 2 adds it. Its rules already cover the light theme (`.light .kzs-arcade …`).
+
+**Missing pieces, to file in krizaka-ui** (I cannot open issues from this run; Claude or Oussama files them, or tells me to
+fold them into #548):
+
+1. **A fighter tile**: `ChoiceGrid`'s `visual` is one node. The select screen needs two layers in it, the cover as the
+   portrait and the bird standing in front of it, with the bird's idle loop. Either a `fighter` slot on `ChoiceItem`, or
+   `VersusCard`'s fighter exported on its own.
+2. **`GradeStamp` without a score**: the stamp must be able to carry only its remark. A chapter has a real score only when a
+   run gave one (§ 5.6); a made-up « 17/20 » is exactly what the voice rule forbids.
+3. **An MDX-friendly round marker**: « Round n » must come before each h2 without being typed in the MDX and without changing
+   the heading's id (the redirect anchors of § 3 depend on it). The plan is a small rehype step in the blog that inserts a
+   `StageBanner` before each h2; if krizaka-ui prefers to own it, it becomes a `RoundMarker` there.
+
+### 5.2 The fighters: one bird per chapter
+
+The birds keep the meanings `@krizaka/ui` gives them (`mascots.d.ts`). This is a proposal; **Oussama decides**.
+
+| # | Chapter | Bird | Why this bird | Versus: what I faced (left) vs what we built (right), from the chapter's own text |
+|---|---|---|---|---|
+| 1 | Pourquoi Krizaka | `lovebird` (introductions) | « D'abord, qui écrit » | « une affirmation sans source » vs « une exécution qui garde son id, sa version et ses règles » |
+| 2 | Un moteur sur un portable | `duck` (building, code) | the engine, the services | « le Mac saturé du 12 octobre » vs « les modèles deviennent des données » |
+| 3 | Ce que coûte un GPU | `magpie` (the score, points) | the bills and the figures | « le GPU resté allumé » vs « la garde à 20 min ou 6 h » |
+| 4 | D'un clip à un film | `crane` (listening, a calm moment) | the film, the voice and the music | « l'aube, jugée à l'œil » vs « le relais, mesuré » |
+| 5 | Une interface partout | `flamingo` (answers) | the screen that answers the reader | « l'air IA » vs « Cahier » |
+| 6 | Les premiers produits | `owl` (reading, documents) | Yomizaka reads leases and pay slips | « notre facture Akinaza » vs « Yomizaka, qui la refuse » |
+| 7 | Un résultat vide… | `falcon` (watch, security) | what we will never give an agent | « `orazaka agent listen` » vs « un plan fixe, un dossier » |
+| 8 | Construire avec des agents | `beaver` (a small business at work) | a company run almost alone | « une trentaine d'agents, des PR vides » vs « la charte et le pack de build » |
+
+The versus lines are short labels, not new sentences: each one names a moment the chapter tells. In Phase 2 each label is
+checked against its section, and the PR cites it. In chapter 8 (`sensitive: true`) the labels name no supplier and no amount.
+In chapter 3 the left side waits for the GPU-left-on figure (§ 0, § 9).
+
+### 5.3 Wireframe: the character select screen (the home)
+
+Desktop (≥ 1024 px). Four tiles a row, two rows; the reading order is chapter 1 to 8, left to right.
+
+```text
+┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ [K] Krizaka Blog    Histoire  Les bases  Recherche  Flux  À propos     ◐  FR/EN  ← krizaka.com   │  NavBar
+├──────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                                  │
+│   [the blog's title, as today]                                           PageHero                │
+│   « Si une affirmation ne remonte pas à une mesure, à une exécution ou à une ligne de code,      │
+│     je ne l'écris pas. »                                                                         │
+│                                                                                                  │
+│   [ Start ]  Press start → chapitre 1                                    (Kbd + link)            │
+│                                                                                                  │
+├ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~  Landscape (the band)  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ┤
+│  CHOISIS TON CHAPITRE                                    ChoiceGrid variant="arcade", 4 columns  │
+│  ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐                 │
+│  │ 01 · [période]  │ │ 02 · [période]  │ │ 03 · [période]  │ │ 04 · [période]  │  eyebrow +      │
+│  │ ┌─────────────┐ │ │ ┌─────────────┐ │ │ ┌─────────────┐ │ │ ┌─────────────┐ │  SpecimenTag    │
+│  │ │   cover     │ │ │ │   cover     │ │ │ │   cover     │ │ │ │   cover     │ │  portrait       │
+│  │ │      (bird) │ │ │ │      (bird) │ │ │ │      (bird) │ │ │ │      (bird) │ │  (TapedPhoto)   │
+│  │ └─────────────┘ │ │ └─────────────┘ │ │ └─────────────┘ │ │ └─────────────┘ │                 │
+│  │ Pourquoi        │ │ Un moteur d'IA  │ │ Ce que coûtent  │ │ D'un clip à un  │  name           │
+│  │ Krizaka         │ │ sur un portable │ │ une image…      │ │ film            │                 │
+│  │ promesse, 1 l.  │ │ promesse, 1 l.  │ │ promesse, 1 l.  │ │ promesse, 1 l.  │  title          │
+│  │ 6 min        →  │ │ 9 min        →  │ │ 10 min       →  │ │ 10 min       →  │  meta           │
+│  └─────────────────┘ └─────────────────┘ └─────────────────┘ └─────────────────┘                 │
+│  ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐ ┌──────────[NEW]──┐                 │
+│  │ 05 …            │ │ 06 …            │ │ 07 …            │ │ 08 …            │  latest chapter │
+│  │ …               │ │ …               │ │ …               │ │ …               │  = « New » badge│
+│  └─────────────────┘ └─────────────────┘ └─────────────────┘ └─────────────────┘                 │
+│  Toute l'histoire, dans l'ordre →  /story/  (Stepper, #106)                                      │
+├──────────────────────────────────────────────────────────────────────────────────────────────────┤
+│  LES BASES                                   CardGrid of 5 LinkCards, default look (no arcade)   │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐                                │
+│  └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘                                │
+├──────────────────────────────────────────────────────────────────────────────────────────────────┤
+│  Newsletter: [ adresse e-mail            ] [ M'abonner ]    one muted notice line                │
+└──────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+Phone (≤ 420 px). One column; the tiles stack, the portrait above the name.
+
+```text
+┌──────────────────────────────┐
+│ [K]                ◐  ☰      │  NavBar (menu)
+├──────────────────────────────┤
+│ [the blog's title]           │
+│ « Si une affirmation ne      │
+│   remonte pas… »             │
+│ [ Start ] Press start →      │
+├ ~ ~ ~ ~ Landscape ~ ~ ~ ~ ~ ─┤
+│ CHOISIS TON CHAPITRE         │
+│ ┌──────────────────────────┐ │
+│ │ 01 · [période]           │ │
+│ │ ┌──────────────────────┐ │ │
+│ │ │  cover        (bird) │ │ │  16:9, size reserved
+│ │ └──────────────────────┘ │ │  (no layout shift)
+│ │ Pourquoi Krizaka         │ │
+│ │ promesse, 1–2 lignes     │ │
+│ │ 6 min                 →  │ │
+│ └──────────────────────────┘ │
+│ ┌──────────────────────────┐ │
+│ │ 02 …                     │ │
+│ └──────────────────────────┘ │
+│   … 03 to 08 …               │
+│ Toute l'histoire →           │
+├──────────────────────────────┤
+│ LES BASES  (5 cards, 1 col.) │
+├──────────────────────────────┤
+│ [ e-mail ][ M'abonner ]      │
+└──────────────────────────────┘
+```
+
+The grid is a list of links. Keyboard and screen readers get eight links in order, each named by its chapter title. The
+bird and the cover are decorative (`alt=""` on the bird, the cover keeps its `coverAlt`).
+
+### 5.4 Wireframe: the versus screen (the head of a chapter)
+
+The versus screen replaces the post hero. It holds the chapter's single h1 (its title), so `check-meta` still finds exactly
+one h1. Chapter 2 as the example:
+
+Desktop.
+
+```text
+┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ NavBar                                                                                           │
+├──────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                         CHAPITRE 02 · [période]          StageBanner arcade, size="lg"           │
+│  ╲ ╲ ╲ ╲ ╲ ╲ ╲ ╲ ╲ ╲ ╲ ╲ ╲ ╲ ╲ ╲ ╲   SpeedLines (still; behind the card only)  ╱ ╱ ╱ ╱ ╱ ╱ ╱ ╱ ╱ │
+│  ┌───────────────────────────────┐        ┌──────┐        ┌───────────────────────────────┐      │
+│  │  ┌─────────────────────────┐  │        │      │        │  ┌─────────────────────────┐  │      │
+│  │  │  a picture of what I    │  │        │  VS  │        │  │  cover (TapedPhoto)     │  │      │
+│  │  │  faced (a media entry)  │  │        │      │        │  │                (duck)   │  │      │
+│  │  └─────────────────────────┘  │        └──────┘        │  └─────────────────────────┘  │      │
+│  │  le Mac saturé du 12 octobre  │                        │  les modèles deviennent des   │      │
+│  │                               │                        │  données                      │      │
+│  └───────────────────────────────┘                        └───────────────────────────────┘      │
+│                                    VersusCard (#548)                                             │
+│                                                                                                  │
+│   Un moteur d'IA sur un portable                                         h1 (the only one)       │
+│   [the chapter's description, from its front matter]                     the lead                │
+│   Oussama Abid · [date] · 9 min                                          meta row                │
+├──────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                     ROUND 1 · Le 12 octobre, le Mac a saturé             StageBanner arcade, sm  │
+│                     ## Le 12 octobre, le Mac a saturé                    h2, id unchanged        │
+│                     body text, the normal reading column (no arcade inside the text)             │
+│                     …                                                                            │
+│                     ROUND 2 · Les modèles deviennent des données                                 │
+│                     ## …                                                                         │
+└──────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+Phone.
+
+```text
+┌──────────────────────────────┐
+│ CHAPITRE 02 · [période]      │  StageBanner lg
+│ ┌──────────────────────────┐ │
+│ │ ce que j'ai affronté     │ │  the two sides stack:
+│ │ le Mac saturé du         │ │  left on top,
+│ │ 12 octobre               │ │
+│ └──────────────────────────┘ │
+│            VS                │  « VS » between them
+│ ┌──────────────────────────┐ │
+│ │ cover          (duck)    │ │
+│ │ les modèles deviennent   │ │
+│ │ des données              │ │
+│ └──────────────────────────┘ │
+│ Un moteur d'IA sur un        │  h1
+│ portable                     │
+│ lead, meta row               │
+├──────────────────────────────┤
+│ ROUND 1                      │  the marker on its own line
+│ ## Le 12 octobre, le Mac     │
+│    a saturé                  │
+│ body, reading column         │
+└──────────────────────────────┘
+```
+
+Rules for the versus screen:
+
+- **Text first.** Both labels are real text, inside the `VersusCard`, read in order (« faced », « VS », « built »). The
+  pictures are decorative when the label already says it.
+- **One picture rule.** The right side is the chapter's cover, shown once, as `AGENTS.md` asks. The left side is another
+  existing entry of `lib/media.json` when the chapter has one that fits; otherwise the left side is the label alone, on
+  paper. No new image is made for it.
+- **Round markers** are decoration over an unchanged h2: the anchor ids of § 3 do not move, and `tocOf` reads the h2, not
+  the marker. A chapter has 5–6 rounds (§ 1).
+
+### 5.5 Wireframe: the stats screen (the end of a chapter's body)
+
+The stats screen closes the body, after the last round and before « Continue? ». It is the chapter's « concrete » in one
+place: its figures, what broke and what shipped. Each figure is copied from a section of the same chapter and links to it.
+
+Chapter 3 as the example (every figure below is from § 1, chapter 3; the GPU left on waits for § 9):
+
+Desktop.
+
+```text
+┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                     RÉSULTATS · CHAPITRE 03                StageBanner arcade, lg (title as h2)  │
+│                                                                                                  │
+│  ┌────────────────┐ ┌────────────────┐ ┌────────────────┐ ┌────────────────┐                     │
+│  │ 62 s           │ │ 17,36 $        │ │ 11,51 $        │ │ 2,8 h · 2,2 h  │   <Numbers><Num>    │
+│  │ FLUX, médiane  │ │ payé           │ │ perdu          │ │ calcul ·       │   value + label +   │
+│  │ sur le Mac     │ │                │ │                │ │ attente        │   hint (its section)│
+│  └────────────────┘ └────────────────┘ └────────────────┘ └────────────────┘                     │
+│                                                                                                  │
+│  CE QUI A CASSÉ / CE QUI EST SORTI                         AchievementList variant="arcade"      │
+│  ┌──────────────────────────────┐ ┌──────────────────────────────┐ ┌───────────────────────────┐ │
+│  │ ROUND 3            [SORTI]   │ │ ROUND 4            [SORTI]   │ │ ROUND 6          [SORTI]  │ │
+│  │ ~~le GPU resté allumé~~      │ │ ~~4,80 $ et 72 min~~         │ │ ~~le 15 novembre~~        │ │
+│  │ la garde à 20 min ou 6 h     │ │ 1,28 $ et 19 min             │ │ un jalon sans date        │ │
+│  └──────────────────────────────┘ └──────────────────────────────┘ └───────────────────────────┘ │
+│  struck = what broke or what it replaced (`replaced`), plain = what shipped (`title`)            │
+└──────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+Phone.
+
+```text
+┌──────────────────────────────┐
+│ RÉSULTATS · CHAPITRE 03      │
+│ ┌─────────────┐┌───────────┐ │  two figures a row
+│ │ 62 s        ││ 17,36 $   │ │
+│ │ FLUX, Mac   ││ payé      │ │
+│ └─────────────┘└───────────┘ │
+│ ┌─────────────┐┌───────────┐ │
+│ │ 11,51 $     ││ 2,8 h ·   │ │
+│ │ perdu       ││ 2,2 h     │ │
+│ └─────────────┘└───────────┘ │
+│ CE QUI A CASSÉ / SORTI       │
+│ ┌──────────────────────────┐ │  one card a row
+│ │ ROUND 3        [SORTI]   │ │
+│ │ ~~le GPU resté allumé~~  │ │
+│ │ la garde à 20 min ou 6 h │ │
+│ └──────────────────────────┘ │
+│ … 2 more                     │
+└──────────────────────────────┘
+```
+
+Rules for the stats screen:
+
+- **Only figures the chapter already gives**, the `<Numbers>` rule of `AGENTS.md`. Four figures at most, each with its
+  section in the hint. No total that the posts do not compute, no gauge whose 100 % would be invented (so no `ProfileCard`
+  gauges here).
+- **Chapter 8** (`sensitive: true`) shows no amount: its figures are counts the post gives (27 commands, twelve services,
+  about thirty agents). Its « broke / shipped » cards follow the strict rules.
+- The stats proposed per chapter, all from § 1:
+
+  | # | Figures (≤ 4) | Broke → shipped (struck → plain) |
+  |---|---|---|
+  | 1 | 3,99 $ US de l'heure (the H100) | the 48 GB GPU never in stock in Toronto → an H100 in CA-MTL-1 |
+  | 2 | load 100–260 · 62 s (FLUX.2 [klein], median) · 26 GiB asked (Wan 2.2 5B) · 131 s hosted | the Mac of 12 October → models as data (ADR-030); the pack that failed four times → ADR-049 |
+  | 3 | 62 s · 17,36 $ · 11,51 $ lost · 2,8 h / 2,2 h | the GPU left on → the guard; 4,80 $ / 72 min → 1,28 $ / 19 min |
+  | 4 | 6 $ for 5 clips · 34,42 $ for « l'aube » · 35,27 $ and 31,12 $ per finished minute | the rejected bird keyframes → « le relais » |
+  | 5 | 156 · 79 · 112 components · 48 versions in 10 days | 22 gaps → the fix made once (krizaka-ui#295); the motionless engine flow → the tests |
+  | 6 | about 4 s · 8/8 and 4/4 rules | the refusal swallowed as an outage → ADR-053; our own invoice → refused by our own tool |
+  | 7 | 36 s, 13 entries · 422 | `agent listen` → closed on 17 October (orazaka-cli#54); the console → in the app on 21 October |
+  | 8 | 27 commands · twelve services · about thirty agents | empty PRs and a CI that never ran → the charter and the build pack |
+
+### 5.6 The « Continue? » screen (the close of a chapter)
+
+`ContinuePrompt variant="arcade"`: the title « Continuer ? » / "Continue?", the next chapter's number, title and promise
+inside, and one action, a link « Chapitre 04 » with the key-cap « Start ». No countdown: a number that ticks down would be a
+figure the posts do not give. The last chapter's prompt leads to « Les bases ».
+
+The `GradeStamp` beside it carries **what was learned**: one sentence copied from the chapter (the PR cites where). It
+carries a score only when a run in the chapter gave one (chapter 6: « 8/8 »); the other chapters get the remark alone, which
+needs the « no score » option of § 5.1. Until `GradeStamp` ships, the sentence stands as a plain pull quote.
+
+```text
+Desktop                                                     Phone
+┌───────────────────────────────────────┐ ┌────────────┐    ┌──────────────────────────────┐
+│ CONTINUER ?                     ●     │ │ ce que j'ai│    │ CONTINUER ?                  │
+│ Chapitre 04 · D'un clip à un film     │ │ appris :   │    │ Chapitre 04 · D'un clip à …  │
+│ promesse, une ligne                   │ │ « … »      │    │ promesse                     │
+│ [Start]  Chapitre 04  →               │ │ (stamp)    │    │ [Start] Chapitre 04 →        │
+└───────────────────────────────────────┘ └────────────┘    │ ┌──────────────────────────┐ │
+ ContinuePrompt arcade                    GradeStamp        │ │ « … »  (stamp)           │ │
+                                                            │ └──────────────────────────┘ │
+                                                            └──────────────────────────────┘
+```
+
+### 5.7 Restraint
+
+- **The text stays readable.** The body is the normal reading column, untouched. The arcade lives in the frames, the
+  headers and the transitions: the select grid, the versus head, the round markers, the stats and the continue screen.
+- **Dark and light, and phone width.** Every screen is checked in both themes and at 390 px wide, and the captures go to
+  Bunny `pr-assets`. Contrast is AA; the arcade blocks' light rules are in `story.css`.
+- **Motion.** It is still under `prefers-reduced-motion` (the blocks already do it, and `SpeedLines` is specified so).
+  Nothing moves the layout: every picture reserves its size, and the stamps and banners animate with transform and opacity
+  only. No sound, anywhere.
+- **Inspiration only.** No SNK or Capcom name, logo, character, sprite, font or sound is used or imitated. The fighters are
+  our birds, the faces are `@krizaka/fonts`, and the words « Press start », « VS », « Round » and « Continue? » are the
+  genre's common words, not a brand's.
+- **Messages.** Every word of these screens (« Press start », « Choisis ton chapitre », « Round », « Résultats »,
+  « Continuer ? », « Sorti ») is in `messages/{en,fr}.json`, checked by `krizaka-i18n check`.
+
+## 6. Phase 2 — the order of work (after « validé » only)
 
 1. Rebase on #106 once it is merged.
 2. Write the 8 chapters, FR first and then EN, two chapters per PR so that each review stays readable. Each PR description
@@ -357,10 +689,14 @@ The bar's sections become Story (`/story/`), Basics (`/basics/`), Search, Feed a
    - move the shelf posts and delete the absorbed posts;
    - add `lib/redirects.json`, the function and the ingress rules;
    - update the sitemap, the feeds, the home and the bar.
-4. Media: no new image. Every cover and figure is an existing entry of `lib/media.json`, and entries no longer used stay in the library.
-5. Captures of the home and of one chapter, in dark and light, on desktop and at phone width, go to Bunny `pr-assets`, never to the repository.
+4. The arcade screens (§ 5), in their own PR after the chapters' text is approved:
+   - import `@krizaka/ui/story.css`, then the select grid, the round markers, the stats and « Continue? » with the 3.43.0 blocks;
+   - the versus head, `SpeedLines`, `GradeStamp`, `Doodle` and `TapedPhoto` once krizaka/krizaka-ui#548 and #542 are released.
+     Until then the chapter opens on the 3.43.0 `StageBanner` and its cover, and the grade is a pull quote. No stand-in is hand-made.
+5. Media: no new image. Every cover and figure is an existing entry of `lib/media.json`, and entries no longer used stay in the library.
+6. Captures of the home, the versus head, the stats and « Continue? » of one chapter, in dark and light, on desktop and at phone width, go to Bunny `pr-assets`, never to the repository.
 
-## 6. Phase 2 — tests (`tests/*.test.mjs`)
+## 7. Phase 2 — tests (`tests/*.test.mjs`)
 
 - **Redirects**:
   - every retired slug, in both languages, is in `lib/redirects.json`, and none of them exists in `content/`;
@@ -375,8 +711,14 @@ The bar's sections become Story (`/story/`), Basics (`/basics/`), Search, Feed a
   - `npm run lint`: check-content, confidentiality (with chapter 8 `sensitive: true`), `<Model>` links and the media rules;
   - `npm test` and `npm run build`;
   - `scripts/check-meta.mjs out`: one h1, titles ≤ 60 characters, descriptions ≤ 155.
+- **Arcade** (§ 5):
+  - a round marker precedes every h2 of a chapter, and the h2 ids equal `tocOf`'s (the redirect anchors do not move);
+  - the versus head holds the page's only h1, and its two labels are text;
+  - every stats figure appears in the chapter's body too (the `<Numbers>` rule), and chapter 8's stats hold no amount;
+  - a grade score appears only where § 5.6 allows it;
+  - the home's select grid lists the eight chapters in order, each linking to its chapter.
 
-## 7. The voice rule, as applied here
+## 8. The voice rule, as applied here
 
 - FR is written first, in Oussama's first person. EN is a natural translation, not a word-for-word one.
 - No sentence is new, unless it only joins two kept sentences (« Le Mac, lui, ne disparaît pas. » is the kind of link that is
@@ -388,7 +730,7 @@ The bar's sections become Story (`/story/`), Basics (`/basics/`), Search, Feed a
 - **Paused products.** Orochia, Yasakia, Yororis and Kachizaka are named only where an old post already names them, and
   nothing new is announced about them.
 
-## 8. Open questions
+## 9. Open questions
 
 For Oussama:
 
@@ -396,8 +738,14 @@ For Oussama:
 2. The GPU left on: one incident or two, and which figure (§ 0)?
 3. The shelf's fifth slot: `payments-…` (the default) or `censored-…` (§ 2)?
 4. The newsletter: one e-mail for chapter 1, or none (§ 3)?
+5. The arcade: the bird of each chapter and the eight versus labels (§ 5.2).
+6. The arcade's words on screen: « Press start », « Choisis ton chapitre », « Round », « Continuer ? » (tu or vous, French or
+   the genre's English) (§ 5.7).
+7. The grade stamp: a score only where a run gave one (chapter 6), the remark alone elsewhere (§ 5.6)?
 
 For Claude:
 
-5. The `/story/<chapter>/` and `/basics/<slug>/` paths, and the redirect function. The fallback is static pages that answer 200 (§ 3).
-6. Should `chapter` and `period` be new front-matter fields, or be derived from somewhere else (§ 4)?
+8. The `/story/<chapter>/` and `/basics/<slug>/` paths, and the redirect function. The fallback is static pages that answer 200 (§ 3).
+9. Should `chapter` and `period` be new front-matter fields, or be derived from somewhere else (§ 4)?
+10. The three missing pieces of § 5.1 (a fighter tile, `GradeStamp` without a score, the round marker): new krizaka-ui
+    issues, or folded into krizaka/krizaka-ui#548?
