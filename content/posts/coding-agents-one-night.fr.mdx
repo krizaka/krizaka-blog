@@ -44,7 +44,7 @@ On a écrit une action qui monte le workspace avant que l'agent commence : elle 
 
 Pour la relecture juridique, j'ai demandé à Orazaka, notre propre moteur, d'écrire le prompt de l'agent. Le plan était bon. Mais il citait deux repos qui n'existent pas, des liens gouvernementaux qui n'existent pas, et une règle d'annulation de 14 jours qu'il attribuait à la loi québécoise sur la protection du consommateur. Elle n'en vient pas.
 
-On a corrigé avant de publier l'issue, et on a laissé la sortie brute en commentaire, pour qu'on puisse comparer. C'est exactement le genre d'erreur qu'un document juridique ne peut pas se permettre, et c'est pour ça que l'agent a reçu une consigne claire : ce qu'il ne peut pas vérifier, il l'écrit « à valider par un avocat ».
+On a corrigé avant de publier l'issue, et on a laissé la sortie brute en commentaire, pour qu'on puisse comparer. C'est exactement le genre d'erreur qu'un document juridique ne peut pas se permettre. Et une consigne ne règle pas le fond : un modèle qui ne peut rien vérifier ne sait pas qu'il se trompe. Le vrai remède, c'est que le moteur aille lire les sources lui-même, et les cite. C'est le prochain chantier d'Orazaka.
 
 ## Les règles qu'on a écrites
 
