@@ -1,0 +1,68 @@
+---
+title: "Un résultat vide n'est pas un succès : ce qu'on a changé dans le moteur d'Orazaka"
+description: "Un run de recherche s'est terminé « réussi » avec un classement vide. Ce qu'on a trouvé en relisant le moteur, et ce qui a changé : contrats de sortie, cache exact, Studios qui s'appellent, reprise sur étape."
+seoTitle: "Orazaka v2 : un résultat vide n'est pas un succès"
+seoDescription: "Ce qu'on a changé dans le moteur d'Orazaka : contrat de sortie par étape, cache exact par empreinte, appel d'un Studio, reprise d'un run depuis une étape."
+date: 2026-10-23
+publishedAt: "2026-10-23T02:00:00-04:00"
+tags: [orazaka, engineering]
+author: oussama
+draft: false
+cover: orazaka-v2-workbench
+coverAlt: "Un vieil atelier de brique au bord du canal de Lachine à la tombée du jour : sur un long établi sous une lampe suspendue, un moteur mécanique démonté, ses engrenages, ressorts et petites pièces de laiton rangés en rangées bien droites sur une toile ; derrière les grandes fenêtres, le canal et un vieux pont d'acier"
+series: building-orazaka
+part: 10
+---
+
+Il y a quelques jours, un Studio de recherche de prospects s'est terminé en vert sur Orazaka. Statut : réussi. On a ouvert le résultat, et le classement était vide. Le résumé aussi.
+
+Rien n'avait planté. Le modèle avait répondu, chaque étape avait rendu quelque chose, et le moteur avait fait exactement ce qu'on lui avait demandé : passer à l'étape suivante, puis déclarer le run terminé. Le problème, c'est que « quelque chose », ça pouvait être rien.
+
+Le même jour, une vérification d'authenticité sur Yomizaka a rendu ses signaux aplatis en une seule ligne de texte. Et un compte de test a vu son audit gratuit consommé par un run qui avait échoué. Trois symptômes, une même cause : le moteur savait dire « fini », il ne savait pas dire « juste ».
+
+## Relire avant de réécrire
+
+Avant de toucher au code, j'ai fait relire le moteur, puis j'ai vérifié chaque remarque contre le code réel. C'est une étape que je ne saute plus. Une bonne moitié des propositions existaient déjà : les conditions sur une étape, les boucles avec un plafond de parallélisme, les étapes d'approbation humaine, le remboursement quand c'est notre faute. Une autre était tout simplement fausse : on nous disait qu'un modèle hébergé était codé en dur, ce n'était plus vrai depuis longtemps. On a quand même ajouté un test pour que ça ne le devienne jamais.
+
+Ce qui restait tenait en une phrase, et c'est devenu la règle de la v2 : **un run ne livre jamais un résultat vide comme un succès.**
+
+## Le contrat de sortie
+
+Une étape peut maintenant déclarer la forme de ce qu'elle doit rendre. Pas un JSON Schema complet, un petit sous-ensemble fermé : des types, des champs obligatoires, une longueur minimale. Un mot-clé que le moteur ne vérifie pas est refusé à la publication, parce qu'une règle ignorée en silence, c'est une promesse qu'on ne tient pas.
+
+```json
+{
+  "id": "write",
+  "kind": "CAPABILITY",
+  "featureKey": "orazaka.core.chat.completion",
+  "onError": "RETRY",
+  "maxAttempts": 2,
+  "outputContract": {
+    "type": "object",
+    "required": ["content"],
+    "properties": { "content": { "type": "string", "minLength": 1 } }
+  }
+}
+```
+
+Quand l'étape revient, sa sortie est contrôlée avant d'être marquée réussie. Si elle sort du contrat, l'étape échoue avec un message qui dit le champ et la règle, jamais la valeur (dans un pack réglementé, la valeur, c'est ce qu'une personne a écrit). Sa politique de reprise s'applique. Et si elle échoue encore, le run échoue et les crédits réservés sont rendus. On ne facture pas un résultat vide.
+
+Le contrat existait déjà au niveau du run entier. Plutôt que d'écrire un deuxième mécanisme, l'étape réutilise exactement le même. C'est un réflexe que j'essaie de garder partout : quand quelque chose existe, on s'en sert, on ne le copie pas.
+
+## Les autres changements
+
+**Les boucles collectées.** Une étape peut tourner sur une liste, par exemple une description par photo. L'étape suivante recevait mal ces résultats : il lui fallait les champs de chaque élément, dans l'ordre des éléments, pas dans l'ordre où ils reviennent. C'était la vraie cause du classement vide du début.
+
+**Le cache exact.** Le même fichier, la même version du Studio, la même configuration : le résultat déjà calculé revient tout de suite, sans réserver de crédits ni appeler de modèle, et il dit de quel run il vient. Pas de « document qui ressemble » : une empreinte exacte. Il est activé Studio par Studio par l'administrateur, parce que seul un Studio déterministe a le droit de répondre deux fois la même chose. Aujourd'hui, c'est l'examen d'authenticité de Yomizaka.
+
+**Un Studio qui en appelle un autre.** Une étape peut appeler un Studio publié. Le run enfant a son propre identifiant, ses crédits restent dans la réservation du parent, et son échec devient celui de l'étape, que la politique du parent traite comme n'importe quel autre. Un seul niveau : un Studio qui en appelle d'autres ne peut pas être appelé, sinon un run pourrait tourner en rond.
+
+**Reprendre depuis une étape.** Un run qui a échoué à la quatrième étape, ou dont on veut refaire la dernière, repart de là. Les étapes d'avant gardent leurs sorties, le nouveau run pointe vers celui d'origine, et seules les étapes rejouées sont facturées.
+
+## La suite
+
+Le prochain morceau, c'est la vitesse et la configuration. Le moteur relit aujourd'hui la définition d'un Studio à chaque étape terminée, alors qu'une version publiée ne change jamais. Chaque réglage du moteur (plafonds, cache, concurrence) vit déjà en base, mais il n'y a pas encore d'écran pour que l'administrateur le change sans moi. Et le routage des modèles doit pouvoir dire « local seulement, jamais un fournisseur hébergé », avec un modèle de repli dans la même règle.
+
+Ces chantiers-là, je les ai découpés en issues précises et confiés à des agents de code sur GitHub, qui commentent leur avancement sur chaque issue. Je relis tout ce qui revient avant de fusionner. On verra dans un prochain billet ce que ça donne vraiment, chiffres avant et après.
+
+Le moteur, c'est la partie que personne ne voit. Mais c'est elle qui décide si un écran vert veut dire quelque chose.
