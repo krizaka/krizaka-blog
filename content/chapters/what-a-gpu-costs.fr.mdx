@@ -1,0 +1,213 @@
+---
+title: "Ce que coûtent une image et une vidéo : mes factures"
+description: "Un Mac, une API hébergée et un H100 loué, sur les mêmes images et les mêmes clips. Les factures, le GPU laissé allumé, le prix d'un résultat qu'on garde, et pourquoi j'ai déplacé le 15 novembre."
+date: 2026-10-23
+publishedAt: "2026-10-23T12:00:00-04:00"
+tags: [costs, measurements, orazaka, ai]
+author: oussama
+draft: true
+cover: compare-montreal-winter-sd35
+coverAlt: "Une rue du Plateau à Montréal une nuit d'hiver enneigée : un escalier extérieur, un lampadaire, de la vapeur qui monte"
+chapter: 3
+period: "2026-10-15/2026-10-21"
+sources:
+  - what-image-and-video-generation-costs
+  - real-cost-of-an-image-paying-for-intent
+  - choosing-providers-when-every-app-has-its-own-trade
+  - why-we-moved-our-15-november-date
+  - orazaka-from-one-mac-to-anywhere
+versus:
+  faced: "un GPU qui attend du travail"
+  built: "une garde qui arrête le pod dès que la file est vide"
+stats:
+  - value: "0,08 $"
+    label: "une image hébergée, SD 3.5 Large"
+    section: "Trois façons de faire cuire le même plat"
+  - value: "23,23 $"
+    label: "de GPU loué pendant un lot"
+    section: "Ce que j'ai vraiment payé"
+---
+
+Pendant notre dernier lot de vidéos, le dernier clip est sorti du GPU, et le pod a continué de tourner. Pendant environ deux heures, une carte H100 louée 3,99 $ US de l'heure a attendu un travail qui ne viendrait plus. Elle avait un chien de garde censé l'éteindre après une période sans travail. Il ne l'a pas fait, parce que pour détruire le pod il devait appeler l'API de RunPod, et le pod n'avait pas de clé pour ça. C'est une boucle de surveillance lancée sur mon Mac qui l'a finalement arrêté.
+
+Ces deux heures ont coûté entre 7 et 8 $, sur une facture GPU de 23,23 $. Ça pique, et c'est un bon point de départ pour parler de ce que coûtent vraiment la génération d'images et de vidéo.
+
+Tous les chiffres viennent des enregistrements d'[Orazaka](https://dev.orazaka.com), mon moteur d'IA, publiés sur la page [Exécutions mesurées](https://dev.orazaka.com/docs/measured-runs). Quand un chiffre vient de mes notes, je le dis.
+
+## Trois façons de faire cuire le même plat
+
+J'ai trois options. Cuisiner chez soi : mon MacBook Pro M1 Max, 64 Go, que je possède déjà. Commander au restaurant : une API hébergée, ici l'inférence serverless de DigitalOcean, payée à la sortie. Ou louer une cuisine professionnelle à l'heure : un GPU chez DigitalOcean ou RunPod, payé au temps, fourneaux allumés ou non.
+
+Chaque option a son prix caché : la mémoire et la patience chez soi, le menu imposé au restaurant, le temps mort en cuisine louée.
+
+Les temps qui suivent vont de la commande au fichier : file d'attente, transfert et stockage compris.
+
+| Modèle | Où | Temps (médiane) | Prix | Réussies |
+|:---|:---|---:|---:|---:|
+| <Model id="flux2-klein-4b">FLUX.2 [klein] 4B</Model>, 1024×1024 | Mac | 62 s | rien de facturé | 6 sur 18 |
+| <Model id="sd15">Stable Diffusion 1.5</Model>, 512×512 | Mac | 58 s | rien de facturé | 6 sur 6 |
+| <Model id="z-image-turbo">Z-Image Turbo</Model>, 1024×1024 | Mac | moteur 158 s | rien de facturé | 0 sur 5 |
+| <Model id="sd35-large">Stable Diffusion 3.5 Large</Model>, 1024×1024 | DigitalOcean serverless | 8 s | 0,08 $ | 6 sur 6 |
+
+« Rien de facturé » ne veut pas dire gratuit. Je n'ai pas mesuré l'électricité du Mac ni son usure, donc je n'avance aucun chiffre.
+
+Le même prompt, trois modèles :
+
+<Row>
+<Figure id="compare-moroccan-riad-flux" alt="Une cour de riad marocain, FLUX.2 klein 4B sur le Mac" caption="FLUX.2 klein sur le Mac : 61 s." />
+<Figure id="compare-moroccan-riad-sd35" alt="Le même prompt, Stable Diffusion 3.5 Large sur DigitalOcean serverless" caption="SD 3.5 Large hébergé : 8 s, 0,08 $." />
+<Figure id="compare-moroccan-riad-sd15" alt="Le même prompt, Stable Diffusion 1.5 sur le Mac" caption="SD 1.5 sur le Mac : 58 s." />
+</Row>
+
+Le 6 sur 18 de FLUX.2 m'a d'abord fait peur. En lisant les enregistrements, presque tous les échecs venaient de moi. Le client d'images abandonnait après deux minutes, alors que le moteur avait besoin de 60 à 75 secondes plus le transfert de l'image dans un tunnel. Pire : en abandonnant, il renvoyait une image transparente de 1×1 pixel, et le traitement se déclarait réussi. Deux images terminées ont aussi été écrasées par des reprises du même nom. Depuis, chaque téléchargement vérifie la taille du fichier, et je compte ces échecs quand même.
+
+## La vidéo, hébergée ou sur un GPU loué
+
+| Modèle | Où | Temps (médiane) | Prix par clip | Réussis |
+|:---|:---|---:|---:|---:|
+| <Model id="wan22-t2v-a14b">Wan 2.2 A14B</Model>, texte vers vidéo, 832×480 | DigitalOcean serverless | 131 s | 0,60 $ | 21 sur 21 |
+| <Model id="wan22-ti2v-5b">Wan 2.2 TI2V 5B</Model>, image vers vidéo, 1280×704 | H100 loué (RunPod) | 175 s | 0,19 à 0,31 $ | 19 sur 19 |
+| Wan 2.2 A14B, texte vers vidéo, 720p | H100 loué (RunPod) | 1 111 s | 1,23 à 1,38 $ | 6 sur 6 |
+| Wan 2.2 TI2V 5B, 1280×704 | RTX 4000 Ada (DigitalOcean) | 1 106 s | 0,23 $ | 1 sur 1 |
+| Wan 2.2 TI2V 5B, 480×832 | Mac | manque de mémoire | — | 0 |
+
+Sur le GPU loué, le prix d'un clip est son temps de calcul multiplié par le tarif horaire, sans le démarrage ni l'attente. La vraie facture est donc plus haute, j'y reviens plus bas.
+
+<Clip id="clip-tea-pour" alt="Du thé à la menthe versé dans un verre sous une tente berbère, cinq secondes" caption="Wan 2.2 A14B hébergé : 134 s, 0,60 $. Le prompt et la graine sont sous le clip." />
+
+La version hébergée est la plus simple : 0,60 $ et deux minutes, à chaque fois. Mais elle impose son menu. J'ai demandé du 720×1280, du 480×832, du 1280×720, avec et sans paramètre de format. Chaque réponse est revenue en 832×480. Impossible d'obtenir du vertical. Orazaka refuse donc ce modèle pour le 9:16, par son nom, plutôt que de recadrer une image horizontale en cachette.
+
+C'est pour le vertical et le 720p que j'ai loué un H100. Le modèle A14B y tourne avec nos réglages, mais ne tient pas entier sur la carte de 80 Go : ses deux experts pèsent 57 Go et sont échangés avec la mémoire de l'hôte. Environ 26 secondes par étape, 18 minutes par clip. Plus cher que l'hébergé, mais en 720p et dans le format que je veux.
+
+La décision suit cette logique : un GPU loué à l'heure, qui n'existe que pendant le travail. Un petit pour le développement, un gros pour les démos, jamais un allumé pour rien. Les options y sont écrites noir sur blanc. Un H100 rend une vidéo deux à trois fois plus vite, pour à peu près le même coût par clip, mais chaque minute d'attente coûte presque trois fois plus cher.
+
+<Numbers>
+<Num value="0,08 $" label="Image hébergée, SD 3.5 Large" hint="8 s, 1024×1024" />
+<Num value="0,60 $" label="Clip hébergé, Wan 2.2 A14B" hint="131 s en médiane, 832×480" />
+<Num value="0,19 à 0,31 $" label="Clip sur un H100 loué" hint="Wan 2.2 TI2V 5B, 1280×704" />
+<Num value="3,99 $/h" label="Le H100, occupé ou pas" hint="RunPod, 80 Go" />
+</Numbers>
+
+## Ce que j'ai vraiment payé
+
+| Lot | Détail | Payé |
+|:---|:---|---:|
+| Serverless, 15 octobre | 21 clips (12,60 $), 7 appels de test de taille et de graine (4,20 $), 7 images (0,56 $) | 17,36 $ |
+| GPU DigitalOcean | 4 droplets RTX 4000 Ada, 4,26 h à 0,76 $ | 3,24 $ |
+| GPU RunPod | 1 pod H100 80 Go, 5,01 h à 3,99 $ | 19,99 $ |
+
+Sur les 23,23 $ de GPU loué, le calcul des clips eux-mêmes représente 11,72 $. L'autre moitié est partie dans le démarrage, le téléchargement des poids, les essais ratés et les temps morts. Une heure de GPU se paie de la création de la machine à sa destruction, pas seulement pendant qu'elle travaille.
+
+### Quand louer un GPU devient rentable
+
+C'est le calcul qui m'intéresse le plus. Le prix d'un clip sur un GPU loué, c'est le tarif horaire divisé par le nombre de clips produits en une heure, divisé encore par la part du temps où la machine travaille vraiment. Un taxi qui attend garé coûte autant que le même taxi qui roule. Le curseur ci-dessous utilise les chiffres mesurés du H100 : 3,99 $ de l'heure, 175 secondes par clip image vers vidéo. Déplacez-le pour voir où il croise les 0,60 $ de l'hébergé.
+
+<Utilization hourly="3.99" seconds="175" hosted="0.6" />
+
+Deux précautions. Les deux clips comparés ne sont pas les mêmes : l'hébergé fait du texte vers vidéo en 832×480, le H100 de l'image vers vidéo en 1280×704 avec un modèle plus petit. Et le calcul suppose que le démarrage est gratuit, ce qui est faux. Ce qu'il montre, c'est la forme de la réponse : à pleine charge, le GPU loué coûte environ le tiers de l'hébergé. Dès qu'il attend, l'avantage fond, puis s'inverse.
+
+Depuis, la règle est simple. Une boucle de garde tourne pendant tout le lot, et on arrête le pod dès que la file est vide.
+
+Les essais ratés ont leur histoire. Après le premier clip réussi, dix clips de suite ont échoué en 17 secondes : le worker vérifiait la mémoire libre avant chaque tâche, et comptait le modèle déjà chargé (environ 22 Go) comme de la mémoire prise ([orazaka-worker-media#22](https://github.com/krizaka/orazaka-worker-media/pull/22)). Trois clips ont été perdus en plein calcul, jusqu'à 9 minutes de GPU chacun, parce qu'un déploiement du site de dev redémarrait le relais et coupait le tunnel ([#24](https://github.com/krizaka/orazaka-worker-media/pull/24)).
+
+## Le prix d'un résultat qu'on garde
+
+### Deux prix qu'on confond
+
+Un ami m'a posé la question qui dérange : je mesure l'exécution, pas le fait que le résultat corresponde à ce que je voulais. Il a raison. Dans mon tableau, la colonne « Réussies » voulait dire « le fichier est sorti », pas « c'est ce que je voulais ».
+
+Le premier prix est celui d'une exécution : ce que facture l'API, ou le temps du GPU multiplié par son tarif. C'est celui des tableaux plus haut, et il est facile à lire sur une facture.
+
+Le second est celui d'un résultat accepté, c'est-à-dire d'une image ou d'un clip dont la personne dit « oui, c'est ça ». Si une sortie sur *N* convient, on en fait en moyenne *N* pour en garder une. Et chaque sortie doit être regardée, par un modèle, par des règles ou par un humain.
+
+```text
+coût d'un résultat accepté = (coût d'une exécution + coût de la vérification) ÷ p
+nombre moyen d'essais      = 1 ÷ p          (p : la part des sorties qui conviennent)
+```
+
+Je choisis ici des p pour montrer la formule, je ne les ai pas mesurés. Avec les prix de l'image : une image hébergée de Stable Diffusion 3.5 Large coûte 0,08 $ et prend 8 secondes. Si une image sur trois convient, la bonne revient à 0,24 $ et 24 secondes de machine, sans compter les trois regards de la personne. Un clip hébergé de Wan 2.2 A14B coûte 0,60 $ et 131 secondes. Si un clip sur quatre convient, on est à 2,40 $ et environ 9 minutes d'attente.
+
+Les dollars sont petits. Ce qui pèse, c'est l'attention : quatre clips regardés un par un, c'est quatre fois « je décris, j'attends, je juge ». Cette part, aucune facture d'API ne la montre.
+
+### La boucle, et ce qu'elle change
+
+Un workflow fait ce que ferait la personne à sa place : générer, comparer à l'intention, reprendre si ça ne va pas, s'arrêter quand c'est bon ou quand le budget est atteint.
+
+<Figure id="intent-loop" alt="Schéma de la boucle : l'intention mène à générer, puis à vérifier. Si la vérification passe, on obtient le résultat accepté. Sinon on reprend en corrigeant, avec un plafond d'essais qui s'arrête et rend la main à la personne." />
+
+La boucle coûte plus cher par requête. Elle peut coûter moins cher par bon résultat, à une condition : que la vérification soit beaucoup moins chère que ce qu'elle évite. La bonne place pour vérifier est avant l'étape chère : un aperçu rapide avant le clip complet, une image fixe avant la vidéo.
+
+Un exemple avec des prix mesurés. Sur un H100 loué, un clip <Model id="wan22-i2v-a14b">Wan 2.2 I2V A14B</Model> prend 18 minutes et coûte 1,20 $. L'aperçu de <Model id="ltx-video">LTX-Video</Model> prend 14 secondes, soit 1 à 2 cents de temps de calcul. Je suppose, pour l'exemple, qu'un départ sur quatre donne le bon mouvement.
+
+| | Sans workflow | Avec workflow |
+|:---|---:|---:|
+| Clips complets (1,20 $, 18 min) | 4 | 1 |
+| Aperçus rapides (≈ 0,02 $, 14 s) | 0 | 4 |
+| Qui juge | la personne, quatre fois, après 18 minutes | un modèle ou des règles sur les aperçus, la personne sur le résultat |
+| Calcul | 4,80 $ | 1,28 $ |
+| Attente de la personne | environ 72 min | environ 19 min |
+
+Ce que l'application ajoute ici, ce sont les quatre aperçus : 0,08 $, environ 6 % du total, plus le coût du juge, que je n'ai pas mesuré. Le tableau est avantageux parce que je suppose que l'aperçu prédit le clip final, et ce n'est pas toujours vrai. Dans mon banc d'essai, LTX-Video a obéi à un travelling alors que Wan l'a presque ignoré. Un aperçu peut approuver un plan que le modèle final ne tournera pas. Il faut donc regarder aussi le résultat final.
+
+Dans Orazaka, un crédit est réservé avant l'exécution, et si elle échoue la réserve est libérée : une exécution ratée n'est pas facturée.
+
+### Ce que je mesure
+
+Je mesure aujourd'hui, par exécution : le temps, le coût de calcul, les échecs, et `imageKept` pour les clips à partir d'une image. Je ne mesure pas un taux d'acceptation dans le produit, ni un juge automatique, ni le temps de la personne. Les mesures ci-dessus sont des mesures d'exécution.
+
+## Choisir ses fournisseurs, puis un prix
+
+Pour le calcul, c'est le GPU qui m'a le plus appris. Quand j'ai voulu générer des clips, le quota de GPU chez DigitalOcean était à zéro, le temps qu'un ticket soit traité. J'ai quand même testé une carte RTX 4000 Ada de 20 Go chez eux : le clip de 1280 par 704 tient en mémoire, mais il prend 18 minutes. Sur un H100 loué à l'heure chez RunPod, 3,99 $, le même type de clip avec Wan 2.2 TI2V 5B prend entre 170 et 280 secondes et coûte de 0,19 à 0,31 $. J'ai donc loué chez RunPod. Pas parce que c'est « le meilleur », mais parce que c'est ce que j'ai mesuré sur mon travail.
+
+Mes critères sont toujours les mêmes, dans cet ordre. D'abord la licence et ce que le fournisseur a le droit de faire de nos données. Puis où elles vivent, parce qu'un client québécois ne veut pas toujours qu'elles partent. Ensuite le prix par unité et les minimums. Puis les approbations à obtenir. Puis le verrouillage : combien ça me coûterait de partir. Enfin la qualité, que je mesure sur mon propre travail au lieu de la croire sur parole.
+
+| Métier | Choisi | Écarté ou mis de côté | Parce que | Ce que ça coûte |
+|:---|:---|:---|:---|:---|
+| GPU à l'heure | RunPod, H100 à 3,99 $/h | RTX 4000 Ada chez DigitalOcean | 18 min par clip contre 3 à 5 min | Un GPU oublié : près de 96 $ par jour |
+| Vidéo et médias | Bunny, une porte devant | Rien d'exclu, un secours prévu | Stream pour le long, Storage pour les boucles | Dépendre d'un fournisseur de plus |
+| Courriel | Mailgun, clé d'envoi seule | Une clé aux droits larges | Une fuite ne peut qu'envoyer | La liste d'abonnés vit dans notre base |
+| Cartes | MapLibre et Protomaps | Mapbox, Google Maps | Ouvert, nos tuiles sur notre CDN | Styler la carte nous-mêmes |
+
+Ce tableau est honnête sur un point : la colonne de droite n'est jamais vide. Chaque choix coûte quelque chose, et la question est de savoir quoi avant de signer.
+
+Une fois le fournisseur choisi, il faut un chiffre par action de l'utilisateur. Pas par exécution, par action : un clip gardé, un bail lu, un gigaoctet servi. Chaque métier a sa propre unité, et c'est ce qui rend la tarification si étrange d'un produit à l'autre.
+
+Je pars de la distinction entre une exécution et un [résultat accepté](#le-prix-dun-résultat-quon-garde). Une exécution coûte un certain prix, mais ce que la personne veut, c'est un résultat accepté. Si seulement une sortie sur trois convient, la bonne revient trois fois plus cher.
+
+```text
+coût par résultat accepté = (coût d'une exécution + vérification) ÷ p
+coût complet              = coût par résultat accepté + frais
+prix                      = coût complet ÷ (1 − marge)
+```
+
+Un exemple, avec un seul chiffre mesuré. Un clip hébergé de Wan 2.2 A14B coûte 0,60 $ l'exécution. Je suppose que deux clips sur trois conviennent : le résultat accepté revient à 0,90 $. J'ajoute 10 % de frais, pour le stockage, le paiement et le support : environ 1 $. Avec une marge de 50 %, le prix est de 2 $. Les deux hypothèses (p et les frais) ne sont pas mesurées, et la marge n'est pas un calcul, c'est une décision.
+
+<Figure id="unit-cost-to-price" alt="Schéma en quatre étapes, de gauche à droite : le coût d'une exécution, 0,60 $, devient 0,90 $ par résultat accepté en divisant par la part de sorties qui conviennent, puis environ 1 $ avec 10 % de frais, puis 2 $ de prix avec une marge de 50 %" />
+
+Il reste les frais fixes, qui ne dépendent d'aucune action : les applications, la base de données, le courtier de messages. Chez nous, c'est une centaine de dollars par mois, sans compter le GPU à l'heure. Tant qu'il n'y a presque pas d'utilisateurs, c'est une dépense, pas un coût unitaire. Ils entrent dans le prix quand il y a du volume : frais fixes divisés par le nombre d'actions du mois.
+
+Pour que ces chiffres ne restent pas dans ma tête, j'ai écrit une petite commande, `./couts`. Elle est en lecture seule. Elle interroge la facturation officielle de DigitalOcean, de Bunny et de RunPod, ajoute mes abonnements et mes noms de domaine, et écrit un rapport daté. Les clés sont lues au moment de l'exécution et jamais écrites. Voici un extrait arrondi, sans identifiant, sans nom de ressource et sans solde.
+
+| Poste, à mi-octobre | Dépensé à ce jour | Part |
+|:---|---:|---:|
+| GPU à l'heure (RunPod) | ≈ 83 $ | 78 % |
+| Applications et bases (DigitalOcean, estimé) | ≈ 14 $ | 13 % |
+| Abonnements et frais fixes | ≈ 8 $ | 8 % |
+| Médias (Bunny) | ≈ 1 $ | 1 % |
+| Total, 17 jours sur 31 | ≈ 107 $ | 100 % |
+
+Ce qui me saute aux yeux : le GPU, c'est près de 80 % de la dépense. La plus grosse ligne du mois est un pod H100 de cinq heures facturées, une vingtaine de dollars, resté allumé sans travailler. C'est le genre de chose que je ne remarquerais pas en regardant une facture à la fois. La ligne DigitalOcean est une estimation, faite avec l'inventaire et la grille de prix : une source indisponible est marquée « non disponible », jamais devinée.
+
+## Pourquoi j'ai déplacé le 15 novembre
+
+Le 16 octobre, nous avons rendu 25 clips vidéo sur un GPU loué à l'heure. Cinq heures au total : 2,8 heures à calculer, 2,2 heures à attendre. Un GPU qui attend se paie comme un GPU qui travaille. Ce chiffre est dans [la décision 078](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-078-runpod-serverless-workers-at-zero-idle.md), et il m'a fait comprendre quelque chose de simple : le calcul lui-même n'est pas le problème. On le paie une fois. Ce qu'on paie plusieurs fois, c'est l'attente et le chargement.
+
+Le chargement, justement. Un modèle vidéo de 57 Go met 129 secondes à se charger depuis le disque réseau. À chaque démarrage à froid, l'utilisateur regarde un écran qui ne bouge pas.
+
+D'où l'ordre qui s'est imposé : d'abord l'attente, ensuite le chargement, ensuite le regroupement des tâches, et seulement à la fin le moteur de service. Changer de moteur n'économise rien tant que le GPU attend du travail. Les démarrages à froid et le coût d'un GPU chaud restaient difficiles : un GPU qui n'existe que pendant le travail doit démarrer, charger ses modèles, puis travailler, et chaque minute d'attente se paie au prix d'une minute de calcul.
+
+L'infrastructure a deux mots d'ordre. Le premier : la portabilité, d'abord pour chez soi. Ce qui tourne sur un Mac ou sur une machine Linux avec une carte NVIDIA doit tourner sans compte cloud. Le second : le coût dans le cloud, avec la plus faible latence possible. Chaque levier est écrit comme une estimation tant qu'il n'est pas mesuré sur un vrai GPU : le GPU serverless qui descend à zéro au repos, le chargement plus rapide, le cache, le calcul plus rapide, sans date.
+
+Tout est regroupé dans un seul jalon, [Infra portability](https://github.com/krizaka/orazaka/milestone/4), qui court sur quatre dépôts. Aucune date.
+
+Chaque chiffre vaut pour ce montage, les 15 et 16 octobre 2026. Je remesure quand le montage change.

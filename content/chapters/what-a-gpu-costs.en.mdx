@@ -1,0 +1,213 @@
+---
+title: "What an image and a video cost: my bills"
+description: "One Mac, one hosted API and one rented H100, on the same images and clips. The bills, the GPU left on, the price of a result you keep, and why I moved 15 November."
+date: 2026-10-23
+publishedAt: "2026-10-23T12:00:00-04:00"
+tags: [costs, measurements, orazaka, ai]
+author: oussama
+draft: true
+cover: compare-montreal-winter-sd35
+coverAlt: "A snowy winter night on a street of Montréal's Plateau: an outdoor staircase, a street lamp, steam rising"
+chapter: 3
+period: "2026-10-15/2026-10-21"
+sources:
+  - what-image-and-video-generation-costs
+  - real-cost-of-an-image-paying-for-intent
+  - choosing-providers-when-every-app-has-its-own-trade
+  - why-we-moved-our-15-november-date
+  - orazaka-from-one-mac-to-anywhere
+versus:
+  faced: "a GPU that waits for work"
+  built: "a guard that stops the pod as soon as the queue is empty"
+stats:
+  - value: "0.08 $"
+    label: "a hosted image, SD 3.5 Large"
+    section: "Three ways to cook the same dish"
+  - value: "23.23 $"
+    label: "of rented GPU in one batch"
+    section: "What I actually paid"
+---
+
+During our last batch of videos, the last clip came out of the GPU, and the pod kept running. For about two hours, an H100 rented at US$3.99 an hour waited for work that would not come. It had a watchdog meant to shut it down after a period without work. It never did, because to destroy the pod it had to call RunPod's API, and the pod had no key for that. A watch loop started on my Mac is what finally stopped it.
+
+Those two hours cost between 7 and 8 $, on a GPU bill of 23.23 $. It stings, and it is a good place to start on what an image and a video really cost to generate.
+
+All the figures come from the records of [Orazaka](https://dev.orazaka.com), my AI engine, published on the [measured runs](https://dev.orazaka.com/docs/measured-runs) page. When a figure comes from my notes, I say so.
+
+## Three ways to cook the same dish
+
+I have three options. Cooking at home: my MacBook Pro M1 Max, 64 GB, which I already own. Ordering in: a hosted API, here DigitalOcean's serverless inference, paid when it is served. Or renting a professional kitchen by the hour: a GPU at DigitalOcean or RunPod, paid by the time it runs, burners lit or not.
+
+Each option has its hidden price: memory and patience at home, the imposed menu at the restaurant, the dead time in a rented kitchen.
+
+The times below run from the order to the file: queue, transfer and storage included.
+
+| Model | Where | Time (median) | Price | Successful |
+|:---|:---|---:|---:|---:|
+| <Model id="flux2-klein-4b">FLUX.2 [klein] 4B</Model>, 1024×1024 | Mac | 62 s | nothing billed | 6 of 18 |
+| <Model id="sd15">Stable Diffusion 1.5</Model>, 512×512 | Mac | 58 s | nothing billed | 6 of 6 |
+| <Model id="z-image-turbo">Z-Image Turbo</Model>, 1024×1024 | Mac | engine 158 s | nothing billed | 0 of 5 |
+| <Model id="sd35-large">Stable Diffusion 3.5 Large</Model>, 1024×1024 | DigitalOcean serverless | 8 s | 0.08 $ | 6 of 6 |
+
+"Nothing billed" does not mean free. I have not measured the Mac's electricity or its wear, so I give no figure for them.
+
+The same prompt, three models:
+
+<Row>
+<Figure id="compare-moroccan-riad-flux" alt="A courtyard of a Moroccan riad, FLUX.2 klein 4B on the Mac" caption="FLUX.2 klein on the Mac: 61 s." />
+<Figure id="compare-moroccan-riad-sd35" alt="The same prompt, Stable Diffusion 3.5 Large on DigitalOcean serverless" caption="SD 3.5 Large hosted: 8 s, 0.08 $." />
+<Figure id="compare-moroccan-riad-sd15" alt="The same prompt, Stable Diffusion 1.5 on the Mac" caption="SD 1.5 on the Mac: 58 s." />
+</Row>
+
+FLUX.2's 6 of 18 scared me at first. Reading the records, almost all the failures were mine. The image client gave up after two minutes, while the engine needed 60 to 75 seconds plus the transfer of the image through a tunnel. Worse: on giving up, it returned a 1×1 pixel transparent image, and the job was reported as a success. Two finished images were also overwritten by retries under the same name. Since then, every download checks the file size, and I still count these failures.
+
+## Video, hosted or on a rented GPU
+
+| Model | Where | Time (median) | Price per clip | Successful |
+|:---|:---|---:|---:|---:|
+| <Model id="wan22-t2v-a14b">Wan 2.2 A14B</Model>, text to video, 832×480 | DigitalOcean serverless | 131 s | 0.60 $ | 21 of 21 |
+| <Model id="wan22-ti2v-5b">Wan 2.2 TI2V 5B</Model>, image to video, 1280×704 | H100 rented (RunPod) | 175 s | 0.19 to 0.31 $ | 19 of 19 |
+| Wan 2.2 A14B, text to video, 720p | H100 rented (RunPod) | 1,111 s | 1.23 to 1.38 $ | 6 of 6 |
+| Wan 2.2 TI2V 5B, 1280×704 | RTX 4000 Ada (DigitalOcean) | 1,106 s | 0.23 $ | 1 of 1 |
+| Wan 2.2 TI2V 5B, 480×832 | Mac | out of memory | — | 0 |
+
+On a rented GPU, the price of a clip is its compute time multiplied by the hourly rate, without the start-up or the waiting. The real bill is therefore higher, and I come back to it below.
+
+<Clip id="clip-tea-pour" alt="Mint tea poured into a glass under a Berber tent, five seconds" caption="Wan 2.2 A14B hosted: 134 s, 0.60 $. The prompt and the seed are under the clip." />
+
+The hosted version is the simplest: 0.60 $ and two minutes, every time. But it imposes its menu. I asked for 720×1280, 480×832, 1280×720, with and without an aspect parameter. Every answer came back at 832×480. Vertical was impossible. So Orazaka refuses this model for 9:16, by name, rather than cropping a horizontal image in secret.
+
+It is for vertical and 720p that I rented an H100. The A14B model runs there with our settings, but does not fit whole on the 80 GB card: its two experts weigh 57 GB and are swapped with the host's memory. About 26 seconds per step, 18 minutes per clip. More expensive than hosted, but in 720p and in the format I want.
+
+The decision follows that logic: a GPU rented by the hour, which exists only while there is work. A small one for development, a big one for demos, never one left on for nothing. The options are written down in black and white. An H100 renders a video two to three times faster, for roughly the same cost per clip, but every minute of waiting costs almost three times as much.
+
+<Numbers>
+<Num value="0.08 $" label="Hosted image, SD 3.5 Large" hint="8 s, 1024×1024" />
+<Num value="0.60 $" label="Hosted clip, Wan 2.2 A14B" hint="131 s median, 832×480" />
+<Num value="0.19 to 0.31 $" label="Clip on a rented H100" hint="Wan 2.2 TI2V 5B, 1280×704" />
+<Num value="3.99 $/h" label="The H100, busy or not" hint="RunPod, 80 GB" />
+</Numbers>
+
+## What I actually paid
+
+| Batch | Detail | Paid |
+|:---|:---|---:|
+| Serverless, 15 October | 21 clips (12.60 $), 7 test calls for size and seed (4.20 $), 7 images (0.56 $) | 17.36 $ |
+| DigitalOcean GPU | 4 RTX 4000 Ada droplets, 4.26 h at 0.76 $ | 3.24 $ |
+| RunPod GPU | 1 H100 80 GB pod, 5.01 h at 3.99 $ | 19.99 $ |
+
+Of the 23.23 $ of rented GPU, the computing of the clips themselves accounts for 11.72 $. The other half went to start-up, downloading the weights, failed attempts and dead time. An hour of GPU is paid from the creation of the machine to its destruction, not only while it works.
+
+The failed attempts have their story. After the first successful clip, ten clips in a row failed in 17 seconds: the worker checked the free memory before each task, and counted the model already loaded (about 22 GB) as memory in use ([orazaka-worker-media#22](https://github.com/krizaka/orazaka-worker-media/pull/22)). Three clips were lost mid-computation, up to 9 minutes of GPU each, because a deployment of the dev site restarted the relay and cut the tunnel ([#24](https://github.com/krizaka/orazaka-worker-media/pull/24)).
+
+### When renting a GPU becomes profitable
+
+This is the calculation I care about most. The price of a clip on a rented GPU is the hourly rate divided by the number of clips produced in an hour, divided again by the share of time the machine really works. A taxi waiting parked costs as much as the same taxi driving. The slider below uses the measured H100 figures: 3.99 $ an hour, 175 seconds per image-to-video clip. Move it to see where it crosses the 0.60 $ of the hosted option.
+
+<Utilization hourly="3.99" seconds="175" hosted="0.6" />
+
+Two cautions. The two clips compared are not the same: the hosted one does text to video at 832×480, the H100 image to video at 1280×704 with a smaller model. And the calculation assumes start-up is free, which is false. What it shows is the shape of the answer: at full load, the rented GPU costs about a third of the hosted one. As soon as it waits, the advantage fades, then reverses.
+
+Since then, the rule is simple. A watch loop runs for the whole batch, and the pod is stopped as soon as the queue is empty.
+
+## The price of a result you keep
+
+### Two prices, often confused
+
+A friend asked me the question that bothers: I measure the run, not whether the result matches what I wanted. He is right. In my table, the "Successful" column meant "the file came out", not "this is what I wanted".
+
+The first price is that of a run: what the API bills, or the GPU's time multiplied by its rate. It is the one in the tables above, and it is easy to read on a bill.
+
+The second is that of an accepted result, meaning an image or a clip that the person says "yes, that's it" to. If one output in *N* is acceptable, you make *N* on average to keep one. And every output has to be looked at, by a model, by rules or by a human.
+
+```text
+cost of an accepted result = (cost of one run + cost of checking) ÷ p
+average number of tries    = 1 ÷ p          (p: the share of outputs that are acceptable)
+```
+
+I pick p values here to show the formula, I have not measured them. With the image prices: a hosted Stable Diffusion 3.5 Large image costs 0.08 $ and takes 8 seconds. If one image in three is acceptable, the right one comes to 0.24 $ and 24 seconds of machine time, not counting the person's three looks. A hosted Wan 2.2 A14B clip costs 0.60 $ and 131 seconds. If one clip in four is acceptable, we are at 2.40 $ and about 9 minutes of waiting.
+
+The dollars are small. What weighs is attention: four clips watched one by one is four times "I describe, I wait, I judge". No API bill shows that part.
+
+### The loop, and what it changes
+
+A workflow does what the person would do in their place: generate, compare with the intent, try again if it is off, stop when it is good or when the budget is reached.
+
+<Figure id="intent-loop" alt="Loop diagram: the intent leads to generating, then to checking. If the check passes, you get the accepted result. Otherwise you retry with a correction, with a retry ceiling that stops and hands control back to the person." />
+
+The loop costs more per request. It can cost less per good result, on one condition: that the check is much cheaper than what it avoids. The right place to check is before the expensive step: a quick preview before the full clip, a still image before the video.
+
+An example with measured prices. On a rented H100, a <Model id="wan22-i2v-a14b">Wan 2.2 I2V A14B</Model> clip takes 18 minutes and costs 1.20 $. The preview from <Model id="ltx-video">LTX-Video</Model> takes 14 seconds, that is 1 to 2 cents of compute time. I assume, for the example, that one start in four gives the right movement.
+
+| | Without workflow | With workflow |
+|:---|---:|---:|
+| Full clips (1.20 $, 18 min) | 4 | 1 |
+| Quick previews (≈ 0.02 $, 14 s) | 0 | 4 |
+| Who judges | the person, four times, after 18 minutes | a model or rules on the previews, the person on the result |
+| Compute | 4.80 $ | 1.28 $ |
+| The person's waiting | about 72 min | about 19 min |
+
+What the application adds here are the four previews: 0.08 $, about 6% of the total, plus the cost of the judge, which I have not measured. The table is favourable because I assume the preview predicts the final clip, and that is not always true. In my test bench, LTX-Video obeyed a dolly move while Wan almost ignored it. A preview can approve a shot the final model will not shoot. So you also have to look at the final result.
+
+In Orazaka, a credit is reserved before the run, and if the run fails the reservation is released: a failed run is not billed.
+
+### What I measure
+
+Today, per run: the time, the compute cost, the failures, and `imageKept` for clips made from an image. I do not measure an acceptance rate in the product, nor an automatic judge, nor the person's time. The measures above are run measures.
+
+## Picking providers, then a price
+
+For compute, the GPU taught me the most. When I wanted to generate clips, DigitalOcean's GPU quota was at zero, until a ticket was handled. I still tested a 20 GB RTX 4000 Ada card there: the 1280 by 704 clip fits in memory, but takes 18 minutes. On an H100 rented by the hour at RunPod, 3.99 $, the same kind of clip with Wan 2.2 TI2V 5B takes between 170 and 280 seconds and costs 0.19 to 0.31 $. So I rented from RunPod. Not because it is "the best", but because it is what I measured on my own work.
+
+My criteria are always the same, in this order. First the licence and what the provider is allowed to do with our data. Then where the data lives, because a Quebec client does not always want it to leave. Then the price per unit and the minimums. Then the approvals to obtain. Then lock-in: what it would cost me to leave. Finally quality, which I measure on my own work instead of taking it on trust.
+
+| Trade | Chosen | Dropped or set aside | Because | What it costs |
+|:---|:---|:---|:---|:---|
+| Hourly GPU | RunPod, H100 at 3.99 $/h | RTX 4000 Ada at DigitalOcean | 18 min per clip against 3 to 5 min | A forgotten GPU: close to 96 $ a day |
+| Video and media | Bunny, a door in front | Nothing excluded, a fallback planned | Stream for the long, Storage for the loops | One more provider to depend on |
+| E-mail | Mailgun, a send-only key | A key with broad rights | A leak can only send | The subscriber list lives in our database |
+| Maps | MapLibre and Protomaps | Mapbox, Google Maps | Open, our tiles on our CDN | Styling the map ourselves |
+
+This table is honest on one point: the right-hand column is never empty. Every choice costs something, and the question is what, before you sign.
+
+Once the provider is chosen, you need a figure per action by the user. Not per run, per action: a clip kept, a lease read, a gigabyte served. Each trade has its own unit, and that is what makes pricing so strange from one product to another.
+
+I start from the distinction between a run and an [accepted result](#the-price-of-a-result-you-keep). A run costs a certain price, but what the person wants is an accepted result. If only one output in three is acceptable, the right one costs three times as much.
+
+```text
+cost per accepted result = (cost of one run + checking) ÷ p
+full cost                = cost per accepted result + overhead
+price                    = full cost ÷ (1 − margin)
+```
+
+One example, with a single measured figure. A hosted Wan 2.2 A14B clip costs 0.60 $ per run. I assume two clips out of three are acceptable: the accepted result comes to 0.90 $. I add 10% overhead, for storage, payment and support: about 1 $. With a 50% margin, the price is 2 $. The two assumptions (p and the overhead) are not measured, and the margin is not a calculation, it is a decision.
+
+<Figure id="unit-cost-to-price" alt="A four-step diagram, left to right: the cost of one run, 0.60 $, becomes 0.90 $ per accepted result when divided by the share of acceptable outputs, then about 1 $ with 10% overhead, then a 2 $ price with a 50% margin" />
+
+There remain the fixed costs, which depend on no action: the applications, the database, the message broker. For us, that is a hundred dollars or so a month, without counting the hourly GPU. While there are almost no users, it is an expense, not a unit cost. They enter the price when there is volume: fixed costs divided by the number of actions in the month.
+
+To keep these figures out of my head, I wrote a small command, `./couts`. It is read-only. It queries the official billing of DigitalOcean, Bunny and RunPod, adds my subscriptions and my domain names, and writes a dated report. The keys are read at run time and never written. Here is a rounded extract, without identifiers, resource names or balances.
+
+| Item, mid-October | Spent to date | Share |
+|:---|---:|---:|
+| Hourly GPU (RunPod) | ≈ 83 $ | 78 % |
+| Applications and databases (DigitalOcean, estimated) | ≈ 14 $ | 13 % |
+| Subscriptions and fixed costs | ≈ 8 $ | 8 % |
+| Media (Bunny) | ≈ 1 $ | 1 % |
+| Total, 17 days out of 31 | ≈ 107 $ | 100 % |
+
+What stands out: the GPU is close to 80% of spending. The biggest line of the month is an H100 pod of five billed hours, about twenty dollars, left on without working. It is the kind of thing I would not notice while looking at one bill at a time. The DigitalOcean line is an estimate, built from the inventory and the price grid: a source that is unavailable is marked "unavailable", never guessed.
+
+## Why I moved 15 November
+
+On 16 October, we delivered 25 video clips on an hourly rented GPU. Five hours in total: 2.8 hours computing, 2.2 hours waiting. A GPU that waits is paid for just like one that works. This figure is in [decision 078](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-078-runpod-serverless-workers-at-zero-idle.md), and it taught me something simple: the computing itself is not the problem. You pay for it once. What you pay for repeatedly is the waiting and the loading.
+
+The loading, precisely. A 57 GB video model takes 129 seconds to load from the network disk. At every cold start, the user watches a screen that does not move.
+
+From this came the order that imposed itself: first the waiting, then the loading, then the batching of tasks, and only at the end the serving engine. Changing engine saves nothing as long as the GPU waits for work. Cold starts and the cost of a warm GPU remained hard: a GPU that exists only while there is work has to start, load its models, then work, and every minute of waiting is paid at the price of a minute of computing.
+
+Infrastructure has two watchwords. The first: portability, first at home. What runs on a Mac or on a Linux machine with an NVIDIA card must run without a cloud account. The second: the cost in the cloud, with the lowest possible latency. Each lever is written as an estimate until it is measured on a real GPU: the serverless GPU that drops to zero at rest, faster loading, the cache, faster computing, with no date.
+
+Everything is grouped into a single milestone, [Infra portability](https://github.com/krizaka/orazaka/milestone/4), which runs across four repositories. No date.
+
+Every figure is valid for this set-up, 15 and 16 October 2026. I measure again when the set-up changes.
