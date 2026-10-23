@@ -227,6 +227,14 @@ export function linkProblems(posts) {
 
 /** The story's chapters (content/chapters/<slug>.<en|fr>.mdx, lib/chapters.ts). */
 export const CHAPTER_PERIOD = /^\d{4}-\d{2}-\d{2}(\/\d{4}-\d{2}-\d{2})?$/;
+const isCalendarDate = (value) => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+};
+const tagSlug = (tag) => String(tag).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const addKnownRoute = (known, key, draft) => known.set(key, known.has(key) && known.get(key) === false ? false : draft);
+
 export const CHAPTER_STATS_MAX = 4;
 
 /** The pages a body may link to besides posts and chapters (both languages). */
@@ -255,7 +263,8 @@ export function chapterProblems(file, data, body, ctx, postSlugs) {
   if (!CHAPTER_PERIOD.test(String(data.period ?? ""))) out.push(`${file}: "period" must be YYYY-MM-DD or YYYY-MM-DD/YYYY-MM-DD (quoted): the dates of the posts it absorbs`);
   else {
     const [from, to] = String(data.period).split("/");
-    if (to && to < from) out.push(`${file}: "period" ends before it starts`);
+    if (!isCalendarDate(from) || (to && !isCalendarDate(to))) out.push(`${file}: "period" must contain real calendar dates`);
+    else if (to && to < from) out.push(`${file}: "period" ends before it starts`);
   }
   if (data.series !== undefined || data.part !== undefined) out.push(`${file}: a chapter has no "series" or "part" — "chapter" is its place`);
   if (!Array.isArray(data.sources) || data.sources.length === 0) out.push(`${file}: "sources" must list the slugs of the posts it is written from`);
@@ -272,7 +281,8 @@ export function chapterProblems(file, data, body, ctx, postSlugs) {
           continue;
         }
         /* Only figures the text already gives: every number of the value is in the body. */
-        for (const num of s.value.match(/\d+(?:[.,]\d+)?/g) ?? []) if (!body.includes(num)) out.push(`${file}: the stat "${s.value}" gives ${num}, which the body does not — only figures the chapter already gives`);
+        const bodyNumbers = new Set(body.match(/\d+(?:[.,]\d+)?/g) ?? []);
+        for (const num of s.value.match(/\d+(?:[.,]\d+)?/g) ?? []) if (!bodyNumbers.has(num)) out.push(`${file}: the stat "${s.value}" gives ${num}, which the body does not — only figures the chapter already gives`);
         if (!sections.includes(s.section)) out.push(`${file}: the stat "${s.value}" names the section ${JSON.stringify(s.section)}, which is not an h2 of the chapter`);
       }
     }
@@ -280,14 +290,15 @@ export function chapterProblems(file, data, body, ctx, postSlugs) {
   return out;
 }
 
-/** Internal links of a body (`](/…)`): each leads to a post or a chapter that exists in that language, or to a page of the site. */
-export function internalLinkProblems(file, body, known) {
+/** Internal links of a body (`](/…)`): each leads to a generated route or a page of the site. */
+export function internalLinkProblems(file, body, known, sourceDraft = false) {
   const out = [];
   for (const l of body.matchAll(/\]\((\/[^)\s#]*)(?:#[^)]*)?\)/g)) {
     const path = l[1];
-    const m = path.match(/^(\/fr)?\/(?:(posts|story)\/([a-z0-9-]+)|([a-z-]*))\/?$/);
+    const m = path.match(/^(\/fr)?\/(?:(posts|story|tags|series)\/([a-z0-9-]+)|([a-z-]*))\/?$/);
     const locale = m?.[1] ? "fr" : "en";
-    const ok = m && (m[2] ? known.has(`${m[2]}:${locale}:${m[3]}`) : STATIC_PAGES.has(m[4]));
+    const key = m?.[2] ? `${m[2]}:${locale}:${m[3]}` : undefined;
+    const ok = m && (key ? known.has(key) && (sourceDraft || !(known instanceof Map && known.get(key) === true)) : STATIC_PAGES.has(m[4]));
     if (!ok) out.push(`${file}: links to ${path}, which is not a page of the blog`);
   }
   return out;
@@ -300,11 +311,25 @@ export function checkChapters(dir, postsDir, ctx) {
   const read = (d) => readdirSync(d).filter((f) => f.endsWith(".mdx")).map((f) => ({ file: f, ...matter(readFileSync(join(d, f), "utf8")) }));
   const posts = read(postsDir);
   const chapters = read(dir);
-  const postSlugs = new Set(posts.map((p) => p.file.match(FILE)).filter(Boolean).map((m) => `${m[2]}:${m[1]}`));
-  const known = new Set([...[...postSlugs].map((k) => `posts:${k}`), ...chapters.map((c) => c.file.match(FILE)).filter(Boolean).map((m) => `story:${m[2]}:${m[1]}`)]);
+  const postSlugs = new Set();
+  const known = new Map();
+  for (const p of posts) {
+    const m = p.file.match(FILE);
+    if (!m) continue;
+    const [, slug, locale] = m;
+    const draft = p.data.draft === true;
+    postSlugs.add(`${locale}:${slug}`);
+    addKnownRoute(known, `posts:${locale}:${slug}`, draft);
+    for (const tag of Array.isArray(p.data.tags) ? p.data.tags : []) addKnownRoute(known, `tags:${locale}:${tagSlug(tag)}`, draft);
+    if (typeof p.data.series === "string" && p.data.series) addKnownRoute(known, `series:${locale}:${p.data.series}`, draft);
+  }
+  for (const c of chapters) {
+    const m = c.file.match(FILE);
+    if (m) addKnownRoute(known, `story:${m[2]}:${m[1]}`, c.data.draft === true);
+  }
   for (const c of chapters) {
     problems.push(...chapterProblems(c.file, c.data, c.content, ctx, postSlugs));
-    problems.push(...internalLinkProblems(c.file, c.content, known));
+    problems.push(...internalLinkProblems(c.file, c.content, known, c.data.draft === true));
   }
   const bySlug = new Map();
   for (const c of chapters) {

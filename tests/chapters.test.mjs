@@ -67,19 +67,60 @@ test("a chapter without its story's fields, or with a source that is not a post,
   assert.match(p({ series: "measured", part: 1 }), /no "series"/);
 });
 
+test("a chapter period contains real calendar dates, including both ends of a range", () => {
+  const p = (period) => chapterProblems("c.en.mdx", { ...good, period }, body, undefined, slugs).join("\n");
+  assert.match(p("2026-13-01"), /real calendar dates/);
+  assert.match(p("2026-02-30"), /real calendar dates/);
+  assert.match(p("2024-02-29/2026-02-30"), /real calendar dates/);
+  assert.doesNotMatch(p("2024-02-29/2026-03-01"), /period/);
+});
+
 test("a stat is a figure the chapter already gives, from one of its sections, four at most", () => {
   const p = (stats) => chapterProblems("c.en.mdx", { ...good, stats }, body, undefined, slugs).join("\n");
   assert.match(p([{ value: "63 s", label: "l", section: "Round one" }]), /gives 63/);
+  assert.match(chapterProblems("c.en.mdx", { ...good, stats: [{ value: "62 s", label: "l", section: "Round one" }] }, "## Round one\n162 seconds", undefined, slugs).join("\n"), /gives 62/);
+  assert.match(chapterProblems("c.en.mdx", { ...good, stats: [{ value: "3.99", label: "l", section: "Round one" }] }, "## Round one\n13.99", undefined, slugs).join("\n"), /gives 3\.99/);
   assert.match(p([{ value: "62 s", label: "l", section: "Nowhere" }]), /not an h2/);
   assert.match(p(Array(5).fill(good.stats[0])), /at most 4/);
 });
 
 test("no dead internal link: a link leads to a post or a chapter of that language, or a page of the site", () => {
-  const known = new Set(["posts:en:a", "posts:fr:a", "story:en:c", "story:fr:c"]);
+  const known = new Set(["posts:en:a", "posts:fr:a", "story:en:c", "story:fr:c", "tags:en:ai", "series:en:building-orazaka", "tags:fr:ai", "series:fr:building-orazaka"]);
   assert.deepEqual(internalLinkProblems("x.en.mdx", "[a](/posts/a/) [b](/fr/posts/a) [c](/story/c/#x) [d](/fr/about/) [e](/) [f](https://x.y/z)", known), []);
+  assert.deepEqual(internalLinkProblems("x.en.mdx", "[a](/tags/ai/) [b](/series/building-orazaka/) [c](/fr/tags/ai/) [d](/fr/series/building-orazaka/)", known), []);
   assert.match(internalLinkProblems("x.en.mdx", "[a](/posts/gone/)", known)[0], /\/posts\/gone/);
   assert.match(internalLinkProblems("x.en.mdx", "[a](/fr/story/missing/)", known)[0], /missing/);
+  assert.match(internalLinkProblems("x.en.mdx", "[a](/tags/unknown/)", known)[0], /unknown/);
+  assert.match(internalLinkProblems("x.en.mdx", "[a](/fr/series/unknown/)", known)[0], /unknown/);
   assert.match(internalLinkProblems("x.en.mdx", "[a](/nowhere/)", known)[0], /nowhere/);
+});
+
+test("published chapters cannot link to draft posts or chapters; draft chapters may link to both", () => {
+  const known = new Map([
+    ["posts:en:published", false],
+    ["posts:en:draft-post", true],
+    ["story:en:draft-chapter", true],
+  ]);
+  const links = "[published](/posts/published/) [draft post](/posts/draft-post/) [draft chapter](/story/draft-chapter/)";
+  assert.equal(internalLinkProblems("c.en.mdx", links, known, false).length, 2);
+  assert.deepEqual(internalLinkProblems("c.en.mdx", links, known, true), []);
+});
+
+test("chapter tag and series links are known only when generated from posts in their language", async () => {
+  const { mkdtempSync, writeFileSync, mkdirSync } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const dir = mkdtempSync(join(tmpdir(), "chapter-routes-"));
+  const posts = join(dir, "posts");
+  const chapters = join(dir, "chapters");
+  mkdirSync(posts);
+  mkdirSync(chapters);
+  for (const locale of ["en", "fr"]) {
+    writeFileSync(join(posts, `a.${locale}.mdx`), `---\ntitle: T\ndraft: false\ntags: [ai]\nseries: building-orazaka\n---\n`);
+    writeFileSync(join(chapters, `c.${locale}.mdx`), `---\ntitle: T\ndescription: D\ndate: 2026-10-23\ndraft: true\nchapter: 1\nperiod: "2026-10-16"\nsources: [a]\nversus: { faced: x, built: y }\n---\n[Tag](${locale === "fr" ? "/fr" : ""}/tags/ai/) [Series](${locale === "fr" ? "/fr" : ""}/series/building-orazaka/) [Unknown](${locale === "fr" ? "/fr" : ""}/tags/not-generated/)\n`);
+  }
+  const { problems } = checkChapters(chapters, posts);
+  assert.equal(problems.filter((p) => /not-generated/.test(p)).length, 2);
+  assert.equal(problems.filter((p) => /\/tags\/ai|\/series\/building-orazaka/.test(p)).length, 0);
 });
 
 test("the story as a whole: each chapter in both languages, numbers from 1 without a gap", async () => {
