@@ -134,6 +134,6 @@ Elles sont plus grandes que 1024×1024, d'où des durées de 75 à 109 secondes.
 
 J'ai voulu générer de la vidéo en local avec <Model id="wan22-ti2v-5b">Wan 2.2 TI2V 5B</Model>, en format vertical 480×832 et 25 images. Le modèle a manqué de mémoire au moment de décoder : il demandait 26 Gio alors que 62 Gio étaient déjà occupés sur une machine de 64 Go. En 704×1280, même résultat. La mémoire unifiée du Mac est généreuse pour l'image, pas pour la vidéo.
 
-La vidéo part ailleurs. En hébergé, un clip de cinq secondes de <Model id="wan22-t2v-a14b">Wan 2.2 A14B</Model> en 832×480 prend 131 secondes en médiane. Sur un H100 loué, on monte en 720p. La vidéo part donc vers un GPU quand je choisis de l'y envoyer, et le reste du travail reste sur le portable. Les chiffres, les factures et les erreurs de ce choix sont dans [le billet sur les coûts](/fr/posts/what-image-and-video-generation-costs/).
+La vidéo part ailleurs. En hébergé, un clip de cinq secondes de <Model id="wan22-t2v-a14b">Wan 2.2 A14B</Model> en 832×480 prend 131 secondes en médiane. Sur un H100 loué, on monte en 720p. La vidéo part donc vers un GPU quand je choisis de l'y envoyer, et le reste du travail reste sur le portable. Les chiffres, les factures et les erreurs de ce choix sont dans [le billet sur les coûts](/fr/story/what-a-gpu-costs/).
 
 Ce que je n'ai pas mesuré : la mémoire et le swap du Mac sur une journée, la mémoire réelle des JVM au repos, et la vitesse du chat en local. Je les utilise tous les jours, mais je n'ai pas encore d'enregistrement chiffré pour les montrer.

@@ -134,6 +134,6 @@ They're bigger than 1024×1024, hence 75 to 109 seconds each.
 
 I tried generating video locally with <Model id="wan22-ti2v-5b">Wan 2.2 TI2V 5B</Model>, vertical, 480×832 and 25 frames. The model ran out of memory while decoding: it asked for 26 GiB while 62 GiB were already taken on a 64 GB machine. At 704×1280, same story. The Mac's unified memory is generous for images, not for video.
 
-Video goes elsewhere. Hosted, a five-second <Model id="wan22-t2v-a14b">Wan 2.2 A14B</Model> clip at 832×480 takes 131 seconds at the median. On a rented H100 we get to 720p. So video goes to a GPU when I choose to send it, and the rest of the work stays on the laptop. The numbers, the bills and the mistakes behind that choice are in [the post about costs](/posts/what-image-and-video-generation-costs/).
+Video goes elsewhere. Hosted, a five-second <Model id="wan22-t2v-a14b">Wan 2.2 A14B</Model> clip at 832×480 takes 131 seconds at the median. On a rented H100 we get to 720p. So video goes to a GPU when I choose to send it, and the rest of the work stays on the laptop. The numbers, the bills and the mistakes behind that choice are in [the post about costs](/story/what-a-gpu-costs/).
 
 What I haven't measured: the Mac's memory and swap over a working day, the real memory of the JVMs at rest, and local chat speed. I use them every day, but I don't have a recorded number to show yet.

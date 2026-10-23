@@ -30,12 +30,13 @@ test("chapters 1 and 2 exist in FR and EN, with the same number, period and sour
   }
 });
 
-test("every chapter's sources are posts of content/posts, in its language", () => {
+test("every chapter's sources are posts of content/posts or retired posts (lib/redirects.json), in its language", () => {
+  const retired = Object.keys(JSON.parse(readFileSync(new URL("../lib/redirects.json", import.meta.url), "utf8")));
   for (const f of readdirSync(CHAPTERS).filter((f) => f.endsWith(".mdx"))) {
     const locale = f.match(/\.(en|fr)\.mdx$/)[1];
     const { sources } = read(f).data;
     assert.ok(Array.isArray(sources) && sources.length > 0, f);
-    for (const s of sources) assert.ok(existsSync(join(POSTS, `${s}.${locale}.mdx`)), `${f}: source ${s}`);
+    for (const s of sources) assert.ok(existsSync(join(POSTS, `${s}.${locale}.mdx`)) || retired.includes(s), `${f}: source ${s}`);
   }
 });
 

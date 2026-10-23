@@ -441,5 +441,9 @@
     ],
     "back": "L’histoire de Krizaka",
     "empty": "Aucun billet n’est encore publié."
+  },
+  "retired": {
+    "lead": "Ce billet fait maintenant partie de l'histoire de Krizaka.",
+    "link": "Lire le chapitre : {title}"
   }
 }

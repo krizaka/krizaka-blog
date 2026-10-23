@@ -38,7 +38,7 @@ Those internal settings are called parameters. Qwen 2.5 7B has 7.6 billion of th
 
 Stored in 16 bits, 7.6 billion numbers weigh about 15 GB. The version I use is quantized (Q4_K_M): each number is rounded to fit in a little over 4 bits, and the file drops to 4.7 GB. It's the difference between a photo in RAW and the same photo in JPEG. You lose a little detail, you gain a lot of room.
 
-You also need memory for the context, on top of the model. On my 64 GB Mac, a quantized 7-billion-parameter model fits without trouble. A video model doesn't, and I learned that the hard way in [the post about the Mac](/posts/local-first-ai-platform-spring-ai-2-and-the-mac/). In [Orazaka](https://dev.orazaka.com/docs/models), the engine I'm building, each model is a row in a database, with its size and where it runs.
+You also need memory for the context, on top of the model. On my 64 GB Mac, a quantized 7-billion-parameter model fits without trouble. A video model doesn't, and I learned that the hard way in [the post about the Mac](/story/an-engine-on-a-laptop/). In [Orazaka](https://dev.orazaka.com/docs/models), the engine I'm building, each model is a row in a database, with its size and where it runs.
 
 ## Embeddings and RAG: a library shelved by meaning
 
@@ -94,7 +94,7 @@ Image and video models work differently. A diffusion model starts from random no
 
 <Figure id="basics-fog" alt="A Montréal street with outdoor staircases emerging from thick fog at dawn" caption="A diffusion image shows itself like a street in the fog: a little sharper at each step." />
 
-On my Mac, FLUX.2 [klein] 4B makes a 1024×1024 image in 62 seconds at the median. <Model id="sd35-large">Stable Diffusion 3.5 Large</Model>, hosted, makes one in 8 seconds for $0.08. For video, <Model id="wan">Wan 2.2</Model> follows the same idea on all the frames of the clip at once, and costs $0.60 for a five-second hosted clip. The details are in [the post about costs](/posts/what-image-and-video-generation-costs/).
+On my Mac, FLUX.2 [klein] 4B makes a 1024×1024 image in 62 seconds at the median. <Model id="sd35-large">Stable Diffusion 3.5 Large</Model>, hosted, makes one in 8 seconds for $0.08. For video, <Model id="wan">Wan 2.2</Model> follows the same idea on all the frames of the clip at once, and costs $0.60 for a five-second hosted clip. The details are in [the post about costs](/story/what-a-gpu-costs/).
 
 ## The short glossary
 

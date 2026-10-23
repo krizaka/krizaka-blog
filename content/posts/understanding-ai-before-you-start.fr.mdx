@@ -38,7 +38,7 @@ Ces réglages internes s'appellent des paramètres. Qwen 2.5 7B en a 7,6 milliar
 
 Stockés en 16 bits, 7,6 milliards de nombres pèsent environ 15 Go. La version que j'utilise est quantifiée (Q4_K_M) : chaque nombre est arrondi pour tenir en un peu plus de 4 bits, et le fichier tombe à 4,7 Go. C'est la différence entre une photo en RAW et la même photo en JPEG. On perd un peu de détail, on gagne beaucoup de place.
 
-Il faut aussi de la mémoire pour le contexte, en plus du modèle. Sur mon Mac de 64 Go, un modèle de 7 milliards de paramètres quantifié passe sans souci. Un modèle vidéo, non, et je l'ai appris à mes dépens dans [le billet sur le Mac](/fr/posts/local-first-ai-platform-spring-ai-2-and-the-mac/). Dans [Orazaka](https://dev.orazaka.com/docs/models), le moteur que je construis, chaque modèle est une ligne dans une base de données, avec sa taille et l'endroit où il tourne.
+Il faut aussi de la mémoire pour le contexte, en plus du modèle. Sur mon Mac de 64 Go, un modèle de 7 milliards de paramètres quantifié passe sans souci. Un modèle vidéo, non, et je l'ai appris à mes dépens dans [le billet sur le Mac](/fr/story/an-engine-on-a-laptop/). Dans [Orazaka](https://dev.orazaka.com/docs/models), le moteur que je construis, chaque modèle est une ligne dans une base de données, avec sa taille et l'endroit où il tourne.
 
 ## Embeddings et RAG : la bibliothèque rangée par sens
 
@@ -94,7 +94,7 @@ Les modèles d'image et de vidéo fonctionnent autrement. Un modèle de diffusio
 
 <Figure id="basics-fog" alt="Une rue de Montréal avec des escaliers extérieurs qui sort d'un épais brouillard à l'aube" caption="Une image de diffusion se révèle comme une rue dans le brouillard : un peu plus nette à chaque étape." />
 
-Sur mon Mac, FLUX.2 [klein] 4B fait une image en 1024×1024 en 62 secondes en médiane. <Model id="sd35-large">Stable Diffusion 3.5 Large</Model>, hébergé, en fait une en 8 secondes pour 0,08 $. Pour la vidéo, <Model id="wan">Wan 2.2</Model> suit le même principe sur toutes les images du clip à la fois, et coûte 0,60 $ le clip de cinq secondes en hébergé. Les détails sont dans [le billet sur les coûts](/fr/posts/what-image-and-video-generation-costs/).
+Sur mon Mac, FLUX.2 [klein] 4B fait une image en 1024×1024 en 62 secondes en médiane. <Model id="sd35-large">Stable Diffusion 3.5 Large</Model>, hébergé, en fait une en 8 secondes pour 0,08 $. Pour la vidéo, <Model id="wan">Wan 2.2</Model> suit le même principe sur toutes les images du clip à la fois, et coûte 0,60 $ le clip de cinq secondes en hébergé. Les détails sont dans [le billet sur les coûts](/fr/story/what-a-gpu-costs/).
 
 ## Le petit glossaire
 

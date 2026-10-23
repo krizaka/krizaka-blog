@@ -312,6 +312,8 @@ export function checkChapters(dir, postsDir, ctx) {
   const posts = read(postsDir);
   const chapters = read(dir);
   const postSlugs = new Set();
+  /* A chapter may name, as its sources, the posts it absorbed: they are retired (lib/redirects.json), not gone from the story. */
+  for (const slug of Object.keys(JSON.parse(readFileSync(new URL("../lib/redirects.json", import.meta.url), "utf8")))) for (const locale of ["en", "fr"]) postSlugs.add(`${locale}:${slug}`);
   const known = new Map();
   for (const p of posts) {
     const m = p.file.match(FILE);

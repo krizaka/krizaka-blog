@@ -86,7 +86,7 @@ Sur un PC, la mémoire de l'ordinateur et celle du GPU sont deux mondes séparé
 
 C'est pour ça qu'un Mac fait tourner des modèles qu'aucune carte graphique grand public de 24 Go n'accepterait. FLUX.2 [klein] 4B y utilise 8,3 Go et fait une image 1024×1024 en 62 secondes. <Model id="z-image-turbo">Z-Image Turbo</Model> y tient avec 10,5 Go.
 
-Mais la mémoire unifiée n'est pas magique. Le GPU d'un Mac est bien plus lent qu'un H100, et la mémoire est partagée avec tout le reste : le système, le navigateur, les autres programmes. Le jour où j'ai voulu faire de la vidéo en local avec Wan 2.2 TI2V 5B, 62 Gio étaient déjà occupés, il en demandait 26 de plus pour décoder les images, et tout s'est arrêté. J'ai raconté cette soirée dans [le billet sur le Mac](/fr/posts/local-first-ai-platform-spring-ai-2-and-the-mac/), et la suite, quand Orazaka a appris à envoyer la vidéo vers des GPU loués à l'heure, dans [le billet sur la portabilité](/fr/posts/orazaka-from-one-mac-to-anywhere/).
+Mais la mémoire unifiée n'est pas magique. Le GPU d'un Mac est bien plus lent qu'un H100, et la mémoire est partagée avec tout le reste : le système, le navigateur, les autres programmes. Le jour où j'ai voulu faire de la vidéo en local avec Wan 2.2 TI2V 5B, 62 Gio étaient déjà occupés, il en demandait 26 de plus pour décoder les images, et tout s'est arrêté. J'ai raconté cette soirée dans [le billet sur le Mac](/fr/story/an-engine-on-a-laptop/), et la suite, quand Orazaka a appris à envoyer la vidéo vers des GPU loués à l'heure, dans [le billet sur la portabilité](/fr/story/an-engine-on-a-laptop/#du-monolithe-aux-services).
 
 ## Nos temps mesurés : quel GPU pour quel modèle
 
@@ -119,7 +119,7 @@ Quand le Mac ne suffit plus, on loue. Voici les fournisseurs que je connais ou q
 | [Modal](https://modal.com/pricing) | du code Python sur GPU, facturé à la seconde | H100 0,001097 $/s (environ 3,95 $/h), L4 0,000222 $/s |
 | [Vast.ai](https://vast.ai/pricing) | une place de marché de GPU de particuliers et de centres de données | pas de prix fixe : il dépend des offres du moment |
 
-Chez nous, la vidéo en 720p passe sur un H100 RunPod à 3,99 $ l'heure, et le détail de ce que ça coûte vraiment, pannes comprises, est dans [le billet sur les coûts](/fr/posts/what-image-and-video-generation-costs/). La leçon que j'en garde : un GPU loué coûte surtout quand il attend. On l'allume pour un lot, on l'éteint quand la file est vide.
+Chez nous, la vidéo en 720p passe sur un H100 RunPod à 3,99 $ l'heure, et le détail de ce que ça coûte vraiment, pannes comprises, est dans [le billet sur les coûts](/fr/story/what-a-gpu-costs/). La leçon que j'en garde : un GPU loué coûte surtout quand il attend. On l'allume pour un lot, on l'éteint quand la file est vide.
 
 ## Questions fréquentes
 

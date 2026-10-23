@@ -1,27 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
-import matter from "gray-matter";
+import { readFileSync } from "node:fs";
 
-/* The 308s of .do/app.yaml (ingress rules): a post merged into another keeps its address. Every source is a post that no
-   longer exists, every target a published post of the same language. */
+/* The app spec: no ingress redirect for a post merged into a chapter. Its old address is a static stub page built from
+   lib/redirects.json (tests/retired-stubs.test.mjs). The ingress stays under the 10-rule limit with /api and the site. */
 const spec = readFileSync(new URL("../.do/app.yaml", import.meta.url), "utf8");
-const rules = [...spec.matchAll(/prefix: (\/(?:fr\/)?posts\/[a-z0-9-]+) \} \}\n\s+redirect: \{ uri: (\/(?:fr\/)?posts\/([a-z0-9-]+)\/), redirect_code: (\d+) \}/g)];
-const post = (path) => {
-  const m = path.match(/^\/(fr\/)?posts\/([a-z0-9-]+)\/?$/);
-  return new URL(`../content/posts/${m[2]}.${m[1] ? "fr" : "en"}.mdx`, import.meta.url);
-};
 
-test("the merged posts redirect (308) to the post that absorbed them, in both languages", () => {
-  assert.equal(rules.length, 4);
-  for (const [, from, to, , code] of rules) {
-    assert.equal(code, "308");
-    assert.equal(from.startsWith("/fr/"), to.startsWith("/fr/"), `${from} and ${to} are in the same language`);
-    assert.ok(!existsSync(post(from)), `${from} is gone`);
-    const target = post(to);
-    assert.ok(existsSync(target), `${to} exists`);
-    assert.equal(matter(readFileSync(target, "utf8")).data.draft, false, `${to} is published`);
-  }
+test("no ingress redirect for the merged posts: their stubs are static pages (lib/redirects.json)", () => {
+  assert.doesNotMatch(spec, /redirect_code/);
+  assert.doesNotMatch(spec, /prefix: \/(fr\/)?posts/);
 });
 
 test("the sign-in stays under /api and the site answers the rest", () => {
@@ -44,17 +31,7 @@ test("the live-spec check is documented: `krizaka-deploy drift` (krizaka/.github
   assert.match(readme, /krizaka-deploy drift/);
 });
 
-test("App Platform allows 10 ingress rules: the redirects leave room for /api and the site", () => {
+test("App Platform allows 10 ingress rules: /api and the site", () => {
   const all = [...spec.matchAll(/^\s+- match:/gm)];
   assert.ok(all.length <= 10, `${all.length} ingress rules`);
-});
-
-test("a redirected address is not a post any more: no post file, and no post links it", () => {
-  const gone = rules.map(([, from]) => from.replace(/^\/(fr\/)?posts\//, ""));
-  const files = readdirSync(new URL("../content/posts/", import.meta.url));
-  for (const slug of gone) assert.ok(!files.some((f) => f.startsWith(`${slug}.`)), `${slug} has no post file left`);
-  for (const f of files) {
-    const body = readFileSync(new URL(`../content/posts/${f}`, import.meta.url), "utf8");
-    for (const slug of gone) assert.ok(!body.includes(`/posts/${slug}`), `${f} still links /posts/${slug}`);
-  }
 });

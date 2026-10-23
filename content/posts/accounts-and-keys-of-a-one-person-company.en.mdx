@@ -51,7 +51,7 @@ I didn't come up with these rules out of caution. I wrote them after mistakes.
 
 An agent session printed a database's full address in its output, password included. It only wanted to check a configuration. The password had to be changed right away. Since then, a guard runs before every agent command: if the command could print a secrets file, it is refused, with a message explaining how to do it otherwise. Even a home-made "masking" is refused, because that's often where it leaks.
 
-A rented GPU stayed on about two hours after the work was done. Between $7 and $8, for nothing. Its watchdog was supposed to shut it down, but it didn't have the key to do it. I tell the story in [the post about costs](/posts/what-image-and-video-generation-costs/). Since then, a watch loop stops the machine after twenty minutes without work.
+A rented GPU stayed on about two hours after the work was done. Between $7 and $8, for nothing. Its watchdog was supposed to shut it down, but it didn't have the key to do it. I tell the story in [the post about costs](/story/what-a-gpu-costs/). Since then, a watch loop stops the machine after twenty minutes without work.
 
 A password stayed at its old value somewhere after a rotation. The lesson: a rotation is only done when every place that uses the key has the new one, and you check each place, not just the first.
 
