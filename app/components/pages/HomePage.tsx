@@ -72,6 +72,9 @@ export default function HomePage({ locale }: { locale: Locale }) {
               <LinkCard key={id} linkAs={Link} href={localizedPath(locale, `/series/${id}`)} title={seriesName(locale, id)} description={seriesLead(locale, id)} meta={seriesCount(locale, inSeries.length)} cta={t.home.moreFromSeries} titleAs="h3" />
             ))}
           </CardGrid>
+          <p className="bl-story-link">
+            <Link href={localizedPath(locale, "/story")}>{t.home.storyTitle}</Link> — {t.home.storyLead}
+          </p>
         </Section>
       )}
       <AuthorNote locale={locale} />

@@ -74,6 +74,7 @@
   diagram stays inside its post; a cover is an evocative still or a short clip. A clip cover shows its poster first and plays
   its muted loop only on hover (or, on a touch screen, while well in view after the page loaded), never under reduced motion
   or Save-Data (`CardLoop`).
+- **The Krizaka story** (`/story/`, EN and FR; linked from the home and the series): the posts in time, read from their front matter by `lib/story.ts` (weeks, oldest first; a post's thread is its series; the step's line is the post's own `description`). Nothing is typed: a new post appears by itself. Built from `@krizaka/ui` blocks only (`Landscape`, `SpecimenTag`, `Stepper`, `PageIndex`, `Footnotes`); a missing block is an issue in krizaka-ui. Tested in `tests/story.test.mjs`.
 - **Questions sections answer search engines too**: a post's h2 « Questions fréquentes » / « Frequently asked questions »
   (or « FAQ ») turns its h3s and their text into FAQPage JSON-LD (`faqOf` in `lib/reading.ts`).
 - Every user-facing string of the site is in `messages/{en,fr}.json` (`krizaka-i18n check`). No `locale === "fr" ?`.

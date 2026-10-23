@@ -61,7 +61,10 @@
     "filterLabel": "Filter by topic",
     "allTopics": "All posts",
     "seoTitle": "Krizaka Blog — sovereign AI, local LLMs, measured costs",
-    "seoDescription": "Notes from building sovereign AI in Montréal: local LLMs, Spring AI 2, GPU and video generation costs, prompts. Real runs, measured numbers."
+    "seoDescription": "Notes from building sovereign AI in Montréal: local LLMs, Spring AI 2, GPU and video generation costs, prompts. Real runs, measured numbers.",
+    "storyTitle": "The Krizaka story",
+    "storyLead": "The same posts, in time: a step for each, week after week.",
+    "storyCta": "Follow the story"
   },
   "post": {
     "back": "All posts",
@@ -284,7 +287,8 @@
       "measured": "Costs, times and results taken from real runs, with the records to check them. What we did not measure is said.",
       "building-krizaka": "What surrounds the code of a small software company, money and law first. Told as it happens, with what isn't decided yet.",
       "basics": "The words of AI, one at a time, with a simple picture and what really runs on our side."
-    }
+    },
+    "story": "Or follow all of them in time: the Krizaka story"
   },
   "calc": {
     "title": "When does a rented GPU beat the hosted price?",
@@ -390,5 +394,32 @@
     "atom": "The Atom version of the feed",
     "latest": "Latest posts",
     "reader": "What is a feed reader?"
+  },
+  "story": {
+    "title": "The Krizaka story",
+    "lead": "The company’s path in time, told by its posts: one step for each, with its picture and its first line, grouped by week and by thread.",
+    "label": "The steps of the story",
+    "indexLabel": "Periods of the story",
+    "threads": "The threads",
+    "threadCount": "{count} steps",
+    "noThread": "Single posts",
+    "week": "Week of {start}",
+    "period": "{start} to {end}",
+    "read": "Read the post",
+    "published": "Published",
+    "statuses": {
+      "done": "Published",
+      "current": "Latest",
+      "upcoming": "Upcoming",
+      "error": "Failed"
+    },
+    "stepCount": "{count} steps",
+    "sourcesLabel": "Sources",
+    "sources": [
+      "Each step is a post: its date, its series, its cover and its first line are the post’s own, read from its front matter.",
+      "A new post joins the story by itself, in its week."
+    ],
+    "back": "The Krizaka story",
+    "empty": "No post is published yet."
   }
 }
