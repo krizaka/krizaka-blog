@@ -18,3 +18,14 @@ export function splitLocale(pathname: string): { locale: Locale; path: string } 
   const m = pathname.match(/^\/fr(\/.*)?$/);
   return m ? { locale: "fr", path: m[1] ?? "/" } : { locale: "en", path: pathname || "/" };
 }
+
+/**
+ * Where the language switch lands: the same page in the other language. A post lands on its translation when there is one
+ * (`translated`: the slugs that exist in both languages), else on the other language's home — never on a page that would 404.
+ */
+export function languageSwitchPath(other: Locale, path: string, translated: readonly string[]): string {
+  const clean = path === "/" ? "/" : path.replace(/\/$/, "");
+  const post = clean.match(/^\/posts\/([a-z0-9]+(?:-[a-z0-9]+)*)$/);
+  if (post) return translated.includes(post[1]) ? localizedPath(other, clean) : localizedPath(other, "/");
+  return localizedPath(other, clean);
+}

@@ -11,13 +11,14 @@ import { KrizakaLogo } from "@krizaka/ui";
 import { Button } from "@krizaka/ui/button";
 import { NavBar } from "@krizaka/ui/nav-bar";
 import { SearchField } from "@krizaka/ui/search-field";
-import { localizedPath, splitLocale } from "@/lib/locale";
+import { languageSwitchPath, localizedPath, splitLocale } from "@/lib/locale";
 import { GITHUB_ORG_URL, KRIZAKA_URL, REPOSITORY_URL } from "@/lib/site";
 import { GitHubMark } from "./GitHubMark";
 import { useI18n } from "./I18nProvider";
 import { useSiteTheme } from "./SiteTheme";
 
-export default function TopBar() {
+/** @param translated the slugs of the posts that exist in both languages, so the switch keeps the reader on the same post. */
+export default function TopBar({ translated }: { translated: readonly string[] }) {
   const router = useRouter();
   const { locale, t } = useI18n();
   const b = t.bar;
@@ -30,8 +31,8 @@ export default function TopBar() {
   const search = localizedPath(locale, "/search");
   const saved = localizedPath(locale, "/saved");
   const feed = localizedPath(locale, "/feed");
-  /* The language switch lands on the same page when it exists in the other language, else on that language's home. */
-  const switchTo = clean.startsWith("/posts/") ? localizedPath(other, "/") : localizedPath(other, clean);
+  /* The language switch lands on the same page in the other language (a post on its translation), else on that language's home. */
+  const switchTo = languageSwitchPath(other, clean, translated);
 
   return (
     <div className="kz-site-bar-wrap pointer-events-none fixed inset-x-0 top-3 z-50">
