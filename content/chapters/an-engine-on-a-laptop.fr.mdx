@@ -1,0 +1,139 @@
+---
+title: "Un moteur d'IA sur un portable"
+description: "Un Mac à bout de souffle, une ClassCastException qui coupe le chat, des modèles qui deviennent des lignes en base. Ce que j'ai appris en faisant tourner Orazaka sur un portable."
+seoDescription: "Une plateforme d'IA sur un Mac : Spring Boot 4 et Spring AI 2, une ClassCastException qui coupe le chat, des modèles en base de données."
+date: 2026-10-23
+publishedAt: "2026-10-23T11:55:00-04:00"
+tags: [orazaka, ai]
+author: oussama
+draft: false
+cover: gallery-mini-picnic
+coverAlt: "Figurines miniatures en tilt-shift : un grand-père qui raconte une histoire à des enfants sur un tapis à motifs, dans une petite oliveraie"
+chapter: 2
+period: "2026-10-16/2026-10-17"
+sources:
+  - local-first-ai-platform-spring-ai-2-and-the-mac
+  - orazaka-from-one-mac-to-anywhere
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "le Mac saturé du 12 octobre"
+  built: "les modèles deviennent des données"
+stats:
+  - value: "100–260"
+    label: "la charge système du Mac, le 12 octobre"
+    section: "Le 12 octobre, le Mac a saturé"
+  - value: "62 s"
+    label: "une image FLUX.2 [klein] 4B en 1024×1024, en médiane"
+    section: "Ce que le Mac fait bien, et où il abandonne"
+  - value: "26 Gio"
+    label: "demandés par Wan 2.2 TI2V 5B au décodage"
+    section: "Ce que le Mac fait bien, et où il abandonne"
+  - value: "131 s"
+    label: "un clip hébergé de cinq secondes, en médiane"
+    section: "Ce que le Mac fait bien, et où il abandonne"
+---
+
+Au début, Orazaka était une découverte. Un projet personnel, sur mon MacBook, pour comprendre ce qu'on peut faire avec des modèles d'IA qui tournent chez soi. Ollama pour le texte, le GPU du Mac (Metal) pour les images, une base de données et quelques services lancés à la main. Si on m'avait pris le portable, il n'y avait plus d'Orazaka.
+
+Ce Mac est le premier serveur d'[Orazaka](https://dev.orazaka.com), le moteur d'IA que je construis. L'idée d'Orazaka est simple : faire tourner l'IA sur une machine que vous contrôlez. Pour moi, cette machine, c'est d'abord mon portable. Voici ce qu'il m'a appris.
+
+## Le 12 octobre, le Mac a saturé
+
+Le 12 octobre, mon Mac a saturé. La charge système oscillait entre 100 et 260, et les outils commençaient à échouer avec `ENFILE` : le système refusait d'ouvrir un fichier de plus. Plusieurs sessions d'agents travaillaient en parallèle, chacune avec ses builds natifs, ses conteneurs Docker ou son simulateur mobile. Tout ça sur un MacBook Pro M1 Max avec 64 Go de mémoire.
+
+Même sans IA, une plateforme a besoin de plusieurs choses à la fois : une base de données, un courtier de messages, les services Java eux-mêmes. Ajoutez un serveur de modèles de langage, un moteur d'images, un worker pour la vidéo. Tout ce monde partage la même mémoire. Quand deux gros plats cuisent en même temps, le four sature.
+
+Ma réponse du 12 octobre a été très simple, presque bête : un verrou. Avant une tâche lourde (un build natif, une pile Docker, une génération), une session crée un dossier `.heavy.lock`. Si le dossier existe déjà, elle attend une minute et réessaie. Comme la clé unique des toilettes d'un café : une personne à la fois, les autres patientent. Ça ralentit un peu tout le monde, mais plus rien ne s'effondre.
+
+Les services Java ont aussi leur part. Orazaka compte jusqu'à onze services Spring Boot. Une proposition ouverte ([orazaka#132](https://github.com/krizaka/orazaka/issues/132)) estime 4 à 6 Go au repos pour l'ensemble et propose un profil de développement avec une seule JVM. Ce sont des estimations, pas des mesures, et ce n'est pas encore livré.
+
+## Les modèles deviennent des données
+
+En juin, j'ai migré la plateforme vers Spring Boot 4.0 et Spring AI 2.0 ([ADR-030](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-030-spring-ai-2-universal-proxy-dynamic-router.md)). Ça impose Spring Framework 7 et Jackson 3, qui déplace `com.fasterxml.jackson` vers `tools.jackson`. Le changement de version m'intéressait moins que ce qu'il permettait.
+
+Avant, le choix du modèle vivait dans la configuration : un bloc `spring.ai.*` dans `application.yml`, et des starters qui configurent les clients à votre place. Changer de modèle voulait dire redéployer. J'ai retiré tout ça. Aujourd'hui, une table `ai_providers` contient l'adresse et la clé de chaque fournisseur, et une table `orazaka_models` relie un nom de modèle à son fournisseur. Un `DynamicModelRouter` lit ces lignes à chaque appel et garde le client en cache.
+
+Pensez à un répertoire téléphonique. Avant, chaque numéro était gravé dans le mur. Maintenant, il est écrit dans le répertoire : on change une ligne, et le prochain appel part au bon endroit, sans travaux. Un administrateur modifie une ligne en base, et la plateforme suit. C'est la décision qui a rendu tout le reste possible : changer de machine ne veut plus dire changer de code.
+
+Un détail rend ça possible : Ollama et LocalAI parlent le même protocole qu'OpenAI. Un seul client compatible OpenAI, pointé vers une adresse lue en base, suffit pour tous les fournisseurs locaux.
+
+On vise le plus petit dénominateur commun : une fonction propre à un fournisseur ne sert à rien si les autres ne l'ont pas. Il faut évaluer chaque modèle sur ses propres tâches, parce qu'un nom de modèle ne garantit pas une qualité.
+
+## La ClassCastException qui a coupé le chat
+
+Évidemment, ça a cassé. Tout passe par le client compatible OpenAI, qui attend des options de type `OpenAiChatOptions`. Mais une étape plus haut dans le pipeline étiquetait les fournisseurs locaux avec des `OllamaChatOptions`. Résultat : une `ClassCastException`, et plus de chat du tout.
+
+Le correctif, dans `RoutedChatModel`, convertit les options avant l'appel :
+
+```java
+static Prompt toOpenAiPrompt(Prompt prompt) {
+  ChatOptions options = prompt.getOptions();
+  if (options == null || options instanceof OpenAiChatOptions) {
+    return prompt;
+  }
+  OpenAiChatOptions.Builder builder =
+      OpenAiChatOptions.builder()
+          .model(options.getModel())
+          .temperature(options.getTemperature())
+          .maxTokens(options.getMaxTokens());
+  // ...tool callbacks, when present
+  return new Prompt(prompt.getInstructions(), builder.build());
+}
+```
+
+Il y a eu un deuxième piège, plus discret. Une étape qui demandait `qwen2.5:7b` partait parfois vers l'inférence hébergée, parce que le nom du modèle était ignoré sauf pour deux fournisseurs. Depuis [orazaka-ai-engine#13](https://github.com/krizaka/orazaka-ai-engine/pull/13), le routage suit le lien du catalogue entre le modèle et son fournisseur. Et un modèle dont le fournisseur ne répond pas échoue avec une erreur qui nomme le modèle et le fournisseur, au lieu de partir ailleurs en silence. Pour une IA souveraine, ce silence-là est le pire bug possible.
+
+Deux autres problèmes sont venus du mélange entre le Mac et le cloud. La plateforme de dev tourne sur DigitalOcean, et le Mac la rejoint par un tunnel, à travers un relais. Le premier : les médias générés étaient écrits sur le disque du conteneur, effacé à chaque déploiement. Les lignes en base survivaient, les fichiers disparaissaient. On passe maintenant par un stockage durable, avec un adaptateur Bunny ([orazaka-ai-engine#21](https://github.com/krizaka/orazaka-ai-engine/pull/21)).
+
+Le second : chaque déploiement redémarre le relais et coupe le tunnel. Un clip en cours de calcul était perdu, puis refait de zéro. Le worker se reconnecte désormais et ne traite jamais deux fois la même tâche ([orazaka-worker-media#24](https://github.com/krizaka/orazaka-worker-media/pull/24)).
+
+## Du monolithe aux services
+
+Puis le projet s'est structuré, et j'ai décidé de le partager en open source. À partir de là, une question a pris toute la place : comment faire tourner ailleurs ce qui ne tournait que chez moi ?
+
+<Figure id="orazaka-portability" alt="Schéma en cinq étapes : un Mac seul, puis des services, puis des conteneurs et une ligne de commande, puis un environnement de dev avec des GPU à l'heure, puis l'installation chez un client ; chaque étape porte sa question principale" />
+
+Le premier Orazaka était un seul programme Java qui faisait tout : le chat, les tâches longues, les médias, l'identité. Il était déjà bien rangé à l'intérieur, et des règles d'architecture vérifiées à chaque build (ArchUnit) empêchaient une couche d'appeler n'importe quelle autre. Mais une seule application possédait toutes les données et toutes les portes d'entrée.
+
+En juillet, j'ai découpé le monolithe en services ([ADR-032](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-032-microservices-decomposition-strangler-fig.md)). Pas d'un coup : avec le motif du « figuier étrangleur ». On place d'abord une façade devant, puis on sort un morceau à la fois derrière elle, et chaque étape doit passer les tests de bout en bout avant la suivante. Une base de données par service, chacune avec son rôle, et aucune clé étrangère entre deux services.
+
+À ce moment-là, tout restait 100 % local : pas de CI, pas de cloud, c'était écrit dans la décision. Le Mac faisait encore tout tourner, mais il le faisait comme le ferait un serveur.
+
+Ensuite est venu le partage du code en dépôts publics, une vingtaine, un par composant. C'était propre sur le papier, mais coûteux au quotidien : une modification qui traverse trois dépôts, c'est trois pull requests. Je suis en train de regrouper ce qui va ensemble.
+
+## Des conteneurs et une ligne de commande
+
+Pour qu'une autre personne puisse lancer Orazaka, il fallait une seule porte d'entrée. C'est la ligne de commande :
+
+```bash
+npx orazaka install --server   # sur un serveur Linux
+orazaka start
+orazaka doctor
+orazaka models image list
+```
+
+Les services et les bases tournent dans des conteneurs. Les modèles, eux, tournent au plus près du matériel : sur un Mac, directement sur Metal, parce que la virtualisation ne donne pas accès au GPU d'Apple.
+
+La [documentation de livraison](https://github.com/krizaka/orazaka/blob/main/docs/DELIVERY.md) pèse les options pour les conteneurs sur un Mac. Docker Desktop n'est pas redistribuable et devient payant pour les grandes organisations. OrbStack est excellent, mais demande une licence payante par utilisateur. Le choix par défaut est Colima, libre et scriptable, et si la machine a déjà l'un des deux autres, on l'utilise. Pour les grandes organisations, Kubernetes et Helm viendront plus tard, quand un client aura besoin de haute disponibilité. Pas avant.
+
+Rien de tout ça ne tiendrait sans tests. Les tests d'intégration lancent de vraies bases et un vrai courtier dans des conteneurs (Testcontainers), à partir d'une seule classe de base partagée. Les règles d'architecture sont vérifiées à chaque build. Un outil de réécriture automatique (OpenRewrite) passe en CI et échoue s'il trouve du code à moderniser. Et le critère le plus utile que j'aie écrit est simple : un pack qui vit dans un dossier hors du dépôt doit s'installer et tourner sans aucune modification du dépôt. La première fois, il a échoué quatre fois, sur quatre défauts que personne n'aurait vus de l'intérieur ([ADR-049](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-049-open-core-split.md)).
+
+## Ce que le Mac fait bien, et où il abandonne
+
+Pour tout le reste, le Mac est un très bon point de départ. Il fait le chat avec Ollama, la voix avec <Model id="piper">Piper</Model>, la musique avec <Model id="ace-step">ACE-Step</Model> et les images avec stable-diffusion.cpp. Une image <Model id="flux2-klein-4b">FLUX.2 [klein] 4B</Model> en 1024×1024 prend 62 secondes en médiane, de la commande au fichier. Pas de facture, pas de compte cloud, pas de pilote à installer. Et tout nouveau développeur a déjà un portable.
+
+Trois images sorties de cette machine. Sous chacune, « Comment c'est fait » donne le prompt, la graine, la durée et l'exécution Orazaka qui l'a produite.
+
+<Row>
+<Figure id="gallery-mini-skating" alt="Figurines miniatures en tilt-shift qui patinent sur un étang gelé" caption="Patineurs miniatures, 75 s sur le Mac." />
+<Figure id="gallery-mini-souk" alt="Miniature en tilt-shift d'une ruelle de souk avec des marchands d'épices" caption="Une ruelle d'épices, 100 s sur le Mac." />
+<Figure id="gallery-mtl-ruelle" alt="Une ruelle du Plateau la nuit après la pluie" caption="Une ruelle du Plateau, 109 s sur le Mac." />
+</Row>
+
+Elles sont plus grandes que 1024×1024, d'où des durées de 75 à 109 secondes.
+
+J'ai voulu générer de la vidéo en local avec <Model id="wan22-ti2v-5b">Wan 2.2 TI2V 5B</Model>, en format vertical 480×832 et 25 images. Le modèle a manqué de mémoire au moment de décoder : il demandait 26 Gio alors que 62 Gio étaient déjà occupés sur une machine de 64 Go. En 704×1280, même résultat. La mémoire unifiée du Mac est généreuse pour l'image, pas pour la vidéo.
+
+La vidéo part ailleurs. En hébergé, un clip de cinq secondes de <Model id="wan22-t2v-a14b">Wan 2.2 A14B</Model> en 832×480 prend 131 secondes en médiane. Sur un H100 loué, on monte en 720p. La vidéo part donc vers un GPU quand je choisis de l'y envoyer, et le reste du travail reste sur le portable. Les chiffres, les factures et les erreurs de ce choix sont dans [le billet sur les coûts](/fr/posts/what-image-and-video-generation-costs/).
+
+Ce que je n'ai pas mesuré : la mémoire et le swap du Mac sur une journée, la mémoire réelle des JVM au repos, et la vitesse du chat en local. Je les utilise tous les jours, mais je n'ai pas encore d'enregistrement chiffré pour les montrer.

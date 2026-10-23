@@ -1,0 +1,73 @@
+---
+title: "Pourquoi je construis Krizaka à Montréal"
+description: "Un GPU loué à Montréal, une loi québécoise et trois questions simples à poser à tout logiciel d'IA. Ce que souverain veut dire chez Krizaka, ce que ça coûte, et ce qui n'est pas réglé."
+seoDescription: "Un GPU à Montréal, la Loi 25 et trois questions à poser à tout outil d'IA : ce qu'IA souveraine veut dire chez Krizaka, ce que ça coûte."
+date: 2026-10-23
+publishedAt: "2026-10-23T11:54:00-04:00"
+tags: [sovereignty, ai, montreal]
+author: oussama
+draft: false
+cover: clip-old-port
+coverAlt: "Le Vieux-Port de Montréal à l'heure bleue : le quai, l'eau et la tour de l'Horloge éclairée"
+chapter: 1
+period: "2026-10-16"
+sources:
+  - why-krizaka-builds-sovereign-ai-in-montreal
+versus:
+  faced: "une affirmation sans source"
+  built: "une exécution qui garde son id, sa version et ses règles"
+stats:
+  - value: "3,99 $ US"
+    label: "l'heure de l'H100 de Montréal"
+    section: "Ce qui n'est pas réglé"
+---
+
+Cette semaine, nos vidéos de démonstration ont été générées sur une carte NVIDIA H100 louée chez RunPod. Dans le registre de location, la région du pod s'appelle CA-MTL-1. Montréal. La machine qui a fabriqué nos images tournait dans ma ville.
+
+Ce n'était pas prévu. Je voulais un GPU de 48 Go chez DigitalOcean, à Toronto, là où vivent déjà nos bases de données. Il n'y en a jamais eu en stock dans cette région, la seule que notre réseau privé atteint. On a pris l'H100 à Montréal. Et en regardant ce nom de région, je me suis dit que c'était un bon point de départ pour expliquer ce qu'on fait.
+
+## D'abord, qui écrit
+
+Je m'appelle Oussama, et je construis Krizaka à Montréal. J'ai étudié les mathématiques et l'informatique, puis je me suis orienté vers les mathématiques et l'informatique appliquées aux sciences cognitives. Mon premier contact avec ce qu'on appelle aujourd'hui l'IA date de 2011, dans un labo de recherche ([à propos de l'auteur](/fr/about/)). J'ai fondé Krizaka ici, et je le construis presque seul. Une grande partie du code est écrite avec des agents d'IA que je dirige, que je relis et que je corrige. Ça compte pour la suite : quand on travaille avec des machines qui écrivent, on devient vite exigeant sur la question « qui a fait quoi, et où ».
+
+## IA souveraine, en une phrase
+
+Le mot est souvent utilisé pour tout et pour rien. Chez nous, il veut dire une chose précise : un client peut savoir où son document a été traité, quel modèle l'a lu, et qui peut voir le résultat.
+
+Pensez à un notaire. Vous lui confiez un acte. Vous savez dans quel bureau il est rangé, qui l'a signé, et il existe un registre. Si quelqu'un conteste, on ouvre le registre. Une IA souveraine, c'est la même chose pour un document qu'une machine a lu.
+
+Concrètement, chaque analyse est une exécution d'[Orazaka](https://dev.orazaka.com), le moteur que je construis. L'exécution garde son identifiant, la version du traitement qui a tourné et les règles appliquées. Le modèle utilisé est une ligne dans une base de données, pas un nom caché dans le code. Un produit construit sur Orazaka n'appelle jamais un modèle tout seul : il passe par le moteur, qui garde la trace.
+
+Ça ne rend pas les données privées par magie, ni le modèle plus intelligent. Ça permet de vérifier. Une promesse qu'on ne peut pas vérifier reste du marketing.
+
+<Clip id="clip-montreal" alt="Un lent travelling dans une rue enneigée du Plateau la nuit, escaliers extérieurs en colimaçon, fenêtres éclairées" caption="Une nuit d'hiver à Montréal, faite avec Orazaka : cinq secondes, générées par un modèle hébergé." />
+
+## Pourquoi ici
+
+Le droit que je lis en premier est celui du Québec : le Code civil, et la Loi 25 sur les renseignements personnels. Un bail québécois, un contrat de travail, une facture d'un cabinet d'ici : ce sont les documents que nos premiers outils doivent comprendre. Et les gens qui devront faire confiance au résultat vivent ici aussi. Je préfère construire un outil qui lit un bail québécois en sachant que je devrai moi-même vivre avec sa réponse.
+
+Il y a aussi la langue. Chaque site Krizaka sort en français et en anglais le même jour. Ce blogue aussi : j'écris d'abord en français, puis je fais la version anglaise.
+
+## Ce que ça m'oblige à faire
+
+Choisir d'être vérifiable, ça a un prix, et je préfère le dire.
+
+Un résultat sans source n'apparaît pas. Quand un outil signale un problème dans un document, il cite la règle et le passage exact. S'il ne peut pas citer, il se tait. C'est frustrant au début, parce qu'un modèle a toujours une opinion. Mais une opinion sans source ne vaut rien devant un client.
+
+Je garde l'infrastructure petite. Pas de service que je ne sais pas expliquer, pas de grosse machine allumée pour rien. Je loue un GPU quand il y a du travail, et je l'éteins quand la file est vide. J'ai appris cette règle en payant, et je le raconte dans [le billet sur les coûts](/fr/posts/what-image-and-video-generation-costs/).
+
+Je publie le code des fondations. Le kit d'interface ([Krizaka UI](https://ui.krizaka.com)) et les briques Spring Boot ([Krizaka Java](https://java.krizaka.com)) sont open source. N'importe qui peut lire ce sur quoi nos produits sont posés.
+
+Et je dis ce qui n'est pas fini. Plusieurs produits sont marqués « en développement » : l'inscription est fermée, et leur site l'affiche.
+
+## Ce qui n'est pas réglé
+
+La souveraineté du modèle reste le point difficile. Faire tourner un bon modèle sur une machine qu'on contrôle coûte de vraies heures de GPU et de vrais dollars. L'H100 de Montréal coûte 3,99 $ US de l'heure. Je mesure tout, et je publie les chiffres.
+
+Une machine louée n'est pas une machine possédée. Je sais où sont nos données, mais je ne construis pas de centre de données. La région d'un pod, c'est une information que je peux donner à un client. Un contrat avec ce fournisseur, c'en est une autre.
+
+Enfin, nos règles de lecture de bail québécois attendent encore la relecture d'un avocat. Les rapports le disent noir sur blanc.
+
+Si vous évaluez un outil d'IA pour vos documents, posez-lui trois questions. Où mon document est-il traité ? Quel modèle l'a lu ? Qui peut voir le résultat ? Si la réponse est vague, ou si personne ne peut vous montrer une trace, vous avez votre réponse.
+
+Ce blogue suivra la même règle. Si une affirmation ne remonte pas à une mesure, à une exécution ou à une ligne de code, je ne l'écris pas.

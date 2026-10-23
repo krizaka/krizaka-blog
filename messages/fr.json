@@ -100,6 +100,25 @@
     "stepUpcoming": "À venir",
     "stepError": "Échec"
   },
+  "chapter": {
+    "label": "Chapitre {n}",
+    "period": "{from} – {to}",
+    "versus": "Face-à-face",
+    "vs": "VS",
+    "faced": "Ce que j'ai affronté",
+    "built": "Ce qu'on a construit",
+    "round": "Round {n}",
+    "stats": "Résultats",
+    "statsOf": "Chapitre {n}",
+    "toc": "Dans ce chapitre",
+    "continue": "Continuer ?",
+    "start": "Start",
+    "next": "Chapitre {n}",
+    "nextCaption": "Chapitre suivant",
+    "storySoFar": "Le prochain chapitre n'est pas encore sorti : la suite de l'histoire est encore dans les billets.",
+    "allPosts": "Tous les billets",
+    "back": "Tous les billets"
+  },
   "engage": {
     "title": "À garder, à partager",
     "save": "Lire plus tard",

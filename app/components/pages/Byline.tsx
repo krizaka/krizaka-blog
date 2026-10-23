@@ -9,12 +9,12 @@ import { formatDate } from "./PostList";
 
 /* Who wrote a post and when: the author (the company's mark for the team, Wu-sama's for Oussama: no photo), the date, the reading time, the update; then the
    post's actions in one row (the other language, and what the page passes: « Read later »). */
-export function Byline({ post, other, children }: { post: Post; other?: Post; children?: React.ReactNode }) {
+export function Byline({ post, other, children, section = "posts" }: { post: Post; other?: Post; children?: React.ReactNode; section?: "posts" | "story" }) {
   const t = getDictionary(post.locale);
   /* The other language's address, from known values only: one of the two locales, a slug of lower-case words. */
   const otherLang: Locale = other?.locale === "fr" ? "fr" : "en";
   const otherSlug = other && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(other.slug) ? other.slug : "";
-  const otherHref = localizedPath(otherLang, `/posts/${otherSlug}/`);
+  const otherHref = localizedPath(otherLang, `/${section}/${otherSlug}/`);
   const author = (t.authors as Record<string, string>)[post.author] ?? post.author;
   return (
     <div className="bl-byline">
