@@ -8,7 +8,10 @@ import { INDEXING_ENABLED, ORGANIZATION_ID, SITE_URL } from "./site";
 
 export const absoluteUrl = (locale: Locale, path: string) => `${SITE_URL}${localizedPath(locale, path)}`;
 export const postPath = (slug: string) => `/posts/${slug}`;
+/** A chapter of the story (lib/chapters.ts). */
+export const chapterPath = (slug: string) => `/story/${slug}`;
 export const ogUrl = (locale: Locale, slug: string) => `${SITE_URL}${locale === "en" ? "" : "/fr"}/og/${slug}.png`;
+export const chapterOgUrl = (locale: Locale, slug: string) => `${SITE_URL}${locale === "en" ? "" : "/fr"}/og/story/${slug}.png`;
 export const DEFAULT_OG = `${SITE_URL}/og/site.png`;
 
 export function pageMetadata(opts: { locale: Locale; path: string; title: string; description: string; alternates?: Locale[]; image?: string; type?: "website" | "article"; published?: string; modified?: string; absoluteTitle?: boolean; tags?: string[] }): Metadata {
@@ -59,9 +62,9 @@ export const blogId = (locale: Locale) => `${absoluteUrl(locale, "/")}#blog`;
 export const authorId = (author: string) => `${SITE_URL}/#author-${author}`;
 
 /** The metadata of a post's page: the short title tag and description when the post gives them, the full title in Open Graph. */
-export function postMetadata(post: Post, alternates: Locale[]): Metadata {
+export function postMetadata(post: Post, alternates: Locale[], path = postPath(post.slug), image = post.image ?? ogUrl(post.locale, post.slug)): Metadata {
   const t = getDictionary(post.locale);
-  const meta = pageMetadata({ locale: post.locale, path: postPath(post.slug), title: titleTag(post, t.site.name), absoluteTitle: true, description: metaDescription(post), type: "article", published: post.date, modified: post.updated, image: post.image ?? ogUrl(post.locale, post.slug), alternates, tags: post.tags });
+  const meta = pageMetadata({ locale: post.locale, path, title: titleTag(post, t.site.name), absoluteTitle: true, description: metaDescription(post), type: "article", published: post.date, modified: post.updated, image, alternates, tags: post.tags });
   return { ...meta, authors: [{ name: (t.authors as Record<string, string>)[post.author] ?? post.author }], keywords: post.tags };
 }
 
@@ -77,9 +80,9 @@ export function blogJsonLd(locale: Locale) {
   return { "@context": "https://schema.org", "@type": "Blog", "@id": blogId(locale), name: t.site.name, description: t.site.description, url: absoluteUrl(locale, "/"), inLanguage: locale, publisher };
 }
 
-export function postJsonLd(post: Post, topic?: { name: string; path: string }) {
+export function postJsonLd(post: Post, topic?: { name: string; path: string }, path = postPath(post.slug), image = post.image ?? ogUrl(post.locale, post.slug)) {
   const t = getDictionary(post.locale);
-  const url = absoluteUrl(post.locale, postPath(post.slug));
+  const url = absoluteUrl(post.locale, path);
   const crumbs = [{ name: t.site.name, item: absoluteUrl(post.locale, "/") }, ...(topic ? [{ name: topic.name, item: absoluteUrl(post.locale, topic.path) }] : []), { name: post.title, item: url }];
   return [
     {
@@ -99,7 +102,7 @@ export function postJsonLd(post: Post, topic?: { name: string; path: string }) {
       inLanguage: post.locale,
       datePublished: post.publishedAt ?? post.date,
       dateModified: post.updated ?? post.date,
-      image: post.image ?? ogUrl(post.locale, post.slug),
+      image,
       keywords: post.tags.join(", "),
       wordCount: post.body.split(/\s+/).filter(Boolean).length,
       timeRequired: `PT${post.readingMinutes}M`,

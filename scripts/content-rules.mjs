@@ -224,3 +224,105 @@ export function linkProblems(posts) {
   }
   return out;
 }
+
+/** The story's chapters (content/chapters/<slug>.<en|fr>.mdx, lib/chapters.ts). */
+export const CHAPTER_PERIOD = /^\d{4}-\d{2}-\d{2}(\/\d{4}-\d{2}-\d{2})?$/;
+export const CHAPTER_STATS_MAX = 4;
+
+/** The pages a body may link to besides posts and chapters (both languages). */
+const STATIC_PAGES = new Set(["", "about", "feed", "newsletter", "search", "series", "tags", "saved"]);
+
+/** The h2s of an MDX body (outside code fences), as written: what a stat's `section` names. */
+const h2Texts = (body) => {
+  let fence = false;
+  const out = [];
+  for (const line of body.split("\n")) {
+    if (/^\s*(```|~~~)/.test(line)) fence = !fence;
+    const m = !fence && line.match(/^##\s+(.+?)\s*$/);
+    if (m) out.push(m[1]);
+  }
+  return out;
+};
+
+/** The problems of one chapter: a post's rules (cover, publishedAt, confidentiality, <Model>, media…), plus the story's
+    fields. `postSlugs` is the set of `<locale>:<slug>` of content/posts, which every source must be in. */
+export function chapterProblems(file, data, body, ctx, postSlugs) {
+  const out = postProblems(file, data, body, ctx);
+  const m = file.match(FILE);
+  if (!m) return out;
+  const locale = m[2];
+  if (!Number.isInteger(data.chapter) || data.chapter < 1) out.push(`${file}: "chapter" must be a whole number from 1 (its place in the story)`);
+  if (!CHAPTER_PERIOD.test(String(data.period ?? ""))) out.push(`${file}: "period" must be YYYY-MM-DD or YYYY-MM-DD/YYYY-MM-DD (quoted): the dates of the posts it absorbs`);
+  else {
+    const [from, to] = String(data.period).split("/");
+    if (to && to < from) out.push(`${file}: "period" ends before it starts`);
+  }
+  if (data.series !== undefined || data.part !== undefined) out.push(`${file}: a chapter has no "series" or "part" — "chapter" is its place`);
+  if (!Array.isArray(data.sources) || data.sources.length === 0) out.push(`${file}: "sources" must list the slugs of the posts it is written from`);
+  else for (const s of data.sources) if (!postSlugs.has(`${locale}:${s}`)) out.push(`${file}: source "${s}" is not a post of content/posts in this language`);
+  for (const k of ["faced", "built"]) if (!(typeof data.versus?.[k] === "string" && data.versus[k].trim())) out.push(`${file}: "versus.${k}" is required (the head's label, from the chapter's own text)`);
+  if (data.stats !== undefined) {
+    if (!Array.isArray(data.stats)) out.push(`${file}: "stats" must be a list`);
+    else {
+      if (data.stats.length > CHAPTER_STATS_MAX) out.push(`${file}: at most ${CHAPTER_STATS_MAX} stats`);
+      const sections = h2Texts(body);
+      for (const s of data.stats) {
+        if (!(typeof s?.value === "string" && s.value.trim() && typeof s.label === "string" && s.label.trim())) {
+          out.push(`${file}: every stat needs a "value" and a "label" (text)`);
+          continue;
+        }
+        /* Only figures the text already gives: every number of the value is in the body. */
+        for (const num of s.value.match(/\d+(?:[.,]\d+)?/g) ?? []) if (!body.includes(num)) out.push(`${file}: the stat "${s.value}" gives ${num}, which the body does not — only figures the chapter already gives`);
+        if (!sections.includes(s.section)) out.push(`${file}: the stat "${s.value}" names the section ${JSON.stringify(s.section)}, which is not an h2 of the chapter`);
+      }
+    }
+  }
+  return out;
+}
+
+/** Internal links of a body (`](/…)`): each leads to a post or a chapter that exists in that language, or to a page of the site. */
+export function internalLinkProblems(file, body, known) {
+  const out = [];
+  for (const l of body.matchAll(/\]\((\/[^)\s#]*)(?:#[^)]*)?\)/g)) {
+    const path = l[1];
+    const m = path.match(/^(\/fr)?\/(?:(posts|story)\/([a-z0-9-]+)|([a-z-]*))\/?$/);
+    const locale = m?.[1] ? "fr" : "en";
+    const ok = m && (m[2] ? known.has(`${m[2]}:${locale}:${m[3]}`) : STATIC_PAGES.has(m[4]));
+    if (!ok) out.push(`${file}: links to ${path}, which is not a page of the blog`);
+  }
+  return out;
+}
+
+/** Every chapter: its own problems, then the story as a whole — each chapter in both languages with the same slug, number,
+    period and sources; the numbers of a language run from 1 without a gap or a repeat; no dead internal link. */
+export function checkChapters(dir, postsDir, ctx) {
+  const problems = [];
+  const read = (d) => readdirSync(d).filter((f) => f.endsWith(".mdx")).map((f) => ({ file: f, ...matter(readFileSync(join(d, f), "utf8")) }));
+  const posts = read(postsDir);
+  const chapters = read(dir);
+  const postSlugs = new Set(posts.map((p) => p.file.match(FILE)).filter(Boolean).map((m) => `${m[2]}:${m[1]}`));
+  const known = new Set([...[...postSlugs].map((k) => `posts:${k}`), ...chapters.map((c) => c.file.match(FILE)).filter(Boolean).map((m) => `story:${m[2]}:${m[1]}`)]);
+  for (const c of chapters) {
+    problems.push(...chapterProblems(c.file, c.data, c.content, ctx, postSlugs));
+    problems.push(...internalLinkProblems(c.file, c.content, known));
+  }
+  const bySlug = new Map();
+  for (const c of chapters) {
+    const m = c.file.match(FILE);
+    if (m) bySlug.set(m[1], { ...bySlug.get(m[1]), [m[2]]: c.data });
+  }
+  for (const [slug, langs] of bySlug) {
+    if (!langs.en || !langs.fr) {
+      problems.push(`chapter ${slug}: it must exist in both languages (${slug}.en.mdx and ${slug}.fr.mdx)`);
+      continue;
+    }
+    for (const k of ["chapter", "period", "sources"]) if (JSON.stringify(langs.en[k]) !== JSON.stringify(langs.fr[k])) problems.push(`chapter ${slug}: "${k}" differs between EN and FR`);
+  }
+  for (const locale of ["en", "fr"]) {
+    const nums = chapters.filter((c) => c.file.endsWith(`.${locale}.mdx`)).map((c) => c.data.chapter).sort((a, b) => a - b);
+    nums.forEach((n, i) => {
+      if (n !== i + 1) problems.push(`chapters (${locale}): the numbers must run 1, 2, 3… without a gap or a repeat (found ${nums.join(", ")})`);
+    });
+  }
+  return { files: chapters.map((c) => c.file), problems: [...new Set(problems)] };
+}

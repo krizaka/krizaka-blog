@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 import { LOCALES } from "@/lib/i18n";
 import { allPosts, seriesOf, tagsOf } from "@/lib/posts";
-import { absoluteUrl, postPath } from "@/lib/seo";
+import { allChapters } from "@/lib/chapters";
+import { absoluteUrl, chapterPath, postPath } from "@/lib/seo";
 
 export const dynamic = "force-static";
 
@@ -16,7 +17,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     const langs = LOCALES.filter((l) => allPosts().some((q) => q.slug === p.slug && q.locale === l));
     return { url: absoluteUrl(p.locale, postPath(p.slug)), lastModified: p.updated ?? p.date, alternates: { languages: Object.fromEntries(langs.map((l) => [l, absoluteUrl(l, postPath(p.slug))])) } };
   });
+  const chapters = allChapters().map((c) => {
+    const langs = LOCALES.filter((l) => allChapters().some((q) => q.slug === c.slug && q.locale === l));
+    return { url: absoluteUrl(c.locale, chapterPath(c.slug)), lastModified: c.updated ?? c.date, alternates: { languages: Object.fromEntries(langs.map((l) => [l, absoluteUrl(l, chapterPath(c.slug))])) } };
+  });
   const tags = LOCALES.flatMap((l) => tagsOf(l).map(({ tag }) => ({ url: absoluteUrl(l, `/tags/${tag}`), lastModified: built })));
   const series = LOCALES.flatMap((l) => seriesOf(l).map(({ series }) => ({ url: absoluteUrl(l, `/series/${series}`), lastModified: built })));
-  return [...both, ...posts, ...tags, ...series];
+  return [...both, ...chapters, ...posts, ...tags, ...series];
 }

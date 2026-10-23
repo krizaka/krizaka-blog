@@ -114,3 +114,20 @@ export function faqOf(body: string): Faq[] {
   flush();
   return out;
 }
+
+type HastNode = { type: string; tagName?: string; properties?: Record<string, unknown>; children?: HastNode[] };
+
+/** A rehype step for the story's chapters: numbers the h2s of the body, in order (`data-round="1"`, `"2"`…), so the page can set
+    « Round n » before each one. The heading itself, its words and its id (rehype-slug) do not change: the anchors stay. */
+export function rehypeRounds() {
+  return (tree: HastNode) => {
+    let n = 0;
+    const walk = (node: HastNode) => {
+      for (const child of node.children ?? []) {
+        if (child.type === "element" && child.tagName === "h2") child.properties = { ...child.properties, dataRound: String(++n) };
+        else if (child.type === "element" || child.type === "root") walk(child);
+      }
+    };
+    walk(tree);
+  };
+}

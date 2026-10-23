@@ -97,6 +97,25 @@
     "stepUpcoming": "Upcoming",
     "stepError": "Failed"
   },
+  "chapter": {
+    "label": "Chapter {n}",
+    "period": "{from} – {to}",
+    "versus": "Face-off",
+    "vs": "VS",
+    "faced": "What I faced",
+    "built": "What we built",
+    "round": "Round {n}",
+    "stats": "Results",
+    "statsOf": "Chapter {n}",
+    "toc": "In this chapter",
+    "continue": "Continue?",
+    "start": "Start",
+    "next": "Chapter {n}",
+    "nextCaption": "Next chapter",
+    "storySoFar": "The next chapter is not out yet: the rest of the story is still in the posts.",
+    "allPosts": "All posts",
+    "back": "All posts"
+  },
   "engage": {
     "title": "Keep it, pass it on",
     "save": "Save for later",

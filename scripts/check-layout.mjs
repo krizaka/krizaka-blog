@@ -11,13 +11,14 @@ const args = process.argv.slice(2);
 const base = (args[args.indexOf("--base") + 1] || "http://localhost:3000").replace(/\/$/, "");
 const paths = ["/", "/fr/"];
 args.forEach((a, i) => a === "--path" && paths.push(args[i + 1]));
-/* --posts <out dir>: every post the build wrote, in both languages (out/posts/<slug>/, out/fr/posts/<slug>/). */
+/* --posts <out dir>: every post and every chapter the build wrote, in both languages (out/posts/<slug>/, out/fr/story/<slug>/…). */
 const postsDir = args.includes("--posts") ? args[args.indexOf("--posts") + 1] : undefined;
 if (postsDir) {
-  for (const prefix of ["", "fr/"]) {
-    const dir = join(postsDir, prefix, "posts");
-    if (existsSync(dir)) for (const slug of readdirSync(dir)) if (existsSync(join(dir, slug, "index.html"))) paths.push(`/${prefix}posts/${slug}/`);
-  }
+  for (const prefix of ["", "fr/"])
+    for (const section of ["posts", "story"]) {
+      const dir = join(postsDir, prefix, section);
+      if (existsSync(dir)) for (const slug of readdirSync(dir)) if (existsSync(join(dir, slug, "index.html"))) paths.push(`/${prefix}${section}/${slug}/`);
+    }
 }
 const WIDTHS = [1750, 1366, 390];
 
