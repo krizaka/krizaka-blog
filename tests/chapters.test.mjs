@@ -116,7 +116,7 @@ test("the redirect anchors planned for the absorbed posts (refonte plan, #108 §
 test("a chapter page exists in both languages, and its round markers, stats and « Continuer ? » come from @krizaka/ui", () => {
   for (const f of ["app/(en)/story/[chapter]/page.tsx", "app/fr/story/[chapter]/page.tsx"]) assert.ok(existsSync(join(root, f)), f);
   const page = readFileSync(join(root, "app/components/pages/ChapterPage.tsx"), "utf8");
-  for (const block of ["@krizaka/ui/stage-banner", "@krizaka/ui/continue-prompt", "@krizaka/ui/story.css", "rehypeRounds"]) assert.match(page, new RegExp(block.replace(/[/.]/g, "\\$&")));
+  for (const block of ["@krizaka/ui/stage-banner", "@krizaka/ui/continue-prompt", "@krizaka/ui/story.css", "rehypeRounds"]) assert.ok(page.includes(block), block);
   for (const l of ["en", "fr"]) {
     const m = JSON.parse(readFileSync(join(root, `messages/${l}.json`), "utf8")).chapter;
     assert.equal(m.round, "Round {n}");
