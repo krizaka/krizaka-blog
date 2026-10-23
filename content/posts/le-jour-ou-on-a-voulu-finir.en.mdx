@@ -21,7 +21,7 @@ It was not. But I learned things I want to write down, because they will be usef
 
 ## A site that keeps growing
 
-In the morning, things moved everywhere. Tickets closed and pull requests were merged. In total, at least a hundred PRs were merged that day, across more than twenty repositories.
+In the morning, things moved everywhere. Tickets closed and pull requests were merged. In total, more than a hundred and sixty PRs were merged that day, across thirty-three repositories.
 
 But each step opened something else to watch. Copilot took issues and opened PRs. Claude sessions worked on other branches. Each had its own context and its own limits, and for the work to move, I had to know where each one stood. Nobody else did that for me. By late afternoon I felt less like I was moving forward and more like I was running a site: everything moves, and you have to decide what to look at first.
 
@@ -35,11 +35,11 @@ Forty-eight empty PRs were closed, each with an explanation. Their issues stayed
 
 Then there was the CI. A push made by an agent does not start the workflows until a human approves them. So a PR can look ready, with code and tests, while no check runs at all. That does not show up right away, and you move on quickly.
 
-Then came the review. Copilot reviewed each PR, the agent fixed things, the review started again, and we went around once more. Each round used quota, the same quota we needed for the work. I stopped the loop. It was not the setting we wanted; it was the one that lasted through the day.
+Then came the review. Copilot reviewed each PR, the agent fixed things, the review started again, and we went around once more. Each round used quota, the same quota we needed for the work. I stopped re-running the review after every fix: one review per PR, when it opens, and I settle the small comments myself instead of sending the agent around once more.
 
 ## The Mac
 
-In the evening, the machine said stop. Seven sessions were running at the same time, with Copilot, and some builds started in parallel, outside the lock we use to run only one heavy build at a time. The load reached 133 on 10 cores. At that level everything slows down, and the builds get in each other's way.
+Early in the afternoon, the machine said stop. Seven sessions were running at the same time, with Copilot, and some builds started in parallel, outside the lock we use to run only one heavy build at a time. The load reached 133 on 10 cores. At that level everything slows down, and the builds get in each other's way.
 
 Agents are not extra capacity. They share the same machine.
 
@@ -47,7 +47,7 @@ Agents are not extra capacity. They share the same machine.
 
 I made a few decisions, and they fit in a few words.
 
-First, three active sessions at most, and one heavy task at a time. Second, finish before starting: a study does not begin until the previous one is validated, and every ADR is validated by me before any code is written. Third, the work that is not a priority goes on pause. Each piece resumes one at a time, as soon as an active session ends, from its last state.
+First, three active sessions at most, and one heavy task at a time. Second, finish before starting: a study does not begin until the previous one is validated, and every ADR is validated before any code is written. Third, the work that is not a priority goes on pause. Each piece resumes one at a time, as soon as an active session ends, from its last state.
 
 ## What I keep from it
 

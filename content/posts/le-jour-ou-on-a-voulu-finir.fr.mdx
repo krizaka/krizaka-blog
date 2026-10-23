@@ -21,7 +21,7 @@ Le 23 octobre, je voulais tout finir. Pas un petit lot de tickets : les issues o
 
 ## Un chantier qui grossit
 
-Le matin, ça avançait partout. Des tickets se fermaient, des pull requests se fusionnaient. Au total, au moins cent PR ont été fusionnées dans la journée, sur plus de vingt dépôts.
+Le matin, ça avançait partout. Des tickets se fermaient, des pull requests se fusionnaient. Au total, plus de cent soixante PR ont été fusionnées dans la journée, sur trente-trois dépôts.
 
 Mais chaque avancée ouvrait une autre chose à surveiller. Copilot prenait des issues et ouvrait des PR. Des sessions Claude travaillaient sur d'autres branches. Chacune avait son contexte et ses limites, et pour que le travail avance, il fallait savoir où en était chacune. Personne d'autre ne le faisait à ma place. En fin d'après-midi, j'avais moins l'impression d'avancer que de gérer un chantier : tout bouge, et il faut décider quoi regarder en premier.
 
@@ -37,11 +37,11 @@ Quarante-huit PR vides ont été fermées, chacune avec une explication. Leurs i
 
 Il y a eu aussi la CI. Un push fait par un agent ne lance pas les workflows tant qu'un humain ne les a pas approuvés. Une PR peut donc avoir l'air prête, avec du code et des tests, sans qu'aucune vérification ne tourne. Ça ne se voit pas tout de suite, et on passe vite.
 
-Ensuite, il y a eu la relecture. Copilot relisait chaque PR, l'agent corrigeait, la relecture repartait, et on repartait pour un tour. Chaque tour consommait du quota, celui-là même dont on avait besoin pour le travail. J'ai arrêté la boucle. Ce n'était pas le réglage qu'on voulait, c'était celui qui tenait dans la journée.
+Ensuite, il y a eu la relecture. Copilot relisait chaque PR, l'agent corrigeait, la relecture repartait, et on repartait pour un tour. Chaque tour consommait du quota, celui-là même dont on avait besoin pour le travail. J’ai arrêté de relancer la relecture à chaque correction : une seule relecture par PR, à son ouverture, et je règle moi-même les petites remarques plutôt que de renvoyer l’agent faire un tour de plus.
 
 ## Le Mac
 
-Le soir, c'est la machine qui a dit stop. Sept sessions tournaient en même temps, avec Copilot, et des builds étaient lancés en parallèle, en dehors du verrou qu'on utilise pour n'en lancer qu'un à la fois. La charge a atteint 133 sur 10 cœurs. À ce niveau, tout ralentit, et les builds se gênent entre eux.
+En début d’après-midi, c’est la machine qui a dit stop. Sept sessions tournaient en même temps, avec Copilot, et des builds étaient lancés en parallèle, en dehors du verrou qu'on utilise pour n'en lancer qu'un à la fois. La charge a atteint 133 sur 10 cœurs. À ce niveau, tout ralentit, et les builds se gênent entre eux.
 
 Les agents ne sont pas une capacité en plus. Ils se partagent la même machine.
 
@@ -49,7 +49,7 @@ Les agents ne sont pas une capacité en plus. Ils se partagent la même machine.
 
 J'ai pris quelques décisions, et elles tiennent en peu de mots.
 
-D'abord, trois sessions actives au plus, et une seule tâche lourde à la fois. Ensuite, on finit avant de commencer : une étude ne démarre pas avant que la précédente soit validée, et chaque ADR est validé par moi avant toute ligne de code. Enfin, les chantiers qui ne sont pas dans les priorités passent en pause. Ils reprennent un par un, dès qu'une session active se termine, depuis leur dernier état.
+D'abord, trois sessions actives au plus, et une seule tâche lourde à la fois. Ensuite, on finit avant de commencer : une étude ne démarre pas avant que la précédente soit validée, et chaque ADR est validé avant toute ligne de code. Enfin, les chantiers qui ne sont pas dans les priorités passent en pause. Ils reprennent un par un, dès qu'une session active se termine, depuis leur dernier état.
 
 ## Ce que j'en retiens
 
