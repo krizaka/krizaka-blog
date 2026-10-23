@@ -5,7 +5,7 @@ import { Section } from "@krizaka/ui/page";
 import { Stepper } from "@krizaka/ui/stepper";
 import { Landscape } from "@krizaka/ui/landscape";
 import { SpecimenTag } from "@krizaka/ui/specimen-tag";
-import { Footnotes } from "@krizaka/ui/footnote";
+import { FootnoteRef, Footnotes } from "@krizaka/ui/footnote";
 import { PageIndex } from "@krizaka/ui/page-index";
 import { PostCard } from "./PostCard";
 import { formatDate } from "./PostList";
@@ -30,7 +30,13 @@ export function StoryPage({ locale }: { locale: Locale }) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(collectionJsonLd(locale, "/story", s.title, s.lead)) }} />
-      <PageHero eyebrow={t.home.eyebrow} title={s.title} lead={s.lead} backdrop="plain" linkAs={Link} />
+      <PageHero
+        eyebrow={t.home.eyebrow}
+        title={s.title}
+        lead={<>{s.lead}{periods.length > 0 && <> <FootnoteRef n={1} /> <FootnoteRef n={2} /></>}</>}
+        backdrop="plain"
+        linkAs={Link}
+      />
       {periods.length === 0 ? (
         <Section reveal={false}>
           <p className="bl-status">{s.empty}</p>
@@ -86,7 +92,7 @@ export function StoryPage({ locale }: { locale: Locale }) {
             </Section>
           ))}
           <Section reveal={false} divider>
-            <Footnotes label={s.sourcesLabel} notes={s.sources} />
+            <Footnotes label={s.sourcesLabel} backLabel={s.backLabel} notes={s.sources} />
           </Section>
         </>
       )}

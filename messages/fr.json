@@ -397,7 +397,7 @@
   },
   "story": {
     "title": "L’histoire de Krizaka",
-    "lead": "Le chemin de l’entreprise dans le temps, raconté par ses billets : une étape pour chacun, avec son image et sa première ligne, groupées par semaine et par fil.",
+    "lead": "Le chemin de l’entreprise raconté par ses billets : une étape pour chacun, avec son image et sa première ligne, groupées par semaine et par fil.",
     "label": "Les étapes de l’histoire",
     "indexLabel": "Les périodes de l’histoire",
     "threads": "Les fils",
@@ -415,6 +415,7 @@
     },
     "stepCount": "{count} étapes",
     "sourcesLabel": "Sources",
+    "backLabel": "Retour au texte",
     "sources": [
       "Chaque étape est un billet : sa date, sa série, sa couverture et sa première ligne sont les siennes, lues dans son en-tête.",
       "Un nouveau billet rejoint l’histoire tout seul, dans sa semaine."

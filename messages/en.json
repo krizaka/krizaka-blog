@@ -415,6 +415,7 @@
     },
     "stepCount": "{count} steps",
     "sourcesLabel": "Sources",
+    "backLabel": "Back to the text",
     "sources": [
       "Each step is a post: its date, its series, its cover and its first line are the post’s own, read from its front matter.",
       "A new post joins the story by itself, in its week."

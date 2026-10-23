@@ -61,3 +61,30 @@ test("the story page is linked from the home and the series, and sits in the sit
   assert.match(read("app/components/pages/SeriesPage.tsx"), /localizedPath\(locale, "\/story"\)/);
   assert.match(read("app/sitemap.ts"), /"\/story"/);
 });
+
+test("the story leads fit the search metadata description limit in both languages", () => {
+  for (const locale of ["en", "fr"]) {
+    const { story } = JSON.parse(readFileSync(new URL(`../messages/${locale}.json`, import.meta.url), "utf8"));
+    assert.ok(story.lead.length <= 155, `${locale}: description is ${story.lead.length} characters (max 155)`);
+  }
+});
+
+test("the story footnotes use a translated return label in both languages", () => {
+  const page = readFileSync(new URL("../app/components/pages/StoryPage.tsx", import.meta.url), "utf8");
+  assert.match(page, /<Footnotes\b[^>]*backLabel=\{s\.backLabel\}/);
+  for (const [locale, label] of [["en", "Back to the text"], ["fr", "Retour au texte"]]) {
+    const { story } = JSON.parse(readFileSync(new URL(`../messages/${locale}.json`, import.meta.url), "utf8"));
+    assert.equal(story.backLabel, label);
+  }
+});
+
+test("each story source has a matching reference in the lead, only when the story has posts", () => {
+  const page = readFileSync(new URL("../app/components/pages/StoryPage.tsx", import.meta.url), "utf8");
+  const lead = page.match(/<PageHero\b[\s\S]*?lead=\{([\s\S]*?)\}\s+backdrop=/)?.[1] ?? "";
+  assert.match(lead, /periods\.length > 0 &&/);
+  const references = [...lead.matchAll(/<FootnoteRef n=\{(\d+)\}/g)].map((m) => Number(m[1]));
+  for (const locale of ["en", "fr"]) {
+    const { story } = JSON.parse(readFileSync(new URL(`../messages/${locale}.json`, import.meta.url), "utf8"));
+    assert.deepEqual(references, story.sources.map((_, i) => i + 1));
+  }
+});
