@@ -1,0 +1,56 @@
+---
+title: "Yomizaka, deuxième partie : tout un immeuble en un seul dépôt"
+description: "Un gestionnaire ne vérifie pas un bail, il en vérifie cent. Les lots par CSV, les fichiers Word, l'origine d'une photo, ce qu'on ne refacture pas, et où on en est avant la démo."
+seoTitle: "Yomizaka : vérifier tout un immeuble en un dépôt"
+seoDescription: "Les lots de vérifications par CSV dans Yomizaka : aperçu ligne par ligne, coût avant de lancer, export, et les fichiers Word et les photos."
+date: 2026-10-23
+publishedAt: "2026-10-23T02:05:00-04:00"
+tags: [yomizaka, documents]
+author: oussama
+draft: false
+cover: yomizaka-mailboxes
+coverAlt: "Le hall d'entrée d'un vieux triplex du Plateau, le matin : une rangée de boîtes aux lettres en laiton sur un mur de plâtre peint, des enveloppes et des documents pliés qui dépassent des fentes, un escalier de bois à la rampe courbe et la lumière d'hiver à travers une porte en vitrail"
+---
+
+Dans le [premier billet](/fr/posts/how-we-build-yomizaka), je racontais un talon de paie montré sur un téléphone, dans un café. Un document, une question.
+
+Mais un gestionnaire d'immeubles ne vérifie pas un document. Au Québec, beaucoup de baux se renouvellent au premier juillet, et quand on gère quelques centaines de portes, on ne veut pas les déposer un par un.
+
+C'est là que Yomizaka change d'échelle.
+
+## Un lot, c'est un CSV et des fichiers
+
+On a gardé l'outil que tout le monde a déjà : un tableur. Une ligne par document, trois colonnes. Le nom du fichier, la vérification à faire, et une référence à soi (le logement, le dossier). Les noms de colonnes en français marchent aussi, et un modèle se télécharge depuis la page.
+
+```csv
+fichier,vérification,référence
+bail-4512-st-denis.pdf,conformité,4512-3
+bail-4514-st-denis.pdf,conformité,4514-1
+talon-candidat-17.pdf,authenticité,dossier-17
+```
+
+On dépose le CSV et les documents ensemble, d'un seul geste. Avant de lancer quoi que ce soit, Yomizaka montre un aperçu ligne par ligne : ce qui sera vérifié, ce qui sera repris d'une vérification déjà faite, et ce qui est refusé, avec la raison. Un fichier nommé dans le CSV mais pas déposé, une vérification qui n'existe pas, une ligne en double. Et le coût, en audits, avant de cliquer. Si le compte n'a pas de quoi tout payer, l'écran le dit avant, pas au milieu.
+
+Une fois lancé, le lot avance tout seul, quelques documents à la fois. Une ligne qui échoue n'arrête jamais les autres. Si le compte n'a plus de crédits en route, les lignes restantes se mettent en pause avec la raison, au lieu d'échouer une par une. À la fin, on exporte le résultat en CSV, une ligne par ligne du fichier de départ, avec ce que chacune est devenue.
+
+C'est l'administrateur qui fixe les limites : si les lots sont ouverts, combien de lignes au plus (deux cents aujourd'hui), combien de vérifications en même temps. Ce sont des réglages en base, pas des constantes dans le code.
+
+## Ce qu'on ne refacture pas
+
+Dans un lot de cent baux, il y a toujours des doublons : le même PDF envoyé deux fois, un bail déjà vérifié le mois dernier. Le moteur d'Orazaka sait maintenant reconnaître un fichier identique par son empreinte, pour la même version de la vérification, et rendre le résultat déjà calculé, sans appeler de modèle et sans prendre d'audit. Le résultat dit de quelle vérification il vient.
+
+Et si une vérification échoue de notre côté, l'audit gratuit ou le crédit est rendu, une seule fois. On l'a appris à la dure : un compte de test a vu son audit consommé par un run qui avait échoué. Ce n'est plus possible.
+
+## Word, et l'origine d'une photo
+
+Beaucoup de baux et de contrats arrivent en Word, pas en PDF. Yomizaka accepte maintenant les fichiers `.docx` : le texte sert à la vérification, et le fichier lui-même passe à l'examen d'authenticité, comme un PDF. L'OpenDocument (`.odt`) suit.
+
+Pour les photos de documents, l'examen montre maintenant d'où vient l'image : l'appareil et le logiciel déclarés, la date de prise de vue et celle de la dernière modification, et si une position GPS a été retirée. Toujours comme des signaux sur trois niveaux, observé, inhabituel, incohérent, jamais comme un verdict. Une photo recadrée sur un téléphone n'est pas un faux.
+
+## Où on en est
+
+Je vais être honnête sur l'état des choses. Les lots tournent, avec leurs tests sur une vraie base de données. L'app Android a sa première version de test, et iOS suit avec le même code. Les clés d'API existent : un gestionnaire pourra brancher Yomizaka sur son propre logiciel. L'API publique qui va avec, pour lancer une vérification ou un lot avec une clé, est en préparation.
+
+On commence à préparer une vraie démo pour des gestionnaires d'immeubles. Pas une vidéo montée : un vrai lot, de vrais documents de test, et les écrans tels qu'ils sont. Le corpus de règles québécoises attend toujours la relecture d'un avocat, et l'écran continue de le dire.
+
+Si vous gérez des immeubles et qu'au premier juillet vous avez, vous aussi, une pile de baux à relire, j'aimerais savoir comment vous faites aujourd'hui. Yomizaka est sur [yomizaka.com](https://www.yomizaka.com).
