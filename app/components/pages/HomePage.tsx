@@ -32,7 +32,19 @@ export default function HomePage({ locale }: { locale: Locale }) {
   const no = () => `§ ${++n}`;
   return (
     <>
-      <PageHero eyebrow={t.home.eyebrow} title={t.home.title} lead={t.home.lead} linkAs={Link} />
+      <PageHero
+        eyebrow={t.home.eyebrow}
+        title={t.home.title}
+        lead={
+          <>
+            {t.home.lead}
+            <span className="mt-3 block">
+              <Link href={localizedPath(locale, "/story")}>{t.home.readStory}</Link>
+            </span>
+          </>
+        }
+        linkAs={Link}
+      />
       {featured && (
         <Section title={t.home.featuredTitle} reveal={false} number={no()} margin>
           <PostCard post={featured} locale={locale} feature priority />

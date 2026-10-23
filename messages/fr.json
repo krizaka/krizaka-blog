@@ -22,7 +22,8 @@
     "switchLanguage": "Switch to English",
     "languageShort": "EN",
     "menu": "Menu",
-    "skip": "Aller au contenu"
+    "skip": "Aller au contenu",
+    "story": "L’histoire"
   },
   "footer": {
     "aria": "Pied de page",
@@ -32,7 +33,9 @@
     "rss": "RSS",
     "atom": "Atom",
     "about": "À propos",
-    "newsletter": "Infolettre"
+    "newsletter": "Infolettre",
+    "story": "L’histoire",
+    "allPosts": "Tous les billets"
   },
   "home": {
     "eyebrow": "Blogue",
@@ -64,7 +67,8 @@
     "seoDescription": "Notes de construction d'une IA souveraine à Montréal : LLM locaux, Spring AI 2, coûts des GPU et de la vidéo, prompts. Des chiffres mesurés.",
     "storyTitle": "L’histoire de Krizaka",
     "storyLead": "Les mêmes billets, dans le temps : une étape pour chacun, semaine après semaine.",
-    "storyCta": "Suivre l’histoire"
+    "storyCta": "Suivre l’histoire",
+    "readStory": "Lire l’histoire de Krizaka →"
   },
   "post": {
     "back": "Tous les billets",

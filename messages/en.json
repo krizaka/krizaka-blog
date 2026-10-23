@@ -22,7 +22,8 @@
     "switchLanguage": "Passer en français",
     "languageShort": "FR",
     "menu": "Menu",
-    "skip": "Skip to the content"
+    "skip": "Skip to the content",
+    "story": "The story"
   },
   "footer": {
     "aria": "Footer",
@@ -32,7 +33,9 @@
     "rss": "RSS",
     "atom": "Atom",
     "about": "About",
-    "newsletter": "Newsletter"
+    "newsletter": "Newsletter",
+    "story": "The story",
+    "allPosts": "All posts"
   },
   "home": {
     "eyebrow": "Blog",
@@ -64,7 +67,8 @@
     "seoDescription": "Notes from building sovereign AI in Montréal: local LLMs, Spring AI 2, GPU and video generation costs, prompts. Real runs, measured numbers.",
     "storyTitle": "The Krizaka story",
     "storyLead": "The same posts, in time: a step for each, week after week.",
-    "storyCta": "Follow the story"
+    "storyCta": "Follow the story",
+    "readStory": "Read the Krizaka story →"
   },
   "post": {
     "back": "All posts",

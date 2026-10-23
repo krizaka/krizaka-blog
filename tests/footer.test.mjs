@@ -20,8 +20,8 @@ test("the footer is @krizaka/ui's SiteFooter, not a copy", () => {
 
 test("the root renders it once, after <main>", () => {
   const root = read("app/components/SiteRoot.tsx");
-  assert.equal(root.match(/<SiteFooter \/>/g)?.length, 1);
-  assert.ok(root.indexOf("</main>") < root.indexOf("<SiteFooter />"));
+  assert.equal(root.match(/<SiteFooter\b/g)?.length, 1);
+  assert.ok(root.indexOf("</main>") < root.indexOf("<SiteFooter"));
 });
 
 test("no other file renders a footer", () => {
