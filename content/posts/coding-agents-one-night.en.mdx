@@ -44,7 +44,7 @@ We wrote an action that sets up the workspace before the agent starts: it clones
 
 For the legal review, I asked Orazaka, our own engine, to write the agent's prompt. The plan was good. But it named two repositories that do not exist, government links that do not exist, and a 14-day cancellation rule it attributed to Québec's consumer protection law. It does not come from there.
 
-We corrected it before publishing the issue, and left the raw output as a comment, so anyone can compare. That is exactly the kind of mistake a legal document cannot afford, which is why the agent got a clear instruction: what it cannot verify, it marks « to validate by counsel ».
+We corrected it before publishing the issue, and left the raw output as a comment, so anyone can compare. That is exactly the kind of mistake a legal document cannot afford. And an instruction does not fix the root: a model that cannot check anything does not know it is wrong. The real remedy is for the engine to read the sources itself, and cite them. That is Orazaka's next piece of work.
 
 ## The rules we wrote
 
