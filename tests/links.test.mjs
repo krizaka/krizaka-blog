@@ -89,3 +89,13 @@ test("an XSLT stylesheet is checked but not crawled: its {link} are templates, n
   assert.equal(isPage("http://localhost:3000/feed.xml", "application/rss+xml"), true);
   assert.equal(isPage("http://localhost:3000/posts/a/", "text/html"), true);
 });
+
+/* The bug of 2026-10-23: the mac-app post linked orazaka's apps/desktop/src-tauri/src/scope.rs (404 since the folder scope
+   moved to krizaka-tauri-kit, ADR-005). The CI link check failed on it. No post may point at that removed path. */
+test("no post links to the desktop scope file that moved to krizaka-tauri-kit", () => {
+  const offenders = walk(join(root, "content/posts"))
+    .filter((f) => f.endsWith(".mdx"))
+    .filter((f) => readFileSync(f, "utf8").includes("krizaka/orazaka/blob/main/apps/desktop/src-tauri/src/scope.rs"))
+    .map((f) => f.replace(root, ""));
+  assert.deepEqual(offenders, []);
+});
