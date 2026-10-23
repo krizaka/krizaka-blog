@@ -59,10 +59,17 @@ test("the home points to the story under its lead, in both languages", () => {
   assert.match(home, /localizedPath\(locale, "\/story"\)/);
 });
 
-test("the search covers the chapters and carries the topic filter", () => {
+test("the search covers the chapters and its topics are the box's filter, not links away", () => {
   const search = read("app/components/pages/SearchPage.tsx");
   assert.match(search, /chaptersOf\(locale\)/);
-  assert.match(search, /<TopicFilter locale=\{locale\} \/>/);
+  assert.doesNotMatch(search, /TopicFilter/);
+  assert.match(search, /<SearchBox entries=\{entries\} topics=\{topics\}/);
+});
+
+test("the mobile panel keeps the active state of the centre (« L'histoire » on the story)", () => {
+  const bar = read("app/components/TopBar.tsx");
+  assert.match(bar, /<MobileLink key=\{item\.key\} href=\{item\.href\} active=\{item\.active\}>/);
+  assert.match(bar, /aria-current=\{active \? "page" : undefined\}/);
 });
 
 test("the footer carries the chapters and « All posts »", () => {

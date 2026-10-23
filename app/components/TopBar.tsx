@@ -99,7 +99,7 @@ export default function TopBar({ translated }: { translated: readonly string[] }
 
           <NavBar.Mobile openLabel={b.menu} closeLabel={b.menu} className="max-h-[calc(100dvh-6rem)] gap-1 overflow-y-auto overscroll-contain p-3">
             {centre.map((item) => (
-              <MobileLink key={item.key} href={item.href}>{b.story}</MobileLink>
+              <MobileLink key={item.key} href={item.href} active={item.active}>{b.story}</MobileLink>
             ))}
             <MobileLink href={search}>{b.search}</MobileLink>
             {saved.length > 0 && <MobileLink href={savedHref}>{b.saved}</MobileLink>}
@@ -125,7 +125,7 @@ export default function TopBar({ translated }: { translated: readonly string[] }
   );
 }
 
-function MobileLink({ href, external, children }: { href: string; external?: boolean; children: string }) {
-  const cls = "flex min-h-11 items-center rounded-xl px-3 font-display text-[15px] font-semibold text-fg no-underline hover:bg-surface-2";
-  return external ? <a href={href} className={cls}>{children}</a> : <Link href={href} className={cls}>{children}</Link>;
+function MobileLink({ href, external, active, children }: { href: string; external?: boolean; active?: boolean; children: string }) {
+  const cls = `flex min-h-11 items-center rounded-xl px-3 font-display text-[15px] font-semibold text-fg no-underline hover:bg-surface-2 ${active ? "bg-accent-soft" : ""}`;
+  return external ? <a href={href} className={cls}>{children}</a> : <Link href={href} className={cls} aria-current={active ? "page" : undefined}>{children}</Link>;
 }
