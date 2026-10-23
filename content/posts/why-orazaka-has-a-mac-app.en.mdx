@@ -30,7 +30,7 @@ The app is called Orazaka Desktop. Its [README](https://github.com/krizaka/oraza
 
 Folders are chosen with the system's native picker. The app lists and previews files (text, images, PDF), accepts drag and drop, and can watch a folder for new files. You can revoke one folder, or all of them.
 
-The limit is in the Rust code ([`scope.rs`](https://github.com/krizaka/krizaka-tauri-kit/blob/main/src/scope.rs)). The app only reads a path if its canonical form is inside a granted folder. A `..` or a symbolic link that leaves the folder is refused. And some folders can never be granted: your home folder itself, the root, the volumes, the system folders, `~/.ssh`, `~/.aws`.
+The limit is in the Rust code ([`scope.rs`](https://github.com/krizaka/orazaka/blob/5d8704b0af6e751cb56aedbc0b07f6c68a379714/apps/desktop/src-tauri/src/scope.rs)). The app only reads a path if its canonical form is inside a granted folder. A `..` or a symbolic link that leaves the folder is refused. And some folders can never be granted: your home folder itself, the root, the volumes, the system folders, `~/.ssh`, `~/.aws`.
 
 The web part of the window has no permission on the file system. The control panel has only Tauri's base capability, no `fs`, no `shell`, no `opener`, and the Orazaka page that opens inside the app has no capability at all, so it cannot talk to the app. The interface cannot launch a shell either: it names a command from a short list (`version`, `status`, `start`, `stop`, `doctor`, `logs`) and the Rust turns it into fixed arguments. I told the other side of this in [the post about an agent on the user's machine](/posts/running-an-agent-on-the-users-machine/).
 

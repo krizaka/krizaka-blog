@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import matter from "gray-matter";
 
 /* The 308s of .do/app.yaml (ingress rules): a post merged into another keeps its address. Every source is a post that no
@@ -42,4 +42,19 @@ test("the spec carries the captcha site key (public by design), never the secret
 test("the live-spec check is documented: `krizaka-deploy drift` (krizaka/.github) must report no difference", () => {
   const readme = readFileSync(new URL("../AGENTS.md", import.meta.url), "utf8");
   assert.match(readme, /krizaka-deploy drift/);
+});
+
+test("App Platform allows 10 ingress rules: the redirects leave room for /api and the site", () => {
+  const all = [...spec.matchAll(/^\s+- match:/gm)];
+  assert.ok(all.length <= 10, `${all.length} ingress rules`);
+});
+
+test("a redirected address is not a post any more: no post file, and no post links it", () => {
+  const gone = rules.map(([, from]) => from.replace(/^\/(fr\/)?posts\//, ""));
+  const files = readdirSync(new URL("../content/posts/", import.meta.url));
+  for (const slug of gone) assert.ok(!files.some((f) => f.startsWith(`${slug}.`)), `${slug} has no post file left`);
+  for (const f of files) {
+    const body = readFileSync(new URL(`../content/posts/${f}`, import.meta.url), "utf8");
+    for (const slug of gone) assert.ok(!body.includes(`/posts/${slug}`), `${f} still links /posts/${slug}`);
+  }
 });

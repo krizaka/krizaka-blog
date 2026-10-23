@@ -74,6 +74,7 @@
   diagram stays inside its post; a cover is an evocative still or a short clip. A clip cover shows its poster first and plays
   its muted loop only on hover (or, on a touch screen, while well in view after the page loaded), never under reduced motion
   or Save-Data (`CardLoop`).
+- **The Krizaka story** (`/story/`, EN and FR; linked from the home and the series): the posts in time, read from their front matter by `lib/story.ts` (weeks, oldest first; a post's thread is its series; the step's line is the post's own `description`). Nothing is typed: a new post appears by itself. Built from `@krizaka/ui` blocks only (`Landscape`, `SpecimenTag`, `Stepper`, `PageIndex`, `Footnotes`); a missing block is an issue in krizaka-ui. Tested in `tests/story.test.mjs`.
 - **Questions sections answer search engines too**: a post's h2 « Questions fréquentes » / « Frequently asked questions »
   (or « FAQ ») turns its h3s and their text into FAQPage JSON-LD (`faqOf` in `lib/reading.ts`).
 - Every user-facing string of the site is in `messages/{en,fr}.json` (`krizaka-i18n check`). No `locale === "fr" ?`.
@@ -141,3 +142,19 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Before you open or update a pull request (coding agents)
+
+These are the defects code review found most often on 2026-10-23. Check them yourself before you open or update a pull request:
+1. **Checks:** run the repository's full check (lint, typecheck, tests, build) and fix it. Never push a red check.
+2. **Concurrency:** any « count then insert » or « check then write » runs in one transaction with a lock, and has a concurrency test.
+3. **One gate:** a rule (limit, permission, validation) is enforced in the service, so no route can skip it. Test every route.
+4. **Errors:** a cleanup (ROLLBACK, DROP, close) never masks the original error. Rethrow it, or throw an `AggregateError` with the original first.
+5. **Validation:** validate the original input, never a truncated or pre-trimmed copy. Server and client reject the same inputs.
+6. **Accessibility:**
+   - every control has a unique label, and FR/EN pairs say their language;
+   - focus rings are never clipped by `overflow`;
+   - text never overflows its box at 360 px.
+7. **Naming:** environment variables follow `<CONTEXT>_<THING>` (`APP_`, `DATABASE_`, `AUTH_`, `MEDIA_`, `MAIL_`, `PAYMENTS_`, `AI_`…) and are declared once.
+8. **Words:** every user-facing string is in the FR and EN messages, and no colour is hard-coded.
+9. **Review threads:** answer every one. Fix it test-first, or reply with the reason, then resolve it.

@@ -298,3 +298,12 @@ picture { display: contents; }
 .bl-chapter-stats .bl-num a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 .bl-continue .kzs-prompt { margin-inline: auto; max-width: 40rem; }
 .bl-continue-title { font-weight: 600; }
+/* ═══ The Krizaka story (/story/): the posts in time ═══ */
+.bl-story-intro { display: grid; gap: 2rem; align-items: start; }
+@media (min-width: 64rem) { .bl-story-intro { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); } }
+.bl-story-period { position: relative; display: flex; align-items: flex-end; min-height: 11rem; margin-bottom: 1.5rem; overflow: hidden; }
+.bl-story-period .bl-story-landscape { position: absolute; inset: 0; height: 100%; }
+.bl-story-period .bl-story-tag { position: relative; margin-inline-start: 1rem; }
+.bl-story-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); gap: 1rem; margin-top: 2rem; }
+.bl-story-step { scroll-margin-top: var(--kz-anchor-offset, 96px); }
+.bl-story-link { margin-top: 2rem; color: var(--kz-text-secondary); } .bl-story-link a { color: var(--kz-accent-text); text-decoration: underline; text-underline-offset: 3px; }

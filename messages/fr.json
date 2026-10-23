@@ -61,7 +61,10 @@
     "filterLabel": "Filtrer par sujet",
     "allTopics": "Tous les billets",
     "seoTitle": "Blogue Krizaka — IA souveraine, LLM locaux, coûts mesurés",
-    "seoDescription": "Notes de construction d'une IA souveraine à Montréal : LLM locaux, Spring AI 2, coûts des GPU et de la vidéo, prompts. Des chiffres mesurés."
+    "seoDescription": "Notes de construction d'une IA souveraine à Montréal : LLM locaux, Spring AI 2, coûts des GPU et de la vidéo, prompts. Des chiffres mesurés.",
+    "storyTitle": "L’histoire de Krizaka",
+    "storyLead": "Les mêmes billets, dans le temps : une étape pour chacun, semaine après semaine.",
+    "storyCta": "Suivre l’histoire"
   },
   "post": {
     "back": "Tous les billets",
@@ -303,7 +306,8 @@
       "measured": "Coûts, durées et résultats tirés de vrais runs, avec les enregistrements pour les vérifier. Ce que nous n'avons pas mesuré est dit.",
       "building-krizaka": "Ce qui entoure le code d'une petite entreprise de logiciels, l'argent et le droit d'abord. Raconté au fil de l'eau, avec ce qui n'est pas encore décidé.",
       "basics": "Les mots de l'IA, un à la fois, avec une image simple et ce qui tourne vraiment chez nous."
-    }
+    },
+    "story": "Ou les suivre tous dans le temps : l’histoire de Krizaka"
   },
   "calc": {
     "title": "Quand un GPU loué bat-il le prix hébergé ?",
@@ -409,5 +413,33 @@
     "atom": "La version Atom du flux",
     "latest": "Derniers billets",
     "reader": "Qu'est-ce qu'un lecteur de flux ?"
+  },
+  "story": {
+    "title": "L’histoire de Krizaka",
+    "lead": "Le chemin de l’entreprise raconté par ses billets : une étape pour chacun, avec son image et sa première ligne, groupées par semaine et par fil.",
+    "label": "Les étapes de l’histoire",
+    "indexLabel": "Les périodes de l’histoire",
+    "threads": "Les fils",
+    "threadCount": "{count} étapes",
+    "noThread": "Billets isolés",
+    "week": "Semaine du {start}",
+    "period": "Du {start} au {end}",
+    "read": "Lire le billet",
+    "published": "Publié",
+    "statuses": {
+      "done": "Publié",
+      "current": "Dernier",
+      "upcoming": "À venir",
+      "error": "Échec"
+    },
+    "stepCount": "{count} étapes",
+    "sourcesLabel": "Sources",
+    "backLabel": "Retour au texte",
+    "sources": [
+      "Chaque étape est un billet : sa date, sa série, sa couverture et sa première ligne sont les siennes, lues dans son en-tête.",
+      "Un nouveau billet rejoint l’histoire tout seul, dans sa semaine."
+    ],
+    "back": "L’histoire de Krizaka",
+    "empty": "Aucun billet n’est encore publié."
   }
 }
