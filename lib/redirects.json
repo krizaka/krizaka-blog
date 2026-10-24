@@ -38,5 +38,41 @@
   "how-we-generate-cinematic-videos-with-ai": {
     "en": "/story/from-a-clip-to-a-film/#what-i-saw-and-heard",
     "fr": "/fr/story/from-a-clip-to-a-film/#ce-que-jai-vu-et-entendu"
+  },
+  "krizaka-ui-one-kit-three-platforms": {
+    "en": "/story/one-interface-everywhere/",
+    "fr": "/fr/story/one-interface-everywhere/"
+  },
+  "getting-out-of-the-ai-look-in-ui-design": {
+    "en": "/story/one-interface-everywhere/#count-first-judge-later",
+    "fr": "/fr/story/one-interface-everywhere/#dabord-compter-ensuite-juger"
+  },
+  "krizaka-motion-our-animation-lab": {
+    "en": "/story/one-interface-everywhere/#the-bug-that-taught-us-to-test",
+    "fr": "/fr/story/one-interface-everywhere/#le-bug-qui-nous-a-appris-à-tester"
+  },
+  "why-orazaka-has-a-mac-app": {
+    "en": "/story/one-interface-everywhere/#why-orazaka-has-a-mac-app",
+    "fr": "/fr/story/one-interface-everywhere/#pourquoi-orazaka-a-une-app-mac"
+  },
+  "one-interface-web-mac-android": {
+    "en": "/story/one-interface-everywhere/#the-same-interface-not-the-same-layout",
+    "fr": "/fr/story/one-interface-everywhere/#la-même-interface-pas-la-même-mise-en-page"
+  },
+  "how-we-build-yomizaka": {
+    "en": "/story/the-first-products/",
+    "fr": "/fr/story/the-first-products/"
+  },
+  "plugging-a-product-into-an-ai-engine": {
+    "en": "/story/the-first-products/#a-product-never-talks-to-a-model",
+    "fr": "/fr/story/the-first-products/#un-produit-ne-parle-jamais-à-un-modèle"
+  },
+  "yomizaka-where-we-are": {
+    "en": "/story/the-first-products/#a-whole-building-in-one-upload",
+    "fr": "/fr/story/the-first-products/#tout-un-immeuble-en-un-seul-dépôt"
+  },
+  "krizaka-books-on-akinaza-contracts-on-yomizaka": {
+    "en": "/story/the-first-products/#our-books-on-akinaza-our-contracts-on-yomizaka",
+    "fr": "/fr/story/the-first-products/#nos-livres-sur-akinaza-nos-contrats-sur-yomizaka"
   }
 }

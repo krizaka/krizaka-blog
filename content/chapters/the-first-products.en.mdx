@@ -1,0 +1,166 @@
+---
+title: "The first products: Yomizaka and Akinaza"
+description: "What Yomizaka reads today and how a rule is written, a whole building in one upload, and our own invoice refused by our own tool. Demonstration data."
+seoDescription: "Yomizaka and Akinaza: how a rule cites its article, what a batch of leases changes, and the invoice our own tool refused."
+date: 2026-10-23
+publishedAt: "2026-10-23T14:00:00-04:00"
+tags: [yomizaka, documents, law]
+author: oussama
+draft: false
+cover: yomizaka-cafe-table
+coverAlt: "A small round marble table near a large window in the rain, in Montréal: two cups of coffee, a phone lying flat and a few sheets of a lease, behind the glass brick houses and an outside iron staircase"
+chapter: 6
+period: "2026-10-17/2026-10-23"
+sources:
+  - how-we-build-yomizaka
+  - yomizaka-where-we-are
+  - krizaka-books-on-akinaza-contracts-on-yomizaka
+  - plugging-a-product-into-an-ai-engine
+versus:
+  faced: "a pay stub we could not read"
+  built: "a rule that cites its article"
+stats:
+  - value: "3 of 9"
+    label: "blocking issues, across the rules of one lease"
+    section: "A pay stub on a phone"
+  - value: "8 of 8"
+    label: "rules passed by our invoice"
+    section: "Our books on Akinaza, our contracts on Yomizaka"
+  - value: "4"
+    label: "seconds, about, for one check run on dev"
+    section: "A product never talks to a model"
+---
+
+A few weeks ago, I was in a café with a friend who manages buildings in Montréal. He took out his phone, turned the screen toward me and showed me a pay stub in PDF. A candidate for a four-and-a-half had sent it to him the night before.
+
+« Do you see anything? »
+
+I did not see anything. The logo was clean, the amounts added up, the deductions looked like Québec's. He did not see anything either, and that is exactly what bothered him. He gets dozens of them a month. He looks at them by eye, he forwards them by e-mail to the owner with the ID and the rest, and he hopes.
+
+Then he scrolled. The next stub was not even a PDF: it was a photo, taken at an angle on a kitchen table, with a folded corner.
+
+It is not a question of goodwill. It is a question of tools. Nobody ever gave him anything other than his eyes and an e-mail inbox. That is exactly where Yomizaka wants to go.
+
+## A pay stub on a phone
+
+The idea fits in one sentence: read before you sign. You upload a lease, a contract or an invoice, and Yomizaka reads it against the rules in force. For each finding, it shows you the exact line of the document it relies on.
+
+<Figure id="yomizaka-home" alt="Yomizaka's home page in the dark theme: the title « Lisez avant de signer. », a sign-in button, a note that sign-up is closed during trials on real Québec leases, then three columns: the exact line behind every finding, the PDF itself examined, everything found again in a second" caption="The home page as it is online today. Sign-up is closed during our trials." />
+
+Take a real test lease. When it arrives, Yomizaka first recognises what it is: a residential lease, with its dates, its rent, its deposit and its language. It also finds the personal information it contains and offers you a redacted version. The document is kept in Canada, encrypted, until you delete it.
+
+<Figure id="yomizaka-lease-info" alt="A lease's page in Yomizaka: a residential lease recognised with high confidence, effective 1 July 2026, rent and deposit of $1,450, in French, two pages; a box flags one address detected and offers a redacted version; below, the document is kept in Canada, encrypted, with a button to delete it" caption="A test lease as Yomizaka reads it. The $1,450 deposit is a clue: in Québec, a landlord cannot require one." />
+
+Then comes the check. The text is read rule by rule, against the Civil Code of Québec and the regulation on the mandatory lease form, as they apply on a given date. On that lease, on 17 October, 3 blocking issues came out of 9 rules: a security deposit, post-dated cheques and a clause forbidding children. All three are forbidden by the Civil Code, and each came back with its article and the exact sentence of the lease.
+
+<Figure id="yomizaka-lease-run" alt="The result of a check in Yomizaka: the steps reading, pre-check, rules check and report, all done; the Orazaka run id, the compliance-check Studio version 1.2.0, the qc-residential-lease rules; a warning that the Québec corpus must be reviewed by a lawyer; then 3 blocking issues out of 9 rules, each with its source in the Civil Code and the quoted passage of the lease" caption="Every finding gives its rule, the article of law, the exact passage of the lease and the id of the run that produced it." />
+
+The yellow box is deliberate. The Québec corpus has not yet been reviewed by a lawyer, and the screen says so. Until that is done, it is a triage, not a legal opinion.
+
+There is also the examination of the file itself, the one that would have helped my friend at the café. Yomizaka looks at which software produced the PDF, on which dates, how many times it was re-saved, which fonts it uses. It gives signals on three levels: observed, unusual, inconsistent. Never a « fake » stamp. A PDF passed through an editor is not necessarily a forgery, and I do not want a tool to decide in a person's place.
+
+## How a rule is written
+
+The least visible part is the most important. A rule is never written from memory. We start from the text of the law, we cite the article, and if we cannot read the source, the rule waits.
+
+In practice, a rule is data, not code. Here is the one from the repository, as it is stored in the Orazaka pack. I have shortened the pattern: the real one takes a whole line, because it recognises « security deposit », « one month's rent as a guarantee » or a percentage, and it ignores « no deposit ».
+
+```json
+{
+  "ruleId": "QC-LEASE-004",
+  "title": "Dépôt de garantie interdit — seul le premier mois peut être exigé d'avance",
+  "severity": "BLOCKING",
+  "method": "DETERMINISTIC",
+  "citation": "C.c.Q., art. 1904, al. 1",
+  "check": {
+    "type": "FORBIDDEN_PATTERN",
+    "pattern": "(?i)(?<!aucun )(?<!sans )d[ée]p[ôo]ts?\\s+(?:de\\s+)?(?:garantie|s[ée]curit[ée])…"
+  },
+  "onPass": "Aucun dépôt de garantie n'est exigé."
+}
+```
+
+`DETERMINISTIC` means that no model judges this rule: a pattern finds it or does not, and the result is reproducible. The model is there to read and summarise, not to invent the law. Each rule comes with two examples written from the requirement: a lease that meets it, and a lease that does not. Then a real passage from a test lease serves as the acceptance test. It was that passage, on 17 October, that caught the deposit.
+
+The whole rule set carries its date, its revision and its review status:
+
+```json
+{ "rulesetId": "qc-residential-lease", "version": "2024-02-21", "revision": 2, "reviewStatus": "TO_REVIEW_BY_LAWYER" }
+```
+
+It is this `reviewStatus` that makes the yellow box appear. The day a lawyer has reviewed it, the data changes, and so does the screen.
+
+It is slower than asking a model to « read the lease and say what is wrong ». But an answer that does not cite its source is one I cannot defend in front of someone signing a twelve-month lease.
+
+## A product never talks to a model
+
+There is no call to an AI model anywhere in Yomizaka's code. Not one. Yet Yomizaka reads a lease and tells you which clauses are a problem. That is not an oversight: it is the rule I set myself from the start. A product never talks to a model. It talks to an engine, and the engine, [Orazaka](https://dev.orazaka.com), chooses the model.
+
+The reasons are simple. A model costs money, and someone has to keep track of it. A model changes: today's will not be the one of six months from now, and I do not want to reopen five products for that. A tenant's document must not go just anywhere. And when someone asks « what really ran? », there must be a written answer.
+
+From the product to the engine, it is an ordinary HTTPS call. Yomizaka sends the engine the text of the lease, the jurisdiction and a date, « the rules in force on ». That date matters: replaying a run with the same date replays the same rules, and a lease signed in 2025 is judged with the 2025 rules. The call carries a service key, specific to the product. A revoked key stops working at once.
+
+From the engine to the product, the answer comes straight back with a run identifier and a status. The product keeps that identifier, shows it on screen, then asks again until the run is finished. On dev, a check run on a lease, recorded on our site, took about 4 seconds: three steps, only one of which calls a model. What comes back is read with care. The product checks the shape of the report against a schema, and a shape it does not recognise becomes « nothing », never a guess.
+
+Yomizaka never calls a model itself: Orazaka, our engine, does the analysis, and each analysis keeps what ran, in which version, on which rules. Every run has an identifier, a state per step with its number of attempts, and the Studio version. Yomizaka's screen shows the identifier. If someone challenges a finding in six months, we can find exactly where it came from.
+
+I learned the hardest lesson at my own expense. The compliance check had a judgement step per model, set to continue if the model fell over, so that a report would stay almost entirely computed by rules. The flaw: a deliberate refusal by the model looked exactly like an outage, and was swallowed into a report the user would believe was complete. Since then, a failure says why ([ADR-053](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-053-typed-failure-cause.md)), and the billing rule fits in one sentence: we bill the work done well, never our own failure. An outage of the engine gives the credits back.
+
+## A whole building in one upload
+
+A pay stub is one document. A building manager does not check one document, he checks a hundred. In Québec, many leases renew on 1 July, and when you manage a few hundred doors, you do not want to submit them one at a time. That is where Yomizaka changes scale.
+
+**A batch is a CSV and some files.** We kept the tool everyone already has: a spreadsheet. One line per document, three columns. The file name, the check to run, and a reference of your own (the unit, the file). The column names in French work too, and a template can be downloaded from the page.
+
+```csv
+fichier,vérification,référence
+bail-4512-st-denis.pdf,conformité,4512-3
+bail-4514-st-denis.pdf,conformité,4514-1
+talon-candidat-17.pdf,authenticité,dossier-17
+```
+
+You drop the CSV and the documents together, in one move. Before anything runs, Yomizaka shows a preview line by line: what will be checked, what will be reused from a check already done, and what is refused, with the reason. A file named in the CSV but not uploaded, a check that does not exist, a duplicate line. And the cost, in audits, before you click. If the account cannot pay for all of it, the screen says so before, not in the middle.
+
+Once started, the batch moves on its own, a few documents at a time. A line that fails never stops the others. If the account runs out of credits in flight, the remaining lines pause with the reason, instead of failing one by one. At the end, the result is exported as CSV, one line per line of the starting file, with what each one became. The administrator sets the limits: whether batches are open, how many lines at most (two hundred today), how many checks at the same time.
+
+**What we do not charge twice.** In a batch of a hundred leases there are always duplicates: the same PDF sent twice, a lease already checked last month. Orazaka's engine can now recognise an identical file by its fingerprint, for the same version of the check, and return the result already computed, without calling a model and without taking an audit. And if a check fails on our side, the free audit or the credit is returned, once. We learned it the hard way: a test account had its audit used up by a run that had failed. That no longer happens.
+
+**Word, and where a photo comes from.** Many leases and contracts arrive as Word files, not PDFs. Yomizaka now accepts `.docx` files: the text is used for the check, and the file itself goes through the authenticity examination, like a PDF. For photos of documents, the examination now shows where the image comes from: the declared device and software, the date the picture was taken and the date of the last change, and whether a GPS position was removed. Still as signals on three levels, never as a verdict. A photo cropped on a phone is not a forgery.
+
+## Our books on Akinaza, our contracts on Yomizaka
+
+Before offering a tool to people who have real clients and real deadlines, I wanted to ask it a simple question: would we, Krizaka, use it? Not in a demo. For our own invoices and our own contracts.
+
+First, a word of honesty. Everything you see in this chapter is demonstration: fictional clients, plausible amounts, a development environment. The document templates are Krizaka's, but we removed everything that identifies the company before sending them anywhere: no business number, no address, no bank details.
+
+**The books, in Akinaza.** Krizaka is a small software studio in Montréal. It mostly sells hours, and a few packages. Éric, who runs it in our demo, wanted one place for three things: the services he bills, invoices his clients read in French or English, and the sales tax return prepared without a spreadsheet.
+
+<Clip id="akinaza-books-en" alt="In Akinaza, a studio's list of invoices: each card gives the demo client, the document's language, the date, the due date, the subtotal, the two taxes and the total" caption="The studio's invoices in Akinaza. Screen recording on our development environment, demonstration data." />
+
+Each service has a name in both languages, a price and a tax category. An invoice is produced from these services, in the client's language, with the taxes calculated once on the taxable total, to the cent. It carries the supplier's tax numbers and its payment terms with the due date: what a buyer needs to claim their credits.
+
+Each invoice records its taxes in the books in the same step, and the database refuses an unbalanced entry. I care about that rule more than any other feature: a book that does not balance is not a book. The period's return is prepared from these books, line by line, with the documents behind each figure. Prepared, never filed: Éric reviews it and files it himself. Akinaza sends nothing to anyone. That is a choice, not an oversight.
+
+**Contracts and invoices, in Yomizaka.** Before Krizaka became Akinaza's first customer, its invoice and services contract templates went through Yomizaka. Here is the video of the run, sped up where there is waiting.
+
+<Clip id="yomizaka-review-en" alt="In Yomizaka, a services contract dropped on the left and, on the right, the report: four rules evaluated, no blocking failure, each rule with its article of law and the run's identifier" caption="Krizaka's services contract checked in Yomizaka. Screen recording, redacted copy, development environment." />
+
+The invoice: 8 rules out of 8, each with the passage of the text that justifies it and the article of law behind it: the date, the tax numbers, the total, the taxes, the payment terms. The contract: 4 rules out of 4, on late-payment interest, copyright, moral rights and the signature. The report itself says what it does not cover: the Civil Code of Québec, to be reviewed by a lawyer. Each check is a traced Orazaka run, the engine working behind. Its identifier is on screen, so that it can be found again.
+
+**What the failures taught us.** This is the part that helped me most, and it is not flattering. The first attempt, run directly on the engine with the raw text of the invoice, failed two rules: the total and the taxes. Yet both lines were there. The engine did not find them when an amount was separated from its label by a long run of spaces, or when a bracketed calculation came in between. It was not a mistake in the invoice, it was a limit of the checker. In Yomizaka, which normalises spaces, the same model passes 8 out of 8. We opened [a ticket on the rules side](https://github.com/krizaka/orazaka-packs/issues/81), and it is now closed.
+
+The second was the opposite. We ran an invoice produced by Akinaza itself through Yomizaka. It failed: the payment terms were missing. A billing product whose own invoice is refused by another of our products is humbling, and that is exactly why we close the loop. The [ticket](https://github.com/krizaka/akinaza/issues/113) is closed: the invoice now carries its due date and its terms.
+
+As for the contract, it passes 4 out of 4 for a reason that bothers me a little: it grants no right, so there is nothing to object to. Silence passes. What no rule reads, for example a late-payment interest rate stated in two different ways between the contract and the invoice, I found by re-reading, and I noted it for the person who has to decide. Yomizaka helps, it does not replace a lawyer. It says so on every screen.
+
+Moving from one tool to the other is manual today: we print the verified text from Akinaza. An import through the API, which would turn a model verified in Yomizaka into an Akinaza template, is [proposed](https://github.com/krizaka/akinaza/issues/115), not built.
+
+## Where we are
+
+I will be honest about the state of things. The batches run, with their tests on a real database. The Android app has its first test version, published on 22 October, and iOS follows with the same code. A Mac app is on its way for people who manage their files from the desk. The API keys exist: a property manager will be able to connect Yomizaka to their own software. The public API that goes with it, to run a check or a batch with a key, is in preparation.
+
+There are also things we will not do until a lawyer tells us it is allowed. Criminal record checks for a dwelling are one of them. They stay closed. The Québec rule set still awaits a lawyer's review, and the screen keeps saying so.
+
+I cannot say in how many weeks all of this will be ready. I do know the order to do it in: what protects people first, what saves time afterwards. Photos and the candidate file first, because that is where forgeries and leaks are. Deadlines next. Each piece ships when it runs on real documents, with its trace. We are starting to prepare a real demo for building managers: not an edited video, a real batch, real test documents, and the screens as they are.
+
+If you manage buildings and have, like me, already looked at a PDF or a photo and wondered whether it was real, I would love to know how you do it today. Yomizaka is at [yomizaka.com](https://www.yomizaka.com).

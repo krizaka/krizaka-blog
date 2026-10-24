@@ -17,8 +17,8 @@ test("the story's chapters follow the rules: a post's, plus chapter, period, sou
   assert.ok(files.length >= 4);
 });
 
-test("chapters 1 and 2 exist in FR and EN, with the same number, period and sources", () => {
-  for (const [slug, n] of [["why-krizaka", 1], ["an-engine-on-a-laptop", 2]]) {
+test("chapters 1, 2, 5 and 6 exist in FR and EN, with the same number, period and sources", () => {
+  for (const [slug, n] of [["why-krizaka", 1], ["an-engine-on-a-laptop", 2], ["one-interface-everywhere", 5], ["the-first-products", 6]]) {
     const fr = read(`${slug}.fr.mdx`).data;
     const en = read(`${slug}.en.mdx`).data;
     assert.equal(fr.chapter, n, slug);

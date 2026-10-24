@@ -58,3 +58,19 @@ test("on a post, « Subscribe » goes to the e-mail form and the feed is a secon
   assert.match(form, /id="subscribe"/);
   assert.match(page, /<NewsletterSection locale=\{locale\} where="post" \/>/);
 });
+
+/* The feeds list the chapters of the story and the posts that remain, each at its own address (lib/feeds.ts feedEntriesOf).
+   A retired post is not a post any more, so it is in neither. */
+test("the four feed routes read feedEntriesOf: the chapters and the remaining posts, at their own addresses", () => {
+  const routes = {
+    "app/(en)/feed.xml/route.ts": /rss\("en", feedEntriesOf\("en"\)\)/,
+    "app/(en)/atom.xml/route.ts": /atom\("en", feedEntriesOf\("en"\)\)/,
+    "app/fr/feed.xml/route.ts": /rss\("fr", feedEntriesOf\("fr"\)\)/,
+    "app/fr/atom.xml/route.ts": /atom\("fr", feedEntriesOf\("fr"\)\)/,
+  };
+  for (const [f, re] of Object.entries(routes)) assert.match(read(f), re, f);
+  const feeds = read("lib/feeds.ts");
+  assert.match(feeds, /\.\.\.chaptersOf\(locale\)\.map\(\(item\) => \(\{ item, path: chapterPath\(item\.slug\) \}\)\)/);
+  assert.match(feeds, /\.\.\.postsOf\(locale\)\.map\(\(item\) => \(\{ item, path: postPath\(item\.slug\) \}\)\)/);
+  assert.equal((feeds.match(/absoluteUrl\(locale, path\)/g) ?? []).length, 2, "the RSS item and the Atom entry link to the entry's own path");
+});
