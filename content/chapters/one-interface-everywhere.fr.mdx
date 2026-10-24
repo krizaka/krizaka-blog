@@ -1,0 +1,176 @@
+---
+title: "Une seule interface, du web au Mac"
+description: "Un kit pour le web, le téléphone et le Mac : ce qu'une correction partagée rapporte, le look « IA » mesuré avant d'être corrigé, le bug que personne n'avait vu, et pourquoi Orazaka a une app Mac."
+seoDescription: "Un kit d'interface pour le web, le mobile et le Mac : ce qu'il rapporte, le look « IA » mesuré puis corrigé, et pourquoi Orazaka a une app Mac."
+date: 2026-10-23
+publishedAt: "2026-10-23T13:00:00-04:00"
+tags: [ui, orazaka]
+author: oussama
+draft: false
+cover: cahier-cover
+coverAlt: "Sur un bureau en noyer, un cahier d'écolier ouvert à la grille Seyès bleue et à la marge rouge : à gauche l'esquisse d'une page web barrée d'un trait d'encre, à droite la planche dessinée d'un petit oiseau avec ses légendes, une plume et un encrier"
+chapter: 5
+period: "2026-10-17/2026-10-21"
+sources:
+  - krizaka-ui-one-kit-three-platforms
+  - getting-out-of-the-ai-look-in-ui-design
+  - krizaka-motion-our-animation-lab
+  - why-orazaka-has-a-mac-app
+  - one-interface-web-mac-android
+versus:
+  faced: "un look « IA » qu'on ne voyait pas"
+  built: "un seul kit pour trois plateformes"
+stats:
+  - value: "156"
+    label: "composants pour le web, le 17 octobre"
+    section: "Un kit, trois plateformes"
+  - value: "22"
+    label: "trous à combler côté mobile"
+    section: "Un kit, trois plateformes"
+  - value: "48"
+    label: "versions de @krizaka/ui depuis le 8 octobre"
+    section: "Un kit, trois plateformes"
+---
+
+Vendredi soir, une barre d'onglets d'Orochia, notre plateforme vidéo pour créateurs, affichait un petit ascenseur vertical à droite. Un pixel de trop, à cause de l'anneau de focus. Un détail. Mais le même motif se retrouvait dans la navigation des réglages, dans une rangée de vidéos courtes, dans un sélecteur de dates et dans la table des matières des pages de lecture.
+
+La correction a été faite une fois, dans le kit ([krizaka-ui#295](https://github.com/krizaka/krizaka-ui/pull/295)), avec des tests qui échouaient avant. Ensuite, chaque application l'a reçue en montant de version. C'est ça, l'idée d'un kit partagé.
+
+## Un kit, trois plateformes
+
+[Krizaka UI](https://ui.krizaka.com) est la bibliothèque de composants de tous nos sites et applications. Elle vise trois plateformes : le web (React), le mobile (React Native avec Expo) et le Mac (une fenêtre Tauri, qui affiche les composants web tels quels, avec quelques formes propres au bureau).
+
+<Figure id="kit-platforms" alt="Schéma : un seul kit, Krizaka UI, alimente trois plateformes ; le web compte 156 composants, le mobile 79 et le Mac 112, au 17 octobre 2026" />
+
+Le 17 octobre, la page des plateformes compte 156 composants sur le web, 79 sur le mobile et 112 sur le Mac. La veille, c'était 151, 76 et 107. Ça bouge vite, et c'est voulu.
+
+La règle qui compte le plus n'est pas un composant, c'est une décision : chaque composant doit dire, pour chaque plateforme, s'il y existe, s'il reste à faire (avec un ticket), ou s'il n'a pas de sens là (et quoi utiliser à la place). Un nouveau composant sans cette décision fait échouer les tests ([krizaka-ui#283](https://github.com/krizaka/krizaka-ui/issues/283)). Côté mobile, il reste 22 trous à combler. Je préfère les voir écrits que les découvrir dans une app.
+
+Réutiliser un composant, ce n'est pas copier son code d'une plateforme à l'autre. C'est garder la même interface : le même nom, les mêmes variantes, les mêmes couleurs tirées des mêmes jetons de design. Sur le web :
+
+```tsx
+import { Button } from "@krizaka/ui/button";
+
+<Button variant="primary">Continuer</Button>;
+```
+
+Et sur le mobile :
+
+```tsx
+import { Button } from "@krizaka/ui/native";
+
+<Button variant="primary" label="Continuer" />;
+```
+
+Vous voyez la petite différence : le texte passe par `label` sur le mobile. Ce n'est pas parfait, et je le dis. Mais une personne qui connaît le bouton du web sait déjà utiliser celui du mobile.
+
+**Ce que ça rapporte.** Une correction faite une fois. Sur la page d'accueil de krizaka.com, les cartes d'une même rangée n'alignaient pas leurs liens quand les phrases avaient des longueurs différentes. On a corrigé la carte dans le kit ([krizaka-ui#187](https://github.com/krizaka/krizaka-ui/pull/187)), avec un test qui mesure la rangée dans un vrai navigateur. Toutes les grilles de cartes de tous les sites en ont profité.
+
+**Ce que ça coûte.** Le kit a lui aussi un prix, et je préfère le dire. Il faut publier, puis faire monter chaque application. `@krizaka/ui` a connu 48 versions publiées depuis sa création le 8 octobre. Le 17 octobre, 22 fichiers `package.json` de nos dépôts en dépendaient, et 8 avaient au moins une version mineure de retard. Un correctif dans le kit n'est pas encore un correctif dans l'app.
+
+La parité native. 22 trous, c'est 22 endroits où une app mobile doit attendre, ou faire autrement. Et il y a des différences de contrat, comme le `label` du bouton, qu'on paiera tôt ou tard.
+
+## D'abord compter, ensuite juger
+
+Le 20 octobre, j'ai montré Krizaka UI à des développeurs de mon entourage. Leur verdict est tombé vite : « Ça fait trop IA. C'est comme tous les projets générés par Claude : le même gabarit, la même façon de faire, le même résultat au premier coup d'œil. »
+
+Ça m'a piqué, parce que c'était juste. Le kit a été écrit avec un assistant, et il en portait la signature. Chaque détail pris seul était défendable. Ensemble, ils formaient un décor qu'on a déjà vu cent fois.
+
+Le même jour, un peu plus tôt, j'avais fait retirer trois choses qui m'agaçaient : les boutons à coins coupés, le bleu et les survols. Ces trois retouches venaient de mon propre regard. Le verdict de ces développeurs est arrivé après, et il disait autre chose : le problème n'était pas là. Avant de toucher à quoi que ce soit d'autre, j'ai demandé un audit, mesuré dans un vrai navigateur sur les sites en ligne (krizaka.com, ui.krizaka.com, et les sites de deux produits).
+
+<Figure id="audit-before-www" alt="La page d'accueil de krizaka.com avant la refonte, en thème sombre : une barre flottante arrondie, une marque centrée, une étiquette en capitales espacées, un titre centré en très gras avec un tiret long, un paragraphe centré, deux boutons, une rangée d'icônes puis quatre grands chiffres" caption="krizaka.com avant, le 20 octobre. Tout y est : le hero centré, l'étiquette en capitales, le tiret long dans le titre, les deux boutons, la rangée de chiffres." />
+
+Voici ce que l'audit a trouvé.
+
+Les polices étaient Inter, Plus Jakarta Sans en graisse 800 et JetBrains Mono : le trio par défaut des gabarits Next.js. Le hero de krizaka.com était centré, avec une étiquette en capitales mono, un titre de 64 px à tiret long, un bouton plein et un bouton fantôme. Une étiquette en capitales mono surmontait 5 titres sur 6 sur krizaka.com, 6 sur 7 sur Orazaka et sur Yomizaka. Une bande de 3 à 4 gros chiffres qui défilent suivait chaque hero.
+
+Il y avait de fausses fenêtres de navigateur, avec leurs trois points et leur barre d'adresse, sur ui.krizaka.com, sur Orazaka et sur Yomizaka. Il y avait des éléments flous : 11 sur krizaka.com, 6 sur la page du bouton, 4 sur l'accueil de ui., 3 sur Yomizaka. Sur la seule page du bouton, 231 éléments avaient exactement le même rayon de 16 px.
+
+L'ordre des sections était celui de toutes les pages SaaS : étiquette, titre, phrase d'introduction, grille de cartes, appel à l'action, FAQ. Les icônes avaient le trait arrondi de 2 px qu'on voit partout. Et les oiseaux de la marque servaient de décoration, alors qu'ils auraient dû structurer quelque chose.
+
+Une remarque que je trouve juste : les mots eux-mêmes étaient précis, et ils sont restés. Le problème n'était pas le texte. C'était l'habillage.
+
+Plutôt que de corriger au hasard, nous avons dessiné trois directions complètes sur les mêmes écrans réels (l'accueil de krizaka.com, la page du bouton de ui., un contrôle de bail de Yomizaka), en clair et en sombre, sur ordinateur et sur téléphone.
+
+<Row>
+<Figure id="dir-cahier" alt="L'accueil de krizaka.com en direction Cahier : papier à la grille Seyès, marge rouge, titre en empattements bleu encre, une planche des cinq oiseaux avec légendes" caption="Cahier : le cahier de terrain." />
+<Figure id="dir-habitat" alt="L'accueil de krizaka.com en direction Habitat : des dalles de béton modulaires aux angles nets, des produits empilés" caption="Habitat : l'architecture modulaire." />
+<Figure id="dir-affiche" alt="L'accueil de krizaka.com en direction Affiche : des aplats de couleur, une typographie qui change de largeur, des oiseaux en autocollants" caption="Affiche : le mur d'affiches." />
+</Row>
+
+**Cahier** : la grille de cahier d'écolier français (la Seyès), une marge rouge où se notent les numéros de section, les oiseaux dessinés comme des planches de naturaliste avec leur promesse en légende. Encre bleue sur papier en clair, craie sur ardoise en sombre.
+
+**Habitat** : l'architecture modulaire de Montréal, des dalles avec une face pleine, sans flou, des produits empilés.
+
+**Affiche** : un mur d'affiches, des aplats de couleur, des titres qui changent de largeur, les oiseaux en autocollants.
+
+J'ai choisi Cahier. La raison tient en une phrase : c'est la seule direction où les oiseaux organisent le système au lieu de l'orner. Ils deviennent les planches et les légendes, et ça, une invite générique ne le produit pas toute seule. Habitat était la plus sûre, mais celle qui risquait le plus de retomber en outil de développeur banal. Affiche était la plus bruyante, difficile à garder calme sur un écran professionnel. Nous gardons de celle-là un tampon pour les grands moments.
+
+**Les coins coupés sont partis.** Sur chaque bouton d'action, nous avions un coin taillé à 45 degrés. Une astuce qui donnait à la commande la plus importante d'une page un air de jeu vidéo. Un seul rayon de 8 px, celui d'un champ de saisie, à la place. Puis, avec Cahier, 2 px sur les contrôles et 0 sur les cartes.
+
+**Le bleu.** L'ancien, `#196df5`, est un bleu électrique saturé : celui de presque tous les produits d'IA. Nous avons dessiné cinq candidats en pastilles, puis sur les vraies pages. Le bleu retenu est un bleu acier, `#3e76a8` en sombre et `#2a5e8d` en clair. Sa teinte (208) est exactement la complémentaire de l'orange d'Orazaka, ce qui a l'avantage d'une règle plutôt que d'un goût. Le contraste du texte blanc dessus est de 4,8 pour 1 en sombre et de 6,7 pour 1 en clair, testé.
+
+<Figure id="steel-before-after" alt="Quatre captures de la page d'accueil de krizaka.com, avant en haut et après en bas : ordinateur sombre, ordinateur clair, téléphone sombre, téléphone clair. Le bleu électrique en haut, le bleu acier en bas" caption="Avant (en haut) et après (en bas) : le bleu et les boutons. Le chiffre de téléchargements change entre les deux captures parce qu'il est lu en direct." />
+
+**Plus de lumière qui suit la souris, plus de carte qui se soulève.** Au survol, une carte montait de 3 à 4 px avec une ombre colorée, et une lueur suivait le pointeur. Le survol change maintenant une couleur, jamais une position : le fond d'une carte monte d'un cran et son filet s'accentue, en 150 ms.
+
+**Plus de flou.** Les ombres sont un décalage plein, comme une feuille posée un peu à côté, jamais un halo. La barre n'est plus du verre dépoli. Sur krizaka.com, aucun élément flou et aucune étiquette en capitales, contre 11 flous au départ ; sur ui.krizaka.com, un seul flou. Il reste des pastilles et quelques rayons de 12 et 14 px sur krizaka.com : ce n'est pas fini.
+
+<Row>
+<Figure id="calm-before-ui" alt="La page d'accueil de ui.krizaka.com avant : un sélecteur de produits, un faux écran de console avec ses trois points, un bandeau de chiffres, un bouton bleu plein" caption="ui.krizaka.com avant." />
+<Figure id="calm-after-ui" alt="La page d'accueil de ui.krizaka.com après : un titre en empattements, une ligne d'installation, trois entrées (composants, fondations, modèles) et une recherche" caption="Après : quatre choses sur le premier écran, et rien d'autre." />
+</Row>
+
+## Le bug qui nous a appris à tester
+
+Le 20 octobre, je me suis rendu compte que le flux du moteur ne bougeait pas, ni sur krizaka.com, ni dans le labo. Les points de lumière étaient là, immobiles.
+
+La cause, une fois trouvée, était minuscule. L'animation faisait glisser un décalage de trait vers une valeur écrite sans unité, un nombre nu, alors que l'autre image clé était une longueur. Le navigateur ne sait pas passer de l'un à l'autre, alors il ne l'animait pas. Chaque point sautait entre deux positions qui le dessinaient au même endroit. Un détail d'une ligne de CSS ([krizaka-ui#394](https://github.com/krizaka/krizaka-ui/pull/394)).
+
+Ce qui m'a le plus appris, c'est pourquoi personne ne l'avait vu. Toutes nos vérifications dans un vrai navigateur tournaient avec le mouvement réduit demandé. Elles voyaient une page parfaitement calme, comme prévu, et trouvaient que tout allait bien.
+
+Depuis, le mouvement est testé là où il bouge. Chaque élément animé a deux vérifications dans un vrai navigateur : une avec le mouvement réduit éteint, qui lit la propriété animée pendant environ sept dixièmes de seconde et exige des valeurs différentes et finies, et une avec le mouvement réduit allumé, qui exige que tout reste au repos. Et une règle de lint : jamais de longueur animée sans son unité.
+
+Le flux du moteur est devenu [`EngineFlow`](https://ui.krizaka.com/components/engine-flow) dans Krizaka UI, redessiné en SVG et en CSS. Les conduits sont des tracés, les photons des points de longueur nulle dont le décalage glisse. On a ainsi, gratuitement, ce qu'un canevas ne donne pas : la pause hors écran, le texte lisible par un lecteur d'écran, des boutons réels pour les nœuds, la couleur qui vient des jetons dans les deux thèmes, et pas de saut de mise en page. Il pèse 2,2 ko compressé. Sur le téléphone, il se met en colonne.
+
+<Clip id="motion-engine-clip" alt="Le flux d'Orazaka dans le labo : des points de lumière vont et viennent entre le moteur au centre et les produits autour, avec le panneau de réglages à droite" caption="Le flux du moteur, joué dans le labo avec ses réglages à droite. Muet." />
+
+Une règle domine tout le reste. Quelqu'un qui demande moins de mouvement dans son système ne reçoit pas une page vide : il reçoit l'image de repos, composée, avec tout en place d'un coup. Et le mouvement est du code comme un autre : il peut casser sans bruit. Un point de lumière immobile n'a fait de mal à personne, mais il est resté invisible tant que nos tests regardaient ailleurs.
+
+## Pourquoi Orazaka a une app Mac
+
+« Pourquoi une app Mac ? Le produit tourne déjà dans un navigateur. » C'est la bonne question, et la réponse tient dans la promesse d'Orazaka.
+
+Orazaka promet que vos documents ne partent pas de chez vous. Or ces documents sont des fichiers, dans des dossiers, sur une machine. Plus je regardais ce que cette promesse demande, plus la fenêtre d'un navigateur me paraissait le mauvais endroit pour la tenir.
+
+Un site peut demander un fichier à l'utilisateur, un par un. Pour qu'un outil lise un dossier, le surveille et y écrive à côté des PDF qui arrivent, il faut autre chose : un dossier choisi une fois, une permission qui dure, une limite que le programme fait respecter lui-même.
+
+L'app s'appelle Orazaka Desktop. Son [README](https://github.com/krizaka/orazaka/blob/main/apps/desktop/README.md) la décrit comme une version 0.1, un build de test, pour macOS 14 et plus sur puce Apple. Elle sert à faire tourner Orazaka sur votre Mac ou à vous connecter à un Orazaka hébergé, et à lui donner accès aux dossiers que vous choisissez, et à eux seuls. Le choix des dossiers passe par le sélecteur natif du système, et on peut révoquer un dossier, ou tous.
+
+La limite est dans le code Rust ([`scope.rs`](https://github.com/krizaka/orazaka/blob/5d8704b0af6e751cb56aedbc0b07f6c68a379714/apps/desktop/src-tauri/src/scope.rs)). L'app ne lit un chemin que si sa forme canonique est à l'intérieur d'un dossier accordé. Un `..` ou un lien symbolique qui sort du dossier est refusé. Et certains dossiers ne peuvent jamais être accordés : votre dossier personnel lui-même, la racine, les volumes, les dossiers du système, `~/.ssh`, `~/.aws`.
+
+La partie web de la fenêtre n'a aucune permission sur le système de fichiers, et l'interface ne peut pas lancer de shell : elle nomme une commande dans une liste courte, et le Rust la transforme en arguments fixes. Je l'ai raconté de l'autre côté dans [le billet sur l'agent sur la machine de l'utilisateur](/fr/posts/running-an-agent-on-the-users-machine/).
+
+Je dois corriger quelque chose. Quand j'ai dit « app native », j'aurais dû dire « app Mac ». Elle n'est pas écrite en SwiftUI. C'est [Tauri 2](https://tauri.app) : un programme en Rust, qui affiche l'interface dans la vue web du système (WKWebView sur macOS). La décision est écrite dans [l'ADR-002 de Krizaka UI](https://github.com/krizaka/krizaka-ui/blob/main/docs/adr/ADR-002-desktop-is-the-web-in-a-window.md), avec ce que nous avons refusé. Electron : un Chromium complet à embarquer par app, son propre système de mise à jour, une surface d'attaque en plus. Une interface native en SwiftUI ou AppKit : une troisième implémentation de chaque composant, à tenir en phase avec le web et le téléphone.
+
+Voilà donc la vraie réponse à « pourquoi pas un site » : pas pour dessiner nos boutons autrement, mais pour tout ce qui touche à la machine. Les boutons, eux, sont ceux du web. Tout ce qui est propre à la fenêtre (le menu natif, l'icône de la barre, les notifications, les dialogues de fichiers) est à l'app, via Tauri, jamais dans les composants.
+
+## La même interface, pas la même mise en page
+
+Orazaka a un client web, une app pour téléphones et une app Mac. Si nous devions dessiner chaque écran trois fois, nous n'en finirions pas, et les trois ne se ressembleraient plus au bout d'un mois. Voici comment le code est rangé pour que ce ne soit pas le cas.
+
+**Les jetons.** Les couleurs et les thèmes viennent de `@krizaka/tokens`. Le paquet a une sortie en CSS pour le web et une entrée `native` pour React Native. Une couleur se change à un endroit.
+
+**Les composants.** `@krizaka/ui` pour le web, et la même fenêtre pour l'app Mac. `@krizaka/ui/native` pour le téléphone. Les noms sont les mêmes (`Button`, `Badge`, `Card`, `Header`, `TextField`), les variantes aussi. L'app mobile fait une quarantaine d'imports depuis `@krizaka/ui/native`, et son dossier d'interface local ne contient plus que quatre petits fichiers, 177 lignes en tout.
+
+**Les contrats.** `@krizaka/orazaka-shared` contient les types TypeScript et les schémas Zod de ce que l'API d'Orazaka échange. Le client web et l'app mobile en dépendent tous les deux. Si l'API change, les deux changent au même moment, et le compilateur le dit.
+
+Et quand le kit a pris l'identité « Cahier » (des badges et des boutons aux coins plus nets), des tests de la bibliothèque d'Orazaka ont cassé : ils vérifiaient une valeur de rayon. Nous les avons corrigés pour qu'ils vérifient la variante, pas le rayon ([#54](https://github.com/krizaka/orazaka-ui-kit/pull/54)). Un test qui fige un détail visuel casse à chaque évolution du kit, et ce n'est pas ce que l'on veut qu'il surveille.
+
+L'app téléphone est un projet Expo, en React Native. Android et iOS sortent du même code. Je ne dis rien de plus : je n'ai pas vérifié de publication dans une boutique.
+
+Même interface ne veut pas dire même écran. Sur le web, la navigation d'une application est un rail d'icônes à gauche. Sur un téléphone, ce rail devient une barre d'onglets en bas ([le journal du kit](https://github.com/krizaka/krizaka-ui/blob/main/packages/ui/CHANGELOG.md) le dit pour `RailNav`). Sur le Mac, c'est la forme web dans la fenêtre, et le kit prévoit pour elle une barre de titre et une densité de bureau.
+
+Ce qui est commun, c'est le contrat : les noms, les états, les jetons, les mots. Ce qui change, c'est la forme que prend un même élément selon la machine.
+
+Où nous allons : la direction est que le même contrat d'interface vaille partout, web, Mac, Android, iOS. Un composant, un nom, des variantes, des états et des jetons, et la forme que chaque machine lui donne. Je ne promets pas de date et je ne promets pas de couverture complète. Si ça ne marchait pas, je le verrais à ceci : un écran qui a besoin d'un comportement propre à une seule machine, sans que le kit puisse l'exprimer. Alors il faudra ajouter la chose au kit, pas la copier dans l'app.

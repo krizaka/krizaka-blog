@@ -1,0 +1,166 @@
+---
+title: "Les premiers produits : Yomizaka et Akinaza"
+description: "Ce que Yomizaka lit aujourd'hui et comment une règle s'écrit, un immeuble entier dans un seul dépôt, et la facture de Krizaka refusée par notre propre outil. Données de démonstration."
+seoDescription: "Yomizaka et Akinaza : comment une règle cite son article, ce qu'un lot de baux change, et la facture refusée par notre propre outil."
+date: 2026-10-23
+publishedAt: "2026-10-23T14:00:00-04:00"
+tags: [yomizaka, documents, law]
+author: oussama
+draft: false
+cover: yomizaka-cafe-table
+coverAlt: "Une petite table ronde en marbre près d'une grande fenêtre sous la pluie, à Montréal : deux tasses de café, un téléphone posé à plat et quelques feuilles d'un bail, derrière la vitre des maisons de brique et un escalier extérieur en fer"
+chapter: 6
+period: "2026-10-17/2026-10-23"
+sources:
+  - how-we-build-yomizaka
+  - yomizaka-where-we-are
+  - krizaka-books-on-akinaza-contracts-on-yomizaka
+  - plugging-a-product-into-an-ai-engine
+versus:
+  faced: "un talon de paie qu'on ne peut pas lire"
+  built: "une règle qui cite son article"
+stats:
+  - value: "3 sur 9"
+    label: "manquements bloquants, sur les règles d'un bail"
+    section: "Un talon de paie sur un téléphone"
+  - value: "8 sur 8"
+    label: "règles passées par notre facture"
+    section: "Nos livres sur Akinaza, nos contrats sur Yomizaka"
+  - value: "4"
+    label: "secondes environ pour une exécution de contrôle, sur dev"
+    section: "Un produit ne parle jamais à un modèle"
+---
+
+Il y a quelques semaines, j'étais dans un café avec un ami qui gère des immeubles à Montréal. Il a sorti son téléphone, a tourné l'écran vers moi et m'a montré un talon de paie en PDF. Un candidat pour un 4½ le lui avait envoyé la veille.
+
+« Tu vois quelque chose, toi ? »
+
+Je ne voyais rien. Le logo était propre, les montants tombaient juste, les retenues avaient l'air québécoises. Lui non plus ne voyait rien, et c'est justement ce qui le dérangeait. Il en reçoit des dizaines par mois. Il les regarde à l'œil, il les transfère par courriel au propriétaire avec la pièce d'identité et le reste, et il espère.
+
+Puis il a fait défiler. Le talon suivant n'était même pas un PDF : c'était une photo, prise de travers sur une table de cuisine, avec un coin plié.
+
+Ce n'est pas un problème de mauvaise volonté. C'est un problème d'outil. Personne ne lui a jamais donné autre chose que ses yeux et une boîte de courriel. C'est exactement là que Yomizaka veut aller.
+
+## Un talon de paie sur un téléphone
+
+L'idée tient en une phrase : lisez avant de signer. Vous déposez un bail, un contrat ou une facture, et Yomizaka le lit au regard des règles en vigueur. Pour chaque constat, il vous montre la ligne exacte du document sur laquelle il s'appuie.
+
+<Figure id="yomizaka-home" alt="La page d'accueil de Yomizaka en thème sombre : le titre « Lisez avant de signer. », un bouton Se connecter, la mention que les inscriptions sont fermées pendant les essais sur de vrais baux québécois, puis trois colonnes : la ligne exacte derrière chaque constat, l'examen du PDF lui-même, tout retrouver en une seconde" caption="La page d'accueil, telle qu'elle est en ligne aujourd'hui. Les inscriptions sont fermées pendant nos essais." />
+
+Prenons un vrai bail de test. Quand il arrive, Yomizaka reconnaît d'abord de quoi il s'agit : un bail de logement, avec ses dates, son loyer, son dépôt et sa langue. Il repère aussi les renseignements personnels qu'il contient et vous propose une version caviardée. Le document est gardé au Canada, chiffré, jusqu'à ce que vous le supprimiez.
+
+<Figure id="yomizaka-lease-info" alt="La fiche d'un bail dans Yomizaka : bail de logement reconnu avec une confiance élevée, date d'effet 1er juillet 2026, loyer et dépôt de 1 450 $, en français, deux pages ; un encadré signale une adresse détectée et propose une version caviardée ; plus bas, le document est conservé au Canada, chiffré, avec un bouton pour le supprimer" caption="Un bail de test, tel que Yomizaka le lit. Le dépôt de 1 450 $ est un indice : au Québec, le locateur ne peut pas l'exiger." />
+
+Ensuite vient la vérification. Le texte est relu règle par règle, au regard du Code civil du Québec et du règlement sur le formulaire de bail obligatoire, tels qu'ils s'appliquent à une date donnée. Sur ce bail-là, le 17 octobre, 3 manquements bloquants sont sortis sur 9 règles : un dépôt de garantie, des chèques postdatés et une clause qui interdit les enfants. Les trois sont interdits par le Code civil, et chacun est revenu avec son article et la phrase exacte du bail.
+
+<Figure id="yomizaka-lease-run" alt="Le résultat d'une vérification dans Yomizaka : les étapes lecture, contrôle préalable, vérification des règles et rapport, toutes terminées ; l'identifiant d'exécution Orazaka, la version du Studio compliance-check 1.2.0, les règles qc-residential-lease ; un avertissement indique que le corpus québécois doit être relu par un avocat ; puis 3 manquements bloquants sur 9 règles, avec pour chaque règle sa source dans le Code civil et le passage cité du bail" caption="Chaque constat donne sa règle, l'article de loi, le passage exact du bail et l'identifiant de l'exécution qui l'a produit." />
+
+L'encadré jaune, je le garde exprès. Le corpus québécois n'a pas encore été relu par un avocat, et l'écran le dit. Tant que ce n'est pas fait, c'est un tri, pas un avis juridique.
+
+Il y a aussi l'examen du fichier lui-même, celui qui aurait aidé mon ami au café. Yomizaka regarde quel logiciel a produit le PDF, à quelles dates, combien de fois il a été réenregistré, quelles polices il utilise. Il en sort des signaux sur trois niveaux : observé, inhabituel, incohérent. Jamais un tampon « faux ». Un PDF passé dans un éditeur n'est pas forcément un faux, et je ne veux pas qu'un outil décide à la place d'une personne.
+
+## Comment on écrit une règle
+
+La partie la moins visible est la plus importante. Une règle ne s'écrit jamais de mémoire. On part du texte de loi, on cite l'article, et si on n'arrive pas à lire la source, la règle attend.
+
+Concrètement, une règle est une donnée, pas du code. Voici celle du dépôt, telle qu'elle est rangée dans le pack d'Orazaka. J'ai raccourci le motif : le vrai fait une ligne entière, parce qu'il reconnaît « dépôt de sécurité », « un mois de loyer en garantie » ou un pourcentage, et qu'il ignore « aucun dépôt ».
+
+```json
+{
+  "ruleId": "QC-LEASE-004",
+  "title": "Dépôt de garantie interdit — seul le premier mois peut être exigé d'avance",
+  "severity": "BLOCKING",
+  "method": "DETERMINISTIC",
+  "citation": "C.c.Q., art. 1904, al. 1",
+  "check": {
+    "type": "FORBIDDEN_PATTERN",
+    "pattern": "(?i)(?<!aucun )(?<!sans )d[ée]p[ôo]ts?\\s+(?:de\\s+)?(?:garantie|s[ée]curit[ée])…"
+  },
+  "onPass": "Aucun dépôt de garantie n'est exigé."
+}
+```
+
+`DETERMINISTIC` veut dire qu'aucun modèle ne juge cette règle : un motif la trouve ou ne la trouve pas, et c'est reproductible. Le modèle sert à lire et à résumer, pas à inventer le droit. Chaque règle arrive avec deux exemples écrits à partir de l'exigence : un bail qui la respecte, un bail qui ne la respecte pas. Puis un vrai passage sur un bail d'essai sert de test d'acceptation. C'est ce passage, le 17 octobre, qui a attrapé le dépôt.
+
+Le jeu de règles entier porte sa date, sa révision et son statut de relecture :
+
+```json
+{ "rulesetId": "qc-residential-lease", "version": "2024-02-21", "revision": 2, "reviewStatus": "TO_REVIEW_BY_LAWYER" }
+```
+
+C'est ce `reviewStatus` qui fait apparaître l'encadré jaune. Le jour où un avocat l'aura relu, la donnée change, et l'écran aussi.
+
+C'est plus lent que de demander à un modèle de « lire le bail et dire ce qui ne va pas ». Mais une réponse qui ne cite pas sa source, je ne peux pas la défendre devant quelqu'un qui signe un bail de douze mois.
+
+## Un produit ne parle jamais à un modèle
+
+Dans le code de Yomizaka, il n'y a aucun appel à un modèle d'IA. Pas un seul. Pourtant, Yomizaka lit un bail et vous dit quelles clauses posent problème. Ce n'est pas un oubli, c'est la règle que je me suis donnée dès le début : un produit ne parle jamais à un modèle. Il parle à un moteur, et le moteur, [Orazaka](https://dev.orazaka.com), choisit le modèle.
+
+Les raisons sont simples. Un modèle coûte de l'argent, et quelqu'un doit en tenir le compte. Un modèle change : celui d'aujourd'hui ne sera pas celui de dans six mois, et je ne veux pas rouvrir cinq produits pour ça. Un document de locataire ne doit pas partir n'importe où. Et quand on demande « qu'est-ce qui a vraiment tourné ? », il faut une réponse écrite.
+
+Du produit vers le moteur, c'est un appel HTTPS ordinaire. Yomizaka envoie au moteur le texte du bail, la juridiction et une date, « les règles en vigueur le ». Cette date compte : rejouer une exécution avec la même date rejoue les mêmes règles, et un bail signé en 2025 est jugé avec les règles de 2025. L'appel porte une clé de service, propre au produit. Une clé révoquée cesse de marcher tout de suite.
+
+Du moteur vers le produit, la réponse arrive tout de suite avec un identifiant d'exécution et un statut. Le produit garde cet identifiant, affiche l'identifiant à l'écran, puis redemande l'exécution tant qu'elle n'est pas terminée. Sur dev, une exécution de contrôle d'un bail, enregistrée sur notre site, a pris environ 4 secondes : trois étapes, dont une seule appelle un modèle. Ce qui revient est lu avec prudence. Le produit vérifie la forme du rapport avec un schéma, et une forme qu'il ne reconnaît pas devient « rien », jamais une supposition.
+
+Yomizaka n'appelle jamais un modèle lui-même : c'est Orazaka, notre moteur, qui fait l'analyse, et chaque analyse garde ce qui a tourné, avec quelle version, sur quelles règles. Chaque exécution a un identifiant, un état par étape avec son nombre de tentatives, et la version du Studio. L'écran de Yomizaka montre l'identifiant. Si quelqu'un conteste un constat dans six mois, on retrouve exactement d'où il vient.
+
+J'ai appris la leçon la plus dure à mes dépens. Le contrôle de conformité avait une étape de jugement par modèle, réglée pour continuer si le modèle tombait, afin de garder un rapport presque entièrement calculé par des règles. Le défaut : un refus volontaire du modèle ressemblait exactement à une panne, et était avalé dans un rapport que l'utilisateur croirait complet. Depuis, un échec dit pourquoi ([ADR-053](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-053-typed-failure-cause.md)), et la règle de facturation tient en une phrase : on facture le travail bien fait, jamais notre propre échec. Une panne du moteur rend les crédits.
+
+## Tout un immeuble en un seul dépôt
+
+Un talon de paie, c'est un document. Un gestionnaire d'immeubles ne vérifie pas un document, il en vérifie cent. Au Québec, beaucoup de baux se renouvellent au premier juillet, et quand on gère quelques centaines de portes, on ne veut pas les déposer un par un. C'est là que Yomizaka change d'échelle.
+
+**Un lot, c'est un CSV et des fichiers.** On a gardé l'outil que tout le monde a déjà : un tableur. Une ligne par document, trois colonnes. Le nom du fichier, la vérification à faire, et une référence à soi (le logement, le dossier). Les noms de colonnes en français marchent aussi, et un modèle se télécharge depuis la page.
+
+```csv
+fichier,vérification,référence
+bail-4512-st-denis.pdf,conformité,4512-3
+bail-4514-st-denis.pdf,conformité,4514-1
+talon-candidat-17.pdf,authenticité,dossier-17
+```
+
+On dépose le CSV et les documents ensemble, d'un seul geste. Avant de lancer quoi que ce soit, Yomizaka montre un aperçu ligne par ligne : ce qui sera vérifié, ce qui sera repris d'une vérification déjà faite, et ce qui est refusé, avec la raison. Un fichier nommé dans le CSV mais pas déposé, une vérification qui n'existe pas, une ligne en double. Et le coût, en audits, avant de cliquer. Si le compte n'a pas de quoi tout payer, l'écran le dit avant, pas au milieu.
+
+Une fois lancé, le lot avance tout seul, quelques documents à la fois. Une ligne qui échoue n'arrête jamais les autres. Si le compte n'a plus de crédits en route, les lignes restantes se mettent en pause avec la raison, au lieu d'échouer une par une. À la fin, on exporte le résultat en CSV, une ligne par ligne du fichier de départ, avec ce que chacune est devenue. C'est l'administrateur qui fixe les limites : si les lots sont ouverts, combien de lignes au plus (deux cents aujourd'hui), combien de vérifications en même temps.
+
+**Ce qu'on ne refacture pas.** Dans un lot de cent baux, il y a toujours des doublons : le même PDF envoyé deux fois, un bail déjà vérifié le mois dernier. Le moteur d'Orazaka sait maintenant reconnaître un fichier identique par son empreinte, pour la même version de la vérification, et rendre le résultat déjà calculé, sans appeler de modèle et sans prendre d'audit. Et si une vérification échoue de notre côté, l'audit gratuit ou le crédit est rendu, une seule fois. On l'a appris à la dure : un compte de test a vu son audit consommé par un run qui avait échoué. Ce n'est plus possible.
+
+**Word, et l'origine d'une photo.** Beaucoup de baux et de contrats arrivent en Word, pas en PDF. Yomizaka accepte maintenant les fichiers `.docx` : le texte sert à la vérification, et le fichier lui-même passe à l'examen d'authenticité, comme un PDF. Pour les photos de documents, l'examen montre maintenant d'où vient l'image : l'appareil et le logiciel déclarés, la date de prise de vue et celle de la dernière modification, et si une position GPS a été retirée. Toujours comme des signaux sur trois niveaux, jamais comme un verdict. Une photo recadrée sur un téléphone n'est pas un faux.
+
+## Nos livres sur Akinaza, nos contrats sur Yomizaka
+
+Avant de proposer un outil à des gens qui ont de vrais clients et de vraies échéances, je voulais lui poser une question simple : est-ce que nous, Krizaka, nous nous en servirions ? Pas dans une démo. Pour nos propres factures et nos propres contrats.
+
+Un mot d'honnêteté d'abord. Tout ce que vous voyez dans ce chapitre est de la démonstration : des clients fictifs, des montants plausibles, un environnement de développement. Les modèles de documents sont ceux de Krizaka, mais nous en avons retiré tout ce qui identifie la société avant de les envoyer où que ce soit : pas de numéro d'entreprise, pas d'adresse, pas de coordonnées bancaires.
+
+**Les livres, dans Akinaza.** Krizaka est un petit studio de logiciel à Montréal. Il vend surtout des heures, et quelques forfaits. Éric, qui le dirige dans notre démo, voulait un seul endroit pour trois choses : les services qu'il facture, des factures que ses clients lisent en français ou en anglais, et la déclaration de taxes de vente préparée sans chiffrier.
+
+<Clip id="akinaza-books-en" alt="Dans Akinaza, la liste des factures d'un studio : chaque carte donne le client de démonstration, la langue du document, la date, l'échéance, le sous-total, les deux taxes et le total" caption="Les factures du studio dans Akinaza. Enregistrement d'écran (interface en anglais) sur notre environnement de développement, données de démonstration." />
+
+Chaque service a un nom dans les deux langues, un prix et une catégorie de taxe. Une facture sort de ces services, dans la langue du client, avec les taxes calculées une seule fois sur le total taxable, au cent près. Elle porte les numéros de taxes du fournisseur et ses conditions de paiement avec l'échéance : ce dont un acheteur a besoin pour réclamer ses crédits.
+
+Chaque facture inscrit ses taxes dans les livres dans la même étape, et la base de données refuse une écriture déséquilibrée. Je tiens à cette règle plus qu'à n'importe quelle fonction : un livre qui ne balance pas n'est pas un livre. La déclaration de la période est préparée à partir de ces livres, ligne par ligne, avec les documents derrière chaque chiffre. Préparée, jamais produite : Éric la relit et la dépose lui-même. Akinaza ne transmet rien à personne. C'est un choix, pas un oubli.
+
+**Les contrats et les factures, dans Yomizaka.** Avant que Krizaka devienne le premier client d'Akinaza, ses modèles de facture et de contrat de services sont passés par Yomizaka. Voici la vidéo du parcours, accélérée là où il faut attendre.
+
+<Clip id="yomizaka-review-en" alt="Dans Yomizaka, un contrat de services déposé à gauche et, à droite, le rapport : quatre règles évaluées, aucune défaillance bloquante, chaque règle avec son article de loi et l'identifiant de l'exécution" caption="Le contrat de services de Krizaka vérifié dans Yomizaka. Enregistrement d'écran (interface en anglais), copie caviardée, environnement de développement." />
+
+La facture : 8 règles sur 8, chacune avec le passage du texte qui la justifie et l'article de loi derrière : la date, les numéros de taxes, le total, les taxes, les conditions de paiement. Le contrat : 4 règles sur 4, sur l'intérêt de retard, le droit d'auteur, les droits moraux et la signature. Le rapport dit lui-même ce qu'il ne couvre pas : le Code civil du Québec, à faire relire par un avocat. Chaque vérification est une exécution tracée d'Orazaka, le moteur qui travaille derrière. Son identifiant est à l'écran, pour qu'on puisse la retrouver.
+
+**Ce que les échecs nous ont appris.** C'est la partie qui m'a le plus servi, et elle n'est pas flatteuse. Le premier essai, fait directement sur le moteur avec le texte brut de la facture, a échoué sur deux règles : le total et les taxes. Pourtant les deux lignes étaient là. Le moteur ne les retrouvait pas quand un montant était séparé de son libellé par une longue suite d'espaces, ou quand un calcul entre crochets s'intercalait. Ce n'était pas une erreur de la facture, c'était une limite du vérificateur. Dans Yomizaka, qui normalise les espaces, le même modèle passe 8 sur 8. Nous avons ouvert [un ticket côté règles](https://github.com/krizaka/orazaka-packs/issues/81), et il est maintenant fermé.
+
+Le deuxième, c'est l'inverse. Nous avons passé dans Yomizaka une facture sortie d'Akinaza lui-même. Elle a échoué : il manquait les conditions de paiement. Un produit de facturation dont la propre facture est refusée par un autre de nos produits, c'est humiliant, et c'est exactement pourquoi on boucle la boucle. Le [ticket](https://github.com/krizaka/akinaza/issues/113) est fermé : la facture porte aujourd'hui son échéance et ses conditions.
+
+Quant au contrat, il passe 4 sur 4 pour une raison qui me gêne un peu : il ne cède aucun droit, donc il n'y a rien à reprocher. Le silence passe. Ce qu'aucune règle ne lit, par exemple un taux d'intérêt de retard énoncé de deux façons différentes entre le contrat et la facture, je l'ai trouvé en relisant, et je l'ai noté pour la personne qui doit trancher. Yomizaka aide, il ne remplace pas un avocat. Il le dit sur chaque écran.
+
+Le passage d'un outil à l'autre est manuel aujourd'hui : c'est le texte vérifié que nous imprimons depuis Akinaza. Une importation par l'API, qui transformerait un modèle vérifié dans Yomizaka en modèle Akinaza, est [proposée](https://github.com/krizaka/akinaza/issues/115), pas construite.
+
+## Où on en est
+
+Je vais être honnête sur l'état des choses. Les lots tournent, avec leurs tests sur une vraie base de données. L'app Android a sa première version de test, publiée le 22 octobre, et iOS suit avec le même code. Une app Mac est en route pour ceux qui gèrent leurs dossiers depuis le bureau. Les clés d'API existent : un gestionnaire pourra brancher Yomizaka sur son propre logiciel. L'API publique qui va avec, pour lancer une vérification ou un lot avec une clé, est en préparation.
+
+Il y a aussi des choses que nous ne ferons pas tant qu'un avocat ne nous aura pas dit que c'est permis. La vérification des antécédents judiciaires pour un logement en fait partie. Elle reste fermée. Le corpus de règles québécoises attend toujours la relecture d'un avocat, et l'écran continue de le dire.
+
+Je ne sais pas dire en combien de semaines tout ça sera prêt. Je sais par contre dans quel ordre le faire : ce qui protège les gens d'abord, ce qui fait gagner du temps ensuite. Les photos et le dossier du candidat d'abord, parce que c'est là que se trouvent les faux et les fuites. Les échéances ensuite. Chaque morceau sort quand il tourne sur de vrais documents, avec sa trace. On commence à préparer une vraie démo pour des gestionnaires d'immeubles : pas une vidéo montée, un vrai lot, de vrais documents de test, et les écrans tels qu'ils sont.
+
+Si vous gérez des immeubles et que vous avez, vous aussi, déjà regardé un PDF ou une photo en vous demandant s'il était vrai, j'aimerais beaucoup savoir comment vous faites aujourd'hui. Yomizaka est sur [yomizaka.com](https://www.yomizaka.com).
