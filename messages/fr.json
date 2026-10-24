@@ -36,7 +36,6 @@
     "chaptersTitle": "Les chapitres",
     "chaptersLead": "Dans l’ordre où c’est arrivé : chacun dit ce que j’avais en face, puis ce qu’on a construit.",
     "new": "Nouveau",
-    "versus": "{faced} → {built}",
     "basicsTitle": "Les bases, pour comprendre",
     "basicsLead": "Les mots de l’IA, un à la fois, pour lire les chapitres sans se perdre."
   },
@@ -77,21 +76,16 @@
   "chapter": {
     "label": "Chapitre {n}",
     "period": "{from} – {to}",
-    "versus": "Face-à-face",
-    "vs": "VS",
     "faced": "Ce que j'ai affronté",
     "built": "Ce qu'on a construit",
     "round": "Round {n}",
     "stats": "Résultats",
     "statsOf": "Chapitre {n}",
     "toc": "Dans ce chapitre",
-    "continue": "Continuer ?",
-    "start": "Start",
-    "next": "Chapitre {n}",
-    "nextCaption": "Chapitre suivant",
-    "storySoFar": "Le prochain chapitre n’est pas encore sorti : celui-ci est le dernier, pour l’instant.",
-    "back": "L’histoire de Krizaka",
-    "toStory": "Retour à l’histoire"
+    "toStory": "Retour à l’histoire",
+    "previous": "Précédent",
+    "nextLabel": "Suivant",
+    "nav": "Les chapitres"
   },
   "engage": {
     "title": "À garder, à partager",

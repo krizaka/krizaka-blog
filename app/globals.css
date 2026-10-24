@@ -265,36 +265,24 @@ picture { display: contents; }
 .bl-prose [data-footnotes] a[data-footnote-backref] { margin-inline-start: 0.375rem; font-family: var(--kz-font-mono); text-decoration: none; }
 .bl-prose sup a[data-footnote-ref] { font-family: var(--kz-font-mono); font-size: 0.75em; text-decoration: none; padding-inline: 0.125em; }
 
-/* A chapter of the story (ChapterPage): the arcade lives in the frames — the versus head, the round markers, the stats and
-   « Continuer ? » — and never inside the reading column's text. Colours are the tokens'; story.css carries the light rules. */
-.bl-versus { padding: 6.5rem 1rem 0; display: flex; flex-direction: column; align-items: center; gap: 1.75rem; }
-.bl-versus .kzs-banner.kzs-arcade[data-size="lg"] .kzs-banner-title { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.5rem 1.25rem; max-width: 56rem; font-size: clamp(1.4rem, 3.2vw, 2.25rem); letter-spacing: -0.01em; line-height: 1.2; }
-.bl-versus-cover { width: 100%; max-width: 56rem; margin: 0; }
-.bl-versus-side { display: flex; flex-direction: column; gap: 0.25rem; flex: 1 1 14rem; max-width: 22rem; }
-.bl-versus-label { font-family: var(--kz-font-mono); font-size: 0.75rem; font-weight: 600; letter-spacing: normal; color: var(--kz-text-secondary); }
-.bl-versus-vs { font-family: var(--kz-font-mono); font-size: 1rem; color: var(--kz-accent-text); }
-@media (max-width: 40rem) { .bl-versus .kzs-banner.kzs-arcade[data-size="lg"] .kzs-banner-title { flex-direction: column; } .bl-versus-side { flex-basis: auto; } }
+/* A chapter of the story (ChapterPage): sober head and foot (ChapterHead, ChapterFoot of @krizaka/ui); the arcade stays in
+   the round markers and the stats, never inside the reading column's text. Colours are the tokens'; story.css carries the light rules. */
+/* The head is the first screen: it clears the bar as a PageHero does. */
+.bl-chapter-top { padding-top: var(--kz-hero-top); }
+.bl-chapter-cover { width: 100%; max-width: 56rem; margin: 1.5rem 0 0; }
 .bl-prose .bl-round { margin-top: 2.75rem; }
 .bl-prose .bl-round + h2 { margin-top: 0.5rem; }
 .bl-chapter-stats { margin-top: 3rem; }
 .bl-chapter-stats .kzs-banner.kzs-arcade[data-size="lg"] .kzs-banner-title { font-size: clamp(1.75rem, 4vw, 2.5rem); }
 .bl-chapter-stats .bl-num a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
-.bl-continue .kzs-prompt { margin-inline: auto; max-width: 40rem; }
-.bl-continue-title { font-weight: 600; }
 /* ═══ The home is the story (krizaka-blog#123) ═══════════════════════════════════════════════════════════════════════
-   The sentence and its byline under the h1; Featured (the post card, large); the chapters as a timeline you follow — an
-   ordered list of LinkCards, the number in the tile, the period and « New » in the meta line; the basics as
+   The sentence and its byline under the h1; Featured (the post card, large); the chapters as a timeline you follow — @krizaka/ui's
+   ChapterIndex on the notebook lines; the basics as
    quiet links. Tokens only; nothing wider than the window at 360 px. */
 .bl-home-byline { margin-top: 1rem; font-family: var(--kz-font-mono); font-size: 0.8125rem; color: var(--kz-text-secondary); }
 .bl-card-cta { margin-top: 1rem; font-weight: 650; font-size: 0.9375rem; color: var(--kz-accent-text); }
 .bl-card-cta-arrow { display: inline-block; transition: transform 0.15s var(--kz-ease, ease); }
 .bl-card:is(:hover, :has(.bl-card-link:focus-visible)) .bl-card-cta-arrow { transform: translateX(3px); }
-.bl-chapters { display: grid; gap: 0.75rem; list-style: none; padding: 0; margin: 0; }
-.bl-chapter { position: relative; min-width: 0; }
-.bl-chapter-no { font-family: var(--kz-font-mono); font-weight: 700; font-size: 0.9375rem; font-variant-numeric: var(--kz-figures, lining-nums tabular-nums); color: var(--kz-text-primary); }
-.bl-chapter .kz-link-card { min-width: 0; }
-.bl-chapter[data-new] .kz-link-card { border-color: var(--kz-accent); }
-.bl-chapter-new { margin-inline-start: 0.625rem; vertical-align: middle; }
 .bl-basics-links { display: grid; gap: 0.5rem; list-style: none; padding: 0; max-width: 48rem; }
 .bl-basics-links a { color: var(--kz-text-primary); text-decoration: underline; text-decoration-color: var(--kz-border-strong); text-underline-offset: 4px; }
 .bl-basics-links a:hover { text-decoration-color: var(--kz-accent-text); }

@@ -8,8 +8,9 @@ import type { Post } from "@/lib/posts";
 import { formatDate } from "./PostList";
 
 /* Who wrote a post and when: the author (the company's mark for the team, Wu-sama's for Oussama: no photo), the date, the reading time, the update; then the
-   post's actions in one row (the other language, and what the page passes). */
-export function Byline({ post, other, children, section = "basics" }: { post: Post; other?: Post; children?: React.ReactNode; section?: "basics" | "story" }) {
+   post's actions in one row (the other language, and what the page passes). A chapter says its reading time in its head
+   (ChapterHead), so it passes `readingTime={false}`. */
+export function Byline({ post, other, children, section = "basics", readingTime = true }: { post: Post; other?: Post; children?: React.ReactNode; section?: "basics" | "story"; readingTime?: boolean }) {
   const t = getDictionary(post.locale);
   /* The other language's address, from known values only: one of the two locales, a slug of lower-case words. */
   const otherLang: Locale = other?.locale === "fr" ? "fr" : "en";
@@ -23,11 +24,15 @@ export function Byline({ post, other, children, section = "basics" }: { post: Po
         <p className="bl-byline-name">{author}</p>
         <p className="bl-byline-meta">
           <time dateTime={post.date}>{formatDate(post.date, post.locale)}</time>
-          <span aria-hidden="true">·</span>
-          <span className="bl-byline-time">
-            <ClockIcon size={13} aria-hidden="true" />
-            {format(t.post.readingTime, { minutes: String(post.readingMinutes) })}
-          </span>
+          {readingTime && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span className="bl-byline-time">
+                <ClockIcon size={13} aria-hidden="true" />
+                {format(t.post.readingTime, { minutes: String(post.readingMinutes) })}
+              </span>
+            </>
+          )}
           {post.updated && (
             <>
               <span aria-hidden="true">·</span>
