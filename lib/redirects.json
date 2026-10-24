@@ -1,0 +1,42 @@
+{
+  "why-krizaka-builds-sovereign-ai-in-montreal": {
+    "en": "/story/why-krizaka/",
+    "fr": "/fr/story/why-krizaka/"
+  },
+  "local-first-ai-platform-spring-ai-2-and-the-mac": {
+    "en": "/story/an-engine-on-a-laptop/",
+    "fr": "/fr/story/an-engine-on-a-laptop/"
+  },
+  "orazaka-from-one-mac-to-anywhere": {
+    "en": "/story/an-engine-on-a-laptop/#from-a-monolith-to-services",
+    "fr": "/fr/story/an-engine-on-a-laptop/#du-monolithe-aux-services"
+  },
+  "measured-not-promised": {
+    "en": "/story/what-a-gpu-costs/",
+    "fr": "/fr/story/what-a-gpu-costs/"
+  },
+  "the-real-economics-of-sovereign-ai": {
+    "en": "/story/what-a-gpu-costs/",
+    "fr": "/fr/story/what-a-gpu-costs/"
+  },
+  "what-image-and-video-generation-costs": {
+    "en": "/story/what-a-gpu-costs/",
+    "fr": "/fr/story/what-a-gpu-costs/"
+  },
+  "real-cost-of-an-image-paying-for-intent": {
+    "en": "/story/what-a-gpu-costs/#the-price-of-a-result-you-keep",
+    "fr": "/fr/story/what-a-gpu-costs/#le-prix-dun-résultat-quon-garde"
+  },
+  "choosing-providers-when-every-app-has-its-own-trade": {
+    "en": "/story/what-a-gpu-costs/#picking-providers-then-a-price",
+    "fr": "/fr/story/what-a-gpu-costs/#choisir-ses-fournisseurs-puis-un-prix"
+  },
+  "why-we-moved-our-15-november-date": {
+    "en": "/story/what-a-gpu-costs/#why-i-moved-15-november",
+    "fr": "/fr/story/what-a-gpu-costs/#pourquoi-jai-déplacé-le-15-novembre"
+  },
+  "how-we-generate-cinematic-videos-with-ai": {
+    "en": "/story/from-a-clip-to-a-film/#what-i-saw-and-heard",
+    "fr": "/fr/story/from-a-clip-to-a-film/#ce-que-jai-vu-et-entendu"
+  }
+}

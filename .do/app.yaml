@@ -65,18 +65,10 @@ functions:
       - { key: MAIL_SENDER_ADDRESS, scope: RUN_AND_BUILD_TIME, value: "Montréal (Québec), Canada" }
       - { key: ABUSE_CAPTCHA_PROVIDER, scope: RUN_AND_BUILD_TIME, value: turnstile }
       - { key: ABUSE_CAPTCHA_SECRET_KEY, scope: RUN_AND_BUILD_TIME, type: SECRET, value: unset }
-# Who answers which path. The sign-in functions under /api, the static site everywhere else, and a 308 for each post
-# merged into another (tests/redirects.test.mjs: every target is a published post, every source is gone).
+# Who answers which path: the sign-in functions under /api, the static site everywhere else. The posts merged into a
+# chapter keep their address as a static stub page (lib/redirects.json, built by the site): no ingress rule for them.
 ingress:
   rules:
-    - match: { path: { prefix: /posts/measured-not-promised } }
-      redirect: { uri: /posts/what-image-and-video-generation-costs/, redirect_code: 308 }
-    - match: { path: { prefix: /fr/posts/measured-not-promised } }
-      redirect: { uri: /fr/posts/what-image-and-video-generation-costs/, redirect_code: 308 }
-    - match: { path: { prefix: /posts/the-real-economics-of-sovereign-ai } }
-      redirect: { uri: /posts/what-image-and-video-generation-costs/, redirect_code: 308 }
-    - match: { path: { prefix: /fr/posts/the-real-economics-of-sovereign-ai } }
-      redirect: { uri: /fr/posts/what-image-and-video-generation-costs/, redirect_code: 308 }
     - match: { path: { prefix: /api } }
       component: { name: oauth }
     - match: { path: { prefix: / } }

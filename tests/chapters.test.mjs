@@ -30,12 +30,13 @@ test("chapters 1 and 2 exist in FR and EN, with the same number, period and sour
   }
 });
 
-test("every chapter's sources are posts of content/posts, in its language", () => {
+test("every chapter's sources are posts of content/posts or retired posts (lib/redirects.json), in its language", () => {
+  const retired = Object.keys(JSON.parse(readFileSync(new URL("../lib/redirects.json", import.meta.url), "utf8")));
   for (const f of readdirSync(CHAPTERS).filter((f) => f.endsWith(".mdx"))) {
     const locale = f.match(/\.(en|fr)\.mdx$/)[1];
     const { sources } = read(f).data;
     assert.ok(Array.isArray(sources) && sources.length > 0, f);
-    for (const s of sources) assert.ok(existsSync(join(POSTS, `${s}.${locale}.mdx`)), `${f}: source ${s}`);
+    for (const s of sources) assert.ok(existsSync(join(POSTS, `${s}.${locale}.mdx`)) || retired.includes(s), `${f}: source ${s}`);
   }
 });
 
@@ -168,4 +169,30 @@ test("a chapter page exists in both languages, and its round markers, stats and 
 
 test("chapters never trigger the newsletter (its workflow watches content/posts only)", () => {
   assert.doesNotMatch(readFileSync(join(root, ".github/workflows/newsletter.yml"), "utf8"), /content\/chapters/);
+});
+
+test("a chapter's search title and description fit check-meta (seoTitle or title + site name; seoDescription or lead)", () => {
+  for (const f of readdirSync(CHAPTERS).filter((f) => f.endsWith(".mdx"))) {
+    const locale = f.match(/\.(en|fr)\.mdx$/)[1];
+    const { data } = read(f);
+    const siteName = JSON.parse(readFileSync(join(root, `messages/${locale}.json`), "utf8")).site.name;
+    const title = data.seoTitle?.trim() || `${data.title} — ${siteName}`;
+    const description = data.seoDescription?.trim() || data.description;
+    assert.ok([...title].length <= 60, `${f}: title is ${[...title].length} characters`);
+    assert.ok([...description].length <= 155, `${f}: description is ${[...description].length} characters`);
+  }
+});
+
+test("a chapter links to the krizaka.com home of its own language (/en in English, /fr in French)", () => {
+  for (const f of readdirSync(CHAPTERS).filter((f) => f.endsWith(".mdx"))) {
+    const locale = f.match(/\.(en|fr)\.mdx$/)[1];
+    const wrong = locale === "en" ? /www\.krizaka\.com\/fr\b/ : /www\.krizaka\.com\/en\b/;
+    assert.doesNotMatch(read(f).content, wrong, `${f} links to the other language's home`);
+  }
+});
+
+test("chapter 3 tells the GPU left on once, with the figure of the post it came from: no pod of five billed hours", () => {
+  for (const f of ["what-a-gpu-costs.en.mdx", "what-a-gpu-costs.fr.mdx"]) {
+    assert.doesNotMatch(read(f).content, /five billed hours|cinq heures facturées/, f);
+  }
 });

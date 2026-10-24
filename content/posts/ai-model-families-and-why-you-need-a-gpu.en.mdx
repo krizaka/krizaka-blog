@@ -86,7 +86,7 @@ On a PC, the computer's memory and the GPU's are two separate worlds, joined by 
 
 That is why a Mac runs models that no 24 GB consumer graphics card would take. FLUX.2 [klein] 4B uses 8.3 GB there and makes a 1024×1024 image in 62 seconds. <Model id="z-image-turbo">Z-Image Turbo</Model> fits with 10.5 GB.
 
-But unified memory is not magic. A Mac's GPU is much slower than an H100, and the memory is shared with everything else: the system, the browser, other programs. The day I tried to make video locally with Wan 2.2 TI2V 5B, 62 GiB were already taken, it asked for 26 more to decode the frames, and everything stopped. I told that evening in [the post about the Mac](/posts/local-first-ai-platform-spring-ai-2-and-the-mac/), and what came next, when Orazaka learned to send video to GPUs rented by the hour, in [the post about portability](/posts/orazaka-from-one-mac-to-anywhere/).
+But unified memory is not magic. A Mac's GPU is much slower than an H100, and the memory is shared with everything else: the system, the browser, other programs. The day I tried to make video locally with Wan 2.2 TI2V 5B, 62 GiB were already taken, it asked for 26 more to decode the frames, and everything stopped. I told that evening in [the post about the Mac](/story/an-engine-on-a-laptop/), and what came next, when Orazaka learned to send video to GPUs rented by the hour, in [the post about portability](/story/an-engine-on-a-laptop/#from-a-monolith-to-services).
 
 ## Our measured times: which GPU for which model
 
@@ -119,7 +119,7 @@ When the Mac is no longer enough, you rent. Here are the providers I know or hav
 | [Modal](https://modal.com/pricing) | Python code on a GPU, billed by the second | H100 $0.001097/s (about $3.95/h), L4 $0.000222/s |
 | [Vast.ai](https://vast.ai/pricing) | a marketplace of GPUs from individuals and data centres | no fixed price: it depends on the offers of the moment |
 
-For us, 720p video runs on a RunPod H100 at $3.99 an hour, and what it really costs, failures included, is in [the post about costs](/posts/what-image-and-video-generation-costs/). The lesson I keep: a rented GPU costs most when it waits. You turn it on for a batch, and off when the queue is empty.
+For us, 720p video runs on a RunPod H100 at $3.99 an hour, and what it really costs, failures included, is in [the post about costs](/story/what-a-gpu-costs/). The lesson I keep: a rented GPU costs most when it waits. You turn it on for a batch, and off when the queue is empty.
 
 ## Frequently asked questions
 

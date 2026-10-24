@@ -445,5 +445,9 @@
     ],
     "back": "The Krizaka story",
     "empty": "No post is published yet."
+  },
+  "retired": {
+    "lead": "This post is now part of the Krizaka story.",
+    "link": "Read the chapter: {title}"
   }
 }

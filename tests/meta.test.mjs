@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { metaProblems } from "../scripts/check-meta.mjs";
+import { metaProblems, pageProblems } from "../scripts/check-meta.mjs";
 
 /* What a built page shows a search engine: a title of at most 60 characters, a description of at most 155, one h1, and an
    alt on every image (empty for a decorative one). */
@@ -40,4 +40,29 @@ test("a cover without a srcset, an AVIF source, a high priority or a preload is 
   assert.equal(coverProblems(good.replace('fetchPriority="high"', "")).length, 1);
   assert.equal(coverProblems(good.replace(/<link[^>]*>/, "")).length, 1);
   assert.equal(coverProblems("<html><body><h1>x</h1></body></html>").length, 1, "a post page has a cover");
+});
+
+/* A retired post's stub (app/components/pages/RetiredPost.tsx, exported as the static page at the old address): it has no title,
+   no description and no h1, so it is checked as a stub: a 0-second refresh, a canonical to the same address, noindex, and a
+   visible link. The article checks stay on every live post. */
+const stub = (path = "/story/why-krizaka/", { refresh = path, canonical = `https://blog.krizaka.com${path}`, robots = "noindex, follow", link = path } = {}) =>
+  `<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="robots" content="${robots}"/><link rel="canonical" href="${canonical}"/></head>` +
+  `<body><meta http-equiv="refresh" content="0; url=${refresh}"/><div><p>This post is now a chapter of the story.</p><p><a href="${link}">Chapter 3</a></p></div></body></html>`;
+
+test("a retired post's stub is a valid page: refresh, canonical, noindex and a visible link", () => {
+  assert.deepEqual(pageProblems(stub()), []);
+  assert.deepEqual(pageProblems(stub("/fr/story/pourquoi-krizaka/#ligne")), []);
+});
+test("a stub with no refresh, a canonical elsewhere, no noindex or no visible link is refused", () => {
+  assert.match(pageProblems(stub("/story/why-krizaka/", { refresh: "" }))[0], /refresh/);
+  assert.match(pageProblems(stub("/story/why-krizaka/", { canonical: "https://blog.krizaka.com/story/other/" })).join(), /canonical/);
+  assert.match(pageProblems(stub("/story/why-krizaka/", { robots: "index, follow" })).join(), /noindex/);
+  assert.match(pageProblems(stub("/story/why-krizaka/", { link: "/story/other/" })).join(), /visible link/);
+});
+test("a live post is still checked as an article: a missing h1 is refused even through pageProblems", () => {
+  assert.match(pageProblems(page({ body: "<p>no heading</p>" }))[0], /h1/);
+  assert.deepEqual(pageProblems(page()), []);
+});
+test("a stub's canonical may carry Next's trailing slash after the section anchor (the same address)", () => {
+  assert.deepEqual(pageProblems(stub("/story/what-a-gpu-costs/#the-price-of-a-result", { canonical: "https://blog.krizaka.com/story/what-a-gpu-costs/#the-price-of-a-result/" })), []);
 });

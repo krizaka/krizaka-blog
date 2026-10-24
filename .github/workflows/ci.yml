@@ -62,9 +62,10 @@ jobs:
           ! grep -q 'xml-stylesheet' out/feed.xml out/fr/feed.xml out/atom.xml out/fr/atom.xml
           test ! -e out/feed.xsl
           for p in out/feed/index.html out/fr/feed/index.html; do grep -q 'id="subscribe"' "$p"; grep -q 'feed.xml' "$p"; done
-          grep -q 'href="#subscribe"' out/posts/what-image-and-video-generation-costs/index.html
-          grep -q 'id="subscribe"' out/posts/what-image-and-video-generation-costs/index.html
-      - name: Every post has its Open Graph image and both feeds list it
+          grep -q 'href="#subscribe"' out/posts/how-we-build-yomizaka/index.html
+          grep -q 'id="subscribe"' out/posts/how-we-build-yomizaka/index.html
+      - name: Every live post has its Open Graph image; the feeds list the posts and the chapters; a retired address is a stub
         run: |
-          test -f out/og/what-image-and-video-generation-costs.png && test -f out/fr/og/what-image-and-video-generation-costs.png
-          grep -q "what-image-and-video-generation-costs" out/feed.xml && grep -q "what-image-and-video-generation-costs" out/fr/atom.xml
+          test -f out/og/how-we-build-yomizaka.png && test -f out/fr/og/how-we-build-yomizaka.png
+          grep -q "/story/what-a-gpu-costs/" out/feed.xml && grep -q "/fr/story/what-a-gpu-costs/" out/fr/atom.xml
+          grep -q 'http-equiv="refresh" content="0; url=/story/what-a-gpu-costs/"' out/posts/what-image-and-video-generation-costs/index.html
