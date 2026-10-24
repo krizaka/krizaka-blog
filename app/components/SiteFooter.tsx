@@ -5,6 +5,7 @@ import { familyLabels } from "@krizaka/ui/sites";
 import { localizedPath } from "@/lib/locale";
 import { useI18n } from "./I18nProvider";
 import { REPOSITORY_URL } from "@/lib/site";
+import { FOOTER_PRODUCT_IDS } from "@/lib/footer-family";
 
 export type FooterChapter = { href: string; title: string };
 
@@ -18,7 +19,7 @@ export default function SiteFooter({ chapters }: { chapters: readonly FooterChap
   const f = t.footer;
   const feeds = locale === "en" ? "" : "/fr";
   return (
-    <FamilyFooter current="krizaka" labels={familyLabels[locale]} aria-label={f.aria}>
+    <FamilyFooter current="krizaka" products={FOOTER_PRODUCT_IDS} labels={familyLabels[locale]} aria-label={f.aria}>
       <FamilyFooter.Column title={f.story}>
         {chapters.map((c) => (
           <FamilyFooter.Link key={c.href} href={c.href}>{c.title}</FamilyFooter.Link>
