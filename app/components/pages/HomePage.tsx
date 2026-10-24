@@ -7,9 +7,14 @@ import { chapterNumber, chaptersOf } from "@/lib/chapters";
 import { latestChapter, storyRows } from "@/lib/home";
 import { postsOf } from "@/lib/posts";
 import { chapterPath, postPath } from "@/lib/seo";
+import { coverOf, type Cover } from "@/lib/media";
 import { formatPeriod } from "./PostList";
 import { PostCard } from "./PostCard";
 import { NewsletterSection } from "../newsletter/NewsletterSection";
+
+const upperFirst = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+/** The print's picture: the WebP set and its intrinsic size (the album keeps the aspect-ratio, so nothing shifts). */
+const albumCover = (c: Cover) => ({ src: c.src, srcSet: c.srcSet, width: c.width, height: c.height });
 
 /* The home is the story (krizaka-blog#123), one page read in five seconds, then deeper on demand:
    - the title and the one sentence that says what this is: the notes from building Krizaka, then who writes them (the byline;
@@ -58,10 +63,14 @@ export default function HomePage({ locale }: { locale: Locale }) {
             newLabel={h.new}
             linkAs={Link}
             paper={false}
+            variant="album"
             chapters={rows.map(({ chapter: c, isNew }) => ({
               number: chapterNumber(c.chapter),
               title: c.title,
               href: href(c.slug),
+              // The album (krizaka-ui#621): the chapter's cover as a taped print, and one short line, what we built.
+              detail: upperFirst(c.versus.built),
+              cover: c.cover ? albumCover(coverOf(c.cover)) : undefined,
               period: <time dateTime={c.period.split("/")[0]}>{formatPeriod(c.period, locale)}</time>,
               isNew,
             }))}

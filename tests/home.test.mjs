@@ -50,7 +50,11 @@ test("the home renders the sentence, its byline, Featured, the chapters, the bas
   assert.match(home, /<ChapterIndex[\s\S]*?chapters=\{rows\.map\(/, "the chapters are @krizaka/ui's ChapterIndex, in the rows' reading order: a timeline, not a feed");
   assert.match(home, /newLabel=\{h\.new\}[\s\S]*?isNew,/, "the latest is marked « New »");
   assert.match(home, /number: chapterNumber\(c\.chapter\)[\s\S]*?title: c\.title[\s\S]*?href: href\(c\.slug\)/, "the number in the margin, the title the link");
-  assert.doesNotMatch(home, /detail:|c\.versus|LinkCard|<Badge/, "no detail line, no box: the faced → built line is on the chapter's head");
+  // The album (Oussama, 2026-10-24; krizaka-ui#621): each chapter is its cover as a taped print, the title and ONE short line — what we built.
+  assert.match(home, /<ChapterIndex[\s\S]*?variant="album"/, "the chapters are the album: the taped print, a title and one line, alternating");
+  assert.match(home, /detail: upperFirst\(c\.versus\.built\)/, "one short line per chapter: what we built (the faced → built pair stays on the chapter's head)");
+  assert.match(home, /cover: c\.cover \? albumCover\(coverOf\(c\.cover\)\)/, "the chapter's own cover, with its intrinsic size (no layout shift)");
+  assert.doesNotMatch(home, /c\.versus\.faced|LinkCard|<Badge/, "no box, and the faced line stays on the chapter's head");
   assert.match(home, /formatPeriod\(c\.period, locale\)/, "and its period");
 });
 
