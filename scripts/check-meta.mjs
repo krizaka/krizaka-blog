@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 /* What every built page shows a search engine (run on out/ after `npm run build`): a <title> of at most 60 characters and
    a meta description of at most 155 (longer ones are cut in the results), exactly one h1, an alt on every image, and no
-   NaN or undefined in the text.
+   NaN or undefined in the text. The blog is one page, the story (krizaka-blog#123): the home must show its sentence, one
+   Featured card (the latest chapter) and every chapter in reading order with the latest marked new; no live page links to a
+   removed address (the topics, the series, search, saved, the feed page, the old story index — they are stubs).
    Usage: node scripts/check-meta.mjs out   — the 404, the editor (/admin) and the private preview are skipped. */
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
@@ -88,11 +90,42 @@ export function stubProblems(html) {
   return out;
 }
 
-/** The problems of one built page: a stub is checked as a stub, a live post as an article (its meta, and its cover on a post). */
-export function pageProblems(html, rel = "") {
+/** The home (`/`, `/fr/`): the sentence, one Featured card that is the chapter marked new, and the chapters 1 → N in order. */
+export function homeProblems(html) {
+  const out = [];
+  const sentence = html.match(/<span class="bl-home-sentence">([^<]*)<\/span>/)?.[1]?.trim();
+  if (!sentence) out.push("the home has no sentence (the hero's lead, .bl-home-sentence)");
+  /* A Section's id is its heading's (`aria-labelledby`). */
+  const featured = html.match(/<section\b[^>]*\baria-labelledby="featured"[\s\S]*?<\/section>/)?.[0] ?? "";
+  if (!featured) out.push("the home has no Featured section (#featured)");
+  else if ((featured.match(/\bbl-card-feature\b/g) ?? []).length !== 1) out.push("Featured holds exactly one card");
+  const list = html.match(/<ol\b[^>]*\bclass="bl-chapters"[\s\S]*?<\/ol>/)?.[0] ?? "";
+  const rows = [...list.matchAll(/<li\b([^>]*)>[\s\S]*?<a\b[^>]*\bhref="([^"]+)"/g)].map((m) => ({ n: Number(m[1].match(/data-chapter="(\d+)"/)?.[1]), isNew: /\bdata-new\b/.test(m[1]), href: m[2] }));
+  if (!rows.length) out.push("the home lists no chapter (ol.bl-chapters)");
+  rows.forEach((r, i) => {
+    if (r.n !== i + 1) out.push(`the chapters are not in reading order: row ${i + 1} is chapter ${r.n}`);
+  });
+  const fresh = rows.filter((r) => r.isNew);
+  if (rows.length && fresh.length !== 1) out.push(`${fresh.length} chapters are marked new (one expected: the latest)`);
+  const featuredHref = featured.match(/<a\b[^>]*\bclass="bl-card-link"[^>]*\bhref="([^"]+)"|<a\b[^>]*\bhref="([^"]+)"[^>]*\bclass="bl-card-link"/);
+  const href = featuredHref?.[1] ?? featuredHref?.[2];
+  if (featured && fresh.length === 1 && href !== fresh[0].href) out.push(`Featured (${href}) is not the chapter marked new (${fresh[0].href})`);
+  return out;
+}
+
+/** The addresses the one-page blog removed (stubs now): a live page never links to them. */
+const REMOVED_LINK = /\bhref="(?:\/fr)?\/(?:(?:tags|series|search|saved|feed)\/[^"]*|story\/|posts\/)"/g;
+export function removedLinkProblems(html) {
+  return [...new Set([...html.matchAll(REMOVED_LINK)].map((m) => m[0]))].map((m) => `links to a removed address: ${m}`);
+}
+
+/** The problems of one built page: a stub is checked as a stub, a live page as an article (its meta, its links, the home's story,
+    and its cover on a shelf post or a chapter). */
+export function pageProblems(html, rel) {
   if (/http-equiv="refresh"/i.test(html)) return stubProblems(html);
-  const out = metaProblems(html);
-  if (/^(fr\/)?posts\/[^/]+\/$/.test(rel)) out.push(...coverProblems(html));
+  const out = [...metaProblems(html), ...removedLinkProblems(html)];
+  if (rel === "" || rel === "fr/") out.push(...homeProblems(html));
+  if (rel && /^(fr\/)?(basics|story)\/[^/]+\/$/.test(rel)) out.push(...coverProblems(html));
   return out;
 }
 
@@ -120,5 +153,5 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     console.error(problems.join("\n"));
     process.exit(1);
   }
-  console.log(`check-meta: ${n} pages — titles ≤ ${TITLE_MAX}, descriptions ≤ ${DESCRIPTION_MAX}, one h1, every image with an alt`);
+  console.log(`check-meta: ${n} pages — titles ≤ ${TITLE_MAX}, descriptions ≤ ${DESCRIPTION_MAX}, one h1, every image with an alt, the home's story, no link to a removed page`);
 }

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { TagsPage } from "@/app/components/pages/TagsPage";
-import { getDictionary } from "@/lib/i18n";
-import { pageMetadata } from "@/lib/seo";
+import RetiredPost, { retiredMetadata } from "@/app/components/pages/RetiredPost";
+import { pageKey, retiredTarget } from "@/lib/retired";
 
-const t = getDictionary("en");
-export const metadata: Metadata = pageMetadata({ locale: "en", path: "/tags", title: t.tags.title, description: t.tags.lead, alternates: ["en", "fr"] });
+/* A removed page (krizaka-blog#123: the blog is one page, the story): a stub to where it went (lib/redirects.json). */
+const key = pageKey("/tags/");
+export const metadata: Metadata = retiredMetadata("en", retiredTarget("en", key)!);
 
 export default function Page() {
-  return <TagsPage locale="en" />;
+  return <RetiredPost locale="en" slug={key} />;
 }

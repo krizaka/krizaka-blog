@@ -27,7 +27,7 @@ import { CoverImage } from "./CoverImage";
      then the h1, the lead and who wrote it, and the cover once;
    - the body: the reading layout of a post, « Round n » set before each h2 (rehypeRounds; the h2 and its id do not change);
    - the stats: the figures the body already gives, each linked to its section;
-   - « Continuer ? »: the next chapter, or the posts while it is not out. */
+   - « Continuer ? »: the next chapter, or back to the story (the home) after the last one. */
 export default function ChapterPage({ chapter }: { chapter: Chapter }) {
   const { locale } = chapter;
   const t = getDictionary(locale);
@@ -109,7 +109,7 @@ export default function ChapterPage({ chapter }: { chapter: Chapter }) {
           title={tc.continue}
           actionKey={tc.start}
           caption={next ? tc.nextCaption : undefined}
-          actionLabel={next ? format(tc.next, { n: chapterNumber(next.chapter) }) : tc.allPosts}
+          actionLabel={next ? format(tc.next, { n: chapterNumber(next.chapter) }) : tc.toStory}
           href={next ? localizedPath(locale, chapterPath(next.slug)) : localizedPath(locale, "/")}
         >
           {next ? (

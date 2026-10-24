@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import matter from "gray-matter";
 
 /* What the blog says about its author comes from a source he gave (content/authors/oussama.json). His public bio says only
@@ -31,9 +31,9 @@ test("the author's facts have a source and the list of what is never published",
 test("the About page and the home note tell the sourced path, and never the employer, a birth date, a former city or LinkedIn", () => {
   for (const l of ["en", "fr"]) {
     const a = messages(l).about;
-    const text = [a.lead, ...a.body, a.homeBody, ...a.places].join("\n");
-    assert.ok(a.homeBody.includes("{lab}"), `${l}: the home note names the 2011 lab`);
-    assert.match(a.homeLab, new RegExp(LAB.source, "i"), `${l}: the lab is named as the LIG`);
+    const text = [a.lead, ...a.body, a.labNote, ...a.places].join("\n");
+    assert.ok(a.labNote.includes("{lab}"), `${l}: the About page's note names the 2011 lab`);
+    assert.match(a.lab, new RegExp(LAB.source, "i"), `${l}: the lab is named as the LIG`);
     for (const [place] of text.matchAll(PATH_PLACES)) assert.ok(facts.places.includes(place), `${l}: ${place} is not sourced`);
     assert.doesNotMatch(text, FORBIDDEN, `${l}: forbidden in the bio`);
     assert.match(text, /Montréal/);
@@ -45,15 +45,15 @@ test("the About page and the home note tell the sourced path, and never the empl
   }
 });
 
-test("the home note links the 2011 lab, the LIG, and its name is the only place Grenoble appears", () => {
+test("the About page links the 2011 lab, the LIG, and its name is the only place Grenoble appears (the home keeps a byline, krizaka-blog#123)", () => {
   assert.equal(facts.lab.url, "https://www.liglab.fr/");
-  assert.match(read("app/components/about/AuthorNote.tsx"), /https:\/\/www\.liglab\.fr\//);
-  for (const l of ["en", "fr"]) assert.doesNotMatch(messages(l).about.homeLab.replace(LAB, ""), FORBIDDEN);
+  assert.match(read("app/components/about/AboutPage.tsx"), /https:\/\/www\.liglab\.fr\//);
+  for (const l of ["en", "fr"]) assert.doesNotMatch(messages(l).about.lab.replace(LAB, ""), FORBIDDEN);
+  assert.ok(!existsSync(new URL("../app/components/about/AuthorNote.tsx", import.meta.url)), "the home's « Who writes » block is gone");
 });
 
 test("the Person JSON-LD of the About page names no former city and no LinkedIn profile", () => {
   assert.doesNotMatch(read("app/components/about/AboutPage.tsx"), FORBIDDEN);
-  assert.doesNotMatch(read("app/components/about/AuthorNote.tsx"), FORBIDDEN);
 });
 
 test("a post that tells the author's path names only sourced places and links to the About page", () => {
@@ -72,12 +72,11 @@ test("a post that tells the author's path names only sourced places and links to
   }
 });
 
-test("the author is shown by the Wu-sama mark, never a photo: AuthorNote, the About page and the byline", () => {
-  for (const f of ["app/components/about/AuthorNote.tsx", "app/components/about/AboutPage.tsx", "app/components/pages/Byline.tsx"]) {
+test("the author is shown by the Wu-sama mark, never a photo: the About page and the byline", () => {
+  for (const f of ["app/components/about/AboutPage.tsx", "app/components/pages/Byline.tsx"]) {
     assert.match(read(f), /WuSamaMark/, `${f} draws the Wu-sama mark`);
     assert.doesNotMatch(read(f), /<(img|Image)\b|@krizaka\/ui\/avatar/, `${f} shows no photo or avatar image`);
   }
-  assert.doesNotMatch(read("app/components/about/AuthorNote.tsx"), /KrizakaLogo/);
   assert.doesNotMatch(read("app/components/about/AboutPage.tsx"), /KrizakaLogo/);
 });
 

@@ -28,11 +28,16 @@ export function aboutJsonLd(locale: Locale) {
   };
 }
 
-/* /about/: who writes the blog. The author is shown by the Wu-sama mark. */
+/* The 2011 lab, named at Oussama's request (content/authors/oussama.json, "lab"). */
+const LIG_URL = "https://www.liglab.fr/";
+
+/* /about/: who writes the blog. The author is shown by the Wu-sama mark. The home carries only his byline (krizaka-blog#123); the
+   note on his first brush with AI, at the LIG in 2011, is told here, after his path. */
 export function AboutPage({ locale }: { locale: Locale }) {
   const a = getDictionary(locale).about;
   const bio = a.body.slice(0, -1);
   const mission = a.body[a.body.length - 1];
+  const [beforeLab, afterLab] = a.labNote.split("{lab}");
 
   return (
     <>
@@ -69,6 +74,13 @@ export function AboutPage({ locale }: { locale: Locale }) {
                   {bio.map((p) => (
                     <p key={p}>{p}</p>
                   ))}
+                  <p>
+                    {beforeLab}
+                    <a href={LIG_URL} rel="noopener">
+                      {a.lab}
+                    </a>
+                    {afterLab}
+                  </p>
                 </div>
                 <Separator className="bl-about-separator" />
                 <div className="bl-about-mission">

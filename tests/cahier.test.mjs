@@ -36,8 +36,8 @@ test("the footer is the family's single band: no link the family's columns alrea
   assert.doesNotMatch(footer, /GITHUB_ORG_URL/);
 });
 
-test("the home is the notebook: its sections numbered in the margin, the latest posts on lined paper", () => {
+test("the home is the notebook: its sections numbered in the margin (Featured, the chapters, the basics), the chapters on lined paper", () => {
   const home = read("app/components/pages/HomePage.tsx");
-  assert.equal((home.match(/number=\{no\(\)\} margin/g) ?? []).length, 4);
+  assert.equal((home.match(/number=\{no\(\)\} margin/g) ?? []).length, 3);
   assert.match(home, /paper="lines"/);
 });

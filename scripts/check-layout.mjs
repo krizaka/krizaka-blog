@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* The layout the reader sees, in a real browser (Playwright, Chromium): at 1750, 1366 and 390 px the bar and the page's h1
+/* The layout the reader sees, in a real browser (Playwright, Chromium): at 1750, 1366, 390 and 360 px the bar and the page's h1
    stay inside the window (nothing cut at the right edge, no sideways scroll), and the bar's links show a focus ring only to
    the keyboard (:focus-visible): none on load, none after a click, one ring (no double ring) after Tab.
    Usage: node scripts/check-layout.mjs --base http://localhost:3000 [--path /posts/<slug>/ …] [--posts out] */
@@ -11,16 +11,16 @@ const args = process.argv.slice(2);
 const base = (args[args.indexOf("--base") + 1] || "http://localhost:3000").replace(/\/$/, "");
 const paths = ["/", "/fr/"];
 args.forEach((a, i) => a === "--path" && paths.push(args[i + 1]));
-/* --posts <out dir>: every post and every chapter the build wrote, in both languages (out/posts/<slug>/, out/fr/story/<slug>/…). */
+/* --posts <out dir>: every post and every chapter the build wrote, in both languages (out/basics/<slug>/, out/fr/story/<slug>/…). */
 const postsDir = args.includes("--posts") ? args[args.indexOf("--posts") + 1] : undefined;
 if (postsDir) {
   for (const prefix of ["", "fr/"])
-    for (const section of ["posts", "story"]) {
+    for (const section of ["basics", "story"]) {
       const dir = join(postsDir, prefix, section);
       if (existsSync(dir)) for (const slug of readdirSync(dir)) if (existsSync(join(dir, slug, "index.html"))) paths.push(`/${prefix}${section}/${slug}/`);
     }
 }
-const WIDTHS = [1750, 1366, 390];
+const WIDTHS = [1750, 1366, 390, 360];
 
 /** The problems of one page as laid out: boxes past the right edge, a title wider than its box, sideways scroll. */
 const layoutProblems = () => {

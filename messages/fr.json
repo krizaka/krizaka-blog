@@ -1,29 +1,16 @@
 {
   "site": {
     "name": "Blogue Krizaka",
-    "tagline": "Des notes de ceux qui construisent Krizaka.",
-    "description": "Le blogue de Krizaka : comment nous construisons une IA souveraine à Montréal, ce qu'elle coûte vraiment, et ce que nos produits font sur de vrais documents. Sobre, factuel, en français et en anglais.",
+    "tagline": "Les notes de construction de Krizaka.",
+    "description": "Les notes de construction de Krizaka, racontées à Montréal par son fondateur : l’histoire en chapitres, dans l’ordre. En français et en anglais.",
     "project": "La voix de Krizaka"
   },
   "bar": {
     "aria": "Navigation principale",
-    "posts": "Billets",
-    "tags": "Sujets",
-    "search": "Rechercher",
-    "searchAria": "Rechercher dans les billets",
-    "saved": "Enregistrés",
-    "rssAria": "S'abonner (RSS)",
-    "github": "GitHub",
-    "githubAria": "Le code source du blogue sur GitHub",
-    "company": "krizaka.com",
-    "theme": "Thème",
     "toLight": "Passer au thème clair",
     "toDark": "Passer au thème sombre",
-    "switchLanguage": "Switch to English",
-    "languageShort": "EN",
-    "menu": "Menu",
     "skip": "Aller au contenu",
-    "story": "L’histoire"
+    "language": "Langue"
   },
   "footer": {
     "aria": "Pied de page",
@@ -35,43 +22,26 @@
     "about": "À propos",
     "newsletter": "Infolettre",
     "story": "L’histoire",
-    "allPosts": "Tous les billets"
+    "basics": "Les bases"
   },
   "home": {
     "eyebrow": "Blogue",
-    "title": "Des notes de ceux qui construisent Krizaka",
-    "lead": "Comment nous construisons une IA souveraine à Montréal, ce qu'elle coûte vraiment, et ce que nos produits font sur de vrais documents. Sobre, factuel, vérifié contre ce qui tourne.",
-    "latest": "Derniers billets",
-    "latestLead": "Du plus récent au plus ancien. Chaque chiffre d'un billet vient d'une exécution ou d'une mesure que nous pouvons montrer.",
-    "emptyTitle": "Les premiers billets s'écrivent",
-    "emptyBody": "Rien n'est encore publié. Le blogue s'ouvrira sur quelques notes sur l'IA souveraine, les coûts mesurés et une vraie exécution sur un document — abonnez-vous au fil pour les voir arriver.",
-    "emptyAction": "S'abonner (RSS)",
-    "topics": "Sujets",
-    "elsewhereTitle": "Là où vit le travail",
-    "elsewhereLead": "Le blogue raconte ; les produits et les projets open source montrent.",
-    "company": "Krizaka",
-    "companyBody": "La compagnie, ses produits et son histoire.",
-    "ui": "Krizaka UI",
-    "uiBody": "Le kit de composants open source avec lequel tous les sites Krizaka sont faits.",
-    "java": "Krizaka Java",
-    "javaBody": "Les briques Spring Boot open source de tous les services Krizaka.",
-    "open": "Ouvrir",
+    "title": "L’histoire de Krizaka",
+    "lead": "Ce sont mes notes de construction de Krizaka, à Montréal : ce que j’ai essayé, ce qui a cassé et ce que j’ai gardé, dans l’ordre.",
     "featuredTitle": "À la une",
-    "seriesTitle": "Séries",
-    "seriesLead": "Des billets qui vont ensemble, dans l'ordre de lecture.",
-    "moreFromSeries": "Lire la série",
-    "allPosts": "Tous les billets",
-    "filterLabel": "Filtrer par sujet",
-    "allTopics": "Tous les billets",
     "seoTitle": "Blogue Krizaka — IA souveraine, LLM locaux, coûts mesurés",
-    "seoDescription": "Notes de construction d'une IA souveraine à Montréal : LLM locaux, Spring AI 2, coûts des GPU et de la vidéo, prompts. Des chiffres mesurés.",
-    "storyTitle": "L’histoire de Krizaka",
-    "storyLead": "Les mêmes billets, dans le temps : une étape pour chacun, semaine après semaine.",
-    "storyCta": "Suivre l’histoire",
-    "readStory": "Lire l’histoire de Krizaka →"
+    "seoDescription": "Les notes de construction de Krizaka à Montréal, chapitre par chapitre : IA souveraine, LLM locaux, coûts des GPU, interface, agents.",
+    "byline": "Par Oussama Abid, fondateur de Krizaka.",
+    "readChapter": "Lire le chapitre",
+    "chaptersTitle": "Les chapitres",
+    "chaptersLead": "Dans l’ordre où c’est arrivé : chacun dit ce que j’avais en face, puis ce qu’on a construit.",
+    "new": "Nouveau",
+    "versus": "{faced} → {built}",
+    "basicsTitle": "Les bases, pour comprendre",
+    "basicsLead": "Les mots de l’IA, un à la fois, pour lire les chapitres sans se perdre."
   },
   "post": {
-    "back": "Tous les billets",
+    "back": "L’histoire de Krizaka",
     "by": "Par {author}",
     "readingTime": "{minutes} min de lecture",
     "updated": "Mis à jour le {date}",
@@ -119,16 +89,12 @@
     "start": "Start",
     "next": "Chapitre {n}",
     "nextCaption": "Chapitre suivant",
-    "storySoFar": "Le prochain chapitre n'est pas encore sorti : la suite de l'histoire est encore dans les billets.",
-    "allPosts": "Tous les billets",
-    "back": "Tous les billets"
+    "storySoFar": "Le prochain chapitre n’est pas encore sorti : celui-ci est le dernier, pour l’instant.",
+    "back": "L’histoire de Krizaka",
+    "toStory": "Retour à l’histoire"
   },
   "engage": {
     "title": "À garder, à partager",
-    "save": "Lire plus tard",
-    "saved": "Enregistré",
-    "saveHint": "Garder ce billet dans vos enregistrés (dans ce navigateur)",
-    "unsaveHint": "Retirer ce billet de vos enregistrés",
     "shareAria": "Partager ce billet",
     "shareNative": "Partager…",
     "copy": "Copier le lien",
@@ -141,26 +107,10 @@
       "hackernews": "Hacker News",
       "reddit": "Reddit",
       "email": "Courriel"
-    },
-    "savedTitle": "Billets enregistrés",
-    "savedLead": "Les billets gardés pour plus tard. La liste reste dans ce navigateur : aucun compte, rien n'est envoyé.",
-    "emptyTitle": "Rien d'enregistré pour l'instant",
-    "emptyBody": "Appuyez sur « Lire plus tard » à la fin d'un billet : il vous attendra ici.",
-    "emptyAction": "Parcourir les billets",
-    "count": "{count} billets enregistrés",
-    "countOne": "1 billet enregistré",
-    "localOnly": "gardés dans ce navigateur seulement",
-    "remove": "Retirer",
-    "removeAria": "Retirer « {title} » de vos enregistrés"
+    }
   },
   "tags": {
-    "title": "Sujets",
-    "lead": "Chaque billet est classé sous les sujets dont il parle.",
-    "oneTitle": "Billets sur {tag}",
-    "oneLead": "Tout ce que nous avons écrit sur ce sujet, du plus récent au plus ancien.",
-    "count": "{count} billets",
     "none": "Aucun billet sur ce sujet pour l'instant.",
-    "back": "Tous les sujets",
     "names": {
       "sovereignty": "Souveraineté",
       "ai": "IA",
@@ -177,87 +127,13 @@
       "ui": "Interface",
       "security": "Sécurité",
       "integration": "Intégration"
-    },
-    "countOne": "1 billet",
-    "seo": {
-      "sovereignty": {
-        "title": "IA souveraine : où vos données sont traitées",
-        "description": "Billets sur l'IA souveraine et auto-hébergée : où un document est traité, quel modèle l'a lu, qui voit le résultat, et ce que ça coûte."
-      },
-      "ai": {
-        "title": "Notes d'ingénierie IA, de Montréal — Blogue Krizaka",
-        "description": "Construire une plateforme d'IA en vrai : LLM locaux, Spring AI, modèles d'image et de vidéo, GPU. De vraies exécutions, des chiffres mesurés."
-      },
-      "montreal": {
-        "title": "L'IA à Montréal et au Québec — Blogue Krizaka",
-        "description": "Construire de l'IA à Montréal : la Loi 25, un GPU loué dans une région de Montréal, et ce qu'une entreprise d'ici doit à ses clients."
-      },
-      "costs": {
-        "title": "Coûts de l'IA mesurés : GPU, API, Mac — Blogue Krizaka",
-        "description": "Ce que coûte vraiment l'IA : API hébergées, H100 loués et un Mac comparés sur le même travail, avec les factures et les erreurs."
-      },
-      "orazaka": {
-        "title": "Orazaka : construire un moteur d'IA open source",
-        "description": "Notes de construction d'Orazaka, un moteur d'IA open source : Spring AI 2, le routage des modèles en données, les workers, les GPU, ce qui a cassé."
-      },
-      "measurements": {
-        "title": "Exécutions d'IA mesurées — Blogue Krizaka",
-        "description": "Des billets fondés sur des mesures : secondes, dollars et résultats d'exécutions enregistrées, et ce qui n'a pas été mesuré, dit clairement."
-      },
-      "yomizaka": {
-        "title": "Yomizaka : lire des documents avec l'IA",
-        "description": "Comment Yomizaka lit des documents comme un bail avec Orazaka : des constats liés aux mots exacts, et ce qu'une exécution ne prouve pas."
-      },
-      "documents": {
-        "title": "Analyse de documents par l'IA — Blogue Krizaka",
-        "description": "L'IA sur de vrais documents : comment un bail ou un contrat est vérifié règle par règle, comment vérifier le résultat, et ses limites."
-      },
-      "law": {
-        "title": "Droit, règles et IA au Québec — Blogue Krizaka",
-        "description": "Les règles d'une entreprise logicielle au Québec : Loi 25, Code civil, règles des réseaux de cartes, et ce qu'une lecture par l'IA peut affirmer."
-      },
-      "prompts": {
-        "title": "Écrire des prompts pour les modèles d'image",
-        "description": "Comment un prompt guide vraiment un modèle d'image ou de vidéo : sujet, lieu, caméra, prompt négatif et guidage, testés avec une graine fixe."
-      },
-      "payments": {
-        "title": "Paiements pour un produit logiciel — Blogue Krizaka",
-        "description": "Encaisser comme petite entreprise logicielle : ce que Stripe, PayPal et Square refusent, ce qu'exigent les réseaux de cartes, l'effet sur le code."
-      },
-      "basics": {
-        "title": "Les bases de l'IA, mot par mot — Blogue Krizaka",
-        "description": "Token, contexte, quantification, RAG, outils, MCP, agents, diffusion : les mots de l'IA expliqués simplement, avec ce qui tourne vraiment."
-      },
-      "ui": {
-        "title": "Kit d'interface et composants — Blogue Krizaka",
-        "description": "Krizaka UI, un kit de composants pour le web, le mobile et le Mac : réutilisation, parité, ce qu'un correctif propage."
-      },
-      "security": {
-        "title": "Sécurité, secrets et comptes — Blogue Krizaka",
-        "description": "Garder les clés et les comptes d'une petite entreprise de logiciels hors du code, et automatiser autour avec des agents et une CI."
-      },
-      "integration": {
-        "title": "Intégrer un moteur d'IA : API, MCP — Blogue Krizaka",
-        "description": "Comment un produit se branche sur un moteur d'IA : API, webhooks, MCP, OAuth, ce que fait l'industrie et ce qui tourne vraiment chez nous."
-      }
     }
-  },
-  "search": {
-    "title": "Rechercher dans les billets",
-    "lead": "Titres, résumés, sujets et texte, dans la langue que vous lisez.",
-    "label": "Rechercher",
-    "placeholder": "Un mot, un sujet, un chiffre…",
-    "results": "{count} résultats",
-    "noResults": "Aucun billet ne correspond. Essayez un mot plus court.",
-    "hint": "Tapez pour chercher."
   },
   "notFound": {
     "title": "Page introuvable",
     "body": "Cette page n'existe pas sur le blogue Krizaka.",
     "back": "Retour au blogue",
-    "lead": "L'adresse a peut-être changé, ou le billet a été fusionné avec un autre.",
-    "search": "Chercher dans les billets",
-    "latest": "Derniers billets"
+    "lead": "L'adresse a peut-être changé, ou le billet a été fusionné avec un autre."
   },
   "authors": {
     "krizaka": "L'équipe Krizaka",
@@ -293,12 +169,6 @@
     "note": "Note"
   },
   "series": {
-    "title": "Séries",
-    "lead": "Des billets qui vont ensemble, dans l'ordre de lecture.",
-    "oneLead": "{count} billets, dans l'ordre de lecture.",
-    "back": "Toutes les séries",
-    "countOne": "1 billet",
-    "count": "{count} billets",
     "names": {
       "building-orazaka": "Construire Orazaka",
       "measured": "Mesuré",
@@ -311,7 +181,7 @@
       "building-krizaka": "Ce qui entoure le code d'une petite entreprise de logiciels, l'argent et le droit d'abord. Raconté au fil de l'eau, avec ce qui n'est pas encore décidé.",
       "basics": "Les mots de l'IA, un à la fois, avec une image simple et ce qui tourne vraiment chez nous."
     },
-    "story": "Ou les suivre tous dans le temps : l’histoire de Krizaka"
+    "story": "Et l’histoire de Krizaka, chapitre par chapitre"
   },
   "calc": {
     "title": "Quand un GPU loué bat-il le prix hébergé ?",
@@ -336,10 +206,8 @@
       "Aujourd'hui, je développe Krizaka ici à Montréal, en orchestrant des agents d'IA autonomes et en explorant la rencontre entre modèles modernes et ingénierie logicielle robuste.",
       "Ce blogue est un carnet d'ingénierie : mesures réelles, choix d'architecture, enseignements de la production et défis encore ouverts."
     ],
-    "homeTitle": "Qui écrit",
-    "homeBody": "Je m'appelle Oussama, et je construis Krizaka à Montréal. Mon premier contact avec l'IA date de 2011, au {lab}, bien avant que le mot soit à la mode. Ici, je raconte ce que j'apprends en route.",
-    "homeLab": "laboratoire d'informatique de Grenoble (LIG)",
-    "homeLink": "À propos de l'auteur",
+    "labNote": "Mon premier contact avec l'IA date de 2011, au {lab}, bien avant que le mot soit à la mode.",
+    "lab": "laboratoire d'informatique de Grenoble (LIG)",
     "placesLabel": "Vit à",
     "places": [
       "Montréal"
@@ -402,55 +270,13 @@
     "invalidTitle": "Ce lien n'est plus valide",
     "invalidLead": "Il a peut-être été copié en partie. Utilisez le lien de désabonnement au bas du dernier courriel reçu."
   },
-  "feedPage": {
-    "eyebrow": "Suivre",
-    "title": "Suivre le Blog Krizaka",
-    "lead": "Recevez chaque nouveau billet par courriel, ou ajoutez le flux à un lecteur. Sans compte et sans pistage, dans les deux cas.",
-    "emailTitle": "Par courriel",
-    "emailLead": "Un courriel quand un billet est publié, dans votre langue. Rien d'autre, et vous partez en un clic.",
-    "rssTitle": "Avec le RSS",
-    "rssWhat": "Le RSS est un format ouvert : un lecteur de flux (Feedly, NetNewsWire, Inoreader, Thunderbird…) va chercher chaque nouveau billet pour vous, sans compte chez nous. Collez cette adresse dans votre lecteur.",
-    "addressLabel": "Adresse du flux (RSS)",
-    "copy": "Copier",
-    "copied": "Copié",
-    "copyFallback": "Copiez l'adresse du flux :",
-    "atom": "La version Atom du flux",
-    "latest": "Derniers billets",
-    "reader": "Qu'est-ce qu'un lecteur de flux ?"
-  },
-  "story": {
-    "title": "L’histoire de Krizaka",
-    "lead": "Le chemin de l’entreprise raconté par ses billets : une étape pour chacun, avec son image et sa première ligne, groupées par semaine et par fil.",
-    "label": "Les étapes de l’histoire",
-    "indexLabel": "Les périodes de l’histoire",
-    "threads": "Les fils",
-    "threadCount": "{count} étapes",
-    "noThread": "Billets isolés",
-    "week": "Semaine du {start}",
-    "period": "Du {start} au {end}",
-    "read": "Lire le billet",
-    "published": "Publié",
-    "statuses": {
-      "done": "Publié",
-      "current": "Dernier",
-      "upcoming": "À venir",
-      "error": "Échec"
-    },
-    "stepCount": "{count} étapes",
-    "sourcesLabel": "Sources",
-    "backLabel": "Retour au texte",
-    "sources": [
-      "Chaque étape est un billet : sa date, sa série, sa couverture et sa première ligne sont les siennes, lues dans son en-tête.",
-      "Un nouveau billet rejoint l’histoire tout seul, dans sa semaine."
-    ],
-    "back": "L’histoire de Krizaka",
-    "empty": "Aucun billet n’est encore publié."
-  },
   "retired": {
     "lead": "Ce billet fait maintenant partie de l'histoire de Krizaka.",
     "link": "Lire le chapitre : {title}",
     "linkPost": "Lire le billet : {title}",
     "linkStory": "Lire l'histoire de Krizaka",
-    "leadBasics": "Ce billet vit maintenant dans « Les bases »."
+    "leadBasics": "Ce billet vit maintenant dans « Les bases ».",
+    "leadPage": "Cette page n’existe plus : le blogue tient maintenant sur une seule page, l’histoire de Krizaka.",
+    "linkBasics": "Lire « Les bases »"
   }
 }

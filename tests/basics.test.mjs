@@ -49,14 +49,14 @@ test("the old posts routes only answer the stubs of retired posts (no live post 
   }
 });
 
-test("every retired series has a stub under /series/<id>/ that leads to the story or to the shelf", () => {
+test("every retired series has a stub under /series/<id>/ that leads to the story (the home) or to the shelf", () => {
   const series = Object.keys(map).filter((k) => k.startsWith("series:"));
   assert.ok(series.length >= 4, "the four series are mapped");
   for (const key of series) {
     const id = key.slice("series:".length);
     const target = map[key];
-    assert.ok(target.en.startsWith("/story/") || target.en.startsWith("/basics/"), `${id} leads to the story or the shelf`);
-    assert.ok(target.fr.startsWith("/fr/story/") || target.fr.startsWith("/fr/basics/"), `${id} leads to the story or the shelf in FR`);
+    assert.ok(target.en === "/" || target.en.startsWith("/basics/"), `${id} leads to the story or the shelf`);
+    assert.ok(target.fr === "/fr/" || target.fr.startsWith("/fr/basics/"), `${id} leads to the story or the shelf in FR`);
   }
   for (const l of ["en", "fr"]) {
     const route = read(l === "en" ? "app/(en)/series/[series]/page.tsx" : "app/fr/series/[series]/page.tsx");
@@ -71,7 +71,7 @@ test("each shelf slug is redirected from its old /posts/ address to /basics/, an
     assert.equal(map[slug].fr, `/fr/basics/${slug}/`);
   }
   for (const [slug, targets] of Object.entries(map)) {
-    if (slug.startsWith("series:") || SHELF.includes(slug)) continue;
+    if (slug.startsWith("series:") || slug.startsWith("page:") || SHELF.includes(slug)) continue;
     assert.match(targets.en, /^\/story\//, `${slug} goes to a chapter`);
     assert.match(targets.fr, /^\/fr\/story\//, `${slug} goes to a chapter in FR`);
   }

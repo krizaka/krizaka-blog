@@ -3,7 +3,7 @@
    fails otherwise. */
 import type { TranslationDictionary } from "./i18n";
 
-export const CLIENT_NAMESPACES = ["site", "bar", "footer", "engage", "newsletter", "feedPage", "search", "calc"] as const;
+export const CLIENT_NAMESPACES = ["site", "bar", "footer", "engage", "newsletter", "calc"] as const;
 export type ClientMessages = Pick<TranslationDictionary, (typeof CLIENT_NAMESPACES)[number]>;
 
 export function clientMessages(t: TranslationDictionary): ClientMessages {

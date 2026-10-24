@@ -48,17 +48,11 @@ test(`every published post: a title tag of at most ${TITLE_MAX} characters and a
   }
 });
 
-test("every topic a published post wears has its own title tag and description, in both languages", () => {
+test("the topics have no pages of their own any more (krizaka-blog#123), so no title tag of their own either; every one keeps its name", () => {
   for (const locale of ["en", "fr"]) {
     const t = JSON.parse(readFileSync(new URL(`../messages/${locale}.json`, import.meta.url), "utf8"));
-    for (const { f, data } of published.filter((p) => p.f.endsWith(`.${locale}.mdx`))) {
-      for (const tag of data.tags ?? []) {
-        const seo = t.tags.seo?.[tag];
-        assert.ok(seo, `${f}: the topic "${tag}" has no tags.seo.${tag} in ${locale}.json`);
-        assert.ok(seo.title.length <= TITLE_MAX, `${locale} tags.seo.${tag}.title is ${seo.title.length} characters`);
-        assert.ok(seo.description.length <= DESCRIPTION_MAX, `${locale} tags.seo.${tag}.description is ${seo.description.length} characters`);
-      }
-    }
+    assert.equal(t.tags.seo, undefined, `${locale}: no tags.seo`);
+    for (const { f, data } of published.filter((p) => p.f.endsWith(`.${locale}.mdx`))) for (const tag of data.tags ?? []) assert.ok(t.tags.names[tag], `${f}: the topic "${tag}" has a name in ${locale}.json`);
   }
 });
 

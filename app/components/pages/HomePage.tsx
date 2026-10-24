@@ -2,99 +2,100 @@ import Link from "next/link";
 import { Section } from "@krizaka/ui/page";
 import { PageHero } from "@krizaka/ui/page-hero";
 import { LinkCard } from "@krizaka/ui/link-card";
-import { CardGrid } from "@krizaka/ui/card-grid";
-import { EmptyState } from "@krizaka/ui/empty-state";
-import { NotificationIcon } from "@krizaka/icons";
-import { Button } from "@krizaka/ui/button";
+import { Badge } from "@krizaka/ui/badge";
 import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
-import { featuredPosts, postsOf } from "@/lib/posts";
-import { JAVA_URL, KRIZAKA_URL, UI_URL } from "@/lib/site";
-import { PostList } from "./PostList";
+import { chapterNumber, chaptersOf } from "@/lib/chapters";
+import { latestChapter, storyRows } from "@/lib/home";
+import { postsOf } from "@/lib/posts";
+import { chapterPath, postPath } from "@/lib/seo";
+import { formatPeriod } from "./PostList";
 import { PostCard } from "./PostCard";
-import { seriesCount, seriesLead, seriesName } from "./SeriesPage";
 import { NewsletterSection } from "../newsletter/NewsletterSection";
-import { AuthorNote } from "../about/AuthorNote";
-import { TopicFilter } from "./TopicFilter";
 
-/* The home: the blog's promise, three posts first (the newest large, the next two medium), the topics as filters (each one its own page), the other
-   posts as cards, the series, and where the work lives. */
+/* The home is the story (krizaka-blog#123), one page read in five seconds, then deeper on demand:
+   - the title and the one sentence that says what this is: the notes from building Krizaka, then who writes them (the byline;
+     À propos is in the footer);
+   - Featured: one card, the latest chapter (cover, title, its line, date, « Read the chapter »);
+   - the chapters in reading order, 1 → N, one row each (number, title, what I faced → what we built, the period), the latest
+     marked « New »: a timeline you follow, never a feed (lib/home.ts);
+   - at the end, « The basics » as quiet links, then the one newsletter line. The footer follows (SiteRoot).
+   Every piece is a @krizaka/ui block: PageHero, Section (the Cahier's § in the margin), the post card, LinkCard, Badge. The
+   chapters are an <ol> of LinkCards until a Stepper's steps can be links (krizaka-ui#617). */
 export default function HomePage({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
-  const posts = postsOf(locale);
+  const h = t.home;
+  const chapters = chaptersOf(locale);
+  const featured = latestChapter(chapters);
+  const rows = storyRows(chapters);
   const basics = postsOf(locale);
-  /* Three posts first: the newest (or a pinned one, `featured: true`) as the large card, the next two beside it. */
-  const [featured, ...second] = featuredPosts(locale, 3);
-  const rest = posts.filter((p) => p !== featured && !second.includes(p));
-  const feed = `${locale === "en" ? "" : "/fr"}/feed/`;
-  /* The Cahier (krizaka-ui ADR-004): the sections are the notebook's pages, numbered in the red margin (§ 1, § 2…), in
-     the order they appear; the latest posts sit on its lined paper. */
+  /* An address is built from known values only: a slug of lower-case words (the file names of content/), never anything else. */
+  const safe = (slug: string) => (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) ? slug : "");
+  const href = (slug: string) => localizedPath(locale, chapterPath(safe(slug)));
+  /* The versus labels are written as the second half of a sentence (« Ce que j'ai affronté : un écran vert… »); alone on a row they
+     start with a capital. */
+  const upperFirst = (s: string) => s.charAt(0).toLocaleUpperCase(locale) + s.slice(1);
   let n = 0;
   const no = () => `§ ${++n}`;
   return (
     <>
-      <PageHero
-        eyebrow={t.home.eyebrow}
-        title={t.home.title}
-        lead={
-          <>
-            {t.home.lead}
-            <span className="mt-3 block">
-              <Link href={localizedPath(locale, "/story")}>{t.home.readStory}</Link>
-            </span>
-          </>
-        }
-        linkAs={Link}
-      />
+      <PageHero eyebrow={h.eyebrow} title={h.title} lead={<span className="bl-home-sentence">{h.lead}</span>} linkAs={Link}>
+        <p className="bl-home-byline">{h.byline}</p>
+      </PageHero>
       {featured && (
-        <Section title={t.home.featuredTitle} reveal={false} number={no()} margin>
-          <PostCard post={featured} locale={locale} feature priority />
-          {second.length > 0 && (
-            <div className="bl-featured-pair">
-              {second.map((p) => (
-                <PostCard key={p.slug} post={p} locale={locale} />
-              ))}
-            </div>
-          )}
-        </Section>
-      )}
-      <Section title={t.home.latest} lead={posts.length ? t.home.latestLead : undefined} reveal={false} divider={Boolean(featured)} number={no()} margin paper="lines">
-        <TopicFilter locale={locale} />
-        {rest.length ? (
-          <PostList posts={rest} locale={locale} reveal={false} />
-        ) : posts.length ? null : (
-          <EmptyState
-            title={t.home.emptyTitle}
-            description={t.home.emptyBody}
-            action={
-              <Button asChild variant="secondary" size="md">
-                <a href={feed}>
-                  <NotificationIcon size={16} />
-                  {t.home.emptyAction}
-                </a>
-              </Button>
-            }
+        <Section id="featured" title={h.featuredTitle} reveal={false} number={no()} margin>
+          <PostCard
+            post={featured}
+            locale={locale}
+            feature
+            priority
+            titleAs="h3"
+            href={href(featured.slug)}
+            kicker={format(t.chapter.label, { n: chapterNumber(featured.chapter) })}
+            cta={h.readChapter}
           />
-        )}
-      </Section>
-      <NewsletterSection locale={locale} where="home" />
-      {basics.length > 0 && (
-        <Section title={t.home.seriesTitle} lead={t.home.seriesLead} divider number={no()} margin>
-          <CardGrid min={320}>
-            <LinkCard linkAs={Link} href={localizedPath(locale, "/basics")} title={seriesName(locale, "basics")} description={seriesLead(locale, "basics")} meta={seriesCount(locale, basics.length)} cta={t.home.moreFromSeries} titleAs="h3" />
-          </CardGrid>
-          <p className="bl-story-link">
-            <Link href={localizedPath(locale, "/story")}>{t.home.storyTitle}</Link> — {t.home.storyLead}
-          </p>
         </Section>
       )}
-      <AuthorNote locale={locale} />
-      <Section title={t.home.elsewhereTitle} lead={t.home.elsewhereLead} divider number={no()} margin>
-        <CardGrid min={260}>
-          <LinkCard href={KRIZAKA_URL} title={t.home.company} description={t.home.companyBody} cta={t.home.open} titleAs="h3" />
-          <LinkCard href={UI_URL} title={t.home.ui} description={t.home.uiBody} cta={t.home.open} titleAs="h3" />
-          <LinkCard href={JAVA_URL} title={t.home.java} description={t.home.javaBody} cta={t.home.open} titleAs="h3" />
-        </CardGrid>
-      </Section>
+      {rows.length > 0 && (
+        <Section id="chapters" title={h.chaptersTitle} lead={h.chaptersLead} reveal={false} divider number={no()} margin paper="lines">
+          <ol className="bl-chapters" aria-label={h.chaptersTitle}>
+            {rows.map(({ chapter: c, isNew }) => (
+              <li key={c.slug} className="bl-chapter" data-chapter={c.chapter} data-new={isNew || undefined}>
+                <LinkCard
+                  linkAs={Link}
+                  href={href(c.slug)}
+                  icon={<span className="bl-chapter-no">{chapterNumber(c.chapter)}</span>}
+                  meta={
+                    <>
+                      <time dateTime={c.period.split("/")[0]}>{formatPeriod(c.period, locale)}</time>
+                      {isNew && (
+                        <Badge tone="accent" dot className="bl-chapter-new">
+                          {h.new}
+                        </Badge>
+                      )}
+                    </>
+                  }
+                  title={c.title}
+                  description={format(h.versus, { faced: upperFirst(c.versus.faced), built: c.versus.built })}
+                  titleAs="h3"
+                  footerAlign="top"
+                />
+              </li>
+            ))}
+          </ol>
+        </Section>
+      )}
+      {basics.length > 0 && (
+        <Section id="basics" title={h.basicsTitle} lead={h.basicsLead} divider number={no()} margin>
+          <ul className="bl-basics-links">
+            {basics.map((p) => (
+              <li key={p.slug}>
+                <Link href={localizedPath(locale, postPath(safe(p.slug)))}>{p.title}</Link>
+              </li>
+            ))}
+          </ul>
+        </Section>
+      )}
+      <NewsletterSection locale={locale} where="home" />
     </>
   );
 }

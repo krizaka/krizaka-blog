@@ -8,8 +8,8 @@ import type { Post } from "@/lib/posts";
 import { formatDate } from "./PostList";
 
 /* Who wrote a post and when: the author (the company's mark for the team, Wu-sama's for Oussama: no photo), the date, the reading time, the update; then the
-   post's actions in one row (the other language, and what the page passes: « Read later »). */
-export function Byline({ post, other, children, section = "posts" }: { post: Post; other?: Post; children?: React.ReactNode; section?: "posts" | "story" }) {
+   post's actions in one row (the other language, and what the page passes). */
+export function Byline({ post, other, children, section = "basics" }: { post: Post; other?: Post; children?: React.ReactNode; section?: "basics" | "story" }) {
   const t = getDictionary(post.locale);
   /* The other language's address, from known values only: one of the two locales, a slug of lower-case words. */
   const otherLang: Locale = other?.locale === "fr" ? "fr" : "en";

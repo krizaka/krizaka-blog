@@ -1,29 +1,16 @@
 {
   "site": {
     "name": "Krizaka Blog",
-    "tagline": "Notes from the people who build Krizaka.",
-    "description": "The Krizaka blog: how we build sovereign AI in Montréal, what it really costs, and what our products do on real documents. Sober, factual, in English and French.",
+    "tagline": "The building notes of Krizaka.",
+    "description": "The building notes of Krizaka, told in Montréal by its founder: the story in chapters, in order. In English and French.",
     "project": "The voice of Krizaka"
   },
   "bar": {
     "aria": "Main navigation",
-    "posts": "Posts",
-    "tags": "Topics",
-    "search": "Search",
-    "searchAria": "Search the posts",
-    "saved": "Saved",
-    "rssAria": "Subscribe (RSS)",
-    "github": "GitHub",
-    "githubAria": "The blog's source on GitHub",
-    "company": "krizaka.com",
-    "theme": "Theme",
     "toLight": "Switch to the light theme",
     "toDark": "Switch to the dark theme",
-    "switchLanguage": "Passer en français",
-    "languageShort": "FR",
-    "menu": "Menu",
     "skip": "Skip to the content",
-    "story": "The story"
+    "language": "Language"
   },
   "footer": {
     "aria": "Footer",
@@ -35,43 +22,26 @@
     "about": "About",
     "newsletter": "Newsletter",
     "story": "The story",
-    "allPosts": "All posts"
+    "basics": "The basics"
   },
   "home": {
     "eyebrow": "Blog",
-    "title": "Notes from the people who build Krizaka",
-    "lead": "How we build sovereign AI in Montréal, what it really costs, and what our products do on real documents. Sober, factual, and checked against what runs.",
-    "latest": "Latest posts",
-    "latestLead": "Newest first. Every number in a post comes from a run or a measurement we can point to.",
-    "emptyTitle": "The first posts are being written",
-    "emptyBody": "Nothing is published yet. The blog opens with a few notes on sovereign AI, measured costs and a real document run — subscribe to the feed to see them arrive.",
-    "emptyAction": "Subscribe (RSS)",
-    "topics": "Topics",
-    "elsewhereTitle": "Where the work lives",
-    "elsewhereLead": "The blog tells; the products and the open-source projects show.",
-    "company": "Krizaka",
-    "companyBody": "The company, its products and its story.",
-    "ui": "Krizaka UI",
-    "uiBody": "The open-source component kit every Krizaka site is built with.",
-    "java": "Krizaka Java",
-    "javaBody": "The open-source Spring Boot building blocks of every Krizaka service.",
-    "open": "Open",
+    "title": "The Krizaka story",
+    "lead": "These are my notes from building Krizaka in Montréal: what I tried, what broke and what I kept, in order.",
     "featuredTitle": "Featured",
-    "seriesTitle": "Series",
-    "seriesLead": "Posts that belong together, in reading order.",
-    "moreFromSeries": "Read the series",
-    "allPosts": "All posts",
-    "filterLabel": "Filter by topic",
-    "allTopics": "All posts",
     "seoTitle": "Krizaka Blog — sovereign AI, local LLMs, measured costs",
-    "seoDescription": "Notes from building sovereign AI in Montréal: local LLMs, Spring AI 2, GPU and video generation costs, prompts. Real runs, measured numbers.",
-    "storyTitle": "The Krizaka story",
-    "storyLead": "The same posts, in time: a step for each, week after week.",
-    "storyCta": "Follow the story",
-    "readStory": "Read the Krizaka story →"
+    "seoDescription": "The building notes of Krizaka in Montréal, chapter by chapter: sovereign AI, local LLMs, GPU costs, one interface, coding agents.",
+    "byline": "By Oussama Abid, founder of Krizaka.",
+    "readChapter": "Read the chapter",
+    "chaptersTitle": "The chapters",
+    "chaptersLead": "In the order it happened: each one says what I was up against, then what we built.",
+    "new": "New",
+    "versus": "{faced} → {built}",
+    "basicsTitle": "The basics, to understand the rest",
+    "basicsLead": "The words of AI, one at a time, so the chapters read without getting lost."
   },
   "post": {
-    "back": "All posts",
+    "back": "The Krizaka story",
     "by": "By {author}",
     "readingTime": "{minutes} min read",
     "updated": "Updated {date}",
@@ -119,16 +89,12 @@
     "start": "Start",
     "next": "Chapter {n}",
     "nextCaption": "Next chapter",
-    "storySoFar": "The next chapter is not out yet: the rest of the story is still in the posts.",
-    "allPosts": "All posts",
-    "back": "All posts"
+    "storySoFar": "The next chapter is not out yet: this one is the last, for now.",
+    "back": "The Krizaka story",
+    "toStory": "Back to the story"
   },
   "engage": {
     "title": "Keep it, pass it on",
-    "save": "Save for later",
-    "saved": "Saved",
-    "saveHint": "Keep this post in your saved list (in this browser)",
-    "unsaveHint": "Remove this post from your saved list",
     "shareAria": "Share this post",
     "shareNative": "Share…",
     "copy": "Copy link",
@@ -141,26 +107,10 @@
       "hackernews": "Hacker News",
       "reddit": "Reddit",
       "email": "E-mail"
-    },
-    "savedTitle": "Saved posts",
-    "savedLead": "The posts you kept for later. The list stays in this browser: no account, nothing sent anywhere.",
-    "emptyTitle": "Nothing saved yet",
-    "emptyBody": "Press “Save for later” at the end of a post and it waits for you here.",
-    "emptyAction": "Browse the posts",
-    "count": "{count} saved posts",
-    "countOne": "1 saved post",
-    "localOnly": "kept in this browser only",
-    "remove": "Remove",
-    "removeAria": "Remove “{title}” from your saved posts"
+    }
   },
   "tags": {
-    "title": "Topics",
-    "lead": "Every post is filed under the subjects it is about.",
-    "oneTitle": "Posts about {tag}",
-    "oneLead": "Everything we have written on this subject, newest first.",
-    "count": "{count} posts",
     "none": "No post on this subject yet.",
-    "back": "All topics",
     "names": {
       "sovereignty": "Sovereignty",
       "ai": "AI",
@@ -177,87 +127,13 @@
       "ui": "UI",
       "security": "Security",
       "integration": "Integration"
-    },
-    "countOne": "1 post",
-    "seo": {
-      "sovereignty": {
-        "title": "Sovereign AI: where your data is processed — Krizaka Blog",
-        "description": "Posts on sovereign, self-hosted AI: where a document is processed, which model read it, who sees the result, and what that costs."
-      },
-      "ai": {
-        "title": "AI engineering notes from Montréal — Krizaka Blog",
-        "description": "Building an AI platform in practice: local LLMs, Spring AI, image and video models, GPUs. Real runs and measured numbers, no hype."
-      },
-      "montreal": {
-        "title": "AI in Montréal and Québec — Krizaka Blog",
-        "description": "Building AI in Montréal: Quebec's Law 25, a GPU rented in a Montréal region, and what a local company owes its customers."
-      },
-      "costs": {
-        "title": "AI costs, measured: GPUs, APIs, a Mac — Krizaka Blog",
-        "description": "What AI really costs: hosted APIs, rented H100s and a Mac compared on the same work, with the bills and the mistakes that cost money."
-      },
-      "orazaka": {
-        "title": "Orazaka: building an open-source AI engine — Krizaka Blog",
-        "description": "Notes from building Orazaka, an open-source AI engine: Spring AI 2, model routing as data, workers, GPUs, and what broke."
-      },
-      "measurements": {
-        "title": "Measured AI runs: times, costs, results — Krizaka Blog",
-        "description": "Posts built on measurements: seconds, dollars and results from recorded runs, with what was not measured said plainly."
-      },
-      "yomizaka": {
-        "title": "Yomizaka: reading documents with AI — Krizaka Blog",
-        "description": "How Yomizaka reads documents such as leases with Orazaka: findings tied to the exact words, and what a run does not prove."
-      },
-      "documents": {
-        "title": "AI document analysis, shown run by run — Krizaka Blog",
-        "description": "AI on real documents: how a lease or a contract is checked rule by rule, how to verify the result, and its limits."
-      },
-      "law": {
-        "title": "Law, rules and AI in Québec — Krizaka Blog",
-        "description": "The rules a Québec software company works under: Law 25, the Civil Code, card-network rules, and what an AI reading of a legal text can claim."
-      },
-      "prompts": {
-        "title": "Prompt engineering for image models — Krizaka Blog",
-        "description": "How prompts really steer image and video models: subject, setting, camera, negative prompts and guidance, tested with a fixed seed."
-      },
-      "payments": {
-        "title": "Payments for software products — Krizaka Blog",
-        "description": "Taking payments as a small software company: what Stripe, PayPal and Square refuse, what card networks require, and how it shapes the code."
-      },
-      "basics": {
-        "title": "AI basics, word by word — Krizaka Blog",
-        "description": "Tokens, context, quantization, RAG, tools, MCP, agents, diffusion: the words of AI explained simply, with what really runs."
-      },
-      "ui": {
-        "title": "UI kit and components — Krizaka Blog",
-        "description": "Krizaka UI, one component kit for the web, mobile and the Mac: reuse, parity, and what one fix propagates."
-      },
-      "security": {
-        "title": "Security, secrets and accounts — Krizaka Blog",
-        "description": "Keeping a small software company's keys and accounts out of the code, and automating around them with agents and CI."
-      },
-      "integration": {
-        "title": "AI engine integration: connectors, APIs, MCP — Krizaka Blog",
-        "description": "How a product plugs into an AI engine: APIs, webhooks, MCP, OAuth, what the industry does and what really runs on our side."
-      }
     }
-  },
-  "search": {
-    "title": "Search the posts",
-    "lead": "Titles, summaries, topics and text, in the language you are reading.",
-    "label": "Search",
-    "placeholder": "A word, a topic, a number…",
-    "results": "{count} results",
-    "noResults": "No post matches. Try a shorter word.",
-    "hint": "Type to search."
   },
   "notFound": {
     "title": "Page not found",
     "body": "This page does not exist on the Krizaka blog.",
     "back": "Back to the blog",
-    "lead": "The address may have changed, or the post was merged into another one.",
-    "search": "Search the posts",
-    "latest": "Latest posts"
+    "lead": "The address may have changed, or the post was merged into another one."
   },
   "authors": {
     "krizaka": "The Krizaka team",
@@ -293,12 +169,6 @@
     "note": "Note"
   },
   "series": {
-    "title": "Series",
-    "lead": "Posts that belong together, in reading order.",
-    "oneLead": "{count} posts, in reading order.",
-    "back": "All series",
-    "countOne": "1 post",
-    "count": "{count} posts",
     "names": {
       "building-orazaka": "Building Orazaka",
       "measured": "Measured",
@@ -311,7 +181,7 @@
       "building-krizaka": "What surrounds the code of a small software company, money and law first. Told as it happens, with what isn't decided yet.",
       "basics": "The words of AI, one at a time, with a simple picture and what really runs on our side."
     },
-    "story": "Or follow all of them in time: the Krizaka story"
+    "story": "And the Krizaka story, chapter by chapter"
   },
   "calc": {
     "title": "When does a rented GPU beat the hosted price?",
@@ -336,10 +206,8 @@
       "Today, I build Krizaka here in Montréal, orchestrating autonomous AI agents and exploring where modern models meet robust software engineering.",
       "This blog is an engineering log: concrete benchmarks, architectural choices, lessons from production, and problems still open."
     ],
-    "homeTitle": "Who writes",
-    "homeBody": "My name is Oussama, and I build Krizaka in Montréal. My first brush with AI was in 2011, at the {lab}, long before the word was in fashion. Here I tell what I learn along the way.",
-    "homeLab": "Grenoble Informatics Laboratory (LIG)",
-    "homeLink": "About the author",
+    "labNote": "My first brush with AI was in 2011, at the {lab}, long before the word was in fashion.",
+    "lab": "Grenoble Informatics Laboratory (LIG)",
     "placesLabel": "Lives in",
     "places": [
       "Montréal"
@@ -402,55 +270,13 @@
     "invalidTitle": "This link is no longer valid",
     "invalidLead": "It may have been copied incompletely. Use the unsubscribe link at the bottom of the latest e-mail you received."
   },
-  "feedPage": {
-    "eyebrow": "Follow",
-    "title": "Follow the Krizaka Blog",
-    "lead": "Get each new post by e-mail, or add the feed to a reader. No account, no tracking either way.",
-    "emailTitle": "By e-mail",
-    "emailLead": "One e-mail when a post is published, in your language. Nothing else, and you leave in one click.",
-    "rssTitle": "With RSS",
-    "rssWhat": "RSS is an open format: a feed reader (Feedly, NetNewsWire, Inoreader, Thunderbird…) fetches each new post for you, with no account on our side. Paste this address into your reader.",
-    "addressLabel": "Feed address (RSS)",
-    "copy": "Copy",
-    "copied": "Copied",
-    "copyFallback": "Copy the feed address:",
-    "atom": "The Atom version of the feed",
-    "latest": "Latest posts",
-    "reader": "What is a feed reader?"
-  },
-  "story": {
-    "title": "The Krizaka story",
-    "lead": "The company’s path in time, told by its posts: one step for each, with its picture and its first line, grouped by week and by thread.",
-    "label": "The steps of the story",
-    "indexLabel": "Periods of the story",
-    "threads": "The threads",
-    "threadCount": "{count} steps",
-    "noThread": "Single posts",
-    "week": "Week of {start}",
-    "period": "{start} to {end}",
-    "read": "Read the post",
-    "published": "Published",
-    "statuses": {
-      "done": "Published",
-      "current": "Latest",
-      "upcoming": "Upcoming",
-      "error": "Failed"
-    },
-    "stepCount": "{count} steps",
-    "sourcesLabel": "Sources",
-    "backLabel": "Back to the text",
-    "sources": [
-      "Each step is a post: its date, its series, its cover and its first line are the post’s own, read from its front matter.",
-      "A new post joins the story by itself, in its week."
-    ],
-    "back": "The Krizaka story",
-    "empty": "No post is published yet."
-  },
   "retired": {
     "lead": "This post is now part of the Krizaka story.",
     "link": "Read the chapter: {title}",
     "linkPost": "Read the post: {title}",
     "linkStory": "Read the Krizaka story",
-    "leadBasics": "This post now lives in « The basics »."
+    "leadBasics": "This post now lives in « The basics ».",
+    "leadPage": "This page is gone: the blog is now a single page, the Krizaka story.",
+    "linkBasics": "Read the basics"
   }
 }
