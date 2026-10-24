@@ -28,7 +28,9 @@ export default function HomePage({ locale }: { locale: Locale }) {
   const featured = latestChapter(chapters);
   const rows = storyRows(chapters);
   const basics = postsOf(locale);
-  const href = (slug: string) => localizedPath(locale, chapterPath(slug));
+  /* An address is built from known values only: a slug of lower-case words (the file names of content/), never anything else. */
+  const safe = (slug: string) => (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) ? slug : "");
+  const href = (slug: string) => localizedPath(locale, chapterPath(safe(slug)));
   /* The versus labels are written as the second half of a sentence (« Ce que j'ai affronté : un écran vert… »); alone on a row they
      start with a capital. */
   const upperFirst = (s: string) => s.charAt(0).toLocaleUpperCase(locale) + s.slice(1);
@@ -87,7 +89,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
           <ul className="bl-basics-links">
             {basics.map((p) => (
               <li key={p.slug}>
-                <Link href={localizedPath(locale, postPath(p.slug))}>{p.title}</Link>
+                <Link href={localizedPath(locale, postPath(safe(p.slug)))}>{p.title}</Link>
               </li>
             ))}
           </ul>

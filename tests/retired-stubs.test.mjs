@@ -142,7 +142,7 @@ test("each removed page's route renders the stub (no page of its own), in both l
   for (const l of ["en", "fr"]) {
     for (const path of REMOVED) {
       const route = read2(l, `${path.slice(1, -1)}/page.tsx`);
-      assert.match(route, new RegExp(`pageKey\\("${path.replace(/\//g, "\\/")}"\\)`), `${l} ${path}`);
+      assert.ok(route.includes(`pageKey("${path}")`), `${l} ${path}`);
       assert.match(route, new RegExp(`<RetiredPost locale="${l}" slug=\\{key\\} />`), `${l} ${path} renders the stub`);
       assert.match(route, new RegExp(`retiredMetadata\\("${l}"`), `${l} ${path}: noindex and the canonical of the target`);
     }
