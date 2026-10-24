@@ -57,7 +57,7 @@ export function versionsOf(slug, read, media = {}, { drafts = false } = {}) {
     const source = read(`content/posts/${slug}.${locale}.mdx`);
     if (source === null || (!drafts && !isPublished(source))) continue;
     const { data } = matter(source);
-    out[locale] = { title: String(data.title), description: String(data.description), url: pageUrl(locale, `/posts/${slug}/`) };
+    out[locale] = { title: String(data.title), description: String(data.description), url: pageUrl(locale, `/basics/${slug}/`) };
     const coverUrl = data.cover ? coverOf(media, data.cover) : undefined;
     if (coverUrl) Object.assign(out[locale], { coverUrl, coverAlt: typeof data.coverAlt === "string" ? data.coverAlt : undefined });
   }

@@ -18,7 +18,7 @@ const posts = readdirSync(dir)
     return { slug, locale, title: p.data.title, description: p.data.description, date: String(p.data.date instanceof Date ? p.data.date.toISOString().slice(0, 10) : p.data.date) };
   })
   .sort((a, b) => b.date.localeCompare(a.date));
-const line = (p) => `- [${p.title}](${SITE}${p.locale === "fr" ? "/fr" : ""}/posts/${p.slug}/): ${p.description}`;
+const line = (p) => `- [${p.title}](${SITE}${p.locale === "fr" ? "/fr" : ""}/basics/${p.slug}/): ${p.description}`;
 const list = (l) => (posts.filter((p) => p.locale === l).map(line).join("\n") || "- (no post published yet)");
 writeFileSync(
   join(root, "out/llms.txt"),

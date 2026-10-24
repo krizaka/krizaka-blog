@@ -10,8 +10,6 @@ cover: payments-terminal-ledger
 coverAlt: "Une illustration bleue en aplats : un terminal de paiement et un registre sur un fond bleu pâle, reliés par de fines lignes de réseau"
 author: oussama
 draft: false
-series: building-krizaka
-part: 1
 ---
 
 Le 15 octobre, j'ai relu le code des paiements d'Orochia, notre plateforme vidéo pour créateurs. Je suis tombé sur une fonction de soixante lignes qui faisait tout en même temps : valider, verrouiller, appliquer les règles, bouger les crédits, écrire dans le registre. Elle marchait. Elle me faisait quand même peur, et j'ai ouvert [un ticket](https://github.com/krizaka/orochia/issues/209) pour la réécrire.
@@ -81,5 +79,3 @@ Je ne sais pas non plus combien de temps il faudra garder les preuves d'âge et 
 ## Ce que vous pouvez en retenir
 
 Si votre produit touche de près ou de loin à une de ces catégories, lisez les listes des processeurs avant d'écrire le code de paiement. Prévoyez que de l'argent restera bloqué des mois. Faites en sorte qu'aucun versement ne parte avant que les contestations aient eu le temps d'arriver. Et gardez vos règles d'argent dans des données, parce que vous allez les changer.
-
-Ce billet ouvre une nouvelle série, « Construire Krizaka », sur ce qui entoure le code, l'argent et le droit d'abord. Les billets techniques sur le moteur continuent dans « Construire Orazaka ».

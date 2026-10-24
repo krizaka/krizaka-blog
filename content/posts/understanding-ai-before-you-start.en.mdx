@@ -10,8 +10,6 @@ author: oussama
 draft: false
 cover: basics-library
 coverAlt: "A quiet library aisle, a hand pulling a book from a shelf, warm light"
-series: basics
-part: 1
 ---
 
 Rereading the first posts of this blog, I made a list of the words I use without ever explaining them. Token. Quantization. RAG. MCP. Agent. The list was long, and a bit embarrassing.
@@ -86,7 +84,7 @@ In Orazaka, I made a more careful choice for customers. A Studio isn't a free ag
 
 Fine-tuning retrains part of the model on your own examples. Methods like [LoRA](https://arxiv.org/abs/2106.09685) make it affordable by touching only a small part of the weights. A prompt changes nothing in the model: you just write a better order.
 
-Send the cook back to school, or give a more precise order. On our side, today, it's always the order. What one line of a prompt really changes, I measured in [the anatomy of a prompt](/posts/anatomy-of-an-ai-prompt/).
+Send the cook back to school, or give a more precise order. On our side, today, it's always the order. What one line of a prompt really changes, I measured in [the anatomy of a prompt](/basics/anatomy-of-an-ai-prompt/).
 
 ## Diffusion, for images and video
 
@@ -112,4 +110,4 @@ On my Mac, FLUX.2 [klein] 4B makes a 1024×1024 image in 62 seconds at the media
 - **Fine-tuning**: retraining the model a little on your examples.
 - **Diffusion**: start from noise and remove it until you get an image.
 
-The next post in this series takes on a more delicate subject: [why some models refuse requests, why others refuse nothing](/posts/censored-and-uncensored-models/), and what Orazaka does about it.
+The next post in this series takes on a more delicate subject: [why some models refuse requests, why others refuse nothing](/story/an-empty-result-is-not-a-success/#the-one-rule-nobody-can-change), and what Orazaka does about it.

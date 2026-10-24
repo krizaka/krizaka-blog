@@ -120,11 +120,11 @@ test("confidentiality: a post declaring sensitive: true also refuses amounts, ke
   assert.match(postProblems("x.en.mdx", ok, "write to me@krizaka.com").join("\n"), /confidential/);
 });
 
-test("the post about running the company with scripts is sensitive in both languages, shows no screenshot of real files, and uses the page components", async () => {
+test("the chapter about building with agents (the company's running) is sensitive in both languages, shows no screenshot of real files, and uses the page components", async () => {
   const { readFileSync } = await import("node:fs");
   const r = (f) => readFileSync(new URL(`../${f}`, import.meta.url), "utf8");
   for (const l of ["fr", "en"]) {
-    const f = r(`content/posts/automate-running-your-company-with-scripts.${l}.mdx`);
+    const f = r(`content/chapters/building-with-agents.${l}.mdx`);
     assert.match(f, /^sensitive: true$/m);
     assert.doesNotMatch(f, /!\[/, "no screenshot of real files");
     for (const c of ["<Numbers>", "<Steps>", "<Compare ", "<CodeTabs>"]) assert.ok(f.includes(c), `${l}: ${c}`);

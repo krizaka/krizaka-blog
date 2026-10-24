@@ -7,7 +7,7 @@ import { ShareBar } from "./ShareBar";
    krizaka/.github.) */
 export function PostEngage({ slug, title, locale }: { slug: string; title: string; locale: Locale }) {
   const t = getDictionary(locale);
-  const url = `${SITE_URL}${locale === "en" ? "" : "/fr"}/posts/${slug}/`;
+  const url = `${SITE_URL}${locale === "en" ? "" : "/fr"}/basics/${slug}/`;
   return (
     <section className="bl-engage" aria-labelledby="bl-engage-title">
       <h2 id="bl-engage-title" className="bl-engage-title">{t.engage.title}</h2>

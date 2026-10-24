@@ -7,7 +7,7 @@ import { EmptyState } from "@krizaka/ui/empty-state";
 import { NotificationIcon } from "@krizaka/icons";
 import { Button } from "@krizaka/ui/button";
 import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
-import { featuredPosts, postsOf, seriesOf } from "@/lib/posts";
+import { featuredPosts, postsOf } from "@/lib/posts";
 import { JAVA_URL, KRIZAKA_URL, UI_URL } from "@/lib/site";
 import { PostList } from "./PostList";
 import { PostCard } from "./PostCard";
@@ -21,7 +21,7 @@ import { TopicFilter } from "./TopicFilter";
 export default function HomePage({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
   const posts = postsOf(locale);
-  const series = seriesOf(locale);
+  const basics = postsOf(locale);
   /* Three posts first: the newest (or a pinned one, `featured: true`) as the large card, the next two beside it. */
   const [featured, ...second] = featuredPosts(locale, 3);
   const rest = posts.filter((p) => p !== featured && !second.includes(p));
@@ -77,12 +77,10 @@ export default function HomePage({ locale }: { locale: Locale }) {
         )}
       </Section>
       <NewsletterSection locale={locale} where="home" />
-      {series.length > 0 && (
+      {basics.length > 0 && (
         <Section title={t.home.seriesTitle} lead={t.home.seriesLead} divider number={no()} margin>
           <CardGrid min={320}>
-            {series.map(({ series: id, posts: inSeries }) => (
-              <LinkCard key={id} linkAs={Link} href={localizedPath(locale, `/series/${id}`)} title={seriesName(locale, id)} description={seriesLead(locale, id)} meta={seriesCount(locale, inSeries.length)} cta={t.home.moreFromSeries} titleAs="h3" />
-            ))}
+            <LinkCard linkAs={Link} href={localizedPath(locale, "/basics")} title={seriesName(locale, "basics")} description={seriesLead(locale, "basics")} meta={seriesCount(locale, basics.length)} cta={t.home.moreFromSeries} titleAs="h3" />
           </CardGrid>
           <p className="bl-story-link">
             <Link href={localizedPath(locale, "/story")}>{t.home.storyTitle}</Link> — {t.home.storyLead}

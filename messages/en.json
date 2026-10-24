@@ -448,6 +448,9 @@
   },
   "retired": {
     "lead": "This post is now part of the Krizaka story.",
-    "link": "Read the chapter: {title}"
+    "link": "Read the chapter: {title}",
+    "linkPost": "Read the post: {title}",
+    "linkStory": "Read the Krizaka story",
+    "leadBasics": "This post now lives in « The basics »."
   }
 }

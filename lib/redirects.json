@@ -74,5 +74,73 @@
   "krizaka-books-on-akinaza-contracts-on-yomizaka": {
     "en": "/story/the-first-products/#our-books-on-akinaza-our-contracts-on-yomizaka",
     "fr": "/fr/story/the-first-products/#nos-livres-sur-akinaza-nos-contrats-sur-yomizaka"
+  },
+  "running-an-agent-on-the-users-machine": {
+    "en": "/story/an-empty-result-is-not-a-success/",
+    "fr": "/fr/story/an-empty-result-is-not-a-success/"
+  },
+  "censored-and-uncensored-models": {
+    "en": "/story/an-empty-result-is-not-a-success/#the-one-rule-nobody-can-change",
+    "fr": "/fr/story/an-empty-result-is-not-a-success/#la-seule-règle-quon-ne-peut-pas-changer"
+  },
+  "orazaka-admin-console-who-can-open-it": {
+    "en": "/story/an-empty-result-is-not-a-success/#the-admin-console",
+    "fr": "/fr/story/an-empty-result-is-not-a-success/#la-console-dadministration"
+  },
+  "orazaka-engine-v2": {
+    "en": "/story/an-empty-result-is-not-a-success/#the-output-contract",
+    "fr": "/fr/story/an-empty-result-is-not-a-success/#le-contrat-de-sortie"
+  },
+  "from-vibe-coding-to-agentic-engineering": {
+    "en": "/story/building-with-agents/",
+    "fr": "/fr/story/building-with-agents/"
+  },
+  "accounts-and-keys-of-a-one-person-company": {
+    "en": "/story/building-with-agents/#the-mistakes-that-taught-me",
+    "fr": "/fr/story/building-with-agents/#les-erreurs-qui-mont-appris"
+  },
+  "automate-running-your-company-with-scripts": {
+    "en": "/story/building-with-agents/#a-task-done-three-times-becomes-a-script",
+    "fr": "/fr/story/building-with-agents/#une-tâche-faite-trois-fois-devient-un-script"
+  },
+  "coding-agents-one-night": {
+    "en": "/story/building-with-agents/#thirty-coding-agents-in-one-night",
+    "fr": "/fr/story/building-with-agents/#une-trentaine-dagents-en-une-nuit"
+  },
+  "understanding-ai-before-you-start": {
+    "en": "/basics/understanding-ai-before-you-start/",
+    "fr": "/fr/basics/understanding-ai-before-you-start/"
+  },
+  "ai-model-families-and-why-you-need-a-gpu": {
+    "en": "/basics/ai-model-families-and-why-you-need-a-gpu/",
+    "fr": "/fr/basics/ai-model-families-and-why-you-need-a-gpu/"
+  },
+  "anatomy-of-an-ai-prompt": {
+    "en": "/basics/anatomy-of-an-ai-prompt/",
+    "fr": "/fr/basics/anatomy-of-an-ai-prompt/"
+  },
+  "is-that-ai-model-really-open-source": {
+    "en": "/basics/is-that-ai-model-really-open-source/",
+    "fr": "/fr/basics/is-that-ai-model-really-open-source/"
+  },
+  "payments-and-high-risk-industries": {
+    "en": "/basics/payments-and-high-risk-industries/",
+    "fr": "/fr/basics/payments-and-high-risk-industries/"
+  },
+  "series:building-krizaka": {
+    "en": "/story/",
+    "fr": "/fr/story/"
+  },
+  "series:building-orazaka": {
+    "en": "/story/",
+    "fr": "/fr/story/"
+  },
+  "series:measured": {
+    "en": "/story/",
+    "fr": "/fr/story/"
+  },
+  "series:basics": {
+    "en": "/basics/",
+    "fr": "/fr/basics/"
   }
 }

@@ -10,8 +10,6 @@ cover: payments-terminal-ledger
 coverAlt: "A flat blue illustration: a card payment terminal and a ledger on a pale blue background, joined by thin network lines"
 author: oussama
 draft: false
-series: building-krizaka
-part: 1
 ---
 
 On 15 October I reread the payments code of Orochia, our creator video platform. I landed on a sixty-line function that did everything at once: validate, lock, apply the rules, move the credits, write the ledger. It worked. It still scared me, and I opened [an issue](https://github.com/krizaka/orochia/issues/209) to rewrite it.
@@ -81,5 +79,3 @@ I also don't know how long proofs of age and identity must be kept, or in what f
 ## What you can take from it
 
 If your product comes anywhere near one of these categories, read the processors' lists before you write the payments code. Plan for money staying locked for months. Make sure no payout leaves before disputes have had time to arrive. And keep your money rules in data, because you will change them.
-
-This post opens a new series, "Building Krizaka", about what surrounds the code, money and law first. The technical posts about the engine go on in "Building Orazaka".

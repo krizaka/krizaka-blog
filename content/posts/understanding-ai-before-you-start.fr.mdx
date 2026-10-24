@@ -10,8 +10,6 @@ author: oussama
 draft: false
 cover: basics-library
 coverAlt: "Une allée de bibliothèque calme, une main qui tire un livre d'une étagère, lumière chaude"
-series: basics
-part: 1
 ---
 
 En relisant les premiers billets de ce blogue, j'ai fait la liste des mots que j'utilise sans jamais les expliquer. Token. Quantification. RAG. MCP. Agent. La liste était longue, et un peu gênante.
@@ -86,7 +84,7 @@ Dans Orazaka, j'ai fait un choix plus prudent pour les clients. Un Studio n'est 
 
 Le fine-tuning réentraîne une partie du modèle sur vos propres exemples. Des méthodes comme [LoRA](https://arxiv.org/abs/2106.09685) le rendent abordable en ne touchant qu'une petite partie des poids. Le prompt, lui, ne change rien au modèle : on écrit mieux la commande.
 
-Renvoyer le cuisinier à l'école, ou lui donner une commande plus précise. Chez nous, aujourd'hui, c'est toujours la commande. Ce qu'une ligne de prompt change vraiment, je l'ai mesuré dans [l'anatomie d'un prompt](/fr/posts/anatomy-of-an-ai-prompt/).
+Renvoyer le cuisinier à l'école, ou lui donner une commande plus précise. Chez nous, aujourd'hui, c'est toujours la commande. Ce qu'une ligne de prompt change vraiment, je l'ai mesuré dans [l'anatomie d'un prompt](/fr/basics/anatomy-of-an-ai-prompt/).
 
 ## La diffusion, pour les images et la vidéo
 
@@ -112,4 +110,4 @@ Sur mon Mac, FLUX.2 [klein] 4B fait une image en 1024×1024 en 62 secondes en m�
 - **Fine-tuning** : réentraîner un peu le modèle sur vos exemples.
 - **Diffusion** : partir du bruit et le retirer jusqu'à obtenir une image.
 
-Le prochain billet de cette série prend un sujet plus délicat : [pourquoi certains modèles refusent des demandes, pourquoi d'autres ne refusent rien](/fr/posts/censored-and-uncensored-models/), et ce qu'Orazaka en fait.
+Le prochain billet de cette série prend un sujet plus délicat : [pourquoi certains modèles refusent des demandes, pourquoi d'autres ne refusent rien](/fr/story/an-empty-result-is-not-a-success/#la-seule-règle-quon-ne-peut-pas-changer), et ce qu'Orazaka en fait.

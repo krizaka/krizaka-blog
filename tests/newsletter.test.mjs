@@ -159,7 +159,7 @@ test("unsubscribe: one click by link (303) or by the mail client (RFC 8058 POST,
   assert.equal(wrong.calls.length, 0, "a confirm link cannot unsubscribe");
 });
 
-const versions = { fr: { title: "Titre", description: "D", url: "https://blog.krizaka.com/fr/posts/x/" } };
+const versions = { fr: { title: "Titre", description: "D", url: "https://blog.krizaka.com/fr/basics/x/" } };
 const auth = { __ow_method: "post", __ow_headers: { authorization: "Bearer bearer-token" } };
 
 test("send: refuses without the bearer, with a bad slug or a URL off the blog", async () => {
@@ -208,7 +208,7 @@ test("versionsOf reads only the published versions of a post", () => {
   const files = { "content/posts/x.fr.mdx": post(false, "Titre"), "content/posts/x.en.mdx": post(true) };
   const v = versionsOf("x", (p) => files[p] ?? null);
   assert.deepEqual(Object.keys(v), ["fr"]);
-  assert.equal(v.fr.url, "https://blog.krizaka.com/fr/posts/x/");
+  assert.equal(v.fr.url, "https://blog.krizaka.com/fr/basics/x/");
 });
 
 test("the pages of the form and of the e-mail links exist in both languages; the landing pages are noindex", () => {

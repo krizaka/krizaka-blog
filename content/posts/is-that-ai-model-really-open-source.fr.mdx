@@ -10,8 +10,6 @@ author: oussama
 draft: false
 cover: licence-magnifier
 coverAlt: "Sur un bureau en noyer, une loupe en laiton posée près d'une pile de feuilles pliées scellées à la cire rouge, une vieille clé et une boîte en bois ouverte, sous une lampe chaude"
-series: basics
-part: 5
 ---
 
 Le 15 octobre, j'ai vérifié qu'aucun modèle par défaut de [notre moteur d'IA](https://github.com/krizaka/orazaka) n'avait une licence non commerciale, puisque nous vendons à des entreprises. La voix anglaise par défaut s'appelait Ryan. C'était une voix <Model id="piper">Piper</Model>, gratuite, publiée « en open source ». En ouvrant sa fiche, j'ai lu : CC BY-NC-SA 4.0. Le « NC », c'est non commercial.
@@ -78,7 +76,7 @@ Piper montre que la licence d'un modèle peut tenir à ses données. Les voix du
 
 ## Les poids ne sont qu'une pièce
 
-Un modèle, ce n'est pas seulement un fichier. Quand on le fait tourner, il y a le code d'inférence, avec sa licence : le moteur de Piper, par exemple, était en MIT, son dépôt d'origine est archivé, et son successeur est en GPL-3.0. Il y a les bibliothèques dont tout ça dépend, chacune avec la sienne. Il y a les données d'entraînement, dont la licence peut remonter jusqu'à vous, comme avec Ryan. Et il y a l'endroit où le modèle tourne : sur votre machine, vous êtes lié par la licence du modèle ; par l'API d'un fournisseur, vous l'êtes aussi par ses conditions d'utilisation, qui peuvent être plus strictes. J'en parle dans [le billet sur les modèles non censurés](/fr/posts/censored-and-uncensored-models/).
+Un modèle, ce n'est pas seulement un fichier. Quand on le fait tourner, il y a le code d'inférence, avec sa licence : le moteur de Piper, par exemple, était en MIT, son dépôt d'origine est archivé, et son successeur est en GPL-3.0. Il y a les bibliothèques dont tout ça dépend, chacune avec la sienne. Il y a les données d'entraînement, dont la licence peut remonter jusqu'à vous, comme avec Ryan. Et il y a l'endroit où le modèle tourne : sur votre machine, vous êtes lié par la licence du modèle ; par l'API d'un fournisseur, vous l'êtes aussi par ses conditions d'utilisation, qui peuvent être plus strictes. J'en parle dans [le billet sur les modèles non censurés](/fr/story/an-empty-result-is-not-a-success/#la-seule-règle-quon-ne-peut-pas-changer).
 
 ## Ma liste avant de choisir
 
@@ -97,8 +95,31 @@ Un modèle, ce n'est pas seulement un fichier. Quand on le fait tourner, il y a 
 Les licences changent, les liens aussi. Tout ce qui est écrit ici a été lu à la source le 20 octobre 2026, dans les fichiers de licence ou les fiches des modèles. Revérifiez avant de vous y fier.
 </Note>
 
+## Les licences, une par une
+
+| Modèle | Usage ici | Licence des poids |
+| :--- | :--- | :--- |
+| <Model id="wan22-i2v-a14b">Wan 2.2 I2V A14B</Model> | Prises des personnages | Apache 2.0 |
+| LTX-Video 0.9.8 | Paysages | LTX Open Weights |
+| FLUX.2 [klein] 4B | Images clés | Apache 2.0 |
+| SeedVR2 | Montée en 4K | Apache 2.0 |
+| ACE-Step | Musique | MIT |
+| <Model id="zonos">Zonos v0.1</Model> | Narrateur | Apache 2.0 |
+| Kokoro | Voix de référence synthétique | Apache 2.0 |
+| <Model id="whisper">Whisper</Model> | Contrôle des mots dits | MIT |
+| <Model id="chatterbox">Chatterbox</Model> | Essayé, non retenu | MIT |
+| <Model id="f5-tts">F5-TTS</Model> | Refusé | Non commerciale (CC BY-NC 4.0) |
+| XTTS-v2 | Refusé | Non commerciale (CPML) |
+| MMAudio | Refusé | Non commerciale (CC BY-NC) |
+| Stable Audio Open | Refusé | Licence communautaire, inscription requise |
+| HunyuanVideo (bruitage) | Écarté | Exclut l'UE, le Royaume-Uni et la Corée du Sud |
+
+<Note>
+Les licences ont été lues à la source le 20 octobre 2026. Elles changent, revérifiez avant de vous y fier. Je ne suis pas avocat : j'ai lu ces textes en ingénieur.
+</Note>
+
 ## Ce que vous pouvez en retenir
 
 « Open source » est souvent une étiquette, et la licence est le contrat. Deux modèles de la même famille, la même semaine, peuvent avoir des droits très différents. Lisez le fichier, pas l'article, notez ce que vous avez lu, et refaites-le quand le modèle change de version.
 
-Pour ce que ça coûte de faire tourner ces modèles, voir [le billet sur les familles de modèles et le GPU](/fr/posts/ai-model-families-and-why-you-need-a-gpu/) et [celui sur le coût réel d'une image](/fr/story/what-a-gpu-costs/#le-prix-dun-résultat-quon-garde).
+Pour ce que ça coûte de faire tourner ces modèles, voir [le billet sur les familles de modèles et le GPU](/fr/basics/ai-model-families-and-why-you-need-a-gpu/) et [celui sur le coût réel d'une image](/fr/story/what-a-gpu-costs/#le-prix-dun-résultat-quon-garde).

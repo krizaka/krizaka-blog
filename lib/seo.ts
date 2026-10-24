@@ -7,7 +7,7 @@ import { faqOf, metaDescription, titleTag } from "./reading.ts";
 import { INDEXING_ENABLED, ORGANIZATION_ID, SITE_URL } from "./site";
 
 export const absoluteUrl = (locale: Locale, path: string) => `${SITE_URL}${localizedPath(locale, path)}`;
-export const postPath = (slug: string) => `/posts/${slug}`;
+export const postPath = (slug: string) => `/basics/${slug}`;
 /** A chapter of the story (lib/chapters.ts). */
 export const chapterPath = (slug: string) => `/story/${slug}`;
 export const ogUrl = (locale: Locale, slug: string) => `${SITE_URL}${locale === "en" ? "" : "/fr"}/og/${slug}.png`;
