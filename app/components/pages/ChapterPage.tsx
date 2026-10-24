@@ -17,7 +17,7 @@ import { chapterNumber, chapterTranslationOf, nextChapter, previousChapter, type
 import { headingsOf, rehypeRounds } from "@/lib/reading.ts";
 import { chapterOgUrl, chapterPath, postJsonLd } from "@/lib/seo";
 import { mdxComponentsFor } from "./mdx";
-import { formatDate } from "./PostList";
+import { formatPeriod } from "./PostList";
 import { Byline } from "./Byline";
 import { CoverImage } from "./CoverImage";
 
@@ -42,8 +42,8 @@ export default function ChapterPage({ chapter }: { chapter: Chapter }) {
   const cover = chapter.cover ? coverOf(chapter.cover) : undefined;
   const headings = headingsOf(chapter.body);
   const n = chapterNumber(chapter.chapter);
-  const [from, to] = chapter.period.split("/");
-  const period = to ? format(tc.period, { from: formatDate(from, locale), to: formatDate(to, locale) }) : formatDate(from, locale);
+  // The same short range as the story's index (« 16–17 oct. 2026 »), never the two dates written out in full.
+  const period = formatPeriod(chapter.period, locale);
   const components = {
     ...mdxComponentsFor(locale),
     h2: ({ children, ...props }: ComponentProps<"h2"> & { "data-round"?: string }) => {
