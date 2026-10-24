@@ -69,11 +69,12 @@ test("a stub's canonical may carry Next's trailing slash after the section ancho
 
 /* The home is the story (krizaka-blog#123): check-meta reads the built home — the sentence, one Featured card that is the chapter
    marked new, the chapters 1 → N in order — and refuses a live page that links to a removed address (a stub now). */
-const row = (n, isNew = false) => `<li class="bl-chapter" data-chapter="${n}"${isNew ? ' data-new="true"' : ""}><a class="kz-block-card kz-link-card" href="/story/c${n}/"><h3>C${n}</h3></a></li>`;
+const row = (n, isNew = false) =>
+  `<li class="kz-chapter-row"${isNew ? ' data-new=""' : ""}><span class="kz-chapter-no">0${n}</span><a class="kz-chapter-link" href="/story/c${n}/"><span class="kz-chapter-title">C${n}</span>${isNew ? ' <span class="kz-chapter-new">New</span>' : ""}</a> <span class="kz-chapter-period">Oct 2026</span></li>`;
 const homeHtml = ({ sentence = "These are my notes from building Krizaka.", featured = "/story/c3/", rows = [row(1), row(2), row(3, true)] } = {}) =>
   `<html><head><title>Krizaka Blog</title><meta name="description" content="d"/></head><body><h1>The Krizaka story</h1><p><span class="bl-home-sentence">${sentence}</span></p>` +
   `<section aria-labelledby="featured" class="kz-section"><h2 id="featured">Featured</h2><div class="bl-card bl-card-feature"><h3><a class="bl-card-link" href="${featured}">C3</a></h3></div></section>` +
-  `<section aria-labelledby="chapters"><ol class="bl-chapters">${rows.join("")}</ol></section></body></html>`;
+  `<section aria-labelledby="chapters"><ol role="list" aria-label="The chapters" data-margin="" class="kz-chapters">${rows.join("")}</ol></section></body></html>`;
 
 test("the built home: the sentence, one Featured card (the chapter marked new), the chapters in reading order", () => {
   assert.deepEqual(homeProblems(homeHtml()), []);

@@ -99,9 +99,10 @@ export function homeProblems(html) {
   const featured = html.match(/<section\b[^>]*\baria-labelledby="featured"[\s\S]*?<\/section>/)?.[0] ?? "";
   if (!featured) out.push("the home has no Featured section (#featured)");
   else if ((featured.match(/\bbl-card-feature\b/g) ?? []).length !== 1) out.push("Featured holds exactly one card");
-  const list = html.match(/<ol\b[^>]*\bclass="bl-chapters"[\s\S]*?<\/ol>/)?.[0] ?? "";
-  const rows = [...list.matchAll(/<li\b([^>]*)>[\s\S]*?<a\b[^>]*\bhref="([^"]+)"/g)].map((m) => ({ n: Number(m[1].match(/data-chapter="(\d+)"/)?.[1]), isNew: /\bdata-new\b/.test(m[1]), href: m[2] }));
-  if (!rows.length) out.push("the home lists no chapter (ol.bl-chapters)");
+  /* The chapters are @krizaka/ui's ChapterIndex: an <ol class="kz-chapters">, one <li> each, its number in .kz-chapter-no. */
+  const list = html.match(/<ol\b[^>]*\bclass="[^"]*\bkz-chapters\b[^"]*"[\s\S]*?<\/ol>/)?.[0] ?? "";
+  const rows = [...list.matchAll(/<li\b([^>]*)>[\s\S]*?<span\b[^>]*\bclass="kz-chapter-no"[^>]*>(\d+)<\/span>[\s\S]*?<a\b[^>]*\bhref="([^"]+)"/g)].map((m) => ({ n: Number(m[2]), isNew: /\bdata-new\b/.test(m[1]), href: m[3] }));
+  if (!rows.length) out.push("the home lists no chapter (ol.kz-chapters)");
   rows.forEach((r, i) => {
     if (r.n !== i + 1) out.push(`the chapters are not in reading order: row ${i + 1} is chapter ${r.n}`);
   });

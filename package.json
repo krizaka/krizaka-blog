@@ -18,7 +18,7 @@
     "@krizaka/icons": "^0.7.0",
     "@krizaka/tailwind": "^3.51.0",
     "@krizaka/tokens": "^3.51.0",
-    "@krizaka/ui": "^3.51.0",
+    "@krizaka/ui": "^3.53.0",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",
     "next": "^16.3.8",

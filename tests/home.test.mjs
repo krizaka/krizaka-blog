@@ -47,10 +47,10 @@ test("the home renders the sentence, its byline, Featured, the chapters, the bas
   const order = ["h.lead", "h.byline", "h.featuredTitle", "h.chaptersTitle", "h.basicsTitle", "<NewsletterSection"].map((k) => home.indexOf(k));
   for (const [i, at] of order.entries()) assert.ok(at > 0 && (i === 0 || at > order[i - 1]), `piece ${i} in order`);
   assert.match(home, /<PostCard[\s\S]*?feature[\s\S]*?href=\{href\(featured\.slug\)\}[\s\S]*?cta=\{h\.readChapter\}/, "Featured is the latest chapter's card, with « Read the chapter »");
-  assert.match(home, /<ol className="bl-chapters"/, "the chapters are an ordered list: a timeline, not a feed");
-  assert.match(home, /data-chapter=\{c\.chapter\} data-new=\{isNew \|\| undefined\}/);
-  assert.match(home, /\{isNew && \(\s*<Badge/, "the latest is marked « New »");
-  assert.match(home, /c\.versus\.faced[\s\S]*c\.versus\.built/, "each row says what I faced → what we built");
+  assert.match(home, /<ChapterIndex[\s\S]*?chapters=\{rows\.map\(/, "the chapters are @krizaka/ui's ChapterIndex, in the rows' reading order: a timeline, not a feed");
+  assert.match(home, /newLabel=\{h\.new\}[\s\S]*?isNew,/, "the latest is marked « New »");
+  assert.match(home, /number: chapterNumber\(c\.chapter\)[\s\S]*?title: c\.title[\s\S]*?href: href\(c\.slug\)/, "the number in the margin, the title the link");
+  assert.doesNotMatch(home, /detail:|c\.versus|LinkCard|<Badge/, "no detail line, no box: the faced → built line is on the chapter's head");
   assert.match(home, /formatPeriod\(c\.period, locale\)/, "and its period");
 });
 
@@ -67,13 +67,12 @@ test("only @krizaka/ui blocks and the site's own modules: Krizaka first", () => 
 for (const locale of ["en", "fr"]) {
   test(`${locale}: the home's words — the title, one sentence in Oussama's voice (« I », never « we » or a slogan), Featured, the chapters, the basics`, () => {
     const h = messages[locale].home;
-    for (const k of ["eyebrow", "title", "lead", "byline", "featuredTitle", "readChapter", "chaptersTitle", "chaptersLead", "new", "versus", "basicsTitle", "basicsLead", "seoTitle", "seoDescription"]) assert.ok(h[k]?.trim(), `${locale}: home.${k}`);
+    for (const k of ["eyebrow", "title", "lead", "byline", "featuredTitle", "readChapter", "chaptersTitle", "chaptersLead", "new", "basicsTitle", "basicsLead", "seoTitle", "seoDescription"]) assert.ok(h[k]?.trim(), `${locale}: home.${k}`);
     assert.equal((h.lead.match(/[.!?](\s|$)/g) ?? []).length, 1, "one sentence");
     assert.match(h.lead, locale === "fr" ? /\bmes notes de construction\b/ : /\bmy notes from building Krizaka\b/, "it says these are the building notes");
     assert.match(h.lead, locale === "fr" ? /\bj[’']/ : /\bI\b/, "first person, Oussama's voice");
     assert.doesNotMatch(h.lead, /Sober|Sobre|factual|factuel|checked against|vérifié/i, "not a slogan");
-    assert.match(h.versus, /\{faced\} → \{built\}/);
     assert.ok([...h.seoDescription].length <= 155 && [...h.seoTitle].length <= 60);
-    for (const k of ["latest", "seriesTitle", "elsewhereTitle", "readStory", "allTopics"]) assert.equal(h[k], undefined, `${locale}: home.${k} is gone`);
+    for (const k of ["latest", "seriesTitle", "elsewhereTitle", "readStory", "allTopics", "versus"]) assert.equal(h[k], undefined, `${locale}: home.${k} is gone`);
   });
 }

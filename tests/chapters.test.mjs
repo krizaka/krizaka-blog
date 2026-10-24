@@ -159,16 +159,25 @@ test("the redirect anchors planned for the absorbed posts (refonte plan, #108 §
   assert.ok(headingsOf(read("an-engine-on-a-laptop.fr.mdx").content).some((h) => h.id === "du-monolithe-aux-services"));
 });
 
-test("a chapter page exists in both languages, and its round markers, stats and « Continuer ? » come from @krizaka/ui", () => {
+test("a chapter page exists in both languages: its head and foot are @krizaka/ui's sober chapter blocks, its round markers and stats the arcade's", () => {
   for (const f of ["app/(en)/story/[chapter]/page.tsx", "app/fr/story/[chapter]/page.tsx"]) assert.ok(existsSync(join(root, f)), f);
   const page = readFileSync(join(root, "app/components/pages/ChapterPage.tsx"), "utf8");
-  for (const block of ["@krizaka/ui/stage-banner", "@krizaka/ui/continue-prompt", "@krizaka/ui/story.css", "rehypeRounds"]) assert.ok(page.includes(block), block);
+  for (const block of ["@krizaka/ui/chapter", "@krizaka/ui/stage-banner", "@krizaka/ui/story.css", "rehypeRounds"]) assert.ok(page.includes(block), block);
+  assert.match(page, /<ChapterHead[\s\S]*?period=\{period\}[\s\S]*?readingTime=[\s\S]*?faced=[\s\S]*?built=/, "the head: the period, the reading time, faced → built once");
+  assert.match(page, /<ChapterFoot[\s\S]*?previous=\{previous && link\(previous\)\}[\s\S]*?next=\{next && link\(next\)\}[\s\S]*?back=\{\{ href: home/, "the foot: previous, next, back to the story");
+  assert.doesNotMatch(page, /ContinuePrompt|PageHero|bl-versus/, "the arcade head and « Continuer ? » are gone");
   for (const l of ["en", "fr"]) {
     const m = JSON.parse(readFileSync(join(root, `messages/${l}.json`), "utf8")).chapter;
     assert.equal(m.round, "Round {n}");
-    assert.equal(m.start, "Start");
+    for (const k of ["previous", "nextLabel", "nav", "toStory", "faced", "built"]) assert.ok(m[k]?.trim(), `${l}: chapter.${k}`);
+    for (const k of ["continue", "start", "nextCaption", "storySoFar", "vs", "versus"]) assert.equal(m[k], undefined, `${l}: chapter.${k} is gone`);
   }
-  assert.equal(JSON.parse(readFileSync(join(root, "messages/fr.json"), "utf8")).chapter.continue, "Continuer ?");
+});
+
+test("the foot's previous and next are the neighbours in reading order, in the chapter's own language", () => {
+  const lib = readFileSync(join(root, "lib/chapters.ts"), "utf8");
+  assert.match(lib, /previousChapter = \(c: Chapter\)[^\n]*chaptersOf\(c\.locale\)\.filter\(\(x\) => x\.chapter < c\.chapter\)\.at\(-1\)/);
+  assert.match(lib, /nextChapter = \(c: Chapter\)[^\n]*chaptersOf\(c\.locale\)\.find\(\(x\) => x\.chapter > c\.chapter\)/);
 });
 
 test("chapters never trigger the newsletter (its workflow watches content/posts only)", () => {
