@@ -448,6 +448,9 @@
   },
   "retired": {
     "lead": "Ce billet fait maintenant partie de l'histoire de Krizaka.",
-    "link": "Lire le chapitre : {title}"
+    "link": "Lire le chapitre : {title}",
+    "linkPost": "Lire le billet : {title}",
+    "linkStory": "Lire l'histoire de Krizaka",
+    "leadBasics": "Ce billet vit maintenant dans « Les bases »."
   }
 }

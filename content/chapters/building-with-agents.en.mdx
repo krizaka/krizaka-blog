@@ -1,0 +1,234 @@
+---
+title: "Building almost alone, with agents"
+description: "Rules written after every mistake, the keys an agent must never see, the scripts that run the company, and thirty coding agents in one night."
+date: 2026-10-24
+publishedAt: "2026-10-24T09:00:00-04:00"
+tags: [ai, security, integration]
+author: oussama
+draft: false
+sensitive: true
+cover: agents-typewriters
+coverAlt: "A long wooden table in a brick loft in Montréal, at night: a row of old typewriters, each with a blank sheet and a small lamp; at the end of the table, an open notebook and a pen; behind the tall arched windows, the city lights and a snowy fire escape"
+chapter: 8
+period: "2026-10-12/2026-10-23"
+sources:
+  - from-vibe-coding-to-agentic-engineering
+  - accounts-and-keys-of-a-one-person-company
+  - automate-running-your-company-with-scripts
+  - coding-agents-one-night
+versus:
+  faced: "thirty agents, one night"
+  built: "rules written after every mistake"
+stats:
+  - value: "27"
+    label: "npm commands in the private management folder"
+    section: "A task done three times becomes a script"
+  - value: "80"
+    label: "secret values, read one at a time"
+    section: "The mistakes that taught me"
+---
+
+On 12 October, my Mac saturated. Several coding agents were working on Krizaka at the same time, each with its builds, its containers and its simulator, and the system ended up refusing to open one more file. I tell the story of that breakdown in [the post about the Mac](/story/an-engine-on-a-laptop/). That day, I understood one simple thing: letting agents write code is not magic. It is organisation.
+
+This chapter tells how I moved from vibe coding to written rules, how I keep the access keys, how scripts run the company, and what broke one night when about thirty agents worked at the same time.
+
+## How I got out of vibe coding
+
+Vibe coding means asking an AI to write code, looking at whether it seems to work, and carrying on. At first it is exhilarating. Then the Mac saturates, one session breaks what another did, and nobody knows who changed what.
+
+A system becomes agentic when you give it five things: a goal, tools to act on the world, memory to know where it stands, a loop that plans, acts, looks at the result and starts again, and human approval before anything that has a real effect.
+
+<Figure id="agentic-loop" alt="Diagram of the agentic loop: a goal leads to a plan, the plan to a tool (with human approval), the tool to an observation that feeds the plan, until a result; memory, budget and an audit journal frame the loop" />
+
+The fifth one is what separates an agent from an intern left alone with the keys.
+
+Krizaka is largely written by agent sessions that I direct, often several at once. What changed was not the agents. It was the guard rails around them.
+
+A rules file that every session reads before it starts: a test that fails first, then the fix; never a merge while a check is red or pending; one small pull request per step. A lock for the heavy tasks, added on 12 October. A CI that refuses what does not pass. And rules written after each mistake: a merge done too early, before a security review had finished, gave the rule "never merge with a check pending"; a session that printed a secret in its output gave an automatic guard that refuses any command able to do it.
+
+What I take from it: an agent does not become reliable because it is clever. It becomes reliable when you give it a clear goal, limited tools, tests that say no, and a person who approves what matters.
+
+## The mistakes that taught me
+
+When I started Krizaka, I thought I needed a GitHub account and a host. This week, I opened the accounts. Twelve services, and more than 80 secret values: API keys, tokens, database passwords. For a company where I am alone, with AI agents writing much of the code.
+
+Each service answers a simple need: code and CI, published packages, cloud and databases, GPUs rented by the hour, media, e-mail, domain names, the anti-robot check on forms, and for mobile, the build tools, notifications and a developer account. None is a luxury. But each brings at least one key, often several: one per environment, one per application, one with fewer rights for the CI.
+
+<Figure id="accounts-map" alt="Diagram: twelve services sorted by role around a small software company: code and CI, packages, cloud and databases, GPUs, media, e-mail, domains, anti-robot, mobile apps; at the centre, more than 80 secrets kept out of the code" />
+
+The basic rule, I wrote very early: a secret is never in the code, never in a repository, never in a conversation. Not even in a conversation with an AI agent, and certainly not there.
+
+In practice, the secrets live in a private folder, outside the repositories, on my machine. The deployed applications receive them as secrets of the platform that hosts them, never in clear text in a versioned file.
+
+To read a secret, a small script fetches one key at a time and never prints it: the value goes into a variable, it is used, that is all. And when I want to check that it is there, I look at its length, not its value.
+
+The variables are named by their role, not by the provider. Changing provider then means changing a value, not renaming variables in ten repositories.
+
+I did not invent these rules out of caution. I wrote them after mistakes.
+
+An agent session printed the full address of a database in its output, password included. It only wanted to check a configuration. The password had to be changed straight away. Since then, a guard runs before every agent command: if the command could print a file of secrets, it is refused, with a message that explains how to do it another way. Even a home-made "masking" is refused, because that is often where leaks happen.
+
+A rented GPU stayed on for about two hours after the work was done, for nothing. Its watchdog was supposed to switch it off, but it did not have the key to do so. I tell that story in [the post on costs](/story/what-a-gpu-costs/). Since then, a monitoring loop stops the machine after twenty minutes without work.
+
+A password stayed at its old value somewhere after a rotation. The lesson: a rotation is finished only when every place that uses the key has the new one, and you check each place, not only the first.
+
+## A task done three times becomes a script
+
+When you work in IT, the first thing you learn is that a task you do by hand three times ends up as a script. You do it for deployments, for tests, for CI. What took me longer was applying that to myself: to the management of my own company.
+
+This chapter describes habits, not the contents of my folder: you will find neither paths, nor amounts, nor account names. That is deliberate, and it is a little the point.
+
+<Numbers>
+  <Num value="27" label="npm commands" hint="in the private management folder" />
+  <Num value="6" label="GitHub automations" hint="in the organisation's shared repository" />
+  <Num value="1" label="cost command" hint="read-only" />
+</Numbers>
+
+At the start, management looked like what many people do when they begin: one console per provider to open to see what I use, receipts to file one by one, and dates to keep in my head. When you have several services, it adds up.
+
+I moved to scripts in small steps, always the same way: I do the task once by hand, the second time I write down the steps, the third time I write the script.
+
+<Steps>
+  <Step title="I write down what I do by hand">A list of gestures: open, copy, file, check.</Step>
+  <Step title="I write it as a small script">One file, one task, no dependency if possible.</Step>
+  <Step title="I give it a short name">An npm command that is easy to remember and stays the same when the script changes.</Step>
+  <Step title="I make it check its own work">A test, a control, a clear message when a source is unavailable.</Step>
+  <Step title="I let GitHub run it for me">What must happen every day or every week becomes a scheduled automation.</Step>
+</Steps>
+
+<Compare label="Before and after the scripts" topic="Question" before="By hand" after="With a script">
+  <Case topic="Where do I look?" before="In each service's console." after="In a single command." afterDetail="It queries them for me, read-only." />
+  <Case topic="What happens when a source is down?" before="I don't notice." after="The report says so." afterDetail="“Unavailable: reason”, never a guessed figure." />
+  <Case topic="Who remembers the deadlines?" before="My memory." after="A calculated calendar." afterDetail="It counts the days and flags what is coming." />
+  <Case topic="How long does it take?" before="A few minutes, every time." after="A few seconds." afterDetail="And the same result every time." />
+</Compare>
+
+Everything starts from a single private folder on my machine. It is in no public repository. It holds the company's documents, a folder of scripts and a `package.json` whose commands are my dashboard.
+
+<CodeTabs>
+<Tab label="package.json">
+
+```json
+{
+  "private": true,
+  "scripts": {
+    "status": "shows today's state, the counts and the alerts",
+    "calendar": "the year's deadline calendar",
+    "inbox": "files what I dropped in the inbox",
+    "backup": "timestamped, encrypted backup",
+    "verify": "integrity check: must finish with zero errors"
+  }
+}
+```
+
+</Tab>
+<Tab label="A day">
+
+```bash
+npm run status     # where I stand, what is coming
+npm run inbox      # I file what I received
+npm run verify     # nothing is broken, or I fix it before I finish
+```
+
+</Tab>
+</CodeTabs>
+
+The script I use most is the inbox one. I drop any document in a folder, and the script does the rest. Four rules, each learned by forgetting it once:
+
+- The folder has only two zones: private and non-private. I do not sort by file type; the script recognises a PDF, an image, a table or a text by itself.
+- What is private is read-protected from the moment it arrives, and the sensitive information it holds is masked in everything the script prints.
+- A document dropped twice is kept only once. I do not want to accumulate duplicates.
+- The registers stay sorted and consistent, and a verification script refuses to finish in success if something is wrong.
+
+The last rule matters most. A verification script that ends in an error is a small reminder to fix things before moving on.
+
+My private folder answers "where is the company?". GitHub answers "where is the work?", and there too, whatever can run alone does. The organisation's roadmap is a GitHub project. I do not update it by hand: automations and agents keep the board up to date. Each pull request writes `Closes` followed by the ticket it resolves, and the board follows those `Closes #…`.
+
+- A daily check makes sure the family's sites stay visible to search engines, and opens a ticket when they no longer are.
+- Dependency updates arrive grouped, and the minor ones merge by themselves once the checks are green. A major version stays a decision.
+- The site's changelog is read from the published releases, never written by hand.
+
+## Thirty coding agents in one night
+
+Tonight, I tried something I had been putting off. Instead of moving issues forward one at a time, we handed about thirty of them to coding agents on GitHub: components for Krizaka UI, animations, fixes in Orazaka's engine, screens for Akinaza, a legal review of our terms. Each agent starts from an issue, opens a branch, and comes back with a pull request.
+
+A few hours later, I should have found a pile of PRs ready to review. Mostly, I found things that had broken. Not because of the agents, for the most part. Because of us.
+
+### Empty PRs
+
+Five PRs, on Akinaza and Yomizaka, had a title, a fine description of what had been done, and zero files changed. Reading one session's log, I found the last line: the work was done, committed, but the push had been refused.
+
+Our repositories run a full check before each push. In that check, there was a test that read the list of our icons from our CDN. The agent works in a sandbox with no access to the Internet, except for a few addresses. The test failed, the push was refused, and the work stayed in the sandbox. Lost.
+
+The fix was simple. The test now compares our icons with a versioned file of hashes, with no network. The comparison with the CDN still happens, but in the CI, which has the network. Nothing was weakened: each check was moved to where it can run.
+
+### A CI that never ran
+
+Other PRs had content and tests, and stayed blocked. They were not red, they were nothing: the mandatory check had never started. On GitHub, a push made by an agent waits for a human to approve the launch of the workflows. Nobody had done it, and nobody could see it.
+
+While waiting for the right setting, our own GitHub app pushes an empty commit to the branch, and the CI starts. It is not elegant, but it is written down, and everyone knows why.
+
+### Java that did not compile
+
+The PR that taught me the most came from the engine. An agent had optimised the critical path of Orazaka's saga: fewer queries per step, a cache of Studio definitions. On paper it was well thought out. Except the code did not compile, and the formatting had never been applied.
+
+The agent had not worked badly. It had simply never been able to build the project. A component of Orazaka does not build on its own: its parent POM and its upstream modules come from the full workspace, and the agent had only the component's repository. It said so itself in its PR, in one line. It pushed anyway.
+
+We wrote an action that sets up the workspace before the agent starts: it clones the repositories, installs the upstream modules, and links the packs next to its copy. Every Java repository calls it. An agent that cannot build cannot verify, and an agent that cannot verify should not push.
+
+### A prompt that made things up
+
+For the legal review, I asked Orazaka, our own engine, to write the agent's prompt. The plan was sound. But it cited two repositories that do not exist, government links that do not exist, and a 14-day cancellation rule that it attributed to Quebec's consumer protection law. That law does not contain it.
+
+We corrected it before publishing the issue, and left the raw output in a comment so we could compare. It is exactly the kind of error a legal document cannot afford. And an instruction does not fix the root: a model that cannot check anything does not know it is wrong. The real remedy is for the engine to read the sources itself, and cite them. That is Orazaka's next job.
+
+## The rules we wrote
+
+All of that now sits in a section of our engineering charter, the one every repository of the organisation inherits. Build before you push, and if you cannot, say so and stop. Comment your progress on the issue, because that is where I follow the work. Tests that do not need the network. Invent nothing. Never weaken a guard to get to green, even when the guard lives in another repository. And let the administrator set every parameter, instead of writing it in the code.
+
+None of these rules is new for a human. What changes with an agent is that it arrives with no context. What you do not write down for it, it does not know.
+
+One more thing came out of that night. Trying to fix a few repository names, I realised that a repository name is written in dozens of places: in the CI pipelines, in the workspace manifest, in the deployments, in the site's data. Renaming a repository today is a treasure hunt.
+
+So we are building a kind of build pack for the CI. Each repository will have just one line:
+
+```yaml
+jobs:
+  ci:
+    uses: krizaka/.github/.github/workflows/krizaka-ci.yml@v2
+    secrets: inherit
+```
+
+The rest is decided by our actions: they look at what is in the repository (a Java project of the workspace, Node, Python, infrastructure), and run the right chain. A single register of repositories replaces the names written by hand, and a script lists everything that cites a repository before it is renamed.
+
+That piece of work is being done right now by an agent, in the DevOps role, within a limited scope and without deploying anything. I will review its PR like the others.
+
+## The day we tried to finish
+
+On 23 October, I wanted to finish everything. Not a small batch of tickets: the issues open for weeks, Akinaza's screens, the Krizaka TypeScript modules, the blog's timeline, Yomizaka's Mac app, the first slices of Orazaka. I thought that with coding agents working in parallel, and me reviewing, the day would be enough.
+
+It was not. But I learned things I want to write down, because they will help the next time.
+
+In the morning, things moved everywhere. Tickets closed, pull requests merged. In total, more than one hundred and sixty PRs were merged that day, across thirty-three repositories. But each step forward opened another thing to watch. A coding agent took issues and opened PRs, agent sessions worked on other branches. Each had its own context and its limits, and for the work to move, you had to know where each one stood. By late afternoon, I felt less like I was moving forward than managing a site: everything moves, and you have to decide what to look at first.
+
+The quotas ran out twice. The review agent's quota gave out first: since the morning, every task had failed on the first round, with a usage-limit message. It ran out a second time in the middle of the day, right after a task. The agent sessions also hit their weekly limit, and several stopped. Forty-eight empty PRs were closed, each with an explanation. Their issues stayed open, queued. The sessions saved their work, and they will resume with a message.
+
+There was the CI too. A push made by an agent does not start the workflows until a human approves them. A PR can therefore look ready, with code and tests, while no check runs at all. You do not see it straight away, and you move on quickly.
+
+Then came the review. The review agent looked at every PR, the agent corrected, the review started again, and we went round once more. Each round used quota, the very quota we needed for the work. I stopped re-running the review after every correction: one review per PR, when it is opened, and I fix the small remarks myself rather than sending the agent around once more.
+
+In early afternoon, the machine said stop. Seven sessions were running at the same time, with the review agent, and builds were launched in parallel, outside the lock we use to run only one at a time. Load reached 133 on 10 cores. At that level everything slows down, and builds get in each other's way. Agents are not extra capacity. They share the same machine.
+
+I made a few decisions, and they fit in a few words. Three active sessions at most, and one heavy task at a time. Finish before you start: a study does not begin until the previous one is validated, and every ADR is validated before any line of code. Work outside the priorities is paused, and resumes one at a time, as soon as an active session ends, from its last state.
+
+Finish before you start. An open PR, an issue in progress, a session launched each take something: quota, attention, room on the machine. Until something is merged, it is not finished. It is a debt waiting to be paid.
+
+One heavy task at a time. Three builds in parallel do not go faster than one. They get in each other's way, and everyone loses time.
+
+The cheapest model that is enough. A text correction or a simple test does not need the most powerful model. I keep the large models for architecture decisions, and I watch what each session costs.
+
+Automatic review, on every PR. It caught real bugs before they reached the main branch. It uses quota, so it has to be watched so that it does not loop, but I keep it.
+
+A human decides and merges. The agents open branches, push code, answer comments. What goes into the main branch is my decision, and I am the one who merges. That is not distrust of them. It is the only way to know what was verified, and by whom.
+
+We did not finish everything that day. There are PRs waiting, issues in the queue, and decisions that come back to me. But the rule is written, and it is the one we follow now.

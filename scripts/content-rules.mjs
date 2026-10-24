@@ -206,7 +206,7 @@ export function mediaProblems(media) {
   return out;
 }
 
-/** Links between posts (`/posts/<slug>` and `/fr/posts/<slug>`): each one leads to a post of that language, and a published
+/** Links between posts (`/basics/<slug>` and `/fr/basics/<slug>`, the shelf's addresses): each one leads to a post of that language, and a published
     post never links to a draft (the reader would land on a 404). `posts` is [{ file, data, body }]. */
 export function linkProblems(posts) {
   const out = [];
@@ -216,7 +216,7 @@ export function linkProblems(posts) {
     if (m) known.set(`${m[2]}:${m[1]}`, p.data.draft === true);
   }
   for (const p of posts) {
-    for (const l of p.body.matchAll(/\]\((\/fr)?\/posts\/([a-z0-9-]+)\/?(?:#[^)]*)?\)/g)) {
+    for (const l of p.body.matchAll(/\]\((\/fr)?\/(?:posts|basics)\/([a-z0-9-]+)\/?(?:#[^)]*)?\)/g)) {
       const key = `${l[1] ? "fr" : "en"}:${l[2]}`;
       if (!known.has(key)) out.push(`${p.file}: links to ${l[0].slice(2, -1)}, which is not a post`);
       else if (p.data.draft !== true && known.get(key)) out.push(`${p.file}: a published post links to the draft ${l[0].slice(2, -1)}`);
@@ -295,9 +295,10 @@ export function internalLinkProblems(file, body, known, sourceDraft = false) {
   const out = [];
   for (const l of body.matchAll(/\]\((\/[^)\s#]*)(?:#[^)]*)?\)/g)) {
     const path = l[1];
-    const m = path.match(/^(\/fr)?\/(?:(posts|story|tags|series)\/([a-z0-9-]+)|([a-z-]*))\/?$/);
+    const m = path.match(/^(\/fr)?\/(?:(posts|basics|story|tags|series)\/([a-z0-9-]+)|([a-z-]*))\/?$/);
     const locale = m?.[1] ? "fr" : "en";
-    const key = m?.[2] ? `${m[2]}:${locale}:${m[3]}` : undefined;
+    const kind = m?.[2] === "basics" ? "posts" : m?.[2];
+    const key = kind ? `${kind}:${locale}:${m[3]}` : undefined;
     const ok = m && (key ? known.has(key) && (sourceDraft || !(known instanceof Map && known.get(key) === true)) : STATIC_PAGES.has(m[4]));
     if (!ok) out.push(`${file}: links to ${path}, which is not a page of the blog`);
   }

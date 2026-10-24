@@ -1,18 +1,25 @@
 import type { Metadata } from "next";
-import { SeriesPage, seriesLead, seriesName } from "@/app/components/pages/SeriesPage";
-import { seriesOf } from "@/lib/posts";
-import { pageMetadata } from "@/lib/seo";
+import { notFound } from "next/navigation";
+import RetiredPost, { retiredMetadata } from "@/app/components/pages/RetiredPost";
+import { retiredSeriesIds, retiredTarget } from "@/lib/retired";
 
 type Props = { params: Promise<{ series: string }> };
 export const dynamicParams = false;
 
-export const generateStaticParams = () => (seriesOf("en").length ? seriesOf("en").map(({ series }) => ({ series })) : [{ series: "_" }]);
+/* A series is retired: its address is a stub to the story or to « Les bases » (lib/redirects.json, `series:<id>`). */
+export const generateStaticParams = () => {
+  const params = retiredSeriesIds().map((series) => ({ series }));
+  return params.length ? params : [{ series: "_" }];
+};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { series } = await params;
-  return pageMetadata({ locale: "en", path: "/series/" + series, title: seriesName("en", series), description: seriesLead("en", series) });
+  const target = retiredTarget("en", `series:${series}`);
+  return target ? retiredMetadata("en", target) : {};
 }
 
 export default async function Page({ params }: Props) {
-  return <SeriesPage locale="en" series={(await params).series} />;
+  const { series } = await params;
+  if (!retiredTarget("en", `series:${series}`)) notFound();
+  return <RetiredPost locale="en" slug={`series:${series}`} />;
 }

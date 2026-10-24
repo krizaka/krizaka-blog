@@ -10,8 +10,6 @@ author: oussama
 draft: false
 cover: licence-magnifier
 coverAlt: "On a walnut desk, a brass magnifying glass beside a stack of folded papers sealed with red wax, an old key and an open wooden box, under a warm lamp"
-series: basics
-part: 5
 ---
 
 On 15 October I checked that none of the default models in [our AI engine](https://github.com/krizaka/orazaka) carried a non-commercial licence, since we sell to companies. The default English voice was called Ryan. It was a <Model id="piper">Piper</Model> voice, free, published "as open source". When I opened its card, I read: CC BY-NC-SA 4.0. The "NC" means non-commercial.
@@ -78,7 +76,7 @@ Piper shows that a model's licence can come from its data. The voices of the `pi
 
 ## The weights are only one piece
 
-A model is not just a file. When you run it, there is the inference code, with its own licence: Piper's engine, for example, was under MIT, its original repository is archived, and its successor is under GPL-3.0. There are the libraries all of it depends on, each with its own. There is the training data, whose licence can travel up to you, as with Ryan. And there is where the model runs: on your machine, you are bound by the model's licence; through a provider's API, you are also bound by its terms of use, which can be stricter. I wrote about it in [the post on uncensored models](/posts/censored-and-uncensored-models/).
+A model is not just a file. When you run it, there is the inference code, with its own licence: Piper's engine, for example, was under MIT, its original repository is archived, and its successor is under GPL-3.0. There are the libraries all of it depends on, each with its own. There is the training data, whose licence can travel up to you, as with Ryan. And there is where the model runs: on your machine, you are bound by the model's licence; through a provider's API, you are also bound by its terms of use, which can be stricter. I wrote about it in [the post on uncensored models](/story/an-empty-result-is-not-a-success/#the-one-rule-nobody-can-change).
 
 ## My list before choosing
 
@@ -97,8 +95,31 @@ A model is not just a file. When you run it, there is the inference code, with i
 Licences change, and so do links. Everything written here was read at the source on 20 October 2026, in the licence files or the model cards. Check again before relying on it.
 </Note>
 
+## The licences, one by one
+
+| Model | Use here | Licence of the weights |
+| :--- | :--- | :--- |
+| <Model id="wan22-i2v-a14b">Wan 2.2 I2V A14B</Model> | Character takes | Apache 2.0 |
+| LTX-Video 0.9.8 | Landscapes | LTX Open Weights |
+| FLUX.2 [klein] 4B | Keyframes | Apache 2.0 |
+| SeedVR2 | 4K upscale | Apache 2.0 |
+| ACE-Step | Music | MIT |
+| <Model id="zonos">Zonos v0.1</Model> | Narrator | Apache 2.0 |
+| Kokoro | Synthetic reference voice | Apache 2.0 |
+| <Model id="whisper">Whisper</Model> | Checking the spoken words | MIT |
+| <Model id="chatterbox">Chatterbox</Model> | Tried, not kept | MIT |
+| <Model id="f5-tts">F5-TTS</Model> | Refused | Non-commercial (CC BY-NC 4.0) |
+| XTTS-v2 | Refused | Non-commercial (CPML) |
+| MMAudio | Refused | Non-commercial (CC BY-NC) |
+| Stable Audio Open | Refused | Community licence, registration required |
+| HunyuanVideo (foley) | Set aside | Excludes the EU, the UK and South Korea |
+
+<Note>
+The licences were read at the source on October 20, 2026. They change, so check again before relying on them. I am not a lawyer: I read these texts as an engineer.
+</Note>
+
 ## What to take away
 
 "Open source" is often a label, and the licence is the contract. Two models of the same family, in the same week, can have very different rights. Read the file, not the article, write down what you read, and do it again when the model changes version.
 
-For what it costs to run these models, see [the post on model families and the GPU](/posts/ai-model-families-and-why-you-need-a-gpu/) and [the one on the real cost of an image](/story/what-a-gpu-costs/#the-price-of-a-result-you-keep).
+For what it costs to run these models, see [the post on model families and the GPU](/basics/ai-model-families-and-why-you-need-a-gpu/) and [the one on the real cost of an image](/story/what-a-gpu-costs/#the-price-of-a-result-you-keep).
