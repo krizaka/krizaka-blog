@@ -232,13 +232,13 @@ const isCalendarDate = (value) => {
   const date = new Date(`${value}T00:00:00.000Z`);
   return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
 };
-const tagSlug = (tag) => String(tag).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const addKnownRoute = (known, key, draft) => known.set(key, known.has(key) && known.get(key) === false ? false : draft);
 
 export const CHAPTER_STATS_MAX = 4;
 
-/** The pages a body may link to besides posts and chapters (both languages). */
-const STATIC_PAGES = new Set(["", "about", "feed", "newsletter", "search", "series", "tags", "saved"]);
+/** The pages a body may link to besides posts and chapters (both languages). The blog is one page (krizaka-blog#123): the topics,
+    the series, the search, the saved posts and the feed page are stubs now (lib/redirects.json), never a link's target. */
+const STATIC_PAGES = new Set(["", "about", "newsletter", "basics"]);
 
 /** The h2s of an MDX body (outside code fences), as written: what a stat's `section` names. */
 const h2Texts = (body) => {
@@ -295,7 +295,7 @@ export function internalLinkProblems(file, body, known, sourceDraft = false) {
   const out = [];
   for (const l of body.matchAll(/\]\((\/[^)\s#]*)(?:#[^)]*)?\)/g)) {
     const path = l[1];
-    const m = path.match(/^(\/fr)?\/(?:(posts|basics|story|tags|series)\/([a-z0-9-]+)|([a-z-]*))\/?$/);
+    const m = path.match(/^(\/fr)?\/(?:(posts|basics|story)\/([a-z0-9-]+)|([a-z-]*))\/?$/);
     const locale = m?.[1] ? "fr" : "en";
     const kind = m?.[2] === "basics" ? "posts" : m?.[2];
     const key = kind ? `${kind}:${locale}:${m[3]}` : undefined;
@@ -323,8 +323,6 @@ export function checkChapters(dir, postsDir, ctx) {
     const draft = p.data.draft === true;
     postSlugs.add(`${locale}:${slug}`);
     addKnownRoute(known, `posts:${locale}:${slug}`, draft);
-    for (const tag of Array.isArray(p.data.tags) ? p.data.tags : []) addKnownRoute(known, `tags:${locale}:${tagSlug(tag)}`, draft);
-    if (typeof p.data.series === "string" && p.data.series) addKnownRoute(known, `series:${locale}:${p.data.series}`, draft);
   }
   for (const c of chapters) {
     const m = c.file.match(FILE);

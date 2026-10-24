@@ -12,18 +12,28 @@
 - Pages are the `@krizaka/ui` page blocks (`Page`, `PageHero`, `Section`, `CardGrid`, `LinkCard`…), tokens through
   `@krizaka/tailwind`, faces `@krizaka/fonts` (`next/font/local`), motion `MotionObserver`. **Dark and light are both
   first-class**; check every view in both. No hard-coded colours (`var(--kz-*)`), no page-local button class.
-- The bar is the family's (`@krizaka/ui/nav-bar`): left the mark, centre this site's sections, right the tools and the way
-  back to krizaka.com. The family switcher arrives with `NavBar.Family`.
+- **The blog is one page: the story** (krizaka-blog#123, the CTO's UX decision). The home (EN `/`, FR `/fr/`) is the title and
+  one sentence in Oussama's voice (these are his notes from building Krizaka), his byline, **Featured** (one card: the latest
+  chapter), then **every chapter in reading order, 1 → N** (number, title, what I faced → what we built, the period; the latest
+  marked « New » — a timeline, never a feed; `lib/home.ts`), then « The basics » as quiet links, the newsletter line, the footer.
+  Each chapter keeps its page (`/story/<slug>/`), each basic its `/basics/<slug>/`; À propos and `/newsletter/` stay.
+- **Removed pages answer a permanent move**: `/story/`, `/series/` (and each series), `/tags/` (and each topic), `/search/`,
+  `/saved/`, `/feed/`, `/posts/` are keys of `lib/redirects.json` (`page:<path>`, `series:<id>`), built as stubs (0-second refresh +
+  canonical + noindex + a visible link — the 308 a static host can give) to the story, or to the chapter or shelf post that absorbed
+  them. Never link to one (`npm run lint` and `scripts/check-meta.mjs` refuse it); never bring one back as a page.
+- The bar is the family's (`@krizaka/ui/nav-bar`): the mark (the way home), the language (`NavBar.Language`) and the theme —
+  nothing else (no sections, no tag menu, no search, no second bar). The footer carries the chapters, « The basics », the feeds
+  (files), À propos and the family's columns (Krizaka, Krizaka UI, Krizaka Java…).
 
 ## 2. Content
 
 - A post is `content/posts/<slug>.<en|fr>.mdx`: front matter `title`, `description` (≤ 220), `date` (YYYY-MM-DD),
   `tags` (lower-case ids; their names are `tags.names.*` in the messages), `author` (`authors.*`), `draft`, optional
-  `cover` (a media id, below), `featured` (the home's first card), `series` (an id of `series.names.*`: `building-orazaka`,
+  `cover` (a media id, below), `featured` (kept in the front matter; the home's Featured is the latest chapter), `series` (an id of `series.names.*`: `building-orazaka`,
   `measured`) with its `part` (a post's place; unique per series and language), optional `image`. A post may exist in one language only; in both, they share the slug and name each other (hreflang).
 - **Search**: optional `seoTitle` (≤ 60 characters, the whole title tag) and `seoDescription` (≤ 155) when the title or the
-  lead is too long for a search result; the h1 and the lead stay the post's own words. Every topic has `tags.seo.<tag>`
-  (title, description) in both languages. `scripts/check-meta.mjs out` (CI) refuses a built page over those limits, without
+  lead is too long for a search result; the h1 and the lead stay the post's own words. A topic is a word on a card
+  (`tags.names.<tag>`), not a page. `scripts/check-meta.mjs out` (CI) refuses a built page over those limits, without
   exactly one h1, with an image without `alt`, or showing NaN/undefined. No promotional block or call to action inside a
   post: a product is named plainly, once, with one link — the posts teach, they do not sell.
 - **MDX props are strings** (`<Utilization hourly="3.99" />`): next-mdx-remote drops JavaScript expressions (`={…}`), and
@@ -39,8 +49,7 @@
   `sensitive: true` and the rules add: no amount of money, no key or variable name, no supplier name, no ledger, fiscal or
   bank word. Patterns are described, internals never.
 - **A published post has a `publishedAt`** (quoted date, time and offset, e.g. `"2026-10-16T21:44:17-04:00"`, on its `date`):
-  posts of one day keep their order. The home shows **three posts first**: pinned ones (`featured: true`) then the newest,
-  the first as the large card. **A published post has a `cover` and its `coverAlt`**, shown **once**: the post's hero and its
+  posts of one day keep their order. **A published post has a `cover` and its `coverAlt`**, shown **once**: the post's hero and its
   cards — never again in the body (lint refuses its id or URL there); a picture in the text is another, relevant one. A cover is made, not found: an Orazaka Studio run (provenance in `lib/media.json`), never a stock photo.
 - **`draft: true` is not published**: the build leaves it out (`APP_SHOW_DRAFTS=1` previews it). Publishing = `draft: false`.
 - **Prove, don't invent.** A figure comes from a run, a measurement or a line of code that the post can point to; what is
@@ -69,12 +78,14 @@
   URL checked 200, name patterns; a family entry links the organisation and is covered by a link to one of its models);
   `npm run lint` refuses an unlinked first mention, an unknown id or a `<Model>` around another model's name.
   `node scripts/link-models.mjs --write` wraps the first mentions. A new model is added to the map with a checked URL.
-- **The home is pictures, not schemas.** A picture of `lib/media.json` either has its provenance (`made`) or is a diagram
-  drawn from code (`style: "diagram"`); at most **one** of the home's first three cards may have a diagram cover (lint). A
-  diagram stays inside its post; a cover is an evocative still or a short clip. A clip cover shows its poster first and plays
-  its muted loop only on hover (or, on a touch screen, while well in view after the page loaded), never under reduced motion
-  or Save-Data (`CardLoop`).
-- **The Krizaka story** (`/story/`, EN and FR; linked from the home and the series): the posts in time, read from their front matter by `lib/story.ts` (weeks, oldest first; a post's thread is its series; the step's line is the post's own `description`). Nothing is typed: a new post appears by itself. Built from `@krizaka/ui` blocks only (`Landscape`, `SpecimenTag`, `Stepper`, `PageIndex`, `Footnotes`); a missing block is an issue in krizaka-ui. Tested in `tests/story.test.mjs`.
+- **Pictures, not schemas.** A picture of `lib/media.json` either has its provenance (`made`) or is a diagram drawn from code
+  (`style: "diagram"`); a diagram stays inside its post; a cover is an evocative still or a short clip. A clip cover shows its
+  poster first and plays its muted loop only on hover (or, on a touch screen, while well in view after the page loaded), never
+  under reduced motion or Save-Data (`CardLoop`).
+- **The story's chapters** (`content/chapters/`, `lib/chapters.ts`) are the blog's content: the home lists them from their front
+  matter (`chapter`, `period`, `versus`), nothing typed; a new chapter appears by itself, Featured and marked « New ». Built from
+  `@krizaka/ui` blocks only (`PageHero`, `Section`, `Card`, `LinkCard`, `Badge`); a missing block is an issue in krizaka-ui.
+  Tested in `tests/home.test.mjs` and on the built page by `scripts/check-meta.mjs` (`homeProblems`).
 - **Questions sections answer search engines too**: a post's h2 « Questions fréquentes » / « Frequently asked questions »
   (or « FAQ ») turns its h3s and their text into FAQPage JSON-LD (`faqOf` in `lib/reading.ts`).
 - Every user-facing string of the site is in `messages/{en,fr}.json` (`krizaka-i18n check`). No `locale === "fr" ?`.
@@ -88,8 +99,8 @@
 
 ## 3.1 Newsletter
 
-- A subscribe form (`app/components/newsletter/`: e-mail + language, Turnstile, honeypot) on the home, at the end of every
-  post and on `/newsletter/` (with what is kept and why — Loi 25). It posts to `/api/newsletter/subscribe`.
+- A subscribe form (`app/components/newsletter/`: e-mail + language, Turnstile, honeypot) on the home (its one newsletter line),
+  at the end of every post and on `/newsletter/` (with what is kept and why — Loi 25). It posts to `/api/newsletter/subscribe`.
 - **The CAPTCHA never loads with the page**: Cloudflare's script (and its challenge frame) is fetched when the form is on screen or takes focus (`lib/when-wanted.ts`).
 - **Double opt-in, nothing stored before the click**: the function e-mails a signed link (HMAC, `MAIL_TOKEN_SECRET`, 48 h);
   `/api/newsletter/confirm` adds the address to `newsletter_subscribers` (database `krizaka_newsletter` on the cluster
@@ -104,8 +115,8 @@
   JavaScript); a bad link lands on `/newsletter/link-invalid/`.
 - The form is compact (one line, one row: e-mail + « M'abonner », one muted notice line); the language is the page's; the
   CAPTCHA is invisible unless Cloudflare needs an action (`appearance: interaction-only`).
-- **/feed/** (EN and FR) is the human page about the feeds: the e-mail form first, then what RSS is, the address to copy and the latest posts; every
-  human-facing « RSS » link goes there. `/feed.xml` and `/atom.xml` are pure XML for readers (no XSLT: Chrome is removing it).
+- **RSS and Atom stay as files, not pages** (krizaka-blog#123): `/feed.xml` and `/atom.xml` are pure XML for readers (no XSLT:
+  Chrome is removing it), and every « RSS » link names the file; the old `/feed/` page is a stub to the story.
 - **New post e-mail**: designed with `@krizaka/email` (`newPost`: the Krizaka mark, the cover, the title, the excerpt, one
   button, the signature, the footer with the one-click unsubscribe and the postal address; tables and inline styles, dark
   mode, a plain-text part; the reader's language). `scripts/newsletter-email.mjs` renders it once per language in the

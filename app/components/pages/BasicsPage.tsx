@@ -6,7 +6,7 @@ import { getDictionary, localizedPath, type Locale } from "@/lib/i18n";
 import { postsOf } from "@/lib/posts";
 import { collectionJsonLd } from "@/lib/seo";
 import { PostList } from "./PostList";
-import { seriesLead, seriesName } from "./SeriesPage";
+import { seriesLead, seriesName } from "./series-label";
 
 /* « Les bases »: the shelf of standalone posts that teach, at /basics/ (EN) and /fr/basics/ (FR). Its words are the series' name and lead. */
 export function BasicsPage({ locale }: { locale: Locale }) {
@@ -19,9 +19,9 @@ export function BasicsPage({ locale }: { locale: Locale }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(collectionJsonLd(locale, "/basics", name, lead)) }} />
       <PageHero eyebrow={t.home.eyebrow} title={name} lead={lead} backdrop="plain" linkAs={Link} />
       <Section reveal={false}>
-        {posts.length ? <PostList posts={posts} locale={locale} reveal={false} /> : <p className="bl-status">{t.tags.none}</p>}
+        {posts.length ? <PostList posts={posts} locale={locale} label={name} reveal={false} /> : <p className="bl-status">{t.tags.none}</p>}
         <p className="bl-story-link">
-          <Link href={localizedPath(locale, "/story")}>{t.series.story}</Link>
+          <Link href={localizedPath(locale, "/")}>{t.series.story}</Link>
         </p>
       </Section>
     </>

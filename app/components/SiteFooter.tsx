@@ -10,10 +10,11 @@ import { FOOTER_PRODUCT_IDS } from "@/lib/footer-family";
 export type FooterChapter = { href: string; title: string };
 
 /* The footer (NAV-SYS) is @krizaka/ui's SiteFooter, one calm band (krizaka-ui#434): the blog is a Krizaka publication, so
-   it signs “A Krizaka company”; its own columns (the story with its chapters and « All posts », the project, the feeds) sit beside
-   the family's (Products · Open source with GitHub · Krizaka: story, blog, contact), then one line. Nothing twice: GitHub is in the
-   family's columns. Rendered once, by the root layout, outside <main>: the page's single contentinfo. The chapters are read on the
-   server (SiteRoot) and handed in. */
+   it signs “A Krizaka company”. Its own columns say what the page says (krizaka-blog#123): the story (its chapters in reading order,
+   then « The basics »), the feeds (the newsletter, RSS and Atom — the files), the project (À propos, the source). They sit beside the
+   family's (Products · Open source: Krizaka UI, Krizaka Java, GitHub · Krizaka: the company), which is where the home's old « Where
+   the work lives » went. Rendered once, by the root layout, outside <main>: the page's single contentinfo. The chapters are read on
+   the server (SiteRoot) and handed in. */
 export default function SiteFooter({ chapters }: { chapters: readonly FooterChapter[] }) {
   const { locale, t } = useI18n();
   const f = t.footer;
@@ -24,16 +25,16 @@ export default function SiteFooter({ chapters }: { chapters: readonly FooterChap
         {chapters.map((c) => (
           <FamilyFooter.Link key={c.href} href={c.href}>{c.title}</FamilyFooter.Link>
         ))}
-        <FamilyFooter.Link href={localizedPath(locale, "/")}>{f.allPosts}</FamilyFooter.Link>
+        <FamilyFooter.Link href={localizedPath(locale, "/basics")}>{f.basics}</FamilyFooter.Link>
+      </FamilyFooter.Column>
+      <FamilyFooter.Column title={f.feeds}>
+        <FamilyFooter.Link href={`${feeds}/newsletter/`}>{f.newsletter}</FamilyFooter.Link>
+        <FamilyFooter.Link href={`${feeds}/feed.xml`}>{f.rss}</FamilyFooter.Link>
+        <FamilyFooter.Link href={`${feeds}/atom.xml`}>{f.atom}</FamilyFooter.Link>
       </FamilyFooter.Column>
       <FamilyFooter.Column title={f.project}>
         <FamilyFooter.Link href={`${feeds}/about/`}>{f.about}</FamilyFooter.Link>
         <FamilyFooter.Link href={REPOSITORY_URL}>{f.source}</FamilyFooter.Link>
-      </FamilyFooter.Column>
-      <FamilyFooter.Column title={f.feeds}>
-        <FamilyFooter.Link href={`${feeds}/newsletter/`}>{f.newsletter}</FamilyFooter.Link>
-        <FamilyFooter.Link href={`${feeds}/feed/`}>{f.rss}</FamilyFooter.Link>
-        <FamilyFooter.Link href={`${feeds}/atom.xml`}>{f.atom}</FamilyFooter.Link>
       </FamilyFooter.Column>
     </FamilyFooter>
   );

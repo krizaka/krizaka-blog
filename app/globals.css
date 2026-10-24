@@ -95,10 +95,6 @@ html.light ::selection { background: hsla(217, 92%, 50%, 0.18); }
 .bl-note { margin: 1.5rem 0; padding: 0.875rem 1rem; border: 1px solid var(--kz-border-default); border-inline-start: 3px solid var(--kz-accent); border-radius: 0; background: var(--kz-surface-1); font-size: 0.9375rem; }
 
 /* ─── Search ─── */
-.bl-search { display: grid; gap: 1.5rem; }
-.bl-search input { width: 100%; min-height: 48px; padding: 0 1rem; border-radius: 0; border: 1px solid var(--kz-border-strong); background: var(--kz-surface-1); color: var(--kz-text-primary); font: inherit; font-size: 1.0625rem; }
-.bl-search input::placeholder { color: var(--kz-text-tertiary, var(--kz-text-secondary)); }
-.bl-search ul { list-style: none; display: grid; gap: 0.75rem; }
 .bl-status { color: var(--kz-text-secondary); font-size: 0.9375rem; }
 
 .kz-skip { position: fixed; left: 12px; top: -64px; z-index: 100; padding: 8px 14px; border-radius: 0; background: var(--kz-accent); color: var(--kz-on-accent); font-weight: 600; }
@@ -143,29 +139,22 @@ picture { display: contents; }
 .bl-card-link:focus-visible { outline: none; }
 .bl-card:has(.bl-card-link:focus-visible) { outline: 2px solid var(--kz-ring, var(--kz-accent)); outline-offset: 2px; }
 .bl-card-meta { font-family: var(--kz-font-mono); font-size: 0.8125rem; color: var(--kz-text-secondary); margin-bottom: 0.375rem; }
-.bl-card-tags { display: flex; flex-wrap: wrap; gap: 0.375rem; list-style: none; margin-top: 0.875rem; }
-.bl-chip { display: inline-flex; align-items: center; height: 1.5rem; padding-inline: 0.625rem; border-radius: var(--kz-radius-sm, 2px); border: 1px solid var(--kz-border-default); font-size: 0.75rem; color: var(--kz-text-secondary); }
 @media (min-width: 64rem) {
   .bl-card-feature { flex-direction: row; }
   .bl-card-feature > :first-child { flex: 0 0 55%; }
   .bl-card-feature > :first-child .bl-cover-img { aspect-ratio: auto; }
   .bl-card-feature > :last-child { display: flex; flex-direction: column; justify-content: center; padding: 2rem; }
-  .bl-card-feature h2 { font-size: 1.875rem; line-height: 1.2; }
+  .bl-card-feature :is(h2, h3) { font-size: 1.875rem; line-height: 1.2; }
 }
 .bl-series { margin-bottom: 2rem; padding: 1rem 1.25rem; border: 1px solid var(--kz-border-default); border-inline-start: 3px solid var(--kz-accent); border-radius: 0; background: var(--kz-surface-1); font-size: 0.9375rem; }
 .bl-series-title { font-family: var(--kz-font-mono); font-size: 0.8125rem; color: var(--kz-text-secondary); margin-bottom: 0.5rem; }
 .bl-series-title a, .bl-series li a { color: var(--kz-accent-text); text-decoration: underline; text-underline-offset: 3px; }
 .bl-series ol { padding-inline-start: 1.5rem; display: grid; gap: 0.25rem; list-style: decimal; }
 .bl-series li[aria-current="page"] { font-weight: 650; color: var(--kz-text-primary); }
-/* Save and share (app/components/engage): Krizaka UI buttons in wrapping rows, nothing past the column on a phone. */
+/* Share (app/components/engage): Krizaka UI buttons in wrapping rows, nothing past the column on a phone. */
 .bl-engage { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--kz-border-subtle); display: grid; gap: 0.75rem; }
 .bl-engage-title { font-family: var(--kz-font-display); font-size: 1.125rem; font-weight: 400; color: var(--kz-text-primary); }
-.bl-engage-row, .bl-share { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
-.bl-saved { display: grid; gap: 1rem; }
-.bl-saved-item { display: grid; gap: 0.25rem; align-content: start; justify-items: start; }
-.bl-saved-item > :first-child { width: 100%; }
-.bl-feed { margin-top: 2rem; font-size: 0.9375rem; }
-.bl-feed a { color: var(--kz-accent-text); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.bl-share { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
 
 /* ─── The utilisation calculator ─── */
 .bl-calc { margin: 2rem 0; padding: 1.25rem; border: 1px solid var(--kz-border-default); border-radius: var(--kz-radius-md, 12px); background: var(--kz-surface-1); display: grid; gap: 0.875rem; }
@@ -222,7 +211,6 @@ picture { display: contents; }
 .bl-prose h2 { scroll-margin-top: var(--kz-anchor-offset, 96px); }
 .bl-prose > p:first-child { font-size: 1.1875rem; line-height: 1.7; color: var(--kz-text-primary); }
 .bl-prose figure, .bl-prose .bl-figure { margin-block: 2.25rem; }
-.bl-post-tags { margin-top: 2.5rem; }
 
 /* Code: @krizaka/ui CodeBlock (language, copy). */
 .bl-prose .bl-code { margin-block: 1.75rem; }
@@ -237,9 +225,7 @@ picture { display: contents; }
 .bl-codetabs [role="tabpanel"] { margin-top: 0.75rem; }
 .bl-codetabs [role="tabpanel"] > * + * { margin-top: 0; }
 
-/* ─── Home: topic filters, cards, who writes ─── */
-.bl-filter { margin-bottom: 1.5rem; }
-.bl-count { font-family: var(--kz-font-mono); font-size: 0.75em; color: var(--kz-text-secondary); margin-inline-start: 0.25rem; }
+/* ─── Cards: the meta line, the topic, the hook ─── */
 .bl-card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.375rem 0.75rem; }
 .bl-topic { margin-inline-end: 0.5rem; display: inline-flex; align-items: center; height: 1.375rem; padding-inline: 0.5rem; border-radius: 6px; background: var(--kz-accent-soft); color: var(--kz-accent-text); font-family: var(--kz-font-sans); font-size: 0.75rem; font-weight: 650; letter-spacing: 0; }
 .bl-card .bl-card-hook { font-size: 0.9375rem; line-height: 1.55; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
@@ -256,12 +242,9 @@ picture { display: contents; }
 .bl-card:is(:hover, :has(.bl-card-link:focus-visible)) :is(h2, h3) { color: color-mix(in srgb, var(--kz-text-primary) 65%, var(--kz-accent-text)); }
 .bl-card-link, .bl-card-link:hover, .bl-card-link:focus-visible { text-decoration: none; }
 /* Text links: an underline on hover, never a glow. */
-.bl-eyebrow a:hover, .bl-byline-lang:hover, .bl-feed a:hover, .bl-series-title a:hover { text-decoration: underline; text-underline-offset: 3px; box-shadow: none; }
+.bl-eyebrow a:hover, .bl-byline-lang:hover, .bl-series-title a:hover { text-decoration: underline; text-underline-offset: 3px; box-shadow: none; }
 
 .kz-404-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
-
-/* The home's Featured block: the newest post large, the next two as medium cards side by side (stacked on a phone). */
-.bl-featured-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 1rem; margin-top: 1rem; }
 
 /* Following a post: e-mail first (the newsletter form, #subscribe), the RSS feed as a quiet second. */
 .bl-follow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; margin-top: 2rem; }
@@ -298,12 +281,21 @@ picture { display: contents; }
 .bl-chapter-stats .bl-num a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 .bl-continue .kzs-prompt { margin-inline: auto; max-width: 40rem; }
 .bl-continue-title { font-weight: 600; }
-/* ═══ The Krizaka story (/story/): the posts in time ═══ */
-.bl-story-intro { display: grid; gap: 2rem; align-items: start; }
-@media (min-width: 64rem) { .bl-story-intro { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); } }
-.bl-story-period { position: relative; display: flex; align-items: flex-end; min-height: 11rem; margin-bottom: 1.5rem; overflow: hidden; }
-.bl-story-period .bl-story-landscape { position: absolute; inset: 0; height: 100%; }
-.bl-story-period .bl-story-tag { position: relative; margin-inline-start: 1rem; }
-.bl-story-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); gap: 1rem; margin-top: 2rem; }
-.bl-story-step { scroll-margin-top: var(--kz-anchor-offset, 96px); }
+/* ═══ The home is the story (krizaka-blog#123) ═══════════════════════════════════════════════════════════════════════
+   The sentence and its byline under the h1; Featured (the post card, large); the chapters as a timeline you follow — an
+   ordered list of LinkCards, the number in the tile, the period and « New » in the meta line; the basics as
+   quiet links. Tokens only; nothing wider than the window at 360 px. */
+.bl-home-byline { margin-top: 1rem; font-family: var(--kz-font-mono); font-size: 0.8125rem; color: var(--kz-text-secondary); }
+.bl-card-cta { margin-top: 1rem; font-weight: 650; font-size: 0.9375rem; color: var(--kz-accent-text); }
+.bl-card-cta-arrow { display: inline-block; transition: transform 0.15s var(--kz-ease, ease); }
+.bl-card:is(:hover, :has(.bl-card-link:focus-visible)) .bl-card-cta-arrow { transform: translateX(3px); }
+.bl-chapters { display: grid; gap: 0.75rem; list-style: none; padding: 0; margin: 0; }
+.bl-chapter { position: relative; min-width: 0; }
+.bl-chapter-no { font-family: var(--kz-font-mono); font-weight: 700; font-size: 0.9375rem; font-variant-numeric: var(--kz-figures, lining-nums tabular-nums); color: var(--kz-text-primary); }
+.bl-chapter .kz-link-card { min-width: 0; }
+.bl-chapter[data-new] .kz-link-card { border-color: var(--kz-accent); }
+.bl-chapter-new { margin-inline-start: 0.625rem; vertical-align: middle; }
+.bl-basics-links { display: grid; gap: 0.5rem; list-style: none; padding: 0; max-width: 48rem; }
+.bl-basics-links a { color: var(--kz-text-primary); text-decoration: underline; text-decoration-color: var(--kz-border-strong); text-underline-offset: 4px; }
+.bl-basics-links a:hover { text-decoration-color: var(--kz-accent-text); }
 .bl-story-link { margin-top: 2rem; color: var(--kz-text-secondary); } .bl-story-link a { color: var(--kz-accent-text); text-decoration: underline; text-underline-offset: 3px; }

@@ -10,7 +10,7 @@ import { displayFace, monoFace, textFace } from "./fonts";
 import "./globals.css";
 
 /* The 404 of both languages (the two root layouts bypass layout.tsx): @krizaka/ui ErrorPage, the message in English and
-   in French, the ways back (home, search, the French home). */
+   in French, the ways back (the story — the home — in English and in French). */
 export const metadata: Metadata = { title: "404 — Krizaka Blog", robots: { index: false } };
 
 export default function GlobalNotFound() {
@@ -40,9 +40,6 @@ export default function GlobalNotFound() {
                 <div className="kz-404-actions">
                   <Button asChild variant="primary" size="md">
                     <a href="/">{en.back}</a>
-                  </Button>
-                  <Button asChild variant="secondary" size="md">
-                    <a href="/search/">{en.search}</a>
                   </Button>
                   <Button asChild variant="ghost" size="md">
                     <a href="/fr/" lang="fr">{fr.back}</a>

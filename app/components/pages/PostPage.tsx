@@ -6,23 +6,21 @@ import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import { PageHero } from "@krizaka/ui/page-hero";
 import { Section } from "@krizaka/ui/page";
-import { ChipLink } from "@krizaka/ui/chip-link";
 import { CardGrid } from "@krizaka/ui/card-grid";
 import { LinkCard } from "@krizaka/ui/link-card";
 import { Toc, TocLayout } from "@krizaka/ui/toc";
 import { BackIcon, ForwardIcon } from "@krizaka/icons";
-import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
+import { format, getDictionary, localizedPath } from "@/lib/i18n";
 import { coverOf } from "@/lib/media";
 import { postsInSeries, relatedPosts, tagSlug, translationOf, type Post } from "@/lib/posts";
 import { headingsOf, neighbours } from "@/lib/reading.ts";
 import { postJsonLd, postPath } from "@/lib/seo";
-import { PostList, formatDate } from "./PostList";
+import { PostList } from "./PostList";
 import { tagLabel } from "./tag-label";
 import { mdxComponentsFor } from "./mdx";
-import { seriesName } from "./SeriesPage";
+import { seriesName } from "./series-label";
 import { PostEngage } from "../engage/PostEngage";
 import { NewsletterSection } from "../newsletter/NewsletterSection";
-import { SaveButton } from "../engage/SaveButton";
 import { Byline } from "./Byline";
 import { Button } from "@krizaka/ui/button";
 import { RssMark } from "../RssMark";
@@ -53,29 +51,18 @@ export default function PostPage({ post }: { post: Post }) {
       <div className="bl-prose">
         <MDXRemote source={post.body} components={mdxComponentsFor(locale)} options={{ mdxOptions: { remarkPlugins: [remarkGfm], rehypePlugins: [rehypeSlug] } }} />
       </div>
-      {post.tags.length > 0 && (
-        <ul className="bl-tags bl-post-tags" aria-label={t.post.topics}>
-          {post.tags.map(tagSlug).map((tag) => (
-            <li key={tag}>
-              <ChipLink asChild>
-                <Link href={localizedPath(locale, `/tags/${tag}`)}>{tagLabel(locale, tag)}</Link>
-              </ChipLink>
-            </li>
-          ))}
-        </ul>
-      )}
       <PostEngage slug={post.slug} title={post.title} locale={locale} />
-      {/* The way to follow: the e-mail form (the newsletter's, further down the page) first, the feed page as a quiet second
-          (/feed/: what RSS is and the address to copy; the feed file itself is for readers). */}
+      {/* The way to follow: the e-mail form (the newsletter's, further down the page) first, the RSS feed as a quiet second
+          (the file itself: the blog has no page about feeds since it became one page, krizaka-blog#123). */}
       <p className="bl-follow">
         <Button asChild variant="primary" size="md">
           <a href="#subscribe">{t.post.subscribe}</a>
         </Button>
         <Button asChild variant="ghost" size="md">
-          <Link href={localizedPath(locale, "/feed")}>
+          <a href={`${locale === "en" ? "" : "/fr"}/feed.xml`} type="application/rss+xml">
             <RssMark size={14} />
             {t.post.rssFeed}
-          </Link>
+          </a>
         </Button>
       </p>
     </article>
@@ -83,18 +70,14 @@ export default function PostPage({ post }: { post: Post }) {
   return (
     <>
       <div className="bl-progress" aria-hidden="true" />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(postJsonLd(post, topic ? { name: tagLabel(locale, topic), path: `/tags/${topic}` } : undefined)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(postJsonLd(post)) }} />
       <PageHero
         back={{ href: localizedPath(locale, "/"), label: t.post.back }}
         linkAs={Link}
         eyebrow={
           <span className="bl-eyebrow">
-            {topic && <Link href={localizedPath(locale, `/tags/${topic}`)}>{tagLabel(locale, topic)}</Link>}
-            {post.series && at >= 0 && (
-              <Link href={localizedPath(locale, `/series/${post.series}`)}>
-                {format(t.post.inSeries, { series: seriesName(locale, post.series), part: String(at + 1), count: String(inSeries.length) })}
-              </Link>
-            )}
+            {topic && <span>{tagLabel(locale, topic)}</span>}
+            {post.series && at >= 0 && <span>{format(t.post.inSeries, { series: seriesName(locale, post.series), part: String(at + 1), count: String(inSeries.length) })}</span>}
           </span>
         }
         title={post.title}
@@ -102,9 +85,7 @@ export default function PostPage({ post }: { post: Post }) {
         backdrop="plain"
         className="bl-post-hero"
       >
-        <Byline post={post} other={other}>
-          <SaveButton slug={post.slug} size="sm" />
-        </Byline>
+        <Byline post={post} other={other} />
       </PageHero>
       <Section reveal={false} spacing="sm" className="bl-post-body">
         {headings.length >= 3 ? <TocLayout className="bl-post-layout" toc={<Toc label={t.post.toc} items={headings.map((h) => ({ id: h.id, label: h.text }))} />}>{body}</TocLayout> : body}
@@ -120,7 +101,7 @@ export default function PostPage({ post }: { post: Post }) {
       )}
       {more.length > 0 && (
         <Section title={t.post.related} divider>
-          <PostList posts={more} locale={locale} />
+          <PostList posts={more} locale={locale} label={t.post.related} />
         </Section>
       )}
     </>

@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
-import { SeriesIndexPage } from "@/app/components/pages/SeriesPage";
-import { getDictionary } from "@/lib/i18n";
-import { pageMetadata } from "@/lib/seo";
+import RetiredPost, { retiredMetadata } from "@/app/components/pages/RetiredPost";
+import { pageKey, retiredTarget } from "@/lib/retired";
 
-export function generateMetadata(): Metadata {
-  const t = getDictionary("fr");
-  return pageMetadata({ locale: "fr", path: "/series", title: t.series.title, description: t.series.lead });
-}
+/* A removed page (krizaka-blog#123: the blog is one page, the story): a stub to where it went (lib/redirects.json). */
+const key = pageKey("/series/");
+export const metadata: Metadata = retiredMetadata("fr", retiredTarget("fr", key)!);
 
 export default function Page() {
-  return <SeriesIndexPage locale="fr" />;
+  return <RetiredPost locale="fr" slug={key} />;
 }

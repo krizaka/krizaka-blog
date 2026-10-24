@@ -2,8 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 
-/* /feed.xml is pure RSS, for readers: no XSLT (Chrome is removing it). The human page about feeds is /feed/ (EN and FR): what RSS is,
-   the address with a copy button, the latest posts, and the e-mail form as the main option. Every human-facing « RSS » link goes there. */
+/* /feed.xml is pure RSS, for readers: no XSLT (Chrome is removing it). RSS and Atom stay as files, not as pages (krizaka-blog#123):
+   the human page /feed/ is gone — its address is a stub to the story — and every « RSS » link of the site names the file itself. The
+   e-mail form is the main way to follow (the home's newsletter line, the end of every post). */
 const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
 
 test("the feeds carry no XSLT stylesheet and the stylesheet is gone", () => {
@@ -21,32 +22,24 @@ test("/feed.xml stays the raw feed in both languages", () => {
   assert.match(read("lib/seo.ts"), /"application\/rss\+xml": `\$\{SITE_URL\}\$\{locale === "en" \? "" : "\/fr"\}\/feed\.xml`/);
 });
 
-test("the feed page exists in both languages, with the e-mail form first, the address to copy and the latest posts", () => {
-  for (const f of ["app/(en)/feed/page.tsx", "app/fr/feed/page.tsx"]) assert.match(read(f), /FeedPage/);
-  const page = read("app/components/feed/FeedPage.tsx");
-  assert.match(page, /SubscribeForm/);
-  assert.match(page, /CopyField/);
-  assert.match(page, /absoluteUrl\(locale, "\/feed\.xml"\)|\/feed\.xml/);
-  assert.match(page, /postsOf\(locale\)/);
-  assert.ok(page.indexOf("SubscribeForm") < page.indexOf("CopyField"), "the e-mail subscribe is the main option: it comes before the feed address");
-  assert.match(read("app/sitemap.ts"), /"\/feed"/);
-});
-
-test("the feed page's words exist in both languages", () => {
-  for (const l of ["en", "fr"]) {
-    const m = JSON.parse(read(`messages/${l}.json`)).feedPage;
-    for (const k of ["eyebrow", "title", "lead", "emailTitle", "emailLead", "rssTitle", "rssWhat", "addressLabel", "copy", "copied", "latest", "reader"]) assert.ok(typeof m[k] === "string" && m[k].length > 0, `${l}: feedPage.${k}`);
+test("the feed page is gone: /feed/ is a stub to the story in both languages, and nothing renders it", () => {
+  for (const [f, l] of [["app/(en)/feed/page.tsx", "en"], ["app/fr/feed/page.tsx", "fr"]]) {
+    assert.match(read(f), /pageKey\("\/feed\/"\)/, f);
+    assert.match(read(f), new RegExp(`<RetiredPost locale="${l}"`), f);
   }
+  assert.equal(existsSync(new URL("../app/components/feed/FeedPage.tsx", import.meta.url)), false);
+  assert.doesNotMatch(read("app/sitemap.ts"), /"\/feed"/);
+  for (const l of ["en", "fr"]) assert.equal(JSON.parse(read(`messages/${l}.json`)).feedPage, undefined, `${l}: no feedPage words left`);
 });
 
-test("every human-facing RSS link goes to /feed/, never to the raw XML", () => {
+test("every human-facing RSS link names the file (/feed.xml), never the removed /feed/ page", () => {
   const post = read("app/components/pages/PostPage.tsx");
-  const home = read("app/components/pages/HomePage.tsx");
-  const bar = read("app/components/TopBar.tsx");
   const footer = read("app/components/SiteFooter.tsx");
-  for (const [name, src] of [["PostPage", post], ["HomePage", home], ["TopBar", bar], ["SiteFooter", footer]]) assert.match(src, /\/feed\/`|localizedPath\(locale, "\/feed"\)/, `${name} links /feed/`);
-  assert.doesNotMatch(post + home + bar, /\/feed\.xml/);
-  assert.doesNotMatch(footer, /\/feed\.xml/);
+  for (const [name, src] of [["PostPage", post], ["SiteFooter", footer]]) {
+    assert.match(src, /\/feed\.xml`/, `${name} links /feed.xml`);
+    assert.doesNotMatch(src, /\/feed\/`|localizedPath\(locale, "\/feed"\)/, `${name} does not link /feed/`);
+  }
+  assert.doesNotMatch(read("app/components/TopBar.tsx"), /\/feed/, "the bar carries no feed");
   assert.match(footer, /\/atom\.xml/, "the Atom file stays a file, for readers");
 });
 
@@ -54,7 +47,7 @@ test("on a post, « Subscribe » goes to the e-mail form and the feed is a secon
   const page = read("app/components/pages/PostPage.tsx");
   const form = read("app/components/newsletter/NewsletterSection.tsx");
   assert.match(page, /variant="primary"[^]*?href="#subscribe"/);
-  assert.match(page, /variant="ghost"[^]*?localizedPath\(locale, "\/feed"\)/);
+  assert.match(page, /variant="ghost"[^]*?\/feed\.xml`/);
   assert.match(form, /id="subscribe"/);
   assert.match(page, /<NewsletterSection locale=\{locale\} where="post" \/>/);
 });

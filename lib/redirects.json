@@ -128,19 +128,107 @@
     "fr": "/fr/basics/payments-and-high-risk-industries/"
   },
   "series:building-krizaka": {
-    "en": "/story/",
-    "fr": "/fr/story/"
+    "en": "/",
+    "fr": "/fr/"
   },
   "series:building-orazaka": {
-    "en": "/story/",
-    "fr": "/fr/story/"
+    "en": "/",
+    "fr": "/fr/"
   },
   "series:measured": {
-    "en": "/story/",
-    "fr": "/fr/story/"
+    "en": "/",
+    "fr": "/fr/"
   },
   "series:basics": {
     "en": "/basics/",
     "fr": "/fr/basics/"
+  },
+  "page:/story/": {
+    "en": "/",
+    "fr": "/fr/"
+  },
+  "page:/series/": {
+    "en": "/",
+    "fr": "/fr/"
+  },
+  "page:/tags/": {
+    "en": "/",
+    "fr": "/fr/"
+  },
+  "page:/search/": {
+    "en": "/",
+    "fr": "/fr/"
+  },
+  "page:/saved/": {
+    "en": "/",
+    "fr": "/fr/"
+  },
+  "page:/feed/": {
+    "en": "/",
+    "fr": "/fr/"
+  },
+  "page:/posts/": {
+    "en": "/",
+    "fr": "/fr/"
+  },
+  "page:/tags/sovereignty/": {
+    "en": "/story/why-krizaka/",
+    "fr": "/fr/story/why-krizaka/"
+  },
+  "page:/tags/ai/": {
+    "en": "/",
+    "fr": "/fr/"
+  },
+  "page:/tags/montreal/": {
+    "en": "/story/why-krizaka/",
+    "fr": "/fr/story/why-krizaka/"
+  },
+  "page:/tags/costs/": {
+    "en": "/story/what-a-gpu-costs/",
+    "fr": "/fr/story/what-a-gpu-costs/"
+  },
+  "page:/tags/orazaka/": {
+    "en": "/",
+    "fr": "/fr/"
+  },
+  "page:/tags/measurements/": {
+    "en": "/",
+    "fr": "/fr/"
+  },
+  "page:/tags/yomizaka/": {
+    "en": "/story/the-first-products/",
+    "fr": "/fr/story/the-first-products/"
+  },
+  "page:/tags/documents/": {
+    "en": "/story/the-first-products/",
+    "fr": "/fr/story/the-first-products/"
+  },
+  "page:/tags/law/": {
+    "en": "/story/the-first-products/",
+    "fr": "/fr/story/the-first-products/"
+  },
+  "page:/tags/prompts/": {
+    "en": "/basics/anatomy-of-an-ai-prompt/",
+    "fr": "/fr/basics/anatomy-of-an-ai-prompt/"
+  },
+  "page:/tags/payments/": {
+    "en": "/basics/payments-and-high-risk-industries/",
+    "fr": "/fr/basics/payments-and-high-risk-industries/"
+  },
+  "page:/tags/basics/": {
+    "en": "/basics/",
+    "fr": "/fr/basics/"
+  },
+  "page:/tags/ui/": {
+    "en": "/story/one-interface-everywhere/",
+    "fr": "/fr/story/one-interface-everywhere/"
+  },
+  "page:/tags/security/": {
+    "en": "/",
+    "fr": "/fr/"
+  },
+  "page:/tags/integration/": {
+    "en": "/",
+    "fr": "/fr/"
   }
 }

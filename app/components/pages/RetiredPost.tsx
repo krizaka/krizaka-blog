@@ -7,7 +7,8 @@ import { postOf } from "@/lib/posts";
 import { retiredTarget, type Retired } from "@/lib/retired";
 import { SITE_URL } from "@/lib/site";
 
-/* The stub at a retired address: it moves the reader to where the page now lives (a chapter's section, a shelf post, or the story).
+/* The stub at a retired address: it moves the reader to where the page now lives (a chapter's section, a shelf post, the shelf, or the
+   story — the home).
    The 0-second refresh and the canonical are both that place (a permanent move for search engines); noindex keeps the stub out of the results. */
 export function retiredMetadata(locale: Locale, target: Retired): Metadata {
   return {
@@ -21,14 +22,16 @@ export default function RetiredPost({ locale, slug }: { locale: Locale; slug: st
   if (!target) return null;
   const t = getDictionary(locale);
   const shelf = target.href.includes("/basics/");
-  const post = shelf ? postOf(locale, target.chapterSlug) : undefined;
+  const page = slug.startsWith("page:") || slug.startsWith("series:");
+  const post = shelf && target.chapterSlug ? postOf(locale, target.chapterSlug) : undefined;
   const chapter = shelf || !target.chapterSlug ? undefined : chapterOf(locale, target.chapterSlug);
-  const label = post ? format(t.retired.linkPost, { title: post.title }) : chapter ? format(t.retired.link, { title: chapter.title }) : t.retired.linkStory;
+  const label = post ? format(t.retired.linkPost, { title: post.title }) : chapter ? format(t.retired.link, { title: chapter.title }) : shelf ? t.retired.linkBasics : t.retired.linkStory;
+  const lead = page ? t.retired.leadPage : shelf ? t.retired.leadBasics : t.retired.lead;
   return (
     <>
       <meta httpEquiv="refresh" content={`0; url=${target.href}`} />
       <Section reveal={false}>
-        <p>{shelf ? t.retired.leadBasics : t.retired.lead}</p>
+        <p>{lead}</p>
         <p>
           <Link href={target.href}>{label}</Link>
         </p>

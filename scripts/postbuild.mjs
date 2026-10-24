@@ -1,27 +1,77 @@
 #!/usr/bin/env node
-/* After `next build`: llms.txt (llmstxt.org) written next to the pages in out/, linking the posts and the family. */
+/* After `next build`: llms.txt (llmstxt.org) written next to the pages in out/. The blog is one page, the story
+   (krizaka-blog#123): llms.txt says so, lists the chapters in reading order (1 → N) in each language, then « The basics », then
+   the family. The text is `llmsText`, pure and tested (tests/llms.test.mjs). */
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const SITE = "https://blog.krizaka.com";
-const dir = join(root, "content/posts");
-const show = process.env.APP_SHOW_DRAFTS === "1";
-const posts = readdirSync(dir)
-  .filter((f) => f.endsWith(".mdx"))
-  .map((f) => ({ f, ...matter(readFileSync(join(dir, f), "utf8")) }))
-  .filter((p) => show || p.data.draft !== true)
-  .map((p) => {
-    const [, slug, locale] = p.f.match(/^(.+)\.(en|fr)\.mdx$/);
-    return { slug, locale, title: p.data.title, description: p.data.description, date: String(p.data.date instanceof Date ? p.data.date.toISOString().slice(0, 10) : p.data.date) };
-  })
-  .sort((a, b) => b.date.localeCompare(a.date));
-const line = (p) => `- [${p.title}](${SITE}${p.locale === "fr" ? "/fr" : ""}/basics/${p.slug}/): ${p.description}`;
-const list = (l) => (posts.filter((p) => p.locale === l).map(line).join("\n") || "- (no post published yet)");
-writeFileSync(
-  join(root, "out/llms.txt"),
-  `# Krizaka Blog\n\n> The company blog of Krizaka (https://www.krizaka.com): notes on sovereign AI, measured costs and real document runs. English at the root, French under ${SITE}/fr/. Feeds: ${SITE}/feed.xml, ${SITE}/atom.xml.\n\n## Posts (English)\n\n${list("en")}\n\n## Billets (français)\n\n${list("fr")}\n\n## Elsewhere\n\n- [Krizaka](https://www.krizaka.com)\n- [Krizaka UI](https://ui.krizaka.com)\n- [Krizaka Java](https://java.krizaka.com)\n- [Source](https://github.com/krizaka/krizaka-blog)\n`,
-);
-console.log(`postbuild: llms.txt (${posts.length} posts)`);
+export const SITE = "https://blog.krizaka.com";
+
+const dateOf = (d) => String(d instanceof Date ? d.toISOString().slice(0, 10) : d);
+
+/** The published entries of a content folder: slug, locale, title, description, date, and a chapter's number. */
+export function readEntries(dir, show = false) {
+  return readdirSync(dir)
+    .filter((f) => f.endsWith(".mdx"))
+    .map((f) => ({ f, ...matter(readFileSync(join(dir, f), "utf8")) }))
+    .filter((p) => show || p.data.draft !== true)
+    .map((p) => {
+      const [, slug, locale] = p.f.match(/^(.+)\.(en|fr)\.mdx$/);
+      return { slug, locale, title: p.data.title, description: p.data.description, date: dateOf(p.data.date), chapter: Number(p.data.chapter) || undefined };
+    });
+}
+
+/** llms.txt: the story's chapters in reading order, then the basics (newest first), per language, then the family. */
+export function llmsText({ chapters, posts }) {
+  const prefix = (l) => (l === "fr" ? "/fr" : "");
+  const story = (l) =>
+    chapters
+      .filter((c) => c.locale === l)
+      .sort((a, b) => a.chapter - b.chapter)
+      .map((c) => `${c.chapter}. [${c.title}](${SITE}${prefix(l)}/story/${c.slug}/): ${c.description}`)
+      .join("\n") || "- (no chapter published yet)";
+  const basics = (l) =>
+    posts
+      .filter((p) => p.locale === l)
+      .sort((a, b) => b.date.localeCompare(a.date))
+      .map((p) => `- [${p.title}](${SITE}${prefix(l)}/basics/${p.slug}/): ${p.description}`)
+      .join("\n") || "- (no post published yet)";
+  return `# Krizaka Blog
+
+> The building notes of Krizaka (https://www.krizaka.com), told by its founder in Montréal: one page, the story, in chapters you read in order, and a few basics to understand them. English at ${SITE}/, French at ${SITE}/fr/. Feeds: ${SITE}/feed.xml, ${SITE}/atom.xml.
+
+## The story (English), in reading order
+
+${story("en")}
+
+## The basics (English)
+
+${basics("en")}
+
+## L'histoire (français), dans l'ordre de lecture
+
+${story("fr")}
+
+## Les bases (français)
+
+${basics("fr")}
+
+## Elsewhere
+
+- [Krizaka](https://www.krizaka.com)
+- [Krizaka UI](https://ui.krizaka.com)
+- [Krizaka Java](https://java.krizaka.com)
+- [Source](https://github.com/krizaka/krizaka-blog)
+`;
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  const show = process.env.APP_SHOW_DRAFTS === "1";
+  const chapters = readEntries(join(root, "content/chapters"), show);
+  const posts = readEntries(join(root, "content/posts"), show);
+  writeFileSync(join(root, "out/llms.txt"), llmsText({ chapters, posts }));
+  console.log(`postbuild: llms.txt (${chapters.length} chapters, ${posts.length} posts)`);
+}

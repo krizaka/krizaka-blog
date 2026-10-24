@@ -7,13 +7,18 @@ import GithubSlugger from "github-slugger";
 /* The old addresses (lib/redirects.json): each keeps a static stub that moves the reader to its new place.
    - an absorbed post is removed; its stub goes to a chapter's section;
    - a shelf post (« Les bases ») stays live at /basics/<slug>/; its old /posts/ address goes there;
-   - a series (`series:<id>`) is retired; its address goes to the story or the shelf.
+   - a series (`series:<id>`) is retired; its address goes to the story (the home) or the shelf;
+   - a removed page (`page:<path>`, krizaka-blog#123: the blog is one page) goes to the story, or to the chapter or shelf post that
+     absorbed it: /story/, /series/, /tags/ and every topic, /search/, /saved/, /feed/, /posts/.
    No page or link points at a removed address. */
 const read = (file) => readFileSync(new URL(`../${file}`, import.meta.url), "utf8");
 const map = JSON.parse(read("lib/redirects.json"));
 const posts = readdirSync(new URL("../content/posts/", import.meta.url));
+/* The stub of a removed page reads like the others (RetiredPost); its words say the page is gone, not that a post moved. */
 const chapters = readdirSync(new URL("../content/chapters/", import.meta.url));
-const slugs = Object.keys(map).filter((k) => !k.startsWith("series:"));
+const slugs = Object.keys(map).filter((k) => !k.startsWith("series:") && !k.startsWith("page:"));
+const pages = Object.keys(map).filter((k) => k.startsWith("page:"));
+const read2 = (l, rel) => read(`${l === "en" ? "app/(en)" : "app/fr"}/${rel}`);
 
 /* The file a target names: a chapter (/story/<slug>/, /fr/story/<slug>/) or a shelf post (/basics/<slug>/, /fr/basics/<slug>/). */
 function targetOf(href, locale) {
@@ -87,8 +92,9 @@ test("the posts routes build a stub for each retired slug (no live post); the sh
   }
 });
 
-test("the sitemap reads the content: no stub, no removed post", () => {
+test("the sitemap reads the content: no stub, no removed post, no removed page", () => {
   assert.doesNotMatch(read("app/sitemap.ts"), /redirects/);
+  assert.doesNotMatch(read("app/sitemap.ts"), /"\/(tags|series|search|saved|feed|story)"/);
   assert.doesNotMatch(read("app/components/pages/RetiredPost.tsx"), /sitemap/);
 });
 
@@ -105,4 +111,49 @@ test("the CI smoke checks read a live post; the retired address is only checked 
   const lines = read(".github/workflows/ci.yml").split("\n").filter((l) => l.includes("what-image-and-video-generation-costs"));
   for (const l of lines) assert.match(l, /http-equiv="refresh"|refresh/, `a CI line still reads the retired post as a live one: ${l.trim()}`);
   assert.match(read(".github/workflows/ci.yml"), /out\/basics\/understanding-ai-before-you-start\/index\.html/);
+});
+
+/* krizaka-blog#123: each removed page answers a permanent move (a stub: 0-second refresh + canonical, noindex — what a static host
+   gives as a 308) to the story, or to the chapter / shelf post that absorbed it. */
+const REMOVED = ["/story/", "/series/", "/tags/", "/search/", "/saved/", "/feed/", "/posts/"];
+
+test("every removed page has its key, in both languages, to the story or to what absorbed it", () => {
+  for (const path of REMOVED) assert.ok(map[`page:${path}`], `${path} is mapped`);
+  for (const key of pages) {
+    for (const l of ["en", "fr"]) {
+      const href = map[key][l];
+      const home = l === "en" ? "/" : "/fr/";
+      const ok = href === home || new RegExp(`^${l === "fr" ? "/fr" : ""}/(story|basics)/[a-z0-9-]+/$`).test(href) || href === `${home}basics/`;
+      assert.ok(ok, `${key} (${l}) → ${href}: the story, a chapter or the shelf`);
+      if (href.includes("/story/") || /\/basics\/[a-z0-9-]+\//.test(href)) {
+        const [, kind, slug] = href.match(/\/(story|basics)\/([a-z0-9-]+)\//);
+        assert.ok(kind === "story" ? chapters.includes(`${slug}.${l}.mdx`) : posts.includes(`${slug}.${l}.mdx`), `${key} (${l}): ${slug} exists`);
+      }
+    }
+  }
+});
+
+test("every topic the posts ever had keeps its address as a stub", () => {
+  const tags = Object.keys(JSON.parse(read("messages/en.json")).tags.names);
+  for (const tag of tags) assert.ok(map[`page:/tags/${tag}/`], `/tags/${tag}/ is mapped`);
+});
+
+test("each removed page's route renders the stub (no page of its own), in both languages", () => {
+  for (const l of ["en", "fr"]) {
+    for (const path of REMOVED) {
+      const route = read2(l, `${path.slice(1, -1)}/page.tsx`);
+      assert.match(route, new RegExp(`pageKey\\("${path.replace(/\//g, "\\/")}"\\)`), `${l} ${path}`);
+      assert.match(route, new RegExp(`<RetiredPost locale="${l}" slug=\\{key\\} />`), `${l} ${path} renders the stub`);
+      assert.match(route, new RegExp(`retiredMetadata\\("${l}"`), `${l} ${path}: noindex and the canonical of the target`);
+    }
+    const tag = read2(l, "tags/[tag]/page.tsx");
+    assert.match(tag, /retiredPagesUnder\("\/tags\/"\)/);
+    assert.match(tag, /<RetiredPost locale="[a-z]+" slug=\{key\} \/>/);
+  }
+});
+
+test("the removed pages' components are gone: no search, saved, topics, series, feed page or old story page is rendered any more", () => {
+  for (const f of ["SearchPage", "SavedPage", "TagsPage", "SeriesPage", "StoryPage", "TopicFilter"]) assert.ok(!existsSync(new URL(`../app/components/pages/${f}.tsx`, import.meta.url)), `${f} is gone`);
+  assert.ok(!existsSync(new URL("../app/components/feed/FeedPage.tsx", import.meta.url)));
+  assert.ok(!existsSync(new URL("../app/components/SearchBox.tsx", import.meta.url)));
 });

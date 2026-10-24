@@ -22,7 +22,9 @@ npm run lint && npm test && npm run build
 
 ## What it ships
 
-Home (featured post with its cover, latest, series), posts with reading time, related posts and series navigation, topics (tags), series, search (an index built at build, no request), RSS and Atom per language, a sitemap with
+One page, the story: the home is the sentence, Featured (the latest chapter) and every chapter in reading order, then « The basics ».
+Each chapter and each basic has its own reading page; the old addresses (topics, series, search, saved, the feed page) are stubs to
+where they went. RSS and Atom per language, a sitemap with
 hreflang, an Open Graph image per post, `llms.txt`, JSON-LD. Open to search engines since the first posts were published (2026-10-16)
 (`APP_INDEXING_ENABLED`). Cost: $0/month (DigitalOcean static site; `.do/app.yaml`).
 

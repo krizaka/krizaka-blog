@@ -1,21 +1,21 @@
 import type { Metadata } from "next";
-import { TagPage } from "@/app/components/pages/TagsPage";
-import { tagSeo } from "@/app/components/pages/tag-label";
-import { tagsOf } from "@/lib/posts";
-import { LOCALES } from "@/lib/i18n";
-import { pageMetadata } from "@/lib/seo";
+import { notFound } from "next/navigation";
+import RetiredPost, { retiredMetadata } from "@/app/components/pages/RetiredPost";
+import { pageKey, retiredPagesUnder, retiredTarget } from "@/lib/retired";
 
 type Props = { params: Promise<{ tag: string }> };
 export const dynamicParams = false;
 
-export const generateStaticParams = () => (tagsOf("en").length ? tagsOf("en").map(({ tag }) => ({ tag })) : [{ tag: "_" }]);
+/* The topic pages are removed (krizaka-blog#123): each address is a stub to the chapter that absorbed it, a shelf post, or the story. */
+export const generateStaticParams = () => retiredPagesUnder("/tags/").map((tag) => ({ tag }));
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { tag } = await params;
-  const seo = tagSeo("en", tag);
-  return pageMetadata({ locale: "en", path: "/tags/" + tag, title: seo.title, absoluteTitle: seo.absolute, description: seo.description, alternates: LOCALES.filter((l) => tagsOf(l).some((x) => x.tag === tag)) });
+  const target = retiredTarget("en", pageKey(`/tags/${(await params).tag}/`));
+  return target ? retiredMetadata("en", target) : {};
 }
 
 export default async function Page({ params }: Props) {
-  return <TagPage locale="en" tag={(await params).tag} />;
+  const key = pageKey(`/tags/${(await params).tag}/`);
+  if (!retiredTarget("en", key)) notFound();
+  return <RetiredPost locale="en" slug={key} />;
 }

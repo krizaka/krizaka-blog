@@ -52,16 +52,18 @@ jobs:
           node scripts/check-seo-family.mjs --base http://localhost:3000 --host https://blog.krizaka.com --index on --limit 60
       - name: Every link answers (internal links fail the build; external ones are retried, a short list of hosts that refuse robots is reported only)
         run: node scripts/check-links.mjs --base http://localhost:3000 --host https://blog.krizaka.com --external
-      - name: The layout in a real browser (every post, both languages — nothing past the window at 1750, 1366, 390 px — focus ring for the keyboard only)
+      - name: The layout in a real browser (the home, every post and chapter, both languages — nothing past the window at 1750, 1366, 390, 360 px — focus ring for the keyboard only)
         run: |
           npx playwright install --with-deps chromium
           node scripts/check-layout.mjs --base http://localhost:3000 --posts out
-      - name: The feeds are pure XML a reader accepts (no XSLT), and /feed/ is the human page
+      - name: The feeds are pure XML a reader accepts (no XSLT); they stay files, the old /feed/ page is a stub to the story
         run: |
           for f in out/feed.xml out/fr/feed.xml out/atom.xml out/fr/atom.xml; do python3 -c "import sys, xml.dom.minidom as m; m.parse(sys.argv[1])" "$f"; done
           ! grep -q 'xml-stylesheet' out/feed.xml out/fr/feed.xml out/atom.xml out/fr/atom.xml
           test ! -e out/feed.xsl
-          for p in out/feed/index.html out/fr/feed/index.html; do grep -q 'id="subscribe"' "$p"; grep -q 'feed.xml' "$p"; done
+          grep -q 'http-equiv="refresh" content="0; url=/"' out/feed/index.html
+          grep -q 'http-equiv="refresh" content="0; url=/fr/"' out/fr/feed/index.html
+          for p in out/index.html out/fr/index.html; do grep -q 'id="subscribe"' "$p"; done
           grep -q 'href="#subscribe"' out/basics/understanding-ai-before-you-start/index.html
           grep -q 'id="subscribe"' out/basics/understanding-ai-before-you-start/index.html
       - name: Every live post has its Open Graph image; the feeds list the posts and the chapters; a retired address is a stub
@@ -69,3 +71,7 @@ jobs:
           test -f out/og/understanding-ai-before-you-start.png && test -f out/fr/og/understanding-ai-before-you-start.png
           grep -q "/story/what-a-gpu-costs/" out/feed.xml && grep -q "/fr/story/what-a-gpu-costs/" out/fr/atom.xml
           grep -q 'http-equiv="refresh" content="0; url=/story/what-a-gpu-costs/"' out/posts/what-image-and-video-generation-costs/index.html
+      - name: The blog is one page — every removed address is a stub (the 308 of a static host) to the story or what absorbed it
+        run: |
+          for p in story series tags search saved feed posts; do grep -q 'http-equiv="refresh" content="0; url=/"' "out/$p/index.html"; grep -q 'http-equiv="refresh" content="0; url=/fr/"' "out/fr/$p/index.html"; done
+          grep -q 'http-equiv="refresh" content="0; url=/story/what-a-gpu-costs/"' out/tags/costs/index.html

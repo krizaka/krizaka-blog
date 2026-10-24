@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import SavedPage from "@/app/components/pages/SavedPage";
-import { getDictionary } from "@/lib/i18n";
-import { pageMetadata } from "@/lib/seo";
+import RetiredPost, { retiredMetadata } from "@/app/components/pages/RetiredPost";
+import { pageKey, retiredTarget } from "@/lib/retired";
 
-const t = getDictionary("fr");
-export const metadata: Metadata = { ...pageMetadata({ locale: "fr", path: "/saved", title: t.engage.savedTitle, description: t.engage.savedLead, alternates: ["en", "fr"] }), robots: { index: false, follow: true } };
+/* A removed page (krizaka-blog#123: the blog is one page, the story): a stub to where it went (lib/redirects.json). */
+const key = pageKey("/saved/");
+export const metadata: Metadata = retiredMetadata("fr", retiredTarget("fr", key)!);
 
 export default function Page() {
-  return <SavedPage locale="fr" />;
+  return <RetiredPost locale="fr" slug={key} />;
 }

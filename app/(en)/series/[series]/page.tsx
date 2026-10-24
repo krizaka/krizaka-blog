@@ -6,7 +6,7 @@ import { retiredSeriesIds, retiredTarget } from "@/lib/retired";
 type Props = { params: Promise<{ series: string }> };
 export const dynamicParams = false;
 
-/* A series is retired: its address is a stub to the story or to « Les bases » (lib/redirects.json, `series:<id>`). */
+/* A series is retired: its address is a stub to the story (the home) or to « Les bases » (lib/redirects.json, `series:<id>`). */
 export const generateStaticParams = () => {
   const params = retiredSeriesIds().map((series) => ({ series }));
   return params.length ? params : [{ series: "_" }];
