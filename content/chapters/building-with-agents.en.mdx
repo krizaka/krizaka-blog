@@ -190,16 +190,17 @@ None of these rules is new for a human. What changes with an agent is that it ar
 
 One more thing came out of that night. Trying to fix a few repository names, I realised that a repository name is written in dozens of places: in the CI pipelines, in the workspace manifest, in the deployments, in the site's data. Renaming a repository today is a treasure hunt.
 
-So we are building a kind of build pack for the CI. Each repository will have just one line:
+So we are preparing a kind of build pack for the CI. It is not shipped yet. Here is the target shape: each repository would have just one line.
 
 ```yaml
+# Forme visée, pas encore livrée : ce fichier n'existe pas.
 jobs:
   ci:
     uses: krizaka/.github/.github/workflows/krizaka-ci.yml@v2
     secrets: inherit
 ```
 
-The rest is decided by our actions: they look at what is in the repository (a Java project of the workspace, Node, Python, infrastructure), and run the right chain. A single register of repositories replaces the names written by hand, and a script lists everything that cites a repository before it is renamed.
+The rest would be decided by reusable workflows in krizaka/.github, one per kind of project: `node-ci.yml`, `java-ci.yml`, `python-ci.yml` and `expo-ci.yml`, at version 1.x. They would look at what is in the repository and run the right chain. The build pack that would bring them together is still to do. A single register of repositories would replace the names written by hand, and a script would list everything that cites a repository before it is renamed.
 
 That piece of work is being done right now by an agent, in the DevOps role, within a limited scope and without deploying anything. I will review its PR like the others.
 

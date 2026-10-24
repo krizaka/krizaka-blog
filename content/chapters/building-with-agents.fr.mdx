@@ -190,16 +190,17 @@ Aucune de ces règles n'est nouvelle pour un humain. Ce qui change avec un agent
 
 Une dernière chose est sortie de cette nuit. En voulant corriger quelques noms de repos, je me suis rendu compte qu'un nom de repo est écrit à des dizaines d'endroits : dans les pipelines de CI, dans le manifeste du workspace, dans les déploiements, dans les données du site. Renommer un repo, aujourd'hui, c'est une chasse au trésor.
 
-Alors on construit une sorte de build pack pour la CI. Chaque repo n'aura plus qu'une ligne :
+Alors on prépare une sorte de build pack pour la CI. Ce n'est pas encore livré. Voici la forme visée : chaque repo n'aurait plus qu'une ligne.
 
 ```yaml
+# Forme visée, pas encore livrée : ce fichier n'existe pas.
 jobs:
   ci:
     uses: krizaka/.github/.github/workflows/krizaka-ci.yml@v2
     secrets: inherit
 ```
 
-Le reste, c'est nos actions qui le décident : elles regardent ce qu'il y a dans le repo (un projet Java du workspace, du Node, du Python, de l'infrastructure), et lancent la bonne chaîne. Un registre unique des repos remplace les noms écrits à la main, et un script liste tout ce qui cite un repo avant de le renommer.
+Le reste serait décidé par des workflows réutilisables de krizaka/.github, un par type de projet : `node-ci.yml`, `java-ci.yml`, `python-ci.yml` et `expo-ci.yml`, en version 1.x. Ils regarderaient ce qu'il y a dans le repo et lanceraient la bonne chaîne. Le build pack qui les réunirait reste à faire. Un registre unique des repos remplacerait les noms écrits à la main, et un script listerait tout ce qui cite un repo avant de le renommer.
 
 Ce chantier-là, c'est un agent qui le fait en ce moment, avec le rôle de DevOps, dans un périmètre limité et sans rien déployer. Je relirai sa PR comme les autres.
 
