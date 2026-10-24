@@ -1,6 +1,6 @@
 ---
 title: "Les premiers produits : Yomizaka et Akinaza"
-description: "Ce que Yomizaka lit aujourd'hui et comment une règle s'écrit, un immeuble entier dans un seul dépôt, et la facture de Krizaka refusée par notre propre outil. Données de démonstration."
+description: "Ce que Yomizaka lit, pourquoi notre source de vérité est la loi elle-même, datée et citée, ce que ça coûte face aux rapports tout faits, et notre facture refusée par notre propre outil."
 seoDescription: "Yomizaka et Akinaza : comment une règle cite son article, ce qu'un lot de baux change, et la facture refusée par notre propre outil."
 date: 2026-10-23
 publishedAt: "2026-10-23T14:00:00-04:00"
@@ -92,6 +92,28 @@ C'est ce `reviewStatus` qui fait apparaître l'encadré jaune. Le jour où un av
 
 C'est plus lent que de demander à un modèle de « lire le bail et dire ce qui ne va pas ». Mais une réponse qui ne cite pas sa source, je ne peux pas la défendre devant quelqu'un qui signe un bail de douze mois.
 
+## Le jour où nos règles ont jugé un avis de visite comme un bail
+
+Le 23 octobre, on a passé dans le moteur de vrais modèles de documents de location, pas seulement des baux : un avis de visite de 24 heures, un état des lieux, des formulaires encore vierges. Le résultat m'a appris quelque chose d'inconfortable. Le moteur jugeait tout avec les règles du bail. L'avis de visite recevait des « manquements » de bail. Le formulaire vierge obtenait des PASS creux : rien à reprocher, puisque rien n'était écrit.
+
+Notre défaut, ce n'était pas une règle mal écrite. C'était de ne pas savoir ce qu'on lisait. Et on ne couvrira jamais tous les documents avec des règles écrites à la main. Alors on a changé la manière, en quatre temps.
+
+**Reconnaître le document.** Avant toute règle, le moteur établit le type, la juridiction, la date et la langue, avec des signaux qu'un auditeur peut relire, sans modèle. Si le type que vous avez déclaré ne correspond pas au texte, l'écran le dit. S'il hésite, il répond « type inconnu ». Un type qu'aucun jeu de règles ne couvre reçoit « pas encore vérifié contre la loi », jamais les règles du bail par défaut.
+
+**Aller chercher la loi elle-même.** C'est là qu'on passe à ce qu'on appelle un RAG : le modèle ne répond pas de mémoire, il lit des textes qu'on lui fournit. Encore faut-il que ces textes soient la vraie loi. Justice Canada publie les lois fédérales en XML, avec un usage commercial permis. Données Québec publie les lois et règlements codifiés du Québec en XML, la même matière que Légis Québec. Légis Québec, lui, refuse les robots, et on ne déguise pas notre agent pour passer quand même. La licence de Données Québec interdit l'usage commercial et les œuvres dérivées : la question est posée à l'avocat, et en attendant, on cite le texte tel quel, avec sa source et sa date.
+
+Chaque article est découpé, daté (en vigueur du… au…) et reçoit une empreinte. Une version n'est jamais écrasée : quand une loi change, l'ancienne garde sa date de fin et la nouvelle s'ajoute. Un veilleur relit les sources et ouvre une demande de revue dès qu'un article change. Pour un avis de visite, le moteur ne lit que les articles 1931 à 1933 du Code civil, tels qu'ils étaient à la date du document, et rien sur le loyer.
+
+Ce qui s'en vient se suit à part, et ne se mélange jamais avec ce qui est en vigueur. La Gazette du Canada publie en RSS les règlements proposés, les règlements adoptés et les lois sanctionnées. On s'en servira comme d'un radar : un signal qui touche une loi qu'on utilise ouvre un élément « à surveiller » pour préparer la prochaine version des règles. Ce signal n'est jamais cité dans une vérification. Le jour où le changement entre en vigueur, c'est le veilleur qui apporte le vrai texte. Les fils RSS juridiques d'éditeurs privés, on les a lus, et on les a écartés : leurs conditions interdisent l'usage commercial.
+
+Notre source de vérité est donc là : pas dans ce dont un modèle se souvient, mais dans un texte officiel, daté, qu'on peut citer et retrouver.
+
+**Vérifier chaque citation, sans modèle.** Un vérificateur relit tout ce que le modèle affirme. Le passage cité doit exister mot pour mot dans l'article, à cette version. Chaque nombre de l'affirmation doit s'y trouver en entier. En relisant ce vérificateur, on a trouvé un piège : « 24 heures » passait contre une citation qui ne contenait que « 2024 ». C'est corrigé, avec un test par cas. Et sans passage du document, il n'y a jamais de PASS : c'est « non applicable » ou « preuve insuffisante ».
+
+**Juger avec des règles fixes et datées.** Découvrir les articles peut être dynamique. Juger, non. Un document n'est jugé que par un jeu de règles promu, daté, pour que deux exécutions disent la même chose. Le moteur pourra proposer une règle à partir d'un article, mais une proposition ne jugera jamais un document : elle devra d'abord passer ses exemples, ses cas de référence et une relecture. Pour les documents qu'aucune règle ne couvre, on prépare une « lecture citée » : chaque affirmation avec son article et son passage, marquée « non auditée », jamais un verdict.
+
+Où on en est, sans arrondir. La reconnaissance du type, les tables de la loi, les imports, la recherche des articles et son cache, le vérificateur et la nouvelle version du contrôle tournent, avec leurs tests. Le corpus reste désactivé par défaut tant que la question de la licence n'est pas réglée. La proposition de règles et la lecture citée sont à venir. Avant de choisir le modèle qui écrira les affirmations, on en testera au moins trois sur les mêmes cas de référence : un modèle qui fait accepter une seule fausse citation est éliminé, et le choix vivra dans la configuration, pas dans le code.
+
 ## Un produit ne parle jamais à un modèle
 
 Dans le code de Yomizaka, il n'y a aucun appel à un modèle d'IA. Pas un seul. Pourtant, Yomizaka lit un bail et vous dit quelles clauses posent problème. Ce n'est pas un oubli, c'est la règle que je me suis donnée dès le début : un produit ne parle jamais à un modèle. Il parle à un moteur, et le moteur, [Orazaka](https://dev.orazaka.com), choisit le modèle.
@@ -155,11 +177,23 @@ Quant au contrat, il passe 4 sur 4 pour une raison qui me gêne un peu : il ne c
 
 Le passage d'un outil à l'autre est manuel aujourd'hui : c'est le texte vérifié que nous imprimons depuis Akinaza. Une importation par l'API, qui transformerait un modèle vérifié dans Yomizaka en modèle Akinaza, est [proposée](https://github.com/krizaka/akinaza/issues/115), pas construite.
 
+## Ce que ça coûte, et comment on se place
+
+Le tri des candidats locataires est un marché où l'on vend surtout des rapports tout faits, souvent autour de 30 $, qui regroupent le crédit, les antécédents et le reste. Les sources derrière se paient à la pièce : quelques dollars une recherche dans les plumitifs, une quinzaine pour une cote de crédit. Même une recherche web se compte au millier de requêtes. Si chaque lecture de bail allait chercher la loi sur un service payant, le prix du bail suivrait.
+
+C'est pour ça que notre source de vérité est à nous : un corpus officiel et ouvert, qu'on importe une fois et qu'on tient à jour. Une recherche déjà faite pour un type de document, une langue et une date est gardée et ne rappelle pas de modèle. Le même fichier, avec la même version de vérification, rend le résultat déjà calculé. Ce qui coûte, on le paie une fois.
+
+Et on ne vendra pas un forfait à 30 $. Le dossier d'un candidat avance par étapes, avec une coupure entre chacune. D'abord les documents qu'il fournit, examinés chez nous. Ensuite, seulement si le gestionnaire le choisit et que le candidat a consenti pour cette étape-là, les dossiers publics. Puis le crédit. Une étape n'est facturée que si elle a répondu, et une étape coupée ne coûte rien. Le candidat peut aussi apporter son propre rapport de crédit, gratuit auprès des agences, et Yomizaka vérifie que le PDF est authentique. Par défaut, le candidat ne paie rien. Un arrêt n'est jamais un verdict sur la personne : la décision reste au gestionnaire, et Yomizaka ne note personne.
+
+À ça s'ajoute ce qu'un outil fait au Québec doit faire : le français d'abord, un consentement par étape et par finalité, et les documents effacés après la vérification par défaut, seul le rapport restant.
+
+Ces étapes tournent aujourd'hui sur des simulateurs. Aucun fournisseur payant n'est branché, et aucun ne le sera avant qu'un premier client pilote dise oui.
+
 ## Où on en est
 
 Je vais être honnête sur l'état des choses. Les lots tournent, avec leurs tests sur une vraie base de données. L'app Android a sa première version de test, publiée le 22 octobre, et iOS suit avec le même code. Une app Mac est en route pour ceux qui gèrent leurs dossiers depuis le bureau. Les clés d'API existent : un gestionnaire pourra brancher Yomizaka sur son propre logiciel. L'API publique qui va avec, pour lancer une vérification ou un lot avec une clé, est en préparation.
 
-Il y a aussi des choses que nous ne ferons pas tant qu'un avocat ne nous aura pas dit que c'est permis. La vérification des antécédents judiciaires pour un logement en fait partie. Elle reste fermée. Le corpus de règles québécoises attend toujours la relecture d'un avocat, et l'écran continue de le dire.
+Il y a aussi des choses que nous n'ouvrirons pas au public tant qu'un avocat ne nous aura pas dit que c'est permis. Les étapes du dossier d'un candidat en font partie : elles tournent sur des simulateurs, et elles restent fermées. Le corpus de règles québécoises attend toujours la relecture d'un avocat, et l'écran continue de le dire.
 
 Je ne sais pas dire en combien de semaines tout ça sera prêt. Je sais par contre dans quel ordre le faire : ce qui protège les gens d'abord, ce qui fait gagner du temps ensuite. Les photos et le dossier du candidat d'abord, parce que c'est là que se trouvent les faux et les fuites. Les échéances ensuite. Chaque morceau sort quand il tourne sur de vrais documents, avec sa trace. On commence à préparer une vraie démo pour des gestionnaires d'immeubles : pas une vidéo montée, un vrai lot, de vrais documents de test, et les écrans tels qu'ils sont.
 
