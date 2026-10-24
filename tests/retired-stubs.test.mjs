@@ -77,7 +77,22 @@ test("the routes build a stub for each retired slug and keep the live posts", ()
   }
 });
 
-test("the sitemap and the feeds read the content: no stub, no removed post", () => {
+test("the sitemap reads the content: no stub, no removed post", () => {
   assert.doesNotMatch(read("app/sitemap.ts"), /redirects/);
   assert.doesNotMatch(read("app/components/pages/RetiredPost.tsx"), /sitemap/);
+});
+
+test("the feeds carry the published chapters (/story/ URLs) next to the posts, in both formats and both languages", () => {
+  assert.match(read("lib/feeds.ts"), /export const feedEntriesOf/);
+  assert.match(read("lib/feeds.ts"), /chaptersOf\(locale\)[\s\S]*chapterPath\(/);
+  for (const route of ["app/(en)/feed.xml/route.ts", "app/(en)/atom.xml/route.ts", "app/fr/feed.xml/route.ts", "app/fr/atom.xml/route.ts"]) {
+    assert.match(read(route), /feedEntriesOf\(/, route);
+    assert.doesNotMatch(read(route), /postsOf\(/, route);
+  }
+});
+
+test("the CI smoke checks read a live post; the retired address is only checked as a stub (its refresh)", () => {
+  const lines = read(".github/workflows/ci.yml").split("\n").filter((l) => l.includes("what-image-and-video-generation-costs"));
+  for (const l of lines) assert.match(l, /http-equiv="refresh"|refresh/, `a CI line still reads the retired post as a live one: ${l.trim()}`);
+  assert.match(read(".github/workflows/ci.yml"), /out\/posts\/how-we-build-yomizaka\/index\.html/);
 });

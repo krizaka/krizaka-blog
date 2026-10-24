@@ -71,6 +71,31 @@ export function coverProblems(html) {
   return out;
 }
 
+/* A retired post's stub (app/components/pages/RetiredPost.tsx): no title, description or h1, but a 0-second refresh, a canonical to
+   the same address, noindex and a visible link to it. The problems; an empty list when it is fine. */
+export function stubProblems(html) {
+  const out = [];
+  const refreshTag = html.match(/<meta\b[^>]*http-equiv="refresh"[^>]*>/i)?.[0] ?? "";
+  const refresh = refreshTag.match(/\bcontent="0; url=([^"]+)"/i)?.[1];
+  if (!refresh) out.push("a stub needs a 0-second refresh (meta http-equiv=refresh)");
+  const canonical = html.match(/<link\b[^>]*rel="canonical"[^>]*>/i)?.[0].match(/\bhref="([^"]+)"/i)?.[1];
+  if (!canonical) out.push("a stub needs a canonical");
+  else if (refresh && !canonical.endsWith(refresh)) out.push(`the stub's canonical (${canonical}) is not its refresh target (${refresh})`);
+  const robots = html.match(/<meta\b[^>]*name="robots"[^>]*>/i)?.[0] ?? "";
+  if (!/\bcontent="[^"]*noindex/i.test(robots)) out.push("a stub is not noindex");
+  if (refresh && !html.includes(`<a href="${refresh}"`)) out.push(`a stub has no visible link to ${refresh}`);
+  if (visibleText(html).some((t) => /\b(NaN|undefined)\b/.test(t))) out.push("the page shows NaN or undefined");
+  return out;
+}
+
+/** The problems of one built page: a stub is checked as a stub, a live post as an article (its meta, and its cover on a post). */
+export function pageProblems(html, rel = "") {
+  if (/http-equiv="refresh"/i.test(html)) return stubProblems(html);
+  const out = metaProblems(html);
+  if (/^(fr\/)?posts\/[^/]+\/$/.test(rel)) out.push(...coverProblems(html));
+  return out;
+}
+
 function* pages(dir, root = dir) {
   for (const name of readdirSync(dir)) {
     const p = join(dir, name);
@@ -89,8 +114,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     n++;
     const html = readFileSync(file, "utf8");
     const rel = `/${relative(dir, file).replace(/index\.html$/, "")}`;
-    for (const p of metaProblems(html)) problems.push(`${rel}: ${p}`);
-    if (/^\/(fr\/)?posts\/[^/]+\/$/.test(rel)) for (const p of coverProblems(html)) problems.push(`${rel}: ${p}`);
+    for (const p of pageProblems(html, rel.slice(1))) problems.push(`${rel}: ${p}`);
   }
   if (problems.length) {
     console.error(problems.join("\n"));

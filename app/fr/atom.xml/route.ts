@@ -1,5 +1,4 @@
-import { atom } from "@/lib/feeds";
-import { postsOf } from "@/lib/posts";
+import { atom, feedEntriesOf } from "@/lib/feeds";
 
 export const dynamic = "force-static";
-export const GET = () => new Response(atom("fr", postsOf("fr")), { headers: { "Content-Type": "application/atom+xml; charset=utf-8" } });
+export const GET = () => new Response(atom("fr", feedEntriesOf("fr")), { headers: { "Content-Type": "application/atom+xml; charset=utf-8" } });
