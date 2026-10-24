@@ -1,6 +1,6 @@
 ---
 title: "The first products: Yomizaka and Akinaza"
-description: "What Yomizaka reads today and how a rule is written, a whole building in one upload, and our own invoice refused by our own tool. Demonstration data."
+description: "What Yomizaka reads, why our source of truth is the law itself, dated and quoted, what it costs next to ready-made reports, and our own invoice refused by our own tool."
 seoDescription: "Yomizaka and Akinaza: how a rule cites its article, what a batch of leases changes, and the invoice our own tool refused."
 date: 2026-10-23
 publishedAt: "2026-10-23T14:00:00-04:00"
@@ -92,6 +92,28 @@ It is this `reviewStatus` that makes the yellow box appear. The day a lawyer has
 
 It is slower than asking a model to « read the lease and say what is wrong ». But an answer that does not cite its source is one I cannot defend in front of someone signing a twelve-month lease.
 
+## The day our rules judged a visit notice as a lease
+
+On 23 October, we ran real rental document templates through the engine, not only leases: a 24-hour visit notice, a condition report, forms still blank. The result taught me something uncomfortable. The engine judged everything with the lease's rules. The visit notice got lease « failures ». The blank form got hollow PASSes: nothing to object to, since nothing was written.
+
+Our flaw was not a badly written rule. It was not knowing what we were reading. And we will never cover every document with hand-written rules. So we changed the method, in four steps.
+
+**Recognise the document.** Before any rule, the engine establishes the kind, the jurisdiction, the date and the language, from signals an auditor can reread, without a model. If the kind you declared does not match the text, the screen says so. If it hesitates, it answers « unknown kind ». A kind no rule set covers gets « not yet checked against the law », never the lease's rules by default.
+
+**Go and fetch the law itself.** This is where we move to what is called RAG: the model does not answer from memory, it reads texts we hand it. Those texts still have to be the real law. Justice Canada publishes the federal statutes in XML, with commercial use allowed. Données Québec publishes Québec's consolidated statutes and regulations in XML, the same material as Légis Québec. Légis Québec refuses robots, and we do not disguise our agent to get through anyway. Données Québec's licence forbids commercial use and derivative works: the question is with our lawyer, and meanwhile we quote the text as it is, with its source and its date.
+
+Each article is cut out, dated (in force from… to…) and given a fingerprint. A version is never overwritten: when a law changes, the old one keeps its end date and the new one is added. A watcher rereads the sources and opens a review request as soon as an article changes. For a visit notice, the engine reads only articles 1931 to 1933 of the Civil Code, as they stood on the document's date, and nothing about rent.
+
+What is coming is followed apart, and never mixed with what is in force. The Canada Gazette publishes proposed regulations, adopted regulations and assented acts as RSS. We will use it as a radar: a signal that touches a law we use opens a « to watch » item, to prepare the next version of the rules. That signal is never quoted in a check. On the day the change comes into force, the watcher brings the real text. The legal RSS feeds of private publishers, we read them, and set them aside: their terms forbid commercial use.
+
+So that is where our source of truth lives: not in what a model remembers, but in an official, dated text we can quote and find again.
+
+**Check every quote, without a model.** A verifier rereads everything the model claims. The quoted passage must exist word for word in the article, at that version. Every number in the claim must appear there whole. Rereading that verifier, we found a trap: « 24 hours » passed against a quote that only contained « 2024 ». It is fixed, with a test per case. And without a passage from the document, there is never a PASS: it is « not applicable » or « insufficient evidence ».
+
+**Judge with fixed, dated rules.** Finding the articles can be dynamic. Judging cannot. A document is judged only by a promoted, dated rule set, so that two runs say the same thing. The engine will be able to propose a rule from an article, but a proposal will never judge a document: it must first pass its examples, its reference cases and a review. For documents no rule covers, we are preparing a « cited reading »: each claim with its article and its passage, marked « not audited », never a verdict.
+
+Where this stands, without rounding. Kind recognition, the law tables, the imports, the article retrieval and its cache, the verifier and the new version of the check run, with their tests. The corpus stays off by default until the licence question is settled. Rule proposals and the cited reading are still to come. Before choosing the model that writes the claims, we will test at least three on the same reference cases: a model that gets a single false quote accepted is out, and the choice will live in the configuration, not in the code.
+
 ## A product never talks to a model
 
 There is no call to an AI model anywhere in Yomizaka's code. Not one. Yet Yomizaka reads a lease and tells you which clauses are a problem. That is not an oversight: it is the rule I set myself from the start. A product never talks to a model. It talks to an engine, and the engine, [Orazaka](https://dev.orazaka.com), chooses the model.
@@ -155,11 +177,23 @@ As for the contract, it passes 4 out of 4 for a reason that bothers me a little:
 
 Moving from one tool to the other is manual today: we print the verified text from Akinaza. An import through the API, which would turn a model verified in Yomizaka into an Akinaza template, is [proposed](https://github.com/krizaka/akinaza/issues/115), not built.
 
+## What it costs, and where we stand
+
+Tenant screening is a market that mostly sells ready-made reports, often around $30, bundling credit, records and the rest. The sources behind them are paid per item: a few dollars for a court records search, around fifteen for a credit score. Even web search is counted per thousand queries. If every lease reading fetched the law from a paid service, the price of a lease would follow.
+
+That is why our source of truth is our own: an official, open corpus we import once and keep up to date. A search already made for a kind of document, a language and a date is kept and does not call a model again. The same file, with the same check version, returns the result already computed. What costs, we pay once.
+
+And we will not sell a $30 bundle. An applicant's file moves in steps, with a cut-off between each. First the documents they provide, examined on our side. Then, only if the manager chooses it and the applicant consented to that step, the public records. Then credit. A step is billed only if it answered, and a step that was cut costs nothing. The applicant can also bring their own credit report, free from the bureaus, and Yomizaka checks that the PDF is authentic. By default, the applicant pays nothing. A stop is never a verdict on the person: the decision stays with the manager, and Yomizaka scores no one.
+
+Add what a tool in Québec has to do: French first, consent per step and per purpose, and documents deleted after the check by default, only the report remaining.
+
+These steps run today on simulators. No paid provider is connected, and none will be before a first pilot customer says yes.
+
 ## Where we are
 
 I will be honest about the state of things. The batches run, with their tests on a real database. The Android app has its first test version, published on 22 October, and iOS follows with the same code. A Mac app is on its way for people who manage their files from the desk. The API keys exist: a property manager will be able to connect Yomizaka to their own software. The public API that goes with it, to run a check or a batch with a key, is in preparation.
 
-There are also things we will not do until a lawyer tells us it is allowed. Criminal record checks for a dwelling are one of them. They stay closed. The Québec rule set still awaits a lawyer's review, and the screen keeps saying so.
+There are also things we will not open to the public until a lawyer tells us it is allowed. The steps of an applicant's file are among them: they run on simulators, and they stay closed. The Québec rule set still awaits a lawyer's review, and the screen keeps saying so.
 
 I cannot say in how many weeks all of this will be ready. I do know the order to do it in: what protects people first, what saves time afterwards. Photos and the candidate file first, because that is where forgeries and leaks are. Deadlines next. Each piece ships when it runs on real documents, with its trace. We are starting to prepare a real demo for building managers: not an edited video, a real batch, real test documents, and the screens as they are.
 
