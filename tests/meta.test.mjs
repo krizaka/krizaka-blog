@@ -63,3 +63,6 @@ test("a live post is still checked as an article: a missing h1 is refused even t
   assert.match(pageProblems(page({ body: "<p>no heading</p>" }))[0], /h1/);
   assert.deepEqual(pageProblems(page()), []);
 });
+test("a stub's canonical may carry Next's trailing slash after the section anchor (the same address)", () => {
+  assert.deepEqual(pageProblems(stub("/story/what-a-gpu-costs/#the-price-of-a-result", { canonical: "https://blog.krizaka.com/story/what-a-gpu-costs/#the-price-of-a-result/" })), []);
+});

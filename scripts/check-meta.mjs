@@ -80,7 +80,7 @@ export function stubProblems(html) {
   if (!refresh) out.push("a stub needs a 0-second refresh (meta http-equiv=refresh)");
   const canonical = html.match(/<link\b[^>]*rel="canonical"[^>]*>/i)?.[0].match(/\bhref="([^"]+)"/i)?.[1];
   if (!canonical) out.push("a stub needs a canonical");
-  else if (refresh && !canonical.endsWith(refresh)) out.push(`the stub's canonical (${canonical}) is not its refresh target (${refresh})`);
+  else if (refresh && !canonical.replace(/\/+$/, "").endsWith(refresh.replace(/\/+$/, ""))) out.push(`the stub's canonical (${canonical}) is not its refresh target (${refresh})`);
   const robots = html.match(/<meta\b[^>]*name="robots"[^>]*>/i)?.[0] ?? "";
   if (!/\bcontent="[^"]*noindex/i.test(robots)) out.push("a stub is not noindex");
   if (refresh && !html.includes(`<a href="${refresh}"`)) out.push(`a stub has no visible link to ${refresh}`);
