@@ -13,23 +13,23 @@ const home = read("app/components/pages/HomePage.tsx");
 
 const ch = (chapter, publishedAt, extra = {}) => ({ slug: `c${chapter}`, chapter, title: `C${chapter}`, date: publishedAt.slice(0, 10), publishedAt, period: "2026-10-16", versus: { faced: "a", built: "b" }, ...extra });
 
-test("the chapters are in reading order (their numbers, never their dates), the latest marked new", () => {
+test("the newest chapter is Featured; the others follow newest first (by number), Featured not repeated", () => {
   const list = [ch(3, "2026-10-20T09:00:00-04:00"), ch(1, "2026-10-23T09:00:00-04:00"), ch(2, "2026-10-21T09:00:00-04:00")];
   const rows = storyRows(list);
-  assert.deepEqual(rows.map((r) => r.chapter.chapter), [1, 2, 3]);
-  assert.deepEqual(rows.filter((r) => r.isNew).map((r) => r.chapter.chapter), [1], "the one that went out last is new, whatever its number");
-  assert.equal(latestChapter(list).chapter, 1);
+  assert.equal(latestChapter(list).chapter, 1, "the one that went out last is Featured, whatever its number");
+  assert.deepEqual(rows.map((r) => r.chapter.chapter), [3, 2], "the others, newest first");
+  assert.equal(rows.filter((r) => r.isNew).length, 0);
 });
 
 test("of two chapters out at the same minute, the later in the story is the latest; no chapter, no Featured", () => {
   const list = [ch(7, "2026-10-24T09:00:00-04:00"), ch(8, "2026-10-24T09:00:00-04:00")];
   assert.equal(latestChapter(list).chapter, 8);
-  assert.equal(storyRows(list).filter((r) => r.isNew).length, 1);
+  assert.deepEqual(storyRows(list).map((r) => r.chapter.chapter), [7]);
   assert.equal(latestChapter([]), undefined);
   assert.deepEqual(storyRows([]), []);
 });
 
-test("today's chapters: 1 → 9 in both languages, chapter 9 Featured and new", () => {
+test("today's chapters: chapter 9 Featured, then 8 → 1 in both languages", () => {
   for (const locale of ["en", "fr"]) {
     const list = readdirSync(new URL("../content/chapters/", import.meta.url))
       .filter((f) => f.endsWith(`.${locale}.mdx`))
@@ -37,9 +37,8 @@ test("today's chapters: 1 → 9 in both languages, chapter 9 Featured and new", 
       .filter((c) => c.draft !== true)
       .map((c) => ({ ...c, date: String(c.date instanceof Date ? c.date.toISOString().slice(0, 10) : c.date) }));
     const rows = storyRows(list);
-    assert.deepEqual(rows.map((r) => r.chapter.chapter), list.map((c) => c.chapter).sort((a, b) => a - b), locale);
-    assert.equal(rows[0].chapter.chapter, 1);
-    assert.equal(rows.length, 9, `${locale}: nine chapters`);
+    assert.deepEqual(rows.map((r) => r.chapter.chapter), [8, 7, 6, 5, 4, 3, 2, 1], locale);
+    assert.equal(rows.length + 1, 9, `${locale}: nine chapters, one of them Featured`);
     assert.equal(latestChapter(list).slug, "what-claude-found-auditing-krizaka", `${locale}: the latest chapter is Featured`);
   }
 });

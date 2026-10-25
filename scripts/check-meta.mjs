@@ -90,7 +90,7 @@ export function stubProblems(html) {
   return out;
 }
 
-/** The home (`/`, `/fr/`): the sentence, one Featured card that is the chapter marked new, and the chapters 1 → N in order. */
+/** The home (`/`, `/fr/`): the sentence, one Featured card (the newest chapter), and the other chapters newest first, Featured not repeated. */
 export function homeProblems(html) {
   const out = [];
   const sentence = html.match(/<span class="bl-home-sentence">([^<]*)<\/span>/)?.[1]?.trim();
@@ -104,13 +104,11 @@ export function homeProblems(html) {
   const rows = [...list.matchAll(/<li\b([^>]*)>[\s\S]*?<span\b[^>]*\bclass="kz-chapter-no"[^>]*>(\d+)<\/span>[\s\S]*?<a\b[^>]*\bhref="([^"]+)"/g)].map((m) => ({ n: Number(m[2]), isNew: /\bdata-new\b/.test(m[1]), href: m[3] }));
   if (!rows.length) out.push("the home lists no chapter (ol.kz-chapters)");
   rows.forEach((r, i) => {
-    if (r.n !== i + 1) out.push(`the chapters are not in reading order: row ${i + 1} is chapter ${r.n}`);
+    if (i > 0 && r.n >= rows[i - 1].n) out.push(`the chapters are not newest first: row ${i + 1} is chapter ${r.n}`);
   });
-  const fresh = rows.filter((r) => r.isNew);
-  if (rows.length && fresh.length !== 1) out.push(`${fresh.length} chapters are marked new (one expected: the latest)`);
   const featuredHref = featured.match(/<a\b[^>]*\bclass="bl-card-link"[^>]*\bhref="([^"]+)"|<a\b[^>]*\bhref="([^"]+)"[^>]*\bclass="bl-card-link"/);
   const href = featuredHref?.[1] ?? featuredHref?.[2];
-  if (featured && fresh.length === 1 && href !== fresh[0].href) out.push(`Featured (${href}) is not the chapter marked new (${fresh[0].href})`);
+  if (href && rows.some((r) => r.href === href)) out.push(`Featured (${href}) is repeated in the list`);
   return out;
 }
 

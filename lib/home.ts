@@ -13,6 +13,8 @@ export function latestChapter<C extends StoryChapter>(chapters: readonly C[]): C
 
 /** Every chapter in reading order (1 → N), the latest one marked new. */
 export function storyRows<C extends StoryChapter>(chapters: readonly C[]): StoryRow<C>[] {
+  // Oussama (2026-10-24): the newest is Featured, and the others go down below it, newest first: when a new chapter comes out it
+  // takes the Featured place and the previous one moves down into the list. Featured is never repeated in the list.
   const latest = latestChapter(chapters);
-  return [...chapters].sort((a, b) => a.chapter - b.chapter).map((chapter) => ({ chapter, isNew: chapter === latest }));
+  return [...chapters].filter((c) => c !== latest).sort((a, b) => b.chapter - a.chapter).map((chapter) => ({ chapter, isNew: false }));
 }
