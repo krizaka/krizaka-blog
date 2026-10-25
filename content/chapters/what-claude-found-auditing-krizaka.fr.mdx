@@ -1,8 +1,8 @@
 ---
-title: "Ce que Claude a vu en auditant Krizaka"
-description: "J'ai demandé à une IA d'auditer notre organisation GitHub, sans complaisance. Le prompt, la réponse brute, ce qui tient, ce qui ne tient pas, et ce que j'ai vérifié moi-même."
-seoTitle: "Ce que Claude a vu en auditant Krizaka sur GitHub"
-seoDescription: "Un audit de l'organisation GitHub de Krizaka par Claude, avec accès au web : le prompt, la réponse brute, les forces, les faiblesses et les limites."
+title: "Ce que Claude et Gemini ont vu en auditant Krizaka"
+description: "Deux IA, un même prompt, un audit sans complaisance de notre organisation GitHub. Les réponses brutes, ce qui tient, ce qui ne tient pas, et ce que j'ai vérifié."
+seoTitle: "Ce que Claude et Gemini ont vu en auditant Krizaka"
+seoDescription: "Claude et Gemini auditent l'organisation GitHub de Krizaka avec le même prompt : réponses brutes, forces, faiblesses, limites."
 date: 2026-10-24
 publishedAt: "2026-10-24T21:00:00-04:00"
 tags: [ai, measurements, security]
@@ -44,7 +44,11 @@ Le prompt complet est [en annexe](#annexe--le-prompt-et-la-sortie-brute).
 
 ## Le protocole
 
-Un seul modèle a tourné : Claude Opus 5.5, d'Anthropic, avec deux outils, la recherche web et la lecture de pages. Il a été lancé sans contexte : un dossier vide, aucun réglage de projet, aucun serveur d'outils, aucune mémoire. Il ne connaissait de Krizaka que ce qu'il a lu sur le web pendant l'audit.
+Deux modèles ont reçu exactement le même prompt.
+
+**Claude Opus 5.5**, d'Anthropic, avec deux outils, la recherche web et la lecture de pages. Il a été lancé sans contexte : un dossier vide, aucun réglage de projet, aucun serveur d'outils, aucune mémoire. Il ne connaissait de Krizaka que ce qu'il a lu sur le web pendant l'audit.
+
+**Gemini 3.8 Flash**, de Google, dans l'éditeur Antigravity, lancé le même soir. Son accès n'était pas le même : il a lu les dépôts avec l'outil en ligne de commande de GitHub, sur ma machine, et a interrogé l'API publique de SonarCloud. En tout, 143 étapes, dont 69 commandes (59 appels à GitHub, 10 à SonarCloud).
 
 <Numbers>
   <Num value="39" label="échanges" hint="lectures et réponses du modèle" />
@@ -54,10 +58,9 @@ Un seul modèle a tourné : Claude Opus 5.5, d'Anthropic, avec deux outils, la r
 
 Je dois dire aussi ce qui n'a pas tourné.
 
-- **Gemini.** Nous n'avons pas de clé d'API Google. J'ai essayé l'outil en ligne de commande de Gemini avec mon compte personnel : il a refusé, ce client n'étant plus accepté pour les comptes individuels. Pas d'audit Gemini ici.
 - **ChatGPT.** Nous n'avons pas de clé OpenAI. Pas d'audit ChatGPT non plus.
 
-C'est pour ça que le titre ne nomme que Claude. L'expérience de mon ami avec trois modèles existe, mais je ne la reproduis pas, et je n'en cite aucun mot.
+Le titre ne nomme donc que Claude et Gemini. L'expérience de mon ami avec trois modèles existe, mais je ne la reproduis pas, et je n'en cite aucun mot.
 
 Un détail technique compte pour lire la réponse : l'outil qui lit les pages les fait d'abord résumer par un plus petit modèle, Claude Haiku 5.5. Le modèle principal a donc lu beaucoup de résumés. Il le dit lui-même au début de sa réponse, et il précise qu'il a vérifié dans le code source les points qui comptaient le plus.
 
@@ -113,6 +116,40 @@ Sa conclusion :
 
 > « The biggest structural risk is not technical: one person and a set of agents produce more code, ADRs and issues than anyone can independently review. »
 
+## Ce que Gemini a trouvé
+
+Gemini a écrit un audit plus long et plus chiffré, parce qu'il a lu plus de code et les mesures de SonarCloud. Je cite en anglais, mot pour mot.
+
+Sur ce qui tient :
+
+> « The platform architecture cleanly decouples domain logic from framework baggage. […] Architectural boundaries are automatically verified on every build via ArchUnit. »
+>
+> « quality-controls.md explicitly catalogs gaps, copy-paste drift, and technical debt instead of hiding them. »
+>
+> « CI workflows consistently employ full-SHA pinning, OpenSSF Scorecard scans […], reproducible Maven build timestamps […], and binary compatibility checks via japicmp-maven-plugin. »
+
+Sur ce qui ne tient pas, sa liste est plus longue que celle des forces :
+
+> « Infrastructure as Code Repository is Completely Empty. »
+>
+> « Copy-Pasted Scripts and Configuration Drift Across 12 Repositories. »
+>
+> « The "UTC Day" Date Slice Bug Across 8 Repositories. »
+>
+> « While web frontends use strict rules, mobile applications […] lint with bare typescript-eslint, bypassing @krizaka/config and ast-grep quality ratchets entirely. »
+>
+> « SonarCloud quality gates display "Passed / OK" on repositories with dozens or hundreds of open issues […], creating a false visual impression of a clean codebase. »
+
+Et son jugement d'ensemble :
+
+> « The core platform libraries […] receive top-tier engineering attention, while downstream products and tooling […] contain critical gaps. »
+
+## Là où ils s'accordent, là où ils divergent
+
+Les deux modèles disent la même chose sur l'essentiel : la documentation et la CI sont solides, et l'écart entre ce qui est écrit et ce qui tourne est le vrai risque. Claude le dit de la relecture (« one human »), Gemini le dit de la largeur (« visibly stretched across 43 repositories »).
+
+Ils divergent sur le ton et sur la matière. Claude reste sobre (« above average for a small organisation ») et a trouvé un défaut que Gemini n'a pas vu, le préfixe `TIMEOUT`. Gemini est plus élogieux sur le cœur Java, mais il apporte plus de faits vérifiables : les chiffres de SonarCloud, les copies de scripts, le bug du jour UTC dans plusieurs dépôts. Une partie de cet écart vient de l'accès : Gemini a lu plus de fichiers et des mesures que Claude n'avait pas.
+
 ## Ce que j'ai vérifié moi-même
 
 Un audit par une IA est une liste de pistes, pas un verdict. J'ai repris les affirmations qui se vérifient avec un chiffre.
@@ -123,9 +160,14 @@ Un audit par une IA est une liste de pistes, pas un verdict. J'ai repris les aff
   <Case topic="Le préfixe TIMEOUT" before="5 secondes, sans garde" after="Vrai" afterDetail="Lignes 696 à 702, aucune propriété ne le protège." />
   <Case topic="Versions de @krizaka/ui" before="environ 83" after="83 sur npm" />
   <Case topic="Tickets ouverts de krizaka-ui" before="128" after="128" />
+  <Case topic="krizaka-ui sur SonarCloud (Gemini)" before="172 bugs, 73 vulnérabilités" after="172 et 73" afterDetail="Et le quality gate dit « OK » : Gemini a raison, il ne juge que le nouveau code." />
+  <Case topic="Le mot de passe d'Orochia (Gemini)" before="« Blocker », en production" after="À nuancer" afterDetail="Une adresse de développement local, déjà refusée en production. Retirée quand même, orochia#414." />
+  <Case topic="Le SQL concaténé (Gemini)" before="« Dynamic SQL »" after="À nuancer" afterDetail="Des morceaux constants, les valeurs passent en paramètres : pas d'injection, mais la forme trompe l'analyse." />
+  <Case topic="L'infra vide (Gemini)" before="Aucun fichier .tf" after="Vrai à l'heure de sa lecture" afterDetail="La première stack est arrivée le soir même, avec un plan en lecture seule (krizaka-infra#8)." />
+  <Case topic="Le jour UTC (Gemini)" before="8 dépôts" after="Vrai" afterDetail="Corrigé dans Yomizaka (#311), une règle refuse désormais le motif ; les autres dépôts suivent." />
 </Compare>
 
-Tout ce que j'ai vérifié était exact. Le défaut du préfixe [`TIMEOUT`](https://github.com/krizaka/orazaka-job-service/blob/main/src/main/java/com/krizaka/orazaka/jobservice/infrastructure/adapter/amqp/JobListener.java#L696-L702) est réel. Un ticket existait déjà pour découper ce fichier ([orazaka-job-service#50](https://github.com/krizaka/orazaka-job-service/issues/50)), mais il ne parlait que du crochet de simulation, qui lui est bien protégé par un réglage. J'y ai ajouté ce que le modèle a trouvé : une ligne qui avait échappé à notre propre ticket. Je l'ai corrigé le soir même : un prompt ne choisit plus son propre délai, seule la simulation de test le peut, derrière son réglage ([orazaka-job-service#72](https://github.com/krizaka/orazaka-job-service/pull/72)).
+Les chiffres des deux modèles étaient exacts. Deux affirmations de Gemini sont plus fortes que la réalité, et je l'écris dans le tableau. Le défaut du préfixe [`TIMEOUT`](https://github.com/krizaka/orazaka-job-service/blob/main/src/main/java/com/krizaka/orazaka/jobservice/infrastructure/adapter/amqp/JobListener.java#L696-L702) est réel. Un ticket existait déjà pour découper ce fichier ([orazaka-job-service#50](https://github.com/krizaka/orazaka-job-service/issues/50)), mais il ne parlait que du crochet de simulation, qui lui est bien protégé par un réglage. J'y ai ajouté ce que le modèle a trouvé : une ligne qui avait échappé à notre propre ticket. Je l'ai corrigé le soir même : un prompt ne choisit plus son propre délai, seule la simulation de test le peut, derrière son réglage ([orazaka-job-service#72](https://github.com/krizaka/orazaka-job-service/pull/72)).
 
 Je n'ai pas vérifié le reste. L'affirmation sur les tâches qui continuent après leur délai, par exemple, le modèle lui-même dit ne pas l'avoir vérifiée jusqu'au bout. Elle reste une piste.
 
@@ -134,26 +176,24 @@ Je n'ai pas vérifié le reste. L'affirmation sur les tâches qui continuent apr
 Je veux être clair sur ce que cet audit ne prouve pas.
 
 - **Un modèle peut flatter.** Le prompt essaie de l'en empêcher, mais il n'y a aucune garantie. Une phrase comme « above average » vaut ce que vaut un avis.
-- **Il ne lit que ce qui est public.** Il n'a vu ni nos réglages de protection des branches (la page demande une connexion), ni ce qui tourne en production, ni ce qui n'est pas poussé.
+- **Les deux n'avaient pas le même accès.** Claude ne lisait que le web public. Gemini a lu les dépôts avec l'outil de GitHub sur ma machine, donc avec ma connexion. Ce n'est pas une comparaison à armes égales, et il faut lire leurs réponses avec ça en tête.
+- **Claude ne lit que ce qui est public.** Il n'a vu ni nos réglages de protection des branches (la page demande une connexion), ni ce qui tourne en production, ni ce qui n'est pas poussé.
 - **Il a beaucoup lu de résumés.** Les pages passent par un plus petit modèle avant de lui arriver. Ce qu'il dit d'un fichier qu'il n'a pas ouvert lui-même est moins sûr.
 - **C'est une seule exécution.** Relancé demain, le même prompt donnera une autre réponse. Je n'ai pas mesuré cette variation.
-- **Claude audite un code en grande partie écrit avec Claude.** Une grande partie du code de Krizaka est écrite par des sessions d'agents Claude que je dirige. Le juge n'est pas étranger à l'affaire. C'est une raison de plus pour que l'expérience soit refaite avec d'autres modèles, et je le ferai quand nous aurons les clés pour le faire proprement.
 
 Ce n'est pas une preuve. C'est une lecture extérieure, publiée avec ses sources, que n'importe qui peut refaire.
 
 ## Ce que j'en retiens
 
-Ce que mon ami m'avait rapporté parlait d'agnosticisme, et d'une petite armée d'agents de code avec une personne qui dirige et relit. Je n'avais jamais vu ça comme une compétence à part. Ça me semblait juste la manière normale de travailler.
+Je retiens surtout la liste des faiblesses. Les compliments font plaisir, mais ils ne disent pas quoi corriger.
 
-En y repensant, je crois que ça touche à l'ergonomie cognitive. Prendre du recul, regarder un système de haut, trouver où ça frotte, poser des limites claires, et organiser le travail entre une personne et des machines pour que l'erreur soit visible tout de suite. Ça vient sans doute de mes études, les mathématiques et l'informatique appliquées aux sciences cognitives, et de la vitesse à laquelle les agents produisent du code. Quelqu'un du milieu des TI m'a rappelé une phrase que j'avais écrite il y a un moment :
+D'abord, la façon de travailler. Une bonne partie du code est écrite par des agents. Ce qui tient la qualité, ce ne sont pas les agents : ce sont les vérifications qui disent non tôt, les règles, les types, les tests d'architecture. Une phrase que j'avais notée il y a un moment résume l'idée :
 
 > « Pour construire efficacement avec l'IA, il faut structurer ses automatisations pour détecter les erreurs le plus tôt et le plus vite possible. »
 
-C'est le principe du « fail fast ». Un agent écrit vite. Les règles, les types et les tests d'architecture disent non en quelques secondes, avant que l'erreur se répande.
+Ensuite, la limite de cette idée. Nos garde-fous attrapent ce pour quoi on a écrit une règle, pas le reste. La ligne `TIMEOUT` n'enfreignait aucune règle. Et une règle ne regarde que là où on lui dit de regarder : dans Yomizaka, une date calculée en UTC plutôt que le jour du Québec est passée sous `no-ambient-clock`, parce que la règle ne lisait pas ce dossier. Il a fallu écrire [`no-utc-day-slice`](https://github.com/krizaka/yomizaka/blob/main/rules/no-utc-day-slice.yml) après le bug ([yomizaka#311](https://github.com/krizaka/yomizaka/pull/311)). Notre propre inventaire, [`docs/quality-controls.md`](https://github.com/krizaka/.github/blob/main/docs/quality-controls.md) ([.github#232](https://github.com/krizaka/.github/pull/232)), le dit en une phrase : « The rules do not look where the bug was. »
 
-L'audit montre aussi où ce principe s'arrête chez nous. Nos garde-fous attrapent ce pour quoi on a écrit une règle. Ils ne voient pas ce qu'on n'a pas encore nommé. La ligne `TIMEOUT` n'enfreignait aucune règle. Et une règle ne regarde que là où on lui dit de regarder : dans Yomizaka, une date calculée en UTC plutôt que le jour du Québec est passée sous `no-ambient-clock`, parce que la règle ne lisait pas ce dossier. Il a fallu une nouvelle règle, [`no-utc-day-slice`](https://github.com/krizaka/yomizaka/blob/main/rules/no-utc-day-slice.yml), écrite après le bug ([yomizaka#311](https://github.com/krizaka/yomizaka/pull/311)). Notre propre inventaire, [`docs/quality-controls.md`](https://github.com/krizaka/.github/blob/main/docs/quality-controls.md) ([.github#232](https://github.com/krizaka/.github/pull/232)), commence d'ailleurs par cette phrase : « The rules do not look where the bug was. »
-
-Sur la relecture, le modèle a raison, et je n'ai pas encore de réponse complète. Je relis et j'approuve, mais je suis seul, et une partie des approbations passe par un agent à qui j'ai délégué des décisions. Les vérifications automatiques sont réelles. Une deuxième paire d'yeux humaine, non. C'est le point de cet audit que je garde le plus en tête.
+Enfin, la relecture. Le modèle a raison : il n'y a qu'une personne pour relire, et une partie des approbations passe par un agent à qui j'ai délégué des décisions. Les vérifications automatiques sont réelles. Une deuxième paire d'yeux humaine manque encore. C'est le point que je garde en tête, et il ne se règle pas avec un outil de plus.
 
 ## Annexe : le prompt et la sortie brute
 
@@ -161,7 +201,9 @@ L'audit a tourné le 24 octobre 2026, de 23 h 53 à 23 h 58 UTC, avec Claude Cod
 
 - [le prompt](https://blog.krizaka.com/audits/2026-10-24-ai-audit/prompt.txt) ;
 - [la réponse complète de Claude](https://blog.krizaka.com/audits/2026-10-24-ai-audit/claude-opus-5-5-answer.md), sans coupure ;
-- [les détails de l'exécution](https://blog.krizaka.com/audits/2026-10-24-ai-audit/run.json) : la commande, les modèles, les jetons, le coût, et ce qui n'a pas pu tourner.
+- [les détails de l'exécution](https://blog.krizaka.com/audits/2026-10-24-ai-audit/run.json) : la commande, les modèles, les jetons, le coût, et ce qui n'a pas pu tourner ;
+- [la réponse complète de Gemini](https://blog.krizaka.com/audits/2026-10-24-ai-audit/gemini-3-8-flash-answer.md), avec une seule retouche, le mot de passe d'une adresse locale masqué ;
+- [les métadonnées de l'exécution de Gemini](https://blog.krizaka.com/audits/2026-10-24-ai-audit/antigravity-run.json), lues dans Antigravity : le modèle, le nombre d'étapes et chaque commande lancée.
 
 Le prompt, tel qu'il a été envoyé :
 
