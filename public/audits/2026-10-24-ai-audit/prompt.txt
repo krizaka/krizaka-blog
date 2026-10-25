@@ -1,0 +1,12 @@
+You are reviewing a software organisation you have never seen before. Use your web tools to read it yourself; do not rely on prior knowledge of it.
+
+Target: the public GitHub organisation https://github.com/krizaka
+
+Please:
+1. Look at the organisation page and the list of its public repositories. Open the repositories you judge most important (for example their README, a few source files, the CI workflows, any architecture or decision documents, and recent pull requests or commits).
+2. Give an unvarnished technical audit of what you actually read: the architecture, code quality, testing, documentation, and the engineering setup (CI, automated checks, release process, governance).
+3. List the strengths and the weaknesses. Weaknesses are as important as strengths: name risks, gaps, inconsistencies, things that look unfinished, and anything a careful reviewer would worry about.
+4. For every point, say which repository, file or page it is based on (a URL), so a reader can check it. If you could not open something, say so instead of guessing.
+5. End with a short overall assessment and the three changes you would make first.
+
+Be specific and neutral. Do not flatter and do not soften criticism. If something is ordinary, say it is ordinary.

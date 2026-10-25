@@ -1,0 +1,186 @@
+---
+title: "Ce que Claude a vu en auditant Krizaka"
+description: "J'ai demandé à une IA d'auditer notre organisation GitHub, sans complaisance. Le prompt, la réponse brute, ce qui tient, ce qui ne tient pas, et ce que j'ai vérifié moi-même."
+seoTitle: "Ce que Claude a vu en auditant Krizaka sur GitHub"
+seoDescription: "Un audit de l'organisation GitHub de Krizaka par Claude, avec accès au web : le prompt, la réponse brute, les forces, les faiblesses et les limites."
+date: 2026-10-24
+publishedAt: "2026-10-24T21:00:00-04:00"
+tags: [ai, measurements, security]
+author: oussama
+draft: false
+cover: audit-drafting-table
+coverAlt: "Une table à dessin dans un atelier de brique à Montréal, la nuit : un grand plan technique étalé, une loupe en laiton posée dessus, un crayon rouge à côté de petits cercles rouges tracés sur le plan, une lampe verte et une tasse de thé ; derrière la fenêtre cintrée, la neige et un escalier de secours"
+chapter: 9
+period: "2026-10-24"
+sources:
+  - from-vibe-coding-to-agentic-engineering
+  - coding-agents-one-night
+versus:
+  faced: "un audit demandé sans complaisance"
+  built: "la réponse publiée telle quelle, faiblesses comprises"
+stats:
+  - value: "43"
+    label: "dépôts publics lus par le modèle, tous créés en 2026"
+    section: "Ce que j'ai vérifié moi-même"
+  - value: "920"
+    label: "lignes dans JobListener, « le fichier le plus faible »"
+    section: "Ce que j'ai vérifié moi-même"
+  - value: "0,70 $"
+    label: "le coût de l'audit, au prix catalogue"
+    section: "Le protocole"
+---
+
+Il y a quelque temps, j'ai demandé à un ami du milieu des TI de faire une expérience sans parti pris. Il a demandé à trois modèles, Claude, Gemini et ChatGPT, d'inspecter notre organisation GitHub et d'en faire un audit sans complaisance. Ce qu'il m'a rapporté était flatteur. Trop flatteur pour que je le répète sans preuve.
+
+Chez Krizaka, une affirmation doit mener à une mesure, à une exécution ou à une ligne de code. Je n'ai pas les sorties de son expérience, donc je ne peux pas les citer. Alors je l'ai refaite moi-même, le 24 octobre, avec un prompt écrit à l'avance et publié, et une réponse publiée telle quelle.
+
+## Pourquoi j'ai refait l'expérience
+
+Un compliment rapporté ne se vérifie pas. Une sortie brute, si. Le lecteur peut relire le prompt, relire la réponse, et vérifier chaque lien.
+
+J'ai aussi voulu que le prompt ne pousse pas vers le compliment. Il ne demande pas ce qui est impressionnant. Il demande un audit, les forces et les faiblesses, et il précise que les faiblesses comptent autant que les forces. Il demande aussi une source pour chaque point, et de dire quand le modèle n'a pas pu ouvrir quelque chose plutôt que de deviner.
+
+Le prompt complet est [en annexe](#annexe--le-prompt-et-la-sortie-brute).
+
+## Le protocole
+
+Un seul modèle a tourné : Claude Opus 5.5, d'Anthropic, avec deux outils, la recherche web et la lecture de pages. Il a été lancé sans contexte : un dossier vide, aucun réglage de projet, aucun serveur d'outils, aucune mémoire. Il ne connaissait de Krizaka que ce qu'il a lu sur le web pendant l'audit.
+
+<Numbers>
+  <Num value="39" label="échanges" hint="lectures et réponses du modèle" />
+  <Num value="5" label="minutes" hint="du lancement à la réponse" />
+  <Num value="0,70 $" label="au prix catalogue" hint="Opus 5.5, plus Haiku 5.5 pour résumer les pages" />
+</Numbers>
+
+Je dois dire aussi ce qui n'a pas tourné.
+
+- **Gemini.** Nous n'avons pas de clé d'API Google. J'ai essayé l'outil en ligne de commande de Gemini avec mon compte personnel : il a refusé, ce client n'étant plus accepté pour les comptes individuels. Pas d'audit Gemini ici.
+- **ChatGPT.** Nous n'avons pas de clé OpenAI. Pas d'audit ChatGPT non plus.
+
+C'est pour ça que le titre ne nomme que Claude. L'expérience de mon ami avec trois modèles existe, mais je ne la reproduis pas, et je n'en cite aucun mot.
+
+Un détail technique compte pour lire la réponse : l'outil qui lit les pages les fait d'abord résumer par un plus petit modèle, Claude Haiku 5.5. Le modèle principal a donc lu beaucoup de résumés. Il le dit lui-même au début de sa réponse, et il précise qu'il a vérifié dans le code source les points qui comptaient le plus.
+
+## Ce que Claude a trouvé solide
+
+Je cite en anglais, mot pour mot. La réponse complète est en annexe.
+
+Sur la gouvernance écrite :
+
+> « The written governance contract is unusually detailed, and CI enforces parts of it (ArchUnit, ratchets, docs-freshness check). »
+
+Sur la CI :
+
+> « The CI hygiene is good: SHA pinning, least-privilege permissions, red-main alerting, nightly builds and Scorecard. »
+
+Sur la documentation et les publications :
+
+> « Decisions are well documented, and the authors write candid self-audits. »
+>
+> « There are real Maven Central and npm releases, with signing and release-please. »
+
+Son jugement d'ensemble, en une phrase :
+
+> « The design and documentation are above average for a small organisation, and the CI is good. »
+
+« Au-dessus de la moyenne pour une petite organisation. » C'est tout. Le modèle n'a pas écrit qu'il voyait rarement ça, ni que ça dépassait des équipes d'entreprise. Je ne l'écris donc pas non plus.
+
+Les garde-fous dont il parle existent, et on peut les lire. Les règles ast-grep comme [`no-ambient-clock`](https://github.com/krizaka/krizaka-com/blob/main/rules/no-ambient-clock.yml) (pas d'horloge implicite dans le code du domaine) et [`no-enum-string-compare`](https://github.com/krizaka/krizaka-com/blob/main/rules/no-enum-string-compare.yml) (pas de statut comparé à une chaîne). Les règles ArchUnit de [`CodeRules`](https://github.com/krizaka/krizaka-build/blob/main/krizaka-test-support/src/main/java/com/krizaka/test/architecture/CodeRules.java), dont `assertNoStandardStreams` (pas de `System.out` en production), et leurs équivalents dans [`GovernanceRules`](https://github.com/krizaka/orazaka-build/blob/main/orazaka-test-support/src/main/java/com/krizaka/orazaka/test/architecture/GovernanceRules.java).
+
+## Ce que Claude a trouvé faible
+
+C'est la partie la plus longue de sa réponse, et c'est la plus utile.
+
+Sur la relecture :
+
+> « The bus factor is one human. Review is effectively AI approving AI-authored code. »
+
+Sur le code lui-même :
+
+> « The implementation is ordinary-to-uneven and further behind than the documents suggest. »
+
+Sur un fichier précis du service des tâches d'Orazaka :
+
+> « `JobListener.java` is the weakest file I read. It is 920 lines (874 lines of code) with 16 constructor parameters. »
+
+Et un vrai défaut, dans ce même fichier : une durée limite de cinq secondes pour tout prompt qui commence par `TIMEOUT`, sans garde.
+
+> « Any user can shorten their own job's timeout this way. »
+
+Il relève aussi que nos règles écrites et notre code ne disent pas toujours la même chose (du SQL écrit à la main malgré la règle, une version `-SNAPSHOT` malgré l'interdiction), que deux de nos propres audits se contredisent ([l'un](https://github.com/krizaka/orazaka/blob/main/docs/PRODUCTION_READINESS_AUDIT.md) dit de ne pas lancer, [l'autre](https://github.com/krizaka/orazaka/blob/main/docs/ARCHITECTURE_ASSESSMENT.md) ne compte aucun bloquant), que les builds du workspace suivent la branche `main` des dépôts voisins et ne sont donc pas reproductibles, et que `@krizaka/ui` change de version trop vite pour qu'un numéro majeur veuille encore dire quelque chose.
+
+Sa conclusion :
+
+> « The biggest structural risk is not technical: one person and a set of agents produce more code, ADRs and issues than anyone can independently review. »
+
+## Ce que j'ai vérifié moi-même
+
+Un audit par une IA est une liste de pistes, pas un verdict. J'ai repris les affirmations qui se vérifient avec un chiffre.
+
+<Compare label="Les affirmations du modèle, vérifiées" topic="Affirmation" before="Ce que dit le modèle" after="Ce que j'ai mesuré">
+  <Case topic="Taille de l'organisation" before="43 dépôts publics" after="43, par l'API GitHub" />
+  <Case topic="JobListener.java" before="920 lignes" after="920 lignes sur main" />
+  <Case topic="Le préfixe TIMEOUT" before="5 secondes, sans garde" after="Vrai" afterDetail="Lignes 696 à 702, aucune propriété ne le protège." />
+  <Case topic="Versions de @krizaka/ui" before="environ 83" after="83 sur npm" />
+  <Case topic="Tickets ouverts de krizaka-ui" before="128" after="128" />
+</Compare>
+
+Tout ce que j'ai vérifié était exact. Le défaut du préfixe [`TIMEOUT`](https://github.com/krizaka/orazaka-job-service/blob/main/src/main/java/com/krizaka/orazaka/jobservice/infrastructure/adapter/amqp/JobListener.java#L696-L702) est réel. Un ticket existait déjà pour découper ce fichier ([orazaka-job-service#50](https://github.com/krizaka/orazaka-job-service/issues/50)), mais il ne parlait que du crochet de simulation, qui lui est bien protégé par un réglage. J'y ai ajouté ce que le modèle a trouvé : une ligne qui avait échappé à notre propre ticket.
+
+Je n'ai pas vérifié le reste. L'affirmation sur les tâches qui continuent après leur délai, par exemple, le modèle lui-même dit ne pas l'avoir vérifiée jusqu'au bout. Elle reste une piste.
+
+## Les limites de l'exercice
+
+Je veux être clair sur ce que cet audit ne prouve pas.
+
+- **Un modèle peut flatter.** Le prompt essaie de l'en empêcher, mais il n'y a aucune garantie. Une phrase comme « above average » vaut ce que vaut un avis.
+- **Il ne lit que ce qui est public.** Il n'a vu ni nos réglages de protection des branches (la page demande une connexion), ni ce qui tourne en production, ni ce qui n'est pas poussé.
+- **Il a beaucoup lu de résumés.** Les pages passent par un plus petit modèle avant de lui arriver. Ce qu'il dit d'un fichier qu'il n'a pas ouvert lui-même est moins sûr.
+- **C'est une seule exécution.** Relancé demain, le même prompt donnera une autre réponse. Je n'ai pas mesuré cette variation.
+- **Claude audite un code en grande partie écrit avec Claude.** Une grande partie du code de Krizaka est écrite par des sessions d'agents Claude que je dirige. Le juge n'est pas étranger à l'affaire. C'est une raison de plus pour que l'expérience soit refaite avec d'autres modèles, et je le ferai quand nous aurons les clés pour le faire proprement.
+
+Ce n'est pas une preuve. C'est une lecture extérieure, publiée avec ses sources, que n'importe qui peut refaire.
+
+## Ce que j'en retiens
+
+Ce que mon ami m'avait rapporté parlait d'agnosticisme, et d'une petite armée d'agents de code avec une personne qui dirige et relit. Je n'avais jamais vu ça comme une compétence à part. Ça me semblait juste la manière normale de travailler.
+
+En y repensant, je crois que ça touche à l'ergonomie cognitive. Prendre du recul, regarder un système de haut, trouver où ça frotte, poser des limites claires, et organiser le travail entre une personne et des machines pour que l'erreur soit visible tout de suite. Ça vient sans doute de mes études, les mathématiques et l'informatique appliquées aux sciences cognitives, et de la vitesse à laquelle les agents produisent du code. Quelqu'un du milieu des TI m'a rappelé une phrase que j'avais écrite il y a un moment :
+
+> « Pour construire efficacement avec l'IA, il faut structurer ses automatisations pour détecter les erreurs le plus tôt et le plus vite possible. »
+
+C'est le principe du « fail fast ». Un agent écrit vite. Les règles, les types et les tests d'architecture disent non en quelques secondes, avant que l'erreur se répande.
+
+L'audit montre aussi où ce principe s'arrête chez nous. Nos garde-fous attrapent ce pour quoi on a écrit une règle. Ils ne voient pas ce qu'on n'a pas encore nommé. La ligne `TIMEOUT` n'enfreignait aucune règle. Et une règle ne regarde que là où on lui dit de regarder : dans Yomizaka, une date calculée en UTC plutôt que le jour du Québec est passée sous `no-ambient-clock`, parce que la règle ne lisait pas ce dossier. Il a fallu une nouvelle règle, [`no-utc-day-slice`](https://github.com/krizaka/yomizaka/blob/main/rules/no-utc-day-slice.yml), écrite après le bug ([yomizaka#311](https://github.com/krizaka/yomizaka/pull/311)). Notre propre inventaire, [`docs/quality-controls.md`](https://github.com/krizaka/.github/blob/main/docs/quality-controls.md) ([.github#232](https://github.com/krizaka/.github/pull/232)), commence d'ailleurs par cette phrase : « The rules do not look where the bug was. »
+
+Sur la relecture, le modèle a raison, et je n'ai pas encore de réponse complète. Je relis et j'approuve, mais je suis seul, et une partie des approbations passe par un agent à qui j'ai délégué des décisions. Les vérifications automatiques sont réelles. Une deuxième paire d'yeux humaine, non. C'est le point de cet audit que je garde le plus en tête.
+
+## Annexe : le prompt et la sortie brute
+
+L'audit a tourné le 24 octobre 2026, de 23 h 53 à 23 h 58 UTC, avec Claude Code 2.1.308 en mode non interactif, le modèle `claude-opus-5-5`, et les seuls outils WebSearch et WebFetch. Les fichiers publiés ne sont pas retouchés :
+
+- [le prompt](https://blog.krizaka.com/audits/2026-10-24-ai-audit/prompt.txt) ;
+- [la réponse complète de Claude](https://blog.krizaka.com/audits/2026-10-24-ai-audit/claude-opus-5-5-answer.md), sans coupure ;
+- [les détails de l'exécution](https://blog.krizaka.com/audits/2026-10-24-ai-audit/run.json) : la commande, les modèles, les jetons, le coût, et ce qui n'a pas pu tourner.
+
+Le prompt, tel qu'il a été envoyé :
+
+```text
+You are reviewing a software organisation you have never seen before. Use your web tools to read it yourself; do not rely on prior knowledge of it.
+
+Target: the public GitHub organisation https://github.com/krizaka
+
+Please:
+1. Look at the organisation page and the list of its public repositories. Open the repositories you judge most important (for example their README, a few source files, the CI workflows, any architecture or decision documents, and recent pull requests or commits).
+2. Give an unvarnished technical audit of what you actually read: the architecture, code quality, testing, documentation, and the engineering setup (CI, automated checks, release process, governance).
+3. List the strengths and the weaknesses. Weaknesses are as important as strengths: name risks, gaps, inconsistencies, things that look unfinished, and anything a careful reviewer would worry about.
+4. For every point, say which repository, file or page it is based on (a URL), so a reader can check it. If you could not open something, say so instead of guessing.
+5. End with a short overall assessment and the three changes you would make first.
+
+Be specific and neutral. Do not flatter and do not soften criticism. If something is ordinary, say it is ordinary.
+```
+
+Les jetons, tels que l'outil les a comptés :
+
+- **Claude Opus 5.5** : 30 jetons en entrée, 47 862 écrits en cache et 416 449 lus, 14 027 en sortie, soit 0,61 $.
+- **Claude Haiku 5.5**, pour les résumés des pages : 481 596 jetons en entrée et 79 082 en sortie, soit 0,09 $.
