@@ -60,7 +60,13 @@ And every day there was the same puzzle. Do I move a new feature forward, or do 
 
 ## Cleaning up is not enough
 
-On October 20, I cleaned up. 148 issues were closed as not planned that day. Many were ambitious ideas written by agents, features nobody had asked for, or duplicate checklists. The line of open issues came down, from 584 to 498.
+On October 20, I cleaned up. 148 issues were closed as not planned that day. There were checklists a script had created twice, work already done, work replaced by another issue. And there were ambitious ideas, features nobody seemed to have asked for. The line of open issues came down, from 584 to 498.
+
+Except that some of those ideas were mine. I had launched them through my agents one evening, without telling the agent doing the triage. For it, they came from nowhere. It closed them.
+
+I don't want to lose an idea because it is not a priority today. So we changed the rule. We now close only three things: a duplicate, work already done or replaced, and work that is wrong or harmful. Every other idea goes to a new column of the board, **Incubation**. An idea in Incubation is kept and visible. It is not a priority: nobody works on it until I move it forward. And when in doubt, it goes to Incubation.
+
+We went back over the issues closed as not planned in October, one by one. 88 came back into Incubation. The others stay closed, with a link to the original or to what replaces them. The curve above is the one read at 1:34 in the morning: it still counts those 88 ideas among the closed issues.
 
 Two days later it was higher than before: 628 open issues at the end of October 22.
 
@@ -99,6 +105,42 @@ Issue first sounds like bureaucracy. In practice, it is what lets me follow. An 
 A rule after a bug is a habit I picked up while reviewing. In Yomizaka, a date was computed in UTC instead of Québec's day. We fixed it, then wrote a rule that refuses the pattern. I tell it in [the chapter on the audit](/story/what-claude-found-auditing-krizaka/). A fixed bug is one bug less. A rule is one class of bugs less.
 
 Three sessions at most is the lesson of [the day we wanted to finish everything](/story/building-with-agents/). More sessions is not more finished work. It is more open work.
+
+## How I follow the work
+
+I don't code every line. I don't even read every issue. What I look at is the organisation's board: one board for every repository, with six columns.
+
+- **Incubation**: an idea kept and visible, not a priority yet.
+- **Backlog**: work accepted, not planned yet.
+- **Next**: what comes next.
+- **In progress**: what is being done right now.
+- **In review**: a pull request exists, it waits for CI or a review.
+- **Done**: finished.
+
+It is my 360° view. I see what moves from one column to the next, what gets stuck, what grows. When a column goes the wrong way, I say so, and we change direction. I decide where we go. The agents and the automations move the cards.
+
+Here is the board on October 25 at 3:55 pm, Montréal time, just after the ideas came back into Incubation.
+
+| Column | Cards |
+| :--- | ---: |
+| Incubation | 88 |
+| Backlog | 625 |
+| Next | 145 |
+| In progress | 16 |
+| In review | 74 |
+| Done | 522 |
+| Total | 1,470 |
+
+I count the columns with one command. No token in the text: the terminal's `gh` uses the session that is already open.
+
+```bash
+gh project item-list 4 --owner krizaka --limit 3000 --format json \
+  | jq -r '.items[].status' | sort | uniq -c
+```
+
+In progress is small, on purpose: three sessions at most. In review is high. That is not 74 reviews waiting for me. A card moves to In review as soon as a pull request is open. Many wait for CI to finish, and auto-merge is armed: the PR merges by itself once everything is green. At that moment, 39 pull requests were still open, down from 104 when the curve was read in the night, and 24 had auto-merge armed. The others wait for a fix or for my decision.
+
+Backlog, finally, is the real pile. That is the one that has to come down.
 
 ## What is not solved
 
