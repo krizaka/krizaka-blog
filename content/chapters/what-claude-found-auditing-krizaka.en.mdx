@@ -125,7 +125,7 @@ An AI audit is a list of leads, not a verdict. I took the claims that can be che
   <Case topic="Open issues in krizaka-ui" before="128" after="128" />
 </Compare>
 
-Everything I checked was right. The [`TIMEOUT`](https://github.com/krizaka/orazaka-job-service/blob/main/src/main/java/com/krizaka/orazaka/jobservice/infrastructure/adapter/amqp/JobListener.java#L696-L702) prefix defect is real. There was already an issue to split that file ([orazaka-job-service#50](https://github.com/krizaka/orazaka-job-service/issues/50)), but it only covered the simulation hook, which is properly behind a setting. I added what the model found: a line our own issue had missed.
+Everything I checked was right. The [`TIMEOUT`](https://github.com/krizaka/orazaka-job-service/blob/main/src/main/java/com/krizaka/orazaka/jobservice/infrastructure/adapter/amqp/JobListener.java#L696-L702) prefix defect is real. There was already an issue to split that file ([orazaka-job-service#50](https://github.com/krizaka/orazaka-job-service/issues/50)), but it only covered the simulation hook, which is properly behind a setting. I added what the model found: a line our own issue had missed. I fixed it the same evening: a prompt no longer chooses its own timeout; only the test simulation can, behind its setting ([orazaka-job-service#72](https://github.com/krizaka/orazaka-job-service/pull/72)).
 
 I didn't check the rest. The claim about jobs that keep running after their timeout, for instance, the model itself says it didn't follow all the way. It stays a lead.
 

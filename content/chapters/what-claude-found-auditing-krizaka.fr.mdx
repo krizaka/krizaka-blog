@@ -125,7 +125,7 @@ Un audit par une IA est une liste de pistes, pas un verdict. J'ai repris les aff
   <Case topic="Tickets ouverts de krizaka-ui" before="128" after="128" />
 </Compare>
 
-Tout ce que j'ai vérifié était exact. Le défaut du préfixe [`TIMEOUT`](https://github.com/krizaka/orazaka-job-service/blob/main/src/main/java/com/krizaka/orazaka/jobservice/infrastructure/adapter/amqp/JobListener.java#L696-L702) est réel. Un ticket existait déjà pour découper ce fichier ([orazaka-job-service#50](https://github.com/krizaka/orazaka-job-service/issues/50)), mais il ne parlait que du crochet de simulation, qui lui est bien protégé par un réglage. J'y ai ajouté ce que le modèle a trouvé : une ligne qui avait échappé à notre propre ticket.
+Tout ce que j'ai vérifié était exact. Le défaut du préfixe [`TIMEOUT`](https://github.com/krizaka/orazaka-job-service/blob/main/src/main/java/com/krizaka/orazaka/jobservice/infrastructure/adapter/amqp/JobListener.java#L696-L702) est réel. Un ticket existait déjà pour découper ce fichier ([orazaka-job-service#50](https://github.com/krizaka/orazaka-job-service/issues/50)), mais il ne parlait que du crochet de simulation, qui lui est bien protégé par un réglage. J'y ai ajouté ce que le modèle a trouvé : une ligne qui avait échappé à notre propre ticket. Je l'ai corrigé le soir même : un prompt ne choisit plus son propre délai, seule la simulation de test le peut, derrière son réglage ([orazaka-job-service#72](https://github.com/krizaka/orazaka-job-service/pull/72)).
 
 Je n'ai pas vérifié le reste. L'affirmation sur les tâches qui continuent après leur délai, par exemple, le modèle lui-même dit ne pas l'avoir vérifiée jusqu'au bout. Elle reste une piste.
 
