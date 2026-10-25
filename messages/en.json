@@ -274,5 +274,43 @@
     "leadBasics": "This post now lives in « The basics ».",
     "leadPage": "This page is gone: the blog is now a single page, the Krizaka story.",
     "linkBasics": "Read the basics"
+  },
+  "curve": {
+    "title": "Issues of the krizaka organisation, running totals",
+    "description": "Public issues, per UTC day, counted by GitHub's search on {date} at {time} (Montréal time). Open = opened minus closed.",
+    "opened": "Opened",
+    "open": "Still open",
+    "completed": "Closed, completed",
+    "notPlanned": "Closed, not planned",
+    "day": "Day",
+    "tableCaption": "A few days of the curve (running totals)",
+    "labels": {
+      "actions": "Chart actions",
+      "viewTable": "View as table",
+      "downloadCsv": "Download CSV",
+      "downloadPng": "Download PNG",
+      "downloadSvg": "Download SVG",
+      "copyData": "Copy data",
+      "copied": "Data copied",
+      "close": "Close",
+      "tableRows": "{count} rows",
+      "tableCaption": "{title} — data",
+      "toggleSeries": "Show or hide {label}",
+      "loading": "Loading chart…",
+      "empty": "No data for this period yet.",
+      "error": "The chart could not be loaded.",
+      "keyboardHint": "Use the arrow keys to move between points, Home and End to jump to the ends.",
+      "roleDescription": "chart",
+      "summaryIntro": "{kind}, {count}.",
+      "summarySeries": "{label}: from {first} to {last}",
+      "summaryRange": "lowest {min} ({minAt}), highest {max} ({maxAt})",
+      "summaryTrendUp": "up {change}",
+      "summaryTrendDown": "down {change}",
+      "summaryTrendFlat": "stable",
+      "summaryTotal": "total {total}",
+      "line": "Line chart",
+      "category": "Day",
+      "value": "Issues"
+    }
   }
 }

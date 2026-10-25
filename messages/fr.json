@@ -274,5 +274,43 @@
     "leadBasics": "Ce billet vit maintenant dans « Les bases ».",
     "leadPage": "Cette page n’existe plus : le blogue tient maintenant sur une seule page, l’histoire de Krizaka.",
     "linkBasics": "Lire « Les bases »"
+  },
+  "curve": {
+    "title": "Les tickets de l'organisation krizaka, en cumul",
+    "description": "Tickets publics, par jour UTC, comptés par la recherche de GitHub le {date} à {time} (heure de Montréal). Ouverts = créés moins fermés.",
+    "opened": "Créés",
+    "open": "Encore ouverts",
+    "completed": "Fermés, faits",
+    "notPlanned": "Fermés, non prévus",
+    "day": "Jour",
+    "tableCaption": "Quelques jours de la courbe (en cumul)",
+    "labels": {
+      "actions": "Actions du graphique",
+      "viewTable": "Voir le tableau",
+      "downloadCsv": "Télécharger en CSV",
+      "downloadPng": "Télécharger en PNG",
+      "downloadSvg": "Télécharger en SVG",
+      "copyData": "Copier les données",
+      "copied": "Données copiées",
+      "close": "Fermer",
+      "tableRows": "{count} lignes",
+      "tableCaption": "{title} — données",
+      "toggleSeries": "Afficher ou masquer {label}",
+      "loading": "Chargement du graphique…",
+      "empty": "Aucune donnée pour cette période.",
+      "error": "Le graphique n'a pas pu être chargé.",
+      "keyboardHint": "Les flèches passent d'un point à l'autre, Début et Fin vont aux extrémités.",
+      "roleDescription": "graphique",
+      "summaryIntro": "{kind}, {count}.",
+      "summarySeries": "{label} : de {first} à {last}",
+      "summaryRange": "minimum {min} ({minAt}), maximum {max} ({maxAt})",
+      "summaryTrendUp": "en hausse de {change}",
+      "summaryTrendDown": "en baisse de {change}",
+      "summaryTrendFlat": "stable",
+      "summaryTotal": "total {total}",
+      "line": "Graphique en courbes",
+      "category": "Jour",
+      "value": "Tickets"
+    }
   }
 }

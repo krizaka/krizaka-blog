@@ -1,0 +1,117 @@
+---
+title: "A curve that climbs and climbs"
+description: "With agents, opening work costs almost nothing. Closing it does. What the curve of our issues taught me, and why we now focus on three projects."
+seoTitle: "An issue curve that keeps climbing: focus on three projects"
+seoDescription: "Krizaka's issue curve climbs faster than we close it. GitHub's figures, what changed in how we work, and the choice of three projects."
+date: 2026-10-25
+publishedAt: "2026-10-25T09:00:00-04:00"
+tags: [ai, measurements, integration]
+author: oussama
+draft: false
+cover: workshop-table
+coverAlt: "A long wooden table in a brick workshop in Montréal: « Krizaka, Made in Montréal » prints, illustrated portraits, the mascots (an owl, a beaver, a flamingo), colour swatches, pencil wireframes, open notebooks, a mug and a laptop with code on the screen"
+chapter: 10
+period: "2026-10-09/2026-10-25"
+sources:
+  - coding-agents-one-night
+  - yomizaka-where-we-are
+versus:
+  faced: "an issue curve that never comes down"
+  built: "three projects, and a way to finish"
+stats:
+  - value: "907"
+    label: "public issues still open when the figures were read"
+    section: "The curve"
+  - value: "148"
+    label: "issues closed as not planned on October 20"
+    section: "Cleaning up is not enough"
+  - value: "25"
+    label: "repositories where the SonarCloud check is required on main"
+    section: "What changed in how we work"
+---
+
+One evening, I opened the organisation's issues page on GitHub. There is a small chart at the top. I looked at it for a long time. The line of open issues kept climbing. The line of closed issues climbed too, but much more slowly.
+
+This chapter is about what that curve taught me, and the decision I made while looking at it.
+
+## The curve
+
+I did not want to copy GitHub's chart. I wrote a small script that asks GitHub's search, day by day: how many public issues were opened, how many were closed because the work was done, how many were closed as not planned. The script keeps the figures in a file, with the time they were read. Anyone can run it again.
+
+<IssueCurve dates="2026-10-09,2026-10-13,2026-10-17,2026-10-20,2026-10-22,2026-10-24,2026-10-25" />
+
+On October 9, there were 34 open issues. When the figures were read, on October 25 at 1:34 in the morning, 1,687 issues had been opened since the start. 525 were closed as done, 252 closed as not planned, and 907 were still open.
+
+October 25 is not a full day: the curve stops at the time of the reading. The days are GitHub's, in UTC. The script and its figures are in [the blog's repository](https://github.com/krizaka/krizaka-blog): `scripts/gen-issue-curve.mjs` and `lib/issue-curve.json`.
+
+## Opening costs almost nothing
+
+With agents, an idea becomes an issue in a minute. I describe what I want, the agent writes the issue, with the context, the criteria, the links. An issue becomes a pull request almost as fast. Sometimes an agent working on one issue opens three more, because it saw a problem next door. It is right to write it down. But every note goes on the pile.
+
+The big days of the curve show it. On October 17, 252 issues were opened. On the 22nd, 236. On the 23rd, 234. On those days we were writing plans: epics, slices of work, ideas parked for later. Writing a plan is useful. But a plan written as issues is one promise per line.
+
+## Closing is the real work
+
+Closing an issue takes what an agent does not do alone. Someone has to read the code, check that the CI really ran, that the test proves what it says, that the PR breaks nothing elsewhere. And someone has to decide. That is me.
+
+Review became the place where everything waited. On October 25, krizaka-ui had 25 open pull requests, most of them never reviewed. We sorted them that day, one by one: merge, fix, or close with an explanation.
+
+And every day there was the same puzzle. Do I move a new feature forward, or do I bring the number of open issues down? Both feel urgent. A feature shows. A closed issue barely shows. But an open issue weighs.
+
+## Cleaning up is not enough
+
+On October 20, I cleaned up. 148 issues were closed as not planned that day. Many were ambitious ideas written by agents, features nobody had asked for, or duplicate checklists. The line of open issues came down, from 584 to 498.
+
+Two days later it was higher than before: 628 open issues at the end of October 22.
+
+That is when I understood. The problem was not the number of issues. It was the number of projects. When you work on everything at once, every project opens work, and nobody closes it.
+
+## Three projects
+
+So I chose. We focus on three things.
+
+**Orazaka**, the engine. It runs the AI of the products. Without it, nothing works.
+
+**Yomizaka**, first. It verifies documents and prepares a tenant's file, for businesses. It is a real need: checking a file today takes time and lets mistakes through.
+
+**Akinaza**, right after. It handles appointments, invoices and the preparation of taxes for service businesses in Québec. Here too, it is a need I see around me: people who are good at their trade and lose their evenings to paperwork.
+
+<Figure id="paperwork-and-ink" alt="A graphic collage of slate and indigo ink, with the Seyès ruling of a school notebook, Québec lease clauses and audit stamps" />
+
+These two products are our flagships. The goal is for them to find their market: people using them because they need them, not because we showed them a demo.
+
+The rest waits. Orochia, Yasakia, Yororis and Kachizaka are not abandoned. Their repositories stay open, and so do their issues. But we open no new work there until the first three move forward.
+
+## What changed in how we work
+
+Choosing three projects is not enough if we keep working the same way. Here is what is in place today.
+
+<Compare label="Before and now" topic="Question" before="Before" after="Now">
+  <Case topic="Where does a task start?" before="From an idea, a conversation, an agent." after="From an issue." afterDetail="With a priority, on one board for the whole organisation." />
+  <Case topic="When is a PR ready?" before="When it looks finished." after="When the CI is green and SonarCloud passes." afterDetail="The SonarCloud check is required on main in 25 repositories." />
+  <Case topic="Who fixes a small review comment?" before="The agent, the PR goes back to it." after="The reviewer." afterDetail="They make the small fix themselves. Only a large change goes back to the author." />
+  <Case topic="What happens to a bug found in review?" before="We fix it." after="We fix it, and if it is a class of bugs, we write a rule." afterDetail="The rule refuses the pattern everywhere, the next time." />
+  <Case topic="How many working sessions at once?" before="As many as possible." after="Three at most." />
+</Compare>
+
+Issue first sounds like bureaucracy. In practice, it is what lets me follow. An issue says why we do the thing, a PR says how, and the board says where we are. When a session stops in the middle, the next one knows where to pick up.
+
+A rule after a bug is a habit I picked up while reviewing. In Yomizaka, a date was computed in UTC instead of Québec's day. We fixed it, then wrote a rule that refuses the pattern. I tell it in [the chapter on the audit](/story/what-claude-found-auditing-krizaka/). A fixed bug is one bug less. A rule is one class of bugs less.
+
+Three sessions at most is the lesson of [the day we wanted to finish everything](/story/building-with-agents/). More sessions is not more finished work. It is more open work.
+
+## What is not solved
+
+I do not want to end on a victory. There is none yet.
+
+The number of open issues is still high. When the figures were read, there were 907 open issues and 104 open pull requests in the organisation. The curve has not turned yet. What I am waiting for now is the line of done issues climbing faster than the line of opened ones. I will run the script again to check, and publish the result, good or not.
+
+SonarCloud is not a magic fix either. We use the free plan, and it has limits: we keep the default quality gate, which mostly judges new code. The problems already there block nothing as long as nobody touches them. The check stops the pile from growing. It does not bring it down.
+
+And review still rests on one person. The rules and the CI say no early, but they do not choose what matters.
+
+## What I take from it
+
+With agents, speed is no longer the problem. Finishing is. Every open project, every issue, every PR waits for something from me: a review, a decision, a little attention.
+
+So I do fewer things at once. One engine, two products that answer a real need, and one simple rule: we finish before we start.

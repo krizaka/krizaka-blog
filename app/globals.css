@@ -220,6 +220,10 @@ picture { display: contents; }
 .bl-numbers > * + * { margin-top: 0; }
 .bl-num { min-width: 0; }
 .bl-steps, .bl-compare, .bl-codetabs { margin-block: 2rem; }
+/* The issue curve (IssueCurve): the chart, then its text version a little below. */
+.bl-curve { margin-block: 2rem; display: grid; gap: 1rem; min-width: 0; }
+.bl-prose .bl-curve :is(td, th[scope="row"]) { white-space: nowrap; overflow-wrap: normal; font-variant-numeric: tabular-nums; }
+.bl-curve caption { caption-side: top; text-align: start; padding: 0.5rem 0.75rem; color: var(--kz-text-secondary); font-size: 0.875rem; }
 .bl-steps ol { margin: 0; padding-inline-start: 0; list-style: none; }
 .bl-steps li + li, .bl-prose .bl-steps li + li { margin-top: 0; }
 .bl-codetabs [role="tabpanel"] { margin-top: 0.75rem; }
