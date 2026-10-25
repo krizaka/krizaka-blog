@@ -60,7 +60,13 @@ Et chaque jour, il y avait le même casse-tête. Est-ce que je fais avancer une 
 
 ## Le ménage ne suffit pas
 
-Le 20 octobre, j'ai fait le ménage. 148 tickets ont été fermés comme non prévus ce jour-là. Beaucoup étaient des idées ambitieuses écrites par des agents, des fonctionnalités que personne n'avait demandées, ou des listes de vérification en double. La courbe des tickets ouverts est descendue, de 584 à 498.
+Le 20 octobre, j'ai fait le ménage. 148 tickets ont été fermés comme non prévus ce jour-là. Il y avait des listes de vérification créées deux fois par un script, du travail déjà fait, du travail remplacé par un autre ticket. Et il y avait des idées ambitieuses, des fonctionnalités que personne ne semblait avoir demandées. La courbe des tickets ouverts est descendue, de 584 à 498.
+
+Sauf que certaines de ces idées, c'est moi qui les avais demandées. Je les avais lancées à travers mes agents, un soir, sans le dire à l'agent qui faisait le tri. Pour lui, elles venaient de nulle part. Il les a fermées.
+
+Je ne veux pas perdre une idée parce qu'elle n'est pas prioritaire aujourd'hui. Alors on a changé la règle. On ne ferme plus que trois choses : un doublon, du travail déjà fait ou remplacé, et du travail faux ou dangereux. Toute autre idée va dans une nouvelle colonne du tableau, **Incubation**. Une idée en Incubation est gardée et visible. Elle n'est pas prioritaire : personne n'y travaille tant que je ne la fais pas avancer. Et en cas de doute, c'est Incubation.
+
+On a relu, un par un, les tickets fermés comme non prévus en octobre. 88 sont revenus en Incubation. Les autres restent fermés, avec le lien vers l'original ou vers ce qui les remplace. La courbe plus haut est celle du relevé de 1 h 34 du matin : elle compte encore ces 88 idées parmi les tickets fermés.
 
 Deux jours plus tard, elle était plus haute qu'avant : 628 tickets ouverts à la fin du 22 octobre.
 
@@ -99,6 +105,42 @@ Le ticket d'abord, ça a l'air bureaucratique. En vrai, c'est ce qui me permet d
 La règle après un bug, c'est une habitude que j'ai prise en relisant. Dans Yomizaka, une date était calculée en UTC au lieu du jour du Québec. On a corrigé, puis on a écrit une règle qui refuse ce motif. Je le raconte dans [le chapitre sur l'audit](/fr/story/what-claude-found-auditing-krizaka/). Un bug corrigé, c'est un bug de moins. Une règle, c'est une famille de bugs de moins.
 
 Trois sessions au plus, c'est la leçon du [jour où on a voulu tout finir](/fr/story/building-with-agents/). Plus de sessions, ce n'est pas plus de travail fini. C'est plus de travail ouvert.
+
+## Comment je suis le travail
+
+Je ne code pas chaque ligne. Je ne lis même pas chaque ticket. Ce que je regarde, c'est le tableau de l'organisation : un seul tableau pour tous les dépôts, avec six colonnes.
+
+- **Incubation** : une idée gardée et visible, pas encore prioritaire.
+- **Backlog** : du travail accepté, pas encore planifié.
+- **Next** : ce qui vient ensuite.
+- **In progress** : ce qui se fait en ce moment.
+- **In review** : une pull request existe, elle attend la CI ou une relecture.
+- **Done** : c'est fini.
+
+C'est ma vue à 360°. Je vois ce qui passe d'une colonne à l'autre, ce qui reste coincé, ce qui grossit. Quand une colonne part dans la mauvaise direction, je le dis, et on réoriente. Je décide où on va. Les agents et les automatisations font avancer les cartes.
+
+Voici le tableau le 25 octobre à 15 h 55, heure de Montréal, juste après le retour des idées en Incubation.
+
+| Colonne | Cartes |
+| :--- | ---: |
+| Incubation | 88 |
+| Backlog | 625 |
+| Next | 145 |
+| In progress | 16 |
+| In review | 74 |
+| Done | 522 |
+| Total | 1 470 |
+
+Je compte les colonnes avec une commande. Pas besoin de jeton dans le texte : le `gh` du terminal utilise la session déjà ouverte.
+
+```bash
+gh project item-list 4 --owner krizaka --limit 3000 --format json \
+  | jq -r '.items[].status' | sort | uniq -c
+```
+
+In progress est petit, et c'est voulu : trois sessions au plus. In review, lui, est haut. Ce ne sont pas 74 relectures qui m'attendent. Une carte passe en In review dès qu'une pull request est ouverte. Beaucoup attendent que la CI finisse, et l'auto-merge est armé : la PR se fusionne toute seule quand tout est vert. À ce moment-là, il restait 39 pull requests ouvertes, contre 104 au relevé de la nuit, et 24 avaient l'auto-merge armé. Les autres attendent une correction ou ma décision.
+
+Backlog, enfin, est la vraie pile. C'est elle qui doit descendre.
 
 ## Ce qui n'est pas réglé
 
