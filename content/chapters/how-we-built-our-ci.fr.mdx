@@ -1,0 +1,328 @@
+---
+title: "Comment on a construit notre CI"
+description: "Plusieurs personnes m'ont demandé comment Krizaka fait sa CI. Le chemin d'une pull request jusqu'à la production, avec les vrais fichiers, et ce qui a cassé en route."
+seoTitle: "Comment on a construit notre CI, de la PR à la production"
+seoDescription: "La CI de Krizaka racontée avec les vrais fichiers : un pipeline commun, des cliquets qui ne reculent pas, Maestro, les versions et ce qui a cassé."
+date: 2026-10-25
+publishedAt: "2026-10-25T15:40:00-04:00"
+tags: [integration, security]
+author: oussama
+draft: false
+cover: automate-cover
+coverAlt: "Un bureau de noyer bien rangé au petit matin : un ordinateur portable ouvert dont l'écran montre une fenêtre de terminal sombre aux lignes vertes, une tasse de café qui fume, un carnet aux cases cochées, une petite horloge de laiton ; par la grande fenêtre, une rue enneigée de Montréal sous l'aube rose et bleue"
+chapter: 11
+period: "2026-10-15/2026-10-25"
+sources:
+  - coding-agents-one-night
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "des pull requests d'agents à vérifier une par une"
+  built: "un pipeline commun, et des règles qui ne reculent pas"
+stats:
+  - value: "25"
+    label: "dépôts où SonarCloud est exigé sur main"
+    section: "Ce qui est exigé sur main"
+  - value: "3"
+    label: "passages verts de suite avant d'exiger un test mobile"
+    section: "Le mobile : Maestro dans la CI"
+  - value: "5"
+    label: "pannes de CI racontées dans ce chapitre"
+    section: "Ce qui a cassé cette semaine"
+---
+
+Depuis quelques semaines, des gens du métier me posent la même question. Comment vous faites votre CI, avec autant de dépôts et des agents qui ouvrent des pull requests toute la journée ?
+
+Je réponds ici, une fois, avec les vrais fichiers. Tout ce que je montre est dans des dépôts publics de l'organisation [krizaka](https://github.com/krizaka). Vous pouvez aller vérifier chaque ligne.
+
+## Pourquoi une CI commune
+
+Au début, chaque dépôt avait son propre fichier de CI. On copiait celui du voisin et on l'adaptait un peu. Un correctif dans un dépôt n'arrivait jamais dans les autres.
+
+Dans [le chapitre sur les agents](/fr/story/building-with-agents/), je parlais d'un « build pack » pour la CI, pas encore livré. Une partie est livrée. Le dépôt [krizaka/.github](https://github.com/krizaka/.github) contient des workflows réutilisables, un par type de projet : `node-ci.yml`, `java-ci.yml`, `python-ci.yml`, `expo-ci.yml`, `maven.yml`, `mobile-e2e.yml`. Chaque dépôt en appelle un, et ne dit que ce qui lui est propre.
+
+Voici celui de krizaka.com, dans `krizaka-com/.github/workflows/ci.yml` (raccourci) :
+
+```yaml
+jobs:
+  ci:
+    uses: krizaka/.github/.github/workflows/node-ci.yml@1cb2e1b6f572ba712083cb6f05fd041370c5ea0b # v1.5.0
+    permissions:
+      contents: read
+    with:
+      duplication: true      # jscpd + dup-ratchet.json: duplicated lines may only go down
+      next-cache-paths: .next/cache
+      container: true
+      container-smoke: scripts/ci-container-smoke.sh
+```
+
+Le workflow est épinglé par son SHA, pas par une étiquette. Une étiquette peut bouger, un SHA non. Le commentaire `# v1.5.0` dit quelle version c'est, et Dependabot propose la mise à jour, dans une PR qui passe par la même CI que le reste.
+
+Orazaka a son propre pipeline, `component.yml`, dans le dépôt [krizaka/orazaka](https://github.com/krizaka/orazaka). Un composant d'Orazaka ne se construit jamais seul : la CI clone tout le workspace, met le dépôt testé à sa place, et construit d'abord ses dépendances depuis leur source.
+
+Le build pack complet, celui où chaque dépôt n'aurait qu'une ligne, n'existe toujours pas. Aujourd'hui, c'est un appel et quelques options. C'est déjà beaucoup mieux que des copies.
+
+## Le chemin d'une pull request
+
+Voici ce qui se passe, pour krizaka.com, entre le moment où une PR s'ouvre et le moment où le changement est en ligne.
+
+<Pipeline label="D'une pull request à la production (krizaka.com)">
+  <Stage title="Pull request" note="ouverte par un agent">L'agent pousse sa branche, ouvre la PR et arme la fusion automatique. Il ne fusionne rien lui-même.</Stage>
+  <Stage title="changes" note="docs seulement ?">Un premier job regarde les fichiers touchés. Une PR qui ne change que de la documentation saute les jobs lourds. Si ce job casse, tout tourne quand même.</Stage>
+  <Stage title="verify" note="lint, cliquets, tests">Installation avec cache, lint, les cliquets, la vérification des types, les tests, puis le build.</Stage>
+  <Stage title="container" note="image et Playwright">L'image Docker est construite et lancée. Un vrai navigateur vérifie les pages, de 360 à 1440 pixels, en sombre et en clair.</Stage>
+  <Stage title="CI gate" note="un seul verdict" tone="gate">Un dernier job lit le résultat de tous les autres et rend un verdict. C'est lui qui est exigé sur main.</Stage>
+  <Stage title="SonarCloud, CodeQL" note="exigés aussi" tone="gate">SonarCloud analyse le nouveau code. CodeQL bloque une alerte de sécurité grave.</Stage>
+  <Stage title="Squash sur main" note="la protection décide">Quand tout est vert, GitHub fusionne. C'est la protection de branche qui décide, pas l'agent.</Stage>
+  <Stage title="release-please" note="PR de version">Un bot tient une PR de version à jour. Quand je la fusionne, il crée l'étiquette vX.Y.Z et la release.</Stage>
+  <Stage title="production" note="avance, déploie" tone="ship">La branche production avance jusqu'à l'étiquette, sans jamais forcer, et DigitalOcean déploie depuis production.</Stage>
+</Pipeline>
+
+Le point le plus important de ce schéma, c'est la case 5. Une PR peut sauter des jobs, légitimement : une PR de documentation n'a pas besoin d'un build Docker. Mais une vérification exigée qui ne s'affiche jamais bloque la PR pour toujours. Et une vérification qui passe au vert parce qu'un job a été sauté par erreur, c'est pire.
+
+Alors un seul job, `CI gate`, tourne toujours, et il décide. Un extrait, dans `.github/.github/workflows/node-ci.yml` :
+
+```yaml
+  gate:
+    name: CI gate
+    needs: [changes, ui-changes, docker-changes, plan, verify, e2e, duplication, container]
+    if: ${{ always() }}
+```
+
+Et la règle qu'il applique, dans le même fichier :
+
+```bash
+# The heavy jobs run unless the gate answered exactly `false`: a skip without that answer is a bug, not a pass.
+if [ "$CODE" != "false" ]; then
+  [ "$VERIFY" = success ] || { echo "::error::verify must run when the gate did not answer false"; fail=1; }
+fi
+```
+
+Un job sauté n'est accepté que si le premier job a dit, exactement, « rien à faire ». Le reste du temps, sauter, c'est échouer.
+
+## Ce qui est exigé sur main
+
+Sur la branche main de nos dépôts, GitHub refuse une fusion tant que certaines vérifications ne sont pas vertes. Pour krizaka.com, Akinaza ou Yomizaka, ce sont :
+
+- `ci / CI gate`, le verdict du pipeline ;
+- `SonarCloud Code Analysis`, exigé dans 25 dépôts depuis le 25 octobre ;
+- pour les deux applications mobiles, `mobile-e2e / gate`, j'y reviens plus bas.
+
+CodeQL passe par une autre porte : une règle de l'organisation sur l'analyse de code. Elle bloque une PR qui apporte une erreur, ou une alerte de sécurité de niveau élevé ou critique.
+
+SonarCloud tourne avec le plan gratuit. On garde le quality gate par défaut, qui juge surtout le nouveau code. C'est son analyse automatique, pas un job de notre CI.
+
+OpenSSF Scorecard tourne aussi, chaque semaine et quand la protection d'une branche change. Il n'est pas exigé, et c'est voulu : il ne tourne jamais sur une PR, donc il ne pourrait pas l'être. Il nous dit si nos pratiques tiennent, il ne bloque rien.
+
+La protection s'applique aussi aux administrateurs, donc à moi. L'historique reste linéaire, et une conversation de relecture doit être résolue avant la fusion. Il n'y a aucune approbation obligatoire. On est une seule personne à relire. Je ne voulais pas d'un deuxième compte ou d'un bot qui approuve dès que la CI est verte : ce serait une signature vide. La relecture, je la fais. Le droit de fusionner, c'est la CI qui le donne.
+
+## Les cliquets : la dette ne fait que descendre
+
+Un cliquet, c'est la pièce qui laisse tourner une roue dans un seul sens. On en a trois, et ils marchent tous de la même façon. Un fichier dans le dépôt garde un compte. La CI recompte. Si le compte monte, elle refuse.
+
+- **lint-ratchet** compte des dettes d'interface : une couleur écrite en dur au lieu d'un jeton, un `fetch` dans un effet côté client, un import direct de TanStack au lieu de notre façade. L'outil s'appelle `krizaka-ratchet`, il vient du paquet `@krizaka/config`.
+- **sg-ratchet** compte les violations de nos règles [ast-grep](https://ast-grep.github.io), règle par règle.
+- **dup-ratchet** compte les lignes dupliquées, avec jscpd. Pour krizaka.com, le compte est à zéro.
+
+Le cœur de sg-ratchet tient en quelques lignes, dans `krizaka-com/scripts/sg-ratchet.mjs` :
+
+```js
+for (const id of [...ruleIds].sort()) {
+  const current = found[id] ?? 0;
+  if (!(id in recorded)) {
+    unrecorded.push(id);
+    next[id] = current;
+    continue;
+  }
+  if (current > recorded[id]) increased.push(id);
+  if (current < recorded[id]) decreased.push(id);
+  next[id] = Math.min(recorded[id], current);
+}
+```
+
+La dernière ligne est la règle. Quand on corrige des violations, on enregistre le nouveau compte, et `Math.min` fait qu'on ne peut jamais l'augmenter de cette façon. Une règle sans compte enregistré fait échouer la CI aussi : on ne peut pas ajouter une règle en douce.
+
+Pourquoi pas tout corriger d'un coup ? Parce qu'une nouvelle règle trouve souvent des dizaines de cas. Les corriger tous dans la même PR, c'est une PR énorme que personne ne relit bien. Avec un cliquet, la règle protège tout de suite le nouveau code, et la dette existante descend petit à petit.
+
+## Un bug devient une règle
+
+C'est l'habitude qui a le plus changé notre façon de travailler. Quand on trouve un bug, on se demande s'il est seul, ou s'il fait partie d'une famille. Si c'est une famille, on écrit une règle qui la refuse, avec ses tests.
+
+Le premier exemple vient d'Akinaza. Un test de confidentialité vérifiait qu'un webhook ne laissait pas fuir le numéro de téléphone d'un client. Il cherchait « 514 » dans le contenu envoyé. Mais ce contenu contient des identifiants aléatoires, et environ une fois sur dix, un UUID contient « 514 ». Le test échouait au hasard. On l'a vu dans [akinaza#341](https://github.com/krizaka/akinaza/issues/341) : cinq échecs dans un seul passage de CI, qui passaient en le relançant.
+
+On aurait pu relancer et passer à autre chose. On a écrit `rules/no-bare-digits-on-serialized.yml` :
+
+```yaml
+id: no-bare-digits-on-serialized
+language: Tsx
+severity: error
+rule:
+  pattern: expect(JSON.stringify($$$A)).not.toMatch($R)
+constraints:
+  R:
+    regex: "^/(?:[^/]*\\|)?[0-9]+(?:\\|[^/]*)?/[a-z]*$"
+```
+
+Chaque règle a ses tests, des cas valides et des cas refusés, dans `rule-tests/no-bare-digits-on-serialized-test.yml` :
+
+```yaml
+valid:
+  - |
+    expect(JSON.stringify(m)).not.toMatch(/\bIA\b|intelligen/i);
+invalid:
+  - |
+    expect(JSON.stringify(body)).not.toMatch(/42/);
+```
+
+Le premier cas passe : le motif cherche des mots, pas une suite de chiffres. Le second est refusé.
+
+Quelques jours plus tard, la même erreur est revenue sous une autre forme : un test cherchait « 4821 » dans un texte chiffré, et un texte chiffré, c'est aussi des octets au hasard. Le ticket [akinaza#358](https://github.com/krizaka/akinaza/issues/358) dit : corriger la famille, pas le cas. Les tests vérifient maintenant le texte en clair en entier, et une deuxième règle, `no-bare-digits-on-random-bytes`, refuse le motif.
+
+<Compare label="Trois bugs, trois règles" topic="Dépôt" before="Le bug" after="La règle">
+  <Case topic="akinaza" before="« 514 » trouvé au hasard dans un UUID." after="no-bare-digits-on-serialized" afterDetail="Une règle ast-grep, avec ses cas valides et refusés." />
+  <Case topic="akinaza" before="Une page serveur lisait une valeur d'un module client : la puce d'état d'une facture avait perdu sa couleur." after="Le test de la frontière client" afterDetail="Un fichier serveur n'importe d'un module « use client » que des composants et des types." />
+  <Case topic="krizaka-ui" before="Le build regroupait les fichiers, et chaque groupe avait son propre routeur : certains composants ignoraient celui de l'application." after="Un garde dans tsup, et son test" afterDetail="Le routeur est toujours l'entrée du paquet, jamais une copie." />
+</Compare>
+
+Le troisième est intéressant parce que ce n'est pas un test qui l'a trouvé. Une PR de krizaka-ui a dépassé de 6 ko la limite de taille du paquet. En cherchant pourquoi, on a vu que chaque groupe du build embarquait sa propre copie du contexte du routeur. Le correctif est un petit plugin, dans `krizaka-ui/packages/ui/tsup.config.ts` :
+
+```ts
+const oneRouter: NonNullable<Options["esbuildPlugins"]>[number] = {
+  name: "krizaka-one-router",
+  setup(build) {
+    build.onResolve({ filter: /^\.\.\/router$/ }, (args) =>
+      args.importer.includes("/src/router/") ? undefined : { path: "@krizaka/ui/router", external: true },
+    );
+  },
+};
+```
+
+Un test vérifie que ce plugin est bien branché. Si quelqu'un le retire un jour, la CI le dira.
+
+Un bug corrigé, c'est un bug de moins. Une règle, c'est toute sa famille de moins, dans tous les dépôts qui partagent la règle.
+
+## Le mobile : Maestro dans la CI
+
+Pour le web, c'était déjà en place. Pour le mobile, jusqu'à cette semaine, un agent ouvrait l'émulateur et vérifiait à la main. Ça coûtait une session de modèle à chaque fois, et ça ne prouvait rien le lendemain.
+
+Le ticket [krizaka/.github#241](https://github.com/krizaka/.github/issues/241) a changé ça. Le workflow `mobile-e2e.yml` fait tout tourner dans GitHub Actions :
+
+<Pipeline label="Un test mobile dans la CI (Yomizaka, Akinaza)">
+  <Stage title="Backend jetable" note="PostgreSQL neuf">Une base PostgreSQL vide et l'application web construite, sur la machine de CI. Rien ne sort de la machine.</Stage>
+  <Stage title="Persona de démo" note="données semées">On sème un compte de démo. Pour Yomizaka, c'est Éric. La base est neuve à chaque passage, donc les données repartent toujours de zéro.</Stage>
+  <Stage title="APK release" note="JavaScript inclus">Une APK en variante release, signée avec la clé de debug, avec le JavaScript dedans. Pas de serveur Metro.</Stage>
+  <Stage title="Émulateur" note="Android, KVM">Un émulateur Android démarre sur la machine de CI.</Stage>
+  <Stage title="Flux Maestro" note="captures, vidéo">Maestro joue les parcours de l'application. Les captures, la vidéo et le rapport JUnit sont toujours gardés.</Stage>
+  <Stage title="mobile-e2e / gate" note="exigé sur main" tone="gate">Un verdict qui s'affiche toujours. Un parcours qui échoue le fait échouer.</Stage>
+</Pipeline>
+
+L'en-tête du workflow le dit lui-même, dans `.github/.github/workflows/mobile-e2e.yml` :
+
+```yaml
+#   gate      ALWAYS reports: `mobile-e2e / gate`. It is never skipped to get green: a failed or cancelled flow run fails it.
+```
+
+La règle d'adoption, c'est 3 passages verts de suite avant que la vérification devienne exigée. Pas avant : une vérification exigée qui échoue au hasard bloque tout le monde, et on finit par la contourner. Après trois passages verts, `mobile-e2e / gate` est devenu exigé sur main pour Yomizaka et pour Akinaza. Un parcours instable est corrigé, ou mis de côté avec un ticket. Il n'est jamais supprimé.
+
+Sur le web, c'est Playwright. Pour krizaka.com, la CI lance l'image Docker de production et un vrai navigateur la visite, dans `krizaka-com/scripts/ci-container-smoke.sh` :
+
+```bash
+# 360–1440 px, dark and light: no page scrolls sideways (a real browser on the real container).
+npx playwright install --with-deps chromium
+node scripts/check-overflow.mjs --base http://localhost:3000
+```
+
+Dans krizaka-ui, les captures des composants sont comparées pixel par pixel, dans l'image Docker de Playwright où les références ont été faites. Mêmes polices, même Chromium, sinon chaque comparaison serait fausse.
+
+## Les versions et la mise en production
+
+Nos bibliothèques, Krizaka UI et Krizaka TypeScript, utilisent [changesets](https://github.com/changesets/changesets). Chaque PR qui change un paquet ajoute un petit fichier qui dit quoi, et à quel niveau : correctif, mineure ou majeure. Sur main, une action tient une PR « chore: version packages » à jour. Quand on la fusionne, les paquets partent sur npm, avec leur provenance.
+
+Je dois être précis sur un point. La provenance est là, mais pas encore la publication de confiance d'npm, celle qui se passe de jeton. npm a refusé notre première tentative, parce que les paquets n'avaient pas encore d'éditeur de confiance déclaré. Pour l'instant, un jeton d'automatisation fait la publication.
+
+Pour krizaka.com, on a mis en place un train de versions le 25 octobre, dans [krizaka-com#390](https://github.com/krizaka/krizaka-com/pull/390). C'est la fin du premier schéma. release-please tient une PR de version. Quand je la fusionne, l'étiquette est créée, et un workflow avance la branche `production` jusqu'à elle. Dans `krizaka-com/scripts/promote-production.mjs` :
+
+```js
+  if (tagIsAncestor) return { action: "noop", reason: `${BRANCH} already contains ${tag}: never moved backwards` };
+  if (productionIsAncestor) return { action: "forward", reason: `${BRANCH} fast-forwarded to ${tag}` };
+  return { action: "refuse", reason: `${BRANCH} has diverged from main: it is never forced, look at it` };
+```
+
+Trois cas, pas un de plus. La branche est déjà à jour, elle avance, ou elle a divergé, et alors on s'arrête et on regarde. Jamais de `--force`. Le site, lui, se déploie depuis `production`, pas depuis main, dans `krizaka-com/deploy/digitalocean/app.yaml` :
+
+```yaml
+services:
+  - name: web
+    github:
+      repo: krizaka/krizaka-com
+      branch: production
+      deploy_on_push: true
+```
+
+Fusionner sur main ne met donc rien en ligne. C'est la release qui le fait, et je sais toujours quelle version tourne.
+
+## Ce qui a cassé cette semaine
+
+Je ne veux pas donner l'impression que tout ça marche du premier coup. Voici ce qui a cassé, rien que cette semaine.
+
+**Une course dans turbo, dans krizaka-ts.** La publication a échoué avec `Failed to resolve entry for package "@krizaka/db"`. La vérification de chaque paquet finissait par un build, qui effaçait `dist/` pendant que les tests d'un autre paquet l'importaient. On a d'abord construit tout avant de vérifier ([krizaka-ts#79](https://github.com/krizaka/krizaka-ts/pull/79)), puis on a corrigé la cause dans `turbo.json` ([krizaka-ts#75](https://github.com/krizaka/krizaka-ts/pull/75)), avec un test qui garde la configuration :
+
+```json
+"check": { "dependsOn": ["^build", "^check"], "outputs": ["dist/**"] }
+```
+
+**Le test des polices avant leur build, dans krizaka-ui.** Après une PR de version, la publication a échoué : le test de `packages/fonts` cherchait `dist/index.js`, qui n'existait pas encore. Le test dépendait du build des autres paquets, pas du sien. [krizaka-ui#702](https://github.com/krizaka/krizaka-ui/pull/702) ajoute la dépendance manquante.
+
+**pnpm qui refuse les scripts d'installation.** Les versions récentes de pnpm refusent de lancer les scripts d'installation d'une dépendance qu'on n'a pas autorisée, avec `ERR_PNPM_IGNORED_BUILDS`. Le build de développement d'orazaka-web-client était cassé depuis la veille. Le correctif liste les trois dépendances permises, dans `pnpm-workspace.yaml` ([orazaka-web-client#283](https://github.com/krizaka/orazaka-web-client/pull/283)) :
+
+```yaml
+allowBuilds:
+  "@ast-grep/cli": true
+  "@parcel/watcher": true
+  unrs-resolver: true
+```
+
+**npm sur un projet pnpm.** Le déploiement lançait `npm install` sur l'arbre pnpm du client web. npm plantait, à chaque déploiement, avec un message qui ne disait rien d'utile. La commande de build est devenue `pnpm run build` ([orazaka#412](https://github.com/krizaka/orazaka/pull/412)).
+
+**Deux dépôts qui s'attendaient.** Pour passer à Krizaka UI 3.55, le workspace d'Orazaka devait régénérer son fichier de verrouillage. Sa CI échouait contre le client web, qui déclarait encore l'ancienne version. Et la PR du client web avait besoin du nouveau fichier de verrouillage. Chacun attendait l'autre. On s'en est sortis en rendant le client web autonome : il ne fait plus partie du workspace npm, il s'installe depuis son propre `pnpm-lock.yaml` ([orazaka#415](https://github.com/krizaka/orazaka/pull/415)). Le prix, c'est qu'il prend maintenant deux paquets partagés depuis le registre, et plus depuis leur source.
+
+Aucune de ces pannes n'a été réglée en relançant la CI. Chacune a été corrigée là où elle naissait.
+
+## Les agents dans la boucle
+
+La plupart de nos PR sont ouvertes par des agents. Un agent prend un ticket, travaille sur une branche, construit et teste avant de pousser, ouvre la PR et arme la fusion automatique. Ensuite, il a fini.
+
+C'est la protection de branche qui décide quand la PR est fusionnée. Pas l'agent, et pas moi qui clique au bon moment. Si la CI est rouge, rien ne se passe. Les mises à jour de Dependabot suivent le même chemin, dans `.github/.github/workflows/dependabot-automerge.yml` :
+
+```yaml
+      - name: Enable auto-merge (not a major)
+        if: steps.meta.outputs.update-type != 'version-update:semver-major'
+        run: gh pr merge --auto --squash "$PR_URL"
+```
+
+Une mise à jour majeure reste à la main.
+
+**Un test instable est un bug.** On ne relance pas à l'aveugle. Le ticket [yomizaka#354](https://github.com/krizaka/yomizaka/issues/354), un test du navigateur qui faisait la course avec une transition de page, le dit en toutes lettres : commencer par un test qui échoue à coup sûr, en le répétant vingt fois en local, et ne jamais rendre la vérification optionnelle ni la relancer à l'aveugle. C'est la même idée que les règles plus haut : on corrige la famille.
+
+**Un agent ne regarde pas la CI tourner.** Attendre qu'un passage de CI finisse, pour un agent, c'est une session de modèle qui tourne pour rien. GitHub sait attendre, gratuitement. L'agent pousse, arme la fusion, et s'arrête. Si la CI échoue, on lit le rapport et les captures gardées par le workflow. Personne n'ouvre un émulateur pour vérifier à la main.
+
+On a aussi arrêté d'utiliser l'agent de code de Copilot, après un pic de coût. Je ne donne pas de chiffre ici. Les tickets passent maintenant par nos autres sessions d'agents, avec la même CI et les mêmes règles.
+
+## Ce qui n'est pas réglé
+
+Il reste des trous, et je préfère les nommer.
+
+**La couverture de tests n'arrive pas à SonarCloud.** SonarCloud lit le code, pas nos tests. On n'envoie pas encore de rapport de couverture. Le ticket [krizaka/.github#237](https://github.com/krizaka/.github/issues/237) prévoit un job Sonar dans les workflows communs, et un seuil de 80 % de couverture sur le nouveau code, exigé seulement après une semaine au vert.
+
+**Le test iOS n'est pas commencé.** Le workflow mobile ne fait qu'Android. iOS est une ligne dans son en-tête, rien de plus.
+
+**Le DNS n'est pas du code.** Nos domaines sont encore réglés à la main. Le ticket [krizaka-infra#9](https://github.com/krizaka/krizaka-infra/issues/9) prévoit de les décrire dans un dépôt, avec un plan en lecture seule dans la CI et une détection des écarts.
+
+**Les tests Playwright du web ne sont pas des vérifications exigées à part.** Sur krizaka.com, ils comptent à travers le `CI gate`. En faire des vérifications exigées à part entière, c'est la suite prévue dans #241.
+
+Et le build pack d'une seule ligne, je l'attends toujours.
+
+## Ce que j'en retiens
+
+Une CI, ce n'est pas un fichier. C'est une suite de petites décisions qu'on n'a plus à reprendre : un seul verdict, des comptes qui ne montent pas, une règle après chaque famille de bugs, une branche de production qu'on ne force jamais.
+
+Avec des agents, ça compte encore plus. Un agent travaille vite et ne se fatigue pas, mais il ne sait que ce qu'on lui a écrit. La CI, c'est l'endroit où ce qu'on a écrit est vérifié, à chaque PR, pour tout le monde. Moi compris.

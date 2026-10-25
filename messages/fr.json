@@ -312,5 +312,8 @@
       "category": "Jour",
       "value": "Tickets"
     }
+  },
+  "pipeline": {
+    "textVersion": "Version texte du pipeline"
   }
 }

@@ -10,6 +10,7 @@ import { modelUrl } from "@/lib/models";
 import { Clip } from "./Clip";
 import { Figure } from "./Figure";
 import { IssueCurve } from "./IssueCurve";
+import { Pipeline } from "./Pipeline";
 import { Utilization } from "./Utilization";
 
 /** The text of a fenced block as MDX hands it over: `<pre><code className="language-x">text</code></pre>`. */
@@ -124,6 +125,15 @@ export function mdxComponentsFor(locale: Locale) {
     Utilization: (props: { hourly?: number | string; seconds?: number | string; hosted?: number | string }) => <Utilization {...props} locale={locale} />,
     /* The issue curve of chapter 10 (lib/issue-curve.json), with its text version: a table of the days named in `dates`. */
     IssueCurve: (props: { dates?: string }) => <IssueCurve {...props} locale={locale} />,
+    /* A pipeline drawn from the tokens (chapter 11), with its text version: <Pipeline label><Stage title note? tone?>…</Stage></Pipeline>. */
+    Pipeline: ({ label, children }: { label: string; children: ReactNode }) => (
+      <Pipeline
+        label={label}
+        locale={locale}
+        stages={childProps<{ title: string; note?: string; tone?: string; children?: ReactNode }>(children).map((c) => ({ title: c.title, note: c.note, tone: c.tone, text: textOf(c.children).trim() }))}
+      />
+    ),
+    Stage: () => null,
     Row: ({ children }: { children: React.ReactNode }) => <div className="bl-row">{children}</div>,
     /* A model named in a post, linked to its official page (lib/models.ts) — the first mention; the lint checks it. */
     Model: ({ id, children }: { id: string; children: ReactNode }) => (
