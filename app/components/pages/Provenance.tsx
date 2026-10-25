@@ -17,7 +17,8 @@ export function Provenance({ made, locale }: { made: Made; locale: Locale }) {
   if (made.negativePrompt) rows.push([t.negative, <q key="n" className="bl-prompt">{made.negativePrompt}</q>]);
   if (made.seed) rows.push([t.seed, <code key="d">{made.seed}</code>]);
   if (made.size) rows.push([t.size, made.durationSeconds ? `${made.size} · ${format(t.frames, { fps: String(made.fps), duration: String(made.durationSeconds) })}` : made.size]);
-  rows.push([t.time, made.seconds ? format(t.timeValue, { seconds: String(made.seconds) }) : t.timeInterrupted]);
+  /* « the run was interrupted » only for a run; a picture made outside Orazaka simply has no recorded time. */
+  rows.push([t.time, made.seconds ? format(t.timeValue, { seconds: String(made.seconds) }) : made.runId ? t.timeInterrupted : none]);
   rows.push([t.cost, made.costUsd ? format(t.costValue, { amount: made.costUsd.toFixed(2) }) : made.costUsd === 0 ? t.costFree : none]);
   rows.push([t.run, made.runId ? <code key="r">{made.runId}</code> : none]);
   if (made.note) rows.push([t.note, made.note]);

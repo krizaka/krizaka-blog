@@ -1,0 +1,117 @@
+---
+title: "Une courbe qui monte, monte, monte"
+description: "Avec des agents, ouvrir du travail ne coûte presque rien. Le fermer, si. Ce que la courbe de nos tickets m'a appris, et pourquoi on se concentre maintenant sur trois projets."
+seoTitle: "Une courbe de tickets qui monte : prioriser trois projets"
+seoDescription: "La courbe des tickets de Krizaka monte plus vite qu'on ne les ferme. Les chiffres de GitHub, ce qui a changé, et le choix de trois projets."
+date: 2026-10-25
+publishedAt: "2026-10-25T09:00:00-04:00"
+tags: [ai, measurements, integration]
+author: oussama
+draft: false
+cover: workshop-table
+coverAlt: "Une grande table de bois dans un atelier de brique à Montréal : des affiches « Krizaka, Made in Montréal », des portraits illustrés, les mascottes (une chouette, un castor, un flamant), des nuanciers, des maquettes au crayon, des carnets ouverts, une tasse et un ordinateur portable avec du code à l'écran"
+chapter: 10
+period: "2026-10-09/2026-10-25"
+sources:
+  - coding-agents-one-night
+  - yomizaka-where-we-are
+versus:
+  faced: "une courbe de tickets qui ne redescend pas"
+  built: "trois projets, et une façon de finir"
+stats:
+  - value: "907"
+    label: "tickets publics encore ouverts au moment du relevé"
+    section: "La courbe"
+  - value: "148"
+    label: "tickets fermés comme non prévus le 20 octobre"
+    section: "Le ménage ne suffit pas"
+  - value: "25"
+    label: "dépôts où la vérification SonarCloud est exigée sur main"
+    section: "Ce qui a changé dans notre façon de travailler"
+---
+
+Un soir, j'ai ouvert la page des tickets de l'organisation sur GitHub. Il y a un petit graphique en haut. Je l'ai regardé longtemps. La courbe des tickets ouverts montait, montait, montait. Celle des tickets fermés montait aussi, mais beaucoup moins vite.
+
+Ce chapitre raconte ce que cette courbe m'a appris, et la décision que j'ai prise en la regardant.
+
+## La courbe
+
+Je n'ai pas voulu recopier le graphique de GitHub. J'ai écrit un petit script qui pose la question à la recherche de GitHub, jour par jour : combien de tickets publics ont été créés, combien ont été fermés parce que le travail était fait, combien ont été fermés comme non prévus. Le script garde les chiffres dans un fichier, avec l'heure du relevé. Tout le monde peut le relancer.
+
+<IssueCurve dates="2026-10-09,2026-10-13,2026-10-17,2026-10-20,2026-10-22,2026-10-24,2026-10-25" />
+
+Le 9 octobre, il y avait 34 tickets ouverts. Au moment du relevé, le 25 octobre à 1 h 34 du matin, 1 687 tickets avaient été créés depuis le début. 525 étaient fermés parce que faits, 252 fermés comme non prévus, et 907 encore ouverts.
+
+Le 25 n'est pas une journée complète : la courbe s'arrête à l'heure du relevé. Les jours sont ceux de GitHub, en UTC. Le script et ses chiffres sont dans [le dépôt du blog](https://github.com/krizaka/krizaka-blog) : `scripts/gen-issue-curve.mjs` et `lib/issue-curve.json`.
+
+## Ouvrir ne coûte presque rien
+
+Avec des agents, une idée devient un ticket en une minute. Je décris ce que je veux, l'agent rédige le ticket, avec le contexte, les critères, les liens. Un ticket devient une pull request presque aussi vite. Parfois, un agent qui travaille sur un ticket en ouvre trois autres, parce qu'il a vu un problème à côté. Il a raison de le noter. Mais chaque note s'ajoute à la pile.
+
+Les grandes journées de la courbe le montrent. Le 17 octobre, 252 tickets ont été créés. Le 22, 236. Le 23, 234. Ces jours-là, on écrivait des plans : des épopées, des tranches de travail, des idées mises de côté pour plus tard. Écrire un plan, c'est utile. Mais un plan écrit en tickets, c'est une promesse par ligne.
+
+## Fermer, c'est le vrai travail
+
+Fermer un ticket demande ce qu'un agent ne fait pas seul. Il faut relire le code, vérifier que la CI tourne vraiment, que le test prouve ce qu'il dit, que la PR ne casse rien ailleurs. Et il faut décider. Ça, c'est moi.
+
+La relecture est devenue l'endroit où tout attendait. Le 25 octobre, krizaka-ui avait 25 pull requests ouvertes, la plupart jamais relues. On les a triées ce jour-là, une par une : fusionner, corriger, ou fermer avec une explication.
+
+Et chaque jour, il y avait le même casse-tête. Est-ce que je fais avancer une nouvelle fonctionnalité, ou est-ce que je fais descendre le nombre de tickets ? Les deux semblent urgents. Une fonctionnalité, ça se voit. Un ticket fermé, ça ne se voit presque pas. Mais un ticket ouvert, ça pèse.
+
+## Le ménage ne suffit pas
+
+Le 20 octobre, j'ai fait le ménage. 148 tickets ont été fermés comme non prévus ce jour-là. Beaucoup étaient des idées ambitieuses écrites par des agents, des fonctionnalités que personne n'avait demandées, ou des listes de vérification en double. La courbe des tickets ouverts est descendue, de 584 à 498.
+
+Deux jours plus tard, elle était plus haute qu'avant : 628 tickets ouverts à la fin du 22 octobre.
+
+C'est là que j'ai compris. Le problème n'était pas le nombre de tickets. C'était le nombre de projets. Quand on travaille sur tout en même temps, chaque projet ouvre du travail, et personne ne le ferme.
+
+## Trois projets
+
+Alors j'ai choisi. On se concentre sur trois choses.
+
+**Orazaka**, le moteur. C'est lui qui fait tourner l'IA des produits. Sans lui, rien ne marche.
+
+**Yomizaka**, en priorité absolue. Il vérifie des documents et prépare le dossier d'un locataire, pour les entreprises. C'est un vrai besoin : vérifier un dossier, aujourd'hui, prend du temps et laisse passer des erreurs.
+
+**Akinaza**, juste après. Il s'occupe des rendez-vous, des factures et de la préparation des impôts pour les entreprises de services au Québec. Là aussi, c'est un besoin que je vois autour de moi : des gens qui font bien leur métier et qui perdent leurs soirées dans la paperasse.
+
+<Figure id="paperwork-and-ink" alt="Collage graphique d'ardoise et d'encre indigo, avec la réglure Seyès d'un cahier, des clauses de bail québécois et des tampons d'audit" />
+
+Ces deux produits sont nos produits d'appel. Le but, c'est qu'ils trouvent leur marché : que des gens les utilisent parce qu'ils en ont besoin, pas parce qu'on leur a montré une démo.
+
+Le reste attend. Orochia, Yasakia, Yororis et Kachizaka ne sont pas abandonnés. Leurs dépôts restent ouverts, leurs tickets aussi. Mais on n'y ouvre plus de nouveau travail tant que les trois premiers n'avancent pas.
+
+## Ce qui a changé dans notre façon de travailler
+
+Choisir trois projets ne suffit pas si on continue à travailler de la même façon. Voici ce qui est en place aujourd'hui.
+
+<Compare label="Avant et maintenant" topic="Question" before="Avant" after="Maintenant">
+  <Case topic="D'où part une tâche ?" before="D'une idée, d'une conversation, d'un agent." after="D'un ticket." afterDetail="Avec une priorité, sur un seul tableau pour toute l'organisation." />
+  <Case topic="Quand une PR est-elle prête ?" before="Quand elle a l'air finie." after="Quand la CI est verte et que SonarCloud passe." afterDetail="La vérification SonarCloud est exigée sur main dans 25 dépôts." />
+  <Case topic="Qui corrige une petite remarque de relecture ?" before="L'agent, à qui on renvoie la PR." after="Celui qui relit." afterDetail="Il fait le petit correctif lui-même. Seul un gros changement repart chez l'auteur." />
+  <Case topic="Que fait-on d'un bug trouvé en relecture ?" before="On le corrige." after="On le corrige, et si c'est une famille de bugs, on écrit une règle." afterDetail="La règle refuse le motif partout, la fois suivante." />
+  <Case topic="Combien de sessions de travail en même temps ?" before="Autant que possible." after="Trois au plus." />
+</Compare>
+
+Le ticket d'abord, ça a l'air bureaucratique. En vrai, c'est ce qui me permet de suivre. Un ticket dit pourquoi on fait la chose, une PR dit comment, et le tableau dit où on en est. Quand une session s'arrête au milieu, la suivante sait où reprendre.
+
+La règle après un bug, c'est une habitude que j'ai prise en relisant. Dans Yomizaka, une date était calculée en UTC au lieu du jour du Québec. On a corrigé, puis on a écrit une règle qui refuse ce motif. Je le raconte dans [le chapitre sur l'audit](/fr/story/what-claude-found-auditing-krizaka/). Un bug corrigé, c'est un bug de moins. Une règle, c'est une famille de bugs de moins.
+
+Trois sessions au plus, c'est la leçon du [jour où on a voulu tout finir](/fr/story/building-with-agents/). Plus de sessions, ce n'est pas plus de travail fini. C'est plus de travail ouvert.
+
+## Ce qui n'est pas réglé
+
+Je ne veux pas finir sur une victoire. Il n'y en a pas encore.
+
+Le nombre de tickets ouverts est toujours haut. Au moment du relevé, il y avait 907 tickets ouverts et 104 pull requests ouvertes dans l'organisation. La courbe n'a pas encore tourné. Ce que j'attends maintenant, c'est que la ligne des tickets faits monte plus vite que celle des tickets créés. Je relancerai le script pour le vérifier, et je publierai le résultat, qu'il soit bon ou non.
+
+SonarCloud non plus n'est pas une solution magique. On utilise le plan gratuit, et il a ses limites : on garde le quality gate par défaut, qui juge surtout le nouveau code. Les problèmes déjà là ne bloquent rien tant qu'on ne les touche pas. La vérification empêche la pile de grossir. Elle ne la fait pas descendre.
+
+Et la relecture repose encore sur une seule personne. Les règles et la CI disent non tôt, mais elles ne choisissent pas ce qui compte.
+
+## Ce que j'en retiens
+
+Avec des agents, la vitesse n'est plus le problème. Le problème, c'est de finir. Chaque projet ouvert, chaque ticket, chaque PR attend quelque chose de moi : une relecture, une décision, un peu d'attention.
+
+Alors je fais moins de choses à la fois. Un moteur, deux produits qui répondent à un vrai besoin, et une règle simple : on finit avant de commencer.
