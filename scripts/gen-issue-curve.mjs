@@ -1,13 +1,12 @@
 #!/usr/bin/env node
-/* The issue curve of chapter 10 (« La courbe qui monte »): every day since FROM, how many public issues of the krizaka
+/* The issue curve of chapter 10 (« Une courbe qui monte, monte, monte »): every day since FROM, how many public issues of the krizaka
    organisation were opened, closed as completed and closed as not planned, counted by GitHub's search (UTC days). It writes
    lib/issue-curve.json with the time of the extraction; the chapter draws it (app/components/pages/IssueCurve.tsx) and
-   gives a few of its dates as a table. Run with a GitHub login that can search the organisation:
+   gives a few of its dates as a table. Run with a GitHub token that can search (any login: only public issues are counted), for instance the one of the gh CLI:
 
-     node scripts/gen-issue-curve.mjs [--to YYYY-MM-DD]
+     GITHUB_TOKEN=<token> node scripts/gen-issue-curve.mjs [--to YYYY-MM-DD]
 
    The counts are GitHub's, never typed: re-running it rewrites the file. The pure parts are tested in tests/issue-curve.test.mjs. */
-import { execFileSync } from "node:child_process";
 import { writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -22,11 +21,16 @@ const argTo = process.argv.indexOf("--to");
 const extractedAt = new Date();
 const to = argTo > 0 ? process.argv[argTo + 1] : extractedAt.toISOString().slice(0, 10);
 
-const search = (aliases) => {
+const token = process.env.GITHUB_TOKEN;
+if (!token) throw new Error("GITHUB_TOKEN is required: a GitHub token that can use the search API");
+
+/** Several searches in one GraphQL request (aliases), each one only its count. */
+const search = async (aliases) => {
   const query = `{ ${aliases.map(([alias, q]) => `${alias}: search(type: ISSUE, query: ${JSON.stringify(q)}, first: 0) { issueCount }`).join(" ")} }`;
-  const out = execFileSync("gh", ["api", "graphql", "-f", `query=${query}`], { encoding: "utf8" });
-  const data = JSON.parse(out).data;
-  return Object.fromEntries(aliases.map(([alias]) => [alias, data[alias].issueCount]));
+  const res = await fetch("https://api.github.com/graphql", { method: "POST", headers: { authorization: `Bearer ${token}`, "content-type": "application/json" }, body: JSON.stringify({ query }) });
+  const body = await res.json();
+  if (!res.ok || body.errors) throw new Error(`GitHub search failed (${res.status}): ${JSON.stringify(body.errors ?? body.message)}`);
+  return Object.fromEntries(aliases.map(([alias]) => [alias, body.data[alias].issueCount]));
 };
 
 const days = daysBetween(FROM, to);
@@ -34,12 +38,12 @@ const daily = [];
 for (let i = 0; i < days.length; i += BATCH) {
   const slice = days.slice(i, i + BATCH);
   const aliases = slice.flatMap((day, j) => Object.entries(queriesFor(ORG, day)).map(([kind, q]) => [`d${j}_${kind}`, q]));
-  const counts = search(aliases);
+  const counts = await search(aliases);
   slice.forEach((date, j) => daily.push({ date, created: counts[`d${j}_created`], completed: counts[`d${j}_completed`], notPlanned: counts[`d${j}_notPlanned`], closed: counts[`d${j}_closed`] }));
 }
 /* The check: what the search says today, against what the days add up to. */
 const scope = `org:${ORG} is:issue is:public`;
-const now = search([
+const now = await search([
   ["before", `${scope} created:<${FROM}`],
   ["open", `${scope} is:open`],
   ["all", `${scope}`],

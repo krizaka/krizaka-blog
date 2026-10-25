@@ -3,7 +3,21 @@ import type { Made } from "@/lib/media";
 
 /* « How this was made »: what the run recorded about a result — model, prompt, seed, machine, time, cost, Orazaka run id.
    Only recorded fields are shown; an absent one says so instead of being filled in. */
-export function Provenance({ made, locale }: { made: Made; locale: Locale }) {
+type Words = ReturnType<typeof getDictionary>["media"];
+
+/** The time row: the run's own time; « the run was interrupted » only for a run; a picture made outside Orazaka has no recorded time. */
+function timeOf(made: Made, t: Words): string {
+  if (made.seconds) return format(t.timeValue, { seconds: String(made.seconds) });
+  return made.runId ? t.timeInterrupted : t.notRecorded;
+}
+
+/** The cost row: the provider's price, « no cash cost » on our own hardware, or not recorded. */
+function costOf(made: Made, t: Words): string {
+  if (made.costUsd) return format(t.costValue, { amount: made.costUsd.toFixed(2) });
+  return made.costUsd === 0 ? t.costFree : t.notRecorded;
+}
+
+export function Provenance({ made, locale }: Readonly<{ made: Made; locale: Locale }>) {
   const t = getDictionary(locale).media;
   const none = t.notRecorded;
   const rows: [string, React.ReactNode][] = [
@@ -17,10 +31,7 @@ export function Provenance({ made, locale }: { made: Made; locale: Locale }) {
   if (made.negativePrompt) rows.push([t.negative, <q key="n" className="bl-prompt">{made.negativePrompt}</q>]);
   if (made.seed) rows.push([t.seed, <code key="d">{made.seed}</code>]);
   if (made.size) rows.push([t.size, made.durationSeconds ? `${made.size} · ${format(t.frames, { fps: String(made.fps), duration: String(made.durationSeconds) })}` : made.size]);
-  /* « the run was interrupted » only for a run; a picture made outside Orazaka simply has no recorded time. */
-  rows.push([t.time, made.seconds ? format(t.timeValue, { seconds: String(made.seconds) }) : made.runId ? t.timeInterrupted : none]);
-  rows.push([t.cost, made.costUsd ? format(t.costValue, { amount: made.costUsd.toFixed(2) }) : made.costUsd === 0 ? t.costFree : none]);
-  rows.push([t.run, made.runId ? <code key="r">{made.runId}</code> : none]);
+  rows.push([t.time, timeOf(made, t)], [t.cost, costOf(made, t)], [t.run, made.runId ? <code key="r">{made.runId}</code> : none]);
   if (made.note) rows.push([t.note, made.note]);
   if (made.sound) rows.push([t.sound, made.sound]);
   return (

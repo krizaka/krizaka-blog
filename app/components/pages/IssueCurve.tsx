@@ -9,7 +9,7 @@ import data from "@/lib/issue-curve.json";
    Props are strings (the renderer drops JavaScript expressions in MDX). */
 const file = data as IssueCurveFile;
 
-export function IssueCurve({ dates, locale }: { dates?: string; locale: Locale }) {
+export function IssueCurve({ dates, locale }: Readonly<{ dates?: string; locale: Locale }>) {
   const t = getDictionary(locale).curve;
   const intl = locale === "en" ? "en-CA" : "fr-CA";
   const rows = cumulate(file.daily);
@@ -45,7 +45,7 @@ export function IssueCurve({ dates, locale }: { dates?: string; locale: Locale }
         labels={{ ...labels, kinds: { line } }}
       />
       {picked.length > 0 && (
-        <div className="bl-table" tabIndex={0} role="region" aria-label={t.tableCaption}>
+        <section className="bl-table" tabIndex={0} aria-label={t.tableCaption}>
           <table>
             <caption>{t.tableCaption}</caption>
             <thead>
@@ -69,7 +69,7 @@ export function IssueCurve({ dates, locale }: { dates?: string; locale: Locale }
               ))}
             </tbody>
           </table>
-        </div>
+        </section>
       )}
     </div>
   );
