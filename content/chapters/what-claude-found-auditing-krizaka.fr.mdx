@@ -137,23 +137,20 @@ Je veux être clair sur ce que cet audit ne prouve pas.
 - **Il ne lit que ce qui est public.** Il n'a vu ni nos réglages de protection des branches (la page demande une connexion), ni ce qui tourne en production, ni ce qui n'est pas poussé.
 - **Il a beaucoup lu de résumés.** Les pages passent par un plus petit modèle avant de lui arriver. Ce qu'il dit d'un fichier qu'il n'a pas ouvert lui-même est moins sûr.
 - **C'est une seule exécution.** Relancé demain, le même prompt donnera une autre réponse. Je n'ai pas mesuré cette variation.
-- **Claude audite un code en grande partie écrit avec Claude.** Une grande partie du code de Krizaka est écrite par des sessions d'agents Claude que je dirige. Le juge n'est pas étranger à l'affaire. C'est une raison de plus pour que l'expérience soit refaite avec d'autres modèles, et je le ferai quand nous aurons les clés pour le faire proprement.
 
 Ce n'est pas une preuve. C'est une lecture extérieure, publiée avec ses sources, que n'importe qui peut refaire.
 
 ## Ce que j'en retiens
 
-Ce que mon ami m'avait rapporté parlait d'agnosticisme, et d'une petite armée d'agents de code avec une personne qui dirige et relit. Je n'avais jamais vu ça comme une compétence à part. Ça me semblait juste la manière normale de travailler.
+Je retiens surtout la liste des faiblesses. Les compliments font plaisir, mais ils ne disent pas quoi corriger.
 
-En y repensant, je crois que ça touche à l'ergonomie cognitive. Prendre du recul, regarder un système de haut, trouver où ça frotte, poser des limites claires, et organiser le travail entre une personne et des machines pour que l'erreur soit visible tout de suite. Ça vient sans doute de mes études, les mathématiques et l'informatique appliquées aux sciences cognitives, et de la vitesse à laquelle les agents produisent du code. Quelqu'un du milieu des TI m'a rappelé une phrase que j'avais écrite il y a un moment :
+D'abord, la façon de travailler. Une bonne partie du code est écrite par des agents. Ce qui tient la qualité, ce ne sont pas les agents : ce sont les vérifications qui disent non tôt, les règles, les types, les tests d'architecture. Une phrase que j'avais notée il y a un moment résume l'idée :
 
 > « Pour construire efficacement avec l'IA, il faut structurer ses automatisations pour détecter les erreurs le plus tôt et le plus vite possible. »
 
-C'est le principe du « fail fast ». Un agent écrit vite. Les règles, les types et les tests d'architecture disent non en quelques secondes, avant que l'erreur se répande.
+Ensuite, la limite de cette idée. Nos garde-fous attrapent ce pour quoi on a écrit une règle, pas le reste. La ligne `TIMEOUT` n'enfreignait aucune règle. Et une règle ne regarde que là où on lui dit de regarder : dans Yomizaka, une date calculée en UTC plutôt que le jour du Québec est passée sous `no-ambient-clock`, parce que la règle ne lisait pas ce dossier. Il a fallu écrire [`no-utc-day-slice`](https://github.com/krizaka/yomizaka/blob/main/rules/no-utc-day-slice.yml) après le bug ([yomizaka#311](https://github.com/krizaka/yomizaka/pull/311)). Notre propre inventaire, [`docs/quality-controls.md`](https://github.com/krizaka/.github/blob/main/docs/quality-controls.md) ([.github#232](https://github.com/krizaka/.github/pull/232)), le dit en une phrase : « The rules do not look where the bug was. »
 
-L'audit montre aussi où ce principe s'arrête chez nous. Nos garde-fous attrapent ce pour quoi on a écrit une règle. Ils ne voient pas ce qu'on n'a pas encore nommé. La ligne `TIMEOUT` n'enfreignait aucune règle. Et une règle ne regarde que là où on lui dit de regarder : dans Yomizaka, une date calculée en UTC plutôt que le jour du Québec est passée sous `no-ambient-clock`, parce que la règle ne lisait pas ce dossier. Il a fallu une nouvelle règle, [`no-utc-day-slice`](https://github.com/krizaka/yomizaka/blob/main/rules/no-utc-day-slice.yml), écrite après le bug ([yomizaka#311](https://github.com/krizaka/yomizaka/pull/311)). Notre propre inventaire, [`docs/quality-controls.md`](https://github.com/krizaka/.github/blob/main/docs/quality-controls.md) ([.github#232](https://github.com/krizaka/.github/pull/232)), commence d'ailleurs par cette phrase : « The rules do not look where the bug was. »
-
-Sur la relecture, le modèle a raison, et je n'ai pas encore de réponse complète. Je relis et j'approuve, mais je suis seul, et une partie des approbations passe par un agent à qui j'ai délégué des décisions. Les vérifications automatiques sont réelles. Une deuxième paire d'yeux humaine, non. C'est le point de cet audit que je garde le plus en tête.
+Enfin, la relecture. Le modèle a raison : il n'y a qu'une personne pour relire, et une partie des approbations passe par un agent à qui j'ai délégué des décisions. Les vérifications automatiques sont réelles. Une deuxième paire d'yeux humaine manque encore. C'est le point que je garde en tête, et il ne se règle pas avec un outil de plus.
 
 ## Annexe : le prompt et la sortie brute
 

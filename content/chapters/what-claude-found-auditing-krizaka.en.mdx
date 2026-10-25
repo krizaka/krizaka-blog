@@ -137,23 +137,20 @@ I want to be clear about what this audit doesn't prove.
 - **It only reads what's public.** It saw neither our branch protection settings (the page needs a sign-in), nor what runs in production, nor anything not pushed.
 - **It read a lot of summaries.** Pages go through a smaller model before they reach it. What it says about a file it didn't open itself is less certain.
 - **It's a single run.** Run again tomorrow, the same prompt will give a different answer. I haven't measured that variation.
-- **Claude is auditing code largely written with Claude.** A large part of Krizaka's code is written by Claude agent sessions that I direct. The judge isn't a stranger to the case. That's one more reason to run the experiment again with other models, and I will once we have the keys to do it properly.
 
 It's not a proof. It's an outside reading, published with its sources, that anyone can run again.
 
 ## What I take from it
 
-What my friend had told me was about being agnostic, and about a small army of coding agents with one person directing and reviewing. I had never seen that as a skill of its own. It just felt like the normal way to work.
+Mostly the list of weaknesses. Compliments are nice, but they do not say what to fix.
 
-Thinking about it again, I believe it has to do with cognitive ergonomics. Stepping back, looking at a system from above, finding where it rubs, drawing clear boundaries, and organising the work between a person and machines so that a mistake shows up right away. It probably comes from my studies, mathematics and computing applied to cognitive science, and from the speed at which agents produce code. Someone from IT reminded me of a sentence I wrote a while ago:
+First, the way of working. A good part of the code is written by agents. What holds the quality is not the agents: it is the checks that say no early, the rules, the types, the architecture tests. A sentence I wrote down a while ago sums it up:
 
-> "To build effectively with AI, you must structure your automations to detect errors as early and as fast as possible."
+> « To build effectively with AI, you have to structure your automations to detect errors as early and as fast as possible. »
 
-That's fail fast. An agent writes quickly. Rules, types and architecture tests say no within seconds, before the mistake spreads.
+Then, where that idea stops. Our guardrails catch what we wrote a rule for, not the rest. The `TIMEOUT` line broke no rule. And a rule only looks where it is told to: in Yomizaka, a date computed in UTC instead of the Québec day slipped past `no-ambient-clock`, because the rule did not read that folder. We had to write [`no-utc-day-slice`](https://github.com/krizaka/yomizaka/blob/main/rules/no-utc-day-slice.yml) after the bug ([yomizaka#311](https://github.com/krizaka/yomizaka/pull/311)). Our own inventory, [`docs/quality-controls.md`](https://github.com/krizaka/.github/blob/main/docs/quality-controls.md) ([.github#232](https://github.com/krizaka/.github/pull/232)), says it in one sentence: « The rules do not look where the bug was. »
 
-The audit also shows where that principle stops for us. Our guardrails catch what we wrote a rule for. They don't see what we haven't named yet. The `TIMEOUT` line broke no rule. And a rule only looks where it's told to look: in Yomizaka, a date computed in UTC instead of the Québec day slipped past `no-ambient-clock`, because the rule didn't read that folder. It took a new rule, [`no-utc-day-slice`](https://github.com/krizaka/yomizaka/blob/main/rules/no-utc-day-slice.yml), written after the bug ([yomizaka#311](https://github.com/krizaka/yomizaka/pull/311)). Our own inventory, [`docs/quality-controls.md`](https://github.com/krizaka/.github/blob/main/docs/quality-controls.md) ([.github#232](https://github.com/krizaka/.github/pull/232)), opens with that very sentence: "The rules do not look where the bug was."
-
-On review, the model is right, and I don't have a full answer yet. I review and approve, but I'm alone, and some approvals go through an agent I've delegated decisions to. The automated checks are real. A second pair of human eyes isn't. That's the point of this audit I keep coming back to.
+Last, review. The model is right: there is one person to review, and part of the approvals goes through an agent I delegated decisions to. The automated checks are real. A second pair of human eyes is still missing. That is the point I keep in mind, and another tool will not settle it.
 
 ## Appendix: the prompt and the raw output
 
