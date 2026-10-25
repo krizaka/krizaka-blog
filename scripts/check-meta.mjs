@@ -15,8 +15,9 @@ export const DESCRIPTION_MAX = 155;
 const decode = (s) =>
   s.replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16))).replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d))).replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
 
-/** The text between tags, outside <script> and <style> (a scan, not a sanitizer: the build's own HTML, read for a check). */
-export function visibleText(html) {
+/** The text between tags, outside <script> and <style> (a scan, not a sanitizer: the build's own HTML, read for a check).
+    `prose`: also outside <pre>, the code blocks, where `undefined` is a word of the language quoted, not a broken figure. */
+export function visibleText(html, { prose = false } = {}) {
   const out = [];
   let skip = "";
   for (const part of html.split("<").slice(1)) {
@@ -28,7 +29,7 @@ export function visibleText(html) {
       if (tag.startsWith("/") && name === skip) skip = "";
       continue;
     }
-    if ((name === "script" || name === "style") && !tag.startsWith("/")) {
+    if ((name === "script" || name === "style" || (prose && name === "pre")) && !tag.startsWith("/")) {
       skip = name;
       continue;
     }
@@ -51,7 +52,7 @@ export function metaProblems(html) {
   if (h1 !== 1) out.push(`${h1} h1 (one expected)`);
   for (const img of html.match(/<img\b[^>]*>/g) ?? []) if (!/\balt=/.test(img)) out.push(`an image without alt: ${img.slice(0, 80)}`);
   /* A number that failed to compute (a prop the renderer dropped) must never reach a reader. */
-  if (visibleText(html).some((t) => /\b(NaN|undefined)\b/.test(t))) out.push("the page shows NaN or undefined");
+  if (visibleText(html, { prose: true }).some((t) => /\b(NaN|undefined)\b/.test(t))) out.push("the page shows NaN or undefined");
   return out;
 }
 
@@ -86,7 +87,7 @@ export function stubProblems(html) {
   const robots = html.match(/<meta\b[^>]*name="robots"[^>]*>/i)?.[0] ?? "";
   if (!/\bcontent="[^"]*noindex/i.test(robots)) out.push("a stub is not noindex");
   if (refresh && !html.includes(`<a href="${refresh}"`)) out.push(`a stub has no visible link to ${refresh}`);
-  if (visibleText(html).some((t) => /\b(NaN|undefined)\b/.test(t))) out.push("the page shows NaN or undefined");
+  if (visibleText(html, { prose: true }).some((t) => /\b(NaN|undefined)\b/.test(t))) out.push("the page shows NaN or undefined");
   return out;
 }
 

@@ -312,5 +312,8 @@
       "category": "Day",
       "value": "Issues"
     }
+  },
+  "pipeline": {
+    "textVersion": "Text version of the pipeline"
   }
 }

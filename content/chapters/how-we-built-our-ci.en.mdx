@@ -1,0 +1,328 @@
+---
+title: "How we built our CI"
+description: "Several people asked me how Krizaka does its CI. The path of a pull request to production, with the real files, and what broke along the way."
+seoTitle: "How we built our CI, from a pull request to production"
+seoDescription: "Krizaka's CI told with the real files: one shared pipeline, ratchets that never go back, Maestro, releases, and what broke."
+date: 2026-10-25
+publishedAt: "2026-10-25T18:00:00-04:00"
+tags: [integration, security]
+author: oussama
+draft: false
+cover: automate-cover
+coverAlt: "A tidy walnut desk at first light: an open laptop whose screen shows a dark terminal window with green lines, a steaming cup of coffee, a notebook of ticked boxes, a small brass clock; through the tall window, a snowy Montréal street under a pink and blue dawn"
+chapter: 11
+period: "2026-10-15/2026-10-25"
+sources:
+  - coding-agents-one-night
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "agents' pull requests to check one by one"
+  built: "one shared pipeline, and rules that never go back"
+stats:
+  - value: "25"
+    label: "repositories where SonarCloud is required on main"
+    section: "What main requires"
+  - value: "3"
+    label: "green runs in a row before a mobile test is required"
+    section: "Mobile: Maestro in CI"
+  - value: "5"
+    label: "CI failures told in this chapter"
+    section: "What broke this week"
+---
+
+For a few weeks, people who build software have been asking me the same question. How do you run your CI, with so many repositories and agents opening pull requests all day?
+
+I answer it here, once, with the real files. Everything I show is in public repositories of the [krizaka](https://github.com/krizaka) organisation. You can go and check every line.
+
+## Why one shared CI
+
+At first, each repository had its own CI file. We copied the neighbour's and adapted it a little. A fix in one repository never reached the others.
+
+In [the chapter on agents](/story/building-with-agents/), I talked about a « build pack » for the CI, not shipped yet. Part of it has shipped. The [krizaka/.github](https://github.com/krizaka/.github) repository holds reusable workflows, one per kind of project: `node-ci.yml`, `java-ci.yml`, `python-ci.yml`, `expo-ci.yml`, `maven.yml`, `mobile-e2e.yml`. Each repository calls one, and says only what is its own.
+
+Here is krizaka.com's, in `krizaka-com/.github/workflows/ci.yml` (shortened):
+
+```yaml
+jobs:
+  ci:
+    uses: krizaka/.github/.github/workflows/node-ci.yml@1cb2e1b6f572ba712083cb6f05fd041370c5ea0b # v1.5.0
+    permissions:
+      contents: read
+    with:
+      duplication: true      # jscpd + dup-ratchet.json: duplicated lines may only go down
+      next-cache-paths: .next/cache
+      container: true
+      container-smoke: scripts/ci-container-smoke.sh
+```
+
+The workflow is pinned by its SHA, not by a tag. A tag can move, a SHA cannot. The `# v1.5.0` comment says which version it is, and Dependabot proposes the update, in a PR that goes through the same CI as everything else.
+
+Orazaka has its own pipeline, `component.yml`, in the [krizaka/orazaka](https://github.com/krizaka/orazaka) repository. An Orazaka component is never built alone: the CI clones the whole workspace, puts the tested repository in its place, and first builds its dependencies from source.
+
+The full build pack, where each repository would have one line, still does not exist. Today it is one call and a few options. That is already much better than copies.
+
+## The path of a pull request
+
+Here is what happens, for krizaka.com, between the moment a PR opens and the moment the change is live.
+
+<Pipeline label="From a pull request to production (krizaka.com)">
+  <Stage title="Pull request" note="opened by an agent">The agent pushes its branch, opens the PR and arms auto-merge. It merges nothing itself.</Stage>
+  <Stage title="changes" note="docs only?">A first job looks at the files touched. A PR that only changes documentation skips the heavy jobs. If this job breaks, everything runs anyway.</Stage>
+  <Stage title="verify" note="lint, ratchets, tests">Install with a cache, lint, the ratchets, the type check, the tests, then the build.</Stage>
+  <Stage title="container" note="image and Playwright">The Docker image is built and started. A real browser checks the pages, from 360 to 1440 pixels, in dark and in light.</Stage>
+  <Stage title="CI gate" note="one verdict" tone="gate">A last job reads the result of all the others and gives a verdict. That is the one main requires.</Stage>
+  <Stage title="SonarCloud, CodeQL" note="required too" tone="gate">SonarCloud analyses the new code. CodeQL blocks a serious security alert.</Stage>
+  <Stage title="Squash on main" note="protection decides">When everything is green, GitHub merges. Branch protection decides, not the agent.</Stage>
+  <Stage title="release-please" note="a release PR">A bot keeps a release PR up to date. When I merge it, it creates the vX.Y.Z tag and the release.</Stage>
+  <Stage title="production" note="moves, deploys" tone="ship">The production branch moves forward to the tag, never forced, and DigitalOcean deploys from production.</Stage>
+</Pipeline>
+
+The most important point of this drawing is box 5. A PR may skip jobs, legitimately: a documentation PR does not need a Docker build. But a required check that never shows up blocks the PR forever. And a check that turns green because a job was skipped by mistake is worse.
+
+So one job, `CI gate`, always runs, and it decides. An excerpt, in `.github/.github/workflows/node-ci.yml`:
+
+```yaml
+  gate:
+    name: CI gate
+    needs: [changes, ui-changes, docker-changes, plan, verify, e2e, duplication, container]
+    if: ${{ always() }}
+```
+
+And the rule it applies, in the same file:
+
+```bash
+# The heavy jobs run unless the gate answered exactly `false`: a skip without that answer is a bug, not a pass.
+if [ "$CODE" != "false" ]; then
+  [ "$VERIFY" = success ] || { echo "::error::verify must run when the gate did not answer false"; fail=1; }
+fi
+```
+
+A skipped job is accepted only if the first job said, exactly, « nothing to do ». The rest of the time, skipping is failing.
+
+## What main requires
+
+On the main branch of our repositories, GitHub refuses a merge until some checks are green. For krizaka.com, Akinaza or Yomizaka, they are:
+
+- `ci / CI gate`, the pipeline's verdict;
+- `SonarCloud Code Analysis`, required in 25 repositories since 25 October;
+- for the two mobile apps, `mobile-e2e / gate`, more on that below.
+
+CodeQL goes through another door: an organisation rule on code scanning. It blocks a PR that brings an error, or a security alert of high or critical level.
+
+SonarCloud runs on the free plan. We keep the default quality gate, which mostly judges new code. It is SonarCloud's automatic analysis, not a job of our CI.
+
+OpenSSF Scorecard runs too, every week and when a branch's protection changes. It is not required, on purpose: it never runs on a PR, so it could not be. It tells us whether our practices hold, it blocks nothing.
+
+The protection applies to administrators too, so to me. History stays linear, and a review conversation must be resolved before the merge. No approval is required. There is one person reviewing. I did not want a second account or a bot that approves as soon as the CI is green: that would be an empty signature. I do the review. The right to merge comes from the CI.
+
+## The ratchets: the debt only goes down
+
+A ratchet is the part that lets a wheel turn one way only. We have three, and they all work the same way. A file in the repository keeps a count. The CI counts again. If the count goes up, it refuses.
+
+- **lint-ratchet** counts interface debts: a colour written by hand instead of a token, a `fetch` in a client-side effect, a direct TanStack import instead of our facade. The tool is `krizaka-ratchet`, from the `@krizaka/config` package.
+- **sg-ratchet** counts the violations of our [ast-grep](https://ast-grep.github.io) rules, rule by rule.
+- **dup-ratchet** counts duplicated lines, with jscpd. For krizaka.com, the count is zero.
+
+The heart of sg-ratchet fits in a few lines, in `krizaka-com/scripts/sg-ratchet.mjs`:
+
+```js
+for (const id of [...ruleIds].sort()) {
+  const current = found[id] ?? 0;
+  if (!(id in recorded)) {
+    unrecorded.push(id);
+    next[id] = current;
+    continue;
+  }
+  if (current > recorded[id]) increased.push(id);
+  if (current < recorded[id]) decreased.push(id);
+  next[id] = Math.min(recorded[id], current);
+}
+```
+
+The last line is the rule. When we fix violations, we record the new count, and `Math.min` means it can never be raised that way. A rule without a recorded count fails the CI too: a rule cannot be slipped in quietly.
+
+Why not fix everything at once? Because a new rule often finds dozens of cases. Fixing them all in the same PR makes a huge PR nobody reviews well. With a ratchet, the rule protects new code right away, and the existing debt goes down little by little.
+
+## A bug becomes a rule
+
+This is the habit that changed our way of working the most. When we find a bug, we ask whether it is alone, or part of a family. If it is a family, we write a rule that refuses it, with its tests.
+
+The first example comes from Akinaza. A privacy test checked that a webhook did not leak a client's phone number. It searched the payload for « 514 ». But that payload holds random ids, and about one time in ten, a UUID contains « 514 ». The test failed at random. We saw it in [akinaza#341](https://github.com/krizaka/akinaza/issues/341): five failures in a single CI run, which passed when run again.
+
+We could have run it again and moved on. We wrote `rules/no-bare-digits-on-serialized.yml`:
+
+```yaml
+id: no-bare-digits-on-serialized
+language: Tsx
+severity: error
+rule:
+  pattern: expect(JSON.stringify($$$A)).not.toMatch($R)
+constraints:
+  R:
+    regex: "^/(?:[^/]*\\|)?[0-9]+(?:\\|[^/]*)?/[a-z]*$"
+```
+
+Each rule has its tests, valid cases and refused cases, in `rule-tests/no-bare-digits-on-serialized-test.yml`:
+
+```yaml
+valid:
+  - |
+    expect(JSON.stringify(m)).not.toMatch(/\bIA\b|intelligen/i);
+invalid:
+  - |
+    expect(JSON.stringify(body)).not.toMatch(/42/);
+```
+
+The first case passes: the pattern looks for words, not a run of digits. The second is refused.
+
+A few days later, the same mistake came back in another form: a test looked for « 4821 » in an encrypted text, and an encrypted text is random bytes too. The issue [akinaza#358](https://github.com/krizaka/akinaza/issues/358) says: fix the class, not the instance. The tests now check the whole plain text, and a second rule, `no-bare-digits-on-random-bytes`, refuses the pattern.
+
+<Compare label="Three bugs, three rules" topic="Repository" before="The bug" after="The rule">
+  <Case topic="akinaza" before="« 514 » found by chance in a UUID." after="no-bare-digits-on-serialized" afterDetail="An ast-grep rule, with its valid and refused cases." />
+  <Case topic="akinaza" before="A server page read a value from a client module: an invoice's state chip had lost its colour." after="The client boundary test" afterDetail="A server file imports only components and types from a « use client » module." />
+  <Case topic="krizaka-ui" before="The build grouped files, and each group had its own router: some components ignored the app's." after="A guard in tsup, and its test" afterDetail="The router is always the package's entry, never a copy." />
+</Compare>
+
+The third one is interesting because no test found it. A krizaka-ui PR went 6 kB over the package's size limit. Looking for why, we saw that each group of the build carried its own copy of the router context. The fix is a small plugin, in `krizaka-ui/packages/ui/tsup.config.ts`:
+
+```ts
+const oneRouter: NonNullable<Options["esbuildPlugins"]>[number] = {
+  name: "krizaka-one-router",
+  setup(build) {
+    build.onResolve({ filter: /^\.\.\/router$/ }, (args) =>
+      args.importer.includes("/src/router/") ? undefined : { path: "@krizaka/ui/router", external: true },
+    );
+  },
+};
+```
+
+A test checks that this plugin is plugged in. If someone removes it one day, the CI will say so.
+
+A fixed bug is one bug less. A rule is its whole family less, in every repository that shares the rule.
+
+## Mobile: Maestro in CI
+
+For the web, this was already in place. For mobile, until this week, an agent opened the emulator and checked by hand. That cost a model session every time, and proved nothing the next day.
+
+The issue [krizaka/.github#241](https://github.com/krizaka/.github/issues/241) changed that. The `mobile-e2e.yml` workflow runs everything in GitHub Actions:
+
+<Pipeline label="A mobile test in CI (Yomizaka, Akinaza)">
+  <Stage title="Throwaway backend" note="a fresh PostgreSQL">An empty PostgreSQL database and the built web app, on the CI machine. Nothing leaves the machine.</Stage>
+  <Stage title="Demo persona" note="seeded data">A demo account is seeded. For Yomizaka, it is Éric. The database is new on every run, so the data always starts from zero.</Stage>
+  <Stage title="Release APK" note="JavaScript bundled">An APK in the release variant, signed with the debug key, with the JavaScript inside. No Metro server.</Stage>
+  <Stage title="Emulator" note="Android, KVM">An Android emulator starts on the CI machine.</Stage>
+  <Stage title="Maestro flows" note="captures, video">Maestro plays the app's journeys. The captures, the video and the JUnit report are always kept.</Stage>
+  <Stage title="mobile-e2e / gate" note="required on main" tone="gate">A verdict that always shows up. A failing flow fails it.</Stage>
+</Pipeline>
+
+The workflow's header says it itself, in `.github/.github/workflows/mobile-e2e.yml`:
+
+```yaml
+#   gate      ALWAYS reports: `mobile-e2e / gate`. It is never skipped to get green: a failed or cancelled flow run fails it.
+```
+
+The adoption rule is 3 green runs in a row before the check becomes required. Not before: a required check that fails at random blocks everyone, and people end up going around it. After three green runs, `mobile-e2e / gate` became required on main for Yomizaka and for Akinaza. An unstable flow is fixed, or set aside with an issue. It is never deleted.
+
+On the web, it is Playwright. For krizaka.com, the CI starts the production Docker image and a real browser visits it, in `krizaka-com/scripts/ci-container-smoke.sh`:
+
+```bash
+# 360–1440 px, dark and light: no page scrolls sideways (a real browser on the real container).
+npx playwright install --with-deps chromium
+node scripts/check-overflow.mjs --base http://localhost:3000
+```
+
+In krizaka-ui, the components' captures are compared pixel by pixel, inside the Playwright Docker image where the references were made. Same fonts, same Chromium, or every comparison would be wrong.
+
+## Releases and production
+
+Our libraries, Krizaka UI and Krizaka TypeScript, use [changesets](https://github.com/changesets/changesets). Each PR that changes a package adds a small file that says what changed, and at which level: patch, minor or major. On main, an action keeps a « chore: version packages » PR up to date. When we merge it, the packages go to npm, with their provenance.
+
+I have to be precise on one point. Provenance is there, but npm's trusted publishing, the kind that needs no token, is not yet. npm refused our first attempt, because the packages had no trusted publisher declared yet. For now, an automation token does the publishing.
+
+For krizaka.com, we set up a release train on 25 October, in [krizaka-com#390](https://github.com/krizaka/krizaka-com/pull/390). It is the end of the first drawing. release-please keeps a release PR. When I merge it, the tag is created, and a workflow moves the `production` branch forward to it. In `krizaka-com/scripts/promote-production.mjs`:
+
+```js
+  if (tagIsAncestor) return { action: "noop", reason: `${BRANCH} already contains ${tag}: never moved backwards` };
+  if (productionIsAncestor) return { action: "forward", reason: `${BRANCH} fast-forwarded to ${tag}` };
+  return { action: "refuse", reason: `${BRANCH} has diverged from main: it is never forced, look at it` };
+```
+
+Three cases, no more. The branch is already up to date, it moves forward, or it has diverged, and then we stop and look. Never `--force`. The site deploys from `production`, not from main, in `krizaka-com/deploy/digitalocean/app.yaml`:
+
+```yaml
+services:
+  - name: web
+    github:
+      repo: krizaka/krizaka-com
+      branch: production
+      deploy_on_push: true
+```
+
+So merging on main puts nothing live. The release does, and I always know which version is running.
+
+## What broke this week
+
+I do not want to give the impression that all this works the first time. Here is what broke, this week alone.
+
+**A race in turbo, in krizaka-ts.** The release failed with `Failed to resolve entry for package "@krizaka/db"`. Each package's check ended with a build, which deleted `dist/` while another package's tests imported it. We first built everything before checking ([krizaka-ts#79](https://github.com/krizaka/krizaka-ts/pull/79)), then fixed the cause in `turbo.json` ([krizaka-ts#75](https://github.com/krizaka/krizaka-ts/pull/75)), with a test that guards the configuration:
+
+```json
+"check": { "dependsOn": ["^build", "^check"], "outputs": ["dist/**"] }
+```
+
+**The fonts test before its build, in krizaka-ui.** After a version PR, the release failed: the test of `packages/fonts` looked for `dist/index.js`, which did not exist yet. The test depended on the other packages' build, not on its own. [krizaka-ui#702](https://github.com/krizaka/krizaka-ui/pull/702) adds the missing dependency.
+
+**pnpm refusing install scripts.** Recent versions of pnpm refuse to run the install scripts of a dependency that was not allowed, with `ERR_PNPM_IGNORED_BUILDS`. The development build of orazaka-web-client had been broken since the day before. The fix lists the three allowed dependencies, in `pnpm-workspace.yaml` ([orazaka-web-client#283](https://github.com/krizaka/orazaka-web-client/pull/283)):
+
+```yaml
+allowBuilds:
+  "@ast-grep/cli": true
+  "@parcel/watcher": true
+  unrs-resolver: true
+```
+
+**npm on a pnpm project.** The deployment ran `npm install` on the web client's pnpm tree. npm crashed, on every deployment, with a message that said nothing useful. The build command became `pnpm run build` ([orazaka#412](https://github.com/krizaka/orazaka/pull/412)).
+
+**Two repositories waiting for each other.** To move to Krizaka UI 3.55, Orazaka's workspace had to regenerate its lockfile. Its CI failed against the web client, which still declared the old version. And the web client's PR needed the new lockfile. Each waited for the other. We got out by making the web client self-contained: it is no longer part of the npm workspace, it installs from its own `pnpm-lock.yaml` ([orazaka#415](https://github.com/krizaka/orazaka/pull/415)). The price is that it now takes two shared packages from the registry, no longer from their source.
+
+None of these failures was settled by running the CI again. Each one was fixed where it started.
+
+## Agents in the loop
+
+Most of our PRs are opened by agents. An agent takes an issue, works on a branch, builds and tests before pushing, opens the PR and arms auto-merge. Then it is done.
+
+Branch protection decides when the PR is merged. Not the agent, and not me clicking at the right moment. If the CI is red, nothing happens. Dependabot's updates follow the same path, in `.github/.github/workflows/dependabot-automerge.yml`:
+
+```yaml
+      - name: Enable auto-merge (not a major)
+        if: steps.meta.outputs.update-type != 'version-update:semver-major'
+        run: gh pr merge --auto --squash "$PR_URL"
+```
+
+A major update stays manual.
+
+**An unstable test is a bug.** We do not run it again blindly. The issue [yomizaka#354](https://github.com/krizaka/yomizaka/issues/354), a browser test racing a page transition, says it plainly: start with a test that fails every time, by repeating it twenty times locally, and never make the check optional or retry it blindly. It is the same idea as the rules above: we fix the family.
+
+**An agent does not watch the CI run.** Waiting for a CI run to finish is, for an agent, a model session running for nothing. GitHub knows how to wait, for free. The agent pushes, arms the merge, and stops. If the CI fails, we read the report and the captures the workflow kept. Nobody opens an emulator to check by hand.
+
+We also stopped using Copilot's coding agent, after a cost spike. I give no figure here. Issues now go through our other agent sessions, with the same CI and the same rules.
+
+## What is not solved
+
+There are still holes, and I would rather name them.
+
+**Test coverage does not reach SonarCloud.** SonarCloud reads the code, not our tests. We do not send a coverage report yet. The issue [krizaka/.github#237](https://github.com/krizaka/.github/issues/237) plans a Sonar job in the shared workflows, and a threshold of 80 % coverage on new code, required only after a week in the green.
+
+**The iOS test has not started.** The mobile workflow only does Android. iOS is one line in its header, nothing more.
+
+**DNS is not code.** Our domains are still set by hand. The issue [krizaka-infra#9](https://github.com/krizaka/krizaka-infra/issues/9) plans to describe them in a repository, with a read-only plan in the CI and a drift check.
+
+**The web's Playwright tests are not required checks of their own.** On krizaka.com, they count through the `CI gate`. Making them required checks in their own right is the next step planned in #241.
+
+And the one-line build pack, I am still waiting for it.
+
+## What I take from it
+
+A CI is not a file. It is a series of small decisions we no longer have to make again: one verdict, counts that do not go up, a rule after each family of bugs, a production branch that is never forced.
+
+With agents, it matters even more. An agent works fast and does not get tired, but it only knows what we wrote for it. The CI is the place where what we wrote is checked, on every PR, for everyone. Me included.

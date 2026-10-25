@@ -27,6 +27,10 @@ test("a NaN or an undefined in the text is refused (not in scripts)", () => {
   assert.match(metaProblems(page({ body: "<h1>T</h1><p>(undefined s of generation)</p>" }))[0], /undefined/);
   assert.deepEqual(metaProblems(page({ body: '<h1>T</h1><script>self.x = undefined</script>' })), []);
 });
+test("an undefined inside a code block is the code quoted, not a broken figure (chapter 11 quotes a tsup plugin)", () => {
+  assert.deepEqual(metaProblems(page({ body: '<h1>T</h1><pre><code><span>x</span> ? <span>undefined</span> : y</code></pre><p>After.</p>' })), []);
+  assert.match(metaProblems(page({ body: "<h1>T</h1><pre><code>ok</code></pre><p>undefined</p>" }))[0], /undefined/);
+});
 
 /* The cover is the LCP of a post: responsive (`srcset` + `sizes`), AVIF first, fetched at high priority and preloaded. */
 import { coverProblems } from "../scripts/check-meta.mjs";
