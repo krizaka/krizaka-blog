@@ -68,17 +68,17 @@ Voici ce qui se passe, pour krizaka.com, entre le moment où une PR s'ouvre et l
 <Pipeline label="D'une pull request à la production (krizaka.com)">
   <Stage title="Pull request" note="ouverte par un agent">L'agent pousse sa branche, ouvre la PR et arme la fusion automatique. Il ne fusionne rien lui-même.</Stage>
   <Stage title="changes" note="docs seulement ?">Un premier job regarde les fichiers touchés. Une PR qui ne change que de la documentation saute les jobs lourds. Si ce job casse, tout tourne quand même.</Stage>
-  <Stage title="verify" note="lint, cliquets, tests">Installation avec cache, lint, les cliquets, la vérification des types, les tests, puis le build. Il démarre en même temps que les trois cases suivantes : aucune n'attend celle-ci.</Stage>
-  <Stage title="container" note="en même temps que verify">L'image Docker est construite et lancée, puis un vrai navigateur vérifie les pages, de 360 à 1440 pixels, en sombre et en clair. Elle est construite même si le lint ou les tests échouent. L'image d'une PR n'est jamais publiée.</Stage>
-  <Stage title="CodeQL" note="vérification à part, exigée" tone="gate">Activé par défaut côté GitHub et imposé par une règle de l'organisation. Il tourne en parallèle, hors de notre workflow, et bloque une alerte de sécurité grave.</Stage>
-  <Stage title="SonarCloud" note="vérification à part, exigée" tone="gate">Analyse automatique par l'application GitHub, hors de notre workflow, en parallèle. Elle juge le nouveau code, mais ne lit pas encore la couverture des tests.</Stage>
-  <Stage title="CI gate" note="un seul verdict" tone="gate">Un job lit le résultat de verify, container et des autres jobs du workflow, et rend un verdict. C'est lui qui est exigé sur main, avec CodeQL et SonarCloud, qui sont deux vérifications séparées.</Stage>
+  <Stage title="verify" note="lint, cliquets, tests">Installation avec cache, lint, les cliquets, la vérification des types, les tests avec leur couverture, puis le build. C'est la première porte : l'image et SonarCloud l'attendent.</Stage>
+  <Stage title="container" note="après verify">Quand verify est vert, l'image Docker est construite, analysée par Trivy (une faille corrigeable de niveau élevé ou critique fait échouer le job) et accompagnée d'un SBOM. Puis elle est lancée, et un vrai navigateur vérifie les pages, de 360 à 1440 pixels, en sombre et en clair. Plus d'image construite pour rien quand le lint ou les tests échouent. L'image d'une PR n'est jamais publiée.</Stage>
+  <Stage title="CodeQL" note="vérification à part, exigée, en parallèle de tout" tone="gate">Activé par défaut côté GitHub et imposé par une règle de l'organisation. Il lit le code source, n'a besoin ni du build ni des tests, et tourne dès l'ouverture de la PR, hors de notre workflow. Il bloque une alerte de sécurité grave.</Stage>
+  <Stage title="SonarCloud" note="après les tests, dans le pipeline" tone="gate">Une analyse faite dans notre CI, après verify, avec la couverture des tests ; on attend son quality gate. C'est le cas de krizaka.com, Akinaza et Yomizaka. Les autres dépôts gardent l'analyse automatique pour l'instant.</Stage>
+  <Stage title="CI gate" note="un seul verdict" tone="gate">Un job lit le résultat de verify, container, SonarCloud et des autres jobs du workflow, et rend un verdict. C'est lui qui est exigé sur main, avec CodeQL, qui reste une vérification à part.</Stage>
   <Stage title="Squash sur main" note="la protection décide">Quand tout est vert, GitHub fusionne. C'est la protection de branche qui décide, pas l'agent.</Stage>
   <Stage title="release-please" note="PR de version">Un bot tient une PR de version à jour. Quand je la fusionne, il crée l'étiquette vX.Y.Z et la release.</Stage>
   <Stage title="production" note="avance, déploie" tone="ship">La branche production avance jusqu'à l'étiquette, sans jamais forcer, et DigitalOcean déploie depuis production.</Stage>
 </Pipeline>
 
-Une chose à lire dans ce schéma : les cases 3 à 6 ne se suivent pas, elles tournent en même temps. Les flèches disent l'ordre du récit, pas celui de l'exécution. La liste en dessous donne le détail.
+Une chose à lire dans ce schéma : après verify, l'image et SonarCloud tournent côte à côte, et CodeQL tourne depuis le début, en parallèle de tout. Les flèches disent l'ordre du récit, pas celui de l'exécution. La liste en dessous donne le détail.
 
 Le point le plus important, c'est la case 7. Une PR peut sauter des jobs, légitimement : une PR de documentation n'a pas besoin d'un build Docker. Mais une vérification exigée qui ne s'affiche jamais bloque la PR pour toujours. Et une vérification qui passe au vert parce qu'un job a été sauté par erreur, c'est pire.
 
@@ -87,7 +87,7 @@ Alors un seul job, `CI gate`, tourne toujours, et il décide. Un extrait, dans `
 ```yaml
   gate:
     name: CI gate
-    needs: [changes, ui-changes, docker-changes, plan, verify, e2e, duplication, container]
+    needs: [changes, ui-changes, docker-changes, plan, verify, e2e, duplication, container, sonar]
     if: ${{ always() }}
 ```
 
@@ -112,7 +112,7 @@ Sur la branche main de nos dépôts, GitHub refuse une fusion tant que certaines
 
 CodeQL passe par une autre porte : l'analyse de code est activée par défaut côté GitHub, et une règle de l'organisation l'impose. C'est une vérification à part, exigée pour fusionner, qui tourne en parallèle du reste. Elle bloque une PR qui apporte une erreur, ou une alerte de sécurité de niveau élevé ou critique.
 
-SonarCloud tourne avec le plan gratuit. On garde le quality gate par défaut, qui juge surtout le nouveau code. C'est son analyse automatique, par l'application GitHub : ce n'est pas un job de notre workflow. Là aussi, une vérification à part, exigée, en parallèle. Et elle ne peut pas encore lire la couverture des tests : la condition « 80 % sur le nouveau code » n'est donc pas évaluée.
+SonarCloud est sur le plan Team depuis le 26 octobre. On garde le quality gate par défaut, qui juge surtout le nouveau code. Pour krizaka.com, Akinaza et Yomizaka, l'analyse se fait maintenant dans notre CI, après les tests, avec la couverture : c'est un job du workflow, et son résultat entre dans le `CI gate`. L'application GitHub continue de poster la vérification `SonarCloud Code Analysis`, la même qu'avant. Pour les autres dépôts, c'est encore l'analyse automatique, qui ne lit pas la couverture : la condition « 80 % sur le nouveau code » n'y est pas évaluée.
 
 OpenSSF Scorecard tourne aussi, chaque semaine et quand la protection d'une branche change. Il n'est pas exigé, et c'est voulu : il ne tourne jamais sur une PR, donc il ne pourrait pas l'être. Il nous dit si nos pratiques tiennent, il ne bloque rien.
 
@@ -310,22 +310,24 @@ Une mise à jour majeure reste à la main.
 
 On a aussi arrêté d'utiliser l'agent de code de Copilot, après un pic de coût. Je ne donne pas de chiffre ici. Les tickets passent maintenant par nos autres sessions d'agents, avec la même CI et les mêmes règles.
 
-## Pourquoi Sonar et CodeQL ne sont pas dans verify — et ce qu'on change
+## Pourquoi CodeQL est à part, et pourquoi Sonar et l'image passent après verify
 
-Je me suis trompé dans la première version de ce chapitre : je dessinais verify, puis container, puis Sonar et CodeQL, comme une file. Ce n'est pas vrai. Aujourd'hui, verify et container tournent en même temps, CodeQL et SonarCloud aussi, et chacun est une vérification à part. Ce qui suit est décidé et en cours. Rien de tout ça n'est fait.
+Je me suis trompé dans la première version de ce chapitre : je dessinais une file, verify, container, Sonar, CodeQL. Ce n'était pas vrai. verify et container tournaient en même temps, CodeQL et SonarCloud aussi. Voici ce que j'ai changé, et pourquoi.
 
-- **CodeQL va rester en parallèle, et exigé.** Il n'a besoin ni du build ni des tests, donc c'est lui qui répond le plus vite. Le mettre derrière verify le ferait attendre pour rien.
-- **Sonar va entrer dans le pipeline, après les tests.** C'est la seule façon de lire la couverture. C'est le ticket [krizaka/.github#237](https://github.com/krizaka/.github/issues/237), en cours.
-- **L'image va attendre verify, et sera analysée.** Aujourd'hui elle est construite même quand le lint échoue, ce qui coûte du temps pour rien. On va la faire passer après verify, puis chercher les vulnérabilités avec Trivy et produire un SBOM.
-- **Les images ne seront publiées que depuis main, après la fusion.** Celle d'une PR ne l'est déjà jamais, et ça ne changera pas.
+- **CodeQL est resté en parallèle, et exigé.** Il lit le code source. Il n'a besoin ni du build ni des tests, donc c'est lui qui répond le plus vite. Le mettre derrière verify l'aurait fait attendre pour rien. La seule chose à faire a été de vérifier qu'il est bien exigé : c'est le cas, par une règle, dans Akinaza, Orazaka et Yomizaka.
+- **Sonar est entré dans le pipeline, après les tests.** C'est la seule façon de lire la couverture : l'analyse automatique ne sait pas l'importer, donc la condition « 80 % sur le nouveau code » n'était jamais évaluée. Le job `sonar` attend verify, reprend les rapports de couverture des tests, et on attend le verdict de SonarCloud. C'est le ticket [krizaka/.github#237](https://github.com/krizaka/.github/issues/237). Il tourne sur krizaka.com, Akinaza et Yomizaka. Pour chaque dépôt, j'ai coupé l'analyse automatique (les deux ne peuvent pas tourner ensemble) puis relancé la CI aussitôt, prêt à la remettre si la CI était rouge. Elle a été verte, et les trois sont passés. Les autres dépôts suivront un par un. Orazaka demande d'abord d'ajouter la couverture Java au parent commun.
+- **L'image attend verify, et elle est analysée.** Avant, elle était construite même quand le lint échouait, ce qui coûtait du temps pour rien. Maintenant elle passe après verify. Trivy y cherche les vulnérabilités et le job échoue sur une faille corrigeable de niveau élevé ou critique ; une exception acceptée s'écrit dans un fichier, avec sa raison et une date de fin. Un SBOM est gardé à chaque passage.
+- **Les images ne sont publiées que depuis main, après la fusion.** Ça n'a pas changé : l'image d'une PR n'est jamais publiée, et le déploiement construit depuis la branche `production`. Seul du code qui a passé toutes les vérifications exigées part en ligne.
 
-Quand ce sera fait, je réécrirai ce passage au présent. D'ici là, le schéma plus haut montre ce qui tourne aujourd'hui.
+Le premier jour, l'analyse de l'image a trouvé de vraies choses. Une faille critique dans la version de Next.js de l'image de krizaka.com, corrigée et publiée depuis. Et des failles de niveau élevé dans npm lui-même, qui est livré avec l'image de Node alors que l'application ne l'utilise jamais en production : on l'a retiré des images d'exécution d'Akinaza, de Yomizaka et de krizaka.com.
+
+Le dépôt [krizaka/.github](https://github.com/krizaka/.github) a aussi son propre `CI gate` depuis ce changement. Ses suites de tests ne tournaient que si leurs fichiers changeaient, donc aucune ne pouvait être exigée, et deux PR avaient été fusionnées avec un test rouge. Un job qui tourne toujours décide maintenant lesquelles s'appliquent, et c'est lui qui est exigé.
 
 ## Ce qui n'est pas réglé
 
 Il reste des trous, et je préfère les nommer.
 
-**La couverture de tests n'arrive pas à SonarCloud.** SonarCloud lit le code, pas nos tests. On n'envoie pas encore de rapport de couverture. Le ticket [krizaka/.github#237](https://github.com/krizaka/.github/issues/237) prévoit un job Sonar dans les workflows communs, et un seuil de 80 % de couverture sur le nouveau code, exigé seulement après une semaine au vert.
+**La couverture n'arrive pas encore partout à SonarCloud.** Elle y arrive pour krizaka.com, Akinaza et Yomizaka. Les autres dépôts, Orazaka compris, gardent l'analyse automatique, qui lit le code mais pas nos tests. Le seuil de 80 % de couverture sur le nouveau code reste à exiger, après une semaine au vert ([krizaka/.github#237](https://github.com/krizaka/.github/issues/237)).
 
 **Le test iOS n'est pas commencé.** Le workflow mobile ne fait qu'Android. iOS est une ligne dans son en-tête, rien de plus.
 

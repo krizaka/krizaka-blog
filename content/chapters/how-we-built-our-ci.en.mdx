@@ -68,17 +68,17 @@ Here is what happens, for krizaka.com, between the moment a PR opens and the mom
 <Pipeline label="From a pull request to production (krizaka.com)">
   <Stage title="Pull request" note="opened by an agent">The agent pushes its branch, opens the PR and arms auto-merge. It merges nothing itself.</Stage>
   <Stage title="changes" note="docs only?">A first job looks at the files touched. A PR that only changes documentation skips the heavy jobs. If this job breaks, everything runs anyway.</Stage>
-  <Stage title="verify" note="lint, ratchets, tests">Install with a cache, lint, the ratchets, the type check, the tests, then the build. It starts at the same time as the next three boxes: none waits for this one.</Stage>
-  <Stage title="container" note="same time as verify">The Docker image is built and started, then a real browser checks the pages, from 360 to 1440 pixels, in dark and in light. It is built even when lint or the tests fail. A PR's image is never published.</Stage>
-  <Stage title="CodeQL" note="a separate check, required" tone="gate">On by default on GitHub's side and enforced by an organisation rule. It runs in parallel, outside our workflow, and blocks a serious security alert.</Stage>
-  <Stage title="SonarCloud" note="a separate check, required" tone="gate">Automatic analysis through the GitHub app, outside our workflow, in parallel. It judges the new code, but does not read test coverage yet.</Stage>
-  <Stage title="CI gate" note="one verdict" tone="gate">A job reads the result of verify, container and the workflow's other jobs, and gives a verdict. That is the one main requires, along with CodeQL and SonarCloud, which are two separate checks.</Stage>
+  <Stage title="verify" note="lint, ratchets, tests">Install with a cache, lint, the ratchets, the type check, the tests with their coverage, then the build. It is the first gate: the image and SonarCloud wait for it.</Stage>
+  <Stage title="container" note="after verify">When verify is green, the Docker image is built, scanned by Trivy (a fixable high or critical finding fails the job) and given an SBOM. Then it is started, and a real browser checks the pages, from 360 to 1440 pixels, in dark and in light. No image is built for nothing when lint or the tests fail. A PR's image is never published.</Stage>
+  <Stage title="CodeQL" note="a separate check, required, parallel to everything" tone="gate">On by default on GitHub's side and enforced by an organisation rule. It reads the source, needs neither the build nor the tests, and starts as soon as the PR opens, outside our workflow. It blocks a serious security alert.</Stage>
+  <Stage title="SonarCloud" note="after the tests, inside the pipeline" tone="gate">An analysis run in our CI, after verify, with the test coverage; we wait for its quality gate. This is the case for krizaka.com, Akinaza and Yomizaka. The other repositories keep automatic analysis for now.</Stage>
+  <Stage title="CI gate" note="one verdict" tone="gate">A job reads the result of verify, container, SonarCloud and the workflow's other jobs, and gives a verdict. That is the one main requires, along with CodeQL, which stays a separate check.</Stage>
   <Stage title="Squash on main" note="protection decides">When everything is green, GitHub merges. Branch protection decides, not the agent.</Stage>
   <Stage title="release-please" note="a release PR">A bot keeps a release PR up to date. When I merge it, it creates the vX.Y.Z tag and the release.</Stage>
   <Stage title="production" note="moves, deploys" tone="ship">The production branch moves forward to the tag, never forced, and DigitalOcean deploys from production.</Stage>
 </Pipeline>
 
-One thing to read in this drawing: boxes 3 to 6 do not follow each other, they run at the same time. The arrows give the order of the story, not the order of execution. The list below gives the detail.
+One thing to read in this drawing: after verify, the image and SonarCloud run side by side, and CodeQL runs from the start, parallel to everything. The arrows give the order of the story, not the order of execution. The list below gives the detail.
 
 The most important point is box 7. A PR may skip jobs, legitimately: a documentation PR does not need a Docker build. But a required check that never shows up blocks the PR forever. And a check that turns green because a job was skipped by mistake is worse.
 
@@ -87,7 +87,7 @@ So one job, `CI gate`, always runs, and it decides. An excerpt, in `.github/.git
 ```yaml
   gate:
     name: CI gate
-    needs: [changes, ui-changes, docker-changes, plan, verify, e2e, duplication, container]
+    needs: [changes, ui-changes, docker-changes, plan, verify, e2e, duplication, container, sonar]
     if: ${{ always() }}
 ```
 
@@ -112,7 +112,7 @@ On the main branch of our repositories, GitHub refuses a merge until some checks
 
 CodeQL goes through another door: code scanning is on by default on GitHub's side, and an organisation rule enforces it. It is a separate check, required to merge, and it runs in parallel with the rest. It blocks a PR that brings an error, or a security alert of high or critical level.
 
-SonarCloud runs on the free plan. We keep the default quality gate, which mostly judges new code. It is its automatic analysis, through the GitHub app: it is not a job of our workflow. Here too, a separate check, required, in parallel. And it cannot read test coverage yet, so the « 80 % on new code » condition is not evaluated.
+SonarCloud has been on the Team plan since 26 October. We keep the default quality gate, which mostly judges new code. For krizaka.com, Akinaza and Yomizaka, the analysis now runs in our CI, after the tests, with coverage: it is a job of the workflow, and its result goes into the `CI gate`. The GitHub app still posts the `SonarCloud Code Analysis` check, the same as before. For the other repositories it is still automatic analysis, which does not read coverage: the « 80 % on new code » condition is not evaluated there.
 
 OpenSSF Scorecard runs too, every week and when a branch's protection changes. It is not required, on purpose: it never runs on a PR, so it could not be. It tells us whether our practices hold, it blocks nothing.
 
@@ -310,22 +310,24 @@ A major update stays manual.
 
 We also stopped using Copilot's coding agent, after a cost spike. I give no figure here. Issues now go through our other agent sessions, with the same CI and the same rules.
 
-## Why Sonar and CodeQL are not in verify — and what we are changing
+## Why CodeQL stands apart, and why Sonar and the image come after verify
 
-I got this wrong in the first version of this chapter: I drew verify, then container, then Sonar and CodeQL, as a queue. That is not true. Today verify and container run at the same time, CodeQL and SonarCloud too, and each one is a separate check. What follows is decided and in progress. None of it is done.
+I got this wrong in the first version of this chapter: I drew a queue, verify, container, Sonar, CodeQL. It was not true. verify and container ran at the same time, and so did CodeQL and SonarCloud. Here is what I changed, and why.
 
-- **CodeQL will stay in parallel, and required.** It needs neither the build nor the tests, so it gives the fastest answer. Putting it behind verify would make it wait for nothing.
-- **Sonar will move into the pipeline, after the tests.** That is the only way to read coverage. It is the issue [krizaka/.github#237](https://github.com/krizaka/.github/issues/237), in progress.
-- **The image will wait for verify, and be scanned.** Today it is built even when lint fails, which costs time for nothing. We will move it after verify, then look for vulnerabilities with Trivy and produce an SBOM.
-- **Images will be published only from main, after the merge.** A PR's image already never is, and that will not change.
+- **CodeQL stayed in parallel, and required.** It reads the source. It needs neither the build nor the tests, so it gives the fastest answer. Putting it behind verify would have made it wait for nothing. The only thing to do was to check that it is required: it is, by a rule, in Akinaza, Orazaka and Yomizaka.
+- **Sonar moved into the pipeline, after the tests.** It is the only way to read coverage: automatic analysis cannot import it, so the « 80 % on new code » condition was never evaluated. The `sonar` job waits for verify, takes the coverage reports from the tests, and we wait for SonarCloud's verdict. It is the issue [krizaka/.github#237](https://github.com/krizaka/.github/issues/237). It runs on krizaka.com, Akinaza and Yomizaka. For each repository I switched automatic analysis off (the two cannot run together), then re-ran the CI at once, ready to switch it back on if the CI was red. It was green, and all three stayed. The other repositories will follow one by one. Orazaka first needs Java coverage added to the shared parent.
+- **The image waits for verify, and it is scanned.** Before, it was built even when lint failed, which cost time for nothing. Now it comes after verify. Trivy looks for vulnerabilities and the job fails on a fixable high or critical finding; an accepted exception is written in a file, with its reason and an end date. An SBOM is kept on every run.
+- **Images are published only from main, after the merge.** That did not change: a PR's image is never published, and the deploy builds from the `production` branch. Only code that passed every required check ships.
 
-When it is done, I will rewrite this passage in the present tense. Until then, the drawing above shows what runs today.
+On the first day, the image scan found real things. A critical flaw in the Next.js version of krizaka.com's image, fixed and released since. And high-severity flaws in npm itself, which ships with the Node image although the application never uses it in production: we removed it from the runtime images of Akinaza, Yomizaka and krizaka.com.
+
+The [krizaka/.github](https://github.com/krizaka/.github) repository also has its own `CI gate` since this change. Its test suites only ran when their files changed, so none could be required, and two PRs had been merged with a red test. A job that always runs now decides which ones apply, and that is the one required.
 
 ## What is not solved
 
 There are still holes, and I would rather name them.
 
-**Test coverage does not reach SonarCloud.** SonarCloud reads the code, not our tests. We do not send a coverage report yet. The issue [krizaka/.github#237](https://github.com/krizaka/.github/issues/237) plans a Sonar job in the shared workflows, and a threshold of 80 % coverage on new code, required only after a week in the green.
+**Coverage does not reach SonarCloud everywhere yet.** It does for krizaka.com, Akinaza and Yomizaka. The other repositories, Orazaka included, keep automatic analysis, which reads the code but not our tests. The 80 % coverage threshold on new code is still to be required, after a week in the green ([krizaka/.github#237](https://github.com/krizaka/.github/issues/237)).
 
 **The iOS test has not started.** The mobile workflow only does Android. iOS is one line in its header, nothing more.
 
