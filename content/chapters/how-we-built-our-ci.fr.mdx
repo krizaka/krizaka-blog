@@ -68,16 +68,19 @@ Voici ce qui se passe, pour krizaka.com, entre le moment où une PR s'ouvre et l
 <Pipeline label="D'une pull request à la production (krizaka.com)">
   <Stage title="Pull request" note="ouverte par un agent">L'agent pousse sa branche, ouvre la PR et arme la fusion automatique. Il ne fusionne rien lui-même.</Stage>
   <Stage title="changes" note="docs seulement ?">Un premier job regarde les fichiers touchés. Une PR qui ne change que de la documentation saute les jobs lourds. Si ce job casse, tout tourne quand même.</Stage>
-  <Stage title="verify" note="lint, cliquets, tests">Installation avec cache, lint, les cliquets, la vérification des types, les tests, puis le build.</Stage>
-  <Stage title="container" note="image et Playwright">L'image Docker est construite et lancée. Un vrai navigateur vérifie les pages, de 360 à 1440 pixels, en sombre et en clair.</Stage>
-  <Stage title="CI gate" note="un seul verdict" tone="gate">Un dernier job lit le résultat de tous les autres et rend un verdict. C'est lui qui est exigé sur main.</Stage>
-  <Stage title="SonarCloud, CodeQL" note="exigés aussi" tone="gate">SonarCloud analyse le nouveau code. CodeQL bloque une alerte de sécurité grave.</Stage>
+  <Stage title="verify" note="lint, cliquets, tests">Installation avec cache, lint, les cliquets, la vérification des types, les tests, puis le build. Il démarre en même temps que les trois cases suivantes : aucune n'attend celle-ci.</Stage>
+  <Stage title="container" note="en même temps que verify">L'image Docker est construite et lancée, puis un vrai navigateur vérifie les pages, de 360 à 1440 pixels, en sombre et en clair. Elle est construite même si le lint ou les tests échouent. L'image d'une PR n'est jamais publiée.</Stage>
+  <Stage title="CodeQL" note="vérification à part, exigée" tone="gate">Activé par défaut côté GitHub et imposé par une règle de l'organisation. Il tourne en parallèle, hors de notre workflow, et bloque une alerte de sécurité grave.</Stage>
+  <Stage title="SonarCloud" note="vérification à part, exigée" tone="gate">Analyse automatique par l'application GitHub, hors de notre workflow, en parallèle. Elle juge le nouveau code, mais ne lit pas encore la couverture des tests.</Stage>
+  <Stage title="CI gate" note="un seul verdict" tone="gate">Un job lit le résultat de verify, container et des autres jobs du workflow, et rend un verdict. C'est lui qui est exigé sur main, avec CodeQL et SonarCloud, qui sont deux vérifications séparées.</Stage>
   <Stage title="Squash sur main" note="la protection décide">Quand tout est vert, GitHub fusionne. C'est la protection de branche qui décide, pas l'agent.</Stage>
   <Stage title="release-please" note="PR de version">Un bot tient une PR de version à jour. Quand je la fusionne, il crée l'étiquette vX.Y.Z et la release.</Stage>
   <Stage title="production" note="avance, déploie" tone="ship">La branche production avance jusqu'à l'étiquette, sans jamais forcer, et DigitalOcean déploie depuis production.</Stage>
 </Pipeline>
 
-Le point le plus important de ce schéma, c'est la case 5. Une PR peut sauter des jobs, légitimement : une PR de documentation n'a pas besoin d'un build Docker. Mais une vérification exigée qui ne s'affiche jamais bloque la PR pour toujours. Et une vérification qui passe au vert parce qu'un job a été sauté par erreur, c'est pire.
+Une chose à lire dans ce schéma : les cases 3 à 6 ne se suivent pas, elles tournent en même temps. Les flèches disent l'ordre du récit, pas celui de l'exécution. La liste en dessous donne le détail.
+
+Le point le plus important, c'est la case 7. Une PR peut sauter des jobs, légitimement : une PR de documentation n'a pas besoin d'un build Docker. Mais une vérification exigée qui ne s'affiche jamais bloque la PR pour toujours. Et une vérification qui passe au vert parce qu'un job a été sauté par erreur, c'est pire.
 
 Alors un seul job, `CI gate`, tourne toujours, et il décide. Un extrait, dans `.github/.github/workflows/node-ci.yml` :
 
@@ -107,9 +110,9 @@ Sur la branche main de nos dépôts, GitHub refuse une fusion tant que certaines
 - `SonarCloud Code Analysis`, exigé dans 25 dépôts depuis le 25 octobre ;
 - pour les deux applications mobiles, `mobile-e2e / gate`, j'y reviens plus bas.
 
-CodeQL passe par une autre porte : une règle de l'organisation sur l'analyse de code. Elle bloque une PR qui apporte une erreur, ou une alerte de sécurité de niveau élevé ou critique.
+CodeQL passe par une autre porte : l'analyse de code est activée par défaut côté GitHub, et une règle de l'organisation l'impose. C'est une vérification à part, exigée pour fusionner, qui tourne en parallèle du reste. Elle bloque une PR qui apporte une erreur, ou une alerte de sécurité de niveau élevé ou critique.
 
-SonarCloud tourne avec le plan gratuit. On garde le quality gate par défaut, qui juge surtout le nouveau code. C'est son analyse automatique, pas un job de notre CI.
+SonarCloud tourne avec le plan gratuit. On garde le quality gate par défaut, qui juge surtout le nouveau code. C'est son analyse automatique, par l'application GitHub : ce n'est pas un job de notre workflow. Là aussi, une vérification à part, exigée, en parallèle. Et elle ne peut pas encore lire la couverture des tests : la condition « 80 % sur le nouveau code » n'est donc pas évaluée.
 
 OpenSSF Scorecard tourne aussi, chaque semaine et quand la protection d'une branche change. Il n'est pas exigé, et c'est voulu : il ne tourne jamais sur une PR, donc il ne pourrait pas l'être. Il nous dit si nos pratiques tiennent, il ne bloque rien.
 
@@ -306,6 +309,17 @@ Une mise à jour majeure reste à la main.
 **Un agent ne regarde pas la CI tourner.** Attendre qu'un passage de CI finisse, pour un agent, c'est une session de modèle qui tourne pour rien. GitHub sait attendre, gratuitement. L'agent pousse, arme la fusion, et s'arrête. Si la CI échoue, on lit le rapport et les captures gardées par le workflow. Personne n'ouvre un émulateur pour vérifier à la main.
 
 On a aussi arrêté d'utiliser l'agent de code de Copilot, après un pic de coût. Je ne donne pas de chiffre ici. Les tickets passent maintenant par nos autres sessions d'agents, avec la même CI et les mêmes règles.
+
+## Pourquoi Sonar et CodeQL ne sont pas dans verify — et ce qu'on change
+
+Je me suis trompé dans la première version de ce chapitre : je dessinais verify, puis container, puis Sonar et CodeQL, comme une file. Ce n'est pas vrai. Aujourd'hui, verify et container tournent en même temps, CodeQL et SonarCloud aussi, et chacun est une vérification à part. Ce qui suit est décidé et en cours. Rien de tout ça n'est fait.
+
+- **CodeQL va rester en parallèle, et exigé.** Il n'a besoin ni du build ni des tests, donc c'est lui qui répond le plus vite. Le mettre derrière verify le ferait attendre pour rien.
+- **Sonar va entrer dans le pipeline, après les tests.** C'est la seule façon de lire la couverture. C'est le ticket [krizaka/.github#237](https://github.com/krizaka/.github/issues/237), en cours.
+- **L'image va attendre verify, et sera analysée.** Aujourd'hui elle est construite même quand le lint échoue, ce qui coûte du temps pour rien. On va la faire passer après verify, puis chercher les vulnérabilités avec Trivy et produire un SBOM.
+- **Les images ne seront publiées que depuis main, après la fusion.** Celle d'une PR ne l'est déjà jamais, et ça ne changera pas.
+
+Quand ce sera fait, je réécrirai ce passage au présent. D'ici là, le schéma plus haut montre ce qui tourne aujourd'hui.
 
 ## Ce qui n'est pas réglé
 
