@@ -12,7 +12,7 @@ author: oussama
 draft: false
 ---
 
-On 15 October I reread the payments code of Orochia, our creator video platform. I landed on a sixty-line function that did everything at once: validate, lock, apply the rules, move the credits, write the ledger. It worked. It still scared me, and I opened [an issue](https://github.com/krizaka/orochia/issues/209) to rewrite it.
+On 15 October I reread the payments code of Orochia, our creator video platform. I landed on a sixty-line function that did everything at once: validate, lock, apply the rules, move the credits, write the ledger. It worked. It still scared me, and I opened an issue to rewrite it.
 
 Reading that code, I realised the real question wasn't in it. The code already talks to four payment gateways. None of them has agreed to work with us yet. And for some of our products, that is not a given.
 
@@ -54,19 +54,19 @@ A few months later, in August 2021, OnlyFans announced a ban on sexually explici
 
 ## What it changes in our code
 
-Orochia is a creator video platform, and part of what it will allow is for adults only. So it sits in that zone, and I knew it from day one. [The merchant accounts issue](https://github.com/krizaka/orochia/issues/31) says it plainly: adult content excludes Stripe. So the code talks to CCBill, Segpay, a crypto gateway, and to Stripe only for tests and deployments without adult content ([orochia#7](https://github.com/krizaka/orochia/issues/7)).
+Orochia is a creator video platform, and part of what it will allow is for adults only. So it sits in that zone, and I knew it from day one. The merchant accounts issue says it plainly: adult content excludes Stripe. So the code talks to CCBill, Segpay, a crypto gateway, and to Stripe only for tests and deployments without adult content (orochia#7).
 
 That changed the design in a few ways.
 
-Auctions are paid in held credits. When you bid, your credits are set aside. If someone outbids you, they come back. If you win, they are spent. [The auctions documentation](https://github.com/krizaka/orochia/blob/main/docs/AUCTIONS.md) sums it up in one line: the winner has always already paid, with no chargeback race at the end.
+Auctions are paid in held credits. When you bid, your credits are set aside. If someone outbids you, they come back. If you win, they are spent. The auctions documentation sums it up in one line: the winner has always already paid, with no chargeback race at the end.
 
 Money moves once. Every movement carries a unique reference, and a payment settles only when the gateway's signed message arrives. If the message arrives twice, the second one does nothing.
 
-Chargebacks must reach the balance. An audit found a hole ([orochia#167](https://github.com/krizaka/orochia/issues/167)): a creator's balance didn't subtract disputed payments. Someone could ask for a payout before the dispute arrived, and the platform would have paid twice. It's not fixed yet, and it has to be before the first real dollar. The payout rules, like the minimum amount, are also leaving the code to become versioned data that can be adjusted without a redeploy ([orochia#205](https://github.com/krizaka/orochia/issues/205)).
+Chargebacks must reach the balance. An audit found a hole (orochia#167): a creator's balance didn't subtract disputed payments. Someone could ask for a payout before the dispute arrived, and the platform would have paid twice. It's not fixed yet, and it has to be before the first real dollar. The payout rules, like the minimum amount, are also leaving the code to become versioned data that can be adjusted without a redeploy (orochia#205).
 
 And age and identity checks aren't an option we'll add later. Under Mastercard's rules, they are a condition for existing at all.
 
-For [Kachizaka](https://github.com/krizaka/kachizaka), our predictions game between friends, I made the opposite call: points, never money. The moment you add a stake and a prize, you enter Stripe's "games of chance" line and PayPal's "pre-approval" box. I'd rather that product never goes there.
+For Kachizaka, our predictions game between friends, I made the opposite call: points, never money. The moment you add a stake and a prize, you enter Stripe's "games of chance" line and PayPal's "pre-approval" box. I'd rather that product never goes there.
 
 ## What isn't decided
 
