@@ -34,7 +34,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
+      - run: npm ci --ignore-scripts
       - name: Send the new posts (once)
         env:
           MAIL_SEND_TOKEN: ${{ secrets.MAIL_SEND_TOKEN }}
