@@ -142,6 +142,28 @@ In progress is small, on purpose: three sessions at most. In review is high. Tha
 
 Backlog, finally, is the real pile. That is the one that has to come down.
 
+### The board updates itself
+
+I swept the board. 45 cards were still in In progress or In review although their issue or PR was already closed or merged. 25 others sat in In review with no activity since October 20 to 23. The cause is simple: a session moves the card to In review, and nobody moves it again after the merge. I fixed all 70: the closed ones to Done, the sleeping ones back to Next.
+
+I did not want to do that sweep by hand again. So I turned on GitHub Projects' built-in workflows, in the board's settings. Before that, several were broken: they pointed to a « Todo » column that no longer existed.
+
+| When | The card goes to |
+| :--- | :--- |
+| An item is closed | Done |
+| A pull request is merged | Done |
+| A pull request is linked to an issue | In review |
+| An item is added to the project | Backlog |
+| An item is reopened | Next |
+| Changes are requested on the code | In progress |
+| A review is approved | In review |
+
+Three more settings finish the job: the issue closes when its card becomes Done, old Done cards are archived, and sub-issues are added by themselves.
+
+There is still a safety net. Every three hours, a plan check goes over the board again, finds the cards whose column does not match their issue or PR, and fixes them.
+
+It is the same principle as for CI: automate the check instead of doing it by hand.
+
 ## What is not solved
 
 I do not want to end on a victory. There is none yet.
