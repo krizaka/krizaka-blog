@@ -28,7 +28,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
+      - run: npm ci --ignore-scripts
       - run: npm run lint
       - run: npm test
       - name: Build, closed (what is served before the first post)
@@ -47,14 +47,15 @@ jobs:
         run: node scripts/check-meta.mjs out
       - name: The family's SEO contract
         run: |
-          npx --yes serve@14 out -l 3000 >/dev/null 2>&1 &
+          npm install --no-save --ignore-scripts --no-audit --no-fund serve@14.2.6
+          node_modules/.bin/serve out -l 3000 >/dev/null 2>&1 &
           for i in $(seq 1 30); do curl -sf http://localhost:3000/robots.txt >/dev/null && break; sleep 1; done
           node scripts/check-seo-family.mjs --base http://localhost:3000 --host https://blog.krizaka.com --index on --limit 60
       - name: Every link answers (internal links fail the build; external ones are retried, a short list of hosts that refuse robots is reported only)
         run: node scripts/check-links.mjs --base http://localhost:3000 --host https://blog.krizaka.com --external
       - name: The layout in a real browser (the home, every post and chapter, both languages — nothing past the window at 1750, 1366, 390, 360 px — focus ring for the keyboard only)
         run: |
-          npx playwright install --with-deps chromium
+          node_modules/.bin/playwright install --with-deps chromium
           node scripts/check-layout.mjs --base http://localhost:3000 --posts out
       - name: The feeds are pure XML a reader accepts (no XSLT); they stay files, the old /feed/ page is a stub to the story
         run: |

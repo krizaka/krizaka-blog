@@ -27,7 +27,9 @@ const pageUrl = (locale, path) => `${SITE}${locale === "fr" ? "/fr" : ""}${path}
 const FILE = /^content\/posts\/([a-z0-9]+(?:-[a-z0-9]+)*)\.(en|fr)\.mdx$/;
 const ZERO = /^0+$/;
 
-const git = (...args) => execFileSync("git", args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+// An absolute path, not a lookup in PATH: /usr/bin/git is where the CI runner and macOS both keep it.
+const GIT = "/usr/bin/git";
+const git = (...args) => execFileSync(GIT, args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
 const show = (rev, path) => {
   if (!rev || ZERO.test(rev)) return null;
   try {
