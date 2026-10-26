@@ -198,9 +198,8 @@
     "body": [
       "My name is Oussama, and I build Krizaka in Montréal.",
       "I studied mathematics and computer science, then turned to mathematics and computing applied to cognitive science.",
-      "My journey began in 2011 in natural language processing and semantic analysis. Over the following fifteen years, I designed and built distributed systems in production across connected transit, healthcare, telecom platforms, and IoT networks scaling to millions of devices.",
-      "Today, I build Krizaka here in Montréal, orchestrating autonomous AI agents and exploring where modern models meet robust software engineering.",
-      "This blog is an engineering log: concrete benchmarks, architectural choices, lessons from production, and problems still open."
+      "Then came fifteen years of distributed systems in production: connected trains, healthcare, telecom, and IoT networks of millions of devices.",
+      "Today I build Krizaka with AI agents, and this blog is its engineering log: real measurements, choices, and problems still open."
     ],
     "labNote": "My first brush with AI was in 2011, at the {lab}, long before the word was in fashion.",
     "lab": "Grenoble Informatics Laboratory (LIG)",
