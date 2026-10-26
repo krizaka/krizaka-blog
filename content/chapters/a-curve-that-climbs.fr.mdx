@@ -142,6 +142,28 @@ In progress est petit, et c'est voulu : trois sessions au plus. In review, lui, 
 
 Backlog, enfin, est la vraie pile. C'est elle qui doit descendre.
 
+### Le tableau se met à jour tout seul
+
+J'ai fait un balayage du tableau. 45 cartes étaient encore en In progress ou en In review alors que leur issue ou leur PR était déjà fermée ou fusionnée. 25 autres dormaient en In review, sans aucune activité depuis le 20 ou le 23 octobre. La cause est simple : une session déplace la carte en In review, et personne ne la déplace après la fusion. J'ai corrigé les 70 : les fermées en Done, les endormies de retour en Next.
+
+Je ne voulais pas refaire ce balayage à la main. J'ai donc activé les workflows intégrés de GitHub Projects, dans les réglages du tableau. Avant, plusieurs étaient cassés : ils visaient une colonne « Todo » qui n'existait plus.
+
+| Quand | La carte va en |
+| :--- | :--- |
+| Un élément est fermé | Done |
+| Une pull request est fusionnée | Done |
+| Une pull request est liée à une issue | In review |
+| Un élément est ajouté au projet | Backlog |
+| Un élément est rouvert | Next |
+| Des changements sont demandés au code | In progress |
+| Une relecture est approuvée | In review |
+
+Trois autres réglages complètent le tout : l'issue se ferme quand la carte passe en Done, les vieilles cartes Done sont archivées, et les sous-issues sont ajoutées toutes seules.
+
+Il reste un filet de sécurité. Toutes les trois heures, un contrôle du plan repasse sur le tableau, trouve les cartes dont la colonne ne correspond pas à leur issue ou à leur PR, et les corrige.
+
+C'est le même principe que pour la CI : on automatise la vérification au lieu de la faire à la main.
+
 ## Ce qui n'est pas réglé
 
 Je ne veux pas finir sur une victoire. Il n'y en a pas encore.
