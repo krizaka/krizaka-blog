@@ -1,6 +1,7 @@
 # Krizaka Blog
 
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/krizaka/krizaka-blog/badge)](https://scorecard.dev/viewer/?uri=github.com/krizaka/krizaka-blog)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=krizaka_krizaka-blog&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=krizaka_krizaka-blog) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=krizaka_krizaka-blog&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=krizaka_krizaka-blog) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=krizaka_krizaka-blog&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=krizaka_krizaka-blog) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=krizaka_krizaka-blog&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=krizaka_krizaka-blog) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=krizaka_krizaka-blog&metric=coverage)](https://sonarcloud.io/summary/new_code?id=krizaka_krizaka-blog)
 
 **blog.krizaka.com** — the company blog of [Krizaka](https://www.krizaka.com): notes on sovereign AI, measured costs and
 real document runs. A static site (Next.js export) of MDX posts in English and French, built with the
