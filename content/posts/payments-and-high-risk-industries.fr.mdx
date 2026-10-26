@@ -12,7 +12,7 @@ author: oussama
 draft: false
 ---
 
-Le 15 octobre, j'ai relu le code des paiements d'Orochia, notre plateforme vidéo pour créateurs. Je suis tombé sur une fonction de soixante lignes qui faisait tout en même temps : valider, verrouiller, appliquer les règles, bouger les crédits, écrire dans le registre. Elle marchait. Elle me faisait quand même peur, et j'ai ouvert [un ticket](https://github.com/krizaka/orochia/issues/209) pour la réécrire.
+Le 15 octobre, j'ai relu le code des paiements d'Orochia, notre plateforme vidéo pour créateurs. Je suis tombé sur une fonction de soixante lignes qui faisait tout en même temps : valider, verrouiller, appliquer les règles, bouger les crédits, écrire dans le registre. Elle marchait. Elle me faisait quand même peur, et j'ai ouvert un ticket pour la réécrire.
 
 En lisant ce code, je me suis rendu compte que la vraie question n'était pas dedans. Le code sait déjà parler à quatre passerelles de paiement. Mais aucune d'elles n'a encore accepté de travailler avec nous. Et pour une partie de nos produits, ce n'est pas gagné d'avance.
 
@@ -54,19 +54,19 @@ Quelques mois plus tard, en août 2021, OnlyFans a annoncé l'interdiction du co
 
 ## Ce que ça change dans notre code
 
-Orochia est une plateforme vidéo pour créateurs, et une partie de ce qu'elle permettra est réservée aux adultes. Elle est donc dans cette zone, et je l'ai su dès le départ. [Le ticket des comptes marchands](https://github.com/krizaka/orochia/issues/31) le dit sans détour : le contenu adulte exclut Stripe. Le code parle donc à CCBill, à Segpay, à une passerelle crypto, et à Stripe seulement pour les tests et les déploiements sans contenu adulte ([orochia#7](https://github.com/krizaka/orochia/issues/7)).
+Orochia est une plateforme vidéo pour créateurs, et une partie de ce qu'elle permettra est réservée aux adultes. Elle est donc dans cette zone, et je l'ai su dès le départ. Le ticket des comptes marchands le dit sans détour : le contenu adulte exclut Stripe. Le code parle donc à CCBill, à Segpay, à une passerelle crypto, et à Stripe seulement pour les tests et les déploiements sans contenu adulte (orochia#7).
 
 Ça a changé la conception de plusieurs façons.
 
-Les enchères se paient en crédits bloqués. Quand vous enchérissez, vos crédits sont mis de côté. Si quelqu'un vous dépasse, ils vous reviennent. Si vous gagnez, ils sont dépensés. [La documentation des enchères](https://github.com/krizaka/orochia/blob/main/docs/AUCTIONS.md) le résume en une ligne : le gagnant a toujours déjà payé, sans course contre une rétrofacturation à la fin.
+Les enchères se paient en crédits bloqués. Quand vous enchérissez, vos crédits sont mis de côté. Si quelqu'un vous dépasse, ils vous reviennent. Si vous gagnez, ils sont dépensés. La documentation des enchères le résume en une ligne : le gagnant a toujours déjà payé, sans course contre une rétrofacturation à la fin.
 
 L'argent ne bouge qu'une fois. Chaque mouvement porte une référence unique, et un paiement n'est réglé qu'à la réception du message signé de la passerelle. Si le message arrive deux fois, la deuxième fois ne fait rien.
 
-Les rétrofacturations doivent descendre jusqu'au solde. Un audit a trouvé un trou ([orochia#167](https://github.com/krizaka/orochia/issues/167)) : le solde d'un créateur ne retirait pas les paiements contestés. Quelqu'un pouvait donc demander un versement avant que la contestation n'arrive, et la plateforme aurait payé deux fois. Ce n'est pas encore corrigé, et ça doit l'être avant le premier vrai dollar. Les règles de versement, comme le montant minimum, sortent aussi du code pour devenir des données versionnées, qu'on peut ajuster sans redéployer ([orochia#205](https://github.com/krizaka/orochia/issues/205)).
+Les rétrofacturations doivent descendre jusqu'au solde. Un audit a trouvé un trou (orochia#167) : le solde d'un créateur ne retirait pas les paiements contestés. Quelqu'un pouvait donc demander un versement avant que la contestation n'arrive, et la plateforme aurait payé deux fois. Ce n'est pas encore corrigé, et ça doit l'être avant le premier vrai dollar. Les règles de versement, comme le montant minimum, sortent aussi du code pour devenir des données versionnées, qu'on peut ajuster sans redéployer (orochia#205).
 
 Et la vérification d'âge et d'identité n'est pas une option qu'on ajoutera plus tard. Avec les règles de Mastercard, c'est une condition pour exister.
 
-Pour [Kachizaka](https://github.com/krizaka/kachizaka), notre jeu de pronostics entre amis, j'ai pris la décision inverse : des points, jamais d'argent. Dès qu'on met une mise et un prix, on entre dans la ligne « jeux de hasard » de Stripe et dans la case « approbation préalable » de PayPal. Je préfère que ce produit n'y entre jamais.
+Pour Kachizaka, notre jeu de pronostics entre amis, j'ai pris la décision inverse : des points, jamais d'argent. Dès qu'on met une mise et un prix, on entre dans la ligne « jeux de hasard » de Stripe et dans la case « approbation préalable » de PayPal. Je préfère que ce produit n'y entre jamais.
 
 ## Ce qui n'est pas décidé
 
