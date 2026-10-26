@@ -196,11 +196,10 @@
     "slot": "La marque Wu-sama, mon surnom, à la place d'une photo",
     "role": "Fondateur",
     "body": [
-      "Je m'appelle Oussama, et je développe Krizaka à Montréal.",
+      "Je m'appelle Oussama, et je construis Krizaka à Montréal.",
       "J'ai étudié les mathématiques et l'informatique, puis je me suis orienté vers les mathématiques et l'informatique appliquées aux sciences cognitives.",
-      "Mon parcours a débuté en 2011 en traitement automatique des langues et analyse sémantique. Au fil des quinze années suivantes, j'ai conçu et déployé des systèmes distribués en production dans les transports connectés, la santé, les télécoms et les réseaux IoT à l'échelle de millions d'objets.",
-      "Aujourd'hui, je développe Krizaka ici à Montréal, en orchestrant des agents d'IA autonomes et en explorant la rencontre entre modèles modernes et ingénierie logicielle robuste.",
-      "Ce blogue est un carnet d'ingénierie : mesures réelles, choix d'architecture, enseignements de la production et défis encore ouverts."
+      "Ensuite, quinze ans de systèmes distribués en production : trains connectés, santé, télécoms et réseaux IoT de millions d'objets.",
+      "Aujourd'hui, je construis Krizaka avec des agents d'IA, et ce blogue en est le carnet d'ingénierie : vraies mesures, choix et problèmes encore ouverts."
     ],
     "labNote": "Mon premier contact avec l'IA date de 2011, au {lab}, bien avant que le mot soit à la mode.",
     "lab": "laboratoire d'informatique de Grenoble (LIG)",
