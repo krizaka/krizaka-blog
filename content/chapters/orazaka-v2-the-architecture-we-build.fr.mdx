@@ -3,9 +3,12 @@ title: "Orazaka v2 : l'architecture qu'on construit"
 description: "Les services d'Orazaka et leur rôle, les packs, le routage qui vit dans la base, la porte unique des vérifications externes, les règles tirées de la loi, et ce qu'on a trouvé en demandant qui a le droit de lire quoi."
 seoDescription: "L'architecture d'Orazaka v2 : services, packs, routage dans la base, vérifications externes, règles tirées de la loi, contrôle d'accès, et ce qui coûte."
 date: 2026-10-26
+publishedAt: "2026-10-26T21:30:00-04:00"
 tags: [orazaka, ai, security]
 author: oussama
-draft: true
+draft: false
+cover: connectors-patchbay
+coverAlt: "Gros plan sur la baie de brassage d'un studio d'enregistrement : des rangées de prises, des câbles tressés de plusieurs couleurs branchés avec soin, une lumière chaude de tungstène et un liseré bleu froid"
 chapter: 13
 period: "2026-10-23/2026-10-26"
 sources:
@@ -165,9 +168,61 @@ Je donne ce qui est mesuré ou lu dans les dépôts, et je laisse de côté le r
 - **Un composant ne se construit jamais seul.** Avec 20 dépôts, la CI clone tout le workspace et construit d'abord les dépendances depuis leur source. C'est la bonne façon d'attraper une rupture, et c'est lent. Le chapitre sur la CI en parle.
 - **La documentation générée vieillit vite.** Elle est refaite toutes les deux heures par une pull request qui se fusionne seule. Le message de ce changement dit pourquoi : les « docs périmées » étaient la cause de rouges qui revenaient.
 - **Les vérifications n'ont pas de fournisseur réel**, et un produit ne peut pas les appeler par l'API tant que la porte HTTP n'est pas livrée.
-- **Le contrôle d'accès du chapitre précédent.** Il n'est pas fini.
+- **Le contrôle d'accès de la section précédente.** Il n'est pas fini.
 - **Une machine.** Le moteur tourne d'abord sur un Mac. [Le chapitre 2](/fr/story/an-engine-on-a-laptop/) raconte ce que ça coûte quand tout partage la même mémoire.
 
 ## Et la v3 ?
 
-{/* V3 — written by the next session */}
+La v3 n'existe pas. Il n'y a ni branche, ni dépôt, ni date. Mais si on va un jour vers une v3, elle aura un seul but : être plus performante. Pas plus jolie, pas plus découpée. Faire le même travail plus vite et pour moins cher, et pouvoir le prouver.
+
+Ce qui suit est donc une direction, pas quelque chose de construit. Chaque point part d'une douleur mesurée dans la v2, ou d'une douleur qu'on n'a pas encore mesurée, et dans ce cas je le dis.
+
+### Où la v2 fait mal
+
+Les chiffres viennent de la [mesure M0](https://github.com/krizaka/orazaka/blob/main/docs/measurements/M0-run-overhead.md), de la [mesure du démarrage à froid](https://github.com/krizaka/orazaka/blob/main/docs/measurements/63-cold-start-and-diffusion.md) sur un H100 et de l'[ADR-078](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-078-runpod-serverless-workers-at-zero-idle.md).
+
+- **Les requêtes.** Un run d'une seule étape fait 37 requêtes SQL. La mesure en a relevé environ 9 en trop : l'état des étapes calculé deux fois, la configuration de l'installation lue deux fois, le plan relu à chaque avancée alors qu'un plan publié ne peut plus changer (un déclencheur de la base l'interdit). Pour un plan de six étapes, la mesure estime qu'on repaie les 15 requêtes de fin à chaque étape. Elle ne l'a pas mesuré.
+- **Les sauts entre services.** Un run réserve des crédits avant de partir et les règle à la fin : deux allers-retours HTTP vers la facturation. Pendant la mesure, la facturation était remplacée par un faux, donc les 19,2 ms ne les comptent pas. Le travail, lui, passe par l'outbox, RabbitMQ, le job-service et le worker, et le résultat revient par le même chemin.
+- **Attendre au lieu d'être prévenu.** L'envoi d'un run attend le relais de l'outbox, qui relit la base toutes les 500 ms : 250 ms en moyenne, à ne rien faire. Les événements de run existent déjà côté Studio, un flux SSE et des webhooks signés. Mais le client commun attend encore la fin d'un run en relisant son état toutes les deux secondes.
+- **Les démarrages à froid.** Le premier run après le redémarrage d'un service paie 30 à 75 ms au lieu de 12 à 14, le temps que la JVM se chauffe. C'est peu. Le GPU, c'est autre chose : charger <Model id="wan22-ti2v-5b">Wan 2.2 TI2V 5B</Model> (34 Go) sur un H100 prend 87,8 s depuis le volume réseau, et 32,1 s une fois copié sur le disque du pod. La cible était sous 12 s. Elle est manquée.
+- **La file du GPU.** Un pod loué se paie à l'heure, qu'il travaille ou non. Le 16 octobre, il a tourné cinq heures avec le GPU à 0 %. Une garde l'arrête maintenant. Ce qu'on ne sait pas, c'est combien de temps un travail attend dans la file avant qu'un GPU le prenne : nos temps vont « de la commande au fichier », et ils mélangent l'attente, le transfert et le rendu.
+- **La sérialisation.** Chaque service garde sa copie du contrat dont il a besoin, et chaque message est écrit puis relu à chaque saut. Je n'ai aucun chiffre sur ce que ça coûte. C'est sur la liste de ce qu'il faut mesurer.
+
+La mesure M0 dit elle-même une chose importante : ces 37 requêtes sont rapides, et retirer les 9 en trop améliorerait un chiffre déjà loin sous son seuil de 250 ms. C'est pour ça qu'on n'y a pas touché. Un run seul ne fait pas mal. Ce qui peut faire mal est ce qu'on n'a pas mesuré : vingt runs qui avancent en même temps, un plan de six étapes, une base qui n'est plus sur la même machine.
+
+### Ce que la v3 viserait
+
+Un goulot, une cible.
+
+- **Moins de sauts.** On fusionne deux services quand la coupe coûte plus qu'elle ne rapporte. La règle existe déjà : on a découpé la saga selon ce qui fuyait, pas selon sa longueur ([ADR-059](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-059-run-saga-split.md)). Une coupe reste si elle protège une frontière : le grand livre des crédits, la sécurité, un worker qui tourne sur une autre machine. Elle part si elle n'est qu'un saut de plus. Pour la facturation, la question à mesurer est simple : une réservation par run plutôt qu'une par étape.
+- **Des événements au lieu de relire.** Le relais de l'outbox serait réveillé quand une ligne arrive, au lieu de passer toutes les 500 ms. Et les produits écouteraient les webhooks signés ou le flux SSE au lieu de relire l'état d'un run toutes les deux secondes : `@krizaka/orazaka-client` doit apprendre à les écouter, et Yomizaka doit passer à ce client.
+- **Du SQL groupé, et des vues de lecture.** D'abord retirer les lectures en double. Ensuite grouper les écritures d'une même transition en un seul aller-retour, avec des requêtes préparées. Et pour ce qu'un client lit souvent (l'état d'un run, son détail), une vue de lecture tenue à jour par les événements, au lieu de relire le run, le plan et les étapes à chaque demande.
+- **Un cache, avec son invalidation écrite.** La mesure donne le premier candidat : un plan publié ne change jamais, on peut donc le garder en mémoire sans risque. Pour le reste (la configuration d'une installation, les droits d'un Studio), un cache n'a sa place que si on sait nommer l'événement qui le vide. Un cache sans invalidation écrite est un bug qui attend son jour.
+- **Des workers chauds et un ordonnanceur GPU.** Garder un worker chaud tant que la file a du travail, l'éteindre dès qu'elle est vide : la garde fait déjà la seconde moitié. Pour le chargement, la mesure écrit le chemin vers les 12 s : un checkpoint FP8, deux fois plus léger, et un disque plus rapide ou un cache déjà chaud. L'ADR-078 propose des workers serverless qui ne coûtent rien au repos ; elle attend son essai. Et un ordonnanceur qui regroupe les travaux par modèle, pour ne pas recharger 34 Go entre deux clips.
+- **Des réponses en flux.** Le chat est déjà en SSE. La cible : qu'un run long montre chaque étape quand elle finit, jusque dans le produit, au lieu d'un état final qu'on attend.
+- **L'authentification une seule fois, à l'edge.** Aujourd'hui, l'edge échange la clé d'API contre un jeton, puis chaque service vérifie ce jeton et en tire ses droits de son côté. La cible : l'edge établit une fois qui demande (la personne, son organisation, ses rôles, ses groupes), le signe, et chaque service reçoit ce principal signé et le transmet jusqu'à la recherche et aux outils. Ce n'est pas d'abord une question de vitesse. C'est le correctif d'[orazaka-ai-engine#107](https://github.com/krizaka/orazaka-ai-engine/issues/107) vu d'un peu plus haut : un rôle ne protège rien tant qu'il n'arrive pas jusqu'au chemin qui lit. Ce correctif est en cours. La v3 en ferait la forme normale.
+
+### Comment on saurait que la v3 est meilleure
+
+« Plus performant » sans chiffre, c'est une impression. La méthode, on l'a déjà : M0 a fixé son seuil (250 ms au p95) avant de mesurer, et la décision a suivi le chiffre. La v3 transformerait ces chiffres en budgets, vérifiés dans la CI.
+
+| Budget | Aujourd'hui | Cible |
+|:---|:---|:---|
+| Requêtes SQL, run d'une étape | 37, mesuré | 28 ou moins, sans les lectures en double |
+| Surcoût du saga, p95 | 19,2 ms, mesuré | pas plus, et toujours sous 250 ms |
+| Attente de l'envoi | 250 ms en moyenne, 500 au plus, mesuré | aucune relève périodique sur ce chemin |
+| Chargement de Wan 2.2 TI2V 5B, H100 | 32,1 s, mesuré | sous 12 s |
+| Rendu d'un clip de 5 s, H100 | 0,19 $, mesuré | pas plus |
+| GPU loué au repos | cinq heures payées à 0 % le 16 octobre, environ 20 $, mesuré | 0 $ |
+| Run de six étapes, vingt runs à la fois | pas mesuré | les mesurer d'abord |
+| Attente dans la file du GPU | pas mesuré | la séparer du rendu, puis la mesurer |
+
+Le harnais de M0 existe déjà dans les tests du service Studio. La première marche est petite : faire de ses chiffres des assertions. Une pull request qui ajouterait une requête à un run ferait échouer la CI, et le message dirait laquelle. Le compte des requêtes est le budget le plus facile, parce qu'il ne dépend ni de la machine ni de la charge. Les temps, eux, se comparent sur la même machine, contre la mesure précédente. Et chaque budget fonctionne comme un cliquet : il part du chiffre d'aujourd'hui, et il ne peut que baisser.
+
+### Ce qu'on refuse
+
+- **Une réécriture.** Je connais la tentation. On voit 37 requêtes, une file qui attend, une coupe de trop, et on a envie de tout reprendre au propre. On a déjà fait autrement. En juillet, le monolithe d'Orazaka a été découpé en services par étapes, chacune verte avant la suivante ([ADR-032](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-032-microservices-decomposition-strangler-fig.md), le « figuier étrangleur ») : l'edge d'abord, pour que chaque bascule soit une ligne dans la table des routes, avec un retour arrière immédiat. La v3 suivrait le même chemin : un goulot à la fois, mesuré avant, mesuré après, et l'ancien chemin gardé tant que le nouveau n'a pas fait ses preuves.
+- **Optimiser sans mesurer.** Les 9 requêtes en double sont connues depuis la première mesure, et on les a laissées, parce que le chiffre tenait son seuil. C'était la bonne décision. Elles partiront avec le premier budget qui les compte.
+- **Couper ou fusionner pour la forme.** Une coupe se justifie par une frontière, une fusion par un chiffre. Jamais par un schéma plus joli.
+
+Ce que j'en retiens : la v3 ne sera pas une version qu'on annonce un matin. Ce sera une suite de budgets, passés au vert l'un après l'autre, sur le moteur qui tourne déjà.

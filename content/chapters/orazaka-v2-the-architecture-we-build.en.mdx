@@ -3,9 +3,12 @@ title: "Orazaka v2: the architecture we are building"
 description: "Orazaka's services and what each one does, the packs, routing that lives in the database, the single door for external checks, rules drawn from the law, and what we found when we asked who may read what."
 seoDescription: "The architecture of Orazaka v2: services, packs, routing in the database, external checks, rules from the law, access control, and what it costs."
 date: 2026-10-26
+publishedAt: "2026-10-26T21:30:00-04:00"
 tags: [orazaka, ai, security]
 author: oussama
-draft: true
+draft: false
+cover: connectors-patchbay
+coverAlt: "Close-up of a recording studio patch bay: rows of sockets, braided cables of several colours plugged in neatly, warm tungsten light with a cool blue rim"
 chapter: 13
 period: "2026-10-23/2026-10-26"
 sources:
@@ -170,4 +173,56 @@ I give what is measured or read in the repositories, and leave out the rest.
 
 ## And v3?
 
-{/* V3 — written by the next session */}
+v3 does not exist. There is no branch, no repository, no date. But if we ever head towards a v3, it will have one goal: to perform better. Not prettier, not cut into more pieces. The same work, faster and cheaper, and a way to prove it.
+
+So what follows is a direction, not something built. Each point starts from a pain measured in v2, or from a pain we have not measured yet, and then I say so.
+
+### Where v2 hurts
+
+The figures come from the [M0 measurement](https://github.com/krizaka/orazaka/blob/main/docs/measurements/M0-run-overhead.md), the [cold-start measurement](https://github.com/krizaka/orazaka/blob/main/docs/measurements/63-cold-start-and-diffusion.md) on one H100, and [ADR-078](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-078-runpod-serverless-workers-at-zero-idle.md).
+
+- **Statements.** A single-step run takes 37 SQL statements. The measurement found about 9 of them redundant: step states computed twice, the installation's configuration read twice, the blueprint re-read on every advance although a published blueprint can no longer change (a database trigger forbids it). For a six-step blueprint, the measurement estimates that the 15 closing statements are paid again at every step. It did not measure it.
+- **Hops between services.** A run holds credits before it starts and settles them at the end: two HTTP round-trips to billing. During the measurement, billing was replaced by a fake, so the 19.2 ms do not count them. The work itself goes through the outbox, RabbitMQ, the job-service and the worker, and the result comes back the same way.
+- **Waiting instead of being told.** Dispatching a run waits for the outbox relay, which reads the database every 500 ms: 250 ms on average, doing nothing. Run events already exist on the Studio side, an SSE stream and signed webhooks. But the shared client still waits for a run to finish by reading its state every two seconds.
+- **Cold starts.** The first run after a service restarts pays 30 to 75 ms instead of 12 to 14, while the JVM warms up. That is little. The GPU is another matter: loading <Model id="wan22-ti2v-5b">Wan 2.2 TI2V 5B</Model> (34 GB) on an H100 takes 87.8 s from the network volume, and 32.1 s once copied to the pod's disk. The target was under 12 s. It is missed.
+- **The GPU queue.** A rented pod is paid by the hour, working or not. On 16 October it ran five hours with the GPU at 0 %. A guard stops it now. What we do not know is how long a job waits in the queue before a GPU takes it: our times run "from command to file", and they mix waiting, transfer and rendering.
+- **Serialisation.** Each service keeps its own copy of the contract it needs, and every message is written and read again at every hop. I have no figure for what that costs. It is on the list of things to measure.
+
+The M0 measurement itself says something important: those 37 statements are fast, and removing the 9 redundant ones would improve a number already far under its 250 ms threshold. That is why we left them alone. A single run does not hurt. What may hurt is what we have not measured: twenty runs advancing at once, a six-step blueprint, a database that is no longer on the same machine.
+
+### What v3 would aim for
+
+One bottleneck, one target.
+
+- **Fewer hops.** Two services are merged when the split costs more than it gives. The rule already exists: we split the saga by what leaked, not by how long it was ([ADR-059](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-059-run-saga-split.md)). A split stays if it guards a boundary: the credit ledger, security, a worker running on another machine. It goes if it is only one more hop. For billing, the question to measure is simple: one hold per run rather than one per step.
+- **Events instead of re-reading.** The outbox relay would be woken when a row arrives, instead of passing every 500 ms. And products would listen to the signed webhooks or the SSE stream instead of re-reading a run's state every two seconds: `@krizaka/orazaka-client` has to learn to listen to them, and Yomizaka has to move to that client.
+- **Batched SQL, and read models.** First remove the duplicate reads. Then group the writes of one transition into a single round-trip, with prepared statements. And for what a client reads often (a run's state, its detail), a read model kept up to date by the events, instead of re-reading the run, the blueprint and the steps on every request.
+- **A cache, with its invalidation written down.** The measurement gives the first candidate: a published blueprint never changes, so it can be kept in memory safely. For the rest (an installation's configuration, a Studio's access rights), a cache has its place only if we can name the event that clears it. A cache without written invalidation is a bug waiting for its day.
+- **Warm workers and GPU scheduling.** Keep a worker warm while the queue has work, stop it as soon as the queue is empty: the guard already does the second half. For loading, the measurement writes down the way to 12 s: an FP8 checkpoint, half the size, and a faster disk or an already warm cache. ADR-078 proposes serverless workers that cost nothing at rest; it waits for its spike. And a scheduler that groups jobs by model, so we do not reload 34 GB between two clips.
+- **Streaming responses.** Chat is already SSE. The target: a long run shows each step as it finishes, all the way into the product, instead of a final state you wait for.
+- **Authentication once, at the edge.** Today the edge exchanges the API key for a token, then each service checks that token and derives its rights on its own. The target: the edge establishes once who is asking (the person, their organisation, their roles, their groups), signs it, and each service receives that signed principal and passes it down to retrieval and to the tools. This is not mainly about speed. It is the fix of [orazaka-ai-engine#107](https://github.com/krizaka/orazaka-ai-engine/issues/107) seen from a little higher: a role protects nothing until it reaches the path that reads. That fix is in progress. v3 would make it the normal shape.
+
+### How we would know v3 is better
+
+"Better performance" without a figure is a feeling. We already have the method: M0 set its threshold (250 ms at p95) before measuring, and the decision followed the number. v3 would turn those numbers into budgets, checked in CI.
+
+| Budget | Today | Target |
+|:---|:---|:---|
+| SQL statements, single-step run | 37, measured | 28 or fewer, without the duplicate reads |
+| Saga overhead, p95 | 19.2 ms, measured | no more, and always under 250 ms |
+| Dispatch wait | 250 ms on average, 500 at most, measured | no periodic poll on this path |
+| Loading Wan 2.2 TI2V 5B, H100 | 32.1 s, measured | under 12 s |
+| Rendering a 5 s clip, H100 | $0.19, measured | no more |
+| Rented GPU at rest | five hours paid at 0 % on 16 October, about $20, measured | $0 |
+| Six-step run, twenty runs at once | not measured | measure them first |
+| Wait in the GPU queue | not measured | separate it from rendering, then measure it |
+
+M0's harness already exists in the Studio service's tests. The first step is small: turn its figures into assertions. A pull request that added a statement to a run would fail CI, and the message would say which one. The statement count is the easiest budget, because it depends neither on the machine nor on the load. Times are compared on the same machine, against the previous measurement. And each budget works like a ratchet: it starts from today's number, and it can only go down.
+
+### What we refuse
+
+- **A rewrite.** I know the temptation. You see 37 statements, a queue that waits, one split too many, and you want to start over cleanly. We have already done it another way. In July, Orazaka's monolith was cut into services in steps, each one green before the next ([ADR-032](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-032-microservices-decomposition-strangler-fig.md), the "strangler fig"): the edge first, so that every cutover was one line in the route table, with an instant rollback. v3 would follow the same path: one bottleneck at a time, measured before, measured after, and the old path kept until the new one has proved itself.
+- **Optimising without measuring.** The 9 duplicate statements have been known since the first measurement, and we left them, because the number held its threshold. It was the right call. They will go with the first budget that counts them.
+- **Splitting or merging for looks.** A split is justified by a boundary, a merge by a number. Never by a nicer diagram.
+
+What I take from it: v3 will not be a version we announce one morning. It will be a series of budgets, turned green one after the other, on the engine that already runs.
