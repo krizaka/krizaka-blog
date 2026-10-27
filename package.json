@@ -8,7 +8,7 @@
     "gen": "node scripts/gen-favicon.mjs",
     "dev": "npm run gen && next dev",
     "build": "npm run gen && node scripts/build.mjs",
-    "lint": "tsc --noEmit && krizaka-i18n check messages && node scripts/check-content.mjs",
+    "lint": "tsc --noEmit && krizaka-server-client-boundary && krizaka-i18n check messages && node scripts/check-content.mjs",
     "test": "node --test tests/*.test.mjs",
     "links": "node scripts/check-links.mjs --base http://localhost:3000 --external"
   },
@@ -31,7 +31,7 @@
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
-    "@krizaka/config": "^0.4.1",
+    "@krizaka/config": "^0.10.0",
     "@krizaka/email": "^0.1.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^26",
