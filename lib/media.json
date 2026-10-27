@@ -4219,5 +4219,75 @@
    "costUsd": 0,
    "note": "Made for the cover of chapter 12 with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Three candidates were made (seeds 2601 to 2603: a cutting mat with paper, an oak board, paper tiles); this one was kept after a review at full size because it shows the cut itself, the pieces still fitting together."
   }
+ },
+ "shift-left-cover": {
+  "kind": "image",
+  "width": 1536,
+  "height": 864,
+  "blur": "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAADQAQCdASoQAAkABUB8JQBdgCFNzBcawADN8PGzHjUkUXJD5538wEz3vERDnGpgpTsSBr0h7v3STRLwpreKOV8lnmwwEAAA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/ci-the-error-never-leaves-the-editor/shift-left-cover-480.30d6cf105d.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/ci-the-error-never-leaves-the-editor/shift-left-cover-960.a5a985a821.webp"
+   },
+   {
+    "w": 1536,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/ci-the-error-never-leaves-the-editor/shift-left-cover-1536.bcf9be4025.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "A tidy walnut desk at first light, an open laptop whose dark editor window shows soft faint lines with one single small amber marker glowing in the margin, no readable text, a brass magnifying glass resting beside it, a steaming ceramic cup, a paper notebook with a neat row of ticked boxes, through the tall window behind a snowy Montreal street turns pink and blue at dawn, 50mm lens, low angle, bokeh of street lights, calm and orderly mood. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No text, no letters, no numbers, no logos, no people, no watermark.",
+   "seed": "2026",
+   "size": "1536×864",
+   "seconds": 0,
+   "costUsd": 0,
+   "note": "Made like the cover of chapter 11, with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. One seed (2026), kept after a review at full size."
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/ci-the-error-never-leaves-the-editor/shift-left-cover-480.53222a0903.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/ci-the-error-never-leaves-the-editor/shift-left-cover-768.c3feebcc6e.avif"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/ci-the-error-never-leaves-the-editor/shift-left-cover-1200.bb50d951e3.avif"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/ci-the-error-never-leaves-the-editor/shift-left-cover-1536.ddc94ec9e0.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/ci-the-error-never-leaves-the-editor/shift-left-cover-480.9f73494de1.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/ci-the-error-never-leaves-the-editor/shift-left-cover-768.57957399fc.webp"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/ci-the-error-never-leaves-the-editor/shift-left-cover-1200.961c9fe2fd.webp"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/ci-the-error-never-leaves-the-editor/shift-left-cover-1536.bc0f5787ce.webp"
+    }
+   ]
+  }
  }
 }
