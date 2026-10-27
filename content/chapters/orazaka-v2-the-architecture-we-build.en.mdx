@@ -1,0 +1,173 @@
+---
+title: "Orazaka v2: the architecture we are building"
+description: "Orazaka's services and what each one does, the packs, routing that lives in the database, the single door for external checks, rules drawn from the law, and what we found when we asked who may read what."
+seoDescription: "The architecture of Orazaka v2: services, packs, routing in the database, external checks, rules from the law, access control, and what it costs."
+date: 2026-10-26
+tags: [orazaka, ai, security]
+author: oussama
+draft: true
+chapter: 13
+period: "2026-10-23/2026-10-26"
+sources:
+  - orazaka-engine-v2
+  - plugging-a-product-into-an-ai-engine
+  - orazaka-admin-console-who-can-open-it
+versus:
+  faced: "an engine we could no longer sum up on one page"
+  built: "one request, one door, rules that are data"
+stats:
+  - value: "20"
+    label: "repositories in Orazaka's workspace"
+    section: "One request, end to end"
+  - value: "35"
+    label: "Studios in the catalogue, across 12 packs"
+    section: "Packs: the trade is data"
+  - value: "37"
+    label: "SQL statements for a single-step run"
+    section: "What it costs, what hurts"
+  - value: "19.2 ms"
+    label: "p95 of that run, after the outbox"
+    section: "What it costs, what hurts"
+---
+
+When someone asks me what Orazaka is, technically, I answer with a list of repositories. It is a bad answer. A list does not say what happens when someone asks a question.
+
+This chapter is the answer on one page, then on several. It describes the engine as it is on the main branch on 26 October, not as I dream it. And it tells the story of a question that came to me while rereading it: who may read what?
+
+## One request, end to end
+
+The [orazaka](https://github.com/krizaka/orazaka) workspace assembles 20 repositories. Five are reusable Krizaka building blocks (users, notifications, billing, the shared kit, the Maven parent), four are the foundations (Orazaka's Maven parent, the contracts, the edge, the interface kit), six make up the AI engine, three are clients (web, mobile, command line), one is a worker, and one holds the packs.
+
+Here is the path of a request, in the order it crosses things.
+
+<Pipeline label="The path of a request through Orazaka">
+  <Stage title="The client" note="web, mobile or a product">The web app goes through its own server (a BFF): the browser never calls a service directly. The mobile app calls the edge with a token. A product such as Yomizaka calls it with a service key.</Stage>
+  <Stage title="The edge" note="port 8088">The single HTTP entry point. It exchanges an API key for a session token, applies CORS and tracing, and sends the route to the service that owns it. Spring MVC and virtual threads, nothing exotic.</Stage>
+  <Stage title="Conversation or Studio" note="ports 8080 and 8096">The conversation service turns the transport (SSE chat, an intent) into an engine request and enforces security, with no business logic. The Studio service holds the pack catalogue, the installations and the runs.</Stage>
+  <Stage title="RabbitMQ" note="interactive and batch queues" tone="gate">The work is published to a queue. A row in the database, the capability, says which one.</Stage>
+  <Stage title="The job service" note="port 8090">It drains the queues and hands each job to the executor that same row names: code inside the service, or an external worker.</Stage>
+  <Stage title="The worker" note="Python, Metal or CUDA">For images and video, a native worker reads the queue, does the work and reports its progress.</Stage>
+  <Stage title="Billing" note="hold, settle, release" tone="ship">Every step held credits before it left. At the end, the billing service settles what ran, or releases what was not used.</Stage>
+</Pipeline>
+
+Two more services sit beside this path. The knowledge service (port 8084) serves recommendations and search. The automation service (port 8082) runs automations (Jira, Slack, an agent on the user's own machine) with its own scheduler.
+
+## Who does what
+
+I am correcting something I used to say badly. The "AI engine" is not a service. It is a library, `orazaka-ai-engine`, that the services embed. It holds the core (the AI client and its providers), the interceptor chain, the tools and the orchestration. The services are around it.
+
+| Piece | Kind | Role |
+|:---|:---|:---|
+| `orazaka-edge` | service | Single HTTP door, API key to token exchange, CORS, tracing. |
+| `orazaka-conversation-service` | service | SSE chat, intents, models, pipeline, MCP, jobs. Translates transport, no business logic. |
+| `orazaka-ai-engine` | library | The core, 14 interceptors, the tools (MCP, RAG, sandbox), orchestration. |
+| `orazaka-job-service` | service | Runs asynchronous jobs, holds the registry of capabilities and workers. |
+| `orazaka-studio` | service | Pack catalogue, Studios, installations, runs as a saga. |
+| `orazaka-knowledge-service` | service | Vector search (pgvector), asynchronous indexing, recommendations. |
+| `orazaka-automation-service` | service | Connectors and scheduling (Quartz). |
+| `orazaka-worker-media` | Python worker | Image, video, composition, on the machine's GPU. |
+| `krizaka-billing` | service | Credits, wallets, plans, metering: hold, settle, release. |
+| `orazaka-web-client` | application | Next.js, with its mandatory BFF. |
+| `orazaka-mobile-client` | application | Expo. It reads a signed manifest to find the edge, never a hard-coded address. |
+
+The ports and roles come from the repositories' READMEs and from the architecture generated from the code (`docs/_generated/ARCHITECTURE.md`). I do not write them by hand, for the usual reason: a hand-drawn diagram is out of date the next day.
+
+## Packs: the trade is data
+
+A pack is a folder: a `pack.yaml` manifest, its translations, its Studios (plans of steps that form a graph), and sometimes its own worker. Installing a pack writes data (capability rows, a price, a catalogue entry). It changes no code.
+
+The generated catalogue counts 12 packs and 35 Studios today. Six packs are published: document verification, media, prospecting, data analytics, wellbeing, real estate. The others are drafts or stay off the shop window. A pack's shape is checked against a schema on every change, and `orazaka pack validate` does it locally.
+
+Why packs rather than functions in the engine? Because the engine must not know what a lease is. It knows how to run a plan, hold credits, call a tool, keep a trace. What a lease is, and what makes a clause forbidden, is content. It can be reread, versioned and fixed without a deployment.
+
+## Routing is in the database
+
+A capability is a row in the `orazaka_capabilities` table. Two columns matter. `routing_key` says where the work goes (the queue a process drains). `handler_key` says which code runs it. Both are data: a pack adds a capability with a row, not with a deployment.
+
+This is not a matter of style. Before, producers guessed the queue with a chain of `contains()` on the feature name. A capability the chain did not recognise went silently to the text queue, and nobody noticed. The schema comment (ADR-037) says it plainly: the mapping is data, and there is no default.
+
+A governance test guards the whole: `assertEveryCapabilityHasAnExecutor` fails if a capability row has no executor. What is in the database must be wired in the code, or the build stops.
+
+The same principle serves providers. The router for external checks picks the enabled row that serves the purpose and the region, lowest priority first, whose `handler_key` names a known adapter. A row whose handler is unknown is skipped. If none is left, the answer is "not configured", not an error and not a made-up result.
+
+## The single door for external checks
+
+For a rental application, Yomizaka needs to know whether a candidate has court records with the housing tribunal, or a credit history. This is sensitive data, sold by third-party providers, with keys, a price per call and Law 25.
+
+The engine handles it through one service, `ExternalCheckService`, and every call follows the same order:
+
+1. the subject reference, a keyed HMAC-SHA-256 of their identifier: no sealed pepper, no check;
+2. consent, per purpose: none, or withdrawn, and the request is refused without touching the provider;
+3. the key: the person's own first, the platform's next, otherwise refusal;
+4. a hold of one call against the run's budget: if the budget cannot hold it, refusal;
+5. the connector, whose failure becomes a provider error whose message is neither returned nor logged;
+6. one audit line, whatever happens;
+7. the hold is settled if the provider answered, released otherwise.
+
+The connector is never reached without consent, a key and a hold, because no path goes around the service. The adapters for Québec court records (SOQUIJ), credit and identity (Trustii), a fallback outside Québec (Certn) and a fake that replays recorded answers are chosen by `handler_key` ([orazaka-ai-engine#101](https://github.com/krizaka/orazaka-ai-engine/pull/101)). The answers carry no names, no dates and no content of a record: an outcome, not the data.
+
+I have to say where we are. No real call is made: the fake answers, until a pilot customer gives the go-ahead. And a product cannot yet submit a check through the API: the HTTP door is open as a ticket ([orazaka-ai-engine#105](https://github.com/krizaka/orazaka-ai-engine/issues/105)). Until then, Yomizaka's adapter answers "not configured".
+
+## Rules come from the law
+
+The story is in [chapter 6](/story/the-first-products/): a visit notice judged as a lease. Four blank forms, put through the same set of rules, had given the same result: 4 failures, 5 rules passed, 3 without enough evidence. Rent rules failed on forms that had no rent. Rules passed on documents that never mentioned them.
+
+The immediate fix made every rule quote the passage it judges. The cause was elsewhere: the engine did not read what kind of document it was. [ADR-089](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-089-rules-from-the-law.md) draws one simple line:
+
+> A user's document is only ever judged by a promoted ruleset. Models may find the law and propose rules; they never decide a verdict with a rule nobody promoted.
+
+Discovery is dynamic, execution is fixed and dated. The document's kind is one value from a closed list, with a quote the worker checks. The articles of law come from a dated corpus signed by a hash. A proposed rule only becomes a ruleset after its fixtures, its golden cases, a first review and a merged pull request. A kind with no promoted ruleset answers "not supported", never "the closest lease".
+
+The ADR has been accepted since 24 October and is being built in twelve cuts. It also holds a reservation I do not hide: commercial use of the Données Québec dataset (CC BY-NC-ND 4.0) still has to be validated with its publisher.
+
+## Products go through the API, only
+
+Yomizaka never talks to a model. What it does is written in its contract: it calls the Studios of the document verification pack on Orazaka's edge with a service key. The edge exchanges it for a session of the product's account, whose grants open those Studios and no others. Yomizaka keeps the run id of every analysis and shows it: it is the trace of what ran, with which version of the Studio.
+
+Akinaza follows the same rule, more firmly: no AI in the product, in its screens or its words. If one is needed one day, it will sit behind a port. Its translation already goes through a Studio, behind a port, not through a model called directly.
+
+There is a shared client for this: [`@krizaka/orazaka-client`](https://github.com/krizaka/krizaka-ts/tree/main/packages/orazaka-client). It starts a run with an idempotency key, reads its state, waits for its end. Its errors have stable codes, every call has a 20-second default timeout, and five failures in a row open a circuit breaker for 30 seconds. A contract test guards it against recorded answers from the edge. Its first version, 0.1.0, is in krizaka-ts. Yomizaka has not moved to it yet: it keeps its own small client, and the migration is still ahead of us.
+
+Why this path, rather than a library embedded in every product? Four reasons, and they are the reasons of the single door.
+
+- Consent, budget, audit and idempotency are written once. A product that went around the engine would have to rewrite them, and one day it would forget.
+- Models change. A product that knows none of them has nothing to migrate when one is replaced.
+- The trace is the same everywhere: a run id you can show to a customer.
+- No model or provider key lives in a product.
+
+## "What if an employee asks for the CEO's salary?"
+
+This is the question that made me reread all of this. I put it like so: role-based access control must be possible, otherwise a user can ask for the CEO's salary, if that salary is in a document the assistant knows how to search.
+
+There are two ways to get it wrong. Trusting the model to be careful, and it will not be: a text read by a model can contain orders, and a check placed in the prompt is only advice. Or filtering the answer afterwards, when the passage has already been read. The check has to come first: a passage you may not read must never reach the model.
+
+So I looked at the code, without trusting what I thought I knew. Here is what is true.
+
+**What holds.**
+
+- Roles exist. The session carries the `ADMIN` and `USER` roles, and the administration routes (the rules review queue, the apps' configuration, the platform's MCP servers) require them.
+- A person's MCP servers belong to them. Someone else's id answers "not found", as if it did not exist, and tokens are never sent back in clear.
+- Internal services require a service authority. There was a day when the knowledge service had no security at all: an audit found that, and it has been fixed.
+- Access rights to a Studio are evaluated for the actor who asks, and uploaded files are filed by organisation and by person.
+- Documents and external results enter the prompt as data, never as instructions.
+
+**What is missing.** Searching the knowledge base can only filter by person, plus the entries that are "for the whole platform". There is no role, no group, no per-document access list. Semantic search is not told who is asking. And a tool exposed by the engine runs for any valid session, with no permission of its own.
+
+I will not detail it further: it is not fixed. I opened a top-priority ticket, [orazaka-ai-engine#107](https://github.com/krizaka/orazaka-ai-engine/issues/107), which is on the board as "Next". It writes the exact scene (an employee, a payroll document indexed for human resources), the expected behaviour and the acceptance criteria. The check will be applied when indexing and when querying, inside the query itself, with the tests that prove a forbidden passage never comes out. It is being fixed.
+
+I am writing this before anything sensitive is indexed, not after. What I take from it: a role in the session means nothing until every path that reads something consults it. We had it for the admin screens. We did not yet have it for what an assistant goes looking for.
+
+## What it costs, what hurts
+
+I give what is measured or read in the repositories, and leave out the rest.
+
+- **A run is expensive in statements, not in time.** A single-step run takes 37 SQL statements: 22 before dispatch, 15 after the result. The starting document announced a handful, and the measurement corrected it. The time overhead stays small: after dispatch moved through the transactional outbox, p95 is 19.2 ms and the median 10.4 ms, far from the 250 ms threshold set before measuring. What dispatch now waits for is the relay: at most 500 ms, 250 on average. The decision was to go on. But 37 statements say the saga is chatty, and I would rather write it than discover it on a day of load.
+- **A component never builds alone.** With 20 repositories, CI clones the whole workspace and builds the dependencies from source first. It is the right way to catch a break, and it is slow. The CI chapter covers it.
+- **Generated documentation goes stale fast.** It is rebuilt every two hours by a pull request that merges itself. The message of that change says why: "stale docs" were the cause of reds that kept coming back.
+- **The checks have no real provider**, and a product cannot call them through the API until the HTTP door ships.
+- **The access control of the previous section.** It is not finished.
+- **One machine.** The engine runs first on a Mac. [Chapter 2](/story/an-engine-on-a-laptop/) tells what that costs when everything shares the same memory.
+
+## And v3?
+
+{/* V3 — written by the next session */}

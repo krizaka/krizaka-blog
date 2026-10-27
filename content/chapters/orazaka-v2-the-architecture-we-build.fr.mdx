@@ -1,0 +1,173 @@
+---
+title: "Orazaka v2 : l'architecture qu'on construit"
+description: "Les services d'Orazaka et leur rôle, les packs, le routage qui vit dans la base, la porte unique des vérifications externes, les règles tirées de la loi, et ce qu'on a trouvé en demandant qui a le droit de lire quoi."
+seoDescription: "L'architecture d'Orazaka v2 : services, packs, routage dans la base, vérifications externes, règles tirées de la loi, contrôle d'accès, et ce qui coûte."
+date: 2026-10-26
+tags: [orazaka, ai, security]
+author: oussama
+draft: true
+chapter: 13
+period: "2026-10-23/2026-10-26"
+sources:
+  - orazaka-engine-v2
+  - plugging-a-product-into-an-ai-engine
+  - orazaka-admin-console-who-can-open-it
+versus:
+  faced: "un moteur qu'on ne savait plus résumer en une page"
+  built: "une demande, une porte, des règles qui sont des données"
+stats:
+  - value: "20"
+    label: "dépôts dans le workspace d'Orazaka"
+    section: "Une demande, de bout en bout"
+  - value: "35"
+    label: "Studios au catalogue, dans 12 packs"
+    section: "Les packs : le métier est une donnée"
+  - value: "37"
+    label: "requêtes SQL pour un run d'une seule étape"
+    section: "Ce que ça coûte, ce qui fait mal"
+  - value: "19,2 ms"
+    label: "p95 de ce run, après le passage par l'outbox"
+    section: "Ce que ça coûte, ce qui fait mal"
+---
+
+Quand on me demande ce qu'est Orazaka techniquement, je réponds par une liste de dépôts. C'est une mauvaise réponse. Une liste ne dit pas ce qui se passe quand quelqu'un pose une question.
+
+Ce chapitre est la réponse en une page, puis en plusieurs. Il décrit le moteur tel qu'il est sur la branche principale le 26 octobre, pas tel que je le rêve. Et il raconte une question qui m'est venue en le relisant : qui a le droit de lire quoi ?
+
+## Une demande, de bout en bout
+
+Le workspace [orazaka](https://github.com/krizaka/orazaka) assemble 20 dépôts. Cinq sont des briques Krizaka réutilisables (utilisateurs, notifications, facturation, outils communs, parent Maven), quatre sont les fondations (le parent Maven d'Orazaka, les contrats, l'edge, le kit d'interface), six forment le moteur d'IA, trois sont des clients (web, mobile, ligne de commande), un est un worker, un contient les packs.
+
+Voici le chemin d'une demande, dans l'ordre où elle le traverse.
+
+<Pipeline label="Le chemin d'une demande dans Orazaka">
+  <Stage title="Le client" note="web, mobile ou un produit">L'application web passe par son serveur intermédiaire (BFF) : le navigateur n'appelle jamais un service directement. Le mobile appelle l'edge avec un jeton. Un produit, comme Yomizaka, l'appelle avec une clé de service.</Stage>
+  <Stage title="L'edge" note="port 8088">Le point d'entrée HTTP unique. Il échange une clé d'API contre un jeton de session, applique CORS et la traçabilité, et envoie la route au service qui en est responsable. Spring MVC et threads virtuels, rien d'exotique.</Stage>
+  <Stage title="Conversation ou Studio" note="ports 8080 et 8096">Le service de conversation traduit le transport (le chat en SSE, une intention) en une demande du moteur et applique la sécurité, sans logique métier. Le service Studio tient le catalogue des packs, les installations et les runs.</Stage>
+  <Stage title="RabbitMQ" note="files interactive et batch" tone="gate">Le travail est publié dans une file. Une ligne de la base, la capacité, dit dans laquelle.</Stage>
+  <Stage title="Le job-service" note="port 8090">Il vide les files et confie chaque travail à l'exécuteur que la même ligne désigne : du code dans le service, ou un worker externe.</Stage>
+  <Stage title="Le worker" note="Python, Metal ou CUDA">Pour l'image et la vidéo, un worker natif lit la file, travaille et rend compte de sa progression.</Stage>
+  <Stage title="La facturation" note="réserver, régler, libérer" tone="ship">Chaque étape a réservé des crédits avant de partir. À la fin, le service de facturation règle ce qui a tourné, ou libère ce qui n'a pas servi.</Stage>
+</Pipeline>
+
+Un service de plus sert les recommandations et la recherche : le service de connaissances (port 8084). Un autre fait les automatisations (Jira, Slack, un agent sur la machine de l'utilisateur) avec son propre ordonnanceur : le service d'automatisation (port 8082).
+
+## Qui fait quoi
+
+Je corrige ici une chose que je disais mal. Le « moteur d'IA » n'est pas un service. C'est une bibliothèque, `orazaka-ai-engine`, que les services embarquent. Elle contient le cœur (le client d'IA et ses fournisseurs), la chaîne d'intercepteurs, les outils et l'orchestration. Les services sont autour.
+
+| Élément | Nature | Rôle |
+|:---|:---|:---|
+| `orazaka-edge` | service | Porte HTTP unique, échange clé d'API contre jeton, CORS, traçabilité. |
+| `orazaka-conversation-service` | service | Chat en SSE, intentions, modèles, pipeline, MCP, jobs. Traduit le transport, aucune logique métier. |
+| `orazaka-ai-engine` | bibliothèque | Le cœur, 14 intercepteurs, les outils (MCP, RAG, bac à sable), l'orchestration. |
+| `orazaka-job-service` | service | Exécute les jobs asynchrones, tient le registre des capacités et des workers. |
+| `orazaka-studio` | service | Catalogue de packs, Studios, installations, runs sous forme de saga. |
+| `orazaka-knowledge-service` | service | Recherche vectorielle (pgvector), indexation asynchrone, recommandations. |
+| `orazaka-automation-service` | service | Connecteurs et planification (Quartz). |
+| `orazaka-worker-media` | worker Python | Image, vidéo, composition, sur le GPU de la machine. |
+| `krizaka-billing` | service | Crédits, portefeuilles, forfaits, mesure : réserver, régler, libérer. |
+| `orazaka-web-client` | application | Next.js, avec son BFF obligatoire. |
+| `orazaka-mobile-client` | application | Expo. Il lit un manifeste signé pour trouver l'edge, jamais une adresse écrite en dur. |
+
+Les ports et les rôles viennent des README des dépôts et de l'architecture générée à partir du code (`docs/_generated/ARCHITECTURE.md`). Je ne les écris pas à la main, pour la raison qu'on connaît : un schéma écrit à la main vieillit le lendemain.
+
+## Les packs : le métier est une donnée
+
+Un pack est un dossier : un manifeste `pack.yaml`, ses traductions, ses Studios (des plans d'étapes qui forment un graphe), et parfois son propre worker. Installer un pack écrit des données (des lignes de capacités, un prix, une entrée de catalogue). Il ne change aucun code.
+
+Le catalogue généré compte aujourd'hui 12 packs et 35 Studios. Six packs sont publiés : la vérification de documents, les médias, la prospection, l'analyse de données, le bien-être, l'immobilier. Les autres sont des brouillons ou n'apparaissent pas dans la vitrine. Un pack vérifie sa forme contre un schéma à chaque modification, et `orazaka pack validate` le fait en local.
+
+Pourquoi des packs plutôt que des fonctions dans le moteur ? Parce que le moteur ne doit pas savoir ce qu'est un bail. Il sait lancer un plan, réserver des crédits, appeler un outil, garder une trace. Ce qu'est un bail, et ce qui fait qu'une clause est interdite, est du contenu. Il se relit, se versionne et se corrige sans redéployer.
+
+## Le routage est dans la base
+
+Une capacité est une ligne dans la table `orazaka_capabilities`. Deux colonnes comptent. `routing_key` dit où le travail va (la file qu'un processus vide). `handler_key` dit quel code l'exécute. Les deux sont des données : un pack ajoute une capacité avec une ligne, pas avec un déploiement.
+
+Ce n'est pas un choix de style. Avant, les producteurs devinaient la file avec une chaîne de `contains()` sur le nom de la fonctionnalité. Une capacité que la chaîne ne reconnaissait pas partait en silence vers la file de texte, et personne ne le voyait. Le commentaire du schéma (ADR-037) le dit en toutes lettres : la correspondance est une donnée, et il n'y a pas de valeur par défaut.
+
+Un test de gouvernance garde le tout : `assertEveryCapabilityHasAnExecutor` échoue si une ligne de capacité n'a pas d'exécuteur. Ce qui est dans la base doit être branché dans le code, sinon la construction s'arrête.
+
+Le même principe sert pour les fournisseurs. Le routeur des vérifications externes choisit la ligne activée qui sert l'objectif et la région, la plus basse en priorité, dont le `handler_key` nomme un adaptateur connu. Une ligne dont le gestionnaire est inconnu est ignorée. S'il n'en reste aucune, la réponse est « non configuré », pas une erreur ni un faux résultat.
+
+## La porte unique des vérifications externes
+
+Yomizaka a besoin, pour un dossier de location, de savoir si un candidat a des dossiers au Tribunal administratif du logement, ou un historique de crédit. Ce sont des données sensibles, vendues par des fournisseurs tiers, avec des clés, un prix par appel et la loi 25.
+
+Le moteur les traite par un seul service, `ExternalCheckService`, et chaque appel suit le même ordre :
+
+1. la référence du sujet, une empreinte HMAC-SHA-256 de son identifiant : sans poivre scellé, pas de vérification ;
+2. le consentement, par objectif : sans consentement, ou retiré, la demande est refusée sans toucher au fournisseur ;
+3. la clé : celle de la personne d'abord, celle de la plateforme ensuite, sinon refus ;
+4. une réservation d'un appel sur le budget du run : si le budget ne tient pas, refus ;
+5. le connecteur, dont l'échec devient une erreur de fournisseur dont le message n'est ni renvoyé ni journalisé ;
+6. une ligne d'audit, quoi qu'il arrive ;
+7. la réservation est réglée si le fournisseur a répondu, libérée sinon.
+
+Le connecteur n'est jamais atteint sans consentement, sans clé et sans réservation, parce qu'aucun chemin ne contourne le service. Les adaptateurs pour les registres québécois (SOQUIJ), le crédit et l'identité (Trustii), un secours hors Québec (Certn) et un faux qui rejoue des réponses enregistrées sont choisis par `handler_key` ([orazaka-ai-engine#101](https://github.com/krizaka/orazaka-ai-engine/pull/101)). Les réponses ne portent ni noms, ni dates, ni contenu d'un dossier : un résultat, pas la donnée.
+
+Je dois dire où on en est. Aucun appel réel n'a lieu : le faux répond, tant qu'un client pilote n'a pas donné son feu vert. Et un produit ne peut pas encore soumettre une vérification par l'API : la porte HTTP est ouverte comme ticket ([orazaka-ai-engine#105](https://github.com/krizaka/orazaka-ai-engine/issues/105)). D'ici là, l'adaptateur de Yomizaka répond « non configuré ».
+
+## Les règles viennent de la loi
+
+L'histoire est dans [le chapitre 6](/fr/story/the-first-products/) : un avis de visite jugé comme un bail. Quatre formulaires vierges, passés par le même jeu de règles, avaient donné le même résultat : 4 manquements, 5 règles conformes, 3 sans preuve suffisante. Des règles de loyer échouaient sur des formulaires sans loyer. Des règles passaient sur des documents qui n'en parlaient pas.
+
+Le correctif immédiat obligeait chaque règle à citer le passage qu'elle juge. La cause, elle, était ailleurs : le moteur ne lisait pas de quel type de document il s'agissait. L'[ADR-089](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-089-rules-from-the-law.md) trace une ligne simple :
+
+> Un document d'utilisateur n'est jugé que par un jeu de règles promu. Les modèles peuvent trouver la loi et proposer des règles ; ils ne décident jamais d'un verdict avec une règle que personne n'a promue.
+
+La découverte est dynamique, l'exécution est fixe et datée. Le type du document est une valeur d'une liste fermée, avec une citation que le worker vérifie. Les articles de loi viennent d'un corpus daté et signé par une empreinte. Une proposition de règle ne devient un jeu de règles qu'après ses fixtures, ses cas de référence, une première relecture et une pull request fusionnée. Un type de document sans jeu promu répond « non pris en charge », jamais « le bail le plus proche ».
+
+L'ADR est acceptée depuis le 24 octobre et se réalise en douze tranches. Elle contient aussi une réserve que je ne cache pas : l'usage commercial du jeu de données de Données Québec (CC BY-NC-ND 4.0) reste à valider auprès de son éditeur.
+
+## Les produits passent par l'API, seulement
+
+Yomizaka ne parle jamais à un modèle. Ce qu'il fait est écrit dans son contrat : il appelle les Studios du pack de vérification de documents sur l'edge d'Orazaka avec une clé de service. L'edge l'échange contre une session du compte du produit, dont les droits ouvrent ces Studios et pas d'autres. Yomizaka garde l'identifiant du run à chaque analyse et l'affiche : c'est la trace de ce qui a tourné, avec quelle version du Studio.
+
+Akinaza suit la même règle, plus fermement : pas d'IA dans le produit, ni dans ses écrans ni dans ses mots. S'il en faut une un jour, ce sera derrière un port. Sa traduction passe déjà par un Studio, derrière un port, pas par un modèle appelé en direct.
+
+Il y a un client commun pour cela : [`@krizaka/orazaka-client`](https://github.com/krizaka/krizaka-ts/tree/main/packages/orazaka-client). Il lance un run avec une clé d'idempotence, lit son état, attend sa fin. Ses erreurs ont des codes stables, chaque appel a un délai de 20 secondes par défaut, et cinq échecs d'affilée ouvrent un disjoncteur pendant 30 secondes. Un test de contrat le garde contre les réponses de l'edge enregistrées. Sa première version, 0.1.0, est dans krizaka-ts. Yomizaka n'y est pas encore passé : il garde son propre petit client, et la migration est devant nous.
+
+Pourquoi ce chemin, et pas une bibliothèque embarquée dans chaque produit ? Quatre raisons, et ce sont celles de la porte unique.
+
+- Le consentement, le budget, l'audit et l'idempotence sont écrits une fois. Un produit qui contournerait le moteur devrait les réécrire, et un jour il les oublierait.
+- Les modèles changent. Un produit qui n'en connaît aucun n'a rien à migrer quand on remplace l'un d'eux.
+- La trace est la même partout : un identifiant de run qu'on peut montrer à un client.
+- Aucune clé de modèle ni de fournisseur n'est dans un produit.
+
+## « Et si un employé demande le salaire du PDG ? »
+
+Voici la question qui m'a fait relire tout ça. Je l'ai posée comme ceci : le contrôle d'accès par rôle doit être possible, sinon un utilisateur peut demander le salaire du PDG, si ce salaire est dans un document que l'assistant sait chercher.
+
+Il y a deux manières de se tromper. Croire que le modèle fera attention, et il ne le fera pas : un texte lu par un modèle peut contenir des ordres, et un contrôle posé dans le prompt n'est qu'un conseil. Ou filtrer la réponse après coup, quand le passage a déjà été lu. Le contrôle doit se faire avant : un passage qu'on n'a pas le droit de lire ne doit jamais arriver jusqu'au modèle.
+
+J'ai donc regardé le code, sans me fier à ce que je croyais savoir. Voici ce qui est vrai.
+
+**Ce qui tient.**
+
+- Les rôles existent. La session porte les rôles `ADMIN` et `USER`, et les routes d'administration (la file de relecture des règles, la configuration des applications, les serveurs MCP de la plateforme) les exigent.
+- Les serveurs MCP d'une personne lui appartiennent. L'identifiant d'un autre répond « introuvable », comme s'il n'existait pas, et les jetons ne sont jamais renvoyés en clair.
+- Les services internes exigent une autorité de service. Il y a eu un jour où le service de connaissances n'avait aucune sécurité du tout : ce défaut a été trouvé par un audit et corrigé.
+- Les droits d'accès à un Studio sont évalués pour l'acteur qui le demande, et les fichiers déposés sont rangés par organisation et par personne.
+- Les documents et les résultats externes entrent dans le prompt comme des données, jamais comme des instructions.
+
+**Ce qui manque.** La recherche dans la base de connaissances ne sait filtrer que par personne, plus les entrées « pour toute la plateforme ». Il n'y a ni rôle, ni groupe, ni liste de droits par document. La recherche sémantique ne reçoit pas qui demande. Et un outil exposé par le moteur s'exécute pour n'importe quelle session valide, sans permission propre à l'outil.
+
+Je ne détaille pas plus : ce n'est pas corrigé. J'ai ouvert un ticket de priorité maximale, [orazaka-ai-engine#107](https://github.com/krizaka/orazaka-ai-engine/issues/107), qui est au tableau en « Next ». Il écrit la scène exacte (un employé, un document de paie indexé pour les ressources humaines), le comportement attendu et les critères d'acceptation. Le contrôle sera appliqué à l'indexation et à la requête, dans la requête elle-même, avec les tests qui prouvent qu'un passage interdit ne sort jamais. C'est en cours de correction.
+
+Je l'écris avant qu'on indexe quoi que ce soit de sensible, pas après. Ce que j'en retiens : un rôle dans la session ne veut rien dire tant que chaque chemin qui lit quelque chose ne le consulte pas. On l'avait pour les écrans d'administration. On ne l'avait pas encore pour ce qu'un assistant va chercher.
+
+## Ce que ça coûte, ce qui fait mal
+
+Je donne ce qui est mesuré ou lu dans les dépôts, et je laisse de côté le reste.
+
+- **Un run coûte cher en requêtes, pas en temps.** Un run d'une seule étape compte 37 requêtes SQL : 22 avant l'envoi, 15 après le résultat. Le document de départ en annonçait une poignée, et la mesure l'a corrigé. Le surcoût en temps reste petit : après le passage de l'envoi par la boîte d'envoi transactionnelle (l'outbox), le p95 est de 19,2 ms et la médiane de 10,4 ms, loin du seuil de 250 ms fixé avant de mesurer. Ce que l'envoi attend désormais, c'est le relais : au plus 500 ms, 250 en moyenne. La décision était de continuer. Mais 37 requêtes disent que la saga est bavarde, et je préfère l'écrire que la découvrir un jour de charge.
+- **Un composant ne se construit jamais seul.** Avec 20 dépôts, la CI clone tout le workspace et construit d'abord les dépendances depuis leur source. C'est la bonne façon d'attraper une rupture, et c'est lent. Le chapitre sur la CI en parle.
+- **La documentation générée vieillit vite.** Elle est refaite toutes les deux heures par une pull request qui se fusionne seule. Le message de ce changement dit pourquoi : les « docs périmées » étaient la cause de rouges qui revenaient.
+- **Les vérifications n'ont pas de fournisseur réel**, et un produit ne peut pas les appeler par l'API tant que la porte HTTP n'est pas livrée.
+- **Le contrôle d'accès du chapitre précédent.** Il n'est pas fini.
+- **Une machine.** Le moteur tourne d'abord sur un Mac. [Le chapitre 2](/fr/story/an-engine-on-a-laptop/) raconte ce que ça coûte quand tout partage la même mémoire.
+
+## Et la v3 ?
+
+{/* V3 — written by the next session */}
