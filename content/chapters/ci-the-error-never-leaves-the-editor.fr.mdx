@@ -1,0 +1,109 @@
+---
+title: "L'erreur ne quitte plus l'éditeur"
+description: "Deux jours après le chapitre sur notre CI, le tableau de SonarCloud m'a montré ce qu'elle laissait passer. Comment on a déplacé les contrôles vers l'éditeur, et pourquoi chaque bug doit laisser une garde."
+seoTitle: "Shift-left : l'erreur ne quitte plus l'éditeur, suite CI"
+seoDescription: "Complexité cognitive, règles Sonar au lint, secrets, règles Java : comment Krizaka déplace ses contrôles de la CI vers l'éditeur, et ce que ça a cassé."
+date: 2026-10-27
+publishedAt: "2026-10-27T21:00:00-04:00"
+tags: [integration, security]
+author: oussama
+cover: shift-left-cover
+coverAlt: "Un bureau en noyer rangé à l'aube : un portable ouvert sur un éditeur sombre avec un seul petit repère ambre dans la marge, une loupe en laiton, une tasse et un carnet de cases cochées, une rue enneigée de Montréal floue derrière la fenêtre"
+draft: false
+chapter: 14
+period: "2026-10-26/2026-10-27"
+sources:
+  - coding-agents-one-night
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "une CI qui attrape l'erreur trop tard"
+  built: "des contrôles au lint, une seule source, et une garde par bug"
+stats:
+  - value: "15"
+    label: "seuil de complexité cognitive, vérifié au lint"
+    section: "La complexité, avant la PR"
+  - value: "12"
+    label: "dépôts où la branche doit être à jour avant la fusion"
+    section: "La course que personne ne voyait"
+  - value: "0.11 à 0.13"
+    label: "versions de @krizaka/config publiées le 27 octobre"
+    section: "Une seule source pour les règles"
+---
+
+Dans [le chapitre 11](/fr/story/how-we-built-our-ci/), je vous ai montré notre CI. Deux jours plus tard, le tableau de SonarCloud m'a montré ce qu'elle laissait passer.
+
+Tout fonctionnait comme prévu. Les portes étaient exigées, les PR attendaient. Mais plusieurs portes Sonar étaient rouges sur main, et chaque fois pour la même famille de raisons : du code trop compliqué, des petites erreurs qu'un éditeur aurait pu signaler. La CI tenait la porte, mais elle la tenait trop tard. L'agent avait fini, la PR était ouverte, et c'est dix minutes plus tard qu'on apprenait que tout était à refaire.
+
+Ce chapitre raconte le déplacement : de « la CI l'attrape » vers « l'erreur ne quitte pas l'éditeur ».
+
+## Ce que le tableau m'a montré
+
+J'ai demandé à un agent de lire, dépôt par dépôt, pourquoi les portes étaient rouges. La réponse tenait en une phrase. Presque toutes échouaient sur le nouveau code, et presque toujours sur la complexité cognitive, la règle S3776 de Sonar : une fonction qui fait trop de choses imbriquées pour qu'on la relise sans effort.
+
+Je n'ai pas baissé de seuil, et je n'ai rien marqué « ne sera pas corrigé ». Les fonctions ont été découpées, dépôt par dépôt, par des PR courtes. Dans krizaka-ui, ce même passage a révélé 37 bugs, dont seize tris sans fonction de comparaison. Un tri sans comparaison trie en texte : `[10, 9, 1].sort()` donne `[1, 10, 9]`. Personne ne l'avait vu parce que ça marchait presque toujours.
+
+Je pouvais m'arrêter là. Mais en regardant la liste, je me suis dit que rien de tout ça n'avait besoin d'attendre Sonar. Une règle de lint trouve la même chose en une seconde, pendant que l'agent écrit.
+
+## La complexité, avant la PR
+
+Le premier pas a été de faire entrer cette règle dans l'éditeur. `@krizaka/config` 0.11 ajoute la complexité cognitive à `krizakaStack()`, au même seuil que Sonar, 15. Elle s'accompagne d'un compteur dans notre cliquet : les fonctions qui dépassent déjà le seuil sont figées à leur nombre actuel, et la CI refuse d'en ajouter une seule.
+
+Le principe est celui du chapitre 11. Mais là où le cliquet comptait nos règles maison, il compte maintenant une règle qui existe aussi chez Sonar. Ce que Sonar dira dans dix minutes, le lint le dit tout de suite.
+
+Et le déploiement a cassé, bien sûr. En mettant à jour les dépôts, on a vu qu'une commande, `krizaka-ratchet --update`, effaçait en silence les compteurs qu'elle ne mesurait pas, par exemple celui des gabarits de page, propre à chaque dépôt. Rien n'échouait. Un compteur disparaissait, et avec lui la garde qu'il tenait. C'est [krizaka-ts#163](https://github.com/krizaka/krizaka-ts/pull/163) : la commande garde maintenant ce qu'elle ne connaît pas, et le dit dans son rapport. Un test s'en charge.
+
+C'est ce que j'ai retenu de cette première étape. Un outil qui efface une garde sans rien dire est pire qu'une garde qui manque.
+
+## Tout Sonar au lint
+
+Une seule règle, ce n'était pas assez. 0.12 active le jeu complet de `eslint-plugin-sonarjs`, qui est le moteur des règles JavaScript et TypeScript de SonarCloud. Une erreur Sonar devient une erreur de lint.
+
+Il y avait une dette, évidemment. Dans chaque dépôt, on a compté ce que la règle trouvait déjà et on l'a figé. Les nombres sont enregistrés dans le dépôt et ne peuvent que descendre, comme les autres. Je n'ai pas voulu tout corriger d'un coup, pour la même raison que pour les cliquets : la règle protège le nouveau code tout de suite, et la dette existante part petit à petit.
+
+Pour Java, la même idée s'écrit autrement. Dans [krizaka-build#107](https://github.com/krizaka/krizaka-build/pull/107), le parent commun lance PMD et SpotBugs avec le greffon de sécurité dans `verify`, avec une base de départ par module. Et [krizaka-build#106](https://github.com/krizaka/krizaka-build/pull/106) ajoute à nos tests d'architecture ArchUnit des règles de sécurité écrites noir sur blanc dans un ADR.
+
+Cette dernière étape a eu sa panne à elle. Un dépôt qui n'avait pas le fichier d'exclusions de SpotBugs cassait au premier build. [krizaka-build#108](https://github.com/krizaka/krizaka-build/pull/108) rend le fichier facultatif et ajoute un job canari, qui construit un projet vide avec le parent à chaque changement. On a appris à ne pas publier un parent sans le faire essayer par un consommateur.
+
+## Les secrets et les workflows, au plus tôt
+
+Il y a des choses qu'une CI ne devrait jamais avoir à attraper. Un secret poussé dans un dépôt, par exemple : une fois dans l'historique, il est brûlé.
+
+[.github#334](https://github.com/krizaka/.github/pull/334) place gitleaks et zizmor au plus tôt. D'abord un hook à chaque commit, avec une seule configuration pour tous les dépôts. Ensuite un job de CI qui lit tout l'historique. Après viennent la protection de GitHub à l'envoi, puis la règle Sonar sur les secrets, en dernier filet. zizmor fait la même chose pour nos workflows, qui sont du code comme le reste et qui peuvent être attaqués comme lui.
+
+Le premier passage sur les dépôts principaux n'a trouvé aucun vrai secret, seulement des valeurs de test et une valeur factice utilisée par la CI, que j'ai autorisées avec une raison écrite à côté.
+
+En parallèle, j'ai fait un ménage moins glorieux. Dans les dépôts clonés sur nos machines, 88 jetons traînaient dans l'adresse du dépôt distant, là où un `git remote -v` les affiche à qui regarde par-dessus l'épaule. Ils n'ont fuité nulle part, à ma connaissance. Mais ils n'avaient rien à faire là. Je les ai retirés, et les agents utilisent maintenant un jeton qu'ils demandent au moment du besoin, jamais écrit dans une adresse.
+
+## Une seule source pour les règles
+
+Déplacer les contrôles vers l'éditeur a un risque : chaque dépôt garde sa copie, et les copies divergent. On l'avait déjà vécu avec les fichiers de CI.
+
+Le bon geste est le même qu'au chapitre 11. 0.13 de `@krizaka/config` livre le paquet de règles ast-grep partagé, ainsi que les commandes `krizaka-sg-ratchet` et `krizaka-seo-family`. Aucun dépôt ne devrait plus garder sa propre copie du cliquet ni de ses propres règles. Les versions 0.11, 0.12 et 0.13 sont sorties le même jour, le 27 octobre.
+
+## La course que personne ne voyait
+
+Un jour, la branche main de Yomizaka est devenue rouge. Trente avertissements de lint pour un plafond de 27. Pourtant, chaque PR avait été verte quand on l'avait fusionnée.
+
+L'explication est bête. Deux PR étaient vertes chacune sur une base ancienne. La première a fusionné et a fixé le plafond. La seconde, partie avant, a fusionné après sans refaire le contrôle sur le nouveau main, et a ajouté ses avertissements. Aucune PR n'était fautive, et la somme l'était.
+
+La garde, c'est un réglage de GitHub : exiger que la branche soit à jour avant la fusion. Je l'ai mis sur Yomizaka, puis sur 12 dépôts, avec un petit script qui remet à jour les PR en attente de fusion automatique. J'avais pensé à la file de fusion, mais SonarCloud ne répond que sur les PR, donc une file ne l'obtiendrait jamais. La solution est moins élégante, et elle marche.
+
+## Un correctif sans garde n'est pas fini
+
+J'ai rajouté une règle à notre CI, dans [.github#336](https://github.com/krizaka/.github/pull/336) : une PR qui corrige un bug doit ajouter un test qui l'aurait attrapé, ou une règle. Sans ça, le contrôle échoue.
+
+La règle n'est pas une punition. Elle force la question que j'avais prise comme habitude au chapitre 11 : pourquoi les gardes ne l'ont pas vu ? Sans elle, je l'oublie, l'agent aussi.
+
+Dans le même changement, les PR qui ne touchent que la documentation passent maintenant par une analyse Sonar légère, au lieu de relancer toute la CI. Une PR de texte n'a pas besoin d'un build Docker, mais elle a le droit d'être vérifiée.
+
+## Ce qui n'est pas réglé
+
+Au moment où j'écris, trois portes Sonar sont encore rouges sur main : krizaka-ui, krizaka-blog et le dépôt .github lui-même. J'y travaille, et je ne les ai pas contournées.
+
+Les règles Sonar qui demandent de suivre une donnée de bout en bout, les « taint », n'ont pas de jumeau local. On les voit dans l'éditeur par le mode connecté, et Sonar reste leur seule porte. Et certaines règles de types ne se déclenchent qu'avec la configuration TypeScript complète : c'est la suite.
+
+## Ce que j'en retiens
+
+Une CI attrape les erreurs. Mais plus tard elle les attrape, plus elles coûtent, parce que l'agent a fini et que la PR est déjà ouverte. L'idée est de remonter chaque contrôle d'un cran, vers le commit, vers l'éditeur, vers la règle écrite une fois pour tous les dépôts.
+
+Et quand un bug passe quand même, la question ne change pas : qu'est-ce qui aurait dû le voir, et où ? La réponse est une garde, jamais « faire plus attention ».
