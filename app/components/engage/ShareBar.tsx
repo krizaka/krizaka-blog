@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { CheckIcon, CopyIcon, Share90Icon } from "@krizaka/icons";
 import { Button } from "@krizaka/ui/button";
 import { shareLinks } from "@/lib/share";
@@ -11,12 +11,13 @@ import { useI18n } from "../I18nProvider";
 export function ShareBar({ url, title }: { url: string; title: string }) {
   const { t } = useI18n();
   const e = t.engage;
-  const [native, setNative] = useState(false);
+  // The browser's share sheet is read as an external value: false on the server and for the first paint, no effect.
+  const native = useSyncExternalStore(
+    () => () => {},
+    () => typeof navigator !== "undefined" && typeof navigator.share === "function",
+    () => false,
+  );
   const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    setNative(typeof navigator !== "undefined" && typeof navigator.share === "function");
-  }, []);
 
   useEffect(() => {
     if (!copied) return;
