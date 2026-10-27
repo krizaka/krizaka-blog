@@ -34,9 +34,11 @@ const layoutProblems = () => {
   }
   /* Nothing of the content past the right edge: a wide table or code block scrolls inside its own box (overflow-x: auto), it never
      widens the page. Decorative backdrops (aria-hidden, clipped by their section) are not content. */
-  const scrolls = (e) => { for (let p = e.parentElement; p && p !== document.body; p = p.parentElement) if (/(auto|scroll)/.test(getComputedStyle(p).overflowX)) return true; return false; };
+  const ancestors = (e) => { const out = []; for (let p = e.parentElement; p && p !== document.body; p = p.parentElement) out.push(p); return out; };
+  const scrolls = (e) => ancestors(e).some((p) => /(auto|scroll)/.test(getComputedStyle(p).overflowX));
   /* What only a screen reader reads (a chart's data table in a 1 px clipped box, the « sr-only » pattern) is not on the screen. */
-  const visuallyHidden = (e) => { for (let p = e.parentElement; p && p !== document.body; p = p.parentElement) { const r = p.getBoundingClientRect(); if (r.width <= 1 && r.height <= 1 && getComputedStyle(p).overflow.includes("hidden")) return true; } return false; };
+  const clippedBox = (p) => { const r = p.getBoundingClientRect(); return r.width <= 1 && r.height <= 1 && getComputedStyle(p).overflow.includes("hidden"); };
+  const visuallyHidden = (e) => ancestors(e).some(clippedBox);
   for (const e of document.querySelectorAll("main *")) {
     if (e.closest("[aria-hidden='true']") || scrolls(e) || visuallyHidden(e)) continue;
     const r = e.getBoundingClientRect();
