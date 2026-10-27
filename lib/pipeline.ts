@@ -16,6 +16,20 @@ function head(x: number, y: number, dx: number, dy: number): string {
   return `${x},${y} ${bx + px * (HEAD / 2)},${by + py * (HEAD / 2)} ${bx - px * (HEAD / 2)},${by - py * (HEAD / 2)}`;
 }
 
+function arrowBetween(from: number, a: PipelineBox, b: PipelineBox): PipelineArrow {
+  if (a.y === b.y) {
+    const right = b.x > a.x;
+    const x1 = right ? a.x + a.w : a.x;
+    const x2 = right ? b.x - 2 : b.x + b.w + 2;
+    const y = a.y + a.h / 2;
+    return { from, x1, y1: y, x2, y2: y, head: head(x2, y, right ? 1 : -1, 0) };
+  }
+  const x = a.x + a.w / 2;
+  const y1 = a.y + a.h;
+  const y2 = b.y - 2;
+  return { from, x1: x, y1, x2: x, y2, head: head(x, y2, 0, 1) };
+}
+
 export function pipelineLayout(n: number, { cols, width, height = 60, gapX = 40, gapY = 36, pad = 4 }: { cols: number; width: number; height?: number; gapX?: number; gapY?: number; pad?: number }): PipelineLayout {
   const c = Math.max(1, Math.min(cols, n));
   const rows = Math.ceil(n / c);
@@ -26,21 +40,6 @@ export function pipelineLayout(n: number, { cols, width, height = 60, gapX = 40,
     boxes.push({ x: pad + col * (width + gapX), y: pad + row * (height + gapY), w: width, h: height });
   }
   const arrows: PipelineArrow[] = [];
-  for (let i = 0; i + 1 < n; i++) {
-    const a = boxes[i];
-    const b = boxes[i + 1];
-    if (a.y === b.y) {
-      const right = b.x > a.x;
-      const x1 = right ? a.x + a.w : a.x;
-      const x2 = right ? b.x - 2 : b.x + b.w + 2;
-      const y = a.y + a.h / 2;
-      arrows.push({ from: i, x1, y1: y, x2, y2: y, head: head(x2, y, right ? 1 : -1, 0) });
-    } else {
-      const x = a.x + a.w / 2;
-      const y1 = a.y + a.h;
-      const y2 = b.y - 2;
-      arrows.push({ from: i, x1: x, y1, x2: x, y2, head: head(x, y2, 0, 1) });
-    }
-  }
+  for (let i = 0; i + 1 < n; i++) arrows.push(arrowBetween(i, boxes[i], boxes[i + 1]));
   return { boxes, arrows, viewWidth: 2 * pad + c * width + (c - 1) * gapX, viewHeight: 2 * pad + rows * height + (rows - 1) * gapY };
 }
