@@ -1,7 +1,7 @@
 ---
 title: "Orazaka v2: the architecture we are building"
-description: "Orazaka's services and what each one does, the packs, routing that lives in the database, the single door for external checks, rules drawn from the law, and what we found when we asked who may read what."
-seoDescription: "The architecture of Orazaka v2: services, packs, routing in the database, external checks, rules from the law, access control, and what it costs."
+description: "What we own and what we plug in: the orchestration, the control loop, the GPU lease, live steering and access. Then what is not there yet, and the v3 these slices lead to."
+seoDescription: "Orazaka v2: own the core, integrate the edges. Typed steps, a control loop, a GPU lease, access control, Law 25, and where we are."
 date: 2026-10-26
 publishedAt: "2026-10-26T21:30:00-04:00"
 tags: [orazaka, ai, security]
@@ -16,213 +16,194 @@ sources:
   - plugging-a-product-into-an-ai-engine
   - orazaka-admin-console-who-can-open-it
 versus:
-  faced: "an engine we could no longer sum up on one page"
-  built: "one request, one door, rules that are data"
+  faced: "an audit that suggested stacking frameworks, and an engine we could no longer sum up"
+  built: "a core we own, edges we plug in, and an honest list of what is missing"
 stats:
   - value: "20"
     label: "repositories in Orazaka's workspace"
     section: "One request, end to end"
-  - value: "35"
-    label: "Studios in the catalogue, across 12 packs"
-    section: "Packs: the trade is data"
+  - value: "52"
+    label: "engine files that still import Spring AI, a count that can only go down"
+    section: "Where we are"
   - value: "37"
     label: "SQL statements for a single-step run"
-    section: "What it costs, what hurts"
+    section: "Where we are"
   - value: "19.2 ms"
     label: "p95 of that run, after the outbox"
-    section: "What it costs, what hurts"
+    section: "Where we are"
 ---
 
-When someone asks me what Orazaka is, technically, I answer with a list of repositories. It is a bad answer. A list does not say what happens when someone asks a question.
+When someone asks me what Orazaka is, technically, I often answer with a list of repositories. It is a bad answer. A list does not say what we are building, or why.
 
-This chapter is the answer on one page, then on several. It describes the engine as it is on the main branch on 26 October, not as I dream it. And it tells the story of a question that came to me while rereading it: who may read what?
+On 26 October, I had the architecture reviewed by an outside audit: a language model, given the context. It suggested a hybrid architecture, keeping some parts and replacing others with well-known frameworks. Some of it was right. Some of it described as existing things we have not built. We checked it against the code, line by line, then a counter-review tightened what was left. The outcome is one decision, [ADR-092](https://github.com/krizaka/orazaka/pull/430), and one sentence:
+
+> We own the core, we integrate the edges.
+
+This chapter explains that sentence. It also says, without rounding, where we are today.
+
+## What we own, what we plug in
+
+An AI engine is a lot of parts. Most of them already exist elsewhere, and are well made: a protocol to talk to tools, a message broker, libraries to call a model. Rewriting them would teach us nothing and cost us years. But a few parts are what make Orazaka Orazaka. Those we keep.
+
+**What we own:**
+
+- **The orchestration.** A request becomes a graph of typed steps. Each step has an output contract (what it must return) and a control policy (how we judge what it returned).
+- **The control loop.** What decides whether an output is good, and what to do when it is not.
+- **The GPU lease.** Who may use a machine's graphics card, and for how long.
+- **Live steering.** Changing a step while a run moves on, without redoing everything.
+- **Access.** Who may read what, checked when the assistant searches and when it calls a tool ([ADR-091](https://github.com/krizaka/orazaka/pull/427)).
+
+**What we plug in as it is:**
+
+- **MCP**, the tools protocol, through the official SDK, by way of Spring AI. We do not implement the protocol.
+- **RabbitMQ and the outbox**, so that work leaves reliably, in the same transaction as the run's state.
+- **The Python media worker**, for images and video. It stays in Python. It does not become Java.
+
+In between sits **Spring AI 2**, the library that talks to model providers. We use it, but behind our ports: one adapter module knows it. The domain itself must be plain Java 21.
+
+**What we refuse:** LangChain4j, LangGraph4j, a second workflow engine, and `StructuredTaskScope` while it is a preview API. The reason is the same each time: two ways of doing one thing means two upgrade trains and two places where a run's state can drift apart. We already paid for the move to Spring AI 2. We already have a graph of steps, with its saga, its approvals and its credit holds. We do not want a second one.
 
 ## One request, end to end
 
-The [orazaka](https://github.com/krizaka/orazaka) workspace assembles 20 repositories. Five are reusable Krizaka building blocks (users, notifications, billing, the shared kit, the Maven parent), four are the foundations (Orazaka's Maven parent, the contracts, the edge, the interface kit), six make up the AI engine, three are clients (web, mobile, command line), one is a worker, and one holds the packs.
+The [orazaka](https://github.com/krizaka/orazaka) workspace brings together 20 repositories: reusable Krizaka building blocks (users, notifications, billing), the foundations (contracts, edge), the AI engine, the clients (web, mobile, command line), the media worker and the packs.
 
-Here is the path of a request, in the order it crosses things.
+A correction first, because I used to say it wrong. The "AI engine" is not a service. It is a library, `orazaka-ai-engine`, that the services embed: the AI client, the interceptor chain, the tools. The graph of steps lives in the Studio service.
+
+Here is the path of a request, in order.
 
 <Pipeline label="The path of a request through Orazaka">
-  <Stage title="The client" note="web, mobile or a product">The web app goes through its own server (a BFF): the browser never calls a service directly. The mobile app calls the edge with a token. A product such as Yomizaka calls it with a service key.</Stage>
-  <Stage title="The edge" note="port 8088">The single HTTP entry point. It exchanges an API key for a session token, applies CORS and tracing, and sends the route to the service that owns it. Spring MVC and virtual threads, nothing exotic.</Stage>
-  <Stage title="Conversation or Studio" note="ports 8080 and 8096">The conversation service turns the transport (SSE chat, an intent) into an engine request and enforces security, with no business logic. The Studio service holds the pack catalogue, the installations and the runs.</Stage>
-  <Stage title="RabbitMQ" note="interactive and batch queues" tone="gate">The work is published to a queue. A row in the database, the capability, says which one.</Stage>
-  <Stage title="The job service" note="port 8090">It drains the queues and hands each job to the executor that same row names: code inside the service, or an external worker.</Stage>
-  <Stage title="The worker" note="Python, Metal or CUDA">For images and video, a native worker reads the queue, does the work and reports its progress.</Stage>
-  <Stage title="Billing" note="hold, settle, release" tone="ship">Every step held credits before it left. At the end, the billing service settles what ran, or releases what was not used.</Stage>
+  <Stage title="The client" note="web, mobile or a product">The web app goes through its backend-for-frontend (BFF), mobile through a token, a product such as Yomizaka through a service key. Nobody calls a service directly.</Stage>
+  <Stage title="The edge" note="the single door">It exchanges an API key for a session, applies CORS and tracing, and sends the route to the right service.</Stage>
+  <Stage title="The Studio" note="the graph of steps">It holds the packs, the installations and the runs. It moves a Studio's plan forward step by step, with compensation when a step fails.</Stage>
+  <Stage title="RabbitMQ and the outbox" note="interactive or batch" tone="gate">Work is written in the same transaction as the run's state, then published to a queue. A database row says which one.</Stage>
+  <Stage title="The job service and the worker" note="code or a GPU">It drains the queue and hands the work to the executor the same row names: code inside the service, or the media worker.</Stage>
+  <Stage title="Billing" note="hold, settle, release" tone="ship">Every run held its credits before it started. At the end, we settle what ran and release the rest.</Stage>
 </Pipeline>
 
-Two more services sit beside this path. The knowledge service (port 8084) serves recommendations and search. The automation service (port 8082) runs automations (Jira, Slack, an agent on the user's own machine) with its own scheduler.
+Routing lives in the database. A capability is a row: `routing_key` says where the work goes, `handler_key` says which code runs it. Before, the code guessed the queue with a chain of `contains()` on a name, and an unknown capability went silently to the wrong queue. Today, a governance test stops the build if a row has no executor.
 
-## Who does what
+## The control loop
 
-I am correcting something I used to say badly. The "AI engine" is not a service. It is a library, `orazaka-ai-engine`, that the services embed. It holds the core (the AI client and its providers), the interceptor chain, the tools and the orchestration. The services are around it.
+This is the part that matters most to me, and the one with the most work ahead of it.
 
-| Piece | Kind | Role |
-|:---|:---|:---|
-| `orazaka-edge` | service | Single HTTP door, API key to token exchange, CORS, tracing. |
-| `orazaka-conversation-service` | service | SSE chat, intents, models, pipeline, MCP, jobs. Translates transport, no business logic. |
-| `orazaka-ai-engine` | library | The core, 14 interceptors, the tools (MCP, RAG, sandbox), orchestration. |
-| `orazaka-job-service` | service | Runs asynchronous jobs, holds the registry of capabilities and workers. |
-| `orazaka-studio` | service | Pack catalogue, Studios, installations, runs as a saga. |
-| `orazaka-knowledge-service` | service | Vector search (pgvector), asynchronous indexing, recommendations. |
-| `orazaka-automation-service` | service | Connectors and scheduling (Quartz). |
-| `orazaka-worker-media` | Python worker | Image, video, composition, on the machine's GPU. |
-| `krizaka-billing` | service | Credits, wallets, plans, metering: hold, settle, release. |
-| `orazaka-web-client` | application | Next.js, with its mandatory BFF. |
-| `orazaka-mobile-client` | application | Expo. It reads a signed manifest to find the edge, never a hard-coded address. |
+The idea is simple. A model produces an output. Before we hand it to anyone, we judge it. And we do not ask a model what a rule can check. Here is the intended order, for every step:
 
-The ports and roles come from the repositories' READMEs and from the architecture generated from the code (`docs/_generated/ARCHITECTURE.md`). I do not write them by hand, for the usual reason: a hand-drawn diagram is out of date the next day.
+1. **Deterministic checks first.** The schema holds, the file exists and can be read, the duration and the proportions are right. No model, no token. Target: under 10 ms.
+2. **A semantic judge next.** A model reads the output and returns a drift score: how far it strays from what was asked. It never runs on an output that step 1 rejected.
+3. **A correction, with the diff.** If the drift is above the threshold, we regenerate, telling the model what is wrong. At most K tries, and an error memory refuses a correction that repeats a failure already seen.
+4. **A human, last.** After K tries, or from the start when the policy says so, the decision goes to a person.
 
-## Packs: the trade is data
+Every judgement is a typed verdict: `Validated`, `DriftAdjustment` or `HumanEscalation`. That is not a code detail. A typed verdict is written to the run's log, can be counted, can be read back. The thresholds, K and the policies are database rows that an administrator sets, not `if`s in the Java.
 
-A pack is a folder: a `pack.yaml` manifest, its translations, its Studios (plans of steps that form a graph), and sometimes its own worker. Installing a pack writes data (capability rows, a price, a catalogue entry). It changes no code.
+**Law 25.** Quebec's *Act respecting the protection of personal information in the private sector*, in section 12.1, governs decisions based exclusively on automated processing. The person concerned must be able to have the decision reviewed by someone. The `HumanEscalation` verdict is that path. It is recorded with the run, the reason, the person who decided, the time and the action taken, in the same transaction as the run's state. A policy can make escalation mandatory for a step that decides something about a person. An obligation in the law becomes a feature of the engine.
 
-The generated catalogue counts 12 packs and 35 Studios today. Six packs are published: document verification, media, prospecting, data analytics, wellbeing, real estate. The others are drafts or stay off the shop window. A pack's shape is checked against a schema on every change, and `orazaka pack validate` does it locally.
+## A machine's GPU
 
-Why packs rather than functions in the engine? Because the engine must not know what a lease is. It knows how to run a plan, hold credits, call a tool, keep a trace. What a lease is, and what makes a clause forbidden, is content. It can be reread, versioned and fixed without a deployment.
+On the Mac, and on a server with a single card, two things want the GPU's memory at the same time: Ollama, which keeps text models loaded, and the media worker, which loads a video model of several tens of gigabytes. When the two fight, the machine crawls or one of them falls over.
 
-## Routing is in the database
+The intended answer is a lease per device. Whoever wants the GPU asks for a lease, with a time to live and a heartbeat. A lease that stops beating is taken back. There are two profiles: `SHARED_LIGHT`, where several small jobs share the card, and `EXCLUSIVE_HEAVY`, for a heavy render. Before it grants an exclusive lease, the arbiter asks Ollama to free its memory (`keep_alive: 0`) and checks on `/api/ps` that it really is free. We do not trust, we check. A small model stays outside the heavy lock, so the interface keeps answering.
 
-A capability is a row in the `orazaka_capabilities` table. Two columns matter. `routing_key` says where the work goes (the queue a process drains). `handler_key` says which code runs it. Both are data: a pack adds a capability with a row, not with a deployment.
+## Live steering
 
-This is not a matter of style. Before, producers guessed the queue with a chain of `contains()` on the feature name. A capability the chain did not recognise went silently to the text queue, and nobody noticed. The schema comment (ADR-037) says it plainly: the mapping is data, and there is no default.
+A long run, say a video in several shots, takes time. Meanwhile, you change your mind. Redoing the whole run for one detail is expensive.
 
-A governance test guards the whole: `assertEveryCapabilityHasAnExecutor` fails if a capability row has no executor. What is in the database must be wired in the code, or the build stops.
+The intended steering rests on typed edges between steps. An edge says what a change upstream means downstream:
 
-The same principle serves providers. The router for external checks picks the enabled row that serves the purpose and the region, lowest priority first, whose `handler_key` names a known adapter. A row whose handler is unknown is skipped. If none is left, the answer is "not configured", not an error and not a made-up result.
+- `CONTENT`: the next step depends on the content, so it is regenerated;
+- `ASSEMBLY`: only the assembly, which is deterministic, is redone;
+- `CONTINUITY`: only the control loop runs again on the neighbouring step. It regenerates only if the drift is above the threshold; otherwise it flags "impact detected" and leaves the decision to the person.
 
-## The single door for external checks
+We cancel only the part of the graph that is touched, not the whole run.
 
-For a rental application, Yomizaka needs to know whether a candidate has court records with the housing tribunal, or a credit history. This is sensitive data, sold by third-party providers, with keys, a price per call and Law 25.
+## Who may read what
 
-The engine handles it through one service, `ExternalCheckService`, and every call follows the same order:
+The question that made me reread everything, I asked like this: if an employee asks the assistant for the CEO's salary, and that salary is in an indexed document, what happens?
 
-1. the subject reference, a keyed HMAC-SHA-256 of their identifier: no sealed pepper, no check;
-2. consent, per purpose: none, or withdrawn, and the request is refused without touching the provider;
-3. the key: the person's own first, the platform's next, otherwise refusal;
-4. a hold of one call against the run's budget: if the budget cannot hold it, refusal;
-5. the connector, whose failure becomes a provider error whose message is neither returned nor logged;
-6. one audit line, whatever happens;
-7. the hold is settled if the provider answered, released otherwise.
+There are two ways to get it wrong. Trusting the model to be careful: it will not be, a text a model reads can carry orders, and an instruction in the prompt is only advice. Or filtering the answer afterwards, once the passage has already been read. The check has to come before.
 
-The connector is never reached without consent, a key and a hold, because no path goes around the service. The adapters for Québec court records (SOQUIJ), credit and identity (Trustii), a fallback outside Québec (Certn) and a fake that replays recorded answers are chosen by `handler_key` ([orazaka-ai-engine#101](https://github.com/krizaka/orazaka-ai-engine/pull/101)). The answers carry no names, no dates and no content of a record: an outcome, not the data.
+ADR-091 sets three rules:
 
-I have to say where we are. No real call is made: the fake answers, until a pilot customer gives the go-ahead. And a product cannot yet submit a check through the API: the HTTP door is open as a ticket ([orazaka-ai-engine#105](https://github.com/krizaka/orazaka-ai-engine/issues/105)). Until then, Yomizaka's adapter answers "not configured".
+- **The caller travels.** The verified identity (the organisation, the person, their roles, their groups) goes with every search and every tool call, in a signed token. Never in a request body.
+- **The right is in the query.** Every indexed passage carries the rights of its source. The filter is part of the search itself, before ranking. A passage you may not read is never read, so it cannot leak through a snippet, a count or a cache.
+- **Every tool declares its roles.** A tool that declares nothing is for administrators only. Without an identity, nothing runs.
 
-## Rules come from the law
+The fix is in progress ([orazaka-ai-engine#107](https://github.com/krizaka/orazaka-ai-engine/issues/107)), before we index anything sensitive. I will not go into more detail until it ships.
 
-The story is in [chapter 6](/story/the-first-products/): a visit notice judged as a lease. Four blank forms, put through the same set of rules, had given the same result: 4 failures, 5 rules passed, 3 without enough evidence. Rent rules failed on forms that had no rent. Rules passed on documents that never mentioned them.
+## Packs, and the proof that the core stays generic
 
-The immediate fix made every rule quote the passage it judges. The cause was elsewhere: the engine did not read what kind of document it was. [ADR-089](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-089-rules-from-the-law.md) draws one simple line:
+A pack is a folder: a manifest, its translations, its Studios (plans of steps), sometimes its own worker. Installing it writes data: capabilities, a price, a catalogue entry. It changes no code. The engine does not know what a lease is. It knows how to start a plan, hold credits, call a tool, judge an output and keep a trace.
 
-> A user's document is only ever judged by a promoted ruleset. Models may find the law and propose rules; they never decide a verdict with a rule nobody promoted.
+How do we know that is true, and that it stays true? A rule of ADR-092 says it: the proof is a pack. The document verification pack ([orazaka-packs](https://github.com/krizaka/orazaka-packs)), the one with the lease rules, must evolve without a single change in the core. Those rules come from the law: a document is judged only by a promoted ruleset, after its reference cases and a review ([ADR-089](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-089-rules-from-the-law.md)). If one day the core has to change for a product, the pull request is refused, and the change goes into a port or a pack.
 
-Discovery is dynamic, execution is fixed and dated. The document's kind is one value from a closed list, with a quote the worker checks. The articles of law come from a dated corpus signed by a hash. A proposed rule only becomes a ruleset after its fixtures, its golden cases, a first review and a merged pull request. A kind with no promoted ruleset answers "not supported", never "the closest lease".
+The same goes for media. There is no video module in the core. There is the media worker, and packs that use it.
 
-The ADR has been accepted since 24 October and is being built in twelve cuts. It also holds a reservation I do not hide: commercial use of the Données Québec dataset (CC BY-NC-ND 4.0) still has to be validated with its publisher.
+**Products go through the API, and only the API.** Yomizaka never talks to a model. It calls the pack's Studios on the edge with a service key, and keeps the run id of every analysis: that is the trace of what ran. Akinaza follows the same rule. The shared client, [`@krizaka/orazaka-client`](https://github.com/krizaka/krizaka-ts/tree/main/packages/orazaka-client), starts a run with an idempotency key, reads its state and waits for its end. Consent, budget, audit and idempotency are written once, in the engine. A product that went around it would have to write them again, and one day it would forget one.
 
-## Products go through the API, only
+## Where we are
 
-Yomizaka never talks to a model. What it does is written in its contract: it calls the Studios of the document verification pack on Orazaka's edge with a service key. The edge exchanges it for a session of the product's account, whose grants open those Studios and no others. Yomizaka keeps the run id of every analysis and shows it: it is the trace of what ran, with which version of the Studio.
+That is the direction. Here is what the code says on 26 October. The audit and the counter-review found it, and I would rather write it here than let someone discover it.
 
-Akinaza follows the same rule, more firmly: no AI in the product, in its screens or its words. If one is needed one day, it will sit behind a port. Its translation already goes through a Studio, behind a port, not through a model called directly.
+- **The core still imports Spring AI.** 52 engine files import it: 36 in the core, 14 in the interceptors, 2 in the tools (measured in ADR-092). An ArchUnit test will count those files, and the count will only be allowed to go down. No big bang: we move one slice at a time to the adapter module, down to zero ([orazaka-ai-engine#112](https://github.com/krizaka/orazaka-ai-engine/issues/112)).
+- **The core's `DagCompiler` is a stub.** Two task names written by hand, no executor, and nothing calls it. The real graph is the Studio's plan: it has its dependencies, its parallelism, its output contracts and its approval steps. The stub will be deleted.
+- **The control loop has a flaw.** On each new try, the interceptor checked the same text again instead of generating a new one, and after the last try it served the answer without it being validated. A fix is in progress ([orazaka-ai-engine#116](https://github.com/krizaka/orazaka-ai-engine/issues/116)). Typed verdicts, the drift score and escalation come next ([orazaka-ai-engine#114](https://github.com/krizaka/orazaka-ai-engine/issues/114)).
+- **The GPU lease does not exist yet.** Nothing calls `/api/ps` today, and nothing sets `keep_alive`. The worker manages its own memory, and that is all ([orazaka-ai-engine#113](https://github.com/krizaka/orazaka-ai-engine/issues/113)).
+- **Live steering is designed, not built** ([ADR-088](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-088-runs-as-background-tasks.md)). We can approve a step, resume from a step and cancel a whole run. Not yet cancel a single branch ([orazaka-studio#87](https://github.com/krizaka/orazaka-studio/issues/87)).
+- **The cache works per run, not per step.** An identical run is served from the cache. One changed step redoes the whole run.
+- **The access control of the previous section** is not finished.
 
-There is a shared client for this: [`@krizaka/orazaka-client`](https://github.com/krizaka/krizaka-ts/tree/main/packages/orazaka-client). It starts a run with an idempotency key, reads its state, waits for its end. Its errors have stable codes, every call has a 20-second default timeout, and five failures in a row open a circuit breaker for 30 seconds. A contract test guards it against recorded answers from the edge. Its first version, 0.1.0, is in krizaka-ts. Yomizaka has not moved to it yet: it keeps its own small client, and the migration is still ahead of us.
+And what it costs, measured:
 
-Why this path, rather than a library embedded in every product? Four reasons, and they are the reasons of the single door.
+- **A run is expensive in statements, not in time.** A single-step run takes 37 SQL statements, about 9 of them redundant. The saga's overhead stays small: a p95 of 19.2 ms after dispatch moved through the outbox, far from the 250 ms threshold set before measuring ([ADR-067](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-067-the-run-path-becomes-load-bearing.md)). What dispatch really waits for is the outbox relay: at most 500 ms, 250 on average.
+- **A rented GPU costs money even asleep.** On 16 October, a pod ran for five hours with the GPU at 0 %, for about $20. A guard stops it now ([ADR-078](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-078-runpod-serverless-workers-at-zero-idle.md)).
+- **A component never builds alone.** With 20 repositories, CI clones the workspace and builds the dependencies first. It is the right way to catch a break, and it is slow.
 
-- Consent, budget, audit and idempotency are written once. A product that went around the engine would have to rewrite them, and one day it would forget.
-- Models change. A product that knows none of them has nothing to migrate when one is replaced.
-- The trace is the same everywhere: a run id you can show to a customer.
-- No model or provider key lives in a product.
+## In incubation: Recipes
 
-## "What if an employee asks for the CEO's salary?"
+One more idea, not built. It sits in incubation, at the top of the column ([.github#302](https://github.com/krizaka/.github/issues/302)).
 
-This is the question that made me reread all of this. I put it like so: role-based access control must be possible, otherwise a user can ask for the CEO's salary, if that salary is in a document the assistant knows how to search.
+When you type a good prompt in the chat, you lose it. The idea: keep it as a **recipe**. A recipe is private by default. The engine spots what changes from one time to the next (a document, a date, an amount, a name) and turns it into typed variables. You press ▶ Play, a short form asks for the document or the date, and the run starts.
 
-There are two ways to get it wrong. Trusting the model to be careful, and it will not be: a text read by a model can contain orders, and a check placed in the prompt is only advice. Or filtering the answer afterwards, when the passage has already been read. The check has to come first: a passage you may not read must never reach the model.
+What I like is what sits underneath. A recipe does not break the intent down again each time. It runs a plan that is already compiled and versioned, the same graph of steps as the rest of the engine. It is faster, the cost is predictable, and the result can be reproduced. No second workflow engine there either.
 
-So I looked at the code, without trusting what I thought I knew. Here is what is true.
-
-**What holds.**
-
-- Roles exist. The session carries the `ADMIN` and `USER` roles, and the administration routes (the rules review queue, the apps' configuration, the platform's MCP servers) require them.
-- A person's MCP servers belong to them. Someone else's id answers "not found", as if it did not exist, and tokens are never sent back in clear.
-- Internal services require a service authority. There was a day when the knowledge service had no security at all: an audit found that, and it has been fixed.
-- Access rights to a Studio are evaluated for the actor who asks, and uploaded files are filed by organisation and by person.
-- Documents and external results enter the prompt as data, never as instructions.
-
-**What is missing.** Searching the knowledge base can only filter by person, plus the entries that are "for the whole platform". There is no role, no group, no per-document access list. Semantic search is not told who is asking. And a tool exposed by the engine runs for any valid session, with no permission of its own.
-
-I will not detail it further: it is not fixed. I opened a top-priority ticket, [orazaka-ai-engine#107](https://github.com/krizaka/orazaka-ai-engine/issues/107), which is on the board as "Next". It writes the exact scene (an employee, a payroll document indexed for human resources), the expected behaviour and the acceptance criteria. The check will be applied when indexing and when querying, inside the query itself, with the tests that prove a forbidden passage never comes out. It is being fixed.
-
-I am writing this before anything sensitive is indexed, not after. What I take from it: a role in the session means nothing until every path that reads something consults it. We had it for the admin screens. We did not yet have it for what an assistant goes looking for.
-
-## What it costs, what hurts
-
-I give what is measured or read in the repositories, and leave out the rest.
-
-- **A run is expensive in statements, not in time.** A single-step run takes 37 SQL statements: 22 before dispatch, 15 after the result. The starting document announced a handful, and the measurement corrected it. The time overhead stays small: after dispatch moved through the transactional outbox, p95 is 19.2 ms and the median 10.4 ms, far from the 250 ms threshold set before measuring. What dispatch now waits for is the relay: at most 500 ms, 250 on average. The decision was to go on. But 37 statements say the saga is chatty, and I would rather write it than discover it on a day of load.
-- **A component never builds alone.** With 20 repositories, CI clones the whole workspace and builds the dependencies from source first. It is the right way to catch a break, and it is slow. The CI chapter covers it.
-- **Generated documentation goes stale fast.** It is rebuilt every two hours by a pull request that merges itself. The message of that change says why: "stale docs" were the cause of reds that kept coming back.
-- **The checks have no real provider**, and a product cannot call them through the API until the HTTP door ships.
-- **The access control of the previous section.** It is not finished.
-- **One machine.** The engine runs first on a Mac. [Chapter 2](/story/an-engine-on-a-laptop/) tells what that costs when everything shares the same memory.
+Later, a recipe will be able to take a trigger (every Monday at 8 a.m., a new document in a folder) and become a **Routine**. It will then run under the identity of the person who switched it on, never under a system account. Its rights will be checked again at every run, and if the control loop asks for a human, the Routine stops and waits.
 
 ## And v3?
 
-v3 does not exist. There is no branch, no repository, no date. But if we ever head towards a v3, it will have one goal: to perform better. Not prettier, not cut into more pieces. The same work, faster and cheaper, and a way to prove it.
+v3 has no branch, no repository and no date. But it now has a shape: it is where the slices of ADR-092 lead. We will not build it next to v2. We will get there by turning the slices green, one after the other, on the engine that already runs.
 
-So what follows is a direction, not something built. Each point starts from a pain measured in v2, or from a pain we have not measured yet, and then I say so.
+Its goal stays the same: do the same work faster, for less, with outputs we can prove.
 
-### Where v2 hurts
+### The slices, in order
 
-The figures come from the [M0 measurement](https://github.com/krizaka/orazaka/blob/main/docs/measurements/M0-run-overhead.md), the [cold-start measurement](https://github.com/krizaka/orazaka/blob/main/docs/measurements/63-cold-start-and-diffusion.md) on one H100, and [ADR-078](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-078-runpod-serverless-workers-at-zero-idle.md).
+1. **The boundary.** Spring AI in one adapter module, the domain in plain Java 21, the ArchUnit count at zero, the graph stub deleted.
+2. **The verdict.** First the test that reproduces the loop's flaw, then the typed verdicts, the judge, the K corrections with the diff, and escalation.
+3. **The GPU arbiter.** The lease per device, checked eviction, jobs grouped by model so we do not reload tens of gigabytes between two clips. The worker reports its memory and its loaded models ([orazaka-worker-media#83](https://github.com/krizaka/orazaka-worker-media/issues/83)).
+4. **Steering.** Commands between two steps, typed edges, cancelling a single branch.
+5. **The per-step cache.** One key per step, computed from its inputs, so a change only redoes the branches it touches ([orazaka-studio#88](https://github.com/krizaka/orazaka-studio/issues/88)).
 
-- **Statements.** A single-step run takes 37 SQL statements. The measurement found about 9 of them redundant: step states computed twice, the installation's configuration read twice, the blueprint re-read on every advance although a published blueprint can no longer change (a database trigger forbids it). For a six-step blueprint, the measurement estimates that the 15 closing statements are paid again at every step. It did not measure it.
-- **Hops between services.** A run holds credits before it starts and settles them at the end: two HTTP round-trips to billing. During the measurement, billing was replaced by a fake, so the 19.2 ms do not count them. The work itself goes through the outbox, RabbitMQ, the job-service and the worker, and the result comes back the same way.
-- **Waiting instead of being told.** Dispatching a run waits for the outbox relay, which reads the database every 500 ms: 250 ms on average, doing nothing. Run events already exist on the Studio side, an SSE stream and signed webhooks. But the shared client still waits for a run to finish by reading its state every two seconds.
-- **Cold starts.** The first run after a service restarts pays 30 to 75 ms instead of 12 to 14, while the JVM warms up. That is little. The GPU is another matter: loading <Model id="wan22-ti2v-5b">Wan 2.2 TI2V 5B</Model> (34 GB) on an H100 takes 87.8 s from the network volume, and 32.1 s once copied to the pod's disk. The target was under 12 s. It is missed.
-- **The GPU queue.** A rented pod is paid by the hour, working or not. On 16 October it ran five hours with the GPU at 0 %. A guard stops it now. What we do not know is how long a job waits in the queue before a GPU takes it: our times run "from command to file", and they mix waiting, transfer and rendering.
-- **Serialisation.** Each service keeps its own copy of the contract it needs, and every message is written and read again at every hop. I have no figure for what that costs. It is on the list of things to measure.
+The last three answer the measured pains directly. A warm GPU and the arbiter go after model loading. Steering, and events instead of re-reading state, go after waiting. The per-step cache goes after work redone for nothing.
 
-The M0 measurement itself says something important: those 37 statements are fast, and removing the 9 redundant ones would improve a number already far under its 250 ms threshold. That is why we left them alone. A single run does not hurt. What may hurt is what we have not measured: twenty runs advancing at once, a six-step blueprint, a database that is no longer on the same machine.
+### How we will know it is better
 
-### What v3 would aim for
-
-One bottleneck, one target.
-
-- **Fewer hops.** Two services are merged when the split costs more than it gives. The rule already exists: we split the saga by what leaked, not by how long it was ([ADR-059](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-059-run-saga-split.md)). A split stays if it guards a boundary: the credit ledger, security, a worker running on another machine. It goes if it is only one more hop. For billing, the question to measure is simple: one hold per run rather than one per step.
-- **Events instead of re-reading.** The outbox relay would be woken when a row arrives, instead of passing every 500 ms. And products would listen to the signed webhooks or the SSE stream instead of re-reading a run's state every two seconds: `@krizaka/orazaka-client` has to learn to listen to them, and Yomizaka has to move to that client.
-- **Batched SQL, and read models.** First remove the duplicate reads. Then group the writes of one transition into a single round-trip, with prepared statements. And for what a client reads often (a run's state, its detail), a read model kept up to date by the events, instead of re-reading the run, the blueprint and the steps on every request.
-- **A cache, with its invalidation written down.** The measurement gives the first candidate: a published blueprint never changes, so it can be kept in memory safely. For the rest (an installation's configuration, a Studio's access rights), a cache has its place only if we can name the event that clears it. A cache without written invalidation is a bug waiting for its day.
-- **Warm workers and GPU scheduling.** Keep a worker warm while the queue has work, stop it as soon as the queue is empty: the guard already does the second half. For loading, the measurement writes down the way to 12 s: an FP8 checkpoint, half the size, and a faster disk or an already warm cache. ADR-078 proposes serverless workers that cost nothing at rest; it waits for its spike. And a scheduler that groups jobs by model, so we do not reload 34 GB between two clips.
-- **Streaming responses.** Chat is already SSE. The target: a long run shows each step as it finishes, all the way into the product, instead of a final state you wait for.
-- **Authentication once, at the edge.** Today the edge exchanges the API key for a token, then each service checks that token and derives its rights on its own. The target: the edge establishes once who is asking (the person, their organisation, their roles, their groups), signs it, and each service receives that signed principal and passes it down to retrieval and to the tools. This is not mainly about speed. It is the fix of [orazaka-ai-engine#107](https://github.com/krizaka/orazaka-ai-engine/issues/107) seen from a little higher: a role protects nothing until it reaches the path that reads. That fix is in progress. v3 would make it the normal shape.
-
-### How we would know v3 is better
-
-"Better performance" without a figure is a feeling. We already have the method: M0 set its threshold (250 ms at p95) before measuring, and the decision followed the number. v3 would turn those numbers into budgets, checked in CI.
+"Faster" without a figure is a feeling. The method already exists: the M0 measurement set its threshold before measuring, and the decision followed the figure. v3 is those figures turned into budgets, checked in CI.
 
 | Budget | Today | Target |
 |:---|:---|:---|
+| Files importing Spring AI outside the adapter | 52, measured | 0 |
 | SQL statements, single-step run | 37, measured | 28 or fewer, without the duplicate reads |
 | Saga overhead, p95 | 19.2 ms, measured | no more, and always under 250 ms |
-| Dispatch wait | 250 ms on average, 500 at most, measured | no periodic poll on this path |
-| Loading Wan 2.2 TI2V 5B, H100 | 32.1 s, measured | under 12 s |
-| Rendering a 5 s clip, H100 | $0.19, measured | no more |
-| Rented GPU at rest | five hours paid at 0 % on 16 October, about $20, measured | $0 |
-| Six-step run, twenty runs at once | not measured | measure them first |
-| Wait in the GPU queue | not measured | separate it from rendering, then measure it |
+| Dispatch wait | 250 ms on average, 500 at most, measured | no periodic polling on this path |
+| A step's deterministic checks | not measured | under 10 ms |
+| Loading <Model id="wan22-ti2v-5b">Wan 2.2 TI2V 5B</Model> on an H100 | 32.1 s, measured | under 12 s |
+| Rented GPU at rest | five hours at 0 % on 16 October, measured | $0 |
+| One step changed in a run | the whole run redone | only the branches it touches |
 
-M0's harness already exists in the Studio service's tests. The first step is small: turn its figures into assertions. A pull request that added a statement to a run would fail CI, and the message would say which one. The statement count is the easiest budget, because it depends neither on the machine nor on the load. Times are compared on the same machine, against the previous measurement. And each budget works like a ratchet: it starts from today's number, and it can only go down.
+Every budget is a ratchet: it starts from today's figure, and it can only go down. It is the same mechanism as for Spring AI in the core.
 
 ### What we refuse
 
-- **A rewrite.** I know the temptation. You see 37 statements, a queue that waits, one split too many, and you want to start over cleanly. We have already done it another way. In July, Orazaka's monolith was cut into services in steps, each one green before the next ([ADR-032](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-032-microservices-decomposition-strangler-fig.md), the "strangler fig"): the edge first, so that every cutover was one line in the route table, with an instant rollback. v3 would follow the same path: one bottleneck at a time, measured before, measured after, and the old path kept until the new one has proved itself.
-- **Optimising without measuring.** The 9 duplicate statements have been known since the first measurement, and we left them, because the number held its threshold. It was the right call. They will go with the first budget that counts them.
-- **Splitting or merging for looks.** A split is justified by a boundary, a merge by a number. Never by a nicer diagram.
+- **A rewrite.** I know the temptation. You see 52 misplaced files, a useless stub, a loop that does not regenerate, and you want to start over clean. In July, we split Orazaka's monolith in stages, each one green before the next ([ADR-032](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-032-microservices-decomposition-strangler-fig.md)). v3 follows the same path.
+- **Optimising without measuring.** The 9 redundant statements have been known since the first measurement. We left them, because the figure held its threshold. They will go with the budget that counts them.
+- **Calling something intellectual property before it is built.** The GPU arbiter is planned. Until it is there, I do not sell it.
 
-What I take from it: v3 will not be a version we announce one morning. It will be a series of budgets, turned green one after the other, on the engine that already runs.
+What I take from it: an architecture is not a diagram you draw once. It is a line you hold. What gives the engine its value, we own and we prove. The rest, we plug in, and we keep it behind a door we can change.
