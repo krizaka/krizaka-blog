@@ -1,0 +1,128 @@
+---
+title: "Krizaka UI : comment on l'a découpé, et pourquoi"
+description: "Dix-neuf paquets plutôt qu'un, une entrée par composant, une documentation écrite par le code, des pages faites de blocs, des moteurs tiers derrière nos façades : chaque coupe, sa raison, et ce qui a mal tourné."
+seoTitle: "Krizaka UI : comment on l'a découpé"
+seoDescription: "Comment Krizaka UI est découpé : paquets, entrées, registre, blocs de pages, façades TanStack, versions. Chaque coupe avec sa raison et ses ratés."
+date: 2026-10-26
+publishedAt: "2026-10-26T12:00:00-04:00"
+tags: [ui]
+author: oussama
+draft: false
+cover: kit-pottery
+coverAlt: "Dans un atelier de céramique, un tampon en bois sculpté posé près de trois pièces d'argile non émaillées de tailles différentes, une grande assiette, un bol et une petite tasse, toutes marquées du même motif géométrique"
+chapter: 12
+period: "2026-10-11/2026-10-26"
+sources:
+  - krizaka-ui-one-kit-three-platforms
+  - krizaka-motion-our-animation-lab
+  - one-interface-web-mac-android
+versus:
+  faced: "36 formulaires et 42 tables écrits à la main"
+  built: "des paquets coupés pour qu'on n'ait plus à copier"
+stats:
+  - value: "36"
+    label: "formulaires écrits à la main dans les produits, le 11 octobre"
+    section: "D'abord, j'ai compté"
+  - value: "19"
+    label: "paquets dans le dépôt"
+    section: "Dix-neuf paquets, trois niveaux"
+  - value: "202"
+    label: "entrées de code dans @krizaka/ui, chacune avec son budget de taille"
+    section: "Une entrée par composant"
+  - value: "145"
+    label: "entrées gardées après l'audit, sur 187"
+    section: "Ce qui a mal tourné"
+---
+
+[Le chapitre 5](/fr/story/one-interface-everywhere/) racontait pourquoi on a un seul kit d'interface, et le jour où on a vu qu'il avait l'air d'avoir été généré. Celui-ci parle de sa charpente : comment le kit est découpé, et surtout pourquoi chaque coupe est là. Une bibliothèque se juge à ce qu'elle refuse d'avoir dans le même paquet.
+
+Tout est dans [krizaka-ui](https://github.com/krizaka/krizaka-ui), et le mode d'emploi est sur [ui.krizaka.com](https://ui.krizaka.com).
+
+## D'abord, j'ai compté
+
+Le 11 octobre au soir, j'ai compté ce que nos applications écrivaient à la main. C'est l'[ADR-001](https://github.com/krizaka/krizaka-ui/blob/main/docs/adr/ADR-001-tanstack-under-krizaka-facades.md), et les chiffres m'ont arrêté.
+
+Dans les produits : 36 formulaires écrits à la main, 42 tables, 23 listes mobiles sans virtualisation sérieuse. Orochia, côté web, portait environ 3 000 lignes de gestion maison de l'état du serveur, avec son propre client temps réel qui se reconnecte tout seul. Orazaka n'utilisait la bibliothèque de requêtes que dans 3 appels, sur 3 456 lignes de hooks. Le kit lui-même réécrivait un tableau de données (449 lignes, tri et sélection seulement), une pagination, un surligneur de code par expressions régulières, et ses graphiques reposaient sur ECharts, 157 ko compressés.
+
+Ce n'est pas un procès. Chaque application avait avancé seule, et chacune avait raison de le faire à son moment. Mais l'addition était claire : on réécrivait partout la même chose, un peu différente à chaque fois.
+
+Toutes les coupes qui suivent répondent à la même question : où cette chose doit-elle vivre pour qu'on ne la copie plus ?
+
+## Dix-neuf paquets, trois niveaux
+
+Le dépôt contient aujourd'hui 19 paquets. La règle de placement tient en trois niveaux, et pas un de plus.
+
+| Niveau | Où | Ce qu'on y met |
+|:---|:---|:---|
+| 0, fondations | `@krizaka/tokens`, `@krizaka/tailwind` | Les jetons de design (`--kz-*`), le préréglage Tailwind. Aucun composant. |
+| 0, briques de plateforme | `intl`, `i18n`, `realtime`, `query`, `push`, `pacer`, `discovery`, `payments`, `email`, `app-config`… | Du code sans interface que chaque produit veut de la même façon : formats, messages, temps réel, état du serveur, notifications, paiements. |
+| 1, primitives | `@krizaka/ui/*` | Tout composant sans vocabulaire de produit : bouton, carte, boîte de dialogue, onglets. Les mots arrivent par les props. |
+| 2, composites de produit | un dépôt par produit | Le thème du produit et les composants qui portent son vocabulaire. Jamais une primitive copiée. |
+
+Le test de placement est une question : *un autre produit pourrait-il l'utiliser sans changer un mot ni un type ?* Oui, c'est le niveau 1. Est-ce que ça porte l'identité ou le domaine d'un produit ? C'est le niveau 2. Sinon, c'est une fonction de l'application. Seuls les niveaux 0 et 1 vivent dans ce dépôt.
+
+Pourquoi autant de paquets plutôt qu'un gros ? Pour qu'une application ne paie que ce dont elle a besoin. Une application mobile n'a que faire de Tailwind. Un service qui envoie des courriels n'a pas besoin des composants. `@krizaka/intl` n'a aucune dépendance, et les pilotes du temps réel (`pg`, `ioredis`) sont optionnels : les connexions et les adresses sont données par l'application, jamais lues dans son environnement.
+
+Une exception volontaire : `tokens`, `tailwind` et `ui` forment un groupe fixe et partagent un seul numéro de version, aujourd'hui 3.63.1. Ils se tiennent ensemble : un jeton renommé casse le préréglage et les composants en même temps. Les autres paquets ont leur propre numéro.
+
+## Une entrée par composant
+
+On n'importe jamais « tout le kit ». On importe une entrée :
+
+```tsx
+import { Button } from "@krizaka/ui/button";
+```
+
+`@krizaka/ui` expose 209 chemins dans son `package.json`, dont 202 sont du code (le reste, ce sont des feuilles de style et le registre). Chacun passe un contrôle de taille : 198 budgets, de 1 ko pour un petit composant jusqu'à quelques ko pour un gros. Un composant qui grossit sans qu'on s'en rende compte fait échouer la CI.
+
+C'est une décision d'adoption autant que de taille. Un produit qui n'utilise que le bouton et la carte ne doit pas embarquer le calendrier. Et on peut adopter le kit un composant à la fois, sans migration d'un bloc.
+
+Le mobile n'est pas une entrée parmi les autres : `@krizaka/ui/native` est la version React Native, avec les mêmes jetons. Le bureau est plus simple, et c'est volontaire. L'[ADR-002](https://github.com/krizaka/krizaka-ui/blob/main/docs/adr/ADR-002-desktop-is-the-web-in-a-window.md) dit que le bureau, c'est le web dans une fenêtre : l'app Mac d'Orazaka est une fenêtre Tauri, un binaire d'environ 10 Mo qui affiche les composants web tels quels, là où Electron aurait embarqué un Chromium de 150 Mo. Pas de troisième implémentation à tenir en phase avec les deux autres.
+
+## Le code écrit la documentation
+
+Chaque composant a, à côté de lui, un fichier `meta.ts` : un résumé, quand l'utiliser et quand ne pas le faire, l'accessibilité, les plateformes (web, mobile, les deux), l'état, les composants voisins. Il a aussi des exemples nommés de 40 lignes au plus, rendus en vrai sur le site. Les tests du registre échouent si l'un manque ou s'il est incomplet.
+
+[ui.krizaka.com](https://ui.krizaka.com) est construit à partir de ce registre, et à chaque fusion sur `main`. Une page par composant, avec ses props lues dans les types, ses exemples vivants avec leur code, ses captures mobiles. La documentation d'un commit est la documentation de son code. On n'écrit la documentation d'un composant nulle part ailleurs.
+
+Il y a une conséquence que j'apprécie : pour chaque composant, il faut dire s'il existe sur le web, sur le téléphone et sur le bureau, et sinon pourquoi (un ticket, ou « n'a pas de sens ici »). Un test vérifie ce tableau de parité. Il y a aussi un Storybook, mais il est interne : il sert à auditer l'accessibilité avec axe et à comparer des captures en thème sombre et clair. Il n'est pas publié, et on ne le lie jamais. La documentation publique est une seule.
+
+## Des pages faites de blocs
+
+Au-dessus des primitives, il y a un deuxième étage : les blocs de page. `Page`, `PageHero`, `Section`, `CardGrid`, `LinkCard`, `ActionBar`… Chaque page de krizaka.com, du blog et de ui.krizaka.com est faite de ces blocs, jamais d'une copie locale. Quand un bloc manque, on l'ajoute au kit, on le publie, puis on l'utilise.
+
+Chaque page déclare aussi son gabarit, choisi parmi 15 : accueil, produit, comment ça marche, galerie, accueil de documentation, article de documentation, composant, catalogue, texte long, journal des versions, contact, mentions légales, statut, erreur, tarifs. Le fichier `lib/page-templates.ts` de krizaka.com les liste, et la commande de lint échoue si une page n'y est pas. Sur ui.krizaka.com, les gabarits sont classés par intention : convaincre, expliquer, montrer, agir, exploiter, converser, se remettre d'une erreur.
+
+La règle du langage de pages tient en une phrase : se lire en cinq secondes, puis aller plus loin à la demande. Une carte montre une icône, un nom, une phrase. Le détail se déplie.
+
+Une leçon pratique ici. La feuille de style des blocs est importée une seule fois, par le nom du paquet, dans la mise en page de chaque site. Un jour, un `@import` relatif dans `globals.css` a été supprimé par le build de production, et des pages sont sorties sans style (krizaka-com#74). Depuis, la règle est écrite : jamais d'import relatif pour ça.
+
+## Des moteurs tiers derrière nos façades
+
+L'ADR-001 ne s'est pas arrêtée au constat. Sa phrase est : *partager le cerveau, garder la peau.* Tout ce qui est état du serveur, formulaire, tableau, virtualisation, cadence tourne sur les moteurs sans interface de TanStack, mais derrière un paquet `@krizaka/*`. Tout ce qui se voit (primitives, marques, mouvement, thèmes) reste à nous.
+
+Concrètement, un produit importe `@krizaka/query`, `@krizaka/ui/data-table`, `@krizaka/ui/form`, `@krizaka/pacer`. Jamais `@tanstack/*`. La version de la façade est le contrat : si TanStack casse quelque chose, on le répare une fois, à un endroit. Et quand TanStack n'était pas prêt (le magasin d'état en alpha, le routeur), l'ADR dit non, avec la raison.
+
+Ce n'est pas une règle qu'on espère voir respectée. `krizakaStack()` (ESLint) avertit, `krizaka-ratchet` compte les écarts et les empêche d'augmenter, et `depcruise` fait échouer le lint sur un import interdit ou un cycle. Un cliquet : le nombre ne peut que baisser.
+
+## Livrer sans casser personne
+
+Une bibliothèque partagée ne vaut que si la mise à jour est sans peur. Tout passe par des changesets : une pull request qui change ce qu'un paquet livre ajoute une note. Sur `main`, un robot ouvre une pull request « version packages ». La fusionner publie sur npm, avec une publication de confiance (OIDC) et une provenance, sans aucun jeton npm dans les secrets.
+
+Deux garde-fous qui ont leur histoire. Chaque jour, et après chaque version, un test installe les paquets publiés depuis npm (jamais depuis le workspace) dans une vraie application Next.js 16, une application Expo SDK 57 et un script Node, et fait compiler tous les exemples. Si ça casse, la version est mauvaise, même si les tests du dépôt sont verts. Et chaque produit reçoit les mises à jour par Renovate : une pull request par version de la plateforme, les correctifs fusionnés tout seuls quand la CI est verte.
+
+La politique de support est écrite dans `SUPPORT.md` : deux majeures supportées, la courante et la précédente, avec des correctifs six mois après la sortie de la suivante. Un composant retiré vit une version mineure entière en dépréciation, avec un avertissement en développement, et n'est supprimé qu'à la majeure suivante, avec un outil de migration automatique quand le changement est mécanique.
+
+## Ce qui a mal tourné
+
+C'est la partie que je préfère garder, parce que chaque coupe est née d'une erreur.
+
+- **Deux copies d'un même port de paiement.** Akinaza et Yomizaka portaient chacun le leur, avec leur adaptateur Stripe. L'[ADR-005](https://github.com/krizaka/krizaka-ui/blob/main/docs/adr/ADR-005-payments-package.md) en a fait un paquet, `@krizaka/payments`, sans aucune dépendance à l'exécution : les noms de forfaits restent ceux du produit, aucun montant n'est dans le paquet. La règle de l'organisation est « partager avant une deuxième copie ». On l'a appliquée après la deuxième.
+- **Une migration sans filet.** Personne n'utilisait encore nos produits, alors on a migré le tableau de données vers TanStack Table d'un seul coup, sans compatibilité avec l'ancienne API. C'était une version majeure (3.0.0), assumée. Le prix : tous les produits qui s'en servaient ont dû migrer en même temps.
+- **Trop de composants.** Le 25 octobre, j'ai demandé qu'on réduise : « on en a un peu trop ». L'audit de l'[ADR-006](https://github.com/krizaka/krizaka-ui/blob/main/docs/adr/ADR-006-krizaka-ui-2027.md) a compté 187 entrées de `@krizaka/ui`, et regardé qui les importait dans 24 dépôts. Après l'audit, 145 restent, 14 fusionnent dans une autre, 28 sont dépréciées puis retirées. La règle qui en sort : une entrée existe parce qu'un produit ou un site l'importe, ou qu'un ticket de produit la demande, ou qu'une autre entrée gardée s'appuie dessus. Sinon, elle est dépréciée. Les retraits sont prévus pour la 4.0, pas encore faits.
+- **Un look qui trahissait son origine.** Le chapitre 5 en parle. L'ADR-003 en a tiré un bleu acier, une seule forme de bouton et un survol discret ; l'ADR-004, le Cahier.
+- **Une première publication qui bloque.** Le premier envoi d'un nouveau paquet sur npm demande que quelqu'un déclare une fois, à la main, l'éditeur de confiance. C'est écrit dans le contrat du dépôt.
+
+Et une décision en cours, que je ne tranche pas ici. L'[ADR-007](https://github.com/krizaka/krizaka-ui/blob/main/docs/adr/ADR-007-shop-composer.md), du 26 octobre, est encore une proposition : décrire une page de boutique comme des sections, des variantes et des blocs en données, pour que le propriétaire choisisse comment chaque section se dessine. Le point de départ est une mesure sur la page de démonstration d'un salon, sur dev : 7 355 px de haut sur ordinateur, 12,7 écrans sur téléphone, 3 photos différentes pour 9 emplacements. Ce n'est pas un problème de couleur. C'est que la page était un fichier fixe, où chaque section choisissait sa largeur, son rythme et sa photo.
+
+Ce que je retiens de tout ça : un kit n'est pas un tas de composants. C'est un ensemble de décisions sur ce qu'on ne copiera plus.
