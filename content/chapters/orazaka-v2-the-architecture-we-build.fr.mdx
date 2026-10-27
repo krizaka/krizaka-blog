@@ -35,7 +35,7 @@ stats:
 
 Quand on me demande ce qu'est Orazaka techniquement, je réponds souvent par une liste de dépôts. C'est une mauvaise réponse. Une liste ne dit pas ce qu'on construit, ni pourquoi.
 
-Le 26 octobre, j'ai fait relire l'architecture par un audit externe, un modèle de langage à qui on a donné le contexte. Il proposait une architecture hybride : garder certaines pièces, en remplacer d'autres par des cadres connus. Une partie était juste. Une autre décrivait comme existantes des choses qu'on n'a pas construites. On l'a vérifié dans le code, ligne par ligne, puis une contre-expertise a resserré ce qui restait. Il en est sorti une décision, l'[ADR-092](https://github.com/krizaka/orazaka/pull/430), et une phrase :
+Le 26 octobre, j'ai fait relire l'architecture par un audit externe, un modèle de langage à qui on a donné le contexte. Il proposait une architecture hybride : garder certaines pièces, en remplacer d'autres par des cadres connus. Une partie était juste. Une autre décrivait comme existantes des choses qu'on n'a pas construites. On l'a vérifié dans le code, ligne par ligne, puis une contre-expertise a resserré ce qui restait. Il en est sorti une décision, l'[ADR-092](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-092-own-the-core-integrate-the-edges.md), et une phrase :
 
 > On possède le cœur, on branche les bords.
 
@@ -51,7 +51,7 @@ Un moteur d'IA, c'est beaucoup de pièces. La plupart existent déjà ailleurs, 
 - **La boucle de contrôle.** Ce qui décide si une sortie est bonne, et quoi faire si elle ne l'est pas.
 - **Le bail du GPU.** Qui a le droit d'utiliser la carte graphique d'une machine, et pendant combien de temps.
 - **Le pilotage en direct.** Changer une étape pendant qu'un run avance, sans tout refaire.
-- **L'accès.** Qui a le droit de lire quoi, vérifié au moment où l'assistant cherche et au moment où il appelle un outil ([ADR-091](https://github.com/krizaka/orazaka/pull/427)).
+- **L'accès.** Qui a le droit de lire quoi, vérifié au moment où l'assistant cherche et au moment où il appelle un outil ([ADR-091](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-091-access-at-retrieval-and-at-the-tool.md)).
 
 **Ce qu'on branche tel quel :**
 

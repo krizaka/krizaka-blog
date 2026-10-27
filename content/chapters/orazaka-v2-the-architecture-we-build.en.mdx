@@ -35,7 +35,7 @@ stats:
 
 When someone asks me what Orazaka is, technically, I often answer with a list of repositories. It is a bad answer. A list does not say what we are building, or why.
 
-On 26 October, I had the architecture reviewed by an outside audit: a language model, given the context. It suggested a hybrid architecture, keeping some parts and replacing others with well-known frameworks. Some of it was right. Some of it described as existing things we have not built. We checked it against the code, line by line, then a counter-review tightened what was left. The outcome is one decision, [ADR-092](https://github.com/krizaka/orazaka/pull/430), and one sentence:
+On 26 October, I had the architecture reviewed by an outside audit: a language model, given the context. It suggested a hybrid architecture, keeping some parts and replacing others with well-known frameworks. Some of it was right. Some of it described as existing things we have not built. We checked it against the code, line by line, then a counter-review tightened what was left. The outcome is one decision, [ADR-092](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-092-own-the-core-integrate-the-edges.md), and one sentence:
 
 > We own the core, we integrate the edges.
 
@@ -51,7 +51,7 @@ An AI engine is a lot of parts. Most of them already exist elsewhere, and are we
 - **The control loop.** What decides whether an output is good, and what to do when it is not.
 - **The GPU lease.** Who may use a machine's graphics card, and for how long.
 - **Live steering.** Changing a step while a run moves on, without redoing everything.
-- **Access.** Who may read what, checked when the assistant searches and when it calls a tool ([ADR-091](https://github.com/krizaka/orazaka/pull/427)).
+- **Access.** Who may read what, checked when the assistant searches and when it calls a tool ([ADR-091](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-091-access-at-retrieval-and-at-the-tool.md)).
 
 **What we plug in as it is:**
 
