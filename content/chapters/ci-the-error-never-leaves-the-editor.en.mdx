@@ -1,7 +1,7 @@
 ---
 title: "The error no longer leaves the editor"
 description: "Two days after the chapter on our CI, SonarCloud's dashboard showed me what it let through. How we moved checks toward the editor, and why every bug must leave a guard."
-seoTitle: "Shift-left: the error no longer leaves the editor, a sequel on our CI"
+seoTitle: "Shift-left: the error no longer leaves the editor"
 seoDescription: "Cognitive complexity, Sonar rules at lint, secrets, Java rules: how Krizaka moves its checks from CI to the editor, and what broke on the way."
 date: 2026-10-27
 publishedAt: "2026-10-27T21:00:00-04:00"
@@ -13,7 +13,8 @@ draft: false
 chapter: 14
 period: "2026-10-26/2026-10-27"
 sources:
-  - how-we-built-our-ci
+  - coding-agents-one-night
+  - from-vibe-coding-to-agentic-engineering
 versus:
   faced: "a CI that catches the error too late"
   built: "checks at lint, one source, and a guard for every bug"
@@ -24,7 +25,7 @@ stats:
   - value: "12"
     label: "repositories where the branch must be up to date before merging"
     section: "The race nobody saw"
-  - value: "4"
+  - value: "0.11 to 0.13"
     label: "versions of @krizaka/config published on October 27"
     section: "One source for the rules"
 ---
