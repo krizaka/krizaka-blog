@@ -1,0 +1,106 @@
+---
+title: "The error no longer leaves the editor"
+description: "Two days after the chapter on our CI, SonarCloud's dashboard showed me what it let through. How we moved checks toward the editor, and why every bug must leave a guard."
+seoTitle: "Shift-left: the error no longer leaves the editor, a sequel on our CI"
+seoDescription: "Cognitive complexity, Sonar rules at lint, secrets, Java rules: how Krizaka moves its checks from CI to the editor, and what broke on the way."
+date: 2026-10-27
+publishedAt: "2026-10-27T21:00:00-04:00"
+tags: [integration, security]
+author: oussama
+draft: true
+chapter: 14
+period: "2026-10-26/2026-10-27"
+sources:
+  - how-we-built-our-ci
+versus:
+  faced: "a CI that catches the error too late"
+  built: "checks at lint, one source, and a guard for every bug"
+stats:
+  - value: "15"
+    label: "cognitive complexity threshold, checked at lint"
+    section: "Complexity, before the PR"
+  - value: "12"
+    label: "repositories where the branch must be up to date before merging"
+    section: "The race nobody saw"
+  - value: "4"
+    label: "versions of @krizaka/config published on October 27"
+    section: "One source for the rules"
+---
+
+In [chapter 11](/story/how-we-built-our-ci/), I showed you our CI. Two days later, SonarCloud's dashboard showed me what it let through.
+
+Everything worked as planned. The gates were required, the PRs waited. But several Sonar gates were red on main, almost always for the same family of reasons: code too complicated, small mistakes an editor could have flagged. The CI held the gate, but it held it too late. The agent was done, the PR was open, and ten minutes later we learned everything had to be redone.
+
+This chapter tells the move: from "the CI catches it" to "the error never leaves the editor".
+
+## What the dashboard showed me
+
+I asked an agent to read, repository by repository, why the gates were red. The answer fit in one sentence. Nearly all of them failed on new code, and nearly always on cognitive complexity, Sonar's S3776 rule: a function with too many nested things to be read without effort.
+
+I did not lower a threshold, and I did not mark anything "won't fix". The functions were split, repository by repository, in short PRs. In krizaka-ui, that same pass revealed 37 bugs, sixteen of them sorts without a comparison function. A sort without one sorts as text: `[10, 9, 1].sort()` gives `[1, 10, 9]`. Nobody had seen it because it almost always worked.
+
+I could have stopped there. But looking at the list, I told myself none of it needed to wait for Sonar. A lint rule finds the same thing in a second, while the agent is writing.
+
+## Complexity, before the PR
+
+The first step was to bring that rule into the editor. `@krizaka/config` 0.11 adds cognitive complexity to `krizakaStack()`, at the same threshold as Sonar, 15. A counter joins our ratchet: functions already over the threshold are frozen at their current number, and the CI refuses to add a single one.
+
+The principle is the one from chapter 11. But where the ratchet used to count our own rules, it now counts a rule that also exists at Sonar. What Sonar would say ten minutes later, the lint says right away.
+
+And the rollout broke, of course. Updating the repositories, we saw that a command, `krizaka-ratchet --update`, silently erased the counters it did not measure, such as the page-template one, specific to each repository. Nothing failed. A counter vanished, and the guard it held went with it. That is [krizaka-ts#163](https://github.com/krizaka/krizaka-ts/pull/163): the command now keeps what it does not know and says so in its report. A test holds it.
+
+That is what I kept from this first step. A tool that erases a guard without a word is worse than a missing guard.
+
+## All of Sonar at lint
+
+One rule was not enough. 0.12 turns on the full `eslint-plugin-sonarjs` set, the engine of SonarCloud's JavaScript and TypeScript rules. A Sonar error becomes a lint error.
+
+There was debt, of course. In each repository we counted what the rule already found and froze it. The numbers are recorded in the repository and can only go down, like the others. I did not want to fix everything at once, for the same reason as with ratchets: the rule protects new code immediately, and the existing debt goes away little by little.
+
+For Java, the same idea is written differently. In [krizaka-build#107](https://github.com/krizaka/krizaka-build/pull/107), the shared parent runs PMD and SpotBugs with its security plugin in `verify`, with a baseline per module. And [krizaka-build#106](https://github.com/krizaka/krizaka-build/pull/106) adds security rules, written out in an ADR, to our ArchUnit architecture tests.
+
+That last step had its own failure. A repository without SpotBugs's exclusions file broke on its first build. [krizaka-build#108](https://github.com/krizaka/krizaka-build/pull/108) makes the file optional and adds a canary job, which builds an empty project against the parent on every change. We learned not to publish a parent without having a consumer try it.
+
+## Secrets and workflows, as early as possible
+
+There are things a CI should never have to catch. A secret pushed to a repository, for example: once it is in the history, it is burnt.
+
+[.github#334](https://github.com/krizaka/.github/pull/334) puts gitleaks and zizmor as early as possible. First a hook on every commit, with one configuration for all repositories. Then a CI job that reads the whole history. After that come GitHub's push protection, then the Sonar rule on secrets, as the last net. zizmor does the same for our workflows, which are code like the rest and can be attacked like it.
+
+The first pass over the main repositories found no real secret, only test values and one dummy value used by the CI, which I allowed with a reason written beside it.
+
+Alongside, I did a less glorious cleanup. In the repositories cloned on our machines, 88 tokens were sitting in the remote address, where a `git remote -v` shows them to anyone looking over your shoulder. As far as I know they leaked nowhere. But they had no business being there. I removed them, and the agents now use a token they ask for at the moment they need it, never written into an address.
+
+## One source for the rules
+
+Moving checks toward the editor carries a risk: each repository keeps its copy, and the copies drift apart. We had already lived that with CI files.
+
+The right move is the same as in chapter 11. 0.13 of `@krizaka/config` ships the shared ast-grep rule pack, along with the `krizaka-sg-ratchet` and `krizaka-seo-family` commands. No repository should keep its own copy of the ratchet or its own rules. Versions 0.11, 0.12 and 0.13 came out the same day, October 27.
+
+## The race nobody saw
+
+One day, Yomizaka's main branch turned red. Thirty lint warnings against a cap of 27. Yet every PR had been green when it was merged.
+
+The explanation is silly. Two PRs were each green on an old base. The first merged and set the cap. The second, started earlier, merged afterwards without being checked again on the new main, and added its warnings. No PR was at fault, and the sum was.
+
+The guard is a GitHub setting: require the branch to be up to date before merging. I turned it on for Yomizaka, then for 12 repositories, with a small script that updates PRs waiting on auto-merge. I had thought of the merge queue, but SonarCloud only answers on PRs, so a queue would never get its answer. The solution is less elegant, and it works.
+
+## A fix without a guard is not finished
+
+I added a rule to our CI, in [.github#336](https://github.com/krizaka/.github/pull/336): a PR that fixes a bug must add a test that would have caught it, or a rule. Without that, the check fails.
+
+The rule is not a punishment. It forces the question I had made a habit in chapter 11: why did the guards not see it? Without it, I forget, and so does the agent.
+
+In the same change, PRs that only touch documentation now go through a light Sonar scan, instead of rerunning the whole CI. A text PR does not need a Docker build, but it has the right to be checked.
+
+## What is not settled
+
+As I write, three Sonar gates are still red on main: krizaka-ui, krizaka-blog and the .github repository itself. I am working on them, and I did not bypass them.
+
+The Sonar rules that follow data from end to end, the "taint" ones, have no local twin. They show in the editor through connected mode, and Sonar remains their only gate. And some type-aware rules only fire with the full TypeScript configuration: that is next.
+
+## What I take from it
+
+A CI catches errors. But the later it catches them, the more they cost, because the agent is done and the PR is already open. The idea is to lift each check one notch, toward the commit, toward the editor, toward a rule written once for every repository.
+
+And when a bug gets through anyway, the question does not change: what should have seen it, and where? The answer is a guard, never "pay more attention".
