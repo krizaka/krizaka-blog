@@ -270,8 +270,8 @@ test("the foot's previous and next are the neighbours in reading order, in the c
   );
 });
 
-test("chapters never trigger the newsletter (its workflow watches content/posts only)", () => {
-  assert.doesNotMatch(readFileSync(join(root, ".github/workflows/newsletter.yml"), "utf8"), /content\/chapters/);
+test("a published chapter triggers the newsletter like a post (#177: the workflow watches content/chapters too)", () => {
+  assert.match(readFileSync(join(root, ".github/workflows/newsletter.yml"), "utf8"), /content\/chapters/);
 });
 
 test("a chapter's search title and description fit check-meta (seoTitle or title + site name; seoDescription or lead)", () => {
