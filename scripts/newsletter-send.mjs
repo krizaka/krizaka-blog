@@ -74,6 +74,16 @@ export async function requestSend(slug, versions, token, fetchImpl = fetch, extr
   return body;
 }
 
+/** The switch of the automatic and manual sends: off unless MAIL_NEWSLETTER_ENABLED is exactly "true" (fail closed). */
+export const newsletterEnabled = (env = process.env) => env.MAIL_NEWSLETTER_ENABLED === "true";
+
+/** A send that did not reach everyone is a failed run (a red check), never a green line: the list is small and every address counts. */
+export function assertDelivered(slug, result) {
+  if (result.already) return `newsletter: ${slug} was already sent`;
+  if (result.failed > 0 || (result.total > 0 && result.sent === 0)) throw new Error(`newsletter: ${slug} reached ${result.sent} of ${result.total}; ${result.failed} failed (the mail provider rejected it?)`);
+  return `newsletter: ${slug} sent to ${result.sent} of ${result.total}`;
+}
+
 async function waitLive(url, minutes = 20) {
   for (let i = 0; i < minutes * 2; i++) {
     const res = await fetch(url, { redirect: "follow" }).catch(() => null);
@@ -90,6 +100,7 @@ async function cli() {
   };
   const dry = process.argv.includes("--dry-run");
   const testTo = arg("--test-to");
+  if (!dry && !testTo && !newsletterEnabled()) return console.log("newsletter: sending is switched off (set the repository variable MAIL_NEWSLETTER_ENABLED to true); nothing sent");
   const before = arg("--before");
   const after = arg("--after") ?? "HEAD";
   let slugs;
@@ -128,7 +139,7 @@ async function cli() {
     }
     for (const v of Object.values(versions)) if (!(await waitLive(v.url))) throw new Error(`newsletter: ${v.url} is not live after 20 minutes; nothing sent`);
     const r = await requestSend(slug, rendered, token);
-    console.log(r.already ? `newsletter: ${slug} was already sent` : `newsletter: ${slug} sent to ${r.sent} of ${r.total}${r.failed ? ` (${r.failed} not reached)` : ""}`);
+    console.log(assertDelivered(slug, r));
   }
 }
 
