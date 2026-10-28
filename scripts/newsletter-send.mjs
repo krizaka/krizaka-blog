@@ -48,7 +48,7 @@ export function publishedBetween(changed, read) {
     if (!m) continue;
     if (isPublished(read.after(path)) && !isPublished(read.before(path))) slugs.add(m[1]);
   }
-  return [...slugs].sort();
+  return [...slugs].sort((a, b) => (a < b ? -1 : 1)) /* a Set: never equal */;
 }
 
 /** The post's versions at a commit: { en?, fr? } with title, description, the public URL and the cover. Only published
