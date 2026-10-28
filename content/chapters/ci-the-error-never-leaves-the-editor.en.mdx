@@ -96,6 +96,77 @@ The rule is not a punishment. It forces the question I had made a habit in chapt
 
 In the same change, PRs that only touch documentation now go through a light Sonar scan, instead of rerunning the whole CI. A text PR does not need a Docker build, but it has the right to be checked.
 
+## The two paths, drawn
+
+Someone asked me to show the flow and the folders, so here they are: where a change goes, and where the guards live. Two real examples, drawn from the workflow files. The arrows give the order of the story, the list under each drawing gives the detail.
+
+Krizaka UI first. A change goes from the editor to npm.
+
+<Pipeline label="Krizaka UI: the path of a change">
+  <Stage title="Editor" note="the error shows first">Types and lint rules answer while I write, before anything is committed.</Stage>
+  <Stage title="pre-commit" note="gitleaks, zizmor">`.pre-commit-config.yaml` runs the org's two hooks on the staged files: a secret never gets into the history, a workflow is read before it is pushed. Krizaka UI has no pre-push hook; Akinaza has one, below.</Stage>
+  <Stage title="Type-check, test, build" note="turbo run check">One `turbo run check` per package: lint (with the ast-grep rules and their ratchet), types, tests, build, the size limit, publint. The Storybook screenshots are compared pixel by pixel with the baselines, and a failure uploads the diffs.</Stage>
+  <Stage title="Documentation site" note="ui.krizaka.com">Build, lint, types, tests and the family's SEO contract on the export. Then the crawl of a sample of pages, in three slices, and the layout and motion checks, in a browser, dark and light, desktop and phone. A last job, `Documentation site (ui.krizaka.com)`, gives the verdict.</Stage>
+  <Stage title="Duplicates, realtime" note="two more jobs">Duplicate code, held by `dup-ratchet.json`, and the realtime adapters tested against a real PostgreSQL and a real Valkey.</Stage>
+  <Stage title="Security scan" note="gitleaks, zizmor" tone="gate">The same two tools, this time on the whole pull request. CodeQL runs next to it, enforced by an organisation rule.</Stage>
+  <Stage title="SonarCloud" note="automatic analysis" tone="gate">For Krizaka UI, Sonar analyses the repository on its own side, not in our workflow, and its answer is required. This automatic analysis does not answer on the queue's branches; the CI analysis does, which is why the repositories are moving to it, as krizaka-ts already has.</Stage>
+  <Stage title="Merge gate" note="merge queue, checks green" tone="gate">The PR enters the merge queue. The checks, Sonar included, run on the queue's temporary branch, then it merges.</Stage>
+  <Stage title="main" note="squash, linear history">GitHub merges when everything is green. Nobody pushes to main.</Stage>
+  <Stage title="Version Packages" note="a PR from Changesets">Changesets keeps a "chore: version packages" PR up to date with the versions and the changelogs. Merging it is what releases.</Stage>
+  <Stage title="Release" note="npm, provenance" tone="ship">`release.yml` publishes the packages. Each one tries npm's OIDC trusted publishing first, with provenance; a token is only a logged fallback for a package that has no trusted publisher yet. Then a job fails if a version on main is not on npm.</Stage>
+</Pipeline>
+
+One thing is not on this path: the "fix needs a guard" job of [.github#336](https://github.com/krizaka/.github/pull/336). It belongs to the shared Node pipeline, and Krizaka UI keeps its own `ci.yml`. I prefer to say it than to draw a box that does not exist.
+
+Where the guards live in that repository:
+
+```text
+krizaka-ui/
+├── .pre-commit-config.yaml     gitleaks and zizmor, before each commit
+├── .github/workflows/
+│   ├── ci.yml                  check, documentation site, duplicates, realtime
+│   ├── security.yml            gitleaks and zizmor on the PR
+│   ├── release.yml             Version Packages, npm, provenance
+│   └── update-baselines.yml    renews the screenshot baselines
+├── rules/ and sgconfig.yml     the ast-grep rules
+├── sg-ratchet.json             their debt, which only goes down
+└── dup-ratchet.json            the duplicated lines, same idea
+```
+
+Now the Akinaza shop app, in `apps/mobile`. It is an Expo app, and the path is longer on the test side.
+
+<Pipeline label="Akinaza's mobile app: the path of a change">
+  <Stage title="Editor" note="the error shows first">Same idea: types and lint answer while I write.</Stage>
+  <Stage title="pre-commit" note="gitleaks, zizmor">The same two hooks, from `.pre-commit-config.yaml`.</Stage>
+  <Stage title="pre-push" note="pnpm run check">`.githooks/pre-push` makes the install match the lockfile, then runs lint, types and tests. We never push to see what CI says.</Stage>
+  <Stage title="Lint, types, tests" note="Mobile CI, side by side">`mobile-ci.yml` calls the shared Expo pipeline: ESLint with a cap on warnings and the ratchet of `apps/mobile/lint-ratchet.json`, `tsc`, the Jest tests and the bundle export. The four run side by side, and only when the app, the contracts it reads or the workflow changed.</Stage>
+  <Stage title="mobile-e2e" note="Maestro on an emulator">The shared workflow builds a release APK, starts an Android emulator and plays the Maestro flows of `apps/mobile/.maestro` against a throwaway backend, signed in as the demo shop's owner. It always reports `mobile-e2e / gate`.</Stage>
+  <Stage title="Security scan" note="gitleaks, zizmor" tone="gate">The same scan as the other repositories.</Stage>
+  <Stage title="CI gate" note="Sonar, fix needs a guard" tone="gate">The repository's main pipeline also runs on the PR, with its CI analysis for Sonar. It carries SonarCloud after the tests, the duplicates and the "fix needs a guard" job, and gives one verdict, `ci / CI gate`.</Stage>
+  <Stage title="Merge gate" note="merge queue, checks green" tone="gate">The PR enters the merge queue. The checks, Sonar included, run on the queue's temporary branch, then it merges.</Stage>
+  <Stage title="main" note="squash">GitHub merges when everything is green.</Stage>
+  <Stage title="Showcase videos" note="on main, never required" tone="ship">When Mobile CI is green on main, `download-videos.yml` records the web and phone showcase journeys, and the org's workflow sends them to the CDN and opens a PR for the download page. If it fails, nothing is blocked.</Stage>
+</Pipeline>
+
+And where the guards live:
+
+```text
+akinaza/
+├── .pre-commit-config.yaml     gitleaks and zizmor, before each commit
+├── .githooks/pre-push          lint, types and tests, before each push
+├── .github/workflows/
+│   ├── mobile-ci.yml           Expo pipeline and mobile-e2e
+│   ├── ci.yml                  main pipeline: Sonar, duplicates, fix needs a guard
+│   ├── security.yml            gitleaks and zizmor on the PR
+│   └── download-videos.yml     showcase videos, on main
+├── apps/mobile/
+│   ├── lint-ratchet.json       the app's lint debt
+│   └── .maestro/               the flows (smoke, tabs, invoices...)
+├── rules/ and sg-ratchet.json  ast-grep rules and their ratchet
+├── dup-ratchet.json            duplicated lines
+└── perf-budgets.json           the web's JavaScript budget per page
+```
+
 ## What is not settled
 
 As I write, three Sonar gates are still red on main: krizaka-ui, krizaka-blog and the .github repository itself. I am working on them, and I did not bypass them.
