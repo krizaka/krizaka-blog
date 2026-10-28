@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
-import { publishedBetween, versionsOf, requestSend } from "../scripts/newsletter-send.mjs";
+import { publishedBetween, versionsOf, requestSend, newsletterEnabled, assertDelivered } from "../scripts/newsletter-send.mjs";
 
 const require = createRequire(import.meta.url);
 const nl = require("../functions/packages/newsletter/subscribe/newsletter.js");
@@ -377,4 +377,20 @@ test("the widget only loads Cloudflare's script from the wait, never straight fr
   assert.ok(effect.indexOf("loadScript()") < effect.indexOf("whenWanted("), "loadScript() is inside start, defined before the wait");
   assert.match(effect.slice(effect.indexOf("const start")), /^const start = \(\) => \{\s*loadScript\(\)/);
   assert.doesNotMatch(src, /<script[^>]*challenges\.cloudflare/);
+});
+
+test("the send switch is off unless MAIL_NEWSLETTER_ENABLED is exactly true (fail closed)", () => {
+  assert.equal(newsletterEnabled({}), false);
+  assert.equal(newsletterEnabled({ MAIL_NEWSLETTER_ENABLED: "" }), false);
+  assert.equal(newsletterEnabled({ MAIL_NEWSLETTER_ENABLED: "false" }), false);
+  assert.equal(newsletterEnabled({ MAIL_NEWSLETTER_ENABLED: "1" }), false);
+  assert.equal(newsletterEnabled({ MAIL_NEWSLETTER_ENABLED: "true" }), true);
+  assert.match(readFileSync(new URL("../.github/workflows/newsletter.yml", import.meta.url), "utf8"), /MAIL_NEWSLETTER_ENABLED: \$\{\{ vars\.MAIL_NEWSLETTER_ENABLED \}\}/, "the workflow passes the variable");
+});
+
+test("a send the provider rejected fails the run loudly; a complete one and an already-sent one do not", () => {
+  assert.throws(() => assertDelivered("x", { sent: 0, failed: 1, total: 1 }), /reached 0 of 1/);
+  assert.throws(() => assertDelivered("x", { sent: 2, failed: 1, total: 3 }), /1 failed/);
+  assert.match(assertDelivered("x", { sent: 1, failed: 0, total: 1 }), /sent to 1 of 1/);
+  assert.match(assertDelivered("x", { already: true }), /already sent/);
 });
