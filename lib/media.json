@@ -4242,11 +4242,11 @@
   "made": {
    "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
    "licence": "Apache-2.0",
-   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536\u00d7864",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "A tidy walnut desk at first light, an open laptop whose dark editor window shows soft faint lines with one single small amber marker glowing in the margin, no readable text, a brass magnifying glass resting beside it, a steaming ceramic cup, a paper notebook with a neat row of ticked boxes, through the tall window behind a snowy Montreal street turns pink and blue at dawn, 50mm lens, low angle, bokeh of street lights, calm and orderly mood. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No text, no letters, no numbers, no logos, no people, no watermark.",
    "seed": "2026",
-   "size": "1536×864",
+   "size": "1536\u00d7864",
    "seconds": 0,
    "costUsd": 0,
    "note": "Made like the cover of chapter 11, with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. One seed (2026), kept after a review at full size."
@@ -4286,6 +4286,76 @@
     {
      "w": 1536,
      "url": "https://krizaka-assets.b-cdn.net/site/blog/ci-the-error-never-leaves-the-editor/shift-left-cover-1536.bc0f5787ce.webp"
+    }
+   ]
+  }
+ },
+ "sonar-gates-cover": {
+  "kind": "image",
+  "width": 1536,
+  "height": 864,
+  "blur": "data:image/webp;base64,UklGRm4AAABXRUJQVlA4IGIAAAAQAgCdASoQAAkAA4BaJQBOgCK4lXAG0iCAAPa/f8488rYNRayKJgF/a9dU/Tdt/pnDg0c0yEzy8i5QReDdy3TRZKiY4EmmTQyF6aEktwb50H4BRDp9QV6/Xz8PkNDB+n5AAA==",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/we-bought-sonarcloud-what-do-we-have-now/sonar-gates-cover-480.05fbfdade3.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/we-bought-sonarcloud-what-do-we-have-now/sonar-gates-cover-960.800f54da21.webp"
+   },
+   {
+    "w": 1536,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/we-bought-sonarcloud-what-do-we-have-now/sonar-gates-cover-1536.43d2d5b285.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536\u00d7864",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "On a walnut workbench at dusk, a small brass sounding weight on a coiled rope resting beside an open paper notebook with a neat row of ticked boxes, a row of three tiny carved wooden gates standing open on the bench, a brass desk lamp casting warm light, through the tall window behind the frozen Old Port of Montreal under a pink and blue winter sky, 50mm lens, low angle, bokeh of harbour lights, calm and orderly mood. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No text, no letters, no numbers, no logos, no people, no watermark.",
+   "seed": "2027",
+   "size": "1536\u00d7864",
+   "seconds": 82,
+   "costUsd": 0,
+   "note": "Made like the cover of chapter 14, with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. Two seeds were planned (2027 and 1028); the first was kept after a review at full size."
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/we-bought-sonarcloud-what-do-we-have-now/sonar-gates-cover-480.7b75fd3b7e.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/we-bought-sonarcloud-what-do-we-have-now/sonar-gates-cover-768.95e8b9ec37.avif"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/we-bought-sonarcloud-what-do-we-have-now/sonar-gates-cover-1200.7b394acfca.avif"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/we-bought-sonarcloud-what-do-we-have-now/sonar-gates-cover-1536.c24ce9edc4.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/we-bought-sonarcloud-what-do-we-have-now/sonar-gates-cover-480.63594f6049.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/we-bought-sonarcloud-what-do-we-have-now/sonar-gates-cover-768.0421cf91c3.webp"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/we-bought-sonarcloud-what-do-we-have-now/sonar-gates-cover-1200.fdd69ee190.webp"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/we-bought-sonarcloud-what-do-we-have-now/sonar-gates-cover-1536.be77ccbff6.webp"
     }
    ]
   }

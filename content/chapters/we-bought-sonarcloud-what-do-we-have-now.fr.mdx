@@ -1,0 +1,106 @@
+---
+title: "On a acheté SonarCloud, qu'est-ce qu'on a maintenant ?"
+description: "On est passé au plan payant de SonarCloud. Ce que ça a changé dans notre CI, pourquoi les portes sont d'abord devenues rouges, ce que disent les chiffres, et ce que nos gardes font à la place de Sonar."
+seoTitle: "SonarCloud payant : ce que ça change dans notre CI"
+seoDescription: "Analyse en CI, couverture, file de fusion, version précédente : ce que le plan payant de SonarCloud a changé chez Krizaka, chiffres lus sur l'API."
+date: 2026-10-28
+publishedAt: "2026-10-28T00:50:00-04:00"
+tags: [integration, security]
+author: oussama
+cover: sonar-gates-cover
+coverAlt: "Un établi en noyer au crépuscule : un carnet quadrillé et une chaîne de laiton enroulée, trois minuscules portes de bois alignées, deux lampes de laiton, et derrière la grande fenêtre un port de Montréal sous un ciel rose et bleu"
+draft: false
+chapter: 15
+period: "2026-10-27/2026-10-28"
+sources:
+  - coding-agents-one-night
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "un tableau Sonar qui ne voyait ni la couverture ni la file de fusion"
+  built: "une analyse lancée par la CI, des chiffres honnêtes, et un partage clair avec nos gardes"
+stats:
+  - value: "37 à 0"
+    label: "bugs Sonar dans krizaka-ui, lus sur l'API aujourd'hui"
+    section: "Ce que disent les chiffres"
+  - value: "5 sur 9"
+    label: "dépôts relus dont la porte Sonar est verte"
+    section: "Ce que disent les chiffres"
+  - value: "15"
+    label: "seuil de complexité cognitive, le même chez Sonar et au lint"
+    section: "Qui fait quoi, Sonar ou nos gardes"
+---
+
+Dans [le chapitre 14](/fr/story/ci-the-error-never-leaves-the-editor/), je vous ai parlé de tableau SonarCloud et de portes rouges. Il y avait une question que je n'avais pas posée tout haut : qu'est-ce qu'on a vraiment acheté ?
+
+On est passé au plan payant de SonarCloud. Je l'ai décidé, parce que je voulais que Sonar fasse partie de la porte de fusion, pas seulement du tableau qu'on regarde de temps en temps. Ce chapitre raconte ce que ça a changé, ce qui a mal commencé, et les chiffres que je lis aujourd'hui, le 28 octobre. Je ne dis que ce que j'ai pu vérifier, dans le code, dans les PR fusionnées et sur l'API publique de SonarCloud.
+
+## Avant : une analyse qui tournait de son côté
+
+Au début, on utilisait l'analyse automatique de SonarCloud. On l'active d'un clic, Sonar lit le dépôt sans rien demander à notre CI, et il répond sur les pull requests. C'est pratique, et on s'en est contenté longtemps.
+
+Mais elle a deux limites que j'ai découvertes l'une après l'autre. Elle ne peut pas importer la couverture de tests, parce que les tests tournent chez nous, pas chez Sonar. Et elle ne répond pas sur les branches temporaires de la file de fusion de GitHub. C'est ce qui m'avait fait écrire, au chapitre précédent, que Sonar « ne répondait que sur les PR ». C'était vrai de l'analyse automatique, pas de Sonar.
+
+<Pipeline label="Avant et maintenant : où Sonar regarde">
+  <Stage title="Avant" note="analyse automatique">Sonar lit le dépôt de son côté et répond sur la pull request. Pas de couverture, rien sur la file de fusion.</Stage>
+  <Stage title="Éditeur" note="lint, ratchet">Les règles `sonarjs` répondent pendant qu'on écrit.</Stage>
+  <Stage title="Tests" note="lcov, JaCoCo">Le job de tests dépose son rapport de couverture.</Stage>
+  <Stage title="Analyse en CI" note="après les tests" tone="gate">Le job `sonar` du pipeline commun lance l'analyse, importe la couverture et attend le verdict de la porte.</Stage>
+  <Stage title="CI gate" note="un seul verdict" tone="gate">Une seule vérification exigée résume le pipeline, Sonar compris.</Stage>
+  <Stage title="File de fusion" note="Sonar y répond aussi" tone="ship">L'analyse de la CI répond sur la branche temporaire de la file, puis GitHub fusionne.</Stage>
+</Pipeline>
+
+## Ce que le plan payant a changé
+
+Concrètement, trois choses, et elles sont dans le pipeline commun de l'organisation, pas dans chaque dépôt.
+
+La première est que l'analyse est lancée par notre CI, après les tests, avec `sonar: true` dans le workflow partagé. Elle attend la réponse de la porte de qualité avant de rendre son verdict. L'analyse automatique du projet n'est coupée qu'une fois ce job vert, pour qu'un dépôt ne reste jamais sans analyse.
+
+La deuxième est la couverture. Le job de tests dépose son rapport, en lcov pour JavaScript et TypeScript, en JaCoCo pour Java, et le job Sonar l'importe. C'est la raison pour laquelle Sonar est « entré » dans le workflow : la couverture ne peut venir que d'une analyse lancée par la CI.
+
+La troisième est la file de fusion. Une analyse de la CI répond sur n'importe quelle branche, y compris `gh-readonly-queue/main/...`. Je l'ai vu sur krizaka-ts : l'API publique de SonarCloud liste les branches de la file de ce dépôt, chacune avec le verdict de sa porte. Les autres dépôts y passent un par un, selon une recette écrite dans nos standards. Tant qu'un dépôt n'a pas fait le pas, il garde l'obligation d'être à jour avant la fusion.
+
+Et une petite chose en plus, parce qu'on y a pensé tard : une PR qui ne change que de la documentation a droit à une analyse légère, sans build, plutôt qu'à une vérification qui n'arrive jamais. C'est [.github#336](https://github.com/krizaka/.github/pull/336).
+
+## Pourquoi les portes sont d'abord devenues rouges
+
+Je m'attendais à ce que tout passe au vert. Ça a fait l'inverse.
+
+Au premier passage de l'analyse en CI, Sonar n'avait aucune version de référence pour le projet. Il affichait « not provided », et il comptait donc tout l'historique comme du code nouveau. Chaque vieux défaut devenait une faute du dernier changement, et les portes sont devenues rouges d'un coup, dans des dépôts qui n'avaient rien fait de nouveau.
+
+Notre période de nouveau code est « version précédente » : Sonar juge ce qui a changé depuis la dernière version connue. Sans version, il n'y a pas de précédente. La correction est petite. [.github#354](https://github.com/krizaka/.github/pull/354) donne à chaque analyse de la CI une version, `ci-` suivi du numéro d'exécution, pour que la période soit le changement depuis l'analyse d'avant. Les défauts anciens restent visibles. Ils ne rendent plus la porte rouge à chaque PR. Dans l'historique des analyses de krizaka-ui, on voit les analyses « not provided », puis l'événement de version, quelques heures plus tard.
+
+Ce que j'en retiens : un outil acheté ne règle pas sa propre configuration. On a payé pour une porte, et la première chose qu'elle a faite, c'est dire non à tout.
+
+## Ce que disent les chiffres
+
+Voici ce que j'ai lu ce matin sur l'API publique, projet par projet, avec la clé `krizaka_<dépôt>`. Je donne les nombres tels quels, ils bougent d'une analyse à l'autre.
+
+Dans krizaka-ui, la PR [krizaka-ui#781](https://github.com/krizaka/krizaka-ui/pull/781) corrigeait 37 bugs, dont ces tris sans fonction de comparaison dont je parlais au chapitre précédent. L'API affiche 0 bug aujourd'hui, et 0 vulnérabilité.
+
+Sur les 9 dépôts que j'ai relus, la porte est verte dans 5 : krizaka-com, krizaka-ts, akinaza, yomizaka et orazaka-ai-engine. Elle est rouge dans 4 : krizaka-ui, krizaka-blog, le dépôt .github et krizaka-build. Dans les quatre cas, la porte échoue sur le nouveau code, d'abord sur des problèmes critiques, pas sur l'ancien. Je ne les ai pas contournés, et je ne les cache pas ici.
+
+Côté couverture, ce que Sonar reçoit maintenant : 78,9 % pour le blog que vous lisez, 68,5 % pour krizaka-com, 54,1 % pour krizaka-build, 39,5 % pour akinaza et 39,3 % pour yomizaka. Pour krizaka-ts, l'API affiche 0,0 % : le rapport n'y est pas encore envoyé, et nos standards le notent comme un trou connu. Pour krizaka-ui, il n'y a pas de chiffre du tout.
+
+Ces nombres ne disent pas que le code est bon. Ils disent à quel endroit on regarde, ce qu'on ne regarde pas encore, et si ça progresse d'une semaine à l'autre. C'est pour ça que je les relis le jour où j'écris.
+
+## Qui fait quoi, Sonar ou nos gardes
+
+Une question que je me suis posée en payant : est-ce qu'on fait deux fois le même travail ?
+
+Ma réponse est : on essaie de ne pas le faire. Une erreur doit être arrêtée le plus tôt possible, et Sonar arrive tard, après la PR. Alors chaque fois qu'une règle de Sonar peut tourner dans l'éditeur, on la fait tourner là. `@krizaka/config` active le jeu `eslint-plugin-sonarjs`, et le seuil de complexité cognitive est le même qu'à la porte, 15. Pour Java, PMD et SpotBugs jouent ce rôle dans `mvn verify`, et ArchUnit tient l'architecture. Les cliquets figent la dette de chaque règle et refusent qu'elle augmente.
+
+Ce que Sonar garde pour lui, parce que nos gardes ne le voient pas : les règles qui suivent une donnée de bout en bout, celles qui lisent nos workflows GitHub (injection, permissions), quelques règles Java sans jumeau local, la couverture, l'historique et la vue d'ensemble de tous les dépôts. Notre tableau de gardes marque ces lignes « Sonar seulement », sans les déguiser.
+
+Et il y a ce que Sonar ne remplace pas : les secrets, qui doivent être arrêtés avant d'entrer dans l'historique, la règle « un correctif apporte sa garde », et les tests qui disent si le produit fait ce qu'on promet.
+
+## Ce qui est prévu, pas fait
+
+Il y a une fonction de SonarCloud que je voudrais essayer : la vue Architecture. Elle permet de déclarer l'architecture voulue, par exemple « Spring AI seulement dans son adaptateur » ou « pas d'accès à la base dans les services », et de voir les écarts comme des problèmes, à côté du reste. J'en ai posé l'idée dans [l'issue .github#355](https://github.com/krizaka/.github/issues/355), après avoir regardé la capture d'une vue « architecture actuelle ».
+
+Elle est ouverte, et rien n'est activé. Il reste à vérifier ce que notre plan permet, par quels projets commencer, et ce qui recoupe nos règles ArchUnit. Le principe que j'ai écrit dans l'issue est simple : ne pas mettre la même règle à deux endroits. Sonar donnerait la vue d'ensemble et l'historique, le build garderait l'arrêt rapide.
+
+## Ce que j'en retiens
+
+On a payé pour que Sonar voie notre couverture, juge ce qui change et se prononce sur la file de fusion. C'est fait, et c'est vérifiable. On n'a pas payé pour un tampon vert, et les portes rouges d'aujourd'hui me le rappellent.
+
+Le travail est resté le même : remonter les contrôles le plus tôt possible, et garder Sonar pour ce que lui seul voit.
