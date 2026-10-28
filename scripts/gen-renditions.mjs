@@ -35,8 +35,9 @@ async function main() {
   const { default: sharp } = await import("sharp");
   const file = join(root, "lib/media.json");
   const media = JSON.parse(readFileSync(file, "utf8"));
-  const dir = join(root, "content/posts");
-  const covers = [...new Set(readdirSync(dir).filter((f) => f.endsWith(".mdx")).map((f) => matter(readFileSync(join(dir, f), "utf8")).data.cover).filter(Boolean))];
+  /* The covers of the posts and of the story's chapters. */
+  const dirs = ["content/posts", "content/chapters"].map((d) => join(root, d));
+  const covers = [...new Set(dirs.flatMap((dir) => readdirSync(dir).filter((f) => f.endsWith(".mdx")).map((f) => matter(readFileSync(join(dir, f), "utf8")).data.cover)).filter(Boolean))];
   const folders = new Set();
   for (const id of covers) {
     const m = media[id];
