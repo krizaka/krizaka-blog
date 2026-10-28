@@ -86,7 +86,7 @@ One day, Yomizaka's main branch turned red. Thirty lint warnings against a cap o
 
 The explanation is silly. Two PRs were each green on an old base. The first merged and set the cap. The second, started earlier, merged afterwards without being checked again on the new main, and added its warnings. No PR was at fault, and the sum was.
 
-The guard is a GitHub setting: require the branch to be up to date before merging. I turned it on for Yomizaka, then for 12 repositories, with a small script that updates PRs waiting on auto-merge. I had thought of the merge queue, but SonarCloud only answers on PRs, so a queue would never get its answer. The solution is less elegant, and it works.
+The guard is a GitHub setting: require the branch to be up to date before merging. I turned it on for Yomizaka, then for 12 repositories, with a small script that updates PRs waiting on auto-merge. I first believed SonarCloud only answered on PRs. That is true of its automatic analysis; run from the CI, its analysis also answers on the merge queue's branches. I checked it on one repository: the queue works, Sonar included. So we are moving to the merge queue, which keeps the same promise without updating PRs by hand.
 
 ## A fix without a guard is not finished
 
