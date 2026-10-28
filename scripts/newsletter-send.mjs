@@ -24,7 +24,13 @@ import { coverOf, withRenderedEmails } from "./newsletter-email.mjs";
 const SITE = "https://blog.krizaka.com";
 const LOCALES = ["en", "fr"];
 const pageUrl = (locale, path) => `${SITE}${locale === "fr" ? "/fr" : ""}${path}`;
-const FILE = /^content\/posts\/([a-z0-9]+(?:-[a-z0-9]+)*)\.(en|fr)\.mdx$/;
+/* A post lives at /basics/<slug>/, a story chapter (content/chapters) at /story/<slug>/; both are e-mailed once, keyed by slug
+   (a test guards that no slug is shared by a post and a chapter). */
+const FILE = /^content\/(?:posts|chapters)\/([a-z0-9]+(?:-[a-z0-9]+)*)\.(en|fr)\.mdx$/;
+const KINDS = [
+  ["posts", "/basics/"],
+  ["chapters", "/story/"],
+];
 const ZERO = /^0+$/;
 
 // An absolute path, not a lookup in PATH: /usr/bin/git is where the CI runner and macOS both keep it.
@@ -40,7 +46,7 @@ const show = (rev, path) => {
 };
 const isPublished = (source) => source !== null && matter(source).data.draft !== true;
 
-/** The slugs published between two commits: a post file that is published after and was a draft (or absent) before. */
+/** The slugs published between two commits: a post or chapter file that is published after and was a draft (or absent) before. */
 export function publishedBetween(changed, read) {
   const slugs = new Set();
   for (const path of changed) {
@@ -51,18 +57,24 @@ export function publishedBetween(changed, read) {
   return [...slugs].sort((a, b) => (a < b ? -1 : 1)); /* a Set: never equal */
 }
 
-/** The post's versions at a commit: { en?, fr? } with title, description, the public URL and the cover. Only published
+/** The post's (or chapter's) versions at a commit: { en?, fr? } with title, description, the public URL and the cover. Only published
     versions. `media` is lib/media.json (the cover's e-mail-sized WebP). */
 export function versionsOf(slug, read, media = {}, { drafts = false } = {}) {
   const out = {};
   for (const locale of LOCALES) {
-    const source = read(`content/posts/${slug}.${locale}.mdx`);
+    let source = null;
+    let base = KINDS[0][1];
+    for (const [dir, path] of KINDS) {
+      source = read(`content/${dir}/${slug}.${locale}.mdx`);
+      base = path;
+      if (source !== null) break;
+    }
     if (source === null || (!drafts && !isPublished(source))) continue;
     const { data } = matter(source);
     out[locale] = {
       title: String(data.title),
       description: String(data.description),
-      url: pageUrl(locale, `/basics/${slug}/`),
+      url: pageUrl(locale, `${base}${slug}/`),
     };
     const coverUrl = data.cover ? coverOf(media, data.cover) : undefined;
     if (coverUrl)
@@ -126,7 +138,7 @@ async function cli() {
     // No "before" (a new branch, a forced history): nothing can be told apart, so nothing is sent automatically.
     if (!before || ZERO.test(before))
       return console.log("newsletter: no previous commit to compare with; use --slug to send by hand");
-    const changed = git("diff", "--name-only", before, after, "--", "content/posts").split("\n");
+    const changed = git("diff", "--name-only", before, after, "--", "content/posts", "content/chapters").split("\n");
     slugs = publishedBetween(changed.filter(Boolean), { before: (p) => show(before, p), after: (p) => show(after, p) });
   }
   if (!slugs.length) return console.log("newsletter: no post published by these commits");
