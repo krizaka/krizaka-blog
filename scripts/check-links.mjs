@@ -13,7 +13,7 @@ import { pathToFileURL } from "node:url";
 export const SOFT_HOSTS = ["www.linkedin.com", "linkedin.com", "x.com", "twitter.com", "www.reddit.com", "reddit.com", "news.ycombinator.com", "www.facebook.com", "www.mastercard.us", "www.mastercard.com", "usa.visa.com", "www.visa.ca", "www.paypal.com"];
 /** Schemes and targets that are not fetched: other schemes, fragments, and the paths the CDN's edge injects on the live
     site (Cloudflare's e-mail obfuscation rewrites a mailto: into /cdn-cgi/l/email-protection#…, decoded by its script). */
-const SKIP = /^(mailto:|tel:|javascript:|data:|#)|\/cdn-cgi\//i;
+const SKIP = /(?:^(?:mailto:|tel:|javascript:|data:|#)|\/cdn-cgi\/)/i;
 
 /** The entities React writes in attributes (&amp; &quot; &#x27; &#39; …), decoded. */
 export const decodeEntities = (v) =>
