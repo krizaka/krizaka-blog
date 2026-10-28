@@ -86,7 +86,7 @@ Un jour, la branche main de Yomizaka est devenue rouge. Trente avertissements de
 
 L'explication est bête. Deux PR étaient vertes chacune sur une base ancienne. La première a fusionné et a fixé le plafond. La seconde, partie avant, a fusionné après sans refaire le contrôle sur le nouveau main, et a ajouté ses avertissements. Aucune PR n'était fautive, et la somme l'était.
 
-La garde, c'est un réglage de GitHub : exiger que la branche soit à jour avant la fusion. Je l'ai mis sur Yomizaka, puis sur 12 dépôts, avec un petit script qui remet à jour les PR en attente de fusion automatique. J'avais pensé à la file de fusion, mais SonarCloud ne répond que sur les PR, donc une file ne l'obtiendrait jamais. La solution est moins élégante, et elle marche.
+La garde, c'est un réglage de GitHub : exiger que la branche soit à jour avant la fusion. Je l'ai mis sur Yomizaka, puis sur 12 dépôts, avec un petit script qui remet à jour les PR en attente de fusion automatique. J'avais d'abord cru que SonarCloud ne répondait que sur les PR. C'est vrai de son analyse automatique ; lancée par la CI, son analyse répond aussi sur les branches de la file de fusion. Je l'ai vérifié sur un dépôt : la file marche, Sonar compris. Alors on passe à la file de fusion, qui garde la même promesse sans remettre les PR à jour à la main.
 
 ## Un correctif sans garde n'est pas fini
 
