@@ -1,0 +1,99 @@
+---
+title: "How the CTO agent and I work"
+description: "Who decides what, why four lanes and no more, one board where everything is an issue, the rules that hold, and a cockpit I read on my phone."
+seoTitle: "Founder and CTO agent: how we work together"
+seoDescription: "The split of decisions, the four lanes, the board, the rules that hold and what it really costs, told by the founder of Krizaka."
+date: 2026-10-29
+publishedAt: "2026-10-29T14:00:00-04:00"
+tags: [ai, integration, costs]
+author: oussama
+cover: series-17-how-the-founder-and-the-cto-agent-work
+coverAlt: "The five birds around a wooden table with lanterns and a phone under the orange sun, the falcon watching from the ground"
+draft: false
+sensitive: true
+chapter: 17
+period: "2026-10-28/2026-10-29"
+sources:
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "products that always came last"
+  built: "four lanes, one board, rules that hold"
+stats:
+  - value: "4"
+    label: "lanes, one session per lane, no more"
+    section: "Four lanes, no more"
+  - value: "3 levels"
+    label: "Epic, Feature, Task or Bug on the same board"
+    section: "Everything is an issue"
+  - value: "3 hours"
+    label: "between two reports from the CTO agent, each with a forecast"
+    section: "Who decides what"
+---
+
+People keep asking me: "But concretely, how do you work with your agents?" Until now I answered in pieces, one chapter on the rules, one on CI, one on the audit. This time I lay it all out, because it has settled into a shape stable enough to tell, and because I read this chapter on my own phone thinking "right, that's how we do it".
+
+I am alone in Montréal. With me there are coding-agent sessions and, above them, an agent I call the CTO. It hardly codes at all. It orchestrates: it reads the state of the work, opens and sorts issues, picks which session does what, and reports back to me. Everything I describe here exists, in files and scripts. I am not telling you an ideal.
+
+## Who decides what
+
+The split is easy to say, and it took me weeks to hold.
+
+I set the direction, and I decide what is mine: anything about money, accounts, legal matters, and what we keep or drop. Anything that cannot be undone is mine.
+
+The CTO agent decides the rest, as long as it can be reversed. It picks an order of work, settles a design detail, postpones one thing to do another. When spending is possible, it has a written cap. And as soon as something is irreversible or paid, it stops and asks me instead of guessing.
+
+Every 3 hours it writes me a report: what is finished, what is under way, what is blocked, and a forecast. Not a promise of a date, a forecast, with the gap from the last one. I banned "tonight" and "tomorrow": we say what is done, and what comes next, in order.
+
+This split is written down, so each session finds it again: what is mine on one side, what the agent can settle alone on the other. Without it I would be asked every time, or worse, guessed at.
+
+## Four lanes, no more
+
+At the start we ran as many sessions as the machine could take. Thirty agents in one night, I told it in [chapter 8](/story/building-with-agents/). It was thrilling, and it was a management mistake.
+
+One day I looked at where the work was really going, and saw that the products came last. Yomizaka, Akinaza, the Orazaka engine: they were waiting, because every slot was taken by the platform, meaning the libraries, CI, quality, the rules. Each platform job was useful, and their sum was stealing the products' place, because nobody was looking at the sum.
+
+The answer was to cut into four lanes: Platform, Yomizaka, Akinaza, Orazaka. 4 sessions at most, one per lane. The platform gets a single session, and its jobs queue inside that lane instead of slipping into the others. It sounds like housekeeping. In truth it is the one thing that forces me to choose, because there is no longer room to do everything at once.
+
+## Everything is an issue
+
+Nothing starts without a GitHub issue. They all live on one board, in 3 levels: an Epic, which is a large goal, Features inside it, and under each Feature the Tasks and Bugs. Every pull request closes or references one of those, so a Feature's progress can be read without anyone recomputing it.
+
+One rule cost me dearly to learn, and I like it: what the agent finds on the way is not a new card by default. If it is in scope, it fixes it. If it is next door, it adds a checkbox to the issue at hand. Otherwise it parks it in an incubation column that the board does not count. Without that, a job that ends leaves three new ones, and the counter never goes down. The board must show the work agents execute, not the work we dream of.
+
+## The rules that hold
+
+Every rule was born from a mistake, and they all sit in files the agents read. The ones that matter most to me:
+
+A failing test before any fix. We first write what reproduces the bug, watch it go red, then fix.
+
+Every bug also asks: why did no guard see it? And the missing guard is added, a lint rule, an architecture test, a page audit, failing on the main branch before the fix. A bug without a guard will come back.
+
+A rule must reach every repository. This is the newest one and the one I find most honest. Adding a rule in one corner is useless, it has to land in every active repository, and it is only finished when its column of the matrix is green everywhere. I tell the matrix in [chapter 16](/story/the-audit-said-ai-code-we-measured/), red cells included, which I did not hide.
+
+Our libraries first, then trusted open source. If a domain is covered by our own packages, we import them, and if a function is missing it goes into the library before it is used. And before building something, we look for a serious, maintained project with a compatible licence: we put it behind our own facade, with the reason written down. We only build what nothing does well, or what would touch security or where the data lives.
+
+Direction before building. For a subject that may reshape others, we write an architecture decision (an ADR) first, prioritise it, and block the slices it could change. It avoids redoing what we just finished.
+
+And the build that refuses "AI code". That is the whole subject of [chapter 16](/story/the-audit-said-ai-code-we-measured/): we no longer ask an agent politely to write clean code, a tool fails if it does not.
+
+## The cockpit
+
+I am not at a console all day, so I have a dashboard of my own, running on my machine, which I show to nobody. No screenshot and no figure here, I only describe it.
+
+First there is the day's report: what happened since the last one, and the forecast. Then a view of the Epics, with what remains in each, and that is the one I open most, because it answers "where are we, really?". Then a view of quality, one of conformance, meaning the matrix of rules against repositories, and one of the agents' costs. That is all. It decides nothing: it shows, and it is up to me to look underneath.
+
+## The real moments
+
+The most frequent one goes like this: I am testing one of our apps on my phone and something is off. I take a screenshot and send it with one sentence. The CTO agent turns it into an issue, files it in the right lane, and the session that picks it up first writes a test that reproduces what I saw. Then the fix, then the question of the guard.
+
+A recent example, on the blog you are reading. A subscription confirmation link told me "link expired" when it was not. Reading the code, we saw that every error, a missing configuration, an unreachable database, a damaged token, a real expiry, sent the reader to the same "expired" page. A reader with a valid link could be told a lie because our list was down. The fix now separates the cases: confirmed, truly expired, invalid link, and "try again" with a trace in the logs when the problem is ours. Each has its test, and one test follows the link from the e-mail to the confirmation. We then reproduced the cases on a real local database before believing the result.
+
+We let go of nothing on five things: quality, architecture, cost, the experience and design of the interface, and security. That is our own phrase, and it is not a slogan: each one is a column of the cockpit.
+
+## What it costs, and what is still hard
+
+I will not repeat the numbers here, they are in [chapter 16](/story/the-audit-said-ai-code-we-measured/), with their caveats. The order of magnitude is a few cents per merged pull request, and it does not count my time, the one that writes issues, decides and reads. That is the real cost, and it does not go down.
+
+What is still hard, I say rather than hide. The rules matrix still has red cells. Agents forget from one session to the next, so whatever must hold has to be written or tested, never "explained once". I still have to settle things that pile up while I am away. And the board stays a reading tool: when it looks clean, it is sometimes because I stopped looking underneath.
+
+What I take from it: I stopped looking for a good agent and started writing a good frame. The frame is who decides what, how many lanes, where the work lives, and what makes the build fail. The rest follows.

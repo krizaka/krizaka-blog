@@ -4430,6 +4430,76 @@
    ]
   }
  },
+ "how-we-work-lanes-cover": {
+  "kind": "image",
+  "width": 1536,
+  "height": 864,
+  "blur": "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAADQAQCdASoQAAkAA4BaJZQCdADPvRB84AD+3h+ypDhy6U68p6AViPIc8md0j3TPHEVFR9TyZ/lNyuzseIHzWIJmL6aPaKOLvxMazt3wGGt/h8gDAAA=",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-the-founder-and-the-cto-agent-work/how-we-work-lanes-cover-480.2035b8974f.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-the-founder-and-the-cto-agent-work/how-we-work-lanes-cover-960.8bba33322b.webp"
+   },
+   {
+    "w": 1536,
+    "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-the-founder-and-the-cto-agent-work/how-we-work-lanes-cover-1536.8c3c6363db.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "On a walnut table at night, four small brass rails laid side by side like four lanes, each carrying one small wooden train car in a different warm colour, beside an open paper notebook and a wall board of pinned paper cards in three columns, two empty wooden chairs facing the tall window, a brass lamp casting warm light, behind the window a snowy Montreal skyline under a pink and blue winter dusk, 50mm lens, low angle, bokeh of city lights, calm and orderly mood. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No text, no letters, no numbers, no logos, no people, no watermark.",
+   "seed": "3117",
+   "size": "1536×864",
+   "seconds": 0,
+   "costUsd": 0,
+   "note": "Made like the cover of chapter 16, with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. One seed (3117), the first one, kept after a review at full size."
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-the-founder-and-the-cto-agent-work/how-we-work-lanes-cover-480.37ab086130.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-the-founder-and-the-cto-agent-work/how-we-work-lanes-cover-768.0559bb8b4a.avif"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-the-founder-and-the-cto-agent-work/how-we-work-lanes-cover-1200.d76d01e9a7.avif"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-the-founder-and-the-cto-agent-work/how-we-work-lanes-cover-1536.d517c4b8bd.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-the-founder-and-the-cto-agent-work/how-we-work-lanes-cover-480.ef16444499.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-the-founder-and-the-cto-agent-work/how-we-work-lanes-cover-768.f4e10d071c.webp"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-the-founder-and-the-cto-agent-work/how-we-work-lanes-cover-1200.2b72bede9c.webp"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-the-founder-and-the-cto-agent-work/how-we-work-lanes-cover-1536.076fb7331f.webp"
+    }
+   ]
+  }
+ },
  "series-01-why-krizaka": {
   "kind": "image",
   "width": 1280,
@@ -5505,7 +5575,7 @@
    "engine": "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
    "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
    "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere. The whole settlement at night in full glow, all five birds standing together in a row, each exactly once (falcon, owl, duck, flamingo, pigeon), a ruler and a gauge standing in front measuring the village. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor, a violet owl with two ear tufts and big round eyes, a red duck with a flat yellow bill and round glasses (a duck, not an owl: no ear tufts), a pink flamingo, a blue pigeon.",
-   "seed": "8117",
+   "seed": "7117",
    "size": "1280×720",
    "seconds": 0,
    "costUsd": 0,
@@ -5546,6 +5616,76 @@
     {
      "w": 1280,
      "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-16-the-audit-said-ai-code-we-measured-1280.5166e4e16b.webp"
+    }
+   ]
+  }
+ },
+ "series-17-how-the-founder-and-the-cto-agent-work": {
+  "kind": "image",
+  "width": 1280,
+  "height": 720,
+  "blur": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAADwAQCdASoQAAkABABoJZACdDBFgTM7cgAA/vWY0/kWWecdRa/0fmuV1ylaWfa6+37MbKpFIvaWVsLTZZrE090qANs0sRzghM3D+E0Od1hjn41CgrQSgAAA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-480.0b686f8aca.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-960.d05f1dd3dc.webp"
+   },
+   {
+    "w": 1280,
+    "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-1280.f156f88d25.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B",
+   "licence": "Apache-2.0",
+   "engine": "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere. A long wooden table at the village edge under the orange sun, four small lanterns in a row along it and a wall board of pinned cards behind, a small glowing phone at one end; the five birds each stand once along the table, the pigeon carrying a card. Nobody else is in the picture. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor, a violet owl with two ear tufts and big round eyes, a red duck with a flat yellow bill and round glasses (a duck, not an owl: no ear tufts), a pink flamingo, a blue pigeon.",
+   "seed": "9118",
+   "size": "1280×720",
+   "seconds": 0,
+   "costUsd": 0,
+   "note": "Chapter 17 of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text."
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-480.cc4b7b88ef.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-768.8b7498c034.avif"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-1200.8ae726cb1a.avif"
+    },
+    {
+     "w": 1280,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-1280.f702bb7f03.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-480.b3ab69f535.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-768.a975a23f38.webp"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-1200.db213fef03.webp"
+    },
+    {
+     "w": 1280,
+     "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-1280.9b6513c56b.webp"
     }
    ]
   }

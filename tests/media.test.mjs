@@ -97,3 +97,12 @@ test("every cover of the repository has its renditions (so the page can emit a s
   assert.ok(covers.size > 0);
   for (const id of covers) assert.deepEqual(renditionProblems(id, ctx.media[id]), []);
 });
+
+test("media on the blog's CDN: the legacy prefix and the layout v2 prefix (ADR-014) both count, anything else does not", async () => {
+  const { onBlogCdn, cdnBaseOf } = await import("../scripts/content-rules.mjs");
+  assert.equal(onBlogCdn("https://krizaka-assets.b-cdn.net/site/blog/a/b.1234567890.webp"), true);
+  assert.equal(onBlogCdn("https://krizaka-assets.b-cdn.net/sites/blog/posts/a/b.1234567890.webp"), true);
+  assert.equal(onBlogCdn("https://krizaka-assets.b-cdn.net/sites/ui/a/b.webp"), false);
+  assert.equal(onBlogCdn("https://example.com/site/blog/a.webp"), false);
+  assert.equal(cdnBaseOf("https://krizaka-assets.b-cdn.net/sites/blog/posts/a/b.webp"), "https://krizaka-assets.b-cdn.net/sites/blog/posts/");
+});

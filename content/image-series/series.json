@@ -179,7 +179,7 @@
     },
     {
       "post": "the-audit-said-ai-code-we-measured",
-      "seed": 8117,
+      "seed": 7117,
       "birds": [
         "falcon",
         "owl",
@@ -188,6 +188,18 @@
         "pigeon"
       ],
       "beat": "The whole settlement at night in full glow, all five birds standing together in a row, each exactly once (falcon, owl, duck, flamingo, pigeon), a ruler and a gauge standing in front measuring the village."
+    },
+    {
+      "post": "how-the-founder-and-the-cto-agent-work",
+      "seed": 9118,
+      "birds": [
+        "falcon",
+        "owl",
+        "duck",
+        "flamingo",
+        "pigeon"
+      ],
+      "beat": "A long wooden table at the village edge under the orange sun, four small lanterns in a row along it and a wall board of pinned cards behind, a small glowing phone at one end; the five birds each stand once along the table, the pigeon carrying a card. Nobody else is in the picture."
     }
   ],
   "sprites": {

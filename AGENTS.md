@@ -53,10 +53,11 @@
   cards — never again in the body (lint refuses its id or URL there); a picture in the text is another, relevant one. A cover is made, not found: an Orazaka Studio run (provenance in `lib/media.json`), never a stock photo.
 - **`draft: true` is not published**: the build leaves it out (`APP_SHOW_DRAFTS=1` previews it). Publishing = `draft: false`.
 - **Prove, don't invent.** A figure comes from a run, a measurement or a line of code that the post can point to; what is
-  not measured is said. Sober, factual, no superlatives. Yororis' lexicon applies if it is ever named.
+  not measured is said. Sober, factual, no superlatives.
 - **Images are never committed** (any image/video file under `content/` or `public/` fails `npm run lint`). They live on
   Bunny `krizaka-assets` under `site/blog/<post>/…` (`node scripts/cdn-assets.mjs upload <file> --to blog/<post>` in krizaka-com, which writes `site/blog/<post>/<name>.<hash>.<ext>`)
   and a post names them by their CDN URL.
+- **Two CDN prefixes.** Older media sit under `site/blog/<post>/`; new uploads of krizaka-com's `cdn-assets.mjs` land under `sites/blog/posts/<post>/` (layout v2, ADR-014). The rules accept both (`onBlogCdn`).
 - **The media library** is `lib/media.json`: every image and clip a post shows, by id, with the CDN URLs (`site/blog/…`),
   the sizes, a blur placeholder and the **provenance** of the result (model, prompt, seed, machine, time, cost, Orazaka run
   id). A post uses `<Figure id alt caption?/>` (responsive `srcset`, blur-up, size reserved, lazy), `<Clip id alt

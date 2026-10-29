@@ -1,0 +1,99 @@
+---
+title: "Comment on travaille, l'agent CTO et moi"
+description: "Qui décide quoi, pourquoi quatre voies et pas plus, un tableau de bord où tout est une issue, les règles qui tiennent, et un cockpit que je regarde sur mon téléphone."
+seoTitle: "Fondateur et agent CTO : comment on travaille"
+seoDescription: "Le partage des décisions, les quatre voies, le tableau, les règles qui tiennent et ce que ça coûte vraiment, raconté par le fondateur de Krizaka."
+date: 2026-10-29
+publishedAt: "2026-10-29T14:00:00-04:00"
+tags: [ai, integration, costs]
+author: oussama
+cover: series-17-how-the-founder-and-the-cto-agent-work
+coverAlt: "Les cinq oiseaux autour d'une table en bois avec des lanternes et un téléphone sous le soleil orange, le faucon qui veille au sol"
+draft: false
+sensitive: true
+chapter: 17
+period: "2026-10-28/2026-10-29"
+sources:
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "des produits qui passaient en dernier"
+  built: "quatre voies, un tableau, des règles qui tiennent"
+stats:
+  - value: "4"
+    label: "voies, une session par voie, pas plus"
+    section: "Quatre voies, pas plus"
+  - value: "3 niveaux"
+    label: "Épopée, fonctionnalité, tâche ou bogue sur le même tableau"
+    section: "Tout est une issue"
+  - value: "3 heures"
+    label: "entre deux rapports de l'agent CTO, avec une prévision"
+    section: "Qui décide quoi"
+---
+
+On me pose souvent la question : « Mais concrètement, tu travailles comment avec tes agents ? » Jusqu'ici je répondais par des morceaux, un chapitre sur les règles, un autre sur la CI, un sur l'audit. Cette fois je mets tout à plat, parce que ça a pris une forme assez stable pour être racontée, et parce que je lis moi-même ce chapitre sur mon téléphone en me disant « ah oui, c'est comme ça qu'on fait ».
+
+Je suis seul à Montréal. Avec moi, il y a des sessions d'agents de code et, au-dessus, un agent que j'appelle le CTO. Il ne code presque pas. Il orchestre : il lit l'état du travail, ouvre et range les issues, choisit quelle session fait quoi, et me rend des comptes. Tout ce que je décris ici existe vraiment, dans des fichiers et des scripts. Je ne raconte pas un idéal.
+
+## Qui décide quoi
+
+Le partage est simple à dire, et il m'a fallu des semaines pour le tenir.
+
+Moi, je fixe la direction, et je décide ce qui m'appartient : ce qui touche à l'argent, aux comptes, au juridique, et ce qu'on garde ou ce qu'on abandonne. Tout ce qui ne se rattrape pas, c'est à moi.
+
+L'agent CTO décide le reste, à condition que ce soit réversible. Il choisit un ordre de travail, tranche un détail de conception, reporte une chose pour en faire une autre. Quand une dépense est possible, elle a un plafond écrit. Et dès que c'est irréversible ou payant, il s'arrête et me pose la question, au lieu de deviner.
+
+Toutes les 3 heures, il me fait un rapport : ce qui est fini, ce qui est en cours, ce qui bloque, et une prévision. Pas une promesse de date, une prévision, avec l'écart par rapport à la dernière. J'ai interdit les « ce soir » et les « demain » : on dit ce qui est fait, et ce qui vient ensuite, dans l'ordre.
+
+Ce partage est écrit, pour que chaque session le retrouve : ce qui est à moi d'un côté, ce que l'agent peut trancher seul de l'autre. Sans ça, il faudrait me le redemander à chaque fois, ou pire, deviner.
+
+## Quatre voies, pas plus
+
+Au début, on lançait autant de sessions que la machine en supportait. Trente agents en une nuit, je l'ai raconté au [chapitre 8](/fr/story/building-with-agents/). C'était grisant, et c'était une erreur de gestion.
+
+Un jour, je regarde où va vraiment le travail, et je vois que les produits passent en dernier. Yomizaka, Akinaza, le moteur Orazaka : ils attendaient, parce que tous les créneaux étaient pris par la plateforme, c'est-à-dire les bibliothèques, la CI, la qualité, les règles. Chaque chantier de plateforme était utile, et leur somme volait leur place aux produits, parce que personne ne regardait la somme.
+
+La réponse a été de couper en quatre voies : Plateforme, Yomizaka, Akinaza, Orazaka. 4 sessions au plus, une par voie. La plateforme n'a droit qu'à une seule session, et ses chantiers font la queue dans cette voie au lieu de se faufiler dans les autres. Ça a l'air d'une règle d'intendance. En vérité c'est la seule chose qui m'oblige à choisir, parce qu'il n'y a plus de place pour tout faire en même temps.
+
+## Tout est une issue
+
+Rien ne démarre sans une issue sur GitHub. Elles vivent toutes sur un seul tableau, et elles ont 3 étages : une épopée, qui est un grand objectif, des fonctionnalités dedans, et sous chaque fonctionnalité des tâches et des bogues. Chaque PR ferme ou référence une de ces tâches, donc la progression d'une fonctionnalité se lit sans que personne ait à la recalculer.
+
+Il y a une règle qui m'a coûté cher à apprendre, et que j'aime bien : ce que l'agent trouve en route n'est pas une nouvelle carte du tableau par défaut. S'il est dans le périmètre, il le corrige. S'il est voisin, il l'ajoute en case à cocher de l'issue en cours. Sinon, il le range dans une colonne d'incubation que le tableau ne compte pas. Sans ça, un chantier qui se termine en laisse trois nouveaux, et le compteur ne descend jamais. Le tableau doit montrer le travail que les agents exécutent, pas le travail dont on rêve.
+
+## Les règles qui tiennent
+
+Chaque règle est née d'une erreur, et elles sont toutes dans des fichiers que les agents lisent. Celles qui comptent le plus pour moi :
+
+Un test qui échoue avant tout correctif. On écrit d'abord ce qui reproduit le bogue, on le voit rouge, puis on corrige.
+
+Chaque bogue demande aussi : pourquoi aucun garde ne l'a vu ? Et le garde manquant s'ajoute, une règle de lint, un test d'architecture, un audit de page, qui échoue sur la branche principale avant le correctif. Un bogue sans garde reviendra.
+
+Une règle doit atteindre tous les dépôts. C'est la plus récente et celle que je trouve la plus honnête. Ajouter une règle dans un coin ne sert à rien, il faut la poser dans chaque dépôt actif, et elle n'est finie que quand la colonne de la matrice est verte partout. Je raconte la matrice au [chapitre 16](/fr/story/the-audit-said-ai-code-we-measured/), avec ses cases rouges, que je n'ai pas cachées.
+
+Les bibliothèques d'abord, puis l'open source de confiance. Si un domaine est couvert par nos propres paquets, on les importe, et s'il manque une fonction, elle entre dans la bibliothèque avant d'être utilisée. Et avant de construire quelque chose, on regarde s'il existe un projet sérieux, entretenu, avec une licence compatible : on le met derrière notre façade, avec la raison écrite. On ne construit nous-mêmes que ce que rien ne fait bien, ou ce qui toucherait à la sécurité ou à l'endroit où vivent les données.
+
+La direction avant la construction. Pour un sujet qui peut en remodeler d'autres, on écrit une décision d'architecture (un ADR) d'abord, on la priorise, et on bloque les tranches qu'elle pourrait changer. Ça évite de refaire ce qu'on vient de finir.
+
+Et le build qui refuse le « code d'IA ». C'est le sujet entier du [chapitre 16](/fr/story/the-audit-said-ai-code-we-measured/) : on ne demande plus poliment à un agent d'écrire proprement, un outil échoue si ce n'est pas le cas.
+
+## Le cockpit
+
+Je ne suis pas devant une console toute la journée, alors j'ai un tableau de bord à moi, qui tourne sur ma machine et que je ne montre à personne. Je ne montre ni capture ni chiffre, je le décris seulement.
+
+On y voit d'abord le rapport du jour : ce qui s'est passé depuis le dernier, et la prévision. Puis une vue des épopées, avec ce qui reste dans chacune, et c'est celle que j'ouvre le plus, parce qu'elle répond à « on en est où, vraiment ? ». Puis une vue de la qualité, une de la conformité, c'est-à-dire la matrice des règles contre les dépôts, et une des coûts des agents. C'est tout. Il ne décide de rien : il montre, et c'est à moi d'aller voir en dessous.
+
+## Les vrais moments
+
+Le plus fréquent, c'est ça : je teste une de nos applis sur mon téléphone, et quelque chose cloche. Je fais une capture, je l'envoie avec une phrase. L'agent CTO la transforme en issue, la range dans la bonne voie, et la session qui la prend écrit d'abord un test qui reproduit ce que j'ai vu. Puis le correctif, puis la question du garde.
+
+Un exemple récent, sur le blog que vous lisez. Un lien de confirmation d'abonnement me disait « lien expiré » alors qu'il ne l'était pas. En lisant le code, on a vu que toute erreur, une configuration manquante, une base injoignable, un jeton abîmé, une vraie expiration, renvoyait vers la même page « expiré ». Un lecteur avec un lien valide pouvait donc lire un mensonge parce que notre liste était indisponible. Le correctif sépare maintenant les cas : confirmé, expiré pour de vrai, lien invalide, et « réessayez » avec une trace dans les journaux quand c'est nous qui avons un problème. Chacun a son test, et un test suit le lien depuis le courriel jusqu'à la confirmation. On a ensuite reproduit les cas sur une vraie base locale avant de croire le résultat.
+
+On ne lâche rien sur cinq choses : la qualité, l'architecture, le coût, l'expérience et le dessin de l'interface, et la sécurité. C'est notre phrase à nous, et ce n'est pas du slogan : chacune est une colonne du cockpit.
+
+## Ce que ça coûte, et ce qui reste dur
+
+Je ne répète pas ici les chiffres, ils sont au [chapitre 16](/fr/story/the-audit-said-ai-code-we-measured/), avec leurs réserves. L'ordre de grandeur, c'est quelques cents par PR fusionnée, et ça ne compte pas mon temps, celui qui écrit les issues, tranche et relit. C'est le vrai coût, et il ne baisse pas.
+
+Ce qui reste dur, je le dis plutôt que le cacher. La matrice des règles a encore des cases rouges. Les agents oublient d'une session à l'autre, donc tout ce qui doit tenir doit être écrit ou testé, jamais « expliqué une fois ». Je dois encore trancher des choses qui s'accumulent quand je suis absent. Et le tableau reste un outil de lecture : quand il a l'air propre, c'est parfois que j'ai arrêté de regarder en dessous.
+
+Ce que j'en retiens : j'ai arrêté de chercher un bon agent et j'ai commencé à écrire un bon cadre. Le cadre, c'est qui décide quoi, combien de voies, où vit le travail, et ce qui fait échouer le build. Le reste vient avec.
