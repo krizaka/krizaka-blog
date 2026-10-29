@@ -108,9 +108,9 @@ test("the feeds carry the published chapters (/story/ URLs) next to the posts, i
 });
 
 test("the CI smoke checks read a live post; the retired address is only checked as a stub (its refresh)", () => {
-  const lines = read(".github/workflows/ci.yml").split("\n").filter((l) => l.includes("what-image-and-video-generation-costs"));
+  const lines = read("scripts/ci-after-build.sh").split("\n").filter((l) => l.includes("what-image-and-video-generation-costs"));
   for (const l of lines) assert.match(l, /http-equiv="refresh"|refresh/, `a CI line still reads the retired post as a live one: ${l.trim()}`);
-  assert.match(read(".github/workflows/ci.yml"), /out\/basics\/understanding-ai-before-you-start\/index\.html/);
+  assert.match(read("scripts/ci-after-build.sh"), /out\/basics\/understanding-ai-before-you-start\/index\.html/);
 });
 
 /* krizaka-blog#123: each removed page answers a permanent move (a stub: 0-second refresh + canonical, noindex — what a static host

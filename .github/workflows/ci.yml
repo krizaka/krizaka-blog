@@ -1,7 +1,7 @@
-# Lint, tests and the static build on every pull request. The deployment is DigitalOcean App Platform's (.do/app.yaml):
-# it rebuilds and publishes on every push to main. The site is built twice: closed (noindex, no draft — what is served
-# until the first post is published) and open (indexing on, drafts in, so every kind of page exists) for the family's
-# SEO contract (scripts/check-seo-family.mjs).
+# The CI is the org's (krizaka/.github docs/standards/ci-and-deploy.md): the changes gate, the caches, lint, tests with the lcov report,
+# the build, SonarCloud and the gate that always reports live in node-ci. This file says only what is the blog's: the site-specific
+# checks (closed vs open build, SEO contract, links, layout in a browser, feeds, Open Graph images, stubs) are scripts/ci-after-build.sh.
+# The deployment is DigitalOcean App Platform's (.do/app.yaml): it rebuilds and publishes on every push to main.
 name: CI
 
 on:
@@ -19,96 +19,27 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  site:
-    name: Lint, tests, build
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci --ignore-scripts
-      - run: npm run lint
-      - run: npm run test:coverage   # the node:test suite, with the lcov report SonarCloud reads (coverage/lcov.info)
-      - name: Build, closed (what is served before the first post)
-        run: npm run build
-      - name: Closed means closed
-        run: |
-          grep -q "Disallow: /$" out/robots.txt
-          grep -q 'name="robots" content="noindex' out/index.html
-          test -f out/index.html && test -f out/fr/index.html && test -f out/feed.xml && test -f out/fr/atom.xml && test -f out/llms.txt && test -f out/sitemap.xml && test -f out/admin/index.html && test -f out/admin/config.yml
-      - name: Build, open, with the drafts (every page exists)
-        env:
-          APP_INDEXING_ENABLED: "true"
-          APP_SHOW_DRAFTS: "1"
-        run: npm run build
-      - name: What search engines read on every page (title ≤ 60, description ≤ 155, one h1, alt on every image, no NaN)
-        run: node scripts/check-meta.mjs out
-      - name: The family's SEO contract
-        run: |
-          npm install --no-save --ignore-scripts --no-audit --no-fund serve@14.2.6
-          node_modules/.bin/serve out -l 3000 >/dev/null 2>&1 &
-          for i in $(seq 1 30); do curl -sf http://localhost:3000/robots.txt >/dev/null && break; sleep 1; done
-          node scripts/check-seo-family.mjs --base http://localhost:3000 --host https://blog.krizaka.com --index on --limit 60
-      - name: Every link answers (internal links fail the build; external ones are retried, a short list of hosts that refuse robots is reported only)
-        run: node scripts/check-links.mjs --base http://localhost:3000 --host https://blog.krizaka.com --external
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: sonar-coverage
-          path: coverage/lcov.info
-          retention-days: 1
-          if-no-files-found: error
-      - name: The layout in a real browser (the home, every post and chapter, both languages — nothing past the window at 1750, 1366, 390, 360 px — focus ring for the keyboard only)
-        run: |
-          node_modules/.bin/playwright install --with-deps chromium
-          node scripts/check-layout.mjs --base http://localhost:3000 --posts out
-      - name: The feeds are pure XML a reader accepts (no XSLT); they stay files, the old /feed/ page is a stub to the story
-        run: |
-          for f in out/feed.xml out/fr/feed.xml out/atom.xml out/fr/atom.xml; do python3 -c "import sys, xml.dom.minidom as m; m.parse(sys.argv[1])" "$f"; done
-          ! grep -q 'xml-stylesheet' out/feed.xml out/fr/feed.xml out/atom.xml out/fr/atom.xml
-          test ! -e out/feed.xsl
-          grep -q 'http-equiv="refresh" content="0; url=/"' out/feed/index.html
-          grep -q 'http-equiv="refresh" content="0; url=/fr/"' out/fr/feed/index.html
-          for p in out/index.html out/fr/index.html; do grep -q 'id="subscribe"' "$p"; done
-          grep -q 'href="#subscribe"' out/basics/understanding-ai-before-you-start/index.html
-          grep -q 'id="subscribe"' out/basics/understanding-ai-before-you-start/index.html
-      - name: Every live post has its Open Graph image; the feeds list the posts and the chapters; a retired address is a stub
-        run: |
-          test -f out/og/understanding-ai-before-you-start.png && test -f out/fr/og/understanding-ai-before-you-start.png
-          grep -q "/story/what-a-gpu-costs/" out/feed.xml && grep -q "/fr/story/what-a-gpu-costs/" out/fr/atom.xml
-          grep -q 'http-equiv="refresh" content="0; url=/story/what-a-gpu-costs/"' out/posts/what-image-and-video-generation-costs/index.html
-      - name: The blog is one page — every removed address is a stub (the 308 of a static host) to the story or what absorbed it
-        run: |
-          for p in story series tags search saved feed posts; do grep -q 'http-equiv="refresh" content="0; url=/"' "out/$p/index.html"; grep -q 'http-equiv="refresh" content="0; url=/fr/"' "out/fr/$p/index.html"; done
-          grep -q 'http-equiv="refresh" content="0; url=/story/what-a-gpu-costs/"' out/tags/costs/index.html
-
-  sonar:
-    name: SonarCloud
-    needs: site
-    if: ${{ !cancelled() && needs.site.result == 'success' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
+  ci:
+    uses: krizaka/.github/.github/workflows/node-ci.yml@ # main
     permissions:
       contents: read
-    env:
+    secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    with:
+      sonar: true
+      test-script: test:coverage
+      after-build: scripts/ci-after-build.sh
+      timeout-minutes: 30
+
+  # The branch protection still requires « Lint, tests, build »: this shim reads the gate's verdict (node-ci header). Delete it once
+  # the protection requires « ci / CI gate ».
+  site:
+    name: Lint, tests, build
+    needs: ci
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    env:
+      RESULT: ${{ needs.ci.outputs.result }}
     steps:
-      - name: The token is there
-        run: |
-          if [ -z "$SONAR_TOKEN" ]; then echo "::error::SONAR_TOKEN is empty: pass the org secret to the workflow and, for Dependabot, add it as a Dependabot secret"; exit 1; fi
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0  # blame and new-code detection need the history
-          persist-credentials: false
-      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-        with:
-          name: sonar-coverage
-          path: coverage
-      # CI analysis: the SonarCloud app still decorates the pull request and posts « SonarCloud Code Analysis »; the gate is awaited here.
-      - uses: SonarSource/sonarqube-scan-action@d209202bc7d53ff1cc128f7f907dac145c9d6ae9 # v8.3.0
-        env:
-          SONAR_HOST_URL: https://sonarcloud.io
-        with:
-          args: -Dsonar.qualitygate.wait=true
+      - run: test "$RESULT" = success
