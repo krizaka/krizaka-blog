@@ -8,6 +8,11 @@ import { featuredOrder } from "../lib/reading.ts";
 export const RESERVED_SLUGS = new Set(["site", "_"]);
 export const FILE = /^([a-z0-9]+(?:-[a-z0-9]+)*)\.(en|fr)\.mdx$/;
 export const CDN = "https://krizaka-assets.b-cdn.net/site/blog/";
+/** The media layout v2 (krizaka-com ADR-014): new uploads of `cdn-assets.mjs` land under sites/blog/posts/; the older files keep the legacy prefix. */
+export const CDN_V2 = "https://krizaka-assets.b-cdn.net/sites/blog/posts/";
+export const CDN_PREFIXES = [CDN, CDN_V2];
+export const onBlogCdn = (u) => typeof u === "string" && CDN_PREFIXES.some((p) => u.startsWith(p));
+export const cdnBaseOf = (u) => CDN_PREFIXES.find((p) => u.startsWith(p));
 
 /** The widths a picture is sold in: 480, 768, 1200 and 1600 where the source is at least that wide, and its own width (never upscaled).
     Bunny's Optimizer is not enabled, so no width parameter exists: the renditions are made once (scripts/gen-renditions.mjs) and uploaded. */
@@ -33,7 +38,7 @@ export function renditionProblems(id, m) {
       continue;
     }
     if (list.map((x) => x.w).join(",") !== want) out.push(`media ${id}: renditions.${f} must be at ${want} px (the source is ${m.width} px wide), not ${list.map((x) => x.w).join(",")}`);
-    for (const x of list) if (!(typeof x.url === "string" && x.url.startsWith(CDN) && x.url.endsWith(`.${f}`))) out.push(`media ${id}: renditions.${f} ${x.w}: a .${f} URL on ${CDN} is required`);
+    for (const x of list) if (!(typeof x.url === "string" && onBlogCdn(x.url) && x.url.endsWith(`.${f}`))) out.push(`media ${id}: renditions.${f} ${x.w}: a .${f} URL on ${CDN} is required`);
   }
   return out;
 }
@@ -100,8 +105,8 @@ export function postProblems(file, data, body, ctx) {
   if (data.seoDescription !== undefined && (typeof data.seoDescription !== "string" || data.seoDescription.length > 155)) out.push(`${file}: "seoDescription" must be text of at most 155 characters`);
   if (data.tags !== undefined && !Array.isArray(data.tags)) out.push(`${file}: "tags" must be a list`);
   if (data.draft !== undefined && typeof data.draft !== "boolean") out.push(`${file}: "draft" must be true or false`);
-  if (data.image && !String(data.image).startsWith(CDN)) out.push(`${file}: "image" must be on the media CDN (${CDN}…), never a file of this repository`);
-  if (/!\[[^\]]*\]\((?!https:\/\/krizaka-assets\.b-cdn\.net\/site\/blog\/)[^)]+\)/.test(body)) out.push(`${file}: images in the body must be on the media CDN (${CDN}…)`);
+  if (data.image && !onBlogCdn(String(data.image))) out.push(`${file}: "image" must be on the media CDN (${CDN}…), never a file of this repository`);
+  if (/!\[[^\]]*\]\((?!https:\/\/krizaka-assets\.b-cdn\.net\/sites?\/blog\/)[^)]+\)/.test(body)) out.push(`${file}: images in the body must be on the media CDN (${CDN}…)`);
   if (ctx) {
     if (data.cover !== undefined && !(data.cover in ctx.media)) out.push(`${file}: "cover" ${JSON.stringify(data.cover)} is not in the media library (lib/media.json)`);
     /* A cover is the page's biggest picture (the LCP): it ships in responsive AVIF and WebP renditions, never one file for every screen. */
@@ -182,7 +187,7 @@ export function homeCoverProblems(posts, media) {
 /** The problems of the media library itself: every URL on the blog's CDN prefix, every entry carries what it needs. */
 export function mediaProblems(media) {
   const out = [];
-  const onCdn = (u) => typeof u === "string" && u.startsWith(CDN);
+  const onCdn = onBlogCdn;
   for (const [id, m] of Object.entries(media)) {
     if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(id)) out.push(`media ${id}: the id must be lower-case words with hyphens`);
     if (!["image", "video"].includes(m.kind)) out.push(`media ${id}: kind must be image or video`);
