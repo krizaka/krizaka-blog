@@ -107,9 +107,19 @@ function toHtml(text) {
     .join("")}</body></html>`;
 }
 
-function confirmationEmail({ email, locale }, env, now = Date.now()) {
+const CONFIRM_TOKEN = "__CONFIRM_TOKEN__";
+/** The confirmation e-mail. `rendered` is the designed one of @krizaka/email for this language (confirmation-emails.json,
+    written by scripts/bundle-functions.mjs): the function only fills in the signed link and the postal address. Without it
+    (a language the file lacks) the plain text below is the fallback. */
+function confirmationEmail({ email, locale }, env, now = Date.now(), rendered = null) {
   const w = WORDS[locale];
-  const link = actionUrl("confirm", makeToken({ email, locale, purpose: "c", now }, env.MAIL_TOKEN_SECRET), locale);
+  const token = makeToken({ email, locale, purpose: "c", now }, env.MAIL_TOKEN_SECRET);
+  const link = actionUrl("confirm", token, locale);
+  const mail = rendered?.[locale];
+  if (mail) {
+    const fill = (text, html) => text.split(CONFIRM_TOKEN).join(encodeURIComponent(token)).split(SENDER_ADDRESS).join(html ? escapeHtml(senderAddress(env)) : senderAddress(env));
+    return { to: email, subject: mail.subject, text: fill(mail.text, false), html: fill(mail.html, true) };
+  }
   const text = `${w.confirmBody(link)}\n${footer(locale, env, { why: w.whyConfirm })}`;
   return { to: email, subject: w.confirmSubject, text, html: toHtml(text) };
 }
@@ -234,7 +244,7 @@ const redirect = (location) => ({ statusCode: 303, headers: { Location: location
 
 module.exports = {
   SITE, LOCALES, CONFIRM_TTL_MS, configured, normalizeEmail, validEmail, pickLocale, makeToken, readToken, pageUrl, actionUrl,
-  confirmationEmail, newPostEmail, UNSUBSCRIBE_TOKEN, SENDER_ADDRESS, footer, toHtml, sendEmail, mailConfigured, dbConfigured, connect, addSubscriber,
+  confirmationEmail, newPostEmail, UNSUBSCRIBE_TOKEN, SENDER_ADDRESS, CONFIRM_TOKEN, footer, toHtml, sendEmail, mailConfigured, dbConfigured, connect, addSubscriber,
   removeSubscriber, listSubscribers, claimPost, recordSent, sendPostToAll, sameSecret,
   captchaConfigured, clientIp, json, redirect, WORDS,
 };

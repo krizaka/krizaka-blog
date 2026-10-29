@@ -432,8 +432,9 @@ test("a send the provider rejected fails the run loudly; a complete one and an a
 });
 
 test("the subscribe action checks the CAPTCHA with @krizaka/rate-limit/turnstile, bundled and in sync", async () => {
-  const { render, TARGET } = await import("../scripts/bundle-functions.mjs");
+  const { render, TARGET, EMAILS, renderEmails } = await import("../scripts/bundle-functions.mjs");
   assert.equal(readFileSync(TARGET, "utf8"), render(), "run `npm run functions:bundle`");
+  assert.equal(readFileSync(EMAILS, "utf8"), await renderEmails(), "run `npm run functions:bundle`");
   // No second copy of the siteverify call in the functions.
   for (const a of ["subscribe", "confirm", "unsubscribe", "send"]) {
     assert.doesNotMatch(readFileSync(new URL(`../functions/packages/newsletter/${a}/newsletter.js`, import.meta.url), "utf8"), /siteverify/);
@@ -443,4 +444,26 @@ test("the subscribe action checks the CAPTCHA with @krizaka/rate-limit/turnstile
   const args = { __ow_method: "post", email: "a@b.co", captchaToken: "once" };
   assert.equal((await subscribe(args, ENV, f)).statusCode, 202);
   assert.equal(JSON.parse((await subscribe(args, ENV, f)).body).error, "captcha");
+});
+
+test("the confirmation e-mail is the designed one of @krizaka/email, EN and FR, with the signed link that confirms", async () => {
+  for (const locale of ["en", "fr"]) {
+    const f = fakeFetch({ [SITEVERIFY]: { status: 200, body: { success: true } } });
+    const r = await subscribe({ __ow_method: "post", email: "a@b.co", locale, captchaToken: `designed-${locale}` }, ENV, f);
+    assert.equal(r.statusCode, 202);
+    const body = new URLSearchParams(f.calls.find((c) => c.url === "https://api.mailgun.net/v3/mg.example.com/messages").init.body);
+    const [text, html] = [body.get("text"), body.get("html")];
+    assert.match(html, /<table/, "the e-mail kit's layout: tables and inline styles");
+    assert.match(body.get("subject"), locale === "fr" ? /Confirmez/ : /Confirm/);
+    assert.doesNotMatch(text + html, /__CONFIRM_TOKEN__|__SENDER_ADDRESS__/, "every placeholder is filled");
+    const link = /https:\/\/blog\.krizaka\.com\/api\/newsletter\/confirm\?t=[^\s"<&]+/.exec(text)?.[0];
+    assert.ok(link, "the plain-text part carries the link");
+    assert.equal(/&l=fr/.test(text), locale === "fr");
+    const db = fakeDb();
+    const t = decodeURIComponent(new URL(link).searchParams.get("t"));
+    const clicked = await confirm({ t, l: locale }, ENV, db.sql);
+    assert.equal(clicked.statusCode, 303);
+    assert.match(clicked.headers.Location, /\/newsletter\/confirmed\//);
+    assert.ok(db.subs.has("a@b.co"));
+  }
 });

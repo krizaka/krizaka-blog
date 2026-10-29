@@ -2,6 +2,7 @@
    confirmation link. Nothing is stored here: the address joins the list only when the link is opened (double opt-in).
    The answer is the same whether the address is new or already subscribed (nobody learns who is on the list). */
 const nl = require("./newsletter.js");
+const designed = require("./confirmation-emails.json"); // @krizaka/email, rendered once per language (scripts/bundle-functions.mjs)
 
 /** True when Turnstile accepts the token (fails closed). The library is an ES module bundled next to this file; a
     dynamic import loads it from CommonJS on the platform's Node 18. */
@@ -25,7 +26,7 @@ async function handle(args = {}, env = process.env, fetchImpl = fetch, now = Dat
   const locale = nl.pickLocale(args.locale);
   if (!(await captchaOk(args, env, fetchImpl, now))) return nl.json(400, { error: "captcha" });
   try {
-    await nl.sendEmail(nl.confirmationEmail({ email, locale }, env), env, fetchImpl);
+    await nl.sendEmail(nl.confirmationEmail({ email, locale }, env, now, designed), env, fetchImpl);
   } catch {
     return nl.json(502, { error: "send" });
   }
