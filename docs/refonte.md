@@ -242,7 +242,7 @@ retired, keep their slug and move to `/basics/<slug>/`.
 | `ai-model-families-and-why-you-need-a-gpu` | as is | its prices stay dated (they already are); links → chapters |
 | `anatomy-of-an-ai-prompt` | as is | the recap's last line points to chapter 3 instead of the costs post |
 | `is-that-ai-model-really-open-source` | as is | also receives the licence table of the film post (§ 1, ch. 4) |
-| `payments-and-high-risk-industries` | tightened | drop the « series opens here » lines; the Orochia and Kachizaka part stays as written (past fact, nothing new announced about paused products) |
+| `payments-and-high-risk-industries` | tightened | drop the « series opens here » lines; that part stays as written (past fact, nothing new announced) |
 
 **For Oussama to decide**: `censored-and-uncensored-models` could take the fifth slot instead of `payments-…`. In that
 case, chapter 7 keeps only its Orazaka part and the full post stays on the shelf. The plan's default is `payments-…`,
@@ -767,7 +767,7 @@ Desktop                                                     Phone
 - No « plongeons », no « il est crucial », no « en conclusion », no lists of three. Few bullets, little bold.
 - **Changed facts.** A fact that changed since a post was written appears only as a dated note, « Mise à jour, octobre 2026 : … ».
   The note is written only once the fact is checked in the merged PR or issue (§ 1, chapters 4, 6 and 7).
-- **Paused products.** Orochia, Yasakia, Yororis and Kachizaka are named only where an old post already names them, and
+- **Products that left the organisation.** They are named only where an old post already names them, and
   nothing new is announced about them.
 
 ## 9. Open questions
