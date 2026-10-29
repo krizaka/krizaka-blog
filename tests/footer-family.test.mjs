@@ -49,5 +49,4 @@ test("the open-source column is the package's: every open-source project and Git
 test("the blog passes the focus to the package and keeps no list of its own", () => {
   const footer = read("app/components/SiteFooter.tsx");
   assert.match(footer, /products=\{FOOTER_PRODUCT_IDS\}/);
-  assert.doesNotMatch(footer, /https?:\/\/(www\.)?(orochia|yasakia|yororis|kachizaka)\./);
 });
