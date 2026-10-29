@@ -43,6 +43,6 @@ test("the footer is the family's single band: no link the family's columns alrea
 
 test("the home is the notebook: its sections numbered in the margin (Featured, the chapters, the basics), the chapters on lined paper", () => {
   const home = read("app/components/pages/HomePage.tsx");
-  assert.equal((home.match(/number=\{no\(\)\} margin/g) ?? []).length, 3);
+  assert.equal((home.match(/number=\{no\(\)\}\s+margin/g) ?? []).length, 3);
   assert.match(home, /paper="lines"/);
 });

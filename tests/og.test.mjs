@@ -54,7 +54,7 @@ test("both languages' routes hand the post's cover to the card", async () => {
 test("the cover is placed from the card's padding edge (absolute children start inside the padding)", async () => {
   const src = (await import("node:fs")).readFileSync(new URL("../lib/og.tsx", import.meta.url), "utf8");
   assert.equal(
-    (src.match(/top: -56, left: -64/g) ?? []).length,
+    (src.match(/top: -56,\s*left: -64/g) ?? []).length,
     2,
     "picture and veil are shifted by the card's 56/64 px padding",
   );

@@ -262,11 +262,11 @@ test("the foot's previous and next are the neighbours in reading order, in the c
   const lib = readFileSync(join(root, "lib/chapters.ts"), "utf8");
   assert.match(
     lib,
-    /previousChapter = \(c: Chapter\)[^\n]*chaptersOf\(c\.locale\)\.filter\(\(x\) => x\.chapter < c\.chapter\)\.at\(-1\)/,
+    /previousChapter = \(c: Chapter\)[^;]*chaptersOf\(c\.locale\)\s*\.filter\(\(x\) => x\.chapter < c\.chapter\)\s*\.at\(-1\)/,
   );
   assert.match(
     lib,
-    /nextChapter = \(c: Chapter\)[^\n]*chaptersOf\(c\.locale\)\.find\(\(x\) => x\.chapter > c\.chapter\)/,
+    /nextChapter = \(c: Chapter\)[^;]*chaptersOf\(c\.locale\)\s*\.find\(\(x\) => x\.chapter > c\.chapter\)/,
   );
 });
 
