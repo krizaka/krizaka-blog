@@ -141,8 +141,44 @@ test("confirm: a fresh link adds the subscriber with the proof of consent; an ol
   const r2 = await confirm({ t, l: "fr" }, ENV, late.sql, now + nl.CONFIRM_TTL_MS + 1);
   assert.equal(r2.headers.Location, "https://blog.krizaka.com/fr/newsletter/expired/");
   assert.equal(late.calls.length, 0);
+});
+
+test("confirm: an address already on the list, or a link opened twice, lands on confirmed (idempotent, krizaka-blog#192)", async () => {
+  const now = Date.UTC(2026, 9, 28);
+  const t = nl.makeToken({ email: "a@b.co", locale: "en", purpose: "c", now }, ENV.MAIL_TOKEN_SECRET);
+  const db = fakeDb({ subscribers: [{ email: "a@b.co", locale: "fr" }] });
+  for (let i = 0; i < 2; i++) assert.equal((await confirm({ t }, ENV, db.sql, now + 1000)).headers.Location, "https://blog.krizaka.com/newsletter/confirmed/");
+  assert.equal(db.subs.size, 1);
+  assert.equal(db.subs.get("a@b.co").locale, "en", "the renewed consent keeps one row");
+});
+
+test("confirm: only a genuine link past its date says expired; a forged one says invalid; a failing list says try again (krizaka-blog#192)", async () => {
+  const now = Date.UTC(2026, 9, 28);
+  const t = nl.makeToken({ email: "a@b.co", locale: "en", purpose: "c", now }, ENV.MAIL_TOKEN_SECRET);
+  const late = (await confirm({ t }, ENV, fakeDb().sql, now + nl.CONFIRM_TTL_MS + 1)).headers.Location;
+  assert.equal(late, "https://blog.krizaka.com/newsletter/expired/");
+  assert.equal((await confirm({ t: t.slice(0, -2) + "xx" }, ENV, fakeDb().sql, now)).headers.Location, "https://blog.krizaka.com/newsletter/link-invalid/");
+  assert.equal((await confirm({ t: undefined }, ENV, fakeDb().sql, now)).headers.Location, "https://blog.krizaka.com/newsletter/link-invalid/");
   const down = async () => Promise.reject(new Error("db"));
-  assert.equal((await confirm({ t }, ENV, down, now)).headers.Location, "https://blog.krizaka.com/fr/newsletter/expired/");
+  const failed = await confirm({ t }, ENV, down, now);
+  assert.equal(failed.statusCode, 503, "a database error is not an expired link");
+  assert.match(failed.body, /still valid/);
+  const noDb = await confirm({ t }, { ...ENV, DATABASE_URL: "unset" }, fakeDb().sql, now);
+  assert.equal(noDb.statusCode, 503, "a missing configuration is not an expired link");
+});
+
+test("send to click: the link of the confirmation e-mail, in its text and in its HTML, confirms the subscriber (krizaka-blog#192)", async () => {
+  const f = fakeFetch({ [SITEVERIFY]: { status: 200, body: { success: true } } });
+  await subscribe({ __ow_method: "post", email: "a@b.co", locale: "fr", captchaToken: "ok" }, ENV, f);
+  const mail = new URLSearchParams(f.calls.find((c) => c.url.includes("/messages")).init.body);
+  const fromText = mail.get("text").match(/https:\/\/blog\.krizaka\.com\/api\/newsletter\/confirm\?[^\s]+/)[0];
+  const fromHtml = mail.get("html").match(/href="(https:\/\/blog\.krizaka\.com\/api\/newsletter\/confirm\?[^"]+)"/)[1].replaceAll("&amp;", "&");
+  assert.equal(fromHtml, fromText);
+  const url = new URL(fromText);
+  const db = fakeDb();
+  const r = await confirm({ t: url.searchParams.get("t"), l: url.searchParams.get("l") }, ENV, db.sql);
+  assert.equal(r.headers.Location, "https://blog.krizaka.com/fr/newsletter/confirmed/");
+  assert.equal(db.subs.size, 1);
 });
 
 test("unsubscribe: one click by link (303) or by the mail client (RFC 8058 POST, 200) deletes the row", async () => {
