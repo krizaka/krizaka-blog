@@ -1,0 +1,143 @@
+---
+title: "The audit said our agents write « AI code ». We measured."
+description: "An external audit says our code looks written by AI: null checks everywhere, procedural services. What was true, what was overstated, and what the build now refuses."
+seoTitle: "« AI code »: we measured, then the build refused it"
+seoDescription: "An external audit accuses our agents' code. What we measured, the rules that fail the build, the half-done rollout lesson, and what it costs."
+date: 2026-10-28
+publishedAt: "2026-10-28T23:10:00-04:00"
+tags: [ai, measurements, security]
+author: oussama
+cover: audit-loupe-cover
+coverAlt: "A walnut workbench at night: a brass loupe resting on a ruler, an open notebook with gridded pages, three tiny wooden gates in a row, a brass lamp, and behind the big window a city under a pink and blue sky"
+draft: false
+chapter: 16
+period: "2026-10-28/2026-10-29"
+sources:
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "an external audit saying our agents write « AI code »"
+  built: "measurements, then rules that fail the build, everywhere"
+stats:
+  - value: "34 of 35"
+    label: "Java request bodies without @Valid, the audit's right point"
+    section: "What was right, what was overstated"
+  - value: "198 green, 112 red"
+    label: "cells of the conformance matrix tonight, over 36 repositories"
+    section: "The half-done rollout"
+  - value: "6 to 13 cents"
+    label: "per PR merged by the agents, an order of magnitude"
+    section: "What it costs"
+---
+
+On 28 October I received an external audit of our code, and it said, roughly, this: your agents write « AI code ». Cascades of `if (x != null)`, procedural services, `if/else` over sign-in providers, and a Java 21, a Spring and a TypeScript that we do not use to their full extent.
+
+My first reaction was to defend us. The second one was more useful: what if we looked? In chapter 9 I had already had the organisation audited by [Claude and Gemini](/story/what-claude-found-auditing-krizaka/), and I had seen that an opinion has to be checked. This chapter tells what we measured, what we decided, what went wrong on the way and what it costs. I only say what I could read in the code, in the pull requests and on GitHub's API.
+
+## What was right, what was overstated
+
+We wrote a small tool, `tools/code-health`, that reads the repositories without changing anything and counts. The detail, with the measured commits, is in [ADR-015](https://github.com/krizaka/.github/blob/main/docs/adr/ADR-015-ai-code-audit-measured-and-enforced.md). Here is what it says.
+
+What the audit got right:
+
+- About 2,000 null checks and `requireNonNull` calls in 59,000 lines of Java, and not a single nullness annotation anywhere. Of those thousands, only 5 are provably useless. The rest are defensive because nobody said what can be null. Only a tool that reads the types can sort them.
+- 34 request bodies out of 35 have no `@Valid`. Validation is done by hand in constructors, and each controller turns the error into a response its own way.
+- In TypeScript, at least 1,071 hits of three rules that look at types (unnecessary condition, `?.`, `??`). That is a floor: the copies we read had no dependencies installed.
+
+What was overstated:
+
+<Compare label="The audit, measured" topic="The complaint" before="What the audit says" after="What I measured">
+  <Case topic="OAuth as an if ladder" before="A cascade of providers." after="Already a strategy in krizaka-users." afterDetail="An injected list of verifiers, one bean per provider. The weak point is the type: the provider is a string compared by hand." />
+  <Case topic="Procedural services" before="Spring used badly." after="0 @Autowired fields, 0 Manager classes." afterDetail="Four Utils classes, all in one repository. One controller touches the database." />
+  <Case topic="Complexity" before="Code that is too tangled." after="A few dozen functions." afterDetail="In Java, 35 methods are over 10 in cyclomatic complexity. In TypeScript, most of the 560 are JSX components, where every && counts." />
+  <Case topic="Java 21 under-used" before="Little modern Java." after="Half true." afterDetail="402 records, but only 7 sealed types and 8 pattern switches." />
+</Compare>
+
+The provider ladder did exist, but not where the audit looked. It was in one web client, `orazaka-web-client`, in the file that configures sign-in. Reading it, I found something better than a style: a bug. The call that creates an account after a GitHub or Google sign-in sent an e-mail and a name, while the service asked for the provider and an identity token. In other words, that path could not work as written, and no test said so, because the ladder hid the contract. The fix, with a contract test written first, is in [PR 335](https://github.com/krizaka/orazaka-web-client/pull/335): a typed table of providers, and the right request.
+
+What I keep from this: we had a style problem, and above all a contract problem, and it was the measurement that showed it, not the discussion.
+
+## The plan: a tool that fails, not an instruction
+
+The audit had a premise that I think is right: an agent changes its style only when a deterministic tool fails the build. Writing « write clean code » in an instructions file does not hold from one session to the next. So we turned every requirement we keep into a blocking rule.
+
+<Pipeline label="From style to rule">
+  <Stage title="Editor" note="10 seconds">After each edit, a hook checks that one file: ESLint for TypeScript, PMD for Java.</Stage>
+  <Stage title="Compile" note="NullAway">Packages declared `@NullMarked` are checked at compile time. A useless null check becomes an error.</Stage>
+  <Stage title="Tests" note="ArchUnit">The architecture rules: `@Valid` on request bodies, no Utils, no controller touching the database.</Stage>
+  <Stage title="CI" tone="gate" note="ratchet">Each rule has its frozen counter, which only goes down.</Stage>
+  <Stage title="Checkpoint" tone="ship" note="trend">Every three hours, the measure and its change since the last one.</Stage>
+</Pipeline>
+
+Four choices hold it together.
+
+The rules are build failures. In Java, NullAway and JSpecify (nullness checked at compile time), complexity limits in PMD, and ArchUnit rules. In TypeScript, a strict layer that reads the types, in `@krizaka/config`. All of it lives in one place per ecosystem: the Maven parent for Java, `@krizaka/config` for TypeScript, the agents' instructions template for the rest. Never a copy in every repository.
+
+No flag day. The 1,071 hits and the 35 over-complex methods are frozen in a baseline file, and only new code is strict. For nullness, the ratchet is the list of `@NullMarked` packages, which only grows: when a package joins the list, its defensive checks go, and NullAway proves which ones were useless.
+
+A ten-second hook for the agents. After each edit, `krizaka-edit-check` checks the one file that changed and sends the problems back to the agent, which fixes them before going on. No Maven there, it is too slow. If the check goes over its time, it stays silent.
+
+The trend in the checkpoint. `tools/code-health` is not a gate, it is a thermometer: every three hours we see whether the numbers go down.
+
+On the Java side, the rules are merged in the parent ([krizaka-build#121](https://github.com/krizaka/krizaka-build/pull/121)) and will be published to Maven Central on 1 November, when publishing resumes. As for corrections already made, the core and the business layer of Orazaka are plain Java again: the Spring dependencies in the core went from 33 to 0, and in the business layer from 2 to 0, with ArchUnit rules that enforce it.
+
+## What we rejected, and why
+
+An audit proposes, it does not decide. I refused several things, with the reason in the ADR.
+
+- Banning `*Manager` classes. We have 0, and the word is legitimate in Spring (`AuthenticationManager`). A rule that guards nothing is noise.
+- Cyclomatic complexity in JSX. It counts every `&&` in a render: 560 alerts, mostly components. Cognitive complexity, already at 15, measures what hurts.
+- Checkstyle. It repeats PMD's measures, and it is a second debt baseline to keep.
+- A rule that « requires a strategy ». No tool can decide that. Two PMD rules hold the line on string ladders, and review does the rest.
+- A `mvn verify` on every edit. PMD and SpotBugs alone take 30 to 60 seconds. That would stop the agent at every line.
+- Error Prone as a whole. It comes in only to host NullAway, with its own checks turned off. This corrects an older refusal, and I wrote it in the ADR.
+
+## The half-done rollout
+
+This is the part I am least proud of, and the one that taught me most.
+
+When we add a rule, we think we put it everywhere. In reality it reaches a few repositories and we move on to the next one. The blog you are reading proves it: it had its own CI and its own Sonar, but no security scan, because the new guards had never reached it.
+
+The decision was simple. Every rule of the organisation is declared once, in a registry, with the check that proves a repository follows it. A matrix of repositories by rules runs every week and in the three-hour checkpoint. A script opens the fix in every red repository. And a rule is done only when its column is green everywhere, no exceptions ([.github#393](https://github.com/krizaka/.github/issues/393)).
+
+The first run of the matrix, over 36 active repositories: 155 green cells, 150 red. Tonight, running it again on the main branch of the `.github` repository, I read 198 green and 112 red. It is not finished, and I will not make it look better than it is. The edit-hook rule, for example, is still red in all 36 repositories, because it is not in place yet.
+
+What the red cells really were surprised me: rarely the template, almost always each repository's own workflows. Unpinned actions, secrets passed as a block, gitleaks false positives on test data. The shared rule brought everyone's old debt to the surface at once. That is exactly what we wanted, but it does not feel like a success on day one.
+
+## Two guards learned the same day
+
+Two incidents, and for each the same question: why did no guard see it before?
+
+First, a session opened a pull request with my personal account instead of the agents' app. That blurs who did what, and it is not for me to open what the agents write. A hook, before the tool call, now refuses to create a pull request, an issue or a comment with my account. It still lets me approve and merge, the only things I must do myself.
+
+The second one we caused ourselves. Our own NullAway rule, added to the Java parent, broke the platform kit build in every Java repository. The parent was green, its consumers were red. Since then, a change to the parent builds its consumers in its own pull request, and cannot merge before they pass.
+
+## What it costs
+
+People often ask me what the agents cost. The true answer is less simple than I thought, so here are the figures and their limits.
+
+The sessions write down, at the end, the number of tokens they used, and we have kept that log since 26 October. On the 29th, 290 PRs had a recorded cost:
+
+| Lane | PRs | Tokens per PR (average) |
+|:---|---:|---:|
+| platform | 92 | 48k |
+| Orazaka | 62 | 68k |
+| Yomizaka | 39 | 68k |
+| Akinaza | 35 | 58k |
+| dependency updates | 8 | 9k |
+| security | 6 | 25k |
+
+In total, 16.1 million tokens for 290 PRs, which is 55k per PR. The models: 274 sessions on Sonnet (one feature or fix per session), 9 on Opus (ADRs and design choices), 3 on Haiku.
+
+These figures come with three caveats, and I want to say them. They are estimates made by the sessions themselves, which cannot see their exact usage: I write « estimated », not « billed ». The log starts on 26 October, earlier work is not in it. And it is the size of the context when the session reported, not what was consumed: a session re-reads its context at every tool call, between 50 and 130 times, mostly from the cache. Multiplying these tokens by the public API price would therefore understate the cost by an order of magnitude. I do not print that as a price.
+
+The honest price is the subscription. I am on Claude Max (from $100/month for Max 5x, $200 for Max 20x). In October, the agents merged 1,568 PRs, read on GitHub's API. One hundred dollars divided by 1,568 is about 6 cents, two hundred dollars about 13 cents. So 6 to 13 cents per merged PR, depending on the plan.
+
+That is an order of magnitude, not a quote. It leaves out my time, the time of writing the issues, reviewing, deciding and writing this chapter, and that is not nothing. It counts every PR the agents merged, including automatic updates that cost almost nothing, so the average for a real feature is higher. All it says is that the bottleneck is not the bill.
+
+## What is not done
+
+I would rather say it than let you guess. The Java rules are in the parent but not published yet, so no consumer repository applies them. The first proof in krizaka-users, the strict TypeScript layer and the hook are in review or in progress, and their issues are open. The matrix has 112 red cells. And I have not re-run the « after » measures: while the rules are not applied, they would show nothing. I will post them next to the first ones when they say something.
+
+## What I keep from it
+
+The audit was right about the method and about several findings. It was wrong about others, and it is by measuring that we knew, with a real sign-in bug as a bonus. I no longer want to argue about an agent's style: I want a tool that fails, a counter that goes down, and a column that is green everywhere.
