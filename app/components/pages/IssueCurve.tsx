@@ -20,7 +20,13 @@ export function IssueCurve({ dates, locale }: Readonly<{ dates?: string; locale:
     time: new Intl.DateTimeFormat(intl, { ...zone, timeStyle: "short" }).format(at),
   });
   const { line, ...labels } = t.labels;
-  const picked = rowsAt(rows, (dates ?? "").split(",").map((d) => d.trim()).filter(Boolean));
+  const picked = rowsAt(
+    rows,
+    (dates ?? "")
+      .split(",")
+      .map((d) => d.trim())
+      .filter(Boolean),
+  );
   const num = new Intl.NumberFormat(intl);
   const day = new Intl.DateTimeFormat(intl, { timeZone: "UTC", day: "numeric", month: "short" });
   return (

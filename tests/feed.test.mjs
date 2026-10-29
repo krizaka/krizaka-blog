@@ -19,23 +19,33 @@ test("the feeds carry no XSLT stylesheet and the stylesheet is gone", () => {
 test("/feed.xml stays the raw feed in both languages", () => {
   assert.match(read("app/(en)/feed.xml/route.ts"), /application\/rss\+xml/);
   assert.match(read("app/fr/feed.xml/route.ts"), /application\/rss\+xml/);
-  assert.match(read("lib/seo.ts"), /"application\/rss\+xml": `\$\{SITE_URL\}\$\{locale === "en" \? "" : "\/fr"\}\/feed\.xml`/);
+  assert.match(
+    read("lib/seo.ts"),
+    /"application\/rss\+xml": `\$\{SITE_URL\}\$\{locale === "en" \? "" : "\/fr"\}\/feed\.xml`/,
+  );
 });
 
 test("the feed page is gone: /feed/ is a stub to the story in both languages, and nothing renders it", () => {
-  for (const [f, l] of [["app/(en)/feed/page.tsx", "en"], ["app/fr/feed/page.tsx", "fr"]]) {
+  for (const [f, l] of [
+    ["app/(en)/feed/page.tsx", "en"],
+    ["app/fr/feed/page.tsx", "fr"],
+  ]) {
     assert.match(read(f), /pageKey\("\/feed\/"\)/, f);
     assert.match(read(f), new RegExp(`<RetiredPost locale="${l}"`), f);
   }
   assert.equal(existsSync(new URL("../app/components/feed/FeedPage.tsx", import.meta.url)), false);
   assert.doesNotMatch(read("app/sitemap.ts"), /"\/feed"/);
-  for (const l of ["en", "fr"]) assert.equal(JSON.parse(read(`messages/${l}.json`)).feedPage, undefined, `${l}: no feedPage words left`);
+  for (const l of ["en", "fr"])
+    assert.equal(JSON.parse(read(`messages/${l}.json`)).feedPage, undefined, `${l}: no feedPage words left`);
 });
 
 test("every human-facing RSS link names the file (/feed.xml), never the removed /feed/ page", () => {
   const post = read("app/components/pages/PostPage.tsx");
   const footer = read("app/components/SiteFooter.tsx");
-  for (const [name, src] of [["PostPage", post], ["SiteFooter", footer]]) {
+  for (const [name, src] of [
+    ["PostPage", post],
+    ["SiteFooter", footer],
+  ]) {
     assert.match(src, /\/feed\.xml`/, `${name} links /feed.xml`);
     assert.doesNotMatch(src, /\/feed\/`|localizedPath\(locale, "\/feed"\)/, `${name} does not link /feed/`);
   }
@@ -65,5 +75,9 @@ test("the four feed routes read feedEntriesOf: the chapters and the remaining po
   const feeds = read("lib/feeds.ts");
   assert.match(feeds, /\.\.\.chaptersOf\(locale\)\.map\(\(item\) => \(\{ item, path: chapterPath\(item\.slug\) \}\)\)/);
   assert.match(feeds, /\.\.\.postsOf\(locale\)\.map\(\(item\) => \(\{ item, path: postPath\(item\.slug\) \}\)\)/);
-  assert.equal((feeds.match(/absoluteUrl\(locale, path\)/g) ?? []).length, 2, "the RSS item and the Atom entry link to the entry's own path");
+  assert.equal(
+    (feeds.match(/absoluteUrl\(locale, path\)/g) ?? []).length,
+    2,
+    "the RSS item and the Atom entry link to the entry's own path",
+  );
 });

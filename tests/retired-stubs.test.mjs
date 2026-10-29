@@ -29,7 +29,11 @@ function targetOf(href, locale) {
   assert.ok(m, `${href} is a chapter or a shelf path`);
   assert.equal(!!m[1], locale === "fr", `${href} is in ${locale}`);
   const dir = chapter ? "chapters" : "posts";
-  return { file: new URL(`../content/${dir}/${m[2]}.${locale}.mdx`, import.meta.url), anchor, kind: chapter ? "chapter" : "shelf" };
+  return {
+    file: new URL(`../content/${dir}/${m[2]}.${locale}.mdx`, import.meta.url),
+    anchor,
+    kind: chapter ? "chapter" : "shelf",
+  };
 }
 
 test("every retired slug has its EN and FR stub; an absorbed post's file is gone, a shelf post's stays live", () => {
@@ -37,7 +41,11 @@ test("every retired slug has its EN and FR stub; an absorbed post's file is gone
     assert.ok(map[slug].en && map[slug].fr, `${slug} has both languages`);
     for (const l of ["en", "fr"]) {
       const stays = map[slug][l].includes("/basics/");
-      assert.equal(posts.includes(`${slug}.${l}.mdx`), stays, `${slug}.${l}: ${stays ? "still a live post" : "removed from content/posts"}`);
+      assert.equal(
+        posts.includes(`${slug}.${l}.mdx`),
+        stays,
+        `${slug}.${l}: ${stays ? "still a live post" : "removed from content/posts"}`,
+      );
     }
   }
 });
@@ -59,7 +67,8 @@ test("every stub points to an existing, published chapter or shelf post of the s
 });
 
 test("a stub's address is not a live post under /posts/: the shelf is served at /basics/ only", () => {
-  for (const slug of slugs) for (const l of ["en", "fr"]) assert.doesNotMatch(map[slug][l], /\/posts\//, `${slug}: the target is not /posts/`);
+  for (const slug of slugs)
+    for (const l of ["en", "fr"]) assert.doesNotMatch(map[slug][l], /\/posts\//, `${slug}: the target is not /posts/`);
 });
 
 test("no post or chapter links to a removed address under /posts/ or /series/", () => {
@@ -101,15 +110,27 @@ test("the sitemap reads the content: no stub, no removed post, no removed page",
 test("the feeds carry the published chapters (/story/ URLs) next to the posts, in both formats and both languages", () => {
   assert.match(read("lib/feeds.ts"), /export const feedEntriesOf/);
   assert.match(read("lib/feeds.ts"), /chaptersOf\(locale\)[\s\S]*chapterPath\(/);
-  for (const route of ["app/(en)/feed.xml/route.ts", "app/(en)/atom.xml/route.ts", "app/fr/feed.xml/route.ts", "app/fr/atom.xml/route.ts"]) {
+  for (const route of [
+    "app/(en)/feed.xml/route.ts",
+    "app/(en)/atom.xml/route.ts",
+    "app/fr/feed.xml/route.ts",
+    "app/fr/atom.xml/route.ts",
+  ]) {
     assert.match(read(route), /feedEntriesOf\(/, route);
     assert.doesNotMatch(read(route), /postsOf\(/, route);
   }
 });
 
 test("the CI smoke checks read a live post; the retired address is only checked as a stub (its refresh)", () => {
-  const lines = read("scripts/ci-after-build.sh").split("\n").filter((l) => l.includes("what-image-and-video-generation-costs"));
-  for (const l of lines) assert.match(l, /http-equiv="refresh"|refresh/, `a CI line still reads the retired post as a live one: ${l.trim()}`);
+  const lines = read("scripts/ci-after-build.sh")
+    .split("\n")
+    .filter((l) => l.includes("what-image-and-video-generation-costs"));
+  for (const l of lines)
+    assert.match(
+      l,
+      /http-equiv="refresh"|refresh/,
+      `a CI line still reads the retired post as a live one: ${l.trim()}`,
+    );
   assert.match(read("scripts/ci-after-build.sh"), /out\/basics\/understanding-ai-before-you-start\/index\.html/);
 });
 
@@ -123,11 +144,17 @@ test("every removed page has its key, in both languages, to the story or to what
     for (const l of ["en", "fr"]) {
       const href = map[key][l];
       const home = l === "en" ? "/" : "/fr/";
-      const ok = href === home || new RegExp(`^${l === "fr" ? "/fr" : ""}/(story|basics)/[a-z0-9-]+/$`).test(href) || href === `${home}basics/`;
+      const ok =
+        href === home ||
+        new RegExp(`^${l === "fr" ? "/fr" : ""}/(story|basics)/[a-z0-9-]+/$`).test(href) ||
+        href === `${home}basics/`;
       assert.ok(ok, `${key} (${l}) → ${href}: the story, a chapter or the shelf`);
       if (href.includes("/story/") || /\/basics\/[a-z0-9-]+\//.test(href)) {
         const [, kind, slug] = href.match(/\/(story|basics)\/([a-z0-9-]+)\//);
-        assert.ok(kind === "story" ? chapters.includes(`${slug}.${l}.mdx`) : posts.includes(`${slug}.${l}.mdx`), `${key} (${l}): ${slug} exists`);
+        assert.ok(
+          kind === "story" ? chapters.includes(`${slug}.${l}.mdx`) : posts.includes(`${slug}.${l}.mdx`),
+          `${key} (${l}): ${slug} exists`,
+        );
       }
     }
   }
@@ -144,7 +171,11 @@ test("each removed page's route renders the stub (no page of its own), in both l
       const route = read2(l, `${path.slice(1, -1)}/page.tsx`);
       assert.ok(route.includes(`pageKey("${path}")`), `${l} ${path}`);
       assert.match(route, new RegExp(`<RetiredPost locale="${l}" slug=\\{key\\} />`), `${l} ${path} renders the stub`);
-      assert.match(route, new RegExp(`retiredMetadata\\("${l}"`), `${l} ${path}: noindex and the canonical of the target`);
+      assert.match(
+        route,
+        new RegExp(`retiredMetadata\\("${l}"`),
+        `${l} ${path}: noindex and the canonical of the target`,
+      );
     }
     const tag = read2(l, "tags/[tag]/page.tsx");
     assert.match(tag, /retiredPagesUnder\("\/tags\/"\)/);
@@ -153,7 +184,8 @@ test("each removed page's route renders the stub (no page of its own), in both l
 });
 
 test("the removed pages' components are gone: no search, saved, topics, series, feed page or old story page is rendered any more", () => {
-  for (const f of ["SearchPage", "SavedPage", "TagsPage", "SeriesPage", "StoryPage", "TopicFilter"]) assert.ok(!existsSync(new URL(`../app/components/pages/${f}.tsx`, import.meta.url)), `${f} is gone`);
+  for (const f of ["SearchPage", "SavedPage", "TagsPage", "SeriesPage", "StoryPage", "TopicFilter"])
+    assert.ok(!existsSync(new URL(`../app/components/pages/${f}.tsx`, import.meta.url)), `${f} is gone`);
   assert.ok(!existsSync(new URL("../app/components/feed/FeedPage.tsx", import.meta.url)));
   assert.ok(!existsSync(new URL("../app/components/SearchBox.tsx", import.meta.url)));
 });

@@ -39,7 +39,12 @@ export default function HomePage({ locale }: { locale: Locale }) {
   const no = () => `§ ${++n}`;
   return (
     <>
-      <PageHero eyebrow={h.eyebrow} title={h.title} lead={<span className="bl-home-sentence">{h.lead}</span>} linkAs={Link}>
+      <PageHero
+        eyebrow={h.eyebrow}
+        title={h.title}
+        lead={<span className="bl-home-sentence">{h.lead}</span>}
+        linkAs={Link}
+      >
         <p className="bl-home-byline">{h.byline}</p>
       </PageHero>
       {featured && (
@@ -57,7 +62,16 @@ export default function HomePage({ locale }: { locale: Locale }) {
         </Section>
       )}
       {rows.length > 0 && (
-        <Section id="chapters" title={h.chaptersTitle} lead={h.chaptersLead} reveal={false} divider number={no()} margin paper="lines">
+        <Section
+          id="chapters"
+          title={h.chaptersTitle}
+          lead={h.chaptersLead}
+          reveal={false}
+          divider
+          number={no()}
+          margin
+          paper="lines"
+        >
           <ChapterIndex
             label={h.chaptersTitle}
             newLabel={h.new}

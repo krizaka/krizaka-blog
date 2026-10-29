@@ -14,7 +14,8 @@ const PATH_PLACES = /\b(Oujda|Maroc|Morocco|Grenoble|Casablanca|Rabat|Fès|Fez|P
 // Grenoble may appear only inside the 2011 lab's name (the LIG), as Oussama asked on 2026-10-17.
 const LAB = /laboratoire d'informatique de Grenoble \(LIG\)|Grenoble Informatics Laboratory \(LIG\)/gi;
 const FORBIDDEN = /Oujda|Grenoble|Maroc|Morocco|Java and Spring|Java et Spring|linkedin\.com/i;
-const BANKS = /\b(RBC|Royal Bank|Banque Royale|TD Bank|Banque TD|BMO|Bank of Montreal|Banque de Montréal|Scotiabank|CIBC|Banque Nationale|National Bank|Desjardins|Laurentienne|Laurentian)\b/i;
+const BANKS =
+  /\b(RBC|Royal Bank|Banque Royale|TD Bank|Banque TD|BMO|Bank of Montreal|Banque de Montréal|Scotiabank|CIBC|Banque Nationale|National Bank|Desjardins|Laurentienne|Laurentian)\b/i;
 const BIRTH = /\b(né le|née le|born on|date de naissance|date of birth)\b/i;
 const EDU = {
   en: "I studied mathematics and computer science, then turned to mathematics and computing applied to cognitive science.",
@@ -34,12 +35,17 @@ test("the About page and the home note tell the sourced path, and never the empl
     const text = [a.lead, ...a.body, a.labNote, ...a.places].join("\n");
     assert.ok(a.labNote.includes("{lab}"), `${l}: the About page's note names the 2011 lab`);
     assert.match(a.lab, new RegExp(LAB.source, "i"), `${l}: the lab is named as the LIG`);
-    for (const [place] of text.matchAll(PATH_PLACES)) assert.ok(facts.places.includes(place), `${l}: ${place} is not sourced`);
+    for (const [place] of text.matchAll(PATH_PLACES))
+      assert.ok(facts.places.includes(place), `${l}: ${place} is not sourced`);
     assert.doesNotMatch(text, FORBIDDEN, `${l}: forbidden in the bio`);
     assert.match(text, /Montréal/);
     assert.ok(text.includes(EDU[l]), `${l}: the education is worded as he gave it`);
     // His current job is never told, even unnamed (Oussama, 2026-10-17).
-    assert.doesNotMatch(text, /banque canadienne|Canadian bank|bancaire|banking|architecte dans|architect at/i, `${l}: the current job is not told`);
+    assert.doesNotMatch(
+      text,
+      /banque canadienne|Canadian bank|bancaire|banking|architecte dans|architect at/i,
+      `${l}: the current job is not told`,
+    );
     assert.doesNotMatch(text, BANKS);
     assert.doesNotMatch(text, BIRTH);
   }
@@ -49,7 +55,10 @@ test("the About page links the 2011 lab, the LIG, and its name is the only place
   assert.equal(facts.lab.url, "https://www.liglab.fr/");
   assert.match(read("app/components/about/AboutPage.tsx"), /https:\/\/www\.liglab\.fr\//);
   for (const l of ["en", "fr"]) assert.doesNotMatch(messages(l).about.lab.replace(LAB, ""), FORBIDDEN);
-  assert.ok(!existsSync(new URL("../app/components/about/AuthorNote.tsx", import.meta.url)), "the home's « Who writes » block is gone");
+  assert.ok(
+    !existsSync(new URL("../app/components/about/AuthorNote.tsx", import.meta.url)),
+    "the home's « Who writes » block is gone",
+  );
 });
 
 test("the Person JSON-LD of the About page names no former city and no LinkedIn profile", () => {
@@ -68,7 +77,11 @@ test("a post that tells the author's path names only sourced places and links to
     assert.doesNotMatch(content, /Java et Spring|Java and Spring/);
     assert.match(content, /Montréal/, `${f} says Montréal`);
     assert.ok(content.includes(f.endsWith(".fr.mdx") ? EDU.fr : EDU.en), `${f}: the education is worded as he gave it`);
-    assert.match(content, f.endsWith(".fr.mdx") ? /\]\(\/fr\/about\/?\)/ : /\]\(\/about\/?\)/, `${f} tells the path: it links to the About page`);
+    assert.match(
+      content,
+      f.endsWith(".fr.mdx") ? /\]\(\/fr\/about\/?\)/ : /\]\(\/about\/?\)/,
+      `${f} tells the path: it links to the About page`,
+    );
   }
 });
 

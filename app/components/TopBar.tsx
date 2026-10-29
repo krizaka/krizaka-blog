@@ -25,7 +25,11 @@ export default function TopBar({ translated }: { translated: readonly string[] }
   const home = localizedPath(locale, "/");
   const page = path === "/" ? "/" : path.replace(/\/$/, "");
   /* Each language lands on the same page in it (a post on its translation), else on that language's home. */
-  const languages = LOCALES.map((code) => ({ code, name: languageNames[code] ?? code, href: code === locale ? localizedPath(code, page) : languageSwitchPath(code, page, translated) }));
+  const languages = LOCALES.map((code) => ({
+    code,
+    name: languageNames[code] ?? code,
+    href: code === locale ? localizedPath(code, page) : languageSwitchPath(code, page, translated),
+  }));
 
   return (
     <div className="kz-site-bar-wrap pointer-events-none fixed inset-x-0 top-3 z-50">
@@ -39,7 +43,15 @@ export default function TopBar({ translated }: { translated: readonly string[] }
 
         <NavBar.Actions className="gap-1.5">
           <NavBar.Language label={b.language} current={locale} languages={languages} linkAs={Link} />
-          <Button type="button" variant="ghost" size="icon" shape="pill" onClick={toggleTheme} aria-label={theme === "dark" ? b.toLight : b.toDark} className="h-9 w-9">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            shape="pill"
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? b.toLight : b.toDark}
+            className="h-9 w-9"
+          >
             {theme === "dark" ? <SunIcon size={16} /> : <MoonIcon size={16} />}
           </Button>
         </NavBar.Actions>

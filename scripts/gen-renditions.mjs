@@ -37,7 +37,17 @@ async function main() {
   const media = JSON.parse(readFileSync(file, "utf8"));
   /* The covers of the posts and of the story's chapters. */
   const dirs = ["content/posts", "content/chapters"].map((d) => join(root, d));
-  const covers = [...new Set(dirs.flatMap((dir) => readdirSync(dir).filter((f) => f.endsWith(".mdx")).map((f) => matter(readFileSync(join(dir, f), "utf8")).data.cover)).filter(Boolean))];
+  const covers = [
+    ...new Set(
+      dirs
+        .flatMap((dir) =>
+          readdirSync(dir)
+            .filter((f) => f.endsWith(".mdx"))
+            .map((f) => matter(readFileSync(join(dir, f), "utf8")).data.cover),
+        )
+        .filter(Boolean),
+    ),
+  ];
   const folders = new Set();
   for (const id of covers) {
     const m = media[id];
@@ -64,6 +74,7 @@ async function main() {
     folders.add(folder);
   }
   writeFileSync(file, `${JSON.stringify(media, null, 1)}\n`);
-  for (const f of folders) console.log(`upload: node scripts/cdn-assets.mjs upload ${join(out, f)} --to blog/${f} --env-file <env>`);
+  for (const f of folders)
+    console.log(`upload: node scripts/cdn-assets.mjs upload ${join(out, f)} --to blog/${f} --env-file <env>`);
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) await main();

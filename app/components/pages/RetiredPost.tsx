@@ -25,7 +25,13 @@ export default function RetiredPost({ locale, slug }: { locale: Locale; slug: st
   const page = slug.startsWith("page:") || slug.startsWith("series:");
   const post = shelf && target.chapterSlug ? postOf(locale, target.chapterSlug) : undefined;
   const chapter = shelf || !target.chapterSlug ? undefined : chapterOf(locale, target.chapterSlug);
-  const label = post ? format(t.retired.linkPost, { title: post.title }) : chapter ? format(t.retired.link, { title: chapter.title }) : shelf ? t.retired.linkBasics : t.retired.linkStory;
+  const label = post
+    ? format(t.retired.linkPost, { title: post.title })
+    : chapter
+      ? format(t.retired.link, { title: chapter.title })
+      : shelf
+        ? t.retired.linkBasics
+        : t.retired.linkStory;
   const lead = page ? t.retired.leadPage : shelf ? t.retired.leadBasics : t.retired.lead;
   return (
     <>

@@ -11,7 +11,10 @@ const bar = read("app/components/TopBar.tsx");
 
 test("the bar is the mark, the language and the theme", () => {
   assert.match(bar, /<NavBar\.Brand asChild>[\s\S]*<KrizakaLogo[\s\S]*t\.site\.name[\s\S]*<\/NavBar\.Brand>/);
-  assert.match(bar, /<NavBar\.Language label=\{b\.language\} current=\{locale\} languages=\{languages\} linkAs=\{Link\} \/>/);
+  assert.match(
+    bar,
+    /<NavBar\.Language label=\{b\.language\} current=\{locale\} languages=\{languages\} linkAs=\{Link\} \/>/,
+  );
   assert.match(bar, /onClick=\{toggleTheme\}/);
   /* The theme toggle shows on every width: there is no phone menu to hold it. */
   assert.doesNotMatch(bar, /hidden h-9 w-9 md:inline-flex/);
@@ -26,7 +29,10 @@ test("the bar has no tag menu, no centre and no second bar", () => {
 });
 
 test("nothing else in the bar: no search, no saved posts, no GitHub, no feed, no way to krizaka.com", () => {
-  assert.doesNotMatch(bar, /SearchField|SearchIcon|\/search|BookmarkIcon|useSaved|\/saved|GitHubMark|REPOSITORY_URL|GITHUB_ORG_URL|KRIZAKA_URL|\/feed/);
+  assert.doesNotMatch(
+    bar,
+    /SearchField|SearchIcon|\/search|BookmarkIcon|useSaved|\/saved|GitHubMark|REPOSITORY_URL|GITHUB_ORG_URL|KRIZAKA_URL|\/feed/,
+  );
   assert.equal(bar.match(/<Button\b/g)?.length, 1, "one button: the theme");
 });
 
@@ -39,15 +45,22 @@ test("the language switch is the family's (NavBar.Language), each language landi
 for (const locale of ["en", "fr"]) {
   test(`${locale}: the bar's words are in the messages, and only those`, () => {
     const b = messages[locale].bar;
-    for (const k of ["aria", "language", "toLight", "toDark", "skip"]) assert.ok(typeof b[k] === "string" && b[k].trim().length > 0, `${locale}: bar.${k}`);
-    for (const k of ["posts", "tags", "search", "saved", "story", "github", "company", "menu"]) assert.equal(b[k], undefined, `${locale}: bar.${k} is gone`);
+    for (const k of ["aria", "language", "toLight", "toDark", "skip"])
+      assert.ok(typeof b[k] === "string" && b[k].trim().length > 0, `${locale}: bar.${k}`);
+    for (const k of ["posts", "tags", "search", "saved", "story", "github", "company", "menu"])
+      assert.equal(b[k], undefined, `${locale}: bar.${k} is gone`);
   });
 }
 
 test("the root renders the one bar, and no page renders its own", () => {
   const root = read("app/components/SiteRoot.tsx");
   assert.equal(root.match(/<TopBar /g)?.length, 1);
-  for (const file of ["app/components/pages/ChapterPage.tsx", "app/components/pages/HomePage.tsx", "app/components/pages/PostPage.tsx", "app/components/pages/BasicsPage.tsx"]) {
+  for (const file of [
+    "app/components/pages/ChapterPage.tsx",
+    "app/components/pages/HomePage.tsx",
+    "app/components/pages/PostPage.tsx",
+    "app/components/pages/BasicsPage.tsx",
+  ]) {
     assert.doesNotMatch(read(file), /<TopBar\b|NavBar\.Root/, file);
   }
 });

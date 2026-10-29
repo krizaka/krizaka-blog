@@ -7,7 +7,23 @@ import { useEffect, useRef, useState } from "react";
    Nothing loads before the clip comes near the screen: the blur placeholder first, the poster when the clip is within a
    screen of the window, the video only when it plays (preload="none") — so a clip further down never competes with the
    first picture of the page. No library. */
-export function ClipPlayer({ poster, mp4, webm, width, height, blur, label }: { poster: string; mp4: string; webm: string; width: number; height: number; blur: string; label: string }) {
+export function ClipPlayer({
+  poster,
+  mp4,
+  webm,
+  width,
+  height,
+  blur,
+  label,
+}: {
+  poster: string;
+  mp4: string;
+  webm: string;
+  width: number;
+  height: number;
+  blur: string;
+  label: string;
+}) {
   const ref = useRef<HTMLVideoElement>(null);
   const [near, setNear] = useState(false);
   useEffect(() => {
@@ -32,7 +48,20 @@ export function ClipPlayer({ poster, mp4, webm, width, height, blur, label }: { 
     };
   }, []);
   return (
-    <video ref={ref} className="bl-img bl-video" width={width} height={height} poster={near ? poster : undefined} muted loop playsInline controls preload="none" aria-label={label} style={{ backgroundImage: blurUrl(blur) }}>
+    <video
+      ref={ref}
+      className="bl-img bl-video"
+      width={width}
+      height={height}
+      poster={near ? poster : undefined}
+      muted
+      loop
+      playsInline
+      controls
+      preload="none"
+      aria-label={label}
+      style={{ backgroundImage: blurUrl(blur) }}
+    >
       <source src={webm} type="video/webm" />
       <source src={mp4} type="video/mp4" />
     </video>

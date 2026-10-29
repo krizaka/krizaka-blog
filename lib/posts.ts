@@ -43,7 +43,8 @@ export type Post = {
 const DIR = join(process.cwd(), "content", "posts");
 const FILE = /^([a-z0-9]+(?:-[a-z0-9]+)*)\.(en|fr)\.mdx$/;
 
-export const readingMinutes = (body: string): number => Math.max(1, Math.ceil(body.split(/\s+/).filter(Boolean).length / 220));
+export const readingMinutes = (body: string): number =>
+  Math.max(1, Math.ceil(body.split(/\s+/).filter(Boolean).length / 220));
 
 export function parsePost(file: string, source: string): Post {
   const m = file.match(FILE);
@@ -63,10 +64,20 @@ export function parsePost(file: string, source: string): Post {
     title: need("title"),
     description: need("description"),
     seoTitle: typeof data.seoTitle === "string" && data.seoTitle.trim() ? data.seoTitle.trim() : undefined,
-    seoDescription: typeof data.seoDescription === "string" && data.seoDescription.trim() ? data.seoDescription.trim() : undefined,
+    seoDescription:
+      typeof data.seoDescription === "string" && data.seoDescription.trim() ? data.seoDescription.trim() : undefined,
     date,
-    publishedAt: data.publishedAt instanceof Date ? data.publishedAt.toISOString() : typeof data.publishedAt === "string" ? data.publishedAt : undefined,
-    updated: data.updated ? (data.updated instanceof Date ? data.updated.toISOString().slice(0, 10) : String(data.updated)) : undefined,
+    publishedAt:
+      data.publishedAt instanceof Date
+        ? data.publishedAt.toISOString()
+        : typeof data.publishedAt === "string"
+          ? data.publishedAt
+          : undefined,
+    updated: data.updated
+      ? data.updated instanceof Date
+        ? data.updated.toISOString().slice(0, 10)
+        : String(data.updated)
+      : undefined,
     tags,
     author: typeof data.author === "string" ? data.author : "krizaka",
     draft: data.draft === true,
@@ -101,34 +112,58 @@ export const translationOf = (post: Post): Post | undefined => {
   return postOf(other, post.slug);
 };
 
-export const tagSlug = (tag: string): string => tag.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+export const tagSlug = (tag: string): string =>
+  tag
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 
 /** The tags of a language with the posts that wear them, most used first. */
 export function tagsOf(locale: Locale): { tag: string; count: number }[] {
   const counts = new Map<string, number>();
   for (const p of postsOf(locale)) for (const t of p.tags.map(tagSlug)) counts.set(t, (counts.get(t) ?? 0) + 1);
-  return [...counts].map(([tag, count]) => ({ tag, count })).sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag));
+  return [...counts]
+    .map(([tag, count]) => ({ tag, count }))
+    .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag));
 }
-export const postsWithTag = (locale: Locale, tag: string): Post[] => postsOf(locale).filter((p) => p.tags.map(tagSlug).includes(tag));
+export const postsWithTag = (locale: Locale, tag: string): Post[] =>
+  postsOf(locale).filter((p) => p.tags.map(tagSlug).includes(tag));
 
 /** A plain-text version of an MDX body (search index, feeds' summaries): no markup, no code fences. */
 export const plainText = (body: string): string =>
-  body.replace(/```[\s\S]*?```/g, " ").replace(/<[^>]+>/g, " ").replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1").replace(/[#>*_`|~-]+/g, " ").replace(/\s+/g, " ").trim();
+  body
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/[#>*_`|~-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 
 /** The series of a language with their posts in reading order (`part`, then date). */
 export function seriesOf(locale: Locale): { series: string; posts: Post[] }[] {
   const by = new Map<string, Post[]>();
   for (const p of postsOf(locale)) if (p.series) by.set(p.series, [...(by.get(p.series) ?? []), p]);
-  return [...by].map(([series, posts]) => ({ series, posts: posts.sort((a, b) => (a.part ?? 99) - (b.part ?? 99) || a.date.localeCompare(b.date)) })).sort((a, b) => b.posts.length - a.posts.length || a.series.localeCompare(b.series));
+  return [...by]
+    .map(([series, posts]) => ({
+      series,
+      posts: posts.sort((a, b) => (a.part ?? 99) - (b.part ?? 99) || a.date.localeCompare(b.date)),
+    }))
+    .sort((a, b) => b.posts.length - a.posts.length || a.series.localeCompare(b.series));
 }
-export const postsInSeries = (locale: Locale, series: string): Post[] => seriesOf(locale).find((s) => s.series === series)?.posts ?? [];
+export const postsInSeries = (locale: Locale, series: string): Post[] =>
+  seriesOf(locale).find((s) => s.series === series)?.posts ?? [];
 
 /** The posts closest to one: same series first, then shared topics (most shared first), then the newest. Never the post itself. */
 export function relatedPosts(post: Post, limit = 3): Post[] {
   const mine = new Set(post.tags.map(tagSlug));
   return postsOf(post.locale)
     .filter((p) => p.slug !== post.slug)
-    .map((p) => ({ p, score: (p.series && p.series === post.series ? 10 : 0) + p.tags.map(tagSlug).filter((t) => mine.has(t)).length }))
+    .map((p) => ({
+      p,
+      score: (p.series && p.series === post.series ? 10 : 0) + p.tags.map(tagSlug).filter((t) => mine.has(t)).length,
+    }))
     .sort((a, b) => b.score - a.score || b.p.date.localeCompare(a.p.date))
     .slice(0, limit)
     .map((x) => x.p);

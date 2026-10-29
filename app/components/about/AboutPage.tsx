@@ -23,7 +23,12 @@ export function aboutJsonLd(locale: Locale) {
     url: absoluteUrl(locale, "/about"),
     inLanguage: locale,
     isPartOf: { "@type": "Blog", name: t.site.name, url: absoluteUrl(locale, "/"), publisher: organization },
-    mainEntity: { "@type": "Person", name: "Oussama Abid", homeLocation: { "@type": "Place", name: "Montréal" }, worksFor: organization },
+    mainEntity: {
+      "@type": "Person",
+      name: "Oussama Abid",
+      homeLocation: { "@type": "Place", name: "Montréal" },
+      worksFor: organization,
+    },
     publisher: organization,
   };
 }

@@ -20,7 +20,8 @@ export function linkModels(body) {
     if (x.linked === x.id || wrap.includes(x)) groups.add(m.group);
   }
   let out = body;
-  for (const x of wrap.sort((a, b) => b.start - a.start)) out = `${out.slice(0, x.start)}<Model id="${x.id}">${out.slice(x.start, x.end)}</Model>${out.slice(x.end)}`;
+  for (const x of wrap.sort((a, b) => b.start - a.start))
+    out = `${out.slice(0, x.start)}<Model id="${x.id}">${out.slice(x.start, x.end)}</Model>${out.slice(x.end)}`;
   return out;
 }
 

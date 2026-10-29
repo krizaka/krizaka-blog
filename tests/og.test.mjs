@@ -11,9 +11,18 @@ test("hsl() of the tokens becomes #rrggbb, and rgba() with an alpha", () => {
 });
 
 test("the mark's generator and the image use the same conversion", async () => {
-  const src = await import("node:fs").then((fs) => fs.readFileSync(new URL("../scripts/gen-favicon.mjs", import.meta.url), "utf8"));
-  const body = (s) => s.slice(s.indexOf("function hslToCss"), s.indexOf("\n}\n", s.indexOf("function hslToCss"))).replace(/: (string|number)/g, "").replace(/\s+/g, " ");
-  assert.equal(body(src), body((await import("node:fs")).readFileSync(new URL("../lib/color.ts", import.meta.url), "utf8")));
+  const src = await import("node:fs").then((fs) =>
+    fs.readFileSync(new URL("../scripts/gen-favicon.mjs", import.meta.url), "utf8"),
+  );
+  const body = (s) =>
+    s
+      .slice(s.indexOf("function hslToCss"), s.indexOf("\n}\n", s.indexOf("function hslToCss")))
+      .replace(/: (string|number)/g, "")
+      .replace(/\s+/g, " ");
+  assert.equal(
+    body(src),
+    body((await import("node:fs")).readFileSync(new URL("../lib/color.ts", import.meta.url), "utf8")),
+  );
 });
 
 /* A post's card is its own cover, cropped to 1200×630: the widest file of the library (a clip's poster). */
@@ -21,7 +30,17 @@ test("the card's picture is the widest file of the cover, or a clip's poster", a
   const { widestSource, OG_WIDTH, OG_HEIGHT } = await import("../lib/og-cover.ts");
   assert.equal(OG_WIDTH, 1200);
   assert.equal(OG_HEIGHT, 630);
-  assert.equal(widestSource({ kind: "image", srcs: [{ w: 480, url: "a" }, { w: 1536, url: "c" }, { w: 960, url: "b" }] }), "c");
+  assert.equal(
+    widestSource({
+      kind: "image",
+      srcs: [
+        { w: 480, url: "a" },
+        { w: 1536, url: "c" },
+        { w: 960, url: "b" },
+      ],
+    }),
+    "c",
+  );
   assert.equal(widestSource({ kind: "video", poster: "p.jpg" }), "p.jpg");
 });
 
@@ -34,5 +53,9 @@ test("both languages' routes hand the post's cover to the card", async () => {
 
 test("the cover is placed from the card's padding edge (absolute children start inside the padding)", async () => {
   const src = (await import("node:fs")).readFileSync(new URL("../lib/og.tsx", import.meta.url), "utf8");
-  assert.equal((src.match(/top: -56, left: -64/g) ?? []).length, 2, "picture and veil are shifted by the card's 56/64 px padding");
+  assert.equal(
+    (src.match(/top: -56, left: -64/g) ?? []).length,
+    2,
+    "picture and veil are shifted by the card's 56/64 px padding",
+  );
 });

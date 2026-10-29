@@ -2,7 +2,14 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
-import { coverOf, imagesOf, renderPostEmail, withRenderedEmails, UNSUBSCRIBE_TOKEN, SENDER_ADDRESS } from "../scripts/newsletter-email.mjs";
+import {
+  coverOf,
+  imagesOf,
+  renderPostEmail,
+  withRenderedEmails,
+  UNSUBSCRIBE_TOKEN,
+  SENDER_ADDRESS,
+} from "../scripts/newsletter-email.mjs";
 import { versionsOf, requestSend } from "../scripts/newsletter-send.mjs";
 
 const require = createRequire(import.meta.url);
@@ -10,20 +17,45 @@ const nl = require("../functions/packages/newsletter/send/newsletter.js");
 const { handle: sendAction } = require("../functions/packages/newsletter/send/index.js");
 const media = JSON.parse(readFileSync(new URL("../lib/media.json", import.meta.url), "utf8"));
 
-const ENV = { MAIL_API_KEY: "k", MAIL_DOMAIN: "d.example", MAIL_FROM: "Blog <b@d.example>", MAIL_TOKEN_SECRET: "s".repeat(32), MAIL_SEND_TOKEN: "bearer-token", MAIL_SENDER_ADDRESS: "1 Example Street, Montréal (Québec) H0H 0H0", DATABASE_URL: "postgres://x" };
+const ENV = {
+  MAIL_API_KEY: "k",
+  MAIL_DOMAIN: "d.example",
+  MAIL_FROM: "Blog <b@d.example>",
+  MAIL_TOKEN_SECRET: "s".repeat(32),
+  MAIL_SEND_TOKEN: "bearer-token",
+  MAIL_SENDER_ADDRESS: "1 Example Street, Montréal (Québec) H0H 0H0",
+  DATABASE_URL: "postgres://x",
+};
 const auth = { __ow_method: "post", __ow_headers: { authorization: "Bearer bearer-token" } };
 const cover = coverOf(media, "accounts-keys");
 const VERSIONS = {
-  fr: { title: "Un billet « d'essai »", description: "Deux ou trois lignes qui disent de quoi parle le billet, sans rien promettre de plus.", url: "https://blog.krizaka.com/fr/posts/essai/", coverUrl: cover, coverAlt: "Un trousseau de clés sur un bureau" },
-  en: { title: "A test post, and <b>", description: "Two or three lines that say what the post is about, nothing more.", url: "https://blog.krizaka.com/posts/essai/", coverUrl: cover, coverAlt: "A key ring on a desk" },
+  fr: {
+    title: "Un billet « d'essai »",
+    description: "Deux ou trois lignes qui disent de quoi parle le billet, sans rien promettre de plus.",
+    url: "https://blog.krizaka.com/fr/posts/essai/",
+    coverUrl: cover,
+    coverAlt: "Un trousseau de clés sur un bureau",
+  },
+  en: {
+    title: "A test post, and <b>",
+    description: "Two or three lines that say what the post is about, nothing more.",
+    url: "https://blog.krizaka.com/posts/essai/",
+    coverUrl: cover,
+    coverAlt: "A key ring on a desk",
+  },
 };
 
 function fakeDb() {
   const calls = [];
   const sql = async (text, params = []) => {
     calls.push(text);
-    if (text.startsWith("select email, locale, consented_at")) return [{ email: "fr@x.co", locale: "fr", consented_at: "2026-10-16T00:00:00Z" }, { email: "en@x.co", locale: "en", consented_at: "2026-10-16T00:00:00Z" }];
-    if (text.startsWith("insert into newsletter_posts")) return fakeDb.claimed.has(params[0]) ? [] : (fakeDb.claimed.add(params[0]), [{ slug: params[0] }]);
+    if (text.startsWith("select email, locale, consented_at"))
+      return [
+        { email: "fr@x.co", locale: "fr", consented_at: "2026-10-16T00:00:00Z" },
+        { email: "en@x.co", locale: "en", consented_at: "2026-10-16T00:00:00Z" },
+      ];
+    if (text.startsWith("insert into newsletter_posts"))
+      return fakeDb.claimed.has(params[0]) ? [] : (fakeDb.claimed.add(params[0]), [{ slug: params[0] }]);
     return [];
   };
   return { sql, calls };
@@ -42,13 +74,19 @@ test("the e-mail renders in both languages: the title, the cover, one button to 
   const en = rendered.en;
   assert.match(fr.subject, /^Nouveau sur le blogue Krizaka/);
   assert.match(en.subject, /^New on the Krizaka blog/);
-  for (const [l, mail] of [["fr", fr], ["en", en]]) {
+  for (const [l, mail] of [
+    ["fr", fr],
+    ["en", en],
+  ]) {
     const v = VERSIONS[l];
     assert.ok(mail.html.includes(`href="${v.url}"`), `${l}: the button leads to the post`);
     assert.ok(mail.html.includes(v.coverUrl), `${l}: the cover is shown`);
     assert.ok(mail.html.includes(`alt="${v.coverAlt}"`), `${l}: the cover has its alt`);
     assert.ok(mail.html.includes(v.description), `${l}: the excerpt`);
-    assert.ok(mail.html.includes(`<html lang="${l}"`) || new RegExp(`lang="${l}"`).test(mail.html), `${l}: the language of the document`);
+    assert.ok(
+      mail.html.includes(`<html lang="${l}"`) || new RegExp(`lang="${l}"`).test(mail.html),
+      `${l}: the language of the document`,
+    );
     assert.match(mail.html, /prefers-color-scheme:\s*dark/, `${l}: dark mode`);
     assert.match(mail.html, /<table/, `${l}: built on tables`);
     assert.ok(mail.html.includes(UNSUBSCRIBE_TOKEN), `${l}: the unsubscribe link is there`);
@@ -96,11 +134,19 @@ test("the function gives each reader their own unsubscribe link and the postal a
   assert.equal(mail.to, "reader@x.co");
   const link = mail.html.match(/https:\/\/blog\.krizaka\.com\/api\/newsletter\/unsubscribe\?t=([^"&]+)&amp;l=fr/);
   assert.ok(link, "the unsubscribe link of the HTML");
-  assert.deepEqual(nl.readToken(decodeURIComponent(link[1]), "u", ENV.MAIL_TOKEN_SECRET), { email: "reader@x.co", locale: "fr" }, "a signed link that unsubscribes this reader and no other");
+  assert.deepEqual(
+    nl.readToken(decodeURIComponent(link[1]), "u", ENV.MAIL_TOKEN_SECRET),
+    { email: "reader@x.co", locale: "fr" },
+    "a signed link that unsubscribes this reader and no other",
+  );
   assert.ok(mail.text.includes(`unsubscribe?t=${link[1]}`), "the same link in the plain-text part");
   assert.ok(mail.html.includes("1 Example Street") && mail.text.includes("1 Example Street"));
-  for (const part of [mail.html, mail.text, mail.subject]) assert.ok(!part.includes(UNSUBSCRIBE_TOKEN) && !part.includes(SENDER_ADDRESS), "no placeholder left");
-  assert.match(mail.headers["List-Unsubscribe"], /^<https:\/\/blog\.krizaka\.com\/api\/newsletter\/unsubscribe\?t=.+>$/);
+  for (const part of [mail.html, mail.text, mail.subject])
+    assert.ok(!part.includes(UNSUBSCRIBE_TOKEN) && !part.includes(SENDER_ADDRESS), "no placeholder left");
+  assert.match(
+    mail.headers["List-Unsubscribe"],
+    /^<https:\/\/blog\.krizaka\.com\/api\/newsletter\/unsubscribe\?t=.+>$/,
+  );
   assert.equal(mail.headers["List-Unsubscribe-Post"], "List-Unsubscribe=One-Click");
   const other = nl.newPostEmail({ email: "other@x.co", locale: "fr", consentedAt: null }, rendered.fr, ENV);
   assert.notEqual(other.html, mail.html, "each reader has their own link");
@@ -108,10 +154,16 @@ test("the function gives each reader their own unsubscribe link and the postal a
 
 test("the postal address is escaped in the HTML, and the post is not rendered with unset sender: the default stands", async () => {
   const rendered = await withRenderedEmails(VERSIONS);
-  const risky = nl.newPostEmail({ email: "r@x.co", locale: "en", consentedAt: null }, rendered.en, { ...ENV, MAIL_SENDER_ADDRESS: "A & B <c>, Montréal" });
+  const risky = nl.newPostEmail({ email: "r@x.co", locale: "en", consentedAt: null }, rendered.en, {
+    ...ENV,
+    MAIL_SENDER_ADDRESS: "A & B <c>, Montréal",
+  });
   assert.ok(risky.html.includes("A &amp; B &lt;c&gt;, Montréal"));
   assert.ok(risky.text.includes("A & B <c>, Montréal"));
-  const unset = nl.newPostEmail({ email: "r@x.co", locale: "en", consentedAt: null }, rendered.en, { ...ENV, MAIL_SENDER_ADDRESS: "unset" });
+  const unset = nl.newPostEmail({ email: "r@x.co", locale: "en", consentedAt: null }, rendered.en, {
+    ...ENV,
+    MAIL_SENDER_ADDRESS: "unset",
+  });
   assert.ok(unset.html.includes("Montréal (Québec), Canada"));
 });
 
@@ -134,14 +186,22 @@ test("send: a rendered version needs both html and text, within bounds", async (
   const rendered = await withRenderedEmails(VERSIONS);
   const only = (v) => ({ ...auth, slug: "essai", versions: { fr: { ...rendered.fr, ...v } } });
   assert.equal((await sendAction(only({ text: undefined }), ENV, fakeDb().sql, async () => {})).statusCode, 400);
-  assert.equal((await sendAction(only({ html: "x".repeat(200001) }), ENV, fakeDb().sql, async () => {})).statusCode, 400);
+  assert.equal(
+    (await sendAction(only({ html: "x".repeat(200001) }), ENV, fakeDb().sql, async () => {})).statusCode,
+    400,
+  );
 });
 
 test("test mode: one e-mail to the given address only, « [Test] » in the subject, the list never read and the post never claimed", async () => {
   const rendered = await withRenderedEmails(VERSIONS);
   const db = fakeDb();
   const out = [];
-  const r = await sendAction({ ...auth, slug: "jamais-envoye", versions: rendered, test: "Me@Example.com", locale: "en" }, ENV, db.sql, async (m) => out.push(m));
+  const r = await sendAction(
+    { ...auth, slug: "jamais-envoye", versions: rendered, test: "Me@Example.com", locale: "en" },
+    ENV,
+    db.sql,
+    async (m) => out.push(m),
+  );
   assert.equal(r.statusCode, 200);
   assert.deepEqual(JSON.parse(r.body), { test: true, sent: 1, to: "me@example.com", locale: "en" });
   assert.equal(out.length, 1);
@@ -149,22 +209,51 @@ test("test mode: one e-mail to the given address only, « [Test] » in the subje
   assert.match(out[0].subject, /^\[Test\] New on the Krizaka blog/);
   assert.deepEqual(db.calls, [], "no database access: the list is untouched");
   assert.ok(!fakeDb.claimed.has("jamais-envoye"), "the post is not claimed: the real send still happens once");
-  const ok = await sendAction({ ...auth, slug: "jamais-envoye", versions: rendered }, ENV, db.sql, async (m) => out.push(m));
+  const ok = await sendAction({ ...auth, slug: "jamais-envoye", versions: rendered }, ENV, db.sql, async (m) =>
+    out.push(m),
+  );
   assert.equal(JSON.parse(ok.body).total, 2, "the real send is unaffected by the test");
 });
 
 test("test mode: bearer required, valid address required, a mail failure is reported", async () => {
   const rendered = await withRenderedEmails(VERSIONS);
   const noop = async () => {};
-  assert.equal((await sendAction({ ...auth, __ow_headers: {}, slug: "x", versions: rendered, test: "me@example.com" }, ENV, fakeDb().sql, noop)).statusCode, 401);
-  assert.equal((await sendAction({ ...auth, slug: "x", versions: rendered, test: "not an address" }, ENV, fakeDb().sql, noop)).statusCode, 400);
-  assert.equal((await sendAction({ ...auth, slug: "x", versions: rendered, test: "me@example.com" }, ENV, fakeDb().sql, async () => Promise.reject(new Error("mail 500")))).statusCode, 502);
+  assert.equal(
+    (
+      await sendAction(
+        { ...auth, __ow_headers: {}, slug: "x", versions: rendered, test: "me@example.com" },
+        ENV,
+        fakeDb().sql,
+        noop,
+      )
+    ).statusCode,
+    401,
+  );
+  assert.equal(
+    (await sendAction({ ...auth, slug: "x", versions: rendered, test: "not an address" }, ENV, fakeDb().sql, noop))
+      .statusCode,
+    400,
+  );
+  assert.equal(
+    (
+      await sendAction(
+        { ...auth, slug: "x", versions: rendered, test: "me@example.com" },
+        ENV,
+        fakeDb().sql,
+        async () => Promise.reject(new Error("mail 500")),
+      )
+    ).statusCode,
+    502,
+  );
 });
 
 test("the sender script passes the test address and the rendered e-mails to the action", async () => {
   const rendered = await withRenderedEmails(VERSIONS);
   const calls = [];
-  const f = async (url, init) => (calls.push({ url, init }), { ok: true, status: 200, json: async () => ({ test: true, sent: 1 }) });
+  const f = async (url, init) => (
+    calls.push({ url, init }),
+    { ok: true, status: 200, json: async () => ({ test: true, sent: 1 }) }
+  );
   await requestSend("essai", rendered, "tok", f, { test: "me@example.com", locale: "fr" });
   const body = JSON.parse(calls[0].init.body);
   assert.equal(body.test, "me@example.com");
@@ -188,11 +277,17 @@ test("the workflow runs the sender after npm ci, with the bearer only, and a dra
   const wf = readFileSync(new URL("../.github/workflows/newsletter.yml", import.meta.url), "utf8");
   assert.match(wf, /npm ci/);
   assert.match(wf, /MAIL_SEND_TOKEN: \$\{\{ secrets\.MAIL_SEND_TOKEN \}\}/);
-  assert.match(readFileSync(new URL("../scripts/newsletter-send.mjs", import.meta.url), "utf8"), /isPublished\(read\.after\(path\)\) && !isPublished\(read\.before\(path\)\)/);
+  assert.match(
+    readFileSync(new URL("../scripts/newsletter-send.mjs", import.meta.url), "utf8"),
+    /isPublished\(read\.after\(path\)\) && !isPublished\(read\.before\(path\)\)/,
+  );
 });
 
 test("a long cover description (the alt of a cover can be a sentence) is cut to what the template accepts, not refused", async () => {
-  const { html } = await renderPostEmail("fr", { ...VERSIONS.fr, coverAlt: "Un bureau en noyer à l'aube. ".repeat(30) });
+  const { html } = await renderPostEmail("fr", {
+    ...VERSIONS.fr,
+    coverAlt: "Un bureau en noyer à l'aube. ".repeat(30),
+  });
   assert.ok(html.includes("<img"));
-  assert.ok(html.includes("…\""), "cut with an ellipsis");
+  assert.ok(html.includes('…"'), "cut with an ellipsis");
 });

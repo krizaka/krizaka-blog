@@ -11,10 +11,23 @@ export const postPath = (slug: string) => `/basics/${slug}`;
 /** A chapter of the story (lib/chapters.ts). */
 export const chapterPath = (slug: string) => `/story/${slug}`;
 export const ogUrl = (locale: Locale, slug: string) => `${SITE_URL}${locale === "en" ? "" : "/fr"}/og/${slug}.png`;
-export const chapterOgUrl = (locale: Locale, slug: string) => `${SITE_URL}${locale === "en" ? "" : "/fr"}/og/story/${slug}.png`;
+export const chapterOgUrl = (locale: Locale, slug: string) =>
+  `${SITE_URL}${locale === "en" ? "" : "/fr"}/og/story/${slug}.png`;
 export const DEFAULT_OG = `${SITE_URL}/og/site.png`;
 
-export function pageMetadata(opts: { locale: Locale; path: string; title: string; description: string; alternates?: Locale[]; image?: string; type?: "website" | "article"; published?: string; modified?: string; absoluteTitle?: boolean; tags?: string[] }): Metadata {
+export function pageMetadata(opts: {
+  locale: Locale;
+  path: string;
+  title: string;
+  description: string;
+  alternates?: Locale[];
+  image?: string;
+  type?: "website" | "article";
+  published?: string;
+  modified?: string;
+  absoluteTitle?: boolean;
+  tags?: string[];
+}): Metadata {
   const { locale, path, title, description, type = "website" } = opts;
   const t = getDictionary(locale);
   /* The title tag: the page's own words, then the blog's name — unless the page already gives a complete one (≤ 60). */
@@ -33,7 +46,10 @@ export function pageMetadata(opts: { locale: Locale; path: string; title: string
         ...Object.fromEntries(langs.map((l) => [l, absoluteUrl(l, path)])),
         ...(langs.includes("en") ? { "x-default": absoluteUrl("en", path) } : {}),
       },
-      types: { "application/rss+xml": `${SITE_URL}${locale === "en" ? "" : "/fr"}/feed.xml`, "application/atom+xml": `${SITE_URL}${locale === "en" ? "" : "/fr"}/atom.xml` },
+      types: {
+        "application/rss+xml": `${SITE_URL}${locale === "en" ? "" : "/fr"}/feed.xml`,
+        "application/atom+xml": `${SITE_URL}${locale === "en" ? "" : "/fr"}/atom.xml`,
+      },
     },
     openGraph: {
       type,
@@ -43,7 +59,14 @@ export function pageMetadata(opts: { locale: Locale; path: string; title: string
       url,
       locale: locale === "en" ? "en_US" : "fr_CA",
       images: [{ url: image, width: 1200, height: 630 }],
-      ...(type === "article" && opts.published ? { publishedTime: opts.published, modifiedTime: opts.modified ?? opts.published, authors: [absoluteUrl(locale, "/")], tags: opts.tags } : {}),
+      ...(type === "article" && opts.published
+        ? {
+            publishedTime: opts.published,
+            modifiedTime: opts.modified ?? opts.published,
+            authors: [absoluteUrl(locale, "/")],
+            tags: opts.tags,
+          }
+        : {}),
     },
     twitter: { card: "summary_large_image", title: fullTitle, description, images: [image] },
     icons: {
@@ -62,28 +85,73 @@ export const blogId = (locale: Locale) => `${absoluteUrl(locale, "/")}#blog`;
 export const authorId = (author: string) => `${SITE_URL}/#author-${author}`;
 
 /** The metadata of a post's page: the short title tag and description when the post gives them, the full title in Open Graph. */
-export function postMetadata(post: Post, alternates: Locale[], path = postPath(post.slug), image = post.image ?? ogUrl(post.locale, post.slug)): Metadata {
+export function postMetadata(
+  post: Post,
+  alternates: Locale[],
+  path = postPath(post.slug),
+  image = post.image ?? ogUrl(post.locale, post.slug),
+): Metadata {
   const t = getDictionary(post.locale);
-  const meta = pageMetadata({ locale: post.locale, path, title: titleTag(post, t.site.name), absoluteTitle: true, description: metaDescription(post), type: "article", published: post.date, modified: post.updated, image, alternates, tags: post.tags });
-  return { ...meta, authors: [{ name: (t.authors as Record<string, string>)[post.author] ?? post.author }], keywords: post.tags };
+  const meta = pageMetadata({
+    locale: post.locale,
+    path,
+    title: titleTag(post, t.site.name),
+    absoluteTitle: true,
+    description: metaDescription(post),
+    type: "article",
+    published: post.date,
+    modified: post.updated,
+    image,
+    alternates,
+    tags: post.tags,
+  });
+  return {
+    ...meta,
+    authors: [{ name: (t.authors as Record<string, string>)[post.author] ?? post.author }],
+    keywords: post.tags,
+  };
 }
 
 /** The writer of a post: Oussama is a Person who founded Krizaka; « the Krizaka team » is the Organization itself. */
 function authorNode(post: Post) {
   const t = getDictionary(post.locale);
   if (post.author === "krizaka") return publisher;
-  return { "@type": "Person", "@id": authorId(post.author), name: (t.authors as Record<string, string>)[post.author] ?? post.author, url: absoluteUrl(post.locale, "/"), worksFor: org };
+  return {
+    "@type": "Person",
+    "@id": authorId(post.author),
+    name: (t.authors as Record<string, string>)[post.author] ?? post.author,
+    url: absoluteUrl(post.locale, "/"),
+    worksFor: org,
+  };
 }
 
 export function blogJsonLd(locale: Locale) {
   const t = getDictionary(locale);
-  return { "@context": "https://schema.org", "@type": "Blog", "@id": blogId(locale), name: t.site.name, description: t.site.description, url: absoluteUrl(locale, "/"), inLanguage: locale, publisher };
+  return {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "@id": blogId(locale),
+    name: t.site.name,
+    description: t.site.description,
+    url: absoluteUrl(locale, "/"),
+    inLanguage: locale,
+    publisher,
+  };
 }
 
-export function postJsonLd(post: Post, topic?: { name: string; path: string }, path = postPath(post.slug), image = post.image ?? ogUrl(post.locale, post.slug)) {
+export function postJsonLd(
+  post: Post,
+  topic?: { name: string; path: string },
+  path = postPath(post.slug),
+  image = post.image ?? ogUrl(post.locale, post.slug),
+) {
   const t = getDictionary(post.locale);
   const url = absoluteUrl(post.locale, path);
-  const crumbs = [{ name: t.site.name, item: absoluteUrl(post.locale, "/") }, ...(topic ? [{ name: topic.name, item: absoluteUrl(post.locale, topic.path) }] : []), { name: post.title, item: url }];
+  const crumbs = [
+    { name: t.site.name, item: absoluteUrl(post.locale, "/") },
+    ...(topic ? [{ name: topic.name, item: absoluteUrl(post.locale, topic.path) }] : []),
+    { name: post.title, item: url },
+  ];
   return [
     {
       "@context": "https://schema.org",
@@ -98,7 +166,13 @@ export function postJsonLd(post: Post, topic?: { name: string; path: string }, p
       headline: post.title,
       description: post.description,
       url,
-      mainEntityOfPage: { "@type": "WebPage", "@id": url, breadcrumb: { "@id": `${url}#breadcrumb` }, isPartOf: { "@id": blogId(post.locale) }, publisher: org },
+      mainEntityOfPage: {
+        "@type": "WebPage",
+        "@id": url,
+        breadcrumb: { "@id": `${url}#breadcrumb` },
+        isPartOf: { "@id": blogId(post.locale) },
+        publisher: org,
+      },
       inLanguage: post.locale,
       datePublished: post.publishedAt ?? post.date,
       dateModified: post.updated ?? post.date,
@@ -107,7 +181,13 @@ export function postJsonLd(post: Post, topic?: { name: string; path: string }, p
       wordCount: post.body.split(/\s+/).filter(Boolean).length,
       timeRequired: `PT${post.readingMinutes}M`,
       author: authorNode(post),
-      isPartOf: { "@type": "Blog", "@id": blogId(post.locale), name: t.site.name, url: absoluteUrl(post.locale, "/"), publisher: org },
+      isPartOf: {
+        "@type": "Blog",
+        "@id": blogId(post.locale),
+        name: t.site.name,
+        url: absoluteUrl(post.locale, "/"),
+        publisher: org,
+      },
       publisher,
     },
     ...faqJsonLd(post, url),
@@ -127,7 +207,11 @@ function faqJsonLd(post: Post, url: string) {
       inLanguage: post.locale,
       isPartOf: { "@id": `${url}#article` },
       publisher,
-      mainEntity: faq.map((q) => ({ "@type": "Question", name: q.question, acceptedAnswer: { "@type": "Answer", text: q.answer } })),
+      mainEntity: faq.map((q) => ({
+        "@type": "Question",
+        name: q.question,
+        acceptedAnswer: { "@type": "Answer", text: q.answer },
+      })),
     },
   ];
 }
@@ -135,5 +219,14 @@ function faqJsonLd(post: Post, url: string) {
 /** A listing page (topics, a topic, the search): a CollectionPage of the blog, published by Krizaka. */
 export function collectionJsonLd(locale: Locale, path: string, name: string, description: string) {
   const t = getDictionary(locale);
-  return { "@context": "https://schema.org", "@type": "CollectionPage", name, description, url: absoluteUrl(locale, path), inLanguage: locale, isPartOf: { "@type": "Blog", name: t.site.name, url: absoluteUrl(locale, "/") }, publisher };
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name,
+    description,
+    url: absoluteUrl(locale, path),
+    inLanguage: locale,
+    isPartOf: { "@type": "Blog", name: t.site.name, url: absoluteUrl(locale, "/") },
+    publisher,
+  };
 }

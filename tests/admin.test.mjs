@@ -13,7 +13,8 @@ test("the editor uses GitHub accounts and the editorial workflow (a draft is a p
 test("the editor writes the same files the site reads: <slug>.<locale>.mdx with the front-matter fields", () => {
   assert.match(config, /extension: mdx/);
   assert.match(config, /structure: multiple_files/);
-  for (const f of ["title", "description", "date", "tags", "author", "draft", "image", "body"]) assert.match(config, new RegExp(`name: ${f}\\b`));
+  for (const f of ["title", "description", "date", "tags", "author", "draft", "image", "body"])
+    assert.match(config, new RegExp(`name: ${f}\\b`));
 });
 test("a new post starts as a draft, and images are URLs on the media CDN", () => {
   assert.match(config, /name: draft[^\n]*default: true/);
