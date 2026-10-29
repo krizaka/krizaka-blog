@@ -1,0 +1,143 @@
+---
+title: "L'audit disait que nos agents écrivent du « code d'IA ». On a mesuré."
+description: "Un audit externe nous reproche un code d'IA : des « if != null » partout, des services procéduraux. Ce qui était vrai, ce qui était exagéré, et ce que le build refuse."
+seoTitle: "« Code d'IA » : on a mesuré, puis le build l'a refusé"
+seoDescription: "Un audit externe accuse le code de nos agents. Ce qu'on a mesuré, les règles qui font échouer le build, le déploiement à moitié fait, et ce que ça coûte."
+date: 2026-10-28
+publishedAt: "2026-10-28T23:10:00-04:00"
+tags: [ai, measurements, security]
+author: oussama
+cover: audit-loupe-cover
+coverAlt: "Un établi en noyer la nuit : une loupe de laiton posée sur une règle, un carnet ouvert à pages quadrillées, trois minuscules portes de bois alignées, une lampe de laiton, et derrière la grande fenêtre une ville sous un ciel rose et bleu"
+draft: false
+chapter: 16
+period: "2026-10-28/2026-10-29"
+sources:
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "un audit externe qui dit que nos agents écrivent du « code d'IA »"
+  built: "des mesures, puis des règles qui font échouer le build, partout"
+stats:
+  - value: "34 sur 35"
+    label: "corps de requête Java sans @Valid, le point juste de l'audit"
+    section: "Ce qui était juste, ce qui était exagéré"
+  - value: "198 vertes, 112 rouges"
+    label: "cellules de la matrice de conformité ce soir, sur 36 dépôts"
+    section: "Le déploiement à moitié fait"
+  - value: "6 à 13 cents"
+    label: "par PR fusionnée par les agents, un ordre de grandeur"
+    section: "Ce que ça coûte"
+---
+
+Le 28 octobre, j'ai reçu un audit externe de notre code, et il disait en gros ceci : vos agents écrivent du « code d'IA ». Des cascades de `if (x != null)`, des services procéduraux, des `if/else` sur les fournisseurs de connexion, et un Java 21, un Spring et un TypeScript qu'on n'exploite pas à fond.
+
+Ma première réaction a été de me défendre. La deuxième a été plus utile : et si on regardait ? Au chapitre 9, j'avais déjà fait auditer l'organisation par [Claude et Gemini](/fr/story/what-claude-found-auditing-krizaka/), et j'avais déjà vu qu'un avis se vérifie. Ce chapitre raconte ce qu'on a mesuré, ce qu'on a décidé, ce qui a mal tourné en route et ce que ça coûte. Je ne dis que ce que j'ai pu lire dans le code, dans les PR et sur l'API de GitHub.
+
+## Ce qui était juste, ce qui était exagéré
+
+On a écrit un petit outil, `tools/code-health`, qui lit les dépôts sans rien modifier et compte. Le détail, avec les commits mesurés, est dans l'[ADR-015](https://github.com/krizaka/.github/blob/main/docs/adr/ADR-015-ai-code-audit-measured-and-enforced.md). Voici ce qu'il dit.
+
+Ce que l'audit avait vu juste :
+
+- Environ 2 000 vérifications de null et `requireNonNull` dans 59 000 lignes de Java, et aucune annotation de nullité nulle part. Sur ces milliers, 5 seulement sont prouvablement inutiles. Le reste est défensif parce que personne n'a dit ce qui peut être null. Seul un outil qui lit les types peut trier.
+- 34 corps de requête sur 35 n'ont pas de `@Valid`. La validation est faite à la main dans des constructeurs, et chaque contrôleur transforme l'erreur à sa façon.
+- Dans le TypeScript, au moins 1 071 occurrences de trois règles qui regardent les types (condition inutile, `?.`, `??`). C'est un plancher : les copies lues n'avaient pas leurs dépendances installées.
+
+Ce qui était exagéré :
+
+<Compare label="L'audit, mesuré" topic="Le reproche" before="Ce que dit l'audit" after="Ce que j'ai mesuré">
+  <Case topic="OAuth en échelle de if" before="Une cascade de fournisseurs." after="Déjà une stratégie dans krizaka-users." afterDetail="Une liste de vérificateurs injectée, un bean par fournisseur. Le point faible est le type : le fournisseur est une chaîne comparée à la main." />
+  <Case topic="Services procéduraux" before="Du Spring mal utilisé." after="0 champ @Autowired, 0 classe Manager." afterDetail="Quatre classes Utils, toutes dans un seul dépôt. Un contrôleur touche la base." />
+  <Case topic="Complexité" before="Du code trop touffu." after="Quelques dizaines de fonctions." afterDetail="En Java, 35 méthodes dépassent 10 en cyclomatique. En TypeScript, la plupart des 560 sont des composants JSX, où chaque && compte." />
+  <Case topic="Java 21 sous-utilisé" before="Peu de Java moderne." after="À moitié vrai." afterDetail="402 records, mais seulement 7 types scellés et 8 switch à motifs." />
+</Compare>
+
+L'échelle de fournisseurs existait bel et bien, mais pas où l'audit la cherchait. Elle était dans un seul client web, `orazaka-web-client`, dans le fichier qui configure la connexion. En le relisant, j'ai trouvé mieux qu'un style : un bug. L'appel qui crée un compte après une connexion GitHub ou Google envoyait un courriel et un nom, alors que le service demandait le fournisseur et un jeton d'identité. Autrement dit, ce chemin ne pouvait pas marcher tel qu'il était écrit, et aucun test ne le disait, parce que le style en échelle cachait le contrat. Le correctif, avec un test de contrat écrit d'abord, est dans la [PR 335](https://github.com/krizaka/orazaka-web-client/pull/335) : une table typée des fournisseurs, et la bonne requête.
+
+Je retiens cette phrase : on avait un problème de style, et surtout un problème de contrat, et c'est la mesure qui nous l'a montré, pas la discussion.
+
+## Le plan : un outil qui échoue, pas une consigne
+
+L'audit avait une prémisse que je trouve juste : un agent change de style seulement quand un outil déterministe fait échouer le build. Dire « écris du code propre » dans un fichier de consignes ne tient pas d'une session à l'autre. Alors on a transformé chaque exigence qu'on garde en règle bloquante.
+
+<Pipeline label="Du style à la règle">
+  <Stage title="Éditeur" note="10 secondes">Après chaque modification, un hook vérifie le fichier seul : ESLint pour le TypeScript, PMD pour le Java.</Stage>
+  <Stage title="Compilation" note="NullAway">Les paquets déclarés `@NullMarked` sont vérifiés à la compilation. Un null inutile devient une erreur.</Stage>
+  <Stage title="Tests" note="ArchUnit">Les règles d'architecture : `@Valid` sur les corps de requête, pas de Utils, pas de contrôleur qui touche la base.</Stage>
+  <Stage title="CI" tone="gate" note="cliquet">Chaque règle a son compteur gelé, qui ne fait que baisser.</Stage>
+  <Stage title="Checkpoint" tone="ship" note="tendance">Toutes les trois heures, la mesure et son écart avec la dernière.</Stage>
+</Pipeline>
+
+Quatre choix tiennent l'ensemble.
+
+Les règles sont des échecs de build. En Java, NullAway et JSpecify (la nullité vérifiée à la compilation), des limites de complexité dans PMD, et des règles ArchUnit. En TypeScript, une couche stricte qui lit les types, dans `@krizaka/config`. Le tout vit à un seul endroit par écosystème : le parent Maven pour Java, `@krizaka/config` pour TypeScript, le gabarit des consignes d'agents pour le reste. Jamais une copie dans chaque dépôt.
+
+Pas de grand soir. Les 1 071 occurrences et les 35 méthodes trop complexes sont gelées dans un fichier de base, et seul le nouveau code est strict. Pour la nullité, le cliquet est la liste des paquets `@NullMarked`, qui ne fait que grandir : quand un paquet entre dans la liste, on retire ses vérifications défensives, et NullAway prouve lesquelles étaient inutiles.
+
+Un hook de dix secondes pour les agents. Après chaque modification, `krizaka-edit-check` vérifie le seul fichier touché et renvoie les problèmes à l'agent, qui corrige avant de continuer. Pas de Maven à cet endroit, c'est trop lent. Si le contrôle dépasse le délai, il se tait.
+
+La tendance dans le checkpoint. `tools/code-health` n'est pas une porte, c'est un thermomètre : toutes les trois heures, on voit si les chiffres descendent.
+
+Côté Java, les règles sont fusionnées dans le parent ([krizaka-build#121](https://github.com/krizaka/krizaka-build/pull/121)) et seront publiées sur Maven Central le 1er novembre, quand la publication reprend. Côté corrections déjà faites, le cœur et le métier d'Orazaka sont redevenus du Java pur : le nombre de dépendances à Spring dans le cœur est passé de 33 à 0, et dans le métier de 2 à 0, avec des règles ArchUnit qui l'imposent.
+
+## Ce qu'on a refusé, et pourquoi
+
+Un audit propose, il ne tranche pas. J'ai refusé plusieurs choses, avec leur raison dans l'ADR.
+
+- Interdire les classes `*Manager`. On en a 0, et le mot est légitime dans Spring (`AuthenticationManager`). Une règle qui ne garde rien est du bruit.
+- La complexité cyclomatique dans le JSX. Elle compte chaque `&&` d'un rendu : 560 alertes, surtout des composants. La complexité cognitive, déjà à 15, mesure ce qui fait mal.
+- Checkstyle. Il répète les mesures de PMD, et c'est une deuxième base de dette à tenir.
+- Une règle qui « exige une stratégie ». Aucun outil ne sait décider ça. Deux règles PMD tiennent la ligne sur les échelles de chaînes, et la revue fait le reste.
+- Un `mvn verify` à chaque modification. Rien que PMD et SpotBugs prennent 30 à 60 secondes. Ce serait arrêter l'agent à chaque ligne.
+- Error Prone en entier. Il ne vient que pour héberger NullAway, avec ses propres vérifications éteintes. Ça corrige un refus plus ancien, et je l'ai écrit dans l'ADR.
+
+## Le déploiement à moitié fait
+
+C'est la partie dont je suis le moins fier, et celle qui m'a le plus appris.
+
+Quand on ajoute une règle, on pense l'avoir mise partout. En réalité, elle arrive dans quelques dépôts et on passe à la suivante. Le blog que vous lisez en est la preuve : il avait sa propre CI et son propre Sonar, mais pas d'analyse de sécurité, parce que les nouvelles gardes ne l'avaient jamais atteint.
+
+La décision a été simple. Chaque règle de l'organisation est déclarée une fois, dans un registre, avec la vérification qui prouve qu'un dépôt la respecte. Une matrice dépôts par règles tourne toutes les semaines et dans le checkpoint de trois heures. Un script ouvre la correction dans chaque dépôt rouge. Et une règle n'est finie que lorsque sa colonne est verte partout, sans exception ([.github#393](https://github.com/krizaka/.github/issues/393)).
+
+Le premier passage de la matrice, sur 36 dépôts actifs : 155 cases vertes, 150 rouges. Ce soir, en la relançant sur la branche principale du dépôt `.github`, je lis 198 vertes et 112 rouges. Ce n'est pas fini, et je ne vais pas le faire paraître plus beau. La règle du hook d'édition, par exemple, est encore rouge dans les 36 dépôts, parce qu'il n'est pas encore en place.
+
+Ce que les cases rouges étaient vraiment m'a surpris : rarement le gabarit, presque toujours les propres workflows de chaque dépôt. Des actions non épinglées, des secrets passés en bloc, des faux positifs de gitleaks sur des données de test. La règle commune a fait remonter d'un coup la vieille dette de tout le monde. C'est exactement ce qu'on voulait, mais ça ne ressemble pas à un succès le premier jour.
+
+## Deux gardes apprises le même jour
+
+Deux incidents, et pour chacun la même question : pourquoi aucun garde ne l'a vu avant ?
+
+Le premier, une session a ouvert une PR avec mon compte personnel au lieu de celui des agents. Ça brouille qui a fait quoi, et ce n'est pas à moi d'ouvrir ce que les agents écrivent. Un hook, avant l'appel de l'outil, refuse maintenant de créer une PR, une issue ou un commentaire avec mon compte. Il me laisse approuver et fusionner, qui sont les seules choses que je dois faire moi-même.
+
+Le second, c'est nous qui l'avons causé. Notre propre règle NullAway, ajoutée au parent Java, a cassé la construction du kit de plateforme, dans chaque dépôt Java. Le parent était vert, ses consommateurs rouges. Depuis, un changement du parent construit ses consommateurs dans sa propre PR, et ne peut pas être fusionné avant.
+
+## Ce que ça coûte
+
+On me demande souvent combien coûtent les agents. La vraie réponse est moins simple que je ne le pensais, alors voici les chiffres et leurs limites.
+
+Les sessions notent à la fin le nombre de tokens qu'elles ont utilisés, et on garde ce journal depuis le 26 octobre. Au 29, 290 PR y avaient un coût enregistré :
+
+| Voie | PR | Tokens par PR (moyenne) |
+|:---|---:|---:|
+| plateforme | 92 | 48k |
+| Orazaka | 62 | 68k |
+| Yomizaka | 39 | 68k |
+| Akinaza | 35 | 58k |
+| mises à jour de dépendances | 8 | 9k |
+| sécurité | 6 | 25k |
+
+Au total, 16,1 millions de tokens pour 290 PR, soit 55k par PR. Les modèles : 274 sessions sur Sonnet (une fonctionnalité ou un correctif par session), 9 sur Opus (les ADR et les choix de conception), 3 sur Haiku.
+
+Ces chiffres ont trois réserves, que je tiens à dire. Ce sont des estimations faites par les sessions elles-mêmes, qui ne voient pas leur consommation exacte : j'écris « estimé », pas « facturé ». Le journal commence le 26 octobre, le travail d'avant n'y est pas. Et c'est la taille du contexte au moment du rapport, pas ce qui a été consommé : une session relit son contexte à chaque appel d'outil, entre 50 et 130 fois, surtout depuis le cache. Multiplier ces tokens par le prix public de l'API sous-estimerait donc le coût d'un ordre de grandeur. Je ne l'imprime pas comme un prix.
+
+Le prix honnête est celui de l'abonnement. Je suis sur Claude Max (à partir de 100 $ par mois pour Max 5x, 200 $ pour Max 20x). En octobre, les agents ont fusionné 1 568 PR, lu sur l'API de GitHub. Cent dollars divisés par 1 568 font environ 6 cents, deux cents dollars environ 13 cents. Donc de 6 à 13 cents par PR fusionnée, selon l'offre.
+
+C'est un ordre de grandeur, pas un devis. Il ne compte pas mon temps, celui qui écrit les issues, relit, décide et fait ce chapitre, et ce n'est pas rien. Il compte toutes les PR fusionnées par les agents, y compris des mises à jour automatiques qui coûtent presque rien, donc la moyenne d'une vraie fonctionnalité est plus haute. Et ce qu'il dit, c'est seulement que le goulot n'est pas la facture.
+
+## Ce qui n'est pas fait
+
+Je préfère le dire que le laisser deviner. Les règles Java sont dans le parent mais pas encore publiées, donc aucun dépôt consommateur ne les applique. La première preuve dans krizaka-users, la couche TypeScript stricte et le hook sont en revue ou en cours, et leurs issues sont ouvertes. La matrice a 112 cases rouges. Et je n'ai pas relancé les mesures « après » : tant que les règles ne sont pas appliquées, elles ne changeraient rien. Je les posterai à côté de celles du début quand elles diront quelque chose.
+
+## Ce que j'en retiens
+
+L'audit avait raison sur la méthode et sur plusieurs constats. Il se trompait sur d'autres, et c'est en mesurant qu'on l'a su, avec en prime un vrai bug de connexion. Je ne veux plus discuter du style d'un agent : je veux un outil qui échoue, un compteur qui descend, et une colonne verte partout.
