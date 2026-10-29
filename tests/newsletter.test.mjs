@@ -430,3 +430,17 @@ test("a send the provider rejected fails the run loudly; a complete one and an a
   assert.match(assertDelivered("x", { sent: 1, failed: 0, total: 1 }), /sent to 1 of 1/);
   assert.match(assertDelivered("x", { already: true }), /already sent/);
 });
+
+test("the subscribe action checks the CAPTCHA with @krizaka/rate-limit/turnstile, bundled and in sync", async () => {
+  const { render, TARGET } = await import("../scripts/bundle-functions.mjs");
+  assert.equal(readFileSync(TARGET, "utf8"), render(), "run `npm run functions:bundle`");
+  // No second copy of the siteverify call in the functions.
+  for (const a of ["subscribe", "confirm", "unsubscribe", "send"]) {
+    assert.doesNotMatch(readFileSync(new URL(`../functions/packages/newsletter/${a}/newsletter.js`, import.meta.url), "utf8"), /siteverify/);
+  }
+  // A token the library saw once is refused the second time (replay), and the answer is the same « captcha ».
+  const f = fakeFetch({ [SITEVERIFY]: { status: 200, body: { success: true } } });
+  const args = { __ow_method: "post", email: "a@b.co", captchaToken: "once" };
+  assert.equal((await subscribe(args, ENV, f)).statusCode, 202);
+  assert.equal(JSON.parse((await subscribe(args, ENV, f)).body).error, "captcha");
+});

@@ -223,22 +223,9 @@ const sameSecret = (given, expected) => {
   return crypto.timingSafeEqual(a, b);
 };
 
-const SITEVERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+/** The CAPTCHA is Cloudflare Turnstile, checked by @krizaka/rate-limit/turnstile (bundled next to the subscribe action:
+    scripts/bundle-functions.mjs); only its configuration is read here. */
 const captchaConfigured = (env) => env.ABUSE_CAPTCHA_PROVIDER?.trim().toLowerCase() === "turnstile" && configured(env.ABUSE_CAPTCHA_SECRET_KEY);
-/** True when the token is valid. Fails closed: configured or not, the subscription form needs it (a public form that sends e-mail). */
-async function verifyCaptcha(token, ip, env, fetchImpl = fetch) {
-  if (!captchaConfigured(env)) return false;
-  if (typeof token !== "string" || !token.trim() || token.length > 4096) return false;
-  const body = new URLSearchParams({ secret: env.ABUSE_CAPTCHA_SECRET_KEY.trim(), response: token });
-  if (ip) body.set("remoteip", ip);
-  try {
-    const res = await fetchImpl(SITEVERIFY_URL, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body.toString(), signal: AbortSignal.timeout(8000) });
-    if (!res.ok) return false;
-    return (await res.json()).success === true;
-  } catch {
-    return false;
-  }
-}
 
 /** The visitor's address as the platform forwards it (first hop), or "". */
 const clientIp = (args) => String(args?.__ow_headers?.["x-forwarded-for"] ?? "").split(",")[0].trim();
@@ -249,5 +236,5 @@ module.exports = {
   SITE, LOCALES, CONFIRM_TTL_MS, configured, normalizeEmail, validEmail, pickLocale, makeToken, readToken, pageUrl, actionUrl,
   confirmationEmail, newPostEmail, UNSUBSCRIBE_TOKEN, SENDER_ADDRESS, footer, toHtml, sendEmail, mailConfigured, dbConfigured, connect, addSubscriber,
   removeSubscriber, listSubscribers, claimPost, recordSent, sendPostToAll, sameSecret,
-  verifyCaptcha, captchaConfigured, clientIp, json, redirect, WORDS,
+  captchaConfigured, clientIp, json, redirect, WORDS,
 };
