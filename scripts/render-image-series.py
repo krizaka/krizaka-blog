@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parent.parent
 def prompt_of(series: dict, index: int) -> str:
     chapter = series["chapters"][index]
     looks = ", ".join(series["birdLooks"][b] for b in chapter["birds"])
-    parts = [series["style"], chapter["beat"], f"Birds in the picture, small and round and friendly, and no others: {looks}."]
+    parts = [series["style"], chapter["beat"], f"Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: {looks}."]
     if index > 0:
         parts.insert(1, series["continuity"])
     return " ".join(parts)

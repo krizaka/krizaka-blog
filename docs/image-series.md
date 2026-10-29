@@ -14,5 +14,8 @@ birds arrive one by one (falcon, owl, duck, flamingo, pigeon). The anchor is the
   with reference images). About 80 s a picture on an M1 Max.
 - **Never committed**: the PNGs stay in a scratch folder. Renditions (`scripts/gen-renditions.mjs`) go to Bunny
   (`site/blog/series/…`, hashed) with krizaka-com's `cdn-assets.mjs`; the contact sheet goes through `pr-assets.mjs`.
-- **Switching**: the live covers do not change until the founder validates the contact sheet. Then `lib/media.json` entries
-  (with `made` provenance) and the chapters' `cover` ids move in one PR, and the old images stay on Bunny.
+- **Switching (done, 2026-10-29)**: the founder said go. `scripts/prepare-series-covers.mjs` makes the web files and the `lib/media.json` entries
+  (`series-NN-<post>`, with their `made` provenance), `cdn-assets.mjs` sends them to `site/blog/series/`, `gen-renditions.mjs` adds the
+  AVIF/WebP renditions, and each chapter's `cover` points to its picture (the Open Graph image reads the cover). The old covers stay on Bunny.
+- **Review rule**: every picture is looked at in full size for a bird drawn twice, a person, a logo or text before it is used. Chapters 3, 15
+  and 16 were re-rolled with other seeds for that reason (the seeds in `series.json` are the ones of the pictures in use).
