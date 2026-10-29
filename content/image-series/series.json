@@ -1,0 +1,248 @@
+{
+  "about": "One image series for the blog (krizaka-blog#193): chapter N continues chapter N-1. Prompts and seeds only; the pictures live on Bunny, never here. Made with Orazaka's media worker (mflux, FLUX.2 [klein] 4B, Apache-2.0) on the Mac, no paid API.",
+  "anchor": "brand-films/film/le-monde-de-krizaka-16x9.jpg",
+  "model": "flux2-klein-4b",
+  "size": {
+    "width": 1280,
+    "height": 720
+  },
+  "steps": 4,
+  "guidance": 1.0,
+  "style": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos.",
+  "continuity": "Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere.",
+  "never": [
+    "real person",
+    "athlete",
+    "celebrity",
+    "logo",
+    "lyrics",
+    "street fighter",
+    "king of fighters",
+    "marvel",
+    "conan",
+    "olive et tom",
+    "wu-tang"
+  ],
+  "chapters": [
+    {
+      "post": "why-krizaka",
+      "seed": 2910001,
+      "birds": [
+        "falcon"
+      ],
+      "beat": "The first picture: the empty valley at dusk, Montreal rooftops as simple geometric silhouettes on the ground line, one orange falcon with a visor alone on the tallest roof, watching."
+    },
+    {
+      "post": "an-engine-on-a-laptop",
+      "seed": 2910102,
+      "birds": [
+        "falcon"
+      ],
+      "beat": "A small workshop hut now stands beside the rooftops, its window glowing and a glowing hexagon on its door; a table outside holds only a laptop-shaped lantern; the one falcon sits alone on the hut's roof."
+    },
+    {
+      "post": "what-a-gpu-costs",
+      "seed": 7104,
+      "birds": [
+        "falcon",
+        "owl"
+      ],
+      "beat": "A violet owl arrives and weighs on a brass balance scale a glowing picture frame against stacks of coins, beside a glowing stove-like machine (the GPU) with steam. Exactly one owl, standing next to the scale, and exactly one orange falcon with a dark visor on the roof of the right hut."
+    },
+    {
+      "post": "from-a-clip-to-a-film",
+      "seed": 2910304,
+      "birds": [
+        "falcon",
+        "owl"
+      ],
+      "beat": "A small film set on the hillside: a projector throwing a wide beam on a hanging screen, a rail with a camera. The single violet owl perches on top of the screen and watches the beam; the single orange falcon with a dark visor stands on the ground at the left. Only these two birds."
+    },
+    {
+      "post": "one-interface-everywhere",
+      "seed": 2910205,
+      "birds": [
+        "falcon",
+        "owl",
+        "duck"
+      ],
+      "beat": "The red duck with glasses sits at a pottery wheel under a canopy that shapes three vessels of the same clay: a tall phone shape, a tablet shape and a wide laptop shape; the falcon stands at the left, the owl on the canopy."
+    },
+    {
+      "post": "the-first-products",
+      "seed": 2910206,
+      "birds": [
+        "falcon",
+        "owl",
+        "duck"
+      ],
+      "beat": "Two new houses by the stream, one with a scroll of law pinned in the window and one with a small shop awning and a hanging basket; lamps lit, a footbridge between them."
+    },
+    {
+      "post": "an-empty-result-is-not-a-success",
+      "seed": 2910207,
+      "birds": [
+        "falcon",
+        "owl",
+        "duck"
+      ],
+      "beat": "A gate with a latch on the footbridge, one wing open, one closed; a checklist board with ticks beside it and an empty basket on the gate post."
+    },
+    {
+      "post": "building-with-agents",
+      "seed": 2910208,
+      "birds": [
+        "falcon",
+        "owl",
+        "duck",
+        "flamingo"
+      ],
+      "beat": "A pink flamingo arrives; thirty small typewriter-like machines glow in rows in a long night shed, each with a tiny lamp, keys locked in a strongbox outside."
+    },
+    {
+      "post": "what-claude-found-auditing-krizaka",
+      "seed": 2910209,
+      "birds": [
+        "falcon",
+        "owl",
+        "duck",
+        "flamingo"
+      ],
+      "beat": "A drafting table at the valley's edge with a large audit report sheet and a big magnifying glass over the settlement; two lanterns of different colors lean over it."
+    },
+    {
+      "post": "a-curve-that-climbs",
+      "seed": 2910210,
+      "birds": [
+        "falcon",
+        "owl",
+        "duck",
+        "flamingo"
+      ],
+      "beat": "A long winding path up the hill drawn as a climbing curve with many small flags along it, a few flags checked and a clay tennis court with painted lines at the curve's foot."
+    },
+    {
+      "post": "how-we-built-our-ci",
+      "seed": 2910211,
+      "birds": [
+        "falcon",
+        "owl",
+        "duck",
+        "flamingo"
+      ],
+      "beat": "A train of small hexagon crates rolling along rails through a row of lit checkpoint gates toward a lighthouse on a Mediterranean harbour; gates glow green."
+    },
+    {
+      "post": "krizaka-ui-how-we-cut-it",
+      "seed": 2910212,
+      "birds": [
+        "falcon",
+        "owl",
+        "duck",
+        "flamingo"
+      ],
+      "beat": "A workshop of nineteen small colored building blocks on shelves, a chisel and a mallet resting on one block, a basketball hoop on a post at the court's edge, a souk's horseshoe arches with zellige patterns behind. Nobody is in the picture but the birds."
+    },
+    {
+      "post": "orazaka-v2-the-architecture-we-build",
+      "seed": 2910213,
+      "birds": [
+        "falcon",
+        "owl",
+        "duck",
+        "flamingo"
+      ],
+      "beat": "Colored cables run from the workshop hut to many small houses like a patchbay, a big control tower with a rotating beacon, a booth with two turntables and crates of vinyl records under sweeping light beams."
+    },
+    {
+      "post": "ci-the-error-never-leaves-the-editor",
+      "seed": 2910214,
+      "birds": [
+        "falcon",
+        "owl",
+        "duck",
+        "flamingo"
+      ],
+      "beat": "A small desk by the first hut, a lamp, and a net of fine nets catching bugs right at the desk before they reach the road; limestone cliffs of the Chartreuse behind."
+    },
+    {
+      "post": "we-bought-sonarcloud-what-do-we-have-now",
+      "seed": 7216,
+      "birds": [
+        "falcon",
+        "owl",
+        "duck",
+        "flamingo",
+        "pigeon"
+      ],
+      "beat": "A blue pigeon arrives and flies a sealed envelope over a row of dashboard gates, a barometer dial showing a green zone beside a sky-blue cloud tower. Each of the five birds appears exactly once."
+    },
+    {
+      "post": "the-audit-said-ai-code-we-measured",
+      "seed": 7117,
+      "birds": [
+        "falcon",
+        "owl",
+        "duck",
+        "flamingo",
+        "pigeon"
+      ],
+      "beat": "The whole settlement at night in full glow, all five birds standing together in a row, each exactly once (falcon, owl, duck, flamingo, pigeon), a ruler and a gauge standing in front measuring the village."
+    },
+    {
+      "post": "how-the-founder-and-the-cto-agent-work",
+      "seed": 9118,
+      "birds": [
+        "falcon",
+        "owl",
+        "duck",
+        "flamingo",
+        "pigeon"
+      ],
+      "beat": "A long wooden table at the village edge under the orange sun, four small lanterns in a row along it and a wall board of pinned cards behind, a small glowing phone at one end; the five birds each stand once along the table, the pigeon carrying a card. Nobody else is in the picture."
+    }
+  ],
+  "sprites": {
+    "falcon": [
+      300,
+      730,
+      470,
+      925
+    ],
+    "owl": [
+      590,
+      745,
+      755,
+      925
+    ],
+    "duck": [
+      880,
+      720,
+      1045,
+      925
+    ],
+    "flamingo": [
+      1180,
+      725,
+      1320,
+      920
+    ],
+    "pigeon": [
+      1455,
+      745,
+      1615,
+      910
+    ]
+  },
+  "anchorSize": [
+    1920,
+    1080
+  ],
+  "birdLooks": {
+    "falcon": "an orange falcon with a dark visor",
+    "owl": "a violet owl with two ear tufts and big round eyes",
+    "duck": "a red duck with a flat yellow bill and round glasses (a duck, not an owl: no ear tufts)",
+    "flamingo": "a pink flamingo",
+    "pigeon": "a blue pigeon"
+  }
+}
