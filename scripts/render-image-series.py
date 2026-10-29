@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 """Renders the blog's image series (krizaka-blog#193) with Orazaka's media worker engine (mflux, FLUX.2 [klein] 4B).
 
-  python3 scripts/render-image-series.py --worker <orazaka-worker-media dir> --anchor <brand picture> --out <dir> [--only N]
+  python3 scripts/render-image-series.py --worker <orazaka-worker-media dir> --anchor <brand picture> --out <name> [--only N]
+
+--out is a folder NAME inside the scratch folder (SERIES_SCRATCH, default ~/.krizaka-worktrees/_scratch-media): nothing is rendered
+elsewhere, and a name with a separator or a dot-dot is refused.
 
 Chapter N is made from the brand picture and chapter N-1 (reference images), so the series builds. The prompts and seeds are
 content/image-series/series.json; nothing is rendered into the repository (the pictures go to Bunny, see docs/image-series.md).
 Resumable: a chapter whose file exists is skipped. Run it through heavy-lock.sh with HEAVY_SLOTS_ALL=1 (GPU).
 """
-import argparse, json, subprocess, sys
+import argparse, json, os, re, subprocess, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -55,15 +58,20 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--worker", required=True, type=Path)
     ap.add_argument("--anchor", required=True, type=Path)
-    ap.add_argument("--out", required=True, type=Path)
+    ap.add_argument("--out", required=True, help="a folder name inside the scratch folder")
     ap.add_argument("--only", type=int)
     args = ap.parse_args()
     series = json.loads((ROOT / "content/image-series/series.json").read_text())
-    args.out.mkdir(parents=True, exist_ok=True)
-    sprite = sprites(series, args.anchor, args.out)
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", args.out) or ".." in args.out:
+        print("--out must be a plain folder name", file=sys.stderr)
+        return 2
+    scratch = Path(os.environ.get("SERIES_SCRATCH", Path.home() / ".krizaka-worktrees/_scratch-media"))
+    out = scratch / args.out
+    out.mkdir(parents=True, exist_ok=True)
+    sprite = sprites(series, args.anchor, out)
     previous = None
     for index, chapter in enumerate(series["chapters"]):
-        target = args.out / f"{index + 1:02d}-{chapter['post']}.png"
+        target = out / f"{index + 1:02d}-{chapter['post']}.png"
         if (args.only is None or args.only == index + 1) and not target.exists():
             print(f"[{index + 1}/{len(series['chapters'])}] {chapter['post']}", flush=True)
             if subprocess.run(command(series, index, sprite, previous, target, args.worker)).returncode != 0:
