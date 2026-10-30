@@ -24,7 +24,8 @@
     "story": "The story",
     "storyNote": "Notes from building Krizaka in Montréal, one chapter at a time.",
     "readStory": "Read the story",
-    "basics": "The basics"
+    "basics": "The basics",
+    "offline": "Read offline"
   },
   "home": {
     "eyebrow": "Blog",
@@ -312,5 +313,26 @@
   },
   "pipeline": {
     "textVersion": "Text version of the pipeline"
+  },
+  "offline": {
+    "eyebrow": "Offline",
+    "title": "Read offline",
+    "lead": "Save a chapter, or the whole series, on this device. It opens with no connection, on a plane or in the metro.",
+    "save": "Save for offline",
+    "saving": "Saving…",
+    "saved": "Saved for offline",
+    "remove": "Remove from this device",
+    "saveSeries": "Save the whole series ({n} chapters)",
+    "seriesSaved": "The whole series is saved",
+    "savedTitle": "Saved on this device",
+    "empty": "Nothing saved yet. Open a chapter and press « Save for offline ».",
+    "available": "Available to save",
+    "notSaved": "If the page you wanted is not here, it is not saved on this device. Open one of the chapters below, or reconnect.",
+    "quota": "There is not enough space left on this device. Remove a chapter, then try again.",
+    "failed": "The chapter could not be saved. Check the connection and try again.",
+    "unsupported": "This browser cannot save pages for offline reading.",
+    "installHint": "You can also install the blog from your browser's menu: it then opens like an app.",
+    "toStory": "Back to the story",
+    "regionLabel": "Offline reading"
   }
 }

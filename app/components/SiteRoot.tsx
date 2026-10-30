@@ -6,6 +6,7 @@ import { cn } from "@krizaka/ui/cn";
 import { getDictionary, type Locale } from "@/lib/i18n";
 import { clientMessages } from "@/lib/client-messages";
 import { postsOf, translationOf } from "@/lib/posts";
+import { REGISTER_SCRIPT } from "@/lib/offline-core.mjs";
 import { MEDIA_CDN_URL } from "@/lib/site";
 import { displayFace, monoFace, textFace } from "../fonts";
 import { I18nProvider } from "./I18nProvider";
@@ -48,6 +49,8 @@ export default function SiteRoot({ locale, children }: { locale: Locale; childre
             </main>
             <SiteFooter />
           </I18nProvider>
+          {/* The service worker (reading offline, krizaka-blog#211): registered once the page has loaded; none in the private preview build. */}
+          {!process.env.APP_PREVIEW_PATH && <script dangerouslySetInnerHTML={{ __html: REGISTER_SCRIPT }} />}
         </ThemeProvider>
       </body>
     </html>

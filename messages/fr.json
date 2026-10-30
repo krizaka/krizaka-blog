@@ -24,7 +24,8 @@
     "story": "L’histoire",
     "storyNote": "Les notes de construction de Krizaka à Montréal, un chapitre à la fois.",
     "readStory": "Lire l’histoire",
-    "basics": "Les bases"
+    "basics": "Les bases",
+    "offline": "Lire hors ligne"
   },
   "home": {
     "eyebrow": "Blogue",
@@ -312,5 +313,26 @@
   },
   "pipeline": {
     "textVersion": "Version texte du pipeline"
+  },
+  "offline": {
+    "eyebrow": "Hors ligne",
+    "title": "Lire hors ligne",
+    "lead": "Enregistre un chapitre, ou toute la série, sur cet appareil. Il s'ouvre sans connexion, dans l'avion ou dans le métro.",
+    "save": "Enregistrer pour lire hors ligne",
+    "saving": "Enregistrement…",
+    "saved": "Enregistré pour lire hors ligne",
+    "remove": "Retirer de cet appareil",
+    "saveSeries": "Enregistrer toute la série ({n} chapitres)",
+    "seriesSaved": "Toute la série est enregistrée",
+    "savedTitle": "Enregistrés sur cet appareil",
+    "empty": "Rien d'enregistré pour l'instant. Ouvre un chapitre et appuie sur « Enregistrer pour lire hors ligne ».",
+    "available": "À enregistrer",
+    "notSaved": "Si la page voulue n'est pas ici, elle n'est pas enregistrée sur cet appareil. Ouvre l'un des chapitres ci-dessous, ou reconnecte-toi.",
+    "quota": "Il ne reste pas assez d'espace sur cet appareil. Retire un chapitre, puis réessaie.",
+    "failed": "Le chapitre n'a pas pu être enregistré. Vérifie la connexion et réessaie.",
+    "unsupported": "Ce navigateur ne peut pas enregistrer de pages pour la lecture hors ligne.",
+    "installHint": "Tu peux aussi installer le blog depuis le menu de ton navigateur : il s'ouvre alors comme une application.",
+    "toStory": "Retour à l'histoire",
+    "regionLabel": "Lecture hors ligne"
   }
 }

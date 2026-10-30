@@ -132,6 +132,19 @@
   `newsletter_posts` (primary key: never sent twice) and e-mails each confirmed subscriber in their language.
   Manual: Actions → Newsletter → Run workflow (slug).
 
+## 3.2 Reading offline (krizaka-blog#211)
+
+- The blog is an installable PWA: `app/manifest.ts` and a service worker, `out/sw.js`, bundled at build by esbuild from `scripts/sw-src.js`
+  with the precache injected by **Workbox** (`workbox-build`, MIT; chosen over a hand-written worker for its precache revisions and routing).
+  `scripts/offline.mjs` (called by `postbuild.mjs`) writes `out/offline-manifest.json`: every published chapter, its page and the files it
+  draws, read from the exported HTML; the build id is the hash of the chapters.
+- The worker caches nothing by itself. « Save for offline » (a chapter) and « Save the whole series » (`app/components/SaveOffline.tsx`,
+  state in `lib/offline-store.ts`, logic shared with the worker in `lib/offline-core.mjs`) write the chapter into `kz-saved-<build>`; a new
+  build re-saves what the reader had saved and drops the old cache; saving stops at 80 % of the quota. The newsletter and the admin are
+  never saved nor answered from a cache (`isNeverCached`). `/offline/` lists what is saved; it is `noindex`, out of the sitemap.
+- Guards: `tests/offline.test.mjs`, `scripts/check-offline.mjs` (every chapter in the manifest, every file on disk, the worker's precache)
+  and `scripts/check-offline-reading.mjs` (Playwright: save, go offline, read), both in `scripts/ci-after-build.sh`.
+
 ## 4. Indexing
 
 - **noindex until the first post is published**: `APP_INDEXING_ENABLED` (build-time, `.do/app.yaml`) is `false` → every

@@ -30,6 +30,11 @@ node_modules/.bin/playwright install --with-deps chromium
 node scripts/check-layout.mjs --base http://localhost:3000 --posts out
 echo "::endgroup::"
 
+echo "::group::Reading offline: every chapter is saveable and in the service worker's precache, and a saved chapter opens with no network"
+node scripts/check-offline.mjs out
+node scripts/check-offline-reading.mjs --base http://localhost:3000 --out out
+echo "::endgroup::"
+
 echo "::group::Core Web Vitals budget (LCP <= 2.5 s, CLS <= 0.1, phone window, CPU x4)"
 node scripts/check-vitals.mjs --base http://localhost:3000 --posts out
 echo "::endgroup::"

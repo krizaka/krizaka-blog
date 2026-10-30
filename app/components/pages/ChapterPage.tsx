@@ -13,13 +13,21 @@ import { blurUrl } from "@/lib/blur";
 import { jsonLd } from "@/lib/json-ld";
 import { format, getDictionary, localizedPath } from "@/lib/i18n";
 import { coverOf } from "@/lib/media";
-import { chapterNumber, chapterTranslationOf, nextChapter, previousChapter, type Chapter } from "@/lib/chapters";
+import {
+  chapterNumber,
+  chaptersOf,
+  chapterTranslationOf,
+  nextChapter,
+  previousChapter,
+  type Chapter,
+} from "@/lib/chapters";
 import { headingsOf, rehypeRounds } from "@/lib/reading.ts";
 import { absoluteUrl, chapterOgUrl, chapterPath, postJsonLd } from "@/lib/seo";
 import { mdxComponentsFor } from "./mdx";
 import { formatPeriod } from "./PostList";
 import { Byline } from "./Byline";
 import { CoverImage } from "./CoverImage";
+import { SaveChapter, SaveSeries } from "../SaveOffline";
 
 /* One chapter of the story, sober on the notebook lines (krizaka-blog#127):
    - the head (ChapterHead): « 01 » in the margin, the h1, one meta line (the period · the reading time), what I faced →
@@ -136,6 +144,10 @@ export default function ChapterPage({ chapter }: { chapter: Chapter }) {
             style={{ backgroundImage: blurUrl(cover.blur) }}
           />
         )}
+        <div className="bl-offline-bar" role="group" aria-label={t.offline.regionLabel}>
+          <SaveChapter url={localizedPath(locale, chapterPath(chapter.slug))} />
+          <SaveSeries urls={chaptersOf(locale).map((c) => localizedPath(locale, chapterPath(c.slug)))} />
+        </div>
       </Section>
       <Section reveal={false} spacing="sm" className="bl-post-body">
         {headings.length >= 3 ? (
