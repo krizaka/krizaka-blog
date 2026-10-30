@@ -121,7 +121,11 @@
   separate program, pinned in `ci-after-build.sh`) writes the EPUB — table of contents, one file per chapter, `dc:language`, cover,
   alt text, accessibility metadata — and **Chromium** (Playwright's) the PDF — structure tree, `/Lang`, title, outline. Diagrams and
   clips stand for their label in the text; the links back to the chapters are absolute. The build checks that every chapter is in each
-  file. The files are hashed objects on Bunny (`sites/blog/posts/downloads/`, uploaded with krizaka-com's `cdn-assets.mjs upload --to
+  file, in number order 1 → N (TOC and body), that the EPUB carries the chapters' pictures (the pages draw them lazily, the real `src` is
+  in the `<noscript>` twin — converted to JPEG, WebP not being an EPUB core type), embeds the Cahier's faces (`lib/ebook-style.mjs`,
+  `@krizaka/fonts`), and validates with **epubcheck** (no error, no warning; `EPUBCHECK_JAR`, pinned in `ci-after-build.sh`). The look: a
+  designed cover, `§ n.k` section numbers, captions, a contents page, and for the PDF a running header and footer (CSS page margins).
+  « Read offline » (the service worker, `SaveOffline`) is a different thing: it keeps the pages in this browser, no account. The files are hashed objects on Bunny (`sites/blog/posts/downloads/`, uploaded with krizaka-com's `cdn-assets.mjs upload --to
   blog/downloads`, manifest committed there); `lib/downloads.json` records each book's source hash, file hashes and sizes, and the lint
   fails when a chapter changed and its files were not made again (`node scripts/gen-downloads.mjs`, upload, `… record`). The links are on
   each chapter, on the home, and in the feeds (RSS enclosure, Atom `rel="enclosure"`, JSON Feed `attachments`).

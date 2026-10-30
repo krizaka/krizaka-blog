@@ -1,496 +1,496 @@
 {
   "books": {
     "en/story": {
-      "source": "939f4ced4f73",
+      "source": "3734ccee7269",
       "files": {
         "epub": {
-          "hash": "cdfecb88dd",
-          "bytes": 170992
+          "hash": "c57ae17e86",
+          "bytes": 5145594
         },
         "pdf": {
-          "hash": "630b23a544",
-          "bytes": 2148596
+          "hash": "10b809593c",
+          "bytes": 7440953
         }
       }
     },
     "en/why-krizaka": {
-      "source": "36499c33b8f5",
+      "source": "28c8ff6417db",
       "files": {
         "epub": {
-          "hash": "771b422bf0",
-          "bytes": 50961
+          "hash": "45d7e3e8a1",
+          "bytes": 743563
         },
         "pdf": {
-          "hash": "de53200372",
-          "bytes": 204628
+          "hash": "62200a63ec",
+          "bytes": 1132951
         }
       }
     },
     "en/an-engine-on-a-laptop": {
-      "source": "d1ae1cb2f340",
+      "source": "4a3d5faf1d96",
       "files": {
         "epub": {
-          "hash": "58ad04bee6",
-          "bytes": 45065
+          "hash": "68be441018",
+          "bytes": 1655930
         },
         "pdf": {
-          "hash": "42128606e8",
-          "bytes": 248065
+          "hash": "d1782db1d3",
+          "bytes": 2506995
         }
       }
     },
     "en/what-a-gpu-costs": {
-      "source": "8fa304b43cbc",
+      "source": "d8e48b6cdbb4",
       "files": {
         "epub": {
-          "hash": "12ba43dbd8",
-          "bytes": 62535
+          "hash": "a1e68bf095",
+          "bytes": 1535384
         },
         "pdf": {
-          "hash": "cefbeb15b8",
-          "bytes": 377799
+          "hash": "77be30d5c5",
+          "bytes": 2075886
         }
       }
     },
     "en/from-a-clip-to-a-film": {
-      "source": "4307f518e0bb",
+      "source": "d92c5d7aa48e",
       "files": {
         "epub": {
-          "hash": "c567bb21a0",
-          "bytes": 61646
+          "hash": "6541d24a15",
+          "bytes": 1155098
         },
         "pdf": {
-          "hash": "084c0df2f5",
-          "bytes": 328353
+          "hash": "47e2894708",
+          "bytes": 1741127
         }
       }
     },
     "en/one-interface-everywhere": {
-      "source": "f6573af438be",
+      "source": "66240507d14d",
       "files": {
         "epub": {
-          "hash": "297ac743cf",
-          "bytes": 59908
+          "hash": "a1d26bfc6e",
+          "bytes": 2287078
         },
         "pdf": {
-          "hash": "6ce2236ee8",
-          "bytes": 302290
+          "hash": "b9e31f5ec2",
+          "bytes": 3241010
         }
       }
     },
     "en/the-first-products": {
-      "source": "7bd697f8e838",
+      "source": "c0b3b4655251",
       "files": {
         "epub": {
-          "hash": "c2712485c0",
-          "bytes": 64118
+          "hash": "a04bd31bc8",
+          "bytes": 1012320
         },
         "pdf": {
-          "hash": "41fa2355ed",
-          "bytes": 297222
+          "hash": "28ae38e779",
+          "bytes": 1553252
         }
       }
     },
     "en/an-empty-result-is-not-a-success": {
-      "source": "83dddad6cd44",
+      "source": "728ca9716106",
       "files": {
         "epub": {
-          "hash": "292417dadd",
-          "bytes": 55885
+          "hash": "60d00c933e",
+          "bytes": 655257
         },
         "pdf": {
-          "hash": "4b9966d703",
-          "bytes": 260406
+          "hash": "d94ca61f62",
+          "bytes": 1039296
         }
       }
     },
     "en/building-with-agents": {
-      "source": "f8e849f52cd1",
+      "source": "746a02085cf7",
       "files": {
         "epub": {
-          "hash": "122942a774",
-          "bytes": 57943
+          "hash": "438539440f",
+          "bytes": 1371914
         },
         "pdf": {
-          "hash": "10e1e626e0",
-          "bytes": 279613
+          "hash": "ee997f5a01",
+          "bytes": 2075659
         }
       }
     },
     "en/what-claude-found-auditing-krizaka": {
-      "source": "5c1ae58bcb5f",
+      "source": "0db92228dae5",
       "files": {
         "epub": {
-          "hash": "43d2eb4a9f",
-          "bytes": 64940
+          "hash": "27d8f68cb3",
+          "bytes": 785842
         },
         "pdf": {
-          "hash": "6edc0d6841",
-          "bytes": 308098
+          "hash": "267f074131",
+          "bytes": 1233965
         }
       }
     },
     "en/a-curve-that-climbs": {
-      "source": "b51e0abc3b26",
+      "source": "3c1de60b49da",
       "files": {
         "epub": {
-          "hash": "6bee068e51",
-          "bytes": 52584
+          "hash": "bcd4ef2672",
+          "bytes": 1210781
         },
         "pdf": {
-          "hash": "140db5156b",
-          "bytes": 378978
+          "hash": "2480042efd",
+          "bytes": 2025957
         }
       }
     },
     "en/how-we-built-our-ci": {
-      "source": "c2d9a7039e3a",
+      "source": "836723cb45b3",
       "files": {
         "epub": {
-          "hash": "0f2ca96aba",
-          "bytes": 45265
+          "hash": "bbb0742f5f",
+          "bytes": 986244
         },
         "pdf": {
-          "hash": "3a54d25372",
-          "bytes": 342346
+          "hash": "138fb9c854",
+          "bytes": 1656826
         }
       }
     },
     "en/krizaka-ui-how-we-cut-it": {
-      "source": "8525583fd807",
+      "source": "4249cbfde693",
       "files": {
         "epub": {
-          "hash": "5c1f00a05b",
-          "bytes": 51716
+          "hash": "3b56a27aed",
+          "bytes": 1191364
         },
         "pdf": {
-          "hash": "6c848356f8",
-          "bytes": 270064
+          "hash": "c8cdc3d854",
+          "bytes": 1907963
         }
       }
     },
     "en/orazaka-v2-the-architecture-we-build": {
-      "source": "cb80468521c1",
+      "source": "bd2435a0ef0a",
       "files": {
         "epub": {
-          "hash": "e4e39a3036",
-          "bytes": 64934
+          "hash": "5f67342edd",
+          "bytes": 1301774
         },
         "pdf": {
-          "hash": "1dac6492f6",
-          "bytes": 361400
+          "hash": "2d90dd522c",
+          "bytes": 2148979
         }
       }
     },
     "en/ci-the-error-never-leaves-the-editor": {
-      "source": "2a7f72ca358e",
+      "source": "80f269880b79",
       "files": {
         "epub": {
-          "hash": "f566e03122",
-          "bytes": 55423
+          "hash": "ece23c7ec3",
+          "bytes": 511139
         },
         "pdf": {
-          "hash": "f8d7bea649",
-          "bytes": 254348
+          "hash": "243e2e9a0c",
+          "bytes": 809471
         }
       }
     },
     "en/we-bought-sonarcloud-what-do-we-have-now": {
-      "source": "5e4d383f5908",
+      "source": "938abeec2610",
       "files": {
         "epub": {
-          "hash": "dcfca0daa5",
-          "bytes": 65792
+          "hash": "529fb630e9",
+          "bytes": 969172
         },
         "pdf": {
-          "hash": "e18c8fa37a",
-          "bytes": 222636
+          "hash": "a89299103e",
+          "bytes": 1498178
         }
       }
     },
     "en/the-audit-said-ai-code-we-measured": {
-      "source": "1da24a8e1f12",
+      "source": "150ef5d6cdbb",
       "files": {
         "epub": {
-          "hash": "cbf7fed050",
-          "bytes": 71656
+          "hash": "a1418bde40",
+          "bytes": 912079
         },
         "pdf": {
-          "hash": "f11f2c830c",
-          "bytes": 286648
+          "hash": "cad0f44360",
+          "bytes": 1346807
         }
       }
     },
     "en/how-the-founder-and-the-cto-agent-work": {
-      "source": "65bda0a28c61",
+      "source": "ec9dffa4d3b4",
       "files": {
         "epub": {
-          "hash": "b5dd8ad2ff",
-          "bytes": 50246
+          "hash": "e6c8f0e26d",
+          "bytes": 789708
         },
         "pdf": {
-          "hash": "327d5e1e31",
-          "bytes": 173675
+          "hash": "2015646c08",
+          "bytes": 1138146
         }
       }
     },
     "en/how-we-test-our-uis": {
-      "source": "86dcd5705645",
+      "source": "e30a7034510a",
       "files": {
         "epub": {
-          "hash": "e3ffa888c5",
-          "bytes": 40239
+          "hash": "4bfe229ddd",
+          "bytes": 1233124
         },
         "pdf": {
-          "hash": "a1b1a52f73",
-          "bytes": 297056
+          "hash": "6412f5c4ae",
+          "bytes": 1873827
         }
       }
     },
     "fr/story": {
-      "source": "8ddf6a41df89",
+      "source": "83b05ae16e78",
       "files": {
         "epub": {
-          "hash": "5f5b3a4b6e",
-          "bytes": 183687
+          "hash": "5cc02c7e7d",
+          "bytes": 5166314
         },
         "pdf": {
-          "hash": "ca6804a216",
-          "bytes": 2253293
+          "hash": "07e4578573",
+          "bytes": 7573630
         }
       }
     },
     "fr/why-krizaka": {
-      "source": "785c2ff9a074",
+      "source": "d10ef0c10292",
       "files": {
         "epub": {
-          "hash": "77bcb955d2",
-          "bytes": 56713
+          "hash": "15ccabb44e",
+          "bytes": 749787
         },
         "pdf": {
-          "hash": "ce6930e5c0",
-          "bytes": 210768
+          "hash": "daf4d6ca5d",
+          "bytes": 1150035
         }
       }
     },
     "fr/an-engine-on-a-laptop": {
-      "source": "bbef7d721a82",
+      "source": "c0853de6bffc",
       "files": {
         "epub": {
-          "hash": "ada9bb7bb7",
-          "bytes": 50673
+          "hash": "6cdaa22a3a",
+          "bytes": 1670289
         },
         "pdf": {
-          "hash": "4a9b612f77",
-          "bytes": 261617
+          "hash": "6fb7921b7c",
+          "bytes": 2536284
         }
       }
     },
     "fr/what-a-gpu-costs": {
-      "source": "8e927bb31fb5",
+      "source": "f7e05d53213f",
       "files": {
         "epub": {
-          "hash": "3223e6f37b",
-          "bytes": 72654
+          "hash": "9a2b5006aa",
+          "bytes": 1551737
         },
         "pdf": {
-          "hash": "2b30228f72",
-          "bytes": 400495
+          "hash": "8b50c6ded9",
+          "bytes": 2118144
         }
       }
     },
     "fr/from-a-clip-to-a-film": {
-      "source": "90437ba08571",
+      "source": "e702e8b9fec8",
       "files": {
         "epub": {
-          "hash": "3ca2fe3a6d",
-          "bytes": 68552
+          "hash": "f40e659a66",
+          "bytes": 1160287
         },
         "pdf": {
-          "hash": "7e471e254b",
-          "bytes": 352021
+          "hash": "8a3fdd0d69",
+          "bytes": 1772548
         }
       }
     },
     "fr/one-interface-everywhere": {
-      "source": "e09066f47320",
+      "source": "21d7dfaccf98",
       "files": {
         "epub": {
-          "hash": "dce33bb531",
-          "bytes": 57107
+          "hash": "cb9c97feb6",
+          "bytes": 2288597
         },
         "pdf": {
-          "hash": "b3efed774c",
-          "bytes": 314851
+          "hash": "fe23ed32b0",
+          "bytes": 3266121
         }
       }
     },
     "fr/the-first-products": {
-      "source": "3406d8bca1d3",
+      "source": "ffd20dc82c48",
       "files": {
         "epub": {
-          "hash": "62ee82a23d",
-          "bytes": 63742
+          "hash": "2f81d1f42b",
+          "bytes": 1018907
         },
         "pdf": {
-          "hash": "bb2fa0a231",
-          "bytes": 314405
+          "hash": "a5363e7214",
+          "bytes": 1587278
         }
       }
     },
     "fr/an-empty-result-is-not-a-success": {
-      "source": "e885e9cc3e13",
+      "source": "afc56ebdf355",
       "files": {
         "epub": {
-          "hash": "f1d9005349",
-          "bytes": 60558
+          "hash": "94eca2d05b",
+          "bytes": 660817
         },
         "pdf": {
-          "hash": "02e1b8018d",
-          "bytes": 278843
+          "hash": "c9b76d5872",
+          "bytes": 1070499
         }
       }
     },
     "fr/building-with-agents": {
-      "source": "5a6fd2717c40",
+      "source": "5854d42c7f62",
       "files": {
         "epub": {
-          "hash": "b97e5e9ba0",
-          "bytes": 63653
+          "hash": "98d20da3a8",
+          "bytes": 1386564
         },
         "pdf": {
-          "hash": "17dd0817eb",
-          "bytes": 294104
+          "hash": "b7ce03e485",
+          "bytes": 2102710
         }
       }
     },
     "fr/what-claude-found-auditing-krizaka": {
-      "source": "e34429fae5ff",
+      "source": "3e03475572b9",
       "files": {
         "epub": {
-          "hash": "e9c5a5ed91",
-          "bytes": 66834
+          "hash": "b0a2675d87",
+          "bytes": 785043
         },
         "pdf": {
-          "hash": "3255c021be",
-          "bytes": 312882
+          "hash": "4bc0c3df29",
+          "bytes": 1254386
         }
       }
     },
     "fr/a-curve-that-climbs": {
-      "source": "f6c240c8140d",
+      "source": "77bb7bea4a2e",
       "files": {
         "epub": {
-          "hash": "d871703fda",
-          "bytes": 55053
+          "hash": "1023ec39b4",
+          "bytes": 1224050
         },
         "pdf": {
-          "hash": "2525838ec5",
-          "bytes": 390880
+          "hash": "1121904971",
+          "bytes": 2057306
         }
       }
     },
     "fr/how-we-built-our-ci": {
-      "source": "d0630b8cb5ac",
+      "source": "7c952ef9c4dd",
       "files": {
         "epub": {
-          "hash": "8985009789",
-          "bytes": 58095
+          "hash": "233817cc45",
+          "bytes": 1000127
         },
         "pdf": {
-          "hash": "b50c4a3fe1",
-          "bytes": 357501
+          "hash": "41dabfe714",
+          "bytes": 1688221
         }
       }
     },
     "fr/krizaka-ui-how-we-cut-it": {
-      "source": "c763056b7f1d",
+      "source": "91b8069103c5",
       "files": {
         "epub": {
-          "hash": "98571b1f50",
-          "bytes": 65119
+          "hash": "4586a17be8",
+          "bytes": 1207297
         },
         "pdf": {
-          "hash": "7a48cd638f",
-          "bytes": 283369
+          "hash": "77c2b99249",
+          "bytes": 1946262
         }
       }
     },
     "fr/orazaka-v2-the-architecture-we-build": {
-      "source": "8aa8296ab232",
+      "source": "cbf04c85601c",
       "files": {
         "epub": {
-          "hash": "76e99e479a",
-          "bytes": 64599
+          "hash": "8c86cb1e70",
+          "bytes": 1303101
         },
         "pdf": {
-          "hash": "142cc72257",
-          "bytes": 370142
+          "hash": "80fd3287a0",
+          "bytes": 2175059
         }
       }
     },
     "fr/ci-the-error-never-leaves-the-editor": {
-      "source": "7e0280fa4bc9",
+      "source": "e30a4d8547f3",
       "files": {
         "epub": {
-          "hash": "cee770cbd7",
-          "bytes": 50676
+          "hash": "a105111c51",
+          "bytes": 506049
         },
         "pdf": {
-          "hash": "1f7baeef36",
-          "bytes": 265208
+          "hash": "0c1a6bbb6b",
+          "bytes": 824024
         }
       }
     },
     "fr/we-bought-sonarcloud-what-do-we-have-now": {
-      "source": "9a6f6200828a",
+      "source": "6633fadc6fae",
       "files": {
         "epub": {
-          "hash": "4b465970ae",
-          "bytes": 70322
+          "hash": "2db0e3d3ea",
+          "bytes": 980572
         },
         "pdf": {
-          "hash": "094b5173e0",
-          "bytes": 234349
+          "hash": "6b186871f1",
+          "bytes": 1527364
         }
       }
     },
     "fr/the-audit-said-ai-code-we-measured": {
-      "source": "1089107a3493",
+      "source": "5a95d915230c",
       "files": {
         "epub": {
-          "hash": "d32b0705da",
-          "bytes": 81315
+          "hash": "cdd5b8a810",
+          "bytes": 926027
         },
         "pdf": {
-          "hash": "8b677df629",
-          "bytes": 301958
+          "hash": "c674313d80",
+          "bytes": 1376282
         }
       }
     },
     "fr/how-the-founder-and-the-cto-agent-work": {
-      "source": "4e603692d610",
+      "source": "4fb91128de79",
       "files": {
         "epub": {
-          "hash": "3dc65ea204",
-          "bytes": 56938
+          "hash": "d76832059e",
+          "bytes": 803734
         },
         "pdf": {
-          "hash": "58a0590701",
-          "bytes": 182345
+          "hash": "52cd14ec3b",
+          "bytes": 1165791
         }
       }
     },
     "fr/how-we-test-our-uis": {
-      "source": "5c04c8f28731",
+      "source": "3ba0878acbd3",
       "files": {
         "epub": {
-          "hash": "e313b3d325",
-          "bytes": 56087
+          "hash": "0812a8ec74",
+          "bytes": 1252479
         },
         "pdf": {
-          "hash": "40c28d8863",
-          "bytes": 312120
+          "hash": "e484eaaf54",
+          "bytes": 1910596
         }
       }
     }

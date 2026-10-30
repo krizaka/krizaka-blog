@@ -27,7 +27,7 @@ import { mdxComponentsFor } from "./mdx";
 import { formatPeriod } from "./PostList";
 import { Byline } from "./Byline";
 import { CoverImage } from "./CoverImage";
-import { SaveChapter, SaveSeries } from "../SaveOffline";
+import { OfflineHelp, SaveChapter, SaveSeries } from "../SaveOffline";
 import { TakeStory } from "../TakeStory";
 
 /* One chapter of the story, sober on the notebook lines (krizaka-blog#127):
@@ -146,8 +146,15 @@ export default function ChapterPage({ chapter }: { chapter: Chapter }) {
           />
         )}
         <section className="bl-offline-bar" aria-label={t.offline.regionLabel}>
-          <SaveChapter url={localizedPath(locale, chapterPath(chapter.slug))} />
-          <SaveSeries urls={chaptersOf(locale).map((c) => localizedPath(locale, chapterPath(c.slug)))} />
+          <div className="bl-scope">
+            <span className="bl-scope-label">{t.downloads.takeChapter}</span>
+            <SaveChapter url={localizedPath(locale, chapterPath(chapter.slug))} />
+          </div>
+          <div className="bl-scope">
+            <span className="bl-scope-label">{t.downloads.takeStory}</span>
+            <SaveSeries urls={chaptersOf(locale).map((c) => localizedPath(locale, chapterPath(c.slug)))} />
+          </div>
+          <OfflineHelp />
         </section>
       </Section>
       <Section reveal={false} spacing="sm" className="bl-post-body">

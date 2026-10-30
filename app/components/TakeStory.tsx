@@ -68,30 +68,42 @@ export function TakeStory({
   const hint = (f: "epub" | "pdf") => (f === "epub" ? d.epubHint : d.pdfHint);
 
   if (compact) {
-    const group = (name: string, files: Download[]) =>
+    const group = (name: string, meta: string | undefined, files: Download[], whole: boolean) =>
       files.length > 0 && (
-        <span className="bl-take-group">
-          <span className="bl-take-for">{name}</span>
-          {files.map((f, i) => (
-            <span key={f.format}>
-              {i > 0 && (
-                <span className="bl-take-dot" aria-hidden="true">
-                  {" "}
-                  ·{" "}
-                </span>
-              )}
-              <FileLink file={f} locale={locale} label={label(f.format)} />
+        <div className="bl-take-scope">
+          <span className={`bl-book${whole ? " bl-book-whole" : ""}`} aria-hidden="true">
+            <span className="bl-book-mark">§</span>
+          </span>
+          <span className="bl-take-group">
+            <span className="bl-take-for">
+              <b>{name}</b>
+              {meta && <span className="bl-take-count"> · {meta}</span>}
             </span>
-          ))}
-        </span>
+            <span className="bl-take-links">
+              {files.map((f, i) => (
+                <span key={f.format}>
+                  {i > 0 && (
+                    <span className="bl-take-dot" aria-hidden="true">
+                      {" "}
+                      ·{" "}
+                    </span>
+                  )}
+                  <FileLink file={f} locale={locale} label={label(f.format)} />
+                </span>
+              ))}
+            </span>
+          </span>
+        </div>
       );
     return (
       <aside className="bl-take-line" aria-labelledby={`bl-take-${bookKey}`}>
         <h2 id={`bl-take-${bookKey}`} className="bl-take-label">
           {d.takeOffline}
         </h2>
-        {group(d.takeChapter, own)}
-        {group(d.takeStory, story)}
+        <div className="bl-take-scopes">
+          {group(d.takeChapter, undefined, own, false)}
+          {group(d.takeStory, format(d.takeChapters, { n: String(chapters.length) }), story, true)}
+        </div>
       </aside>
     );
   }
