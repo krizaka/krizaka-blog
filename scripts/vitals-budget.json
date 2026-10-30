@@ -1,0 +1,6 @@
+{
+  "lcpMs": 2500,
+  "cls": 0.1,
+  "cpuThrottle": 4,
+  "settleMs": 1500
+}

@@ -77,7 +77,21 @@ test("the four feed routes read feedEntriesOf: the chapters and the remaining po
   assert.match(feeds, /\.\.\.postsOf\(locale\)\.map\(\(item\) => \(\{ item, path: postPath\(item\.slug\) \}\)\)/);
   assert.equal(
     (feeds.match(/absoluteUrl\(locale, path\)/g) ?? []).length,
-    2,
-    "the RSS item and the Atom entry link to the entry's own path",
+    3,
+    "the RSS item, the Atom entry and the JSON Feed item link to the entry's own path",
   );
+});
+
+test("JSON Feed 1.1: both languages, the same entries as the RSS, each with its own address, advertised in the head", () => {
+  for (const [f, lang] of [
+    ["app/(en)/feed.json/route.ts", "en"],
+    ["app/fr/feed.json/route.ts", "fr"],
+  ]) {
+    assert.match(read(f), new RegExp(`jsonFeed\\("${lang}", feedEntriesOf\\("${lang}"\\)\\)`), f);
+    assert.match(read(f), /application\/feed\+json/, f);
+  }
+  const feeds = read("lib/feeds.ts");
+  assert.match(feeds, /https:\/\/jsonfeed\.org\/version\/1\.1/);
+  assert.match(feeds, /feed_url: `\$\{SITE_URL\}\$\{prefix\(locale\)\}\/feed\.json`/);
+  assert.match(read("lib/seo.ts"), /"application\/feed\+json"/);
 });
