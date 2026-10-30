@@ -464,5 +464,7 @@ export function checkChapters(dir, postsDir, ctx) {
 /* A JSX attribute whose text holds a straight double quote ends early and breaks the MDX build (chapter 18, blog#209): use « » or “ ”. */
 export function attributeQuoteProblems(text, file) {
   const bad = /\b(?:alt|title|caption|label)="[^"\n]*"(?![\s/>])/g;
-  return [...text.matchAll(bad)].map((m) => `${file}: a straight double quote inside an attribute ends it early (${m[0].slice(0, 50)}…): use « » or “ ”`);
+  return [...text.matchAll(bad)].map(
+    (m) => `${file}: a straight double quote inside an attribute ends it early (${m[0].slice(0, 50)}…): use « » or “ ”`,
+  );
 }

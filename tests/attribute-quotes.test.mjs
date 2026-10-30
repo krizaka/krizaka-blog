@@ -4,10 +4,7 @@ import { attributeQuoteProblems } from "../scripts/content-rules.mjs";
 
 test("a straight quote inside an attribute is refused", () => {
   assert.equal(
-    attributeQuoteProblems(
-      '<Figure id="a" alt="under the "Development version" banner" />',
-      "x.mdx",
-    ).length,
+    attributeQuoteProblems('<Figure id="a" alt="under the "Development version" banner" />', "x.mdx").length,
     1,
   );
 });

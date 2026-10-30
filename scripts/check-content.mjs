@@ -24,8 +24,7 @@ for (const dir of ["content", "public"])
       );
 for (const dir of ["content/posts", "content/chapters"])
   for (const f of walk(join(root, dir)))
-    if (/\.mdx$/.test(f))
-      problems.push(...attributeQuoteProblems(readFileSync(f, "utf8"), f.replace(root + "/", "")));
+    if (/\.mdx$/.test(f)) problems.push(...attributeQuoteProblems(readFileSync(f, "utf8"), f.replace(root + "/", "")));
 if (problems.length) {
   console.error(problems.join("\n"));
   process.exit(1);
