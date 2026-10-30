@@ -120,13 +120,9 @@ function publicationProblems(file, data, date) {
   return out;
 }
 
-/** The front matter's own fields: required text, date, length limits, types. */
-function frontMatterProblems(file, data) {
+/** The text fields with a limit: the description, and what a search result shows (title, description). */
+function lengthProblems(file, data) {
   const out = [];
-  for (const k of ["title", "description"]) if (blank(data[k])) out.push(`${file}: "${k}" is required`);
-  const date = data.date instanceof Date ? data.date.toISOString().slice(0, 10) : data.date;
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(date ?? ""))) out.push(`${file}: "date" must be YYYY-MM-DD`);
-  if (data.draft !== true) out.push(...publicationProblems(file, data, date));
   if (typeof data.description === "string" && data.description.length > 220)
     out.push(`${file}: "description" is over 220 characters`);
   if (data.seoTitle !== undefined && (typeof data.seoTitle !== "string" || data.seoTitle.length > 60))
@@ -136,6 +132,17 @@ function frontMatterProblems(file, data) {
     (typeof data.seoDescription !== "string" || data.seoDescription.length > 155)
   )
     out.push(`${file}: "seoDescription" must be text of at most 155 characters`);
+  return out;
+}
+
+/** The front matter's own fields: required text, date, length limits, types. */
+function frontMatterProblems(file, data) {
+  const out = [];
+  for (const k of ["title", "description"]) if (blank(data[k])) out.push(`${file}: "${k}" is required`);
+  const date = data.date instanceof Date ? data.date.toISOString().slice(0, 10) : data.date;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(date ?? ""))) out.push(`${file}: "date" must be YYYY-MM-DD`);
+  if (data.draft !== true) out.push(...publicationProblems(file, data, date));
+  out.push(...lengthProblems(file, data));
   if (data.tags !== undefined && !Array.isArray(data.tags)) out.push(`${file}: "tags" must be a list`);
   if (data.draft !== undefined && typeof data.draft !== "boolean") out.push(`${file}: "draft" must be true or false`);
   if (data.image && !onBlogCdn(String(data.image)))
@@ -245,8 +252,7 @@ export function postProblems(file, data, body, ctx) {
       ...seriesProblems(file, data, ctx.series),
     );
   /* A model is named with a link to its official page the first time (lib/models.ts): the reader can see what it is. */
-  out.push(...modelLinkProblems(body).map((p) => `${file}: ${p}`));
-  out.push(...confidentialityProblems(file, data, body));
+  out.push(...modelLinkProblems(body).map((p) => `${file}: ${p}`), ...confidentialityProblems(file, data, body));
   if (/```mermaid/.test(body)) out.push(`${file}: Mermaid is retired`);
   out.push(...fenceProblems(file, body), ...jsPropProblems(file, body));
   return out;
