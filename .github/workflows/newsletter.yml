@@ -2,6 +2,8 @@
 # a new published post), wait until the post is live on blog.krizaka.com, then ask the send action
 # (/api/newsletter/send, bearer MAIL_SEND_TOKEN) to e-mail the confirmed subscribers. The action claims the post in the
 # database first: a re-run, a manual run or a second push never sends the same post twice.
+# The switch: the repository variable MAIL_NEWSLETTER_ENABLED must be "true", otherwise nothing is sent (fail closed).
+# A send that does not reach everyone fails the run (red), never silently.
 # By hand: Actions → Newsletter → Run workflow, with the slug (still at most once).
 name: Newsletter
 
@@ -30,6 +32,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22
@@ -38,6 +41,7 @@ jobs:
       - name: Send the new posts (once)
         env:
           MAIL_SEND_TOKEN: ${{ secrets.MAIL_SEND_TOKEN }}
+          MAIL_NEWSLETTER_ENABLED: ${{ vars.MAIL_NEWSLETTER_ENABLED }}
           SLUG: ${{ github.event.inputs.slug }}
           BEFORE: ${{ github.event.before }}
           AFTER: ${{ github.sha }}

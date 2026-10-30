@@ -48,3 +48,18 @@ export async function withRenderedEmails(versions) {
 
 /** The image URLs of a rendered e-mail (what a client would fetch). */
 export const imagesOf = (html) => [...html.matchAll(/<img\b[^>]*?\ssrc="([^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, "&"));
+
+/** The placeholder of the signed token in the confirmation link, identical to the function's CONFIRM_TOKEN (tests/newsletter.test.mjs). */
+export const CONFIRM_TOKEN = "__CONFIRM_TOKEN__";
+/** The double opt-in e-mail (`newsletterConfirm`), once per language, with the token and the postal address left as placeholders
+    for the subscribe function to fill. `hours` is the link's window (the function's CONFIRM_TTL_MS). */
+export async function renderConfirmationEmail(locale, hours) {
+  const props = {
+    confirmUrl: `${SITE}/api/newsletter/confirm?t=${CONFIRM_TOKEN}${locale === "fr" ? "&l=fr" : ""}`,
+    hours,
+    address: SENDER_ADDRESS,
+    links: { privacy: `${SITE}${locale === "fr" ? "/fr" : ""}/newsletter/` },
+  };
+  const mail = await renderEmail("newsletterConfirm", props, { locale });
+  return { subject: mail.subject, html: mail.html, text: mail.text };
+}

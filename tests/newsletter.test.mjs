@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
-import { publishedBetween, versionsOf, requestSend } from "../scripts/newsletter-send.mjs";
+import { publishedBetween, versionsOf, requestSend, newsletterEnabled, assertDelivered } from "../scripts/newsletter-send.mjs";
 
 const require = createRequire(import.meta.url);
 const nl = require("../functions/packages/newsletter/subscribe/newsletter.js");
@@ -141,8 +141,44 @@ test("confirm: a fresh link adds the subscriber with the proof of consent; an ol
   const r2 = await confirm({ t, l: "fr" }, ENV, late.sql, now + nl.CONFIRM_TTL_MS + 1);
   assert.equal(r2.headers.Location, "https://blog.krizaka.com/fr/newsletter/expired/");
   assert.equal(late.calls.length, 0);
+});
+
+test("confirm: an address already on the list, or a link opened twice, lands on confirmed (idempotent, krizaka-blog#192)", async () => {
+  const now = Date.UTC(2026, 9, 28);
+  const t = nl.makeToken({ email: "a@b.co", locale: "en", purpose: "c", now }, ENV.MAIL_TOKEN_SECRET);
+  const db = fakeDb({ subscribers: [{ email: "a@b.co", locale: "fr" }] });
+  for (let i = 0; i < 2; i++) assert.equal((await confirm({ t }, ENV, db.sql, now + 1000)).headers.Location, "https://blog.krizaka.com/newsletter/confirmed/");
+  assert.equal(db.subs.size, 1);
+  assert.equal(db.subs.get("a@b.co").locale, "en", "the renewed consent keeps one row");
+});
+
+test("confirm: only a genuine link past its date says expired; a forged one says invalid; a failing list says try again (krizaka-blog#192)", async () => {
+  const now = Date.UTC(2026, 9, 28);
+  const t = nl.makeToken({ email: "a@b.co", locale: "en", purpose: "c", now }, ENV.MAIL_TOKEN_SECRET);
+  const late = (await confirm({ t }, ENV, fakeDb().sql, now + nl.CONFIRM_TTL_MS + 1)).headers.Location;
+  assert.equal(late, "https://blog.krizaka.com/newsletter/expired/");
+  assert.equal((await confirm({ t: t.slice(0, -2) + "xx" }, ENV, fakeDb().sql, now)).headers.Location, "https://blog.krizaka.com/newsletter/link-invalid/");
+  assert.equal((await confirm({ t: undefined }, ENV, fakeDb().sql, now)).headers.Location, "https://blog.krizaka.com/newsletter/link-invalid/");
   const down = async () => Promise.reject(new Error("db"));
-  assert.equal((await confirm({ t }, ENV, down, now)).headers.Location, "https://blog.krizaka.com/fr/newsletter/expired/");
+  const failed = await confirm({ t }, ENV, down, now);
+  assert.equal(failed.statusCode, 503, "a database error is not an expired link");
+  assert.match(failed.body, /still valid/);
+  const noDb = await confirm({ t }, { ...ENV, DATABASE_URL: "unset" }, fakeDb().sql, now);
+  assert.equal(noDb.statusCode, 503, "a missing configuration is not an expired link");
+});
+
+test("send to click: the link of the confirmation e-mail, in its text and in its HTML, confirms the subscriber (krizaka-blog#192)", async () => {
+  const f = fakeFetch({ [SITEVERIFY]: { status: 200, body: { success: true } } });
+  await subscribe({ __ow_method: "post", email: "a@b.co", locale: "fr", captchaToken: "ok" }, ENV, f);
+  const mail = new URLSearchParams(f.calls.find((c) => c.url.includes("/messages")).init.body);
+  const fromText = mail.get("text").match(/https:\/\/blog\.krizaka\.com\/api\/newsletter\/confirm\?[^\s]+/)[0];
+  const fromHtml = mail.get("html").match(/href="(https:\/\/blog\.krizaka\.com\/api\/newsletter\/confirm\?[^"]+)"/)[1].replaceAll("&amp;", "&");
+  assert.equal(fromHtml, fromText);
+  const url = new URL(fromText);
+  const db = fakeDb();
+  const r = await confirm({ t: url.searchParams.get("t"), l: url.searchParams.get("l") }, ENV, db.sql);
+  assert.equal(r.headers.Location, "https://blog.krizaka.com/fr/newsletter/confirmed/");
+  assert.equal(db.subs.size, 1);
 });
 
 test("unsubscribe: one click by link (303) or by the mail client (RFC 8058 POST, 200) deletes the row", async () => {
@@ -377,4 +413,57 @@ test("the widget only loads Cloudflare's script from the wait, never straight fr
   assert.ok(effect.indexOf("loadScript()") < effect.indexOf("whenWanted("), "loadScript() is inside start, defined before the wait");
   assert.match(effect.slice(effect.indexOf("const start")), /^const start = \(\) => \{\s*loadScript\(\)/);
   assert.doesNotMatch(src, /<script[^>]*challenges\.cloudflare/);
+});
+
+test("the send switch is off unless MAIL_NEWSLETTER_ENABLED is exactly true (fail closed)", () => {
+  assert.equal(newsletterEnabled({}), false);
+  assert.equal(newsletterEnabled({ MAIL_NEWSLETTER_ENABLED: "" }), false);
+  assert.equal(newsletterEnabled({ MAIL_NEWSLETTER_ENABLED: "false" }), false);
+  assert.equal(newsletterEnabled({ MAIL_NEWSLETTER_ENABLED: "1" }), false);
+  assert.equal(newsletterEnabled({ MAIL_NEWSLETTER_ENABLED: "true" }), true);
+  assert.match(readFileSync(new URL("../.github/workflows/newsletter.yml", import.meta.url), "utf8"), /MAIL_NEWSLETTER_ENABLED: \$\{\{ vars\.MAIL_NEWSLETTER_ENABLED \}\}/, "the workflow passes the variable");
+});
+
+test("a send the provider rejected fails the run loudly; a complete one and an already-sent one do not", () => {
+  assert.throws(() => assertDelivered("x", { sent: 0, failed: 1, total: 1 }), /reached 0 of 1/);
+  assert.throws(() => assertDelivered("x", { sent: 2, failed: 1, total: 3 }), /1 failed/);
+  assert.match(assertDelivered("x", { sent: 1, failed: 0, total: 1 }), /sent to 1 of 1/);
+  assert.match(assertDelivered("x", { already: true }), /already sent/);
+});
+
+test("the subscribe action checks the CAPTCHA with @krizaka/rate-limit/turnstile, bundled and in sync", async () => {
+  const { render, TARGET, EMAILS, renderEmails } = await import("../scripts/bundle-functions.mjs");
+  assert.equal(readFileSync(TARGET, "utf8"), render(), "run `npm run functions:bundle`");
+  assert.equal(readFileSync(EMAILS, "utf8"), await renderEmails(), "run `npm run functions:bundle`");
+  // No second copy of the siteverify call in the functions.
+  for (const a of ["subscribe", "confirm", "unsubscribe", "send"]) {
+    assert.doesNotMatch(readFileSync(new URL(`../functions/packages/newsletter/${a}/newsletter.js`, import.meta.url), "utf8"), /siteverify/);
+  }
+  // A token the library saw once is refused the second time (replay), and the answer is the same « captcha ».
+  const f = fakeFetch({ [SITEVERIFY]: { status: 200, body: { success: true } } });
+  const args = { __ow_method: "post", email: "a@b.co", captchaToken: "once" };
+  assert.equal((await subscribe(args, ENV, f)).statusCode, 202);
+  assert.equal(JSON.parse((await subscribe(args, ENV, f)).body).error, "captcha");
+});
+
+test("the confirmation e-mail is the designed one of @krizaka/email, EN and FR, with the signed link that confirms", async () => {
+  for (const locale of ["en", "fr"]) {
+    const f = fakeFetch({ [SITEVERIFY]: { status: 200, body: { success: true } } });
+    const r = await subscribe({ __ow_method: "post", email: "a@b.co", locale, captchaToken: `designed-${locale}` }, ENV, f);
+    assert.equal(r.statusCode, 202);
+    const body = new URLSearchParams(f.calls.find((c) => c.url === "https://api.mailgun.net/v3/mg.example.com/messages").init.body);
+    const [text, html] = [body.get("text"), body.get("html")];
+    assert.match(html, /<table/, "the e-mail kit's layout: tables and inline styles");
+    assert.match(body.get("subject"), locale === "fr" ? /Confirmez/ : /Confirm/);
+    assert.doesNotMatch(text + html, /__CONFIRM_TOKEN__|__SENDER_ADDRESS__/, "every placeholder is filled");
+    const link = /https:\/\/blog\.krizaka\.com\/api\/newsletter\/confirm\?t=[^\s"<&]+/.exec(text)?.[0];
+    assert.ok(link, "the plain-text part carries the link");
+    assert.equal(/&l=fr/.test(text), locale === "fr");
+    const db = fakeDb();
+    const t = decodeURIComponent(new URL(link).searchParams.get("t"));
+    const clicked = await confirm({ t, l: locale }, ENV, db.sql);
+    assert.equal(clicked.statusCode, 303);
+    assert.match(clicked.headers.Location, /\/newsletter\/confirmed\//);
+    assert.ok(db.subs.has("a@b.co"));
+  }
 });

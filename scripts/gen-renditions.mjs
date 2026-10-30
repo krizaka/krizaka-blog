@@ -13,7 +13,7 @@ import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
-import { CDN, RENDITION_FORMATS, renditionWidths } from "./content-rules.mjs";
+import { RENDITION_FORMATS, cdnBaseOf, renditionWidths } from "./content-rules.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const QUALITY = { avif: { quality: 52, effort: 6 }, webp: { quality: 78, effort: 5 } };
@@ -35,15 +35,17 @@ async function main() {
   const { default: sharp } = await import("sharp");
   const file = join(root, "lib/media.json");
   const media = JSON.parse(readFileSync(file, "utf8"));
-  const dir = join(root, "content/posts");
-  const covers = [...new Set(readdirSync(dir).filter((f) => f.endsWith(".mdx")).map((f) => matter(readFileSync(join(dir, f), "utf8")).data.cover).filter(Boolean))];
+  /* The covers of the posts and of the story's chapters. */
+  const dirs = ["content/posts", "content/chapters"].map((d) => join(root, d));
+  const covers = [...new Set(dirs.flatMap((dir) => readdirSync(dir).filter((f) => f.endsWith(".mdx")).map((f) => matter(readFileSync(join(dir, f), "utf8")).data.cover)).filter(Boolean))];
   const folders = new Set();
   for (const id of covers) {
     const m = media[id];
     if (!m) throw new Error(`cover "${id}" is not in lib/media.json`);
     if (m.renditions && !force) continue;
     const src = sourceOf(m);
-    const folder = src.slice(CDN.length).split("/").slice(0, -1).join("/");
+    const base = cdnBaseOf(src);
+    const folder = src.slice(base.length).split("/").slice(0, -1).join("/");
     const buf = Buffer.from(await (await fetch(src)).arrayBuffer());
     const meta = await sharp(buf).metadata();
     if (meta.width < m.width) throw new Error(`${id}: the widest file is ${meta.width} px, the entry says ${m.width}`);
@@ -54,7 +56,7 @@ async function main() {
         const data = await sharp(buf).resize({ width: w, withoutEnlargement: true })[f](QUALITY[f]).toBuffer();
         const name = `${id}-${w}`;
         writeFileSync(join(out, folder, `${name}.${f}`), data);
-        renditions[f].push({ w, url: `${CDN}${folder}/${name}.${hashOf(data)}.${f}` });
+        renditions[f].push({ w, url: `${base}${folder}/${name}.${hashOf(data)}.${f}` });
         console.log(`${folder}/${name}.${f}  ${(data.length / 1024).toFixed(1)} KB`);
       }
     }

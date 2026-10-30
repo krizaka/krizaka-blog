@@ -13,7 +13,7 @@ test("the feeds carry no XSLT stylesheet and the stylesheet is gone", () => {
   assert.match(feeds, /<\?xml version="1\.0" encoding="UTF-8"\?>\\n<rss version="2\.0"/);
   assert.equal(existsSync(new URL("../lib/feed-xsl.ts", import.meta.url)), false);
   assert.equal(existsSync(new URL("../app/(en)/feed.xsl", import.meta.url)), false);
-  assert.doesNotMatch(read(".github/workflows/ci.yml"), /xsltproc|grep -q '<\?xml-stylesheet/);
+  assert.doesNotMatch(read("scripts/ci-after-build.sh"), /xsltproc|grep -q '<\?xml-stylesheet/);
 });
 
 test("/feed.xml stays the raw feed in both languages", () => {

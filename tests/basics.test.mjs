@@ -90,7 +90,7 @@ test("the sitemap lists the shelf index and no series page", () => {
 });
 
 test("the CI smoke checks read the shelf at /basics/ (a live post)", () => {
-  const ci = read(".github/workflows/ci.yml");
+  const ci = read("scripts/ci-after-build.sh");
   assert.match(ci, /out\/basics\/understanding-ai-before-you-start\/index\.html/);
   assert.doesNotMatch(ci, /out\/posts\/understanding-ai-before-you-start/);
 });
