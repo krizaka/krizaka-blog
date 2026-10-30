@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "3734ccee7269",
+      "source": "fe39fad45858",
       "files": {
         "epub": {
-          "hash": "c57ae17e86",
-          "bytes": 5145594
+          "hash": "f11214f198",
+          "bytes": 5146015
         },
         "pdf": {
-          "hash": "10b809593c",
-          "bytes": 7440953
+          "hash": "9db096238d",
+          "bytes": 7450734
         }
       }
     },
@@ -235,28 +235,28 @@
       }
     },
     "en/how-we-test-our-uis": {
-      "source": "e30a7034510a",
+      "source": "d1af21ce4f5c",
       "files": {
         "epub": {
-          "hash": "4bfe229ddd",
-          "bytes": 1233124
+          "hash": "19c0f79ea8",
+          "bytes": 1233545
         },
         "pdf": {
-          "hash": "6412f5c4ae",
-          "bytes": 1873827
+          "hash": "3c0a3cd113",
+          "bytes": 1883719
         }
       }
     },
     "fr/story": {
-      "source": "83b05ae16e78",
+      "source": "932a38991f04",
       "files": {
         "epub": {
-          "hash": "5cc02c7e7d",
-          "bytes": 5166314
+          "hash": "32c69eb250",
+          "bytes": 5166791
         },
         "pdf": {
-          "hash": "07e4578573",
-          "bytes": 7573630
+          "hash": "e626bee31e",
+          "bytes": 7584284
         }
       }
     },
@@ -482,15 +482,15 @@
       }
     },
     "fr/how-we-test-our-uis": {
-      "source": "3ba0878acbd3",
+      "source": "8d6a8d8444eb",
       "files": {
         "epub": {
-          "hash": "0812a8ec74",
-          "bytes": 1252479
+          "hash": "02a571803e",
+          "bytes": 1252958
         },
         "pdf": {
-          "hash": "e484eaaf54",
-          "bytes": 1910596
+          "hash": "5629f9d87a",
+          "bytes": 1921643
         }
       }
     }
