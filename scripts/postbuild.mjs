@@ -27,6 +27,9 @@ export function readEntries(dir, show = false) {
         description: p.data.description,
         date: dateOf(p.data.date),
         chapter: Number(p.data.chapter) || undefined,
+        period: p.data.period ? String(p.data.period) : undefined,
+        stats: Array.isArray(p.data.stats) ? p.data.stats : [],
+        headings: [...p.content.matchAll(/^## (.+)$/gm)].map((m) => m[1].trim()),
       };
     });
 }
@@ -75,10 +78,41 @@ ${basics("fr")}
 `;
 }
 
+/** llms-full.txt: the same story with what each chapter holds (its period, the sections it walks through, the figures it gives), so a model can choose a chapter without opening them all. */
+export function llmsFullText({ chapters, posts }) {
+  const prefix = (l) => (l === "fr" ? "/fr" : "");
+  const chapter = (c) =>
+    [
+      `### ${c.chapter}. ${c.title}`,
+      `${SITE}${prefix(c.locale)}/story/${c.slug}/${c.period ? ` (${c.period})` : ""}`,
+      c.description,
+      c.headings.length ? `Sections: ${c.headings.join(" / ")}` : "",
+      ...c.stats.map((s) => `- ${s.value} ${s.label}`),
+    ]
+      .filter(Boolean)
+      .join("\n");
+  const part = (l, title) =>
+    `## ${title}\n\n${
+      chapters
+        .filter((c) => c.locale === l)
+        .sort((a, b) => a.chapter - b.chapter)
+        .map(chapter)
+        .join("\n\n") || "(no chapter published yet)"
+    }`;
+  return `${llmsText({ chapters, posts })
+    .split("\n## Elsewhere")[0]
+    .replace(/\n## .*$/s, "")}
+${part("en", "The story, chapter by chapter (English)")}
+
+${part("fr", "L'histoire, chapitre par chapitre (français)")}
+`;
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const show = process.env.APP_SHOW_DRAFTS === "1";
   const chapters = readEntries(join(root, "content/chapters"), show);
   const posts = readEntries(join(root, "content/posts"), show);
   writeFileSync(join(root, "out/llms.txt"), llmsText({ chapters, posts }));
-  console.log(`postbuild: llms.txt (${chapters.length} chapters, ${posts.length} posts)`);
+  writeFileSync(join(root, "out/llms-full.txt"), llmsFullText({ chapters, posts }));
+  console.log(`postbuild: llms.txt, llms-full.txt (${chapters.length} chapters, ${posts.length} posts)`);
 }

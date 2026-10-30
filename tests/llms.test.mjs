@@ -35,3 +35,25 @@ test("llms.txt lists the basics at /basics/, never a removed address, and passes
   assert.match(text, /one page, the story/);
   assert.deepEqual(auditLlms(text, { host: "https://blog.krizaka.com" }), []);
 });
+
+import { llmsFullText } from "../scripts/postbuild.mjs";
+
+test("llms-full.txt gives each chapter its sections and figures, in reading order per language", () => {
+  const full = llmsFullText({ chapters, posts });
+  assert.match(full, /^# Krizaka Blog/);
+  for (const [l, prefix, heading] of [
+    ["en", "", "(English)"],
+    ["fr", "/fr", "(français)"],
+  ]) {
+    const section = full.slice(full.indexOf(heading));
+    const own = [...section.matchAll(/^### (\d+)\. .*\n(\S+)/gm)].filter((m) =>
+      m[2].startsWith(`https://blog.krizaka.com${prefix}/story/`),
+    );
+    const expected = chapters
+      .filter((c) => c.locale === l)
+      .map((c) => c.chapter)
+      .sort((a, b) => a - b);
+    assert.deepEqual(own.map((m) => Number(m[1])).slice(0, expected.length), expected, l);
+  }
+  assert.ok(full.includes("Sections: "), "sections listed");
+});

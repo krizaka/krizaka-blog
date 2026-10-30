@@ -3,6 +3,7 @@
 import type { Metadata } from "next";
 import { getDictionary, localizedPath, type Locale } from "./i18n";
 import type { Post } from "./posts";
+import { seriesNode } from "./series.ts";
 import { faqOf, metaDescription, titleTag } from "./reading.ts";
 import { INDEXING_ENABLED, ORGANIZATION_ID, SITE_URL } from "./site";
 
@@ -144,6 +145,7 @@ export function postJsonLd(
   topic?: { name: string; path: string },
   path = postPath(post.slug),
   image = post.image ?? ogUrl(post.locale, post.slug),
+  series?: { position: number; name: string; url: string },
 ) {
   const t = getDictionary(post.locale);
   const url = absoluteUrl(post.locale, path);
@@ -181,13 +183,17 @@ export function postJsonLd(
       wordCount: post.body.split(/\s+/).filter(Boolean).length,
       timeRequired: `PT${post.readingMinutes}M`,
       author: authorNode(post),
-      isPartOf: {
-        "@type": "Blog",
-        "@id": blogId(post.locale),
-        name: t.site.name,
-        url: absoluteUrl(post.locale, "/"),
-        publisher: org,
-      },
+      isPartOf: [
+        {
+          "@type": "Blog",
+          "@id": blogId(post.locale),
+          name: t.site.name,
+          url: absoluteUrl(post.locale, "/"),
+          publisher: org,
+        },
+        ...(series ? [seriesNode(post.locale, series, ORGANIZATION_ID)] : []),
+      ],
+      ...(series ? { position: series.position } : {}),
       publisher,
     },
     ...faqJsonLd(post, url),
