@@ -31,9 +31,21 @@ export function promptOf(series, index) {
 /** The founder's picks of batch 2026-10-30-blog-v2 (krizaka-blog#193): series index (1-based) -> candidate and Orazaka Studio run id.
     Chapter 10 keeps its cover; chapter 18 is not part of the series. */
 export const PICKS = {
-  1: ["a", "5b9b8a1f"], 2: ["b", "4d45823d"], 3: ["a", "f80e55ac"], 4: ["a", "14c20ad4"], 5: ["a", "7f279725"],
-  6: ["a", "8381c095"], 7: ["a", "5d3e9e4a"], 8: ["a", "dde98cb5"], 9: ["a", "1161b304"], 11: ["a", "349af806"],
-  12: ["b", "e63039d3"], 13: ["b", "8e4ac401"], 14: ["b", "10af5d48"], 15: ["b", "0aca8edc"], 16: ["a", "e7b9a24d"],
+  1: ["a", "5b9b8a1f"],
+  2: ["b", "4d45823d"],
+  3: ["a", "f80e55ac"],
+  4: ["a", "14c20ad4"],
+  5: ["a", "7f279725"],
+  6: ["a", "8381c095"],
+  7: ["a", "5d3e9e4a"],
+  8: ["a", "dde98cb5"],
+  9: ["a", "1161b304"],
+  11: ["a", "349af806"],
+  12: ["b", "e63039d3"],
+  13: ["b", "8e4ac401"],
+  14: ["b", "10af5d48"],
+  15: ["b", "0aca8edc"],
+  16: ["a", "e7b9a24d"],
   17: ["a", "44caa163"],
 };
 
@@ -76,7 +88,8 @@ async function main() {
       made: {
         model: "FLUX.1 [schnell]",
         licence: "Apache-2.0",
-        engine: "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+        engine:
+          "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
         machine: "RunPod L40S",
         via: "Orazaka Studio",
         size: `${meta.width}×${meta.height}`,

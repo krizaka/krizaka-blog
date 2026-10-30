@@ -23,10 +23,16 @@ test("every chapter of the series but the 10th wears its series cover, and each 
     }
     const m = media[c.id];
     assert.ok(m, `${c.id} is in lib/media.json`);
-    assert.deepEqual(m.srcs.map((s) => s.w), [480, 960, 1280]);
+    assert.deepEqual(
+      m.srcs.map((s) => s.w),
+      [480, 960, 1280],
+    );
     assert.ok(m.renditions.avif.length > 0 && m.renditions.webp.length > 0, `${c.id} has renditions`);
     for (const u of [...m.srcs, ...m.renditions.avif, ...m.renditions.webp]) assert.match(u.url, CDN_HOSTS);
-    assert.ok(/Studio run [0-9a-f]{8}\)/.test(m.made.note) && m.made.model === "FLUX.1 [schnell]", `${c.id} says how it was made`);
+    assert.ok(
+      /Studio run [0-9a-f]{8}\)/.test(m.made.note) && m.made.model === "FLUX.1 [schnell]",
+      `${c.id} says how it was made`,
+    );
   }
 });
 
@@ -63,13 +69,25 @@ test("the card uses the Krizaka UI Button (EPUB primary and cut, PDF secondary),
   assert.match(src, /chapters\[0\]\?\.cover/);
   assert.ok(!/<button|className="[^"]*btn/.test(src), "no hand-made button");
   assert.match(read("app/components/pages/HomePage.tsx"), /<TakeStory locale=\{locale\} \/>/);
-  assert.match(read("app/components/pages/ChapterPage.tsx"), /<TakeStory locale=\{locale\} bookKey=\{chapter\.slug\} compact \/>/);
+  assert.match(
+    read("app/components/pages/ChapterPage.tsx"),
+    /<TakeStory locale=\{locale\} bookKey=\{chapter\.slug\} compact \/>/,
+  );
 });
 
 test("the card's words exist in both languages, and no colour is hard-coded in its styles", () => {
   for (const loc of ["en", "fr"]) {
     const d = json(`messages/${loc}.json`).downloads;
-    for (const k of ["takeTitle", "takeMeta", "epubShort", "pdfShort", "epubHint", "pdfHint", "takeChapter", "takeStory"])
+    for (const k of [
+      "takeTitle",
+      "takeMeta",
+      "epubShort",
+      "pdfShort",
+      "epubHint",
+      "pdfHint",
+      "takeChapter",
+      "takeStory",
+    ])
       assert.ok(d[k], `${loc}.downloads.${k}`);
     assert.match(d.takeMeta, /\{n\}/);
     assert.match(d.takeMeta, /FR\/EN/);

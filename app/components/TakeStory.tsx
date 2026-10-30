@@ -88,7 +88,13 @@ export function TakeStory({
   return (
     <aside className="bl-take" aria-labelledby="bl-take-story">
       {cover && (
-        <CoverImage className="bl-take-cover" cover={cover} sizes="(min-width: 40rem) 160px, 96px" alt="" aria-hidden="true" />
+        <CoverImage
+          className="bl-take-cover"
+          cover={cover}
+          sizes="(min-width: 40rem) 160px, 96px"
+          alt=""
+          aria-hidden="true"
+        />
       )}
       <div className="bl-take-body">
         <h2 id="bl-take-story" className="bl-take-title">
