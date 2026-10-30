@@ -5689,5 +5689,75 @@
     }
    ]
   }
+ },
+ "how-we-test-uis-cover": {
+  "kind": "image",
+  "width": 1536,
+  "height": 864,
+  "blur": "data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAABQAgCdASoQAAkAA4BaJYgCdH8AGOmGXJH7P/AA99MrfjJ02Ua3gNWl/6kME2E9UQxuEFCreMeLh/KvlIBJ62d5MrgWV8QzqEzx4S52apKhHekQlaGAmk2e+t3dLAAA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/how-we-test-uis-cover-480.5808dcbce3.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/how-we-test-uis-cover-960.f47909485f.webp"
+   },
+   {
+    "w": 1536,
+    "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/how-we-test-uis-cover-1536.dea04df652.webp"
+   }
+  ],
+  "made": {
+   "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+   "licence": "Apache-2.0",
+   "engine": "stable-diffusion.cpp (sd-cli) on Metal, 4 steps, guidance 1.0, Euler, 1536×864",
+   "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+   "prompt": "On a walnut workbench at night, a small cardboard model of a city lit from inside by tiny warm lights, a single small wooden figure standing on a brass path laid across the model like a route, a brass stopwatch open beside it and an open paper notebook with a column of ticked boxes, a brass desk lamp casting warm light, through the tall window behind the snowy Montreal skyline under a pink and blue winter dusk, 50mm lens, low angle, bokeh of city lights, calm and orderly mood. Shot on a full-frame cinema camera, natural film grain, filmic colour grade with soft teal shadows and warm highlights, shallow depth of field, photorealistic. No text, no letters, no numbers, no logos, no people, no watermark.",
+   "seed": "3118",
+   "size": "1536×864",
+   "seconds": 0,
+   "costUsd": 0,
+   "note": "Made like the cover of chapter 17, with the command line of the image engine Orazaka runs on the Mac (sd-cli), not through an Orazaka Studio: there is no run id. One seed (3118), the first one, kept after a review at full size."
+  },
+  "renditions": {
+   "avif": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/how-we-test-uis-cover-480.a586b5a1e7.avif"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/how-we-test-uis-cover-768.4a3d083c5d.avif"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/how-we-test-uis-cover-1200.ae56216e8f.avif"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/how-we-test-uis-cover-1536.45913cb798.avif"
+    }
+   ],
+   "webp": [
+    {
+     "w": 480,
+     "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/how-we-test-uis-cover-480.5682b7304f.webp"
+    },
+    {
+     "w": 768,
+     "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/how-we-test-uis-cover-768.84f031c412.webp"
+    },
+    {
+     "w": 1200,
+     "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/how-we-test-uis-cover-1200.1610d69eab.webp"
+    },
+    {
+     "w": 1536,
+     "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/how-we-test-uis-cover-1536.3c81cc8281.webp"
+    }
+   ]
+  }
  }
 }

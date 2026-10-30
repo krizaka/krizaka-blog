@@ -29,7 +29,7 @@ test("of two chapters out at the same minute, the later in the story is the late
   assert.deepEqual(storyRows([]), []);
 });
 
-test("today's chapters: chapter 17 Featured, then 16 → 1 in both languages", () => {
+test("today's chapters: chapter 18 Featured, then 17 → 1 in both languages", () => {
   for (const locale of ["en", "fr"]) {
     const list = readdirSync(new URL("../content/chapters/", import.meta.url))
       .filter((f) => f.endsWith(`.${locale}.mdx`))
@@ -37,9 +37,9 @@ test("today's chapters: chapter 17 Featured, then 16 → 1 in both languages", (
       .filter((c) => c.draft !== true)
       .map((c) => ({ ...c, date: String(c.date instanceof Date ? c.date.toISOString().slice(0, 10) : c.date) }));
     const rows = storyRows(list);
-    assert.deepEqual(rows.map((r) => r.chapter.chapter), [16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1], locale);
-    assert.equal(rows.length + 1, 17, `${locale}: seventeen chapters, one of them Featured`);
-    assert.equal(latestChapter(list).slug, "how-the-founder-and-the-cto-agent-work", `${locale}: the latest chapter is Featured`);
+    assert.deepEqual(rows.map((r) => r.chapter.chapter), [17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1], locale);
+    assert.equal(rows.length + 1, 18, `${locale}: eighteen chapters, one of them Featured`);
+    assert.equal(latestChapter(list).slug, "how-we-test-our-uis", `${locale}: the latest chapter is Featured`);
   }
 });
 

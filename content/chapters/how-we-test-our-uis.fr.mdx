@@ -1,0 +1,122 @@
+---
+title: "Comment on teste nos interfaces"
+description: "Des parcours de clients, pas des composants : Playwright sur le web, Maestro sur Android, un Mac encore peu testé, des vidéos qui sortent des tests, et les vraies pannes de la semaine."
+seoTitle: "Tester ses interfaces : parcours, Playwright, Maestro"
+seoDescription: "Comment Krizaka teste ses applications web, Android et Mac avec des parcours, Playwright et Maestro, et ce qui reste à faire. Exemple : Akinaza."
+date: 2026-10-30
+publishedAt: "2026-10-30T14:00:00-04:00"
+tags: [ui, measurements]
+author: oussama
+cover: how-we-test-uis-cover
+coverAlt: "Un modèle de ville éclairé de l'intérieur sur un bureau de noyer, un petit personnage debout sur une règle de laiton à côté d'un carnet ouvert et d'un chronomètre, une lampe de laiton, et derrière la fenêtre une ville enneigée sous un ciel rose et bleu"
+draft: false
+sensitive: true
+chapter: 18
+period: "2026-10-23/2026-10-30"
+sources:
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "des tests lents, qu'on relançait quand ils échouaient"
+  built: "des parcours de clients, zéro rejeu, une garde par panne"
+stats:
+  - value: "0"
+    label: "rejeu des parcours web : un parcours instable est un bogue"
+    section: "Ce qu'on teste, et ce qu'on ne teste pas"
+  - value: "22"
+    label: "captures de référence pour 6 parcours (téléphone, bureau, clair, sombre)"
+    section: "Le web : Playwright et les captures"
+  - value: "7"
+    label: "parcours Maestro sur un émulateur Android, à chaque PR"
+    section: "Le téléphone : Maestro"
+---
+
+La question que je pose à mes agents est simple : si un client ne peut plus réserver une promenade chez Akinaza, comment on le sait ? Une liste de fichiers de tests n'est pas une réponse. Il faut pouvoir dire « le parcours de réservation passe, voilà sa dernière exécution ».
+
+Ce chapitre raconte ce qu'on a mis en place depuis, avec Akinaza comme exemple, parce que c'est le produit qui a le plus de surfaces : le web des clients, le web des propriétaires, Android, iOS et un Mac. Je dis aussi ce qui n'est pas fait. Chaque affirmation renvoie à un fichier, une PR ou un lancement de CI, et les chiffres viennent des dépôts.
+
+## Ce qu'on teste, et ce qu'on ne teste pas
+
+Ma phrase de départ, que j'ai fini par écrire dans une décision d'architecture, c'est : « on ne teste pas les composants ». Les composants vivent dans Krizaka UI, qui a ses propres tests. Un produit qui les utilise ne les teste pas une deuxième fois. Si un bogue est dans un composant, son test va dans la bibliothèque, pas en copie dans le produit.
+
+La décision s'appelle [ADR-017](https://github.com/krizaka/.github/blob/main/docs/adr/ADR-017-e2e-journeys-test-shape.md). Un test de produit a trois sujets possibles : ses règles (des tests unitaires, rapides), ses frontières (serveur, API, vraie base de données), et ses **parcours**, c'est-à-dire une promesse faite à un client, vue de son côté. C'est ce dernier qui prouve que le produit marche, et c'est celui qui a longtemps été partiel chez nous.
+
+Un parcours a une personne, une promesse et un résultat visible. « Eric ouvre un bail sans avis du TAL et voit la section G, avec sa citation » est un parcours. « La page s'affiche » n'en est pas un, et la revue le refuse.
+
+Les personnes sont des personnages fictifs, les mêmes en local et sur le serveur de développement, issus d'un jeu de données de démonstration. Jamais un vrai compte, jamais le compte d'administration.
+
+## Le web : Playwright et les captures
+
+Pour Akinaza, les parcours web sont dans [`journeys.visual.mjs`](https://github.com/krizaka/akinaza/blob/main/apps/web/e2e/visual/journeys.visual.mjs) : la page d'accueil, la page d'une boutique, un service, la confirmation d'une réservation, la connexion, et la journée de la promeneuse. Six parcours. Chacun est photographié sur un téléphone et sur un écran de bureau, en clair et en sombre, ce qui fait 22 captures de référence dans le dépôt (la confirmation de réservation n'existe que sur bureau).
+
+Les captures de référence sont faites sous Linux, dans le conteneur officiel de Playwright, jamais sur mon Mac. Sinon deux machines dessineraient la même police de deux façons et tout serait rouge. Quand une référence doit changer, un workflow « Update visual baselines » le fait sur la branche, et je n'ai pas à lancer Docker chez moi.
+
+Le job tourne en [environ 2 minutes](https://github.com/krizaka/akinaza/actions/workflows/visual.yml) (les huit derniers lancements réussis que j'ai lus aujourd'hui), et c'est un contrôle obligatoire de la file de fusion. Dates, heures et créneaux libres sont masqués, la carte aussi, puisque ses tuiles viennent du réseau.
+
+La configuration dit une chose qui m'importe plus que le reste, et qui tient en une ligne : [`retries: 0`](https://github.com/krizaka/akinaza/blob/main/apps/web/e2e/visual/playwright.config.mjs). Pas de rejeu. Un test qui échoue puis réussit au deuxième essai ne passe pas pour moi, il cache un bogue.
+
+Le noyau commun de ces parcours (se connecter une fois par processus, les masques, les crochets de vidéo, la quarantaine plafonnée) est dans `@krizaka/page-audit/journey`, écrit dans [krizaka-ts#277](https://github.com/krizaka/krizaka-ts/pull/277) puis publié par [la PR de version #278](https://github.com/krizaka/krizaka-ts/pull/278). Le premier produit à s'en servir est Yomizaka, avec [yomizaka#623](https://github.com/krizaka/yomizaka/pull/623) : un catalogue de parcours dans un fichier, et un premier parcours, la section G du bail. Au moment où j'écris, cette PR est encore dans la file de fusion. Akinaza n'a pas encore son catalogue.
+
+## Le téléphone : Maestro
+
+Sur Android, on utilise [Maestro](https://maestro.dev). Les parcours sont de petits fichiers YAML dans [`apps/mobile/.maestro`](https://github.com/krizaka/akinaza/tree/main/apps/mobile/.maestro) : l'ouverture de l'application, les cinq onglets, la journée, les clients, les livres de comptes, une saisie rapide. Sept parcours, plus deux petits morceaux partagés (le lancement et la connexion).
+
+À chaque PR, le workflow [Mobile CI](https://github.com/krizaka/akinaza/blob/main/.github/workflows/mobile-ci.yml) construit l'application, démarre un émulateur Android et un serveur jetable avec la boutique de démonstration, puis lance les parcours en tant que la promeneuse de démo. Le contrôle `mobile-e2e / gate` est obligatoire. Ce job prend entre 16 et 19 minutes sur les huit derniers lancements réussis.
+
+Ce que Maestro voit et que Playwright ne voit pas, c'est l'application réellement installée. Exemple vrai : après avoir effacé l'état de l'appli, un émulateur lent peint d'abord un écran blanc. Le test cherchait le champ e-mail trop tôt et échouait de temps en temps. La correction, dans [akinaza#435](https://github.com/krizaka/akinaza/pull/435), attend l'écran au lieu de l'affirmer tout de suite. Aucun test web n'aurait pu trouver ça.
+
+Il y a ici un écart avec ma règle du zéro rejeu, et je le dis : le workflow partagé relance un parcours qui a échoué, jusqu'à trois essais ([`flow-attempts`](https://github.com/krizaka/.github/blob/main/.github/workflows/mobile-e2e.yml)), parce qu'un émulateur sur un serveur partagé lâche un parcours de temps en temps. Seuls les parcours en échec sont relancés et chacun doit finir par passer, mais c'est bien un rejeu. Je ne l'ai pas encore supprimé.
+
+Et iOS ? Les mêmes parcours Maestro pourraient tourner sur un simulateur, mais le workflow le dit lui-même en en-tête : le job iOS est « optionnel, pas encore dans ce fichier ». Rien ne tourne sur iOS en CI aujourd'hui.
+
+## Le Mac : ce qui n'est pas testé
+
+L'application Mac d'Akinaza est faite avec Tauri. La CI ([`desktop.yml`](https://github.com/krizaka/akinaza/blob/main/.github/workflows/desktop.yml), qui appelle [le workflow partagé](https://github.com/krizaka/.github/blob/main/.github/workflows/tauri-macos.yml)) lance les tests Rust de l'application et construit un `.dmg` non signé à chaque PR qui touche l'application. La version signée n'est produite que sur une étiquette.
+
+Il n'y a aucun parcours d'interface sur le Mac. Personne n'ouvre l'application construite pour y cliquer. L'interface web qu'elle affiche est testée par les parcours web, ce qui couvre une partie du risque, mais la coque native (menus, fenêtre, signature) ne l'est pas. C'est un vrai trou.
+
+## Des vidéos qui sortent des tests
+
+Les pages de téléchargement de nos produits montrent des vidéos des applications, et une vidéo filmée à la main vieillit dès la version suivante. Alors ce sont les tests qui les filment ([krizaka/.github#315](https://github.com/krizaka/.github/issues/315), règle [« app videos »](https://github.com/krizaka/.github/blob/main/docs/standards/app-videos.md)). Un seul parcours sert deux fois : à prouver, et à montrer.
+
+Côté web, [`showcase-web.mjs`](https://github.com/krizaka/akinaza/blob/main/apps/web/scripts/showcase-web.mjs) enregistre avec Playwright. La connexion se fait hors caméra, pour que rien de tapé ne soit filmé, avec le personnage de démo, et la bannière « version de développement » reste visible. Côté téléphone, ce sont les commandes `startRecording` et `stopRecording` de Maestro dans [`.maestro-showcase`](https://github.com/krizaka/akinaza/tree/main/apps/mobile/.maestro-showcase).
+
+Le workflow [`download-videos.yml`](https://github.com/krizaka/akinaza/blob/main/.github/workflows/download-videos.yml) tourne chaque nuit sur `main` et n'est jamais obligatoire, donc il ne peut bloquer aucune fusion. Le workflow partagé [`app-videos.yml`](https://github.com/krizaka/.github/blob/main/.github/workflows/app-videos.yml) encode en webm et mp4 avec une affiche (30 secondes au plus, sans son, 720 pixels de large au plus), envoie le tout sur notre stockage de médias sous un nom qui contient son empreinte, et ouvre une PR. Un test unitaire échoue si la page nomme une vidéo absente du manifeste ou plus vieille que 14 jours.
+
+Un vrai exemple : celui de Yomizaka, [le rapport en 10,6 secondes](https://krizaka-assets.b-cdn.net/sites/yomizaka/download/web-report.2813a67179.mp4) (son [affiche](https://krizaka-assets.b-cdn.net/sites/yomizaka/download/web-report.3ca0931124.jpg)), pris le 27 octobre par le test lui-même. Il pèse 134 Ko.
+
+Pour Akinaza, je dois être honnête : le manifeste des vidéos est vide aujourd'hui (`"videos": []`). Les scripts d'enregistrement existent, le workflow existe, mais aucune vidéo d'Akinaza n'est encore publiée par ce chemin. Je ne montre donc pas de clip d'Akinaza ici.
+
+## Les pannes de la semaine
+
+Un test instable est un bogue. Cette règle est écrite dans l'ADR, avec une quarantaine plafonnée : si la correction n'est pas immédiate, on isole l'assertion, avec une issue, et seule cette assertion saute. Voici les cas de cette semaine, avec leur vraie cause, que chaque fois on n'a trouvée qu'en lisant le journal.
+
+**La pastille d'horaires.** Sur la page d'une boutique, une pastille « ouvert maintenant » est dessinée par le serveur avec l'heure réelle, alors que l'horloge du navigateur de test est figée. Ses mots et sa largeur changeaient avec l'heure du lancement, et les trois captures de la page échouaient sur chaque PR ([akinaza#564](https://github.com/krizaka/akinaza/pull/564)). Le premier correctif cachait la pastille. Il a fallu un second, [akinaza#565](https://github.com/krizaka/akinaza/pull/565), qui injecte l'horloge dans les pages au lieu de les maquiller.
+
+**La journée de la promeneuse.** Même famille : la semaine affichée suit la date, donc la capture de la journée dérivait. La correction est dans [akinaza#599](https://github.com/krizaka/akinaza/pull/599), elle aussi encore ouverte au moment où j'écris.
+
+**L'import à froid.** Le test « répond 401 à quelqu'un qui n'est pas connecté » durait 5 007 ms, pile la limite de 5 secondes, et faisait échouer le pre-push. Le 401 lui-même prend environ 30 ms. La seconde perdue était le premier import dynamique des modules de routes dans le test. Dans [akinaza#561](https://github.com/krizaka/akinaza/pull/561), l'import se fait une fois avant les tests, le test affirme que chaque refus dure moins d'une seconde, et la limite n'a pas bougé.
+
+**RetroTv.** Dans Krizaka UI, le composant de télévision rétro échouait à 11 % sur une machine chargée. Deux causes : ses exemples chargeaient une affiche et un clip depuis le réseau, que le lanceur refusait sans bruit, et l'écran paresseux était photographié avant d'avoir monté ses couches. [krizaka-ui#875](https://github.com/krizaka/krizaka-ui/pull/875) met des fichiers de test dans le dépôt, fait échouer toute requête sortante qui n'est pas l'un d'eux, et [krizaka-ui#893](https://github.com/krizaka/krizaka-ui/pull/893) attend les couches.
+
+**La colonne de date à un pixel.** Dans Yomizaka, une capture échouait pour 956 pixels de différence. La date du jour est écrite par le serveur, dont l'horloge n'est pas figée : « vendredi 30 octobre 2026 » (24 lettres) contre « jeudi 29 octobre 2026 » (21), donc 181 pixels de large contre 152. Le test échouait selon le jour de la semaine. Le test avait été relancé sans lire le journal et il avait passé après minuit, ce qui est exactement la mauvaise habitude : on a lu le journal ensuite. Le détail est dans [yomizaka#611](https://github.com/krizaka/yomizaka/pull/611), et la vraie correction, l'horloge du serveur injectée, dans [yomizaka#615](https://github.com/krizaka/yomizaka/pull/615), encore ouverte.
+
+Une autre, plus ancienne, que j'aime bien : un test de confidentialité cherchait « 514 » (un indicatif de téléphone) dans une charge utile pleine d'identifiants. Un identifiant aléatoire contient « 514 » une fois sur dix environ. Cinq tests ont échoué d'un coup à cause d'un seul ([akinaza#350](https://github.com/krizaka/akinaza/pull/350)).
+
+Chaque cas a le même second temps, celui du [chapitre 17](/story/how-the-founder-and-the-cto-agent-work/) : pourquoi aucun garde n'a-t-il vu ça ? Pour les chiffres dans les UUID, une règle ast-grep refuse un bout de chiffres contre des données sérialisées. Pour RetroTv, une requête réseau devient une erreur. Pour l'horloge de Yomizaka, un test du parcours. Le garde est dans la même PR que le correctif.
+
+## Les chiffres, et ce que je ne sais pas encore
+
+Ce qui vient des dépôts aujourd'hui :
+
+- Akinaza compte 345 fichiers de test (unitaires, d'intégration, parcours), comptés dans le dépôt.
+- 6 parcours web avec 22 captures de référence, 7 parcours Maestro et 1 parcours de vidéo pour le téléphone.
+- Sur les huit derniers lancements réussis que j'ai lus, la CI complète d'une PR prend de 23 à 28 minutes, le job de captures environ 2 et le job mobile de 16 à 19.
+- Dans nos relevés de coût, une PR fusionnée d'Akinaza consomme 45 000 jetons en médiane, sur 131 PR, de 9 375 à 190 000. Je donne des jetons, pas des dollars, parce que c'est ce que le relevé mesure.
+
+Et ce qui manque :
+
+- L'ADR fixe 15 minutes pour la CI d'une PR. Akinaza est entre 23 et 28. On n'y est pas.
+- Je n'ai pas de taux d'instabilité avant et après. L'indicateur est prévu ([krizaka/.github#357](https://github.com/krizaka/.github/issues/357)), il n'est pas encore là. Je préfère ne rien chiffrer plutôt que d'inventer.
+- Pas d'iOS en CI, pas de parcours sur le Mac, le rejeu à trois essais de Maestro, aucun catalogue de parcours chez Akinaza, et aucune vidéo d'Akinaza publiée par ce chemin.
+
+Ce que j'en retiens : les parcours coûtent plus cher qu'un test unitaire, et ils sont les seuls à répondre à ma question du début. Le reste, c'est de la discipline : zéro rejeu, une horloge qu'on contrôle, et un garde à chaque panne.
