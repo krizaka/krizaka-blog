@@ -70,6 +70,16 @@ Three screens of the app, taken by the journey of the tabs in the green run of `
 <Figure id="maestro-books" alt="Android emulator, Books tab: the quarter's two sales-tax figures to remit, with the note that Akinaza prepares the figures and the owner files the return" />
 </Row>
 
+The same green run recorded the clients as they run. The phone first (Android emulator, the tabs of the app, demo persona, no sign-in step), then the public page of a demo shop and the composer of the admin in the browser:
+
+<Row>
+<Clip id="showcase-android" alt="Android emulator: the Today tab with the day's appointments, then the Books tab with the quarter's two sales-tax figures" />
+</Row>
+
+<Clip id="showcase-web-storefront" alt="Browser: the public page of a demo hair salon, from the hero to its services and photos, in the dark theme" />
+
+<Clip id="showcase-web-composer" alt="Browser: the shop composer of the admin, switching sections on and off while the phone preview follows" />
+
 What Maestro sees and Playwright cannot is the app actually installed. A true example: after clearing the app's state, a slow emulator first paints a blank screen. The test looked for the email field too early and failed now and then. The fix, in [akinaza#435](https://github.com/krizaka/akinaza/pull/435), waits for the screen instead of asserting it at once. No web test could have found that.
 
 There is a gap here with my zero-rerun rule, and I say so: the shared workflow reruns a journey that failed, up to three attempts ([`flow-attempts`](https://github.com/krizaka/.github/blob/main/.github/workflows/mobile-e2e.yml)), because an emulator on a shared runner drops a journey now and then. Only the failed journeys are rerun and each must end up passing, but it is a rerun. I have not removed it yet.

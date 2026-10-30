@@ -5837,5 +5837,62 @@
    "machine": "GitHub Actions, Android emulator",
    "note": "Taken by a Maestro journey of the Akinaza mobile app, in the green main run mobile-ci 41009319706 (artifact maestro-e2e, 2026-10-30). Demo persona and demo data only."
   }
- }
+ },
+  "showcase-android": {
+    "kind": "video",
+    "width": 540,
+    "height": 1200,
+    "blur": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAACwBQCdASoYADUAPxF4slOsJyQirBVbMYAiCWkA0yQId7fgCAT+qukNpro7qIB5NLxo4wqKDXAA/ueO6vnWpLLRRo4Pkk3O0Zoif2WFdWGR5Gr+MbMinF6p1FZCwfR+c3nkDlwa4gWDDN8iCMbpxQGHCcU+hvbNERyTIozq47j41gEPZAA=",
+    "poster": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/showcase-android-poster.0047c30de6.webp",
+    "mp4": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/showcase-android.01b4a18af0.mp4",
+    "webm": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/showcase-android.f93d18087c.webm",
+    "bytes": {
+      "mp4": 63389,
+      "webm": 76039
+    },
+    "made": {
+      "model": "Playwright/Maestro screen recording (no generative model)",
+      "licence": "n/a",
+      "machine": "GitHub Actions, Android emulator",
+      "note": "Maestro screen recording of the Akinaza mobile app (journey android-today-books), run akinaza showcase 41011560619 (success, 2026-10-30). Demo persona and demo data only."
+    }
+  },
+  "showcase-web-storefront": {
+    "kind": "video",
+    "width": 1280,
+    "height": 800,
+    "blur": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAABQAwCdASoYAA8APxFysFAsJqSisAgBgCIJaWZAADc5+M7IAAD+7rXLMY1+Bl9RpGehJ4VMKphYvioYs/MRvaEAUD3dIZWWv4DAwAAA",
+    "poster": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/showcase-web-storefront-poster.fce22ec6fc.webp",
+    "mp4": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/showcase-web-storefront.fb201ed966.mp4",
+    "webm": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/showcase-web-storefront.82d68bd8da.webm",
+    "bytes": {
+      "mp4": 508340,
+      "webm": 471932
+    },
+    "made": {
+      "model": "Playwright/Maestro screen recording (no generative model)",
+      "licence": "n/a",
+      "machine": "GitHub Actions, Playwright (Chromium)",
+      "note": "Playwright recording of a demo shop's public page, run akinaza showcase 41011560619 (success, 2026-10-30). Demo persona and demo data only."
+    }
+  },
+  "showcase-web-composer": {
+    "kind": "video",
+    "width": 1280,
+    "height": 800,
+    "blur": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAABwAwCdASoYAA8APxFwsFAsJiSisAgBgCIJZQDDNCG6q6HpYAAA/ujEW9xUuUO6rNk91CDMft/8Ptd1TnaEv6267XkNN/fO7TBXBocMlNhcsWSuIvkM2XDKZAMAAA==",
+    "poster": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/showcase-web-composer-poster.dd645aa5fc.webp",
+    "mp4": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/showcase-web-composer.cfb4a994f1.mp4",
+    "webm": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/showcase-web-composer.0d061c86fc.webm",
+    "bytes": {
+      "mp4": 268434,
+      "webm": 185730
+    },
+    "made": {
+      "model": "Playwright/Maestro screen recording (no generative model)",
+      "licence": "n/a",
+      "machine": "GitHub Actions, Playwright (Chromium)",
+      "note": "Playwright recording of the shop composer of the admin, run akinaza showcase 41011560619 (success, 2026-10-30). Demo persona and demo data only."
+    }
+  }
 }

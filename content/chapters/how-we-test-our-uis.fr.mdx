@@ -70,6 +70,16 @@ Trois écrans de l'app, pris par le parcours des onglets dans l'exécution verte
 <Figure id="maestro-books" alt="Émulateur Android, onglet Livres : les deux montants de taxes de vente du trimestre à remettre, avec la mention qu'Akinaza prépare les chiffres et que le propriétaire produit la déclaration" />
 </Row>
 
+La même exécution verte a filmé les clients tels qu'ils tournent. D'abord le téléphone (émulateur Android, les onglets de l'app, personnage de démo, sans étape de connexion), puis la page publique d'une boutique de démonstration et le compositeur de l'administration dans le navigateur :
+
+<Row>
+<Clip id="showcase-android" alt="Émulateur Android : l'onglet Aujourd'hui avec les rendez-vous du jour, puis l'onglet Livres avec les deux montants de taxes de vente du trimestre" />
+</Row>
+
+<Clip id="showcase-web-storefront" alt="Navigateur : la page publique d'un salon de coiffure de démonstration, de l'en-tête à ses services et ses photos, en thème sombre" />
+
+<Clip id="showcase-web-composer" alt="Navigateur : le compositeur de boutique de l'administration, qui active et désactive des sections pendant que l'aperçu téléphone suit" />
+
 Ce que Maestro voit et que Playwright ne voit pas, c'est l'application réellement installée. Exemple vrai : après avoir effacé l'état de l'appli, un émulateur lent peint d'abord un écran blanc. Le test cherchait le champ e-mail trop tôt et échouait de temps en temps. La correction, dans [akinaza#435](https://github.com/krizaka/akinaza/pull/435), attend l'écran au lieu de l'affirmer tout de suite. Aucun test web n'aurait pu trouver ça.
 
 Il y a ici un écart avec ma règle du zéro rejeu, et je le dis : le workflow partagé relance un parcours qui a échoué, jusqu'à trois essais ([`flow-attempts`](https://github.com/krizaka/.github/blob/main/.github/workflows/mobile-e2e.yml)), parce qu'un émulateur sur un serveur partagé lâche un parcours de temps en temps. Seuls les parcours en échec sont relancés et chacun doit finir par passer, mais c'est bien un rejeu. Je ne l'ai pas encore supprimé.
