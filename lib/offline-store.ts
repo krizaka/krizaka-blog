@@ -54,7 +54,9 @@ export const offlineStore = {
       if (supported()) void refresh();
       else set({ status: "unsupported" });
     }
-    return () => void listeners.delete(listener);
+    return () => {
+      listeners.delete(listener);
+    };
   },
   getSnapshot: () => state,
   getServerSnapshot: () => SERVER,

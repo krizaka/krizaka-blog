@@ -10,16 +10,16 @@ import { CDN_ORIGIN, isNeverCached, migrate, offlineUrl } from "../lib/offline-c
 
 const NETWORK_TIMEOUT_MS = 4000;
 
-precacheAndRoute(self.__WB_MANIFEST);
+precacheAndRoute(globalThis.__WB_MANIFEST);
 cleanupOutdatedCaches();
 
-self.addEventListener("install", () => self.skipWaiting());
-self.addEventListener("activate", (event) => {
+globalThis.addEventListener("install", () => globalThis.skipWaiting());
+globalThis.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
-      await self.clients.claim();
+      await globalThis.clients.claim();
       try {
-        await migrate(self.caches, (url, init) => fetch(url, init));
+        await migrate(globalThis.caches, (url, init) => fetch(url, init));
       } catch {
         // offline at the update: the old cache stays, the next activation tries again
       }
@@ -31,13 +31,13 @@ const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new E
 
 registerRoute(
   ({ request, url }) =>
-    request.mode === "navigate" && url.origin === self.location.origin && !isNeverCached(url.pathname),
+    request.mode === "navigate" && url.origin === globalThis.location.origin && !isNeverCached(url.pathname),
   async ({ request, url }) => {
     try {
       return await Promise.race([fetch(request), timeout(NETWORK_TIMEOUT_MS)]);
     } catch {
       return (
-        (await self.caches.match(request, { ignoreSearch: true })) ??
+        (await globalThis.caches.match(request, { ignoreSearch: true })) ??
         (await matchPrecache(offlineUrl(url.pathname))) ??
         Response.error()
       );
@@ -48,6 +48,7 @@ registerRoute(
 registerRoute(
   ({ request, url }) =>
     request.method === "GET" &&
-    ((url.origin === self.location.origin && url.pathname.startsWith("/_next/static/")) || url.origin === CDN_ORIGIN),
-  async ({ request }) => (await self.caches.match(request)) ?? fetch(request),
+    ((url.origin === globalThis.location.origin && url.pathname.startsWith("/_next/static/")) ||
+      url.origin === CDN_ORIGIN),
+  async ({ request }) => (await globalThis.caches.match(request)) ?? fetch(request),
 );

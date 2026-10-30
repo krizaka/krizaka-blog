@@ -8,7 +8,7 @@ import { SaveSeries, SavedList } from "../SaveOffline";
 /* /offline/ (EN) and /fr/offline/ (FR), krizaka-blog#211: what this device holds for reading with no connection, and the way to save the
    rest. It is also the page the service worker answers with for a page that is not saved, so it is precached and says so
    (`notSaved`) in words that hold online too. Never indexed, never in the sitemap. */
-export function OfflinePage({ locale }: { locale: Locale }) {
+export function OfflinePage({ locale }: Readonly<{ locale: Locale }>) {
   const t = getDictionary(locale);
   const o = t.offline;
   const chapters = chaptersOf(locale).map((c) => ({

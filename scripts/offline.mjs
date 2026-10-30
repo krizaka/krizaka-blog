@@ -47,7 +47,7 @@ const pathOnDisk = (out, url) => join(out, decodeURIComponent(url.split("?")[0])
 
 /** Adds to `assets` what the stylesheets among them draw (the fonts). */
 function withStyleAssets(out, assets) {
-  for (const a of [...assets])
+  for (const a of assets)
     if (a.endsWith(".css") && existsSync(pathOnDisk(out, a)))
       for (const f of cssAssets(readFileSync(pathOnDisk(out, a), "utf8"), a)) assets.add(f);
   return assets;
@@ -58,7 +58,10 @@ export function chapterEntry(out, c) {
   const url = `${c.locale === "fr" ? "/fr" : ""}/story/${c.slug}/`;
   const html = readFileSync(join(out, url, "index.html"), "utf8");
   const assets = withStyleAssets(out, new Set(pageAssets(html)));
-  return { entry: { slug: c.slug, title: c.title, url, assets: [...assets].sort() }, hash: sha(html) };
+  return {
+    entry: { slug: c.slug, title: c.title, url, assets: [...assets].sort((a, b) => a.localeCompare(b)) },
+    hash: sha(html),
+  };
 }
 
 /** offline-manifest.json: the build id and the chapters per language, in reading order. */
@@ -82,7 +85,7 @@ export function shellEntries(out, manifestJson) {
     entries.push({ url, revision: sha(html).slice(0, 12) });
     for (const f of withStyleAssets(out, new Set(pageAssets(html)))) if (f.startsWith("/")) files.add(f);
   }
-  return [...entries, ...[...files].sort().map((url) => ({ url, revision: null }))];
+  return [...entries, ...[...files].sort((a, b) => a.localeCompare(b)).map((url) => ({ url, revision: null }))];
 }
 
 export async function writeOffline(out, chapters) {
@@ -108,6 +111,7 @@ export async function writeOffline(out, chapters) {
     globDirectory: out,
     globPatterns: [],
     additionalManifestEntries: shellEntries(out, json),
+    injectionPoint: "globalThis.__WB_MANIFEST",
   });
   for (const w of warnings) console.warn(`offline: ${w}`);
   const n = Object.values(manifest.chapters).flat().length;

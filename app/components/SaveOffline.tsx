@@ -11,23 +11,24 @@ import { useI18n } from "./I18nProvider";
 const useOffline = (): OfflineState =>
   useSyncExternalStore(offlineStore.subscribe, offlineStore.getSnapshot, offlineStore.getServerSnapshot);
 
-function Notice({ state }: { state: OfflineState }) {
+function Notice({ state }: Readonly<{ state: OfflineState }>) {
   const { t } = useI18n();
   const message = state.status === "unsupported" ? t.offline.unsupported : state.error && t.offline[state.error];
   return (
-    <p className="bl-offline-note" role="status" hidden={!message}>
+    <output className="bl-offline-note" hidden={!message}>
       {message}
-    </p>
+    </output>
   );
 }
 
 /** The chapter's own button: save it, then show it saved with a way to remove it. */
-export function SaveChapter({ url }: { url: string }) {
+export function SaveChapter({ url }: Readonly<{ url: string }>) {
   const { t } = useI18n();
   const state = useOffline();
   if (state.status === "unsupported") return null;
   const saved = state.saved.includes(url);
   const saving = state.status === "saving";
+  const label = saving ? t.offline.saving : t.offline[saved ? "remove" : "save"];
   return (
     <div className="bl-offline">
       <Button
@@ -38,7 +39,7 @@ export function SaveChapter({ url }: { url: string }) {
         aria-pressed={saved}
         onClick={() => (saved ? void offlineStore.remove([url]) : void offlineStore.save([url]))}
       >
-        {saving ? t.offline.saving : saved ? t.offline.remove : t.offline.save}
+        {label}
       </Button>
       {saved && <span className="bl-offline-state">{t.offline.saved}</span>}
       <Notice state={state} />
@@ -47,12 +48,15 @@ export function SaveChapter({ url }: { url: string }) {
 }
 
 /** Every chapter of the language in one go; the count says how many (the series is all of them). */
-export function SaveSeries({ urls }: { urls: readonly string[] }) {
+export function SaveSeries({ urls }: Readonly<{ urls: readonly string[] }>) {
   const { t } = useI18n();
   const state = useOffline();
   if (state.status === "unsupported" || urls.length === 0) return null;
   const all = urls.every((u) => state.saved.includes(u));
   const saving = state.status === "saving";
+  let label = format(t.offline.saveSeries, { n: String(urls.length) });
+  if (all) label = t.offline.seriesSaved;
+  if (saving && state.progress) label = `${t.offline.saving} ${state.progress.done}/${state.progress.total}`;
   return (
     <div className="bl-offline">
       <Button
@@ -63,11 +67,7 @@ export function SaveSeries({ urls }: { urls: readonly string[] }) {
         disabled={saving || all || state.status === "loading"}
         onClick={() => void offlineStore.save(urls)}
       >
-        {saving && state.progress
-          ? `${t.offline.saving} ${state.progress.done}/${state.progress.total}`
-          : all
-            ? t.offline.seriesSaved
-            : format(t.offline.saveSeries, { n: String(urls.length) })}
+        {label}
       </Button>
       <Notice state={state} />
     </div>
@@ -77,7 +77,7 @@ export function SaveSeries({ urls }: { urls: readonly string[] }) {
 export type SavedChapter = { url: string; number: string; title: string };
 
 /** The chapters held on this device, each a link that opens with no network, and a way to remove it. */
-export function SavedList({ chapters }: { chapters: readonly SavedChapter[] }) {
+export function SavedList({ chapters }: Readonly<{ chapters: readonly SavedChapter[] }>) {
   const { t } = useI18n();
   const state = useOffline();
   const held = chapters.filter((c) => state.saved.includes(c.url));

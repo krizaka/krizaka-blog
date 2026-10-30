@@ -144,10 +144,10 @@ export default function ChapterPage({ chapter }: { chapter: Chapter }) {
             style={{ backgroundImage: blurUrl(cover.blur) }}
           />
         )}
-        <div className="bl-offline-bar" role="group" aria-label={t.offline.regionLabel}>
+        <section className="bl-offline-bar" aria-label={t.offline.regionLabel}>
           <SaveChapter url={localizedPath(locale, chapterPath(chapter.slug))} />
           <SaveSeries urls={chaptersOf(locale).map((c) => localizedPath(locale, chapterPath(c.slug)))} />
-        </div>
+        </section>
       </Section>
       <Section reveal={false} spacing="sm" className="bl-post-body">
         {headings.length >= 3 ? (
