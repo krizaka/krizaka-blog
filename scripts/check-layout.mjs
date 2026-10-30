@@ -59,8 +59,16 @@ const contentPastEdge = () => {
       if (/(auto|scroll)/.test(getComputedStyle(p).overflowX)) return true;
     return false;
   };
+  /* What only a screen reader reads (a chart's data table in a 1 px clipped box, the « sr-only » pattern) is not on the screen. */
+  const visuallyHidden = (e) => {
+    for (let p = e.parentElement; p && p !== document.body; p = p.parentElement) {
+      const r = p.getBoundingClientRect();
+      if (r.width <= 1 && r.height <= 1 && getComputedStyle(p).overflow.includes("hidden")) return true;
+    }
+    return false;
+  };
   const past = [...document.querySelectorAll("main *")].find((e) => {
-    if (e.closest("[aria-hidden='true']") || scrolls(e)) return false;
+    if (e.closest("[aria-hidden='true']") || scrolls(e) || visuallyHidden(e)) return false;
     const r = e.getBoundingClientRect();
     return r.width > 0 && r.height > 0 && r.right > vw + 0.5;
   });
@@ -71,6 +79,21 @@ const contentPastEdge = () => {
     : [];
 };
 
+/* A post's actions (other language, read later): the same height and the same centre line, within 1 px. */
+const bylineActions = () => {
+  const acts = [...document.querySelectorAll(".bl-byline-actions > :is(a, button)")]
+    .map((e) => e.getBoundingClientRect())
+    .filter((r) => r.width);
+  const out = [];
+  for (const r of acts.slice(1)) {
+    if (Math.abs(r.height - acts[0].height) > 1)
+      out.push(`the post's actions differ in height (${Math.round(acts[0].height)} and ${Math.round(r.height)} px)`);
+    if (Math.abs(r.top + r.height / 2 - (acts[0].top + acts[0].height / 2)) > 1)
+      out.push("the post's actions are not on one centre line");
+  }
+  return out;
+};
+
 const titleOverflow = () => {
   const h1 = document.querySelector("h1");
   return h1 && h1.scrollWidth > h1.clientWidth + 1
@@ -78,7 +101,7 @@ const titleOverflow = () => {
     : [];
 };
 
-const LAYOUT_CHECKS = [sidewaysScroll, chromePastEdge, contentPastEdge, titleOverflow];
+const LAYOUT_CHECKS = [sidewaysScroll, chromePastEdge, contentPastEdge, bylineActions, titleOverflow];
 
 const ring = () => {
   const a = document.activeElement;
