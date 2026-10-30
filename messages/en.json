@@ -342,6 +342,14 @@
     "epubSeries": "The whole story, EPUB",
     "pdfSeries": "The whole story, PDF",
     "readOnline": "Read it online:",
+    "takeTitle": "Take the story with you",
+    "takeMeta": "{n} chapters · FR/EN",
+    "epubShort": "EPUB",
+    "pdfShort": "PDF",
+    "epubHint": "phones, e-readers",
+    "pdfHint": "to print or read on a computer",
+    "takeChapter": "This chapter",
+    "takeStory": "The whole story",
     "storyHeading": "The whole story"
   }
 }

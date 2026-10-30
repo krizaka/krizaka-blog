@@ -342,6 +342,14 @@
     "epubSeries": "Toute l'histoire, EPUB",
     "pdfSeries": "Toute l'histoire, PDF",
     "readOnline": "À lire en ligne :",
+    "takeTitle": "Emportez l'histoire",
+    "takeMeta": "{n} chapitres · FR/EN",
+    "epubShort": "EPUB",
+    "pdfShort": "PDF",
+    "epubHint": "téléphones, liseuses",
+    "pdfHint": "à imprimer ou à lire sur ordinateur",
+    "takeChapter": "Ce chapitre",
+    "takeStory": "Toute l'histoire",
     "storyHeading": "Toute l'histoire"
   }
 }

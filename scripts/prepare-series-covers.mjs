@@ -28,6 +28,15 @@ export function promptOf(series, index) {
   return parts.join(" ");
 }
 
+/** The founder's picks of batch 2026-10-30-blog-v2 (krizaka-blog#193): series index (1-based) -> candidate and Orazaka Studio run id.
+    Chapter 10 keeps its cover; chapter 18 is not part of the series. */
+export const PICKS = {
+  1: ["a", "5b9b8a1f"], 2: ["b", "4d45823d"], 3: ["a", "f80e55ac"], 4: ["a", "14c20ad4"], 5: ["a", "7f279725"],
+  6: ["a", "8381c095"], 7: ["a", "5d3e9e4a"], 8: ["a", "dde98cb5"], 9: ["a", "1161b304"], 11: ["a", "349af806"],
+  12: ["b", "e63039d3"], 13: ["b", "8e4ac401"], 14: ["b", "10af5d48"], 15: ["b", "0aca8edc"], 16: ["a", "e7b9a24d"],
+  17: ["a", "44caa163"],
+};
+
 export const coverId = (index, post) => `series-${String(index + 1).padStart(2, "0")}-${post}`;
 
 async function main() {
@@ -43,6 +52,8 @@ async function main() {
   mkdirSync(join(out, "series"), { recursive: true });
   for (const [i, c] of series.chapters.entries()) {
     const id = coverId(i, c.post);
+    if (!PICKS[i + 1]) continue;
+    const [pick, runId] = PICKS[i + 1];
     const input = join(src, `${String(i + 1).padStart(2, "0")}-${c.post}.png`);
     const srcs = [];
     for (const w of WIDTHS) {
@@ -58,29 +69,29 @@ async function main() {
     const meta = await sharp(input).metadata();
     media[id] = {
       kind: "image",
-      width: meta.width,
-      height: meta.height,
+      width: Math.min(meta.width, WIDTHS[2]), // the widest file sold
+      height: Math.round((meta.height * Math.min(meta.width, WIDTHS[2])) / meta.width),
       blur: `data:image/webp;base64,${blur.toString("base64")}`,
       srcs,
       made: {
-        model: "FLUX.2 [klein] 4B",
+        model: "FLUX.1 [schnell]",
         licence: "Apache-2.0",
-        engine:
-          "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
-        machine: "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
-        prompt: promptOf(series, i),
-        seed: String(c.seed),
+        engine: "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+        machine: "RunPod L40S",
+        via: "Orazaka Studio",
         size: `${meta.width}×${meta.height}`,
-        seconds: 0,
-        costUsd: 0,
         note:
           "Chapter " +
           (i + 1) +
-          " of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text.",
+          " of the image series, candidate " +
+          pick.toUpperCase() +
+          " of batch 2026-10-30-blog-v2 (Orazaka Studio run " +
+          runId +
+          ") chosen by the founder (krizaka-blog#193). No person, no text, no logo.",
       },
     };
     console.log(id, srcs.map((s) => s.url.split("/").pop()).join(" "));
   }
-  writeFileSync(file, `${JSON.stringify(media, null, 1)}\n`);
+  writeFileSync(file, `${JSON.stringify(media, null, 2)}\n`);
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) await main();

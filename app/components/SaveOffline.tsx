@@ -48,7 +48,7 @@ export function SaveChapter({ url }: Readonly<{ url: string }>) {
 }
 
 /** Every chapter of the language in one go; the count says how many (the series is all of them). */
-export function SaveSeries({ urls }: Readonly<{ urls: readonly string[] }>) {
+export function SaveSeries({ urls, quiet = false }: Readonly<{ urls: readonly string[]; quiet?: boolean }>) {
   const { t } = useI18n();
   const state = useOffline();
   if (state.status === "unsupported" || urls.length === 0) return null;
@@ -61,8 +61,8 @@ export function SaveSeries({ urls }: Readonly<{ urls: readonly string[] }>) {
     <div className="bl-offline">
       <Button
         type="button"
-        variant="primary"
-        shape="cut"
+        variant={quiet ? "ghost" : "primary"}
+        shape={quiet ? undefined : "cut"}
         size="md"
         disabled={saving || all || state.status === "loading"}
         onClick={() => void offlineStore.save(urls)}
