@@ -104,6 +104,14 @@ Akinaza's Mac app is built with Tauri. The CI ([`desktop.yml`](https://github.co
 
 There is no UI journey on the Mac. Nobody opens the built app and clicks in it. The web interface it displays is tested by the web journeys, which covers part of the risk, but the native shell (menus, window, signing) is not. That is a real hole.
 
+Yomizaka's Mac app, built the same way, does have one. [`desktop-journey.mjs`](https://github.com/krizaka/yomizaka/blob/main/scripts/desktop-journey.mjs) launches the built app on a macOS runner and drives it through WebDriver: the demo persona signs in, a folder granted before the launch is listed, the test opens it, checks its lease, waits for the result, then relaunches the app and checks that the folder and the session are still there. The film is made from the same driver: it takes screenshots of the window itself, so it needs no screen-recording permission, starts on the first screen that shows something, and cuts the engine's wait.
+
+<Clip
+  id="showcase-mac"
+  alt="Yomizaka's Mac app: the library with a granted demo folder, the folder's lease opened and sent to be checked, the reading steps, then the library again after a relaunch"
+  caption="Mac (Yomizaka). The journey opens the library, enters a demo folder, checks a demo lease and follows the reading steps, then relaunches the app. What you see: the installed app reading a lease from a local folder, driven by the test."
+/>
+
 ## Videos that come out of the tests
 
 The download pages of our products show videos of the apps, and a video filmed by hand gets old with the next version. So the tests film them ([krizaka/.github#315](https://github.com/krizaka/.github/issues/315), the ["app videos" rule](https://github.com/krizaka/.github/blob/main/docs/standards/app-videos.md)). One journey serves twice: to prove, and to show.

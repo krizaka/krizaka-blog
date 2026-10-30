@@ -5777,6 +5777,25 @@
       "note": "Playwright recording of the shop composer of the admin, run akinaza showcase 41011560619 (success, 2026-10-30). Demo persona and demo data only."
     }
   },
+  "showcase-mac": {
+    "kind": "video",
+    "width": 720,
+    "height": 450,
+    "blur": "data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAABQAwCdASoYAA8APzleyV8vI6qmGAHgJwlpAABc6fv7rA5hAAD+t8ND0Q+gVp1bj+Yan0wAAAA=",
+    "poster": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/showcase-mac-poster.2f5f277906.jpg",
+    "mp4": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/showcase-mac.f3b3d85fd3.mp4",
+    "webm": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/showcase-mac.ff63c469dd.webm",
+    "bytes": {
+      "mp4": 40196,
+      "webm": 41358
+    },
+    "made": {
+      "model": "WebDriver window frames (no generative model)",
+      "licence": "n/a",
+      "machine": "GitHub Actions, macOS runner, the Tauri app driven through WebDriver",
+      "note": "Yomizaka's Mac app recorded by its own journey, yomizaka download-videos run 41140339934 (success, 2026-10-30). Demo persona and demo folder only."
+    }
+  },
   "series-18-how-we-test-our-uis": {
     "kind": "image",
     "width": 1280,
