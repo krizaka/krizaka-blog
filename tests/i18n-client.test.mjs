@@ -32,10 +32,7 @@ test("no client component imports the catalogues (lib/i18n or messages/*) as a v
     for (const m of src.matchAll(/import\s+(type\s+)?([^;]*?)\s+from\s+"([^"]+)"/g)) {
       if (m[1]) continue;
       const names = m[2];
-      if (
-        /^(@\/lib\/i18n|\.\.?\/.*\/?i18n)$/.test(m[3]) &&
-        !isTypeOnlyBraces(names)
-      )
+      if (/^(@\/lib\/i18n|\.\.?\/.*\/?i18n)$/.test(m[3]) && !isTypeOnlyBraces(names))
         assert.fail(`${f} imports ${names} from ${m[3]}: use @/lib/locale`);
       assert.ok(!/messages\/(en|fr)(\.json)?$/.test(m[3]), `${f} imports the catalogue ${m[3]}`);
     }
