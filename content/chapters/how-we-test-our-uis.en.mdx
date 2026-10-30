@@ -62,23 +62,35 @@ On Android we use [Maestro](https://maestro.dev). The journeys are small YAML fi
 
 On every PR, the [Mobile CI](https://github.com/krizaka/akinaza/blob/main/.github/workflows/mobile-ci.yml) workflow builds the app, starts an Android emulator and a throwaway server with the demo shop, then runs the journeys as the demo walker. The `mobile-e2e / gate` check is required. This job takes 16 to 19 minutes over the last eight successful runs.
 
-Three screens of the app, taken by the journey of the tabs in the green run of `main` (demo persona, demo data): Today, Invoices, Books.
+Three screens of the app, taken by the journey of the tabs in the green run of `main` (Android client, demo persona, demo data): Today, Invoices, Books. Each one is a checkpoint of the journey: Maestro taps the tab, waits for the screen, then checks it and photographs it.
 
 <Row>
-<Figure id="maestro-today" alt="Android emulator, Today tab: the day's two appointments, one done, one planned, under the Development version banner" />
-<Figure id="maestro-invoices" alt="Android emulator, Invoices tab: the list of demo invoices with their totals" />
-<Figure id="maestro-books" alt="Android emulator, Books tab: the quarter's two sales-tax figures to remit, with the note that Akinaza prepares the figures and the owner files the return" />
+  <Figure
+    id="maestro-today"
+    alt="Android emulator, Today tab: the day's two appointments, one done, one planned, under the Development version banner"
+    caption="Android. Maestro opens the app as the demo walker and checks that Today lists the day's two appointments, one done, one planned."
+  />
+  <Figure
+    id="maestro-invoices"
+    alt="Android emulator, Invoices tab: the list of demo invoices with their totals"
+    caption="Android. Maestro taps Invoices and checks that the list of demo invoices shows with its totals."
+  />
+  <Figure
+    id="maestro-books"
+    alt="Android emulator, Books tab: the quarter's two sales-tax figures to remit, with the note that Akinaza prepares the figures and the owner files the return"
+    caption="Android. Maestro taps Books and checks the quarter's two sales-tax figures and the note that the owner files the return."
+  />
 </Row>
 
-The same green run recorded the clients as they run. The phone first (Android emulator, the tabs of the app, demo persona, no sign-in step), then the public page of a demo shop and the composer of the admin in the browser:
+The same green run also recorded the phone as it runs, the whole journey in one take, with no sign-in step:
 
 <Row>
-<Clip id="showcase-android" alt="Android emulator: the Today tab with the day's appointments, then the Books tab with the quarter's two sales-tax figures" />
+  <Clip
+    id="showcase-android"
+    alt="Android emulator: the Today tab with the day's appointments, then the Books tab with the quarter's two sales-tax figures"
+    caption="Android. Maestro's recording of the journey: it opens Today, then taps through to Books and its two tax figures. What you see: the installed app, driven by the test, in a loop."
+  />
 </Row>
-
-<Clip id="showcase-web-storefront" alt="Browser: the public page of a demo hair salon, from the hero to its services and photos, in the dark theme" />
-
-<Clip id="showcase-web-composer" alt="Browser: the shop composer of the admin, switching sections on and off while the phone preview follows" />
 
 What Maestro sees and Playwright cannot is the app actually installed. A true example: after clearing the app's state, a slow emulator first paints a blank screen. The test looked for the email field too early and failed now and then. The fix, in [akinaza#435](https://github.com/krizaka/akinaza/pull/435), waits for the screen instead of asserting it at once. No web test could have found that.
 
@@ -97,6 +109,20 @@ There is no UI journey on the Mac. Nobody opens the built app and clicks in it. 
 The download pages of our products show videos of the apps, and a video filmed by hand gets old with the next version. So the tests film them ([krizaka/.github#315](https://github.com/krizaka/.github/issues/315), the ["app videos" rule](https://github.com/krizaka/.github/blob/main/docs/standards/app-videos.md)). One journey serves twice: to prove, and to show.
 
 On the web, [`showcase-web.mjs`](https://github.com/krizaka/akinaza/blob/main/apps/web/scripts/showcase-web.mjs) records with Playwright. Sign-in happens off camera, so nothing typed is filmed, with the demo character, and the "development version" banner stays visible. On the phone, it is Maestro's `startRecording` and `stopRecording` commands in [`.maestro-showcase`](https://github.com/krizaka/akinaza/tree/main/apps/mobile/.maestro-showcase).
+
+Two web takes, from the same green run:
+
+<Clip
+  id="showcase-web-storefront"
+  alt="Browser: the public page of a demo hair salon, from the hero to its services and photos, in the dark theme"
+  caption="Web, customers' side. Playwright opens the public page of a demo salon and scrolls from the hero to the services and the photos, in the dark theme. What you see: the page a customer lands on."
+/>
+
+<Clip
+  id="showcase-web-composer"
+  alt="Browser: the shop composer of the admin, switching sections on and off while the phone preview follows"
+  caption="Web, owner's side (admin). Playwright switches the shop's sections on and off in the composer and checks that the phone preview follows. What you see: the owner building their page."
+/>
 
 The [`download-videos.yml`](https://github.com/krizaka/akinaza/blob/main/.github/workflows/download-videos.yml) workflow runs every night on `main` and is never required, so it cannot block a merge. The shared [`app-videos.yml`](https://github.com/krizaka/.github/blob/main/.github/workflows/app-videos.yml) encodes webm and mp4 with a poster (30 seconds at most, no sound, 720 pixels wide at most), sends everything to our media storage under a name that holds its fingerprint, and opens a PR. A unit test fails if the page names a video missing from the manifest or older than 14 days.
 

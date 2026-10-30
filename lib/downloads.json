@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "3e2b7da8bcdc",
+      "source": "abf7f6fcabf9",
       "files": {
         "epub": {
-          "hash": "cf16cddb0e",
-          "bytes": 170293
+          "hash": "0dfe6d5bab",
+          "bytes": 170570
         },
         "pdf": {
-          "hash": "ce05cc7046",
-          "bytes": 2133670
+          "hash": "d5cbb9c8ba",
+          "bytes": 2139197
         }
       }
     },
@@ -21,7 +21,7 @@
           "bytes": 50961
         },
         "pdf": {
-          "hash": "29a506f3d5",
+          "hash": "1528f3eebb",
           "bytes": 204628
         }
       }
@@ -34,7 +34,7 @@
           "bytes": 45065
         },
         "pdf": {
-          "hash": "c6932e866b",
+          "hash": "737854f50d",
           "bytes": 248065
         }
       }
@@ -47,7 +47,7 @@
           "bytes": 62535
         },
         "pdf": {
-          "hash": "d57c0e11ae",
+          "hash": "3805985f7a",
           "bytes": 377799
         }
       }
@@ -60,7 +60,7 @@
           "bytes": 61646
         },
         "pdf": {
-          "hash": "0ddf972284",
+          "hash": "0f7cc09098",
           "bytes": 328353
         }
       }
@@ -73,7 +73,7 @@
           "bytes": 59908
         },
         "pdf": {
-          "hash": "369f2627ba",
+          "hash": "44860865c3",
           "bytes": 302290
         }
       }
@@ -86,7 +86,7 @@
           "bytes": 64118
         },
         "pdf": {
-          "hash": "1db41f77e7",
+          "hash": "dd4e9e0357",
           "bytes": 297222
         }
       }
@@ -99,7 +99,7 @@
           "bytes": 55885
         },
         "pdf": {
-          "hash": "e07edc268c",
+          "hash": "cedd945117",
           "bytes": 260406
         }
       }
@@ -112,7 +112,7 @@
           "bytes": 57943
         },
         "pdf": {
-          "hash": "d670fda755",
+          "hash": "b2f4f6d509",
           "bytes": 279613
         }
       }
@@ -125,7 +125,7 @@
           "bytes": 64940
         },
         "pdf": {
-          "hash": "897129a8db",
+          "hash": "89edda8ec1",
           "bytes": 308098
         }
       }
@@ -138,7 +138,7 @@
           "bytes": 52584
         },
         "pdf": {
-          "hash": "8006bca9c9",
+          "hash": "d8af40dc65",
           "bytes": 378978
         }
       }
@@ -151,7 +151,7 @@
           "bytes": 45265
         },
         "pdf": {
-          "hash": "8560eb4c94",
+          "hash": "504671ddc9",
           "bytes": 342346
         }
       }
@@ -164,7 +164,7 @@
           "bytes": 51716
         },
         "pdf": {
-          "hash": "236865b3f6",
+          "hash": "3d1b39291c",
           "bytes": 270064
         }
       }
@@ -177,7 +177,7 @@
           "bytes": 64934
         },
         "pdf": {
-          "hash": "8d7d54e3d9",
+          "hash": "d403c2136b",
           "bytes": 361400
         }
       }
@@ -190,7 +190,7 @@
           "bytes": 55423
         },
         "pdf": {
-          "hash": "d40b0842b4",
+          "hash": "0b60ff9f8d",
           "bytes": 254348
         }
       }
@@ -203,7 +203,7 @@
           "bytes": 65792
         },
         "pdf": {
-          "hash": "a089fca305",
+          "hash": "01cc3bb899",
           "bytes": 222636
         }
       }
@@ -216,7 +216,7 @@
           "bytes": 71656
         },
         "pdf": {
-          "hash": "3bb2ea22c0",
+          "hash": "5a44440a20",
           "bytes": 286648
         }
       }
@@ -229,34 +229,34 @@
           "bytes": 50246
         },
         "pdf": {
-          "hash": "ad7bc60c04",
+          "hash": "0d700dfa1a",
           "bytes": 173675
         }
       }
     },
     "en/how-we-test-our-uis": {
-      "source": "8d526a964762",
+      "source": "e244e1e66bd1",
       "files": {
         "epub": {
-          "hash": "78393dc672",
-          "bytes": 39540
+          "hash": "519576a198",
+          "bytes": 39817
         },
         "pdf": {
-          "hash": "ad928e305a",
-          "bytes": 279791
+          "hash": "1e0d2aa1f4",
+          "bytes": 286650
         }
       }
     },
     "fr/story": {
-      "source": "75e734b6f527",
+      "source": "84c5a43dabd4",
       "files": {
         "epub": {
-          "hash": "a853ab6652",
-          "bytes": 182918
+          "hash": "3bb6ad59f7",
+          "bytes": 183207
         },
         "pdf": {
-          "hash": "052b07f808",
-          "bytes": 2240251
+          "hash": "783acae698",
+          "bytes": 2243373
         }
       }
     },
@@ -268,7 +268,7 @@
           "bytes": 56713
         },
         "pdf": {
-          "hash": "6f44196e77",
+          "hash": "3a1a06a5ef",
           "bytes": 210768
         }
       }
@@ -281,7 +281,7 @@
           "bytes": 50673
         },
         "pdf": {
-          "hash": "8154032fa7",
+          "hash": "f9af94acc2",
           "bytes": 261617
         }
       }
@@ -294,7 +294,7 @@
           "bytes": 72654
         },
         "pdf": {
-          "hash": "de6a2301a3",
+          "hash": "96e54ba8c1",
           "bytes": 400495
         }
       }
@@ -307,7 +307,7 @@
           "bytes": 68552
         },
         "pdf": {
-          "hash": "80621018c2",
+          "hash": "fc77139529",
           "bytes": 352021
         }
       }
@@ -320,7 +320,7 @@
           "bytes": 57107
         },
         "pdf": {
-          "hash": "b3be4e82a2",
+          "hash": "d543db0cb0",
           "bytes": 314851
         }
       }
@@ -333,7 +333,7 @@
           "bytes": 63742
         },
         "pdf": {
-          "hash": "fff59b1416",
+          "hash": "29bfcd53c6",
           "bytes": 314405
         }
       }
@@ -346,7 +346,7 @@
           "bytes": 60558
         },
         "pdf": {
-          "hash": "030d6e4020",
+          "hash": "f8a3b57a34",
           "bytes": 278843
         }
       }
@@ -359,7 +359,7 @@
           "bytes": 63653
         },
         "pdf": {
-          "hash": "4dfd6d1791",
+          "hash": "645c3526d9",
           "bytes": 294104
         }
       }
@@ -372,7 +372,7 @@
           "bytes": 66834
         },
         "pdf": {
-          "hash": "9520006e89",
+          "hash": "8cda57e339",
           "bytes": 312882
         }
       }
@@ -385,7 +385,7 @@
           "bytes": 55053
         },
         "pdf": {
-          "hash": "76b2d59bf6",
+          "hash": "df15afe5e7",
           "bytes": 390880
         }
       }
@@ -398,7 +398,7 @@
           "bytes": 58095
         },
         "pdf": {
-          "hash": "d41e1e3c47",
+          "hash": "4331520058",
           "bytes": 357501
         }
       }
@@ -411,7 +411,7 @@
           "bytes": 65119
         },
         "pdf": {
-          "hash": "c9e7166db3",
+          "hash": "0c504597a4",
           "bytes": 283369
         }
       }
@@ -424,7 +424,7 @@
           "bytes": 64599
         },
         "pdf": {
-          "hash": "0723ae44bd",
+          "hash": "48f4e7f287",
           "bytes": 370142
         }
       }
@@ -437,7 +437,7 @@
           "bytes": 50676
         },
         "pdf": {
-          "hash": "92715a876c",
+          "hash": "da4a8bf320",
           "bytes": 265208
         }
       }
@@ -450,7 +450,7 @@
           "bytes": 70322
         },
         "pdf": {
-          "hash": "0ac1ab0aab",
+          "hash": "90d6aa2a54",
           "bytes": 234349
         }
       }
@@ -463,7 +463,7 @@
           "bytes": 81315
         },
         "pdf": {
-          "hash": "4a7998111e",
+          "hash": "9bd47ba3d6",
           "bytes": 301958
         }
       }
@@ -476,21 +476,21 @@
           "bytes": 56938
         },
         "pdf": {
-          "hash": "9d44a4e5a4",
+          "hash": "26026b1b93",
           "bytes": 182345
         }
       }
     },
     "fr/how-we-test-our-uis": {
-      "source": "6ba4a7aca941",
+      "source": "6d2063b38ddb",
       "files": {
         "epub": {
-          "hash": "a7ac31ec42",
-          "bytes": 55318
+          "hash": "f3c5a3bd01",
+          "bytes": 55608
         },
         "pdf": {
-          "hash": "9bedd69669",
-          "bytes": 295729
+          "hash": "debdbd073d",
+          "bytes": 300511
         }
       }
     }

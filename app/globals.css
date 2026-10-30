@@ -352,14 +352,22 @@ picture {
   font-size: 0.8125rem;
 }
 .bl-video {
+  /* the frame's own ratio is set by the player from the clip's size: a phone recording is not cropped to 16:9 */
   aspect-ratio: 16 / 9;
-  object-fit: cover;
+  object-fit: contain;
+  width: 100%;
+  height: auto;
 }
 .bl-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
   gap: 1rem;
   margin: 2rem 0;
+}
+/* A lone portrait clip (a phone recording) keeps a phone's width, centred, instead of filling the page. */
+.bl-row:has(> .bl-figure:only-child) {
+  grid-template-columns: minmax(0, 22rem);
+  justify-content: center;
 }
 .bl-row .bl-figure {
   margin: 0;
