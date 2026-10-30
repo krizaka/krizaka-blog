@@ -1,0 +1,29 @@
+# After every push to main DigitalOcean rebuilds and deploys the blog (krizaka/.github#438): wait until blog.krizaka.com serves
+# this commit (out/build.json, scripts/build-info.mjs), then IndexNow (changed URLs only) and the family's SEO guard on the live
+# host. Red opens one issue here.
+name: post-deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: post-deploy
+  cancel-in-progress: false
+
+jobs:
+  post-deploy:
+    permissions:
+      contents: read
+      issues: write
+    uses: krizaka/.github/.github/workflows/post-deploy.yml@eabaefb885a73d7f670b5537cf8b56d8247978e3
+    with:
+      site-url: https://blog.krizaka.com
+      version-url: https://blog.krizaka.com/build.json
+      expect: ${{ github.sha }}
+      indexnow-key: 2092a507dc8d374a067779182f2ca9a0 # gitleaks:allow — the IndexNow key is public by design (served at /<key>.txt)
+      seo-args: "--index on --limit 60"
