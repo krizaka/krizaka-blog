@@ -102,28 +102,27 @@ export function confidentialityProblems(file, data, body) {
   return out;
 }
 
-/** The problems of one post (file name, parsed front matter, body, context); an empty list when it is fine. */
-export function postProblems(file, data, body, ctx) {
+const blank = (v) => typeof v !== "string" || !v.trim();
+
+/** What a published (non-draft) post owes: the order of its day, a cover and the words of the cover. */
+function publicationProblems(file, data, date) {
   const out = [];
-  const m = file.match(FILE);
-  if (!m) return [`${file}: the name must be <slug>.<en|fr>.mdx (lower-case, hyphens)`];
-  if (RESERVED_SLUGS.has(m[1])) out.push(`${file}: "${m[1]}" is a reserved slug`);
-  for (const k of ["title", "description"])
-    if (typeof data[k] !== "string" || !data[k].trim()) out.push(`${file}: "${k}" is required`);
-  const date = data.date instanceof Date ? data.date.toISOString().slice(0, 10) : data.date;
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(date ?? ""))) out.push(`${file}: "date" must be YYYY-MM-DD`);
-  if (data.draft !== true) {
-    /* gray-matter reads an unquoted timestamp as a Date: the front matter quotes it, so the offset is kept as written. */
-    const at = typeof data.publishedAt === "string" ? data.publishedAt : "";
-    if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?(Z|[+-]\d{2}:\d{2})$/.test(at))
-      out.push(
-        `${file}: a published post needs "publishedAt" (quoted, e.g. "2026-10-16T21:44:17-04:00"): the order of posts of one day`,
-      );
-    else if (at.slice(0, 10) !== String(date)) out.push(`${file}: "publishedAt" (${at}) is not on "date" (${date})`);
-    if (!data.cover) out.push(`${file}: a published post needs a "cover" (a media id of lib/media.json)`);
-    if (data.cover && !(typeof data.coverAlt === "string" && data.coverAlt.trim()))
-      out.push(`${file}: a published post needs "coverAlt", the words of its cover`);
-  }
+  /* gray-matter reads an unquoted timestamp as a Date: the front matter quotes it, so the offset is kept as written. */
+  const at = typeof data.publishedAt === "string" ? data.publishedAt : "";
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?(Z|[+-]\d{2}:\d{2})$/.test(at))
+    out.push(
+      `${file}: a published post needs "publishedAt" (quoted, e.g. "2026-10-16T21:44:17-04:00"): the order of posts of one day`,
+    );
+  else if (at.slice(0, 10) !== String(date)) out.push(`${file}: "publishedAt" (${at}) is not on "date" (${date})`);
+  if (!data.cover) out.push(`${file}: a published post needs a "cover" (a media id of lib/media.json)`);
+  if (data.cover && blank(data.coverAlt))
+    out.push(`${file}: a published post needs "coverAlt", the words of its cover`);
+  return out;
+}
+
+/** The text fields with a limit: the description, and what a search result shows (title, description). */
+function lengthProblems(file, data) {
+  const out = [];
   if (typeof data.description === "string" && data.description.length > 220)
     out.push(`${file}: "description" is over 220 characters`);
   if (data.seoTitle !== undefined && (typeof data.seoTitle !== "string" || data.seoTitle.length > 60))
@@ -133,61 +132,83 @@ export function postProblems(file, data, body, ctx) {
     (typeof data.seoDescription !== "string" || data.seoDescription.length > 155)
   )
     out.push(`${file}: "seoDescription" must be text of at most 155 characters`);
+  return out;
+}
+
+/** The front matter's own fields: required text, date, length limits, types. */
+function frontMatterProblems(file, data) {
+  const out = [];
+  for (const k of ["title", "description"]) if (blank(data[k])) out.push(`${file}: "${k}" is required`);
+  const date = data.date instanceof Date ? data.date.toISOString().slice(0, 10) : data.date;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(date ?? ""))) out.push(`${file}: "date" must be YYYY-MM-DD`);
+  if (data.draft !== true) out.push(...publicationProblems(file, data, date));
+  out.push(...lengthProblems(file, data));
   if (data.tags !== undefined && !Array.isArray(data.tags)) out.push(`${file}: "tags" must be a list`);
   if (data.draft !== undefined && typeof data.draft !== "boolean") out.push(`${file}: "draft" must be true or false`);
   if (data.image && !onBlogCdn(String(data.image)))
     out.push(`${file}: "image" must be on the media CDN (${CDN}…), never a file of this repository`);
-  if (/!\[[^\]]*\]\((?!https:\/\/krizaka-assets\.b-cdn\.net\/sites?\/blog\/)[^)]+\)/.test(body))
-    out.push(`${file}: images in the body must be on the media CDN (${CDN}…)`);
-  if (ctx) {
-    if (data.cover !== undefined && !(data.cover in ctx.media))
-      out.push(`${file}: "cover" ${JSON.stringify(data.cover)} is not in the media library (lib/media.json)`);
-    /* A cover is the page's biggest picture (the LCP): it ships in responsive AVIF and WebP renditions, never one file for every screen. */
-    if (data.cover !== undefined && data.cover in ctx.media)
-      out.push(...renditionProblems(data.cover, ctx.media[data.cover]).map((p) => `${file}: ${p}`));
-    /* The cover is shown once: as the post's hero and on its cards. A picture in the body is another, relevant one. */
-    if (data.cover !== undefined && data.cover in ctx.media) {
-      const entry = ctx.media[data.cover];
-      const urls = [...(entry.srcs ?? []).map((x) => x.url), entry.poster, entry.mp4, entry.webm].filter(Boolean);
-      /* The same picture under another id counts too: the same Orazaka run, or the same file stem on the CDN. */
-      const stem = (u) =>
-        u
-          .split("/")
-          .pop()
-          .replace(/(-\d+)?\.[0-9a-f]{10}\.\w+$/, "")
-          .replace(/-poster$/, "");
-      const stems = new Set(urls.map(stem));
-      const same = (e) =>
-        e &&
-        ((entry.made?.runId && e.made?.runId === entry.made.runId) ||
-          [...(e.srcs ?? []).map((x) => x.url), e.poster].filter(Boolean).some((u) => stems.has(stem(u))));
-      for (const m of body.matchAll(/<(?:Figure|Clip)\b[^>]*?\bid="([^"]+)"/g))
-        if (m[1] !== data.cover && same(ctx.media[m[1]]))
-          out.push(`${file}: <… id="${m[1]}"> is the cover's picture under another id — a cover is shown once`);
-      if (new RegExp(`\\bid="${data.cover}"`).test(body) || urls.some((u) => body.includes(u)))
-        out.push(
-          `${file}: the cover "${data.cover}" is also in the body — a cover is shown once (the hero and the cards); use another, relevant picture in the text`,
-        );
-    }
-    for (const m of body.matchAll(/<(Figure|Clip)\b[^>]*?\bid="([^"]+)"/g)) {
-      const entry = ctx.media[m[2]];
-      if (!entry) out.push(`${file}: <${m[1]} id="${m[2]}"> is not in the media library (lib/media.json)`);
-      else if ((m[1] === "Clip") !== (entry.kind === "video"))
-        out.push(`${file}: <${m[1]} id="${m[2]}"> is a ${entry.kind}`);
-    }
-    for (const m of body.matchAll(/<(Figure|Clip)\b([^>]*?)\/>/g))
-      if (!/\balt="[^"]+"/.test(m[2])) out.push(`${file}: <${m[1]}> needs a non-empty alt`);
-    if (data.series !== undefined && !ctx.series.includes(data.series))
-      out.push(`${file}: "series" ${JSON.stringify(data.series)} has no name in messages (series.names)`);
-    if (data.part !== undefined && (!Number.isInteger(data.part) || data.part < 1))
-      out.push(`${file}: "part" must be a whole number from 1`);
-    if (data.part !== undefined && data.series === undefined) out.push(`${file}: "part" needs a "series"`);
+  return out;
+}
+
+/** The same picture under another id counts too: the same Orazaka run, or the same file stem on the CDN. */
+const stemOf = (u) =>
+  u
+    .split("/")
+    .pop()
+    .replace(/(-\d+)?\.[0-9a-f]{10}\.\w+$/, "")
+    .replace(/-poster$/, "");
+const urlsOf = (e) => [...(e.srcs ?? []).map((x) => x.url), e.poster].filter(Boolean);
+
+/** The <Figure>/<Clip> tags of a body against the media library: known id, right kind, alt text. */
+function mediaTagProblems(file, body, media) {
+  const out = [];
+  for (const m of body.matchAll(/<(Figure|Clip)\b[^>]*?\bid="([^"]+)"/g)) {
+    const entry = media[m[2]];
+    if (!entry) out.push(`${file}: <${m[1]} id="${m[2]}"> is not in the media library (lib/media.json)`);
+    else if ((m[1] === "Clip") !== (entry.kind === "video"))
+      out.push(`${file}: <${m[1]} id="${m[2]}"> is a ${entry.kind}`);
   }
-  /* A model is named with a link to its official page the first time (lib/models.ts): the reader can see what it is. */
-  out.push(...modelLinkProblems(body).map((p) => `${file}: ${p}`));
-  out.push(...confidentialityProblems(file, data, body));
-  if (/```mermaid/.test(body)) out.push(`${file}: Mermaid is retired`);
-  /* Every fence names its language: CodeBlock highlights with it (`text` for plain output). Opening fences only. */
+  for (const m of body.matchAll(/<(Figure|Clip)\b([^>]*?)\/>/g))
+    if (!/\balt="[^"]+"/.test(m[2])) out.push(`${file}: <${m[1]}> needs a non-empty alt`);
+  return out;
+}
+
+/** The cover against the media library and the body (shown once, rendered in AVIF/WebP). */
+function coverProblems(file, data, body, media) {
+  if (data.cover === undefined) return [];
+  if (!(data.cover in media))
+    return [`${file}: "cover" ${JSON.stringify(data.cover)} is not in the media library (lib/media.json)`];
+  /* A cover is the page's biggest picture (the LCP): it ships in responsive AVIF and WebP renditions, never one file for every screen. */
+  const out = renditionProblems(data.cover, media[data.cover]).map((p) => `${file}: ${p}`);
+  const entry = media[data.cover];
+  const urls = [...urlsOf(entry), entry.mp4, entry.webm].filter(Boolean);
+  const stems = new Set(urls.map(stemOf));
+  const same = (e) =>
+    e && ((entry.made?.runId && e.made?.runId === entry.made.runId) || urlsOf(e).some((u) => stems.has(stemOf(u))));
+  for (const m of body.matchAll(/<(?:Figure|Clip)\b[^>]*?\bid="([^"]+)"/g))
+    if (m[1] !== data.cover && same(media[m[1]]))
+      out.push(`${file}: <… id="${m[1]}"> is the cover's picture under another id — a cover is shown once`);
+  if (new RegExp(`\\bid="${data.cover}"`).test(body) || urls.some((u) => body.includes(u)))
+    out.push(
+      `${file}: the cover "${data.cover}" is also in the body — a cover is shown once (the hero and the cards); use another, relevant picture in the text`,
+    );
+  return out;
+}
+
+/** The series a post belongs to and its place in it. */
+function seriesProblems(file, data, series) {
+  const out = [];
+  if (data.series !== undefined && !series.includes(data.series))
+    out.push(`${file}: "series" ${JSON.stringify(data.series)} has no name in messages (series.names)`);
+  if (data.part !== undefined && (!Number.isInteger(data.part) || data.part < 1))
+    out.push(`${file}: "part" must be a whole number from 1`);
+  if (data.part !== undefined && data.series === undefined) out.push(`${file}: "part" needs a "series"`);
+  return out;
+}
+
+/** Every fence names its language: CodeBlock highlights with it (`text` for plain output). Opening fences only. */
+function fenceProblems(file, body) {
+  const out = [];
   let open = false;
   for (const line of body.split("\n")) {
     const m = line.match(/^\s*(```|~~~)\s*([\w+-]*)/);
@@ -198,9 +219,42 @@ export function postProblems(file, data, body, ctx) {
       );
     open = !open;
   }
-  /* next-mdx-remote blocks JavaScript in posts (blockJS): `prop={3.99}` reaches the component as nothing. Props are strings. */
-  for (const m of body.replace(/```[\s\S]*?```/g, "").matchAll(/<([A-Z]\w*)\b[^>]*?\s(\w+)=\{/g))
-    out.push(`${file}: <${m[1]} ${m[2]}={…}> is a JavaScript expression, which the renderer drops — write ${m[2]}="…"`);
+  return out;
+}
+
+/** Images in the body live on the media CDN. */
+function bodyProblems(file, body) {
+  const out = [];
+  if (/!\[[^\]]*\]\((?!https:\/\/krizaka-assets\.b-cdn\.net\/sites?\/blog\/)[^)]+\)/.test(body))
+    out.push(`${file}: images in the body must be on the media CDN (${CDN}…)`);
+  return out;
+}
+
+/** next-mdx-remote blocks JavaScript in posts (blockJS): `prop={3.99}` reaches the component as nothing. Props are strings. */
+function jsPropProblems(file, body) {
+  return [...body.replace(/```[\s\S]*?```/g, "").matchAll(/<([A-Z]\w*)\b[^>]*?\s(\w+)=\{/g)].map(
+    (m) => `${file}: <${m[1]} ${m[2]}={…}> is a JavaScript expression, which the renderer drops — write ${m[2]}="…"`,
+  );
+}
+
+/** The problems of one post (file name, parsed front matter, body, context); an empty list when it is fine. */
+export function postProblems(file, data, body, ctx) {
+  const m = file.match(FILE);
+  if (!m) return [`${file}: the name must be <slug>.<en|fr>.mdx (lower-case, hyphens)`];
+  const out = [];
+  if (RESERVED_SLUGS.has(m[1])) out.push(`${file}: "${m[1]}" is a reserved slug`);
+  out.push(...frontMatterProblems(file, data));
+  out.push(...bodyProblems(file, body));
+  if (ctx)
+    out.push(
+      ...coverProblems(file, data, body, ctx.media),
+      ...mediaTagProblems(file, body, ctx.media),
+      ...seriesProblems(file, data, ctx.series),
+    );
+  /* A model is named with a link to its official page the first time (lib/models.ts): the reader can see what it is. */
+  out.push(...modelLinkProblems(body).map((p) => `${file}: ${p}`), ...confidentialityProblems(file, data, body));
+  if (/```mermaid/.test(body)) out.push(`${file}: Mermaid is retired`);
+  out.push(...fenceProblems(file, body), ...jsPropProblems(file, body));
   return out;
 }
 
