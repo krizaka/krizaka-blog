@@ -2,8 +2,8 @@
 /* `npm run lint`: every post in content/posts (and every chapter in content/chapters) follows the rules (scripts/content-rules.mjs); the admin's config names the same fields. */
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { readdirSync } from "node:fs";
-import { checkChapters, checkDir, mediaProblems, readContext } from "./content-rules.mjs";
+import { readdirSync, readFileSync } from "node:fs";
+import { attributeQuoteProblems, checkChapters, checkDir, mediaProblems, readContext } from "./content-rules.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ctx = readContext(root);
