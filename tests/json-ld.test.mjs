@@ -30,3 +30,27 @@ test("no page injects a raw JSON.stringify into a script", () => {
   const bad = files.filter((f) => /__html:\s*JSON\.stringify/.test(readFileSync(f, "utf8")));
   assert.deepEqual(bad, []);
 });
+
+import { seriesNode } from "../lib/series.ts";
+
+test("the story's series node is the same on every chapter of a language and names Krizaka as publisher", () => {
+  const series = { name: "The Krizaka story", url: "https://blog.krizaka.com/" };
+  const node = seriesNode("en", series, "https://www.krizaka.com/#organization");
+  assert.equal(node["@type"], "CreativeWorkSeries");
+  assert.equal(node["@id"], "https://blog.krizaka.com/#series-en");
+  assert.notEqual(node["@id"], seriesNode("fr", series, "x")["@id"]);
+  assert.deepEqual(node.publisher, { "@id": "https://www.krizaka.com/#organization" });
+});
+
+test("only a chapter page passes a series and a position to the article", () => {
+  const seo = readFileSync(new URL("../lib/seo.ts", import.meta.url), "utf8");
+  assert.match(seo, /position: series\.position/);
+  assert.match(
+    readFileSync(new URL("../app/components/pages/ChapterPage.tsx", import.meta.url), "utf8"),
+    /position: chapter\.chapter/,
+  );
+  assert.doesNotMatch(
+    readFileSync(new URL("../app/components/pages/PostPage.tsx", import.meta.url), "utf8"),
+    /position:/,
+  );
+});

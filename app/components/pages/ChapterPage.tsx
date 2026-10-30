@@ -15,7 +15,7 @@ import { format, getDictionary, localizedPath } from "@/lib/i18n";
 import { coverOf } from "@/lib/media";
 import { chapterNumber, chapterTranslationOf, nextChapter, previousChapter, type Chapter } from "@/lib/chapters";
 import { headingsOf, rehypeRounds } from "@/lib/reading.ts";
-import { chapterOgUrl, chapterPath, postJsonLd } from "@/lib/seo";
+import { absoluteUrl, chapterOgUrl, chapterPath, postJsonLd } from "@/lib/seo";
 import { mdxComponentsFor } from "./mdx";
 import { formatPeriod } from "./PostList";
 import { Byline } from "./Byline";
@@ -105,7 +105,13 @@ export default function ChapterPage({ chapter }: { chapter: Chapter }) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: jsonLd(postJsonLd(chapter, undefined, chapterPath(chapter.slug), chapterOgUrl(locale, chapter.slug))),
+          __html: jsonLd(
+            postJsonLd(chapter, undefined, chapterPath(chapter.slug), chapterOgUrl(locale, chapter.slug), {
+              position: chapter.chapter,
+              name: t.home.title,
+              url: absoluteUrl(locale, "/"),
+            }),
+          ),
         }}
       />
       <Section reveal={false} spacing="sm" className="bl-chapter-top">

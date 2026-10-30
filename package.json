@@ -5,6 +5,7 @@
   "license": "Apache-2.0",
   "description": "blog.krizaka.com — the Krizaka company blog: a static site built from MDX posts, edited by GitHub accounts.",
   "scripts": {
+    "prepare": "git config core.hooksPath .githooks || true",
     "gen": "node scripts/gen-favicon.mjs",
     "dev": "npm run gen && next dev",
     "build": "npm run gen && node scripts/build.mjs",

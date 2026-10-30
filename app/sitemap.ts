@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { LOCALES } from "@/lib/i18n";
 import { allPosts } from "@/lib/posts";
 import { allChapters } from "@/lib/chapters";
-import { absoluteUrl, chapterPath, postPath } from "@/lib/seo";
+import { absoluteUrl, chapterOgUrl, chapterPath, ogUrl, postPath } from "@/lib/seo";
 
 export const dynamic = "force-static";
 
@@ -25,6 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     return {
       url: absoluteUrl(p.locale, postPath(p.slug)),
       lastModified: p.updated ?? p.date,
+      images: [p.image ?? ogUrl(p.locale, p.slug)],
       alternates: { languages: Object.fromEntries(langs.map((l) => [l, absoluteUrl(l, postPath(p.slug))])) },
     };
   });
@@ -33,6 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     return {
       url: absoluteUrl(c.locale, chapterPath(c.slug)),
       lastModified: c.updated ?? c.date,
+      images: [chapterOgUrl(c.locale, c.slug)],
       alternates: { languages: Object.fromEntries(langs.map((l) => [l, absoluteUrl(l, chapterPath(c.slug))])) },
     };
   });
