@@ -40,6 +40,11 @@ Concrètement, chaque analyse est une exécution d'[Orazaka](https://dev.orazaka
 
 Ça ne rend pas les données privées par magie, ni le modèle plus intelligent. Ça permet de vérifier. Une promesse qu'on ne peut pas vérifier reste du marketing.
 
+<Split label="Les trois questions à poser à un outil d'IA, avec deux réponses : une promesse, et une exécution qui garde sa trace.">
+  <Side title="Une promesse" tone="before" items="Où ? « Dans le nuage » | Quel modèle ? Un nom caché dans le code | Pourquoi cette réponse ? Une opinion, sans source | Contesté ? Rien à ouvrir" />
+  <Side title="Une exécution d'Orazaka" tone="after" items="Où ? La région de la machine, par exemple CA-MTL-1, Montréal | Quel modèle ? Une ligne dans une base de données | Pourquoi ? La règle et le passage exact, ou le silence | Contesté ? L'identifiant de l'exécution, sa version et ses règles : le registre" />
+</Split>
+
 <Clip id="clip-montreal" alt="Un lent travelling dans une rue enneigée du Plateau la nuit, escaliers extérieurs en colimaçon, fenêtres éclairées" caption="Une nuit d'hiver à Montréal, faite avec Orazaka : cinq secondes, générées par un modèle hébergé." />
 
 ## Pourquoi ici
@@ -59,6 +64,13 @@ Je garde l'infrastructure petite. Pas de service que je ne sais pas expliquer, p
 Je publie le code des fondations. Le kit d'interface ([Krizaka UI](https://ui.krizaka.com)) et les briques Spring Boot ([Krizaka Java](https://java.krizaka.com)) sont open source. N'importe qui peut lire ce sur quoi nos produits sont posés.
 
 Et je dis ce qui n'est pas fini. Plusieurs produits sont marqués « en développement » : l'inscription est fermée, et leur site l'affiche.
+
+<Layers label="Ce qu'être vérifiable m'oblige à faire : quatre habitudes, chacune avec son prix, de la réponse que voit un lecteur jusqu'à ce que le site dit de lui-même.">
+  <Layer tag="Réponses" title="Sans source, pas de résultat" note="Un constat cite la règle et le passage exact, ou se tait." />
+  <Layer tag="Machines" title="Une infrastructure petite" note="Un GPU loué quand il y a du travail, éteint quand la file est vide." />
+  <Layer tag="Code" title="Des fondations ouvertes" note="Krizaka UI et Krizaka Java se lisent par n'importe qui." />
+  <Layer tag="Statut" title="Ce qui n'est pas fini le dit" note="« En développement » : inscription fermée, et le site l'affiche." />
+</Layers>
 
 ## Ce qui n'est pas réglé
 

@@ -64,6 +64,11 @@ For Java, the same idea is written differently. In [krizaka-build#107](https://g
 
 That last step had its own failure. A repository without SpotBugs's exclusions file broke on its first build. [krizaka-build#108](https://github.com/krizaka/krizaka-build/pull/108) makes the file optional and adds a canary job, which builds an empty project against the parent on every change. We learned not to publish a parent without having a consumer try it.
 
+<Split label="All of Sonar at lint: what Sonar said ten minutes after the PR, the editor now says while the agent writes.">
+  <Side title="Before" tone="before" items="Sonar answers on the PR, ten minutes later | Gates red on new code, mostly cognitive complexity (S3776) | A pass in krizaka-ui finds 37 bugs, 16 of them sorts without a comparison | The agent has already moved on" />
+  <Side title="Now" tone="after" items="@krizaka/config 0.11: cognitive complexity at lint, threshold 15 | 0.12: the full eslint-plugin-sonarjs set, a Sonar error is a lint error | The existing debt is counted and frozen: it only goes down | Sonar stays, as the last net" />
+</Split>
+
 ## Secrets and workflows, as early as possible
 
 There are things a CI should never have to catch. A secret pushed to a repository, for example: once it is in the history, it is burnt.
@@ -87,6 +92,14 @@ One day, Yomizaka's main branch turned red. Thirty lint warnings against a cap o
 The explanation is silly. Two PRs were each green on an old base. The first merged and set the cap. The second, started earlier, merged afterwards without being checked again on the new main, and added its warnings. No PR was at fault, and the sum was.
 
 The guard is a GitHub setting: require the branch to be up to date before merging. I turned it on for Yomizaka, then for 12 repositories, with a small script that updates PRs waiting on auto-merge. I first believed SonarCloud only answered on PRs. That is true of its automatic analysis; run from the CI, its analysis also answers on the merge queue's branches. I checked it on one repository: the queue works, Sonar included. So we are moving to the merge queue, which keeps the same promise without updating PRs by hand.
+
+<Pipeline label="The race nobody saw: two PRs green on an old base, and a red main that no PR caused on its own">
+  <Stage title="Two PRs" note="green on the same old main">Each is checked against the main it started from.</Stage>
+  <Stage title="The first merges" note="the cap is set at 27">Main is green, with its lint warnings counted.</Stage>
+  <Stage title="The second merges" note="not checked again">Started earlier, it merges without being checked on the new main, and adds its warnings.</Stage>
+  <Stage title="Main turns red" note="30 warnings, cap 27" tone="gate">No PR was at fault. The sum was.</Stage>
+  <Stage title="The guard" note="up to date before merging" tone="ship">Turned on for Yomizaka, then 12 repositories; now the merge queue, which keeps the same promise, Sonar included.</Stage>
+</Pipeline>
 
 ## A fix without a guard is not finished
 
