@@ -14,9 +14,15 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const sha = (s) => createHash("sha256").update(s).digest("hex");
 
 /* Files a page draws, by extension: scripts, styles, fonts and pictures. The videos are left out (large; their poster is kept). */
-const FILE = String.raw`[^"'\s\\)<>,]+\.(?:js|css|woff2?|png|jpe?g|webp|avif|svg|gif)`;
-const STATIC = new RegExp(String.raw`/_next/static/${FILE}`, "g");
-const CDN = new RegExp(`${CDN_ORIGIN.replace(/[.]/g, "\\.")}/${FILE}`, "g");
+const FILE = /^[^"'\s\\)<>,]+\.(?:js|css|woff2?|png|jpe?g|webp|avif|svg|gif)/;
+/** The files that follow each occurrence of `prefix` in `text` (a string search: no pattern is built from a URL). */
+const filesAfter = (text, prefix) =>
+  text
+    .split(prefix)
+    .slice(1)
+    .map((rest) => rest.match(FILE)?.[0])
+    .filter(Boolean)
+    .map((f) => prefix + f);
 
 /** The files a page draws: Next's static files and the CDN's pictures, found in its HTML (the metadata and the JSON-LD left out). */
 export function pageAssets(html) {
@@ -24,7 +30,7 @@ export function pageAssets(html) {
     .replace(/<meta\b[^>]*>/g, "")
     .replace(/<script type="application\/ld\+json"[\s\S]*?<\/script>/g, "")
     .replace(/<link\b[^>]*rel="(?:canonical|alternate|manifest|icon|apple-touch-icon)"[^>]*>/g, "");
-  return [...new Set([...(body.match(STATIC) ?? []), ...(body.match(CDN) ?? [])])];
+  return [...new Set([...filesAfter(body, "/_next/static/"), ...filesAfter(body, `${CDN_ORIGIN}/`)])];
 }
 
 /** The fonts and files a stylesheet draws (`url(../media/x.woff2)`), as absolute paths. */
