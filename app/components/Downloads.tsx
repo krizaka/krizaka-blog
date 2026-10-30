@@ -14,7 +14,7 @@ export function Downloads({
   if (files.length === 0) return null;
   const label = { epub: series ? t.epubSeries : t.epub, pdf: series ? t.pdfSeries : t.pdf };
   return (
-    <div className="bl-downloads" role="group" aria-label={t.regionLabel}>
+    <section className="bl-downloads" aria-label={t.regionLabel}>
       {files.map((f) => (
         <Button key={f.format} asChild variant={series ? "secondary" : "ghost"} size="md">
           <a
@@ -27,6 +27,6 @@ export function Downloads({
           </a>
         </Button>
       ))}
-    </div>
+    </section>
   );
 }

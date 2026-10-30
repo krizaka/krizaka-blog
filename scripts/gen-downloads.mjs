@@ -112,7 +112,7 @@ const coverHtml = ({
 <div><div style="font-size:44px;color:#9aa6c8;margin-bottom:40px">${kicker}</div><div style="font-size:96px;line-height:1.1;font-weight:800">${title}</div></div>
 <div style="font-size:34px;color:#9aa6c8">blog.krizaka.com</div></body></html>`;
 
-const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const esc = (s) => String(s).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 
 /** One book: its source HTML, cover, EPUB and PDF in `dir`; returns the files' names. */
 async function makeBook(browser, book, chapters, all, dir) {
@@ -218,12 +218,12 @@ async function makeBook(browser, book, chapters, all, dir) {
   await page.goto(`file://${printable}`, { waitUntil: "load" });
   await page.evaluate(() =>
     Promise.all(
-      [...document.images].map((i) =>
-        i.complete
-          ? 0
-          : new Promise((r) => {
-              i.onload = i.onerror = r;
-            }),
+      [...document.images].map(
+        (i) =>
+          new Promise((r) => {
+            if (i.complete) r();
+            else i.onload = i.onerror = r;
+          }),
       ),
     ),
   );
