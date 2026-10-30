@@ -14,7 +14,7 @@ const CDN_HOSTS = /^https:\/\/krizaka-assets\.b-cdn\.net\/sites?\/blog\//;
 
 test("every chapter of the series but the 10th wears its series cover, and each cover is a media entry sold in every size", () => {
   const picked = series.chapters.map((c, i) => ({ ...c, id: `series-${String(i + 1).padStart(2, "0")}-${c.post}` }));
-  for (const c of picked.slice(0, 17)) {
+  for (const c of picked) {
     if (c.post === KEEPS) continue;
     for (const loc of ["en", "fr"]) {
       const fm = matter(read(`content/chapters/${c.post}.${loc}.mdx`)).data;
@@ -60,15 +60,30 @@ test("every download link of the card resolves to a manifest entry, for the stor
   }
 });
 
-test("the card uses the Krizaka UI Button (EPUB primary and cut, PDF secondary), the series cover, and a quiet offline save", () => {
+test("the home's bookplate: no box, no picture, small ghost Krizaka UI buttons, a quiet offline link (krizaka-blog#228)", () => {
   const src = read("app/components/TakeStory.tsx");
   assert.match(src, /from "@krizaka\/ui\/button"/);
-  assert.match(src, /primary \? "primary" : "secondary"/);
-  assert.match(src, /shape=\{primary \? "cut"/);
+  assert.match(src, /<Button asChild variant="ghost" size="sm"/);
+  assert.ok(!/variant="primary"|shape="cut"|CoverImage|coverOf/.test(src), "no heavy button, no cover thumbnail");
   assert.match(src, /<SaveSeries quiet/);
-  assert.match(src, /chapters\[0\]\?\.cover/);
   assert.ok(!/<button|className="[^"]*btn/.test(src), "no hand-made button");
+  const css = read("app/globals.css");
+  const take = css.slice(css.indexOf("/* « Take the story with you »"), css.indexOf(".bl-offline {"));
+  assert.match(
+    take,
+    /\.bl-take \{[^}]*flex-basis: 100%[^}]*border-block: 1px solid/,
+    "a full-width strip between hairlines",
+  );
+  assert.ok(!/border-radius|box-shadow|background:/.test(take), "never a boxed card");
   assert.match(read("app/components/pages/HomePage.tsx"), /<TakeStory locale=\{locale\} \/>/);
+});
+
+test("the chapter's last line: typographic links with mono sizes, no button grid", () => {
+  const src = read("app/components/TakeStory.tsx");
+  const compact = src.slice(src.indexOf("if (compact)"), src.indexOf('return (\n    <aside className="bl-take"'));
+  assert.match(compact, /className="bl-take-line"/);
+  assert.match(compact, /<FileLink /);
+  assert.ok(!/<FileButton|<Button/.test(compact), "no button at the end of a chapter");
   assert.match(
     read("app/components/pages/ChapterPage.tsx"),
     /<TakeStory locale=\{locale\} bookKey=\{chapter\.slug\} compact \/>/,
@@ -87,6 +102,7 @@ test("the card's words exist in both languages, and no colour is hard-coded in i
       "pdfHint",
       "takeChapter",
       "takeStory",
+      "takeOffline",
     ])
       assert.ok(d[k], `${loc}.downloads.${k}`);
     assert.match(d.takeMeta, /\{n\}/);
