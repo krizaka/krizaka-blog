@@ -30,6 +30,10 @@ node_modules/.bin/playwright install --with-deps chromium
 node scripts/check-layout.mjs --base http://localhost:3000 --posts out
 echo "::endgroup::"
 
+echo "::group::Core Web Vitals budget (LCP <= 2.5 s, CLS <= 0.1, phone window, CPU x4)"
+node scripts/check-vitals.mjs --base http://localhost:3000 --posts out
+echo "::endgroup::"
+
 echo "::group::The feeds are pure XML a reader accepts (no XSLT); the old /feed/ page is a stub to the story"
 for f in out/feed.xml out/fr/feed.xml out/atom.xml out/fr/atom.xml; do python3 -c "import sys, xml.dom.minidom as m; m.parse(sys.argv[1])" "$f"; done
 ! grep -q 'xml-stylesheet' out/feed.xml out/fr/feed.xml out/atom.xml out/fr/atom.xml
