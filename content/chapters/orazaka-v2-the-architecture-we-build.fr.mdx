@@ -63,6 +63,12 @@ Entre les deux, il y a **Spring AI 2**, la bibliothèque qui parle aux fournisse
 
 **Ce qu'on refuse :** LangChain4j, LangGraph4j, un deuxième moteur de workflow, et `StructuredTaskScope` tant que c'est une API en préversion. La raison est la même à chaque fois : deux façons de faire la même chose, c'est deux trains de mises à jour et deux endroits où l'état d'un run peut diverger. On a déjà payé la migration vers Spring AI 2. On a déjà un graphe d'étapes, avec sa saga, ses approbations et ses crédits réservés. On n'en veut pas un second.
 
+<Split label="On possède le cœur, on intègre les bords (ADR-092) : ce qu'Orazaka garde, ce qu'il branche tel quel, ce qu'il refuse.">
+  <Side title="On possède" tone="own" items="L'orchestration : un graphe d'étapes typées | La boucle de contrôle | Le bail GPU | Le pilotage en direct | L'accès, vérifié à la recherche et à l'outil" />
+  <Side title="On branche" tone="plug" items="MCP, par le SDK officiel | RabbitMQ et l'outbox | Le worker média en Python | Spring AI 2, derrière nos ports" />
+  <Side title="On refuse" tone="refuse" items="LangChain4j | LangGraph4j | Un second moteur de workflow | StructuredTaskScope tant qu'il est en préversion" />
+</Split>
+
 ## Une demande, de bout en bout
 
 Le workspace [orazaka](https://github.com/krizaka/orazaka) assemble 20 dépôts : des briques Krizaka réutilisables (utilisateurs, notifications, facturation), les fondations (contrats, edge), le moteur d'IA, les clients (web, mobile, ligne de commande), le worker média et les packs.
@@ -88,10 +94,12 @@ C'est la pièce qui compte le plus pour moi, et celle qui a le plus de travail d
 
 L'idée est simple. Un modèle produit une sortie. Avant de la donner à quelqu'un, on la juge. Et on ne demande pas à un modèle ce qu'une règle peut vérifier. Voici l'ordre visé, pour chaque étape :
 
-1. **Les vérifications déterministes d'abord.** Le schéma est respecté, le fichier existe et se lit, la durée et les proportions sont bonnes. Pas de modèle, pas de jeton. Cible : moins de 10 ms.
-2. **Un juge sémantique ensuite.** Un modèle lit la sortie et rend un score de dérive : à quel point elle s'éloigne de ce qu'on a demandé. Il ne tourne jamais sur une sortie que l'étape 1 a refusée.
-3. **Une correction, avec le diff.** Si la dérive dépasse le seuil, on régénère en disant au modèle ce qui ne va pas. Au plus K essais, et une mémoire des erreurs refuse une correction qui répète un échec déjà vu.
-4. **Un humain, enfin.** Après K essais, ou dès le départ si la politique l'exige, la décision passe à une personne.
+<Pipeline label="La boucle de contrôle visée pour une étape : les règles avant les modèles, une personne en dernier">
+  <Stage title="Vérifications déterministes" note="d'abord, sans modèle">Le schéma est respecté, le fichier existe et se lit, la durée et les proportions sont bonnes. Pas de jeton. Cible : moins de 10 ms.</Stage>
+  <Stage title="Un juge sémantique" note="un score de dérive">Un modèle lit la sortie et dit à quel point elle s'écarte de ce qui était demandé. Il ne tourne jamais sur une sortie que les vérifications ont rejetée.</Stage>
+  <Stage title="Une correction" note="au plus K essais" tone="gate">Au-dessus du seuil, on régénère en disant au modèle ce qui ne va pas. Une mémoire des erreurs refuse une correction qui répète un échec déjà vu.</Stage>
+  <Stage title="Un humain" note="en dernier" tone="ship">Après K essais, ou dès le départ quand la politique le dit, la décision revient à une personne.</Stage>
+</Pipeline>
 
 Chaque jugement est un verdict typé : `Validated`, `DriftAdjustment` ou `HumanEscalation`. Ce n'est pas un détail de code. Un verdict typé s'écrit dans le journal du run, se compte, se relit. Les seuils, K et les politiques sont des lignes de la base, que l'administrateur règle, pas des `if` dans le Java.
 

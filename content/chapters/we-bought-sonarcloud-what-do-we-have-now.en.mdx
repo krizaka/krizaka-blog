@@ -69,6 +69,11 @@ At the first CI analysis, Sonar had no reference version for the project. It sho
 
 Our new-code period is « previous version »: Sonar judges what changed since the last known version. With no version, there is no previous one. The fix is small. [.github#354](https://github.com/krizaka/.github/pull/354) gives each CI analysis a version, `ci-` followed by the run number, so the period is the change since the analysis before. Old defects stay visible. They no longer turn the gate red on every PR. In krizaka-ui's analysis history you can see the « not provided » analyses, then the version event, a few hours later.
 
+<Split label="Why the gates turned red, and the small fix (.github#354): Sonar judges new code since the previous version, so it needs a version.">
+  <Side title="No version" tone="before" items="Sonar shows « not provided » | The whole history counts as new code | Every old defect is blamed on the latest change | Gates red everywhere at once" />
+  <Side title="A version per analysis" tone="after" items="Each CI analysis is versioned: ci- and the run number | New code is what changed since the analysis before | Old defects stay visible | The gate judges the change" />
+</Split>
+
 What I keep from it: a tool you buy does not set itself up. We paid for a gate, and the first thing it did was say no to everything.
 
 ## What the figures say
@@ -80,6 +85,8 @@ In krizaka-ui, the PR [krizaka-ui#781](https://github.com/krizaka/krizaka-ui/pul
 Of the 9 repositories I read, the gate is green in 5: krizaka-com, krizaka-ts, akinaza, yomizaka and orazaka-ai-engine. It is red in 4: krizaka-ui, krizaka-blog, the .github repository and krizaka-build. In all four, the gate fails on new code, first on critical issues, not on old ones. I have not worked around them, and I am not hiding them here.
 
 On coverage, what Sonar receives now: 78.9% for the blog you are reading, 68.5% for krizaka-com, 54.1% for krizaka-build, 39.5% for akinaza and 39.3% for yomizaka. For krizaka-ts the API shows 0.0%: the report is not sent there yet, and our standards note it as a known gap. For krizaka-ui there is no figure at all.
+
+<Bars label="Test coverage that Sonar now receives, by repository, read on SonarCloud's public API on 28 October." source="krizaka-ts shows 0.0 %: its report is not sent yet. krizaka-ui has no figure at all." format="number" series="Coverage, in %:accent" data="krizaka-blog=78.9; krizaka-com=68.5; krizaka-build=54.1; akinaza=39.5; yomizaka=39.3" />
 
 These numbers do not say the code is good. They say where we look, what we do not look at yet, and whether it improves from one week to the next. That is why I reread them the day I write.
 

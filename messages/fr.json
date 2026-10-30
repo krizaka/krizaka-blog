@@ -366,5 +366,11 @@
     "startHere": "Commencer ici",
     "step": "Lecture {n} sur {total}",
     "story": "Retour à l’histoire"
+  },
+  "bars": {
+    "bar": "Graphique en barres",
+    "category": "Élément",
+    "value": "Valeur",
+    "total": "Total"
   }
 }

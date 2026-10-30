@@ -42,6 +42,11 @@ I set the direction, and I decide what is mine: anything about money, accounts, 
 
 The CTO agent decides the rest, as long as it can be reversed. It picks an order of work, settles a design detail, postpones one thing to do another. When spending is possible, it has a written cap. And as soon as something is irreversible or paid, it stops and asks me instead of guessing.
 
+<Split label="Who decides what. Whatever cannot be undone is mine; the agent settles what can be reversed, and stops to ask before anything paid or irreversible.">
+  <Side title="Mine" tone="own" items="The direction | Money, accounts, legal matters | What we keep and what we drop | Anything that cannot be undone" />
+  <Side title="The CTO agent's" tone="plug" items="The order of work | A design detail | Postponing one thing to do another | Spending, within a written cap | A report every 3 hours, with a forecast" />
+</Split>
+
 Every 3 hours it writes me a report: what is finished, what is under way, what is blocked, and a forecast. Not a promise of a date, a forecast, with the gap from the last one. I banned "tonight" and "tomorrow": we say what is done, and what comes next, in order.
 
 This split is written down, so each session finds it again: what is mine on one side, what the agent can settle alone on the other. Without it I would be asked every time, or worse, guessed at.
@@ -57,6 +62,13 @@ The answer was to cut into four lanes: Platform, Yomizaka, Akinaza, Orazaka. 4 s
 ## Everything is an issue
 
 Nothing starts without a GitHub issue. They all live on one board, in 3 levels: an Epic, which is a large goal, Features inside it, and under each Feature the Tasks and Bugs. Every pull request closes or references one of those, so a Feature's progress can be read without anyone recomputing it.
+
+<Layers label="One board, three levels. Every pull request closes or references a Task or a Bug, so a Feature's progress reads itself.">
+  <Layer tag="Epic" title="A large goal" note="What remains in it is the view I open most." />
+  <Layer tag="Feature" title="A deliverable inside the Epic" note="Its progress is read from its sub-issues." level="1" />
+  <Layer tag="Task" title="One piece of work, one session" note="Closed by a pull request." level="2" />
+  <Layer tag="Bug" title="Something broken" note="Fixed test-first, with its guard." level="2" />
+</Layers>
 
 One rule cost me dearly to learn, and I like it: what the agent finds on the way is not a new card by default. If it is in scope, it fixes it. If it is next door, it adds a checkbox to the issue at hand. Otherwise it parks it in an incubation column that the board does not count. Without that, a job that ends leaves three new ones, and the counter never goes down. The board must show the work agents execute, not the work we dream of.
 
@@ -85,6 +97,14 @@ First there is the day's report: what happened since the last one, and the forec
 ## The real moments
 
 The most frequent one goes like this: I am testing one of our apps on my phone and something is off. I take a screenshot and send it with one sentence. The CTO agent turns it into an issue, files it in the right lane, and the session that picks it up first writes a test that reproduces what I saw. Then the fix, then the question of the guard.
+
+<Pipeline label="The most frequent real moment: from a screenshot on my phone to a guard">
+  <Stage title="A screenshot" note="from my phone">Something is off in one of our apps: a capture and one sentence.</Stage>
+  <Stage title="An issue" note="in its lane">The CTO agent turns it into an issue and files it in the right lane.</Stage>
+  <Stage title="A failing test" note="first" tone="gate">The session that picks it up reproduces what I saw before touching the code.</Stage>
+  <Stage title="The fix" note="the test turns green">The test stays, as the proof.</Stage>
+  <Stage title="The guard" note="why did no guard see it?" tone="ship">A lint rule, an architecture test or a page audit, failing on main before the fix.</Stage>
+</Pipeline>
 
 A recent example, on the blog you are reading. A subscription confirmation link told me "link expired" when it was not. Reading the code, we saw that every error, a missing configuration, an unreachable database, a damaged token, a real expiry, sent the reader to the same "expired" page. A reader with a valid link could be told a lie because our list was down. The fix now separates the cases: confirmed, truly expired, invalid link, and "try again" with a trace in the logs when the problem is ours. Each has its test, and one test follows the link from the e-mail to the confirmation. We then reproduced the cases on a real local database before believing the result.
 

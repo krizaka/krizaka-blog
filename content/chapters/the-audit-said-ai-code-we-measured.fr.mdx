@@ -60,7 +60,7 @@ Je retiens cette phrase : on avait un problème de style, et surtout un problèm
 
 L'audit avait une prémisse que je trouve juste : un agent change de style seulement quand un outil déterministe fait échouer le build. Dire « écris du code propre » dans un fichier de consignes ne tient pas d'une session à l'autre. Alors on a transformé chaque exigence qu'on garde en règle bloquante.
 
-<Pipeline label="Du style à la règle">
+<Pipeline label="Du style à la règle : où chaque contrôle arrête le « code IA », de l'éditeur au point d'étape">
   <Stage title="Éditeur" note="10 secondes">Après chaque modification, un hook vérifie le fichier seul : ESLint pour le TypeScript, PMD pour le Java.</Stage>
   <Stage title="Compilation" note="NullAway">Les paquets déclarés `@NullMarked` sont vérifiés à la compilation. Un null inutile devient une erreur.</Stage>
   <Stage title="Tests" note="ArchUnit">Les règles d'architecture : `@Valid` sur les corps de requête, pas de Utils, pas de contrôleur qui touche la base.</Stage>
@@ -101,6 +101,8 @@ La décision a été simple. Chaque règle de l'organisation est déclarée une 
 
 Le premier passage de la matrice, sur 36 dépôts actifs : 155 cases vertes, 150 rouges. Ce soir, en la relançant sur la branche principale du dépôt `.github`, je lis 198 vertes et 112 rouges. Ce n'est pas fini, et je ne vais pas le faire paraître plus beau. La règle du hook d'édition, par exemple, est encore rouge dans les 36 dépôts, parce qu'il n'est pas encore en place.
 
+<Bars label="La matrice des règles par dépôts, sur 36 dépôts actifs : sa première exécution, puis le soir du 28 octobre (.github#393)." source="Une règle n'est finie que quand sa colonne est verte partout." format="integer" stacked="true" series="Cellules vertes:success | Cellules rouges:danger" data="Première exécution : 155 vertes, 150 rouges=155,150; 28 octobre, au soir : 198 vertes, 112 rouges=198,112" />
+
 Ce que les cases rouges étaient vraiment m'a surpris : rarement le gabarit, presque toujours les propres workflows de chaque dépôt. Des actions non épinglées, des secrets passés en bloc, des faux positifs de gitleaks sur des données de test. La règle commune a fait remonter d'un coup la vieille dette de tout le monde. C'est exactement ce qu'on voulait, mais ça ne ressemble pas à un succès le premier jour.
 
 ## Deux gardes apprises le même jour
@@ -117,14 +119,7 @@ On me demande souvent combien coûtent les agents. La vraie réponse est moins s
 
 Les sessions notent à la fin le nombre de tokens qu'elles ont utilisés, et on garde ce journal depuis le 26 octobre. Au 29, 290 PR y avaient un coût enregistré :
 
-| Voie | PR | Tokens par PR (moyenne) |
-|:---|---:|---:|
-| plateforme | 92 | 48k |
-| Orazaka | 62 | 68k |
-| Yomizaka | 39 | 68k |
-| Akinaza | 35 | 58k |
-| mises à jour de dépendances | 8 | 9k |
-| sécurité | 6 | 25k |
+<Bars label="Jetons par PR fusionnée, par voie, en milliers : les 290 PR consignées du 26 au 29 octobre. Des estimations écrites par les sessions elles-mêmes, pas une facture." source="La moyenne sur les 290 PR : 55k. Le nombre de PR de chaque voie est dans son libellé." format="integer" series="Milliers de jetons par PR:accent" data="Orazaka, 62 PR=68; Yomizaka, 39 PR=68; Akinaza, 35 PR=58; plateforme, 92 PR=48; sécurité, 6 PR=25; mises à jour de dépendances, 8 PR=9" />
 
 Au total, 16,1 millions de tokens pour 290 PR, soit 55k par PR. Les modèles : 274 sessions sur Sonnet (une fonctionnalité ou un correctif par session), 9 sur Opus (les ADR et les choix de conception), 3 sur Haiku.
 

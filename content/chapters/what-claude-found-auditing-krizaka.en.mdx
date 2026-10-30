@@ -50,6 +50,11 @@ Two models got exactly the same prompt.
 
 **Gemini 3.8 Flash**, from Google, in the Antigravity editor, the same evening. Its access was not the same: it read the repositories with GitHub's command-line tool, on my machine, and queried SonarCloud's public API. In all, 143 steps, 69 of them commands (59 calls to GitHub, 10 to SonarCloud).
 
+<Split label="The protocol: one prompt, written in advance and published, given to two models whose access was not the same.">
+  <Side title="Claude Opus 5.5" tone="own" items="Web search and page reading, nothing else | Pages summarised first by Claude Haiku 5.5 | An empty folder: no settings, no memory | 39 turns, 5 minutes" />
+  <Side title="Gemini 3.8 Flash" tone="plug" items="GitHub's command-line tool, on my machine, with my sign-in | SonarCloud's public API | 143 steps, 69 of them commands" />
+</Split>
+
 <Numbers>
   <Num value="39" label="turns" hint="the model's reads and replies" />
   <Num value="5" label="minutes" hint="from start to answer" />
@@ -170,6 +175,14 @@ An AI audit is a list of leads, not a verdict. I took the claims that can be che
 Both models' figures were right. Two of Gemini's claims are stronger than the facts, and the table says so. The [`TIMEOUT`](https://github.com/krizaka/orazaka-job-service/blob/main/src/main/java/com/krizaka/orazaka/jobservice/infrastructure/adapter/amqp/JobListener.java#L696-L702) prefix defect is real. There was already an issue to split that file ([orazaka-job-service#50](https://github.com/krizaka/orazaka-job-service/issues/50)), but it only covered the simulation hook, which is properly behind a setting. I added what the model found: a line our own issue had missed. I fixed it the same evening: a prompt no longer chooses its own timeout; only the test simulation can, behind its setting ([orazaka-job-service#72](https://github.com/krizaka/orazaka-job-service/pull/72)).
 
 I didn't check the rest. The claim about jobs that keep running after their timeout, for instance, the model itself says it didn't follow all the way. It stays a lead.
+
+<Pipeline label="One line found by a model, followed to its fix">
+  <Stage title="The claim" note="Claude">A prompt that starts with TIMEOUT gets a five-second timeout, with no guard.</Stage>
+  <Stage title="Measured" note="lines 696 to 702">True on main: no property protects it.</Stage>
+  <Stage title="Our own issue" note="orazaka-job-service#50">The split of the file was planned, but only covered the simulation hook. The line was added to it.</Stage>
+  <Stage title="The fix" note="orazaka-job-service#72" tone="ship">A prompt no longer chooses its own timeout; only the test simulation can, behind its setting.</Stage>
+  <Stage title="What it teaches" note="no rule saw it" tone="gate">Our guardrails catch what we wrote a rule for. This line broke none.</Stage>
+</Pipeline>
 
 ## The limits of the exercise
 

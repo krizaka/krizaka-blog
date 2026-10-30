@@ -60,7 +60,7 @@ What I keep from this: we had a style problem, and above all a contract problem,
 
 The audit had a premise that I think is right: an agent changes its style only when a deterministic tool fails the build. Writing « write clean code » in an instructions file does not hold from one session to the next. So we turned every requirement we keep into a blocking rule.
 
-<Pipeline label="From style to rule">
+<Pipeline label="From style to rule: where each check stops « AI code », from the editor to the checkpoint">
   <Stage title="Editor" note="10 seconds">After each edit, a hook checks that one file: ESLint for TypeScript, PMD for Java.</Stage>
   <Stage title="Compile" note="NullAway">Packages declared `@NullMarked` are checked at compile time. A useless null check becomes an error.</Stage>
   <Stage title="Tests" note="ArchUnit">The architecture rules: `@Valid` on request bodies, no Utils, no controller touching the database.</Stage>
@@ -101,6 +101,8 @@ The decision was simple. Every rule of the organisation is declared once, in a r
 
 The first run of the matrix, over 36 active repositories: 155 green cells, 150 red. Tonight, running it again on the main branch of the `.github` repository, I read 198 green and 112 red. It is not finished, and I will not make it look better than it is. The edit-hook rule, for example, is still red in all 36 repositories, because it is not in place yet.
 
+<Bars label="The matrix of rules by repositories, over 36 active repositories: its first run, then the evening of 28 October (.github#393)." source="A rule is done only when its column is green everywhere." format="integer" stacked="true" series="Green cells:success | Red cells:danger" data="First run: 155 green, 150 red=155,150; 28 October, evening: 198 green, 112 red=198,112" />
+
 What the red cells really were surprised me: rarely the template, almost always each repository's own workflows. Unpinned actions, secrets passed as a block, gitleaks false positives on test data. The shared rule brought everyone's old debt to the surface at once. That is exactly what we wanted, but it does not feel like a success on day one.
 
 ## Two guards learned the same day
@@ -117,14 +119,7 @@ People often ask me what the agents cost. The true answer is less simple than I 
 
 The sessions write down, at the end, the number of tokens they used, and we have kept that log since 26 October. On the 29th, 290 PRs had a recorded cost:
 
-| Lane | PRs | Tokens per PR (average) |
-|:---|---:|---:|
-| platform | 92 | 48k |
-| Orazaka | 62 | 68k |
-| Yomizaka | 39 | 68k |
-| Akinaza | 35 | 58k |
-| dependency updates | 8 | 9k |
-| security | 6 | 25k |
+<Bars label="Tokens per merged PR, by lane, in thousands: the 290 PRs logged from 26 to 29 October. Estimates written by the sessions themselves, not a bill." source="The average over all 290 PRs: 55k. The number of PRs of each lane is in its label." format="integer" series="Thousand tokens per PR:accent" data="Orazaka, 62 PRs=68; Yomizaka, 39 PRs=68; Akinaza, 35 PRs=58; platform, 92 PRs=48; security, 6 PRs=25; dependency updates, 8 PRs=9" />
 
 In total, 16.1 million tokens for 290 PRs, which is 55k per PR. The models: 274 sessions on Sonnet (one feature or fix per session), 9 on Opus (ADRs and design choices), 3 on Haiku.
 
