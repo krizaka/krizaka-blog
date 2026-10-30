@@ -9,6 +9,7 @@ import { postsOf } from "@/lib/posts";
 import { chapterPath, postPath } from "@/lib/seo";
 import { coverOf, type Cover } from "@/lib/media";
 import { formatPeriod } from "./PostList";
+import { BasicsPath } from "./BasicsPath";
 import { PostCard } from "./PostCard";
 import { TakeStory } from "../TakeStory";
 import { NewsletterSection } from "../newsletter/NewsletterSection";
@@ -95,13 +96,8 @@ export default function HomePage({ locale }: { locale: Locale }) {
       )}
       {basics.length > 0 && (
         <Section id="basics" title={h.basicsTitle} lead={h.basicsLead} divider number={no()} margin>
-          <ul className="bl-basics-links">
-            {basics.map((p) => (
-              <li key={p.slug}>
-                <Link href={localizedPath(locale, postPath(safe(p.slug)))}>{p.title}</Link>
-              </li>
-            ))}
-          </ul>
+          <p className="bl-path-for">{t.basics.for}</p>
+          <BasicsPath posts={basics} locale={locale} label={h.basicsTitle} />
         </Section>
       )}
       <NewsletterSection locale={locale} where="home" />

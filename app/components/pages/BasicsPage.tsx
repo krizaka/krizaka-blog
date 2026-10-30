@@ -5,7 +5,7 @@ import { Section } from "@krizaka/ui/page";
 import { getDictionary, localizedPath, type Locale } from "@/lib/i18n";
 import { postsOf } from "@/lib/posts";
 import { collectionJsonLd } from "@/lib/seo";
-import { PostList } from "./PostList";
+import { BasicsPath } from "./BasicsPath";
 import { seriesLead, seriesName } from "./series-label";
 
 /* « Les bases »: the shelf of standalone posts that teach, at /basics/ (EN) and /fr/basics/ (FR). Its words are the series' name and lead. */
@@ -23,12 +23,15 @@ export function BasicsPage({ locale }: { locale: Locale }) {
       <PageHero eyebrow={t.home.eyebrow} title={name} lead={lead} backdrop="plain" linkAs={Link} />
       <Section reveal={false}>
         {posts.length ? (
-          <PostList posts={posts} locale={locale} label={name} reveal={false} />
+          <>
+            <p className="bl-path-for">{t.basics.for}</p>
+            <BasicsPath posts={posts} locale={locale} label={name} />
+          </>
         ) : (
           <p className="bl-status">{t.tags.none}</p>
         )}
         <p className="bl-story-link">
-          <Link href={localizedPath(locale, "/")}>{t.series.story}</Link>
+          <Link href={localizedPath(locale, "/")}>{t.basics.story}</Link>
         </p>
       </Section>
     </>
