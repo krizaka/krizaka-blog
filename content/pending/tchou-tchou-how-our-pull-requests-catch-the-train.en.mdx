@@ -1,0 +1,126 @@
+---
+title: "All aboard: how our pull requests catch the train"
+description: "A hundred open PRs, sessions waiting on CI, and a small token-free script that lands them one by one. What broke, what we kept, and the rules that came out of it."
+seoTitle: "All aboard: our pull requests catch the train"
+seoDescription: "How Krizaka lands its pull requests one after the other with a small token-free train, what broke this week and the guards that came out of it."
+date: 2026-10-30
+publishedAt: "2026-10-30T20:00:00-04:00"
+tags: [ai, integration, measurements]
+author: oussama
+draft: true
+sensitive: true
+chapter: 19
+period: "2026-10-28/2026-10-30"
+sources:
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "about a hundred open PRs and sessions waiting on CI"
+  built: "trains that land, 5 PRs per repository at most, a guard per failure"
+stats:
+  - value: "~100"
+    label: "open PRs across the organisation at the peak of the pile"
+    section: "The problem: a pile"
+  - value: "24 → 4"
+    label: "open PRs on the busiest repository, before and after"
+    section: "What it changes"
+  - value: "116"
+    label: "version-update PRs closed as duplicates"
+    section: "What broke, and the guard that came out of it"
+---
+
+This week I understood that my agents were not short of speed. They were short of a platform. Every session finished its work, opened a pull request, then waited for CI to pass, for the merge queue to accept it, for the branch to be up to date. While it waited, the session kept costing, and the pile kept growing.
+
+This chapter tells the small system that got things moving again. I call it the train, because that is exactly what it is: wagons leaving one behind the other, never overtaking.
+
+## The problem: a pile
+
+We work with five lanes: one session per application (Yomizaka, Akinaza, Orazaka), one for the platform, one for security. Each opens its PRs. Thursday evening there were about a hundred open PRs across the organisation, and Akinaza's repository carried 24 of them alone.
+
+The bottleneck was not the code. It was the capacity of CI and of the merge queue: one PR passes, another waits behind it, and if the branch moves in between, everything starts over. A session that waits is a session burning budget to watch a circle turn.
+
+<Numbers>
+  <Num value="5" label="lanes" hint="one session per application, the platform, security" />
+  <Num value="~100" label="open PRs" hint="at the peak of the pile" />
+  <Num value="24" label="open PRs on one repository" hint="before the rule of 5" />
+</Numbers>
+
+## The train
+
+The train is a small script: sixty-six lines of shell, with no model token at all. It takes PRs that have already been read, in order, and for each one:
+
+<Steps>
+  <Step title="Wait">The previous PR is merged. Not before.</Step>
+  <Step title="Update">The branch catches up with `main`. If GitHub changed its base, it follows.</Step>
+  <Step title="Approve">Once per version of the branch, with my account.</Step>
+  <Step title="Enqueue">The PR enters the merge queue.</Step>
+  <Step title="Stop at the first red">A red check, a conflict, an ejection: the train stops and says why. It never merges around a failure.</Step>
+</Steps>
+
+The important point: the review happens before, by the session that wrote the PR, not by the train. The train judges nothing. It does the platform work, the kind an agent does badly because waiting for it is expensive.
+
+{/* ILLUSTRATION (Monday's render batch): a little train of "PR" wagons, hand-drawn line, in the series' Cahier style. To be produced by an Orazaka Studio run, then cdn-assets + lib/media.json; add the <Figure> here with the caption "One wagon per PR, one direction of travel." */}
+{/* DIAGRAM (figure 1): lane -> PR -> train (wait, update, approve, enqueue, stop on red) -> merge queue -> main. Drawn from code, style "diagram". */}
+
+## What broke, and the guard that came out of it
+
+The train did not work the first time. Each failure became a rule, and each rule has its test.
+
+<Compare label="Eight failures, eight guards" topic="Failure" before="What happened" after="The guard">
+  <Case topic="duplicates" before="The same train started four times by different sessions." after="One train per PR" afterDetail="The script refuses to start if a live train already carries that PR." />
+  <Case topic="approvals" before="An approval every 90 seconds: GitHub rate-limited us." after="Approve once per version" afterDetail="The train remembers the version it already approved." />
+  <Case topic="ejection" before="A PR ejected from the queue was put back seven times." after="Stop at the first ejection" afterDetail="An ejection is a signal, not an incident to replay." />
+  <Case topic="quota" before="Twenty-seven trains polling the API every 90 seconds emptied the shared quota." after="REST, every 3 minutes" afterDetail="Reads go through the REST API; only enqueueing stays a mutation." />
+  <Case topic="silence" before="A rewrite of the script made every train spin in place for an hour, without an error." after="A test of the reading functions" afterDetail="The state of a PR is now tested before each change of the script." />
+  <Case topic="version bot" before="A bot opened one update PR per merge: 116 duplicates." after="One version PR per repository" afterDetail="A new organisation rule joins the open bulk PR; it does not open another." />
+  <Case topic="timeout" before="The merge queue's timeout was shorter than CI: ejections for nothing." after="A timeout longer than CI" afterDetail="The queue no longer judges a healthy CI too slow." />
+  <Case topic="skipped check" before="The name of a skipped job was not evaluated: a PR stayed stuck on a phantom check." after="Literal names" afterDetail="Required checks carry their exact name." />
+</Compare>
+
+Every row of that table is a real incident from this week. I keep them together because their common shape is what matters: a failure is not over when it is repaired, it is over when it cannot come back without a test turning red.
+
+## The rules that came out of it
+
+The train also changed our working rules, which matter more than the script:
+
+- **At most 5 open PRs per repository.** At the limit, nobody opens a new one: we merge first.
+- **Finish before starting.** A session's first job is its open PRs, oldest first: land them, or close them saying why.
+- **One bulk PR per repository at a time.** A new organisation rule joins the open bulk PR instead of opening another.
+- **A landing order.** Two PRs are stacked only when the first is already in the queue.
+
+A pile of open PRs tells me one thing: the order of the work was wrong. The train relieves the symptom, the rule of five treats the cause.
+
+## What it changes
+
+The figures I can give are the ones I can read back. Akinaza's repository went from 24 open PRs to 4. Across the organisation we went from about a hundred open PRs to 75 as I write, and 273 PRs were merged today, Friday.
+
+<Compare label="Open PRs, before and after" topic="Repository" before="At the peak" after="Now">
+  <Case topic="akinaza" before="24" after="4" />
+  <Case topic="yomizaka" before="5, at the ceiling" after="2" />
+  <Case topic="whole organisation" before="about 100" after="75" />
+</Compare>
+
+I give no "time saved": I did not measure it, and I would rather stay quiet than invent a number. What I see is that sessions no longer spend their time waiting, and that we stopped stepping on each other.
+
+## What is left
+
+The train depends on CI, and CI is still slow. The ceiling of 5 PRs per repository is a rule that a human or an agent can forget: we still check it by hand at each checkpoint. And when the API quota is empty, everything stops, which has already happened once.
+
+## My motto, and economy mode
+
+This week I also put one sentence at the head of all our agents' rules: "The flow keeps running, the deadline is ours: it may move, the quality never does." The flow is the trains and the small PRs. The deadline is ours to set, and we say when it moves. The quality is not trimmed to hold a date: no skipped hook, no weakened test, no "good enough" render.
+
+When my Claude usage reached 75 % of the week on Friday, we went into economy mode: two sessions at most, a cheaper model for repository chores, no paid renders. The trains kept working without spending a single model token. Economy mode lasted a few hours, then I decided to carry on. That was my choice, and my budget.
+
+## Frequently asked questions
+
+### Does a train replace review?
+
+No. Review happens before, by the session that writes the PR. The train does not judge the code: it waits, updates, approves and enqueues.
+
+### Why not GitHub's auto-merge?
+
+We use it too. The train covers what it does not: waiting for the previous PR, bringing the branch up to date after a base change, and stopping at the first problem while saying so.
+
+### Why 5 PRs per repository?
+
+Because 24 open PRs on one repository means 24 branches rebasing on each other. Five is what we manage to land in a day.
