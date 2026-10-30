@@ -334,5 +334,14 @@
     "installHint": "Tu peux aussi installer le blog depuis le menu de ton navigateur : il s'ouvre alors comme une application.",
     "toStory": "Retour à l'histoire",
     "regionLabel": "Lecture hors ligne"
+  },
+  "downloads": {
+    "regionLabel": "Télécharger",
+    "epub": "Télécharger l'EPUB",
+    "pdf": "Télécharger le PDF",
+    "epubSeries": "Toute l'histoire, EPUB",
+    "pdfSeries": "Toute l'histoire, PDF",
+    "readOnline": "À lire en ligne :",
+    "storyHeading": "Toute l'histoire"
   }
 }

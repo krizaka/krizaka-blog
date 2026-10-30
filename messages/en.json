@@ -334,5 +334,14 @@
     "installHint": "You can also install the blog from your browser's menu: it then opens like an app.",
     "toStory": "Back to the story",
     "regionLabel": "Offline reading"
+  },
+  "downloads": {
+    "regionLabel": "Download",
+    "epub": "Download EPUB",
+    "pdf": "Download PDF",
+    "epubSeries": "The whole story, EPUB",
+    "pdfSeries": "The whole story, PDF",
+    "readOnline": "Read it online:",
+    "storyHeading": "The whole story"
   }
 }

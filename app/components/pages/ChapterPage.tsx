@@ -28,6 +28,8 @@ import { formatPeriod } from "./PostList";
 import { Byline } from "./Byline";
 import { CoverImage } from "./CoverImage";
 import { SaveChapter, SaveSeries } from "../SaveOffline";
+import { Downloads } from "../Downloads";
+import { SERIES_KEY } from "@/lib/downloads";
 
 /* One chapter of the story, sober on the notebook lines (krizaka-blog#127):
    - the head (ChapterHead): « 01 » in the margin, the h1, one meta line (the period · the reading time), what I faced →
@@ -147,6 +149,8 @@ export default function ChapterPage({ chapter }: { chapter: Chapter }) {
         <section className="bl-offline-bar" aria-label={t.offline.regionLabel}>
           <SaveChapter url={localizedPath(locale, chapterPath(chapter.slug))} />
           <SaveSeries urls={chaptersOf(locale).map((c) => localizedPath(locale, chapterPath(c.slug)))} />
+          <Downloads locale={locale} bookKey={chapter.slug} />
+          <Downloads locale={locale} bookKey={SERIES_KEY} series />
         </section>
       </Section>
       <Section reveal={false} spacing="sm" className="bl-post-body">

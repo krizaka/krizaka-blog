@@ -1166,6 +1166,12 @@ picture {
   align-items: center;
   margin-top: 1.25rem;
 }
+.bl-downloads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
 .bl-offline {
   display: flex;
   flex-wrap: wrap;
