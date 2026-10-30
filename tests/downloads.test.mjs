@@ -194,13 +194,9 @@ test("lib/downloads.json names current EPUB and PDF files for the series and eve
 test("the site links the downloads on each chapter, on the home and in the three feeds; CI makes and checks them", () => {
   assert.match(
     read("app/components/pages/ChapterPage.tsx"),
-    /<Downloads locale=\{locale\} bookKey=\{chapter\.slug\} \/>/,
+    /<TakeStory locale=\{locale\} bookKey=\{chapter\.slug\} compact \/>/,
   );
-  assert.match(read("app/components/pages/ChapterPage.tsx"), /bookKey=\{SERIES_KEY\} series/);
-  assert.match(
-    read("app/components/pages/HomePage.tsx"),
-    /<Downloads locale=\{locale\} bookKey=\{SERIES_KEY\} series \/>/,
-  );
+  assert.match(read("app/components/pages/HomePage.tsx"), /<TakeStory locale=\{locale\} \/>/);
   const feeds = read("lib/feeds.ts");
   assert.match(feeds, /<enclosure url=/);
   assert.match(feeds, /rel="enclosure"/);

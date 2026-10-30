@@ -4503,69 +4503,66 @@
   "series-01-why-krizaka": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAADwAQCdASoQAAkABABoJagCdADdJuddlAAA/u7uX38bH2dHiAxM9Q07FPTuTEdsR/M6BKrZLXZfGweECXkUUmLOw2B/yrE+7+RiA4iC4a5AAA==",
+    "height": 723,
+    "blur": "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAAAQAgCdASoQAAkABABoJagCdH8AGBVUFNdAAP7wFGaoh6nCTDthA2Oxos1qQadJ2br/OJwsULe0392Zh0b0OjZt75IYAA==",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-01-why-krizaka-480.ef42c0168f.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-01-why-krizaka-480.7ffbcbfba3.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-01-why-krizaka-960.c01cb7b599.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-01-why-krizaka-960.3763ca5afc.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-01-why-krizaka-1280.3534b8b3c4.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-01-why-krizaka-1280.93df53b98a.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
+      "model": "FLUX.1 [schnell]",
       "licence": "Apache-2.0",
-      "engine": "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
-      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
-      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. The first picture: the empty valley at dusk, Montreal rooftops as simple geometric silhouettes on the ground line, one orange falcon with a visor alone on the tallest roof, watching. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor.",
-      "seed": "2910001",
-      "size": "1280×720",
-      "seconds": 0,
-      "costUsd": 0,
-      "note": "Chapter 1 of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text."
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+      "machine": "RunPod L40S",
+      "via": "Orazaka Studio",
+      "size": "1360×768",
+      "note": "Chapter 1 of the image series, candidate A of batch 2026-10-30-blog-v2 (Orazaka Studio run 5b9b8a1f) chosen by the founder (krizaka-blog#193). No person, no text, no logo."
     },
     "renditions": {
       "avif": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-01-why-krizaka-480.b848b1e8e0.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-01-why-krizaka-480.f76e403ef0.avif"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-01-why-krizaka-768.3499325616.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-01-why-krizaka-768.98f48917bd.avif"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-01-why-krizaka-1200.f77e3ff12e.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-01-why-krizaka-1200.1469040a35.avif"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-01-why-krizaka-1280.c1a7c2aa4f.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-01-why-krizaka-1280.d092443629.avif"
         }
       ],
       "webp": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-01-why-krizaka-480.c65ef24983.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-01-why-krizaka-480.5ccb3b89a9.webp"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-01-why-krizaka-768.77366878f7.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-01-why-krizaka-768.8aad5fa46a.webp"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-01-why-krizaka-1200.231917ed13.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-01-why-krizaka-1200.7c49ebef8a.webp"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-01-why-krizaka-1280.e736f30aad.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-01-why-krizaka-1280.aeafe8d089.webp"
         }
       ]
     }
@@ -4573,69 +4570,66 @@
   "series-02-an-engine-on-a-laptop": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAAAQAgCdASoQAAkABABoJZACdDBGAUbCnLCYAP7xH2l/Gx9nR4gMTPUNOwzH6l1ykwDWZFHbSfqM3rf5IsOsKOLmrDyU1XoY9K4AgnKbBgApwAAA",
+    "height": 723,
+    "blur": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAAAQAgCdASoQAAkABABoJbACdAEQyzBJUNsAAPlHF9d8Llu7WnpAp/RaCteDdRHA1ysuz+YXdizmLV8f7wSX7diRfKLpSdx9XPgH0uIFGk77ABO/ZpnWwAvvXFqR2G7qAAA=",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-02-an-engine-on-a-laptop-480.eb4937722a.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-02-an-engine-on-a-laptop-480.959fb75471.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-02-an-engine-on-a-laptop-960.095cf714d6.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-02-an-engine-on-a-laptop-960.52e5b9650f.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-02-an-engine-on-a-laptop-1280.87a197ac42.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-02-an-engine-on-a-laptop-1280.585e88e4ed.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
+      "model": "FLUX.1 [schnell]",
       "licence": "Apache-2.0",
-      "engine": "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
-      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
-      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere. A small workshop hut now stands beside the rooftops, its window glowing and a glowing hexagon on its door; a table outside holds only a laptop-shaped lantern; the one falcon sits alone on the hut's roof. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor.",
-      "seed": "2910102",
-      "size": "1280×720",
-      "seconds": 0,
-      "costUsd": 0,
-      "note": "Chapter 2 of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text."
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+      "machine": "RunPod L40S",
+      "via": "Orazaka Studio",
+      "size": "1360×768",
+      "note": "Chapter 2 of the image series, candidate B of batch 2026-10-30-blog-v2 (Orazaka Studio run 4d45823d) chosen by the founder (krizaka-blog#193). No person, no text, no logo."
     },
     "renditions": {
       "avif": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-02-an-engine-on-a-laptop-480.b901a2735a.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-02-an-engine-on-a-laptop-480.47212873fd.avif"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-02-an-engine-on-a-laptop-768.6629dc593c.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-02-an-engine-on-a-laptop-768.d442dc0133.avif"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-02-an-engine-on-a-laptop-1200.c368b2ffbf.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-02-an-engine-on-a-laptop-1200.16fab63e8c.avif"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-02-an-engine-on-a-laptop-1280.ccbaffaf9a.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-02-an-engine-on-a-laptop-1280.1e0d8ebd92.avif"
         }
       ],
       "webp": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-02-an-engine-on-a-laptop-480.968dad1a71.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-02-an-engine-on-a-laptop-480.e254cc08b7.webp"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-02-an-engine-on-a-laptop-768.495bfc8dc7.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-02-an-engine-on-a-laptop-768.6a04c9f691.webp"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-02-an-engine-on-a-laptop-1200.090bdfca88.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-02-an-engine-on-a-laptop-1200.e60a8d125f.webp"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-02-an-engine-on-a-laptop-1280.d93fbe64f9.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-02-an-engine-on-a-laptop-1280.a3213c5c32.webp"
         }
       ]
     }
@@ -4643,69 +4637,66 @@
   "series-03-what-a-gpu-costs": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAAAwAgCdASoQAAkABABoJZACdDBGAUcXFKVGAAD+8tvP7/g1lfaKd/kZe5L2FPKVOnR0WDCEhWiyepiwGZ7ix+g7bigpbPJ+vmTQPEOs3mcm0onkeuGzgAAA",
+    "height": 723,
+    "blur": "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAAAwAgCdASoQAAkABABoJaACdAEfA6W6lM4ngAD+7eA563bSkNiH+B246VFhZponyGr3gl9Fmyvn1Q9dZxG+shr2wVuDRHQKqYAAAA==",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-03-what-a-gpu-costs-480.a301d91c26.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-03-what-a-gpu-costs-480.bc9f8228ed.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-03-what-a-gpu-costs-960.deb39a1d12.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-03-what-a-gpu-costs-960.e9e7daab20.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-03-what-a-gpu-costs-1280.e56a40d85c.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-03-what-a-gpu-costs-1280.0c4484426a.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
+      "model": "FLUX.1 [schnell]",
       "licence": "Apache-2.0",
-      "engine": "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
-      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
-      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere. A violet owl arrives and weighs on a brass balance scale a glowing picture frame against stacks of coins, beside a glowing stove-like machine (the GPU) with steam. Exactly one owl, standing next to the scale, and exactly one orange falcon with a dark visor on the roof of the right hut. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor, a violet owl with two ear tufts and big round eyes.",
-      "seed": "7104",
-      "size": "1280×720",
-      "seconds": 0,
-      "costUsd": 0,
-      "note": "Chapter 3 of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text."
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+      "machine": "RunPod L40S",
+      "via": "Orazaka Studio",
+      "size": "1360×768",
+      "note": "Chapter 3 of the image series, candidate A of batch 2026-10-30-blog-v2 (Orazaka Studio run f80e55ac) chosen by the founder (krizaka-blog#193). No person, no text, no logo."
     },
     "renditions": {
       "avif": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-03-what-a-gpu-costs-480.9f778d50a3.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-03-what-a-gpu-costs-480.1c109056a5.avif"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-03-what-a-gpu-costs-768.c5307f5c3f.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-03-what-a-gpu-costs-768.da1a28b051.avif"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-03-what-a-gpu-costs-1200.6915c6435a.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-03-what-a-gpu-costs-1200.2f8ab7050a.avif"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-03-what-a-gpu-costs-1280.fa7c71b485.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-03-what-a-gpu-costs-1280.99afd13f95.avif"
         }
       ],
       "webp": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-03-what-a-gpu-costs-480.6c74119afe.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-03-what-a-gpu-costs-480.475ff03d80.webp"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-03-what-a-gpu-costs-768.f76f874459.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-03-what-a-gpu-costs-768.e784ec60a5.webp"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-03-what-a-gpu-costs-1200.dba08b36d3.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-03-what-a-gpu-costs-1200.a8819b5067.webp"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-03-what-a-gpu-costs-1280.24c63b92a3.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-03-what-a-gpu-costs-1280.d3a820630c.webp"
         }
       ]
     }
@@ -4713,69 +4704,66 @@
   "series-04-from-a-clip-to-a-film": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAAAwAgCdASoQAAkABABoJZgCdDBHQXLp8SWZSAD+8tyXQg36xllz4uemzkLEUEym6+77SaQbBFb7BxZNsgkzKNoK2bogJh2PgxfhRep6h/AF474DgAA=",
+    "height": 723,
+    "blur": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAACwAQCdASoQAAkABABoJbACdACq6yhgAP5hZFDrNJh/zT8kF2zEfITzgMMNeVZw4maMGcgKdQcxCrrSfurNX3fTQGs55LycRm7JqpJn4lbrQef/Y9sZ+zUWVQuk/QwIAAA=",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-04-from-a-clip-to-a-film-480.4b6da8afb3.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-04-from-a-clip-to-a-film-480.040393c4cd.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-04-from-a-clip-to-a-film-960.a238fa2958.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-04-from-a-clip-to-a-film-960.33e53c7e81.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-04-from-a-clip-to-a-film-1280.3c388e68f8.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-04-from-a-clip-to-a-film-1280.4c057a7239.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
+      "model": "FLUX.1 [schnell]",
       "licence": "Apache-2.0",
-      "engine": "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
-      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
-      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere. A small film set on the hillside: a projector throwing a wide beam on a hanging screen, a rail with a camera. The single violet owl perches on top of the screen and watches the beam; the single orange falcon with a dark visor stands on the ground at the left. Only these two birds. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor, a violet owl with two ear tufts and big round eyes.",
-      "seed": "2910304",
-      "size": "1280×720",
-      "seconds": 0,
-      "costUsd": 0,
-      "note": "Chapter 4 of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text."
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+      "machine": "RunPod L40S",
+      "via": "Orazaka Studio",
+      "size": "1360×768",
+      "note": "Chapter 4 of the image series, candidate A of batch 2026-10-30-blog-v2 (Orazaka Studio run 14c20ad4) chosen by the founder (krizaka-blog#193). No person, no text, no logo."
     },
     "renditions": {
       "avif": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-04-from-a-clip-to-a-film-480.29e13b0e8f.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-04-from-a-clip-to-a-film-480.3333762e84.avif"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-04-from-a-clip-to-a-film-768.45b8633615.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-04-from-a-clip-to-a-film-768.afbf4fc787.avif"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-04-from-a-clip-to-a-film-1200.745e8427be.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-04-from-a-clip-to-a-film-1200.55147e5611.avif"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-04-from-a-clip-to-a-film-1280.0016529c69.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-04-from-a-clip-to-a-film-1280.3d92191d11.avif"
         }
       ],
       "webp": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-04-from-a-clip-to-a-film-480.69119251a0.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-04-from-a-clip-to-a-film-480.c5418415f6.webp"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-04-from-a-clip-to-a-film-768.a29376711b.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-04-from-a-clip-to-a-film-768.f51a39a772.webp"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-04-from-a-clip-to-a-film-1200.e4f119b10c.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-04-from-a-clip-to-a-film-1200.dba063a4b4.webp"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-04-from-a-clip-to-a-film-1280.9dd125040e.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-04-from-a-clip-to-a-film-1280.6e70c8d911.webp"
         }
       ]
     }
@@ -4783,69 +4771,66 @@
   "series-05-one-interface-everywhere": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAADwAQCdASoQAAkABABoJagCdAEDYy97cSAA/vLbz+/4NZX2ix/r252V7ylA/V3YtBnr/Q1FcG6dya7v4clQ97XSdUo1/YkF/UrpJ/Z2gvpG/yBMAAA=",
+    "height": 723,
+    "blur": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAADwAQCdASoQAAkABABoJQBWAB+LkrnwtgAA9pibkdpzt6xGvfvUJQP0bvIvJlZCeU4IXTfqlkXmVwXO5vg0J7EvMqoitlejch2qvD4oLCyoAA==",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-05-one-interface-everywhere-480.830937f161.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-05-one-interface-everywhere-480.a27e84dcef.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-05-one-interface-everywhere-960.49d2173f4f.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-05-one-interface-everywhere-960.19297d4209.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-05-one-interface-everywhere-1280.ce063bdf04.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-05-one-interface-everywhere-1280.ecd50be24c.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
+      "model": "FLUX.1 [schnell]",
       "licence": "Apache-2.0",
-      "engine": "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
-      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
-      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere. The red duck with glasses sits at a pottery wheel under a canopy that shapes three vessels of the same clay: a tall phone shape, a tablet shape and a wide laptop shape; the falcon stands at the left, the owl on the canopy. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor, a violet owl with two ear tufts and big round eyes, a red duck with a flat yellow bill and round glasses (a duck, not an owl: no ear tufts).",
-      "seed": "2910205",
-      "size": "1280×720",
-      "seconds": 0,
-      "costUsd": 0,
-      "note": "Chapter 5 of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text."
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+      "machine": "RunPod L40S",
+      "via": "Orazaka Studio",
+      "size": "1360×768",
+      "note": "Chapter 5 of the image series, candidate A of batch 2026-10-30-blog-v2 (Orazaka Studio run 7f279725) chosen by the founder (krizaka-blog#193). No person, no text, no logo."
     },
     "renditions": {
       "avif": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-05-one-interface-everywhere-480.c6ddf05da2.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-05-one-interface-everywhere-480.32636cc466.avif"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-05-one-interface-everywhere-768.0a332077f7.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-05-one-interface-everywhere-768.426b06641b.avif"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-05-one-interface-everywhere-1200.b6fe68daed.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-05-one-interface-everywhere-1200.01662c517e.avif"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-05-one-interface-everywhere-1280.ad54638c3e.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-05-one-interface-everywhere-1280.e299cc970b.avif"
         }
       ],
       "webp": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-05-one-interface-everywhere-480.e7c10d2861.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-05-one-interface-everywhere-480.00fd18d330.webp"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-05-one-interface-everywhere-768.782eefeaaa.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-05-one-interface-everywhere-768.9f44416737.webp"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-05-one-interface-everywhere-1200.e377164de5.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-05-one-interface-everywhere-1200.e24f754bb3.webp"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-05-one-interface-everywhere-1280.d4d46925a1.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-05-one-interface-everywhere-1280.ff026ecf3e.webp"
         }
       ]
     }
@@ -4853,69 +4838,66 @@
   "series-06-the-first-products": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAAAQAgCdASoQAAkABABoJZgCdDBAAX8dO4SAAP70U2/1JwQjnuJ/r252V7ylA/YnCdGzGPe2vfi78tt/oonXt3C8CL2WYmLcWtDvpw5XhlRz7m9MfIAAAA==",
+    "height": 723,
+    "blur": "data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAAAQAgCdASoQAAkABABoJbACdAEfcXgZATwAAPl2M6jRF9tkZobTmERKJ2FEXsk53apHTbaa7kNYfcQ9+K0vNvrMpVGwNLwKmSgn86wV6gufn/PooQF4DB78G53JzdnGEUdzvtr0QAA=",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-06-the-first-products-480.071720d1b6.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-06-the-first-products-480.125840a826.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-06-the-first-products-960.783a73630c.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-06-the-first-products-960.99e2fe8842.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-06-the-first-products-1280.b8e7c6621c.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-06-the-first-products-1280.0851d04f8e.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
+      "model": "FLUX.1 [schnell]",
       "licence": "Apache-2.0",
-      "engine": "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
-      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
-      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere. Two new houses by the stream, one with a scroll of law pinned in the window and one with a small shop awning and a hanging basket; lamps lit, a footbridge between them. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor, a violet owl with two ear tufts and big round eyes, a red duck with a flat yellow bill and round glasses (a duck, not an owl: no ear tufts).",
-      "seed": "2910206",
-      "size": "1280×720",
-      "seconds": 0,
-      "costUsd": 0,
-      "note": "Chapter 6 of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text."
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+      "machine": "RunPod L40S",
+      "via": "Orazaka Studio",
+      "size": "1360×768",
+      "note": "Chapter 6 of the image series, candidate A of batch 2026-10-30-blog-v2 (Orazaka Studio run 8381c095) chosen by the founder (krizaka-blog#193). No person, no text, no logo."
     },
     "renditions": {
       "avif": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-06-the-first-products-480.1cd207b4eb.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-06-the-first-products-480.d2fa64ca26.avif"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-06-the-first-products-768.54240be482.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-06-the-first-products-768.3b1b5ff45c.avif"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-06-the-first-products-1200.34ed361b92.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-06-the-first-products-1200.d997fe1572.avif"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-06-the-first-products-1280.e9080eb22b.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-06-the-first-products-1280.004c74ad86.avif"
         }
       ],
       "webp": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-06-the-first-products-480.a82d932164.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-06-the-first-products-480.2062dae78a.webp"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-06-the-first-products-768.c454253423.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-06-the-first-products-768.ff4612ae9c.webp"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-06-the-first-products-1200.6c21721224.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-06-the-first-products-1200.b3176cb15c.webp"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-06-the-first-products-1280.9f25061cc0.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-06-the-first-products-1280.62672c0f01.webp"
         }
       ]
     }
@@ -4923,69 +4905,66 @@
   "series-07-an-empty-result-is-not-a-success": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAABQAgCdASoQAAkABABoJZgCdH8D2AATMN9nsSAA/vWY0/UnBJdXTX+Tp28+ocO+n2JwnRsx7ShVhLxWHVBR1kZWjtTwJvmQpzfl+di2WZmais02bQEAAA==",
+    "height": 723,
+    "blur": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAADQAQCdASoQAAkABABoJaAC7AC23arkAAD+6R0Ni3ucKNxk17HaRQ/E1WHTOT1qQN6sQgF0aq8/m69qH0SAqS3MCVfCD4zlMPW6ZHAAAAA=",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-07-an-empty-result-is-not-a-success-480.50cc7014ac.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-07-an-empty-result-is-not-a-success-480.d999d0f441.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-07-an-empty-result-is-not-a-success-960.3891aa8d1b.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-07-an-empty-result-is-not-a-success-960.f2ba169c16.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-07-an-empty-result-is-not-a-success-1280.ffdff1ad0d.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-07-an-empty-result-is-not-a-success-1280.8e1b20b7a2.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
+      "model": "FLUX.1 [schnell]",
       "licence": "Apache-2.0",
-      "engine": "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
-      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
-      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere. A gate with a latch on the footbridge, one wing open, one closed; a checklist board with ticks beside it and an empty basket on the gate post. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor, a violet owl with two ear tufts and big round eyes, a red duck with a flat yellow bill and round glasses (a duck, not an owl: no ear tufts).",
-      "seed": "2910207",
-      "size": "1280×720",
-      "seconds": 0,
-      "costUsd": 0,
-      "note": "Chapter 7 of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text."
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+      "machine": "RunPod L40S",
+      "via": "Orazaka Studio",
+      "size": "1360×768",
+      "note": "Chapter 7 of the image series, candidate A of batch 2026-10-30-blog-v2 (Orazaka Studio run 5d3e9e4a) chosen by the founder (krizaka-blog#193). No person, no text, no logo."
     },
     "renditions": {
       "avif": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-07-an-empty-result-is-not-a-success-480.01361dca8d.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-07-an-empty-result-is-not-a-success-480.c269f5e47b.avif"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-07-an-empty-result-is-not-a-success-768.2b30e7d9b6.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-07-an-empty-result-is-not-a-success-768.b3fb82ff9a.avif"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-07-an-empty-result-is-not-a-success-1200.30fea9ddd3.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-07-an-empty-result-is-not-a-success-1200.37a75c107f.avif"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-07-an-empty-result-is-not-a-success-1280.bcf5626a76.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-07-an-empty-result-is-not-a-success-1280.7165a06fbb.avif"
         }
       ],
       "webp": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-07-an-empty-result-is-not-a-success-480.a29c14169e.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-07-an-empty-result-is-not-a-success-480.49b4aae965.webp"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-07-an-empty-result-is-not-a-success-768.520a8d9dc4.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-07-an-empty-result-is-not-a-success-768.c8a8697053.webp"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-07-an-empty-result-is-not-a-success-1200.926604f6e4.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-07-an-empty-result-is-not-a-success-1200.a8c18daf8d.webp"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-07-an-empty-result-is-not-a-success-1280.aba02b7e0e.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-07-an-empty-result-is-not-a-success-1280.1757f5389d.webp"
         }
       ]
     }
@@ -4993,69 +4972,66 @@
   "series-08-building-with-agents": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAACwAQCdASoQAAkABABoJZACdAC/tyiAAP71mWlvd/tc0WP6SLNdg0SyIfZ2e4Yp6ZwNGDwq9vctnaAN0xTx8pFjvTxeHfU5gwZXZOWSOCffOGn9VWgAAA==",
+    "height": 723,
+    "blur": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAADwAQCdASoQAAkABABoJYgCdAD7UHlyhwAA+Rmq7mXR1ZQGocyGVewt4IOZ5urE7r3GN5uULy0m/kXndNE4A30r4TwEOffSzDWludQA",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-08-building-with-agents-480.ff85aba38e.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-08-building-with-agents-480.f85d4aa832.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-08-building-with-agents-960.1a99a1fb25.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-08-building-with-agents-960.4a2fd45af8.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-08-building-with-agents-1280.696875110f.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-08-building-with-agents-1280.a9d35fd1fe.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
+      "model": "FLUX.1 [schnell]",
       "licence": "Apache-2.0",
-      "engine": "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
-      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
-      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere. A pink flamingo arrives; thirty small typewriter-like machines glow in rows in a long night shed, each with a tiny lamp, keys locked in a strongbox outside. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor, a violet owl with two ear tufts and big round eyes, a red duck with a flat yellow bill and round glasses (a duck, not an owl: no ear tufts), a pink flamingo.",
-      "seed": "2910208",
-      "size": "1280×720",
-      "seconds": 0,
-      "costUsd": 0,
-      "note": "Chapter 8 of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text."
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+      "machine": "RunPod L40S",
+      "via": "Orazaka Studio",
+      "size": "1360×768",
+      "note": "Chapter 8 of the image series, candidate A of batch 2026-10-30-blog-v2 (Orazaka Studio run dde98cb5) chosen by the founder (krizaka-blog#193). No person, no text, no logo."
     },
     "renditions": {
       "avif": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-08-building-with-agents-480.30d2866a96.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-08-building-with-agents-480.63fd8527cb.avif"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-08-building-with-agents-768.c10b46fbed.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-08-building-with-agents-768.b99f7f36a2.avif"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-08-building-with-agents-1200.0e011f22c6.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-08-building-with-agents-1200.d03d19b6f9.avif"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-08-building-with-agents-1280.a0400a8899.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-08-building-with-agents-1280.7322d5517a.avif"
         }
       ],
       "webp": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-08-building-with-agents-480.36a17e4cb1.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-08-building-with-agents-480.adeba184c4.webp"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-08-building-with-agents-768.2cf1654383.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-08-building-with-agents-768.8e0b56879f.webp"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-08-building-with-agents-1200.d1df79160f.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-08-building-with-agents-1200.92a735c841.webp"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-08-building-with-agents-1280.16c57eefd6.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-08-building-with-agents-1280.e4dc76d430.webp"
         }
       ]
     }
@@ -5063,69 +5039,66 @@
   "series-09-what-claude-found-auditing-krizaka": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAAAQAgCdASoQAAkABABoJZACdDBAASLX7ghgAP71mNP5FlvrQD4P5Jnbz6hw76fabIAxWB5e8gD9bB8hMYyXVVNaSF4mwb4Ocg87wCAz8xg2cP9lGuGdQAAA",
+    "height": 723,
+    "blur": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAADQAQCdASoQAAkABABoJQBOgCHQQlKRKAD+8KVFZokxL7EbTqD0JCKh53cFHvV2j/DAw4dn2FRfs+EVq1PbqLK03s+3gAMB3vnWiOyjqzsAAA==",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-09-what-claude-found-auditing-krizaka-480.12e6d88ee2.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-09-what-claude-found-auditing-krizaka-480.d961f95856.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-09-what-claude-found-auditing-krizaka-960.15add7cc2b.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-09-what-claude-found-auditing-krizaka-960.fab9ed67ef.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-09-what-claude-found-auditing-krizaka-1280.bf666f1e20.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-09-what-claude-found-auditing-krizaka-1280.107ca30eef.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
+      "model": "FLUX.1 [schnell]",
       "licence": "Apache-2.0",
-      "engine": "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
-      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
-      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere. A drafting table at the valley's edge with a large audit report sheet and a big magnifying glass over the settlement; two lanterns of different colors lean over it. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor, a violet owl with two ear tufts and big round eyes, a red duck with a flat yellow bill and round glasses (a duck, not an owl: no ear tufts), a pink flamingo.",
-      "seed": "2910209",
-      "size": "1280×720",
-      "seconds": 0,
-      "costUsd": 0,
-      "note": "Chapter 9 of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text."
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+      "machine": "RunPod L40S",
+      "via": "Orazaka Studio",
+      "size": "1360×768",
+      "note": "Chapter 9 of the image series, candidate A of batch 2026-10-30-blog-v2 (Orazaka Studio run 1161b304) chosen by the founder (krizaka-blog#193). No person, no text, no logo."
     },
     "renditions": {
       "avif": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-09-what-claude-found-auditing-krizaka-480.c3dae400e6.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-09-what-claude-found-auditing-krizaka-480.18264ed90a.avif"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-09-what-claude-found-auditing-krizaka-768.c34e923c23.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-09-what-claude-found-auditing-krizaka-768.3db6df9533.avif"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-09-what-claude-found-auditing-krizaka-1200.dedc01cfd6.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-09-what-claude-found-auditing-krizaka-1200.44d3354358.avif"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-09-what-claude-found-auditing-krizaka-1280.aefb719991.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-09-what-claude-found-auditing-krizaka-1280.200f89d1fc.avif"
         }
       ],
       "webp": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-09-what-claude-found-auditing-krizaka-480.75a8ee2e9f.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-09-what-claude-found-auditing-krizaka-480.a82ff13918.webp"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-09-what-claude-found-auditing-krizaka-768.a86249940a.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-09-what-claude-found-auditing-krizaka-768.6973c25da9.webp"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-09-what-claude-found-auditing-krizaka-1200.f40185292a.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-09-what-claude-found-auditing-krizaka-1200.1706e35ae3.webp"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-09-what-claude-found-auditing-krizaka-1280.3cc33d76b9.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-09-what-claude-found-auditing-krizaka-1280.1323284a53.webp"
         }
       ]
     }
@@ -5203,69 +5176,66 @@
   "series-11-how-we-built-our-ci": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAACQAQCdASoQAAkABABoJZgCdADBHVIA/varc/rpe8lJLLn6mtQofPiSh3uCIOaBfhds0qNUhzQw2jLAj1yFuXZ/W+wRBkC1xUHpLixSAtUS9AAA",
+    "height": 723,
+    "blur": "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAADwAQCdASoQAAkABABoJaAC7AD2OD5iRkgA/eO9BRLBys9dJeSFs7/ZZxIMok+ZOGYlusjIpnfbowAXtt6IhEhN3SqFrBK6qfIwU0WDxU2T6L1IAAA=",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-11-how-we-built-our-ci-480.0637b2846b.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-11-how-we-built-our-ci-480.fd60e3009f.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-11-how-we-built-our-ci-960.74915e461a.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-11-how-we-built-our-ci-960.597d42d904.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-11-how-we-built-our-ci-1280.6ceb99f74b.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-11-how-we-built-our-ci-1280.26ce0d3695.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
+      "model": "FLUX.1 [schnell]",
       "licence": "Apache-2.0",
-      "engine": "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
-      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
-      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere. A train of small hexagon crates rolling along rails through a row of lit checkpoint gates toward a lighthouse on a Mediterranean harbour; gates glow green. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor, a violet owl with two ear tufts and big round eyes, a red duck with a flat yellow bill and round glasses (a duck, not an owl: no ear tufts), a pink flamingo.",
-      "seed": "2910211",
-      "size": "1280×720",
-      "seconds": 0,
-      "costUsd": 0,
-      "note": "Chapter 11 of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text."
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+      "machine": "RunPod L40S",
+      "via": "Orazaka Studio",
+      "size": "1360×768",
+      "note": "Chapter 11 of the image series, candidate A of batch 2026-10-30-blog-v2 (Orazaka Studio run 349af806) chosen by the founder (krizaka-blog#193). No person, no text, no logo."
     },
     "renditions": {
       "avif": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-11-how-we-built-our-ci-480.f3ffa0a2b9.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-11-how-we-built-our-ci-480.dd6c009b35.avif"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-11-how-we-built-our-ci-768.375ac6be25.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-11-how-we-built-our-ci-768.73cdaee899.avif"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-11-how-we-built-our-ci-1200.b5565636ff.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-11-how-we-built-our-ci-1200.a3718b21df.avif"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-11-how-we-built-our-ci-1280.a1d9ba9108.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-11-how-we-built-our-ci-1280.e9e63454c8.avif"
         }
       ],
       "webp": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-11-how-we-built-our-ci-480.12c66ed261.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-11-how-we-built-our-ci-480.33610f5654.webp"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-11-how-we-built-our-ci-768.d56e74873f.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-11-how-we-built-our-ci-768.8b52bcdb63.webp"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-11-how-we-built-our-ci-1200.10561a0c0c.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-11-how-we-built-our-ci-1200.a7b7199074.webp"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-11-how-we-built-our-ci-1280.f4fa6d3e49.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-11-how-we-built-our-ci-1280.b9261ff6df.webp"
         }
       ]
     }
@@ -5273,69 +5243,66 @@
   "series-12-krizaka-ui-how-we-cut-it": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAACQAQCdASoQAAkABABoJaACdADBHiAA/vape/LaPFdnNY/0fm5qFlqbZ/tTA6ne1WamWN3ZKcJ7SFc3N+C2j1qWZb39fQGL+wWUulmrYHYuklMAAAA=",
+    "height": 723,
+    "blur": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAAAQAgCdASoQAAkABABoJbACdAYpRalu+z2AAP63kJorwpWmYV4n30g/DqBR+aDm5sWO8K5TOe03V8XjNZI6BLmFtEPuflNZnXdyLuaeIBuP/JwvoqLS7JtwAAA=",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-12-krizaka-ui-how-we-cut-it-480.b6b7ffb27c.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-12-krizaka-ui-how-we-cut-it-480.32b53798da.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-12-krizaka-ui-how-we-cut-it-960.d4aeca83fb.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-12-krizaka-ui-how-we-cut-it-960.57bb3ea43d.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-12-krizaka-ui-how-we-cut-it-1280.75cae43048.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-12-krizaka-ui-how-we-cut-it-1280.02e8cc9937.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
+      "model": "FLUX.1 [schnell]",
       "licence": "Apache-2.0",
-      "engine": "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
-      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
-      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere. A workshop of nineteen small colored building blocks on shelves, a chisel and a mallet resting on one block, a basketball hoop on a post at the court's edge, a souk's horseshoe arches with zellige patterns behind. Nobody is in the picture but the birds. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor, a violet owl with two ear tufts and big round eyes, a red duck with a flat yellow bill and round glasses (a duck, not an owl: no ear tufts), a pink flamingo.",
-      "seed": "2910212",
-      "size": "1280×720",
-      "seconds": 0,
-      "costUsd": 0,
-      "note": "Chapter 12 of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text."
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+      "machine": "RunPod L40S",
+      "via": "Orazaka Studio",
+      "size": "1360×768",
+      "note": "Chapter 12 of the image series, candidate B of batch 2026-10-30-blog-v2 (Orazaka Studio run e63039d3) chosen by the founder (krizaka-blog#193). No person, no text, no logo."
     },
     "renditions": {
       "avif": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-12-krizaka-ui-how-we-cut-it-480.77d5c07c09.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-12-krizaka-ui-how-we-cut-it-480.10d51af180.avif"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-12-krizaka-ui-how-we-cut-it-768.c6744418c7.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-12-krizaka-ui-how-we-cut-it-768.34269458f2.avif"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-12-krizaka-ui-how-we-cut-it-1200.928c232516.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-12-krizaka-ui-how-we-cut-it-1200.391b85581c.avif"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-12-krizaka-ui-how-we-cut-it-1280.88694db794.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-12-krizaka-ui-how-we-cut-it-1280.d8ab9e2ba2.avif"
         }
       ],
       "webp": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-12-krizaka-ui-how-we-cut-it-480.2dc3dcd6a6.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-12-krizaka-ui-how-we-cut-it-480.3c8561cc3a.webp"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-12-krizaka-ui-how-we-cut-it-768.14e699cafb.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-12-krizaka-ui-how-we-cut-it-768.f5f280ed27.webp"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-12-krizaka-ui-how-we-cut-it-1200.61cdbc5df6.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-12-krizaka-ui-how-we-cut-it-1200.cba7b26226.webp"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-12-krizaka-ui-how-we-cut-it-1280.6c0554b727.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-12-krizaka-ui-how-we-cut-it-1280.e50a768482.webp"
         }
       ]
     }
@@ -5343,69 +5310,66 @@
   "series-13-orazaka-v2-the-architecture-we-build": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAADQAQCdASoQAAkABABoJagCdADD2+coAAD+9ZjT+RZz2M4KE/knEmLYoSyIfaEWYlvNge4Wuf4xb8DZjVz0A6ZBA98nnTjZLIJUs34+vGT/DAryd6AAAA==",
+    "height": 723,
+    "blur": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAAAQAgCdASoQAAkABABoJYgCdAEWaXHthZnkAPyrVKttb4ncCDSPSc0BFA2Wp2IQX4gTODkkQXa5P24FRfZx3tF1aqbyG9kE0BvrEyAA",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-13-orazaka-v2-the-architecture-we-build-480.a2555c56b1.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-13-orazaka-v2-the-architecture-we-build-480.a6b4650bb6.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-13-orazaka-v2-the-architecture-we-build-960.a22c8e66cb.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-13-orazaka-v2-the-architecture-we-build-960.e85dcc38f5.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-13-orazaka-v2-the-architecture-we-build-1280.744f349541.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-13-orazaka-v2-the-architecture-we-build-1280.33fb0538d4.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
+      "model": "FLUX.1 [schnell]",
       "licence": "Apache-2.0",
-      "engine": "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
-      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
-      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere. Colored cables run from the workshop hut to many small houses like a patchbay, a big control tower with a rotating beacon, a booth with two turntables and crates of vinyl records under sweeping light beams. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor, a violet owl with two ear tufts and big round eyes, a red duck with a flat yellow bill and round glasses (a duck, not an owl: no ear tufts), a pink flamingo.",
-      "seed": "2910213",
-      "size": "1280×720",
-      "seconds": 0,
-      "costUsd": 0,
-      "note": "Chapter 13 of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text."
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+      "machine": "RunPod L40S",
+      "via": "Orazaka Studio",
+      "size": "1360×768",
+      "note": "Chapter 13 of the image series, candidate B of batch 2026-10-30-blog-v2 (Orazaka Studio run 8e4ac401) chosen by the founder (krizaka-blog#193). No person, no text, no logo."
     },
     "renditions": {
       "avif": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-13-orazaka-v2-the-architecture-we-build-480.ffb80d0ade.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-13-orazaka-v2-the-architecture-we-build-480.b24332ddec.avif"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-13-orazaka-v2-the-architecture-we-build-768.667dd7c47f.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-13-orazaka-v2-the-architecture-we-build-768.2ce714fe24.avif"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-13-orazaka-v2-the-architecture-we-build-1200.9a5a6dda9b.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-13-orazaka-v2-the-architecture-we-build-1200.97c4540dd8.avif"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-13-orazaka-v2-the-architecture-we-build-1280.b8acfd4ec9.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-13-orazaka-v2-the-architecture-we-build-1280.f4aa5de804.avif"
         }
       ],
       "webp": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-13-orazaka-v2-the-architecture-we-build-480.c1fcf67203.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-13-orazaka-v2-the-architecture-we-build-480.434bb8cbed.webp"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-13-orazaka-v2-the-architecture-we-build-768.8b3d6b8496.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-13-orazaka-v2-the-architecture-we-build-768.37e19e5640.webp"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-13-orazaka-v2-the-architecture-we-build-1200.7311fd7e30.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-13-orazaka-v2-the-architecture-we-build-1200.ed920c1870.webp"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-13-orazaka-v2-the-architecture-we-build-1280.a62b027016.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-13-orazaka-v2-the-architecture-we-build-1280.30527c3c4e.webp"
         }
       ]
     }
@@ -5413,69 +5377,66 @@
   "series-14-ci-the-error-never-leaves-the-editor": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAADQAQCdASoQAAkABABoJZgCdADD2+coAAD+9ZjT+RZz2PReNf6Pzc1Cy1Ns/2sI/2r59lHhyESP80GWx7BQ7W7WnMZgsTb8bJOfRs421CkOV6aNCzCmAA==",
+    "height": 723,
+    "blur": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADwAQCdASoQAAkABABoJaACdAED+4JSagAA/uiinNgpOPO6IitU6zdCNvaJW/QP3VNyHANewe3t7R50yrZX+qqevr9S1BX0AAA=",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-14-ci-the-error-never-leaves-the-editor-480.9254cd5772.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-14-ci-the-error-never-leaves-the-editor-480.be7fd48403.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-14-ci-the-error-never-leaves-the-editor-960.b997d3b09d.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-14-ci-the-error-never-leaves-the-editor-960.5ec2e00234.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-14-ci-the-error-never-leaves-the-editor-1280.aca33b79b2.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-14-ci-the-error-never-leaves-the-editor-1280.f507b0995c.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
+      "model": "FLUX.1 [schnell]",
       "licence": "Apache-2.0",
-      "engine": "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
-      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
-      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere. A small desk by the first hut, a lamp, and a net of fine nets catching bugs right at the desk before they reach the road; limestone cliffs of the Chartreuse behind. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor, a violet owl with two ear tufts and big round eyes, a red duck with a flat yellow bill and round glasses (a duck, not an owl: no ear tufts), a pink flamingo.",
-      "seed": "2910214",
-      "size": "1280×720",
-      "seconds": 0,
-      "costUsd": 0,
-      "note": "Chapter 14 of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text."
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+      "machine": "RunPod L40S",
+      "via": "Orazaka Studio",
+      "size": "1360×768",
+      "note": "Chapter 14 of the image series, candidate B of batch 2026-10-30-blog-v2 (Orazaka Studio run 10af5d48) chosen by the founder (krizaka-blog#193). No person, no text, no logo."
     },
     "renditions": {
       "avif": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-14-ci-the-error-never-leaves-the-editor-480.040b2d0501.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-14-ci-the-error-never-leaves-the-editor-480.ce9348f633.avif"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-14-ci-the-error-never-leaves-the-editor-768.58e5f53431.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-14-ci-the-error-never-leaves-the-editor-768.e8340265bc.avif"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-14-ci-the-error-never-leaves-the-editor-1200.740cb9892f.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-14-ci-the-error-never-leaves-the-editor-1200.20f304cd98.avif"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-14-ci-the-error-never-leaves-the-editor-1280.bbedb3ebb5.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-14-ci-the-error-never-leaves-the-editor-1280.9234de392e.avif"
         }
       ],
       "webp": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-14-ci-the-error-never-leaves-the-editor-480.d931ad2aed.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-14-ci-the-error-never-leaves-the-editor-480.b5aecc6702.webp"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-14-ci-the-error-never-leaves-the-editor-768.204a5720a7.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-14-ci-the-error-never-leaves-the-editor-768.b8069a58bc.webp"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-14-ci-the-error-never-leaves-the-editor-1200.e9ae5abb06.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-14-ci-the-error-never-leaves-the-editor-1200.ac7d7963e5.webp"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-14-ci-the-error-never-leaves-the-editor-1280.c6d24c3dde.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-14-ci-the-error-never-leaves-the-editor-1280.11657cfb43.webp"
         }
       ]
     }
@@ -5483,69 +5444,66 @@
   "series-15-we-bought-sonarcloud-what-do-we-have-now": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADwAQCdASoQAAkABABoJagCdADdKag40QAA/vWWZ+6KrNi5JQlgcO3+yUAEcwyak5WCbMREeSuLiNa22iN4zAsjwvArn33i04nTj1N5Bd5IfulWseFqSva8AAA=",
+    "height": 723,
+    "blur": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADQAQCdASoQAAkABABoJZACdADxLHilMADMRt4dfp32dqf3l24S7ekRqyBxj2S92Ivq9Am4Fhirw/ypFToeoP2YYl+pm4V3wAA=",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-15-we-bought-sonarcloud-what-do-we-have-now-480.25fd3cbbdd.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-15-we-bought-sonarcloud-what-do-we-have-now-480.d66ffb2b6e.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-15-we-bought-sonarcloud-what-do-we-have-now-960.b6157297b2.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-15-we-bought-sonarcloud-what-do-we-have-now-960.d12bb8c09f.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-15-we-bought-sonarcloud-what-do-we-have-now-1280.a9cc5fddb1.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-15-we-bought-sonarcloud-what-do-we-have-now-1280.254c234284.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
+      "model": "FLUX.1 [schnell]",
       "licence": "Apache-2.0",
-      "engine": "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
-      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
-      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere. A blue pigeon arrives and flies a sealed envelope over a row of dashboard gates, a barometer dial showing a green zone beside a sky-blue cloud tower. Each of the five birds appears exactly once. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor, a violet owl with two ear tufts and big round eyes, a red duck with a flat yellow bill and round glasses (a duck, not an owl: no ear tufts), a pink flamingo, a blue pigeon.",
-      "seed": "7216",
-      "size": "1280×720",
-      "seconds": 0,
-      "costUsd": 0,
-      "note": "Chapter 15 of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text."
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+      "machine": "RunPod L40S",
+      "via": "Orazaka Studio",
+      "size": "1360×768",
+      "note": "Chapter 15 of the image series, candidate B of batch 2026-10-30-blog-v2 (Orazaka Studio run 0aca8edc) chosen by the founder (krizaka-blog#193). No person, no text, no logo."
     },
     "renditions": {
       "avif": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-15-we-bought-sonarcloud-what-do-we-have-now-480.9de62e6751.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-15-we-bought-sonarcloud-what-do-we-have-now-480.f8d15a41c7.avif"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-15-we-bought-sonarcloud-what-do-we-have-now-768.8f69d81da3.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-15-we-bought-sonarcloud-what-do-we-have-now-768.7b62f7cbc3.avif"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-15-we-bought-sonarcloud-what-do-we-have-now-1200.5c54f9b57d.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-15-we-bought-sonarcloud-what-do-we-have-now-1200.321aed4c8c.avif"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-15-we-bought-sonarcloud-what-do-we-have-now-1280.cc2373f0d3.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-15-we-bought-sonarcloud-what-do-we-have-now-1280.dc368a3552.avif"
         }
       ],
       "webp": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-15-we-bought-sonarcloud-what-do-we-have-now-480.4c0cd90497.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-15-we-bought-sonarcloud-what-do-we-have-now-480.cf10819a63.webp"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-15-we-bought-sonarcloud-what-do-we-have-now-768.376a000ce4.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-15-we-bought-sonarcloud-what-do-we-have-now-768.453feae42d.webp"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-15-we-bought-sonarcloud-what-do-we-have-now-1200.b8558b8f2f.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-15-we-bought-sonarcloud-what-do-we-have-now-1200.d3aaf8b7ff.webp"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-15-we-bought-sonarcloud-what-do-we-have-now-1280.f5af882202.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-15-we-bought-sonarcloud-what-do-we-have-now-1280.c3de88754d.webp"
         }
       ]
     }
@@ -5553,69 +5511,66 @@
   "series-16-the-audit-said-ai-code-we-measured": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAABQAgCdASoQAAkABABoJZACdDBEwZxJIUZb34AA/vWZZuzAEfGuO4ehOT+emMx8StgOO9atoQYq/Bch35qltdL5mQjvP8g3X+k4YaqDBz6bwTZTSneZd9FkRS07G2byAAA=",
+    "height": 723,
+    "blur": "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAAAQAgCdASoQAAkABABoJaACdAD0uIbJR+wAAPz8CqVNwytiqzPxv+t2ikDXtvkfnuv++G0DZD06CasC3+Q5AAAA",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-16-the-audit-said-ai-code-we-measured-480.1667853b1d.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-16-the-audit-said-ai-code-we-measured-480.5acb79946e.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-16-the-audit-said-ai-code-we-measured-960.7439cce017.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-16-the-audit-said-ai-code-we-measured-960.beb0bfbf89.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-16-the-audit-said-ai-code-we-measured-1280.0b7bdef5d6.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-16-the-audit-said-ai-code-we-measured-1280.8829354b29.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
+      "model": "FLUX.1 [schnell]",
       "licence": "Apache-2.0",
-      "engine": "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
-      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
-      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere. The whole settlement at night in full glow, all five birds standing together in a row, each exactly once (falcon, owl, duck, flamingo, pigeon), a ruler and a gauge standing in front measuring the village. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor, a violet owl with two ear tufts and big round eyes, a red duck with a flat yellow bill and round glasses (a duck, not an owl: no ear tufts), a pink flamingo, a blue pigeon.",
-      "seed": "7117",
-      "size": "1280×720",
-      "seconds": 0,
-      "costUsd": 0,
-      "note": "Chapter 16 of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text."
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+      "machine": "RunPod L40S",
+      "via": "Orazaka Studio",
+      "size": "1360×768",
+      "note": "Chapter 16 of the image series, candidate A of batch 2026-10-30-blog-v2 (Orazaka Studio run e7b9a24d) chosen by the founder (krizaka-blog#193). No person, no text, no logo."
     },
     "renditions": {
       "avif": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-16-the-audit-said-ai-code-we-measured-480.baeac6aa19.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-16-the-audit-said-ai-code-we-measured-480.b33c153133.avif"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-16-the-audit-said-ai-code-we-measured-768.3164a13c90.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-16-the-audit-said-ai-code-we-measured-768.2a57f9c9c2.avif"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-16-the-audit-said-ai-code-we-measured-1200.0a584ccf06.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-16-the-audit-said-ai-code-we-measured-1200.c0dcf367bf.avif"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-16-the-audit-said-ai-code-we-measured-1280.de77c0554e.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-16-the-audit-said-ai-code-we-measured-1280.06418f83f3.avif"
         }
       ],
       "webp": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-16-the-audit-said-ai-code-we-measured-480.3d886f920c.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-16-the-audit-said-ai-code-we-measured-480.64c5e8f9cc.webp"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-16-the-audit-said-ai-code-we-measured-768.54b37ae34c.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-16-the-audit-said-ai-code-we-measured-768.f4e92208b9.webp"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-16-the-audit-said-ai-code-we-measured-1200.062d1e958a.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-16-the-audit-said-ai-code-we-measured-1200.1fc6edac96.webp"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-16-the-audit-said-ai-code-we-measured-1280.5166e4e16b.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-16-the-audit-said-ai-code-we-measured-1280.82c84b5996.webp"
         }
       ]
     }
@@ -5623,69 +5578,66 @@
   "series-17-how-the-founder-and-the-cto-agent-work": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAADwAQCdASoQAAkABABoJZACdDBFgTM7cgAA/vWY0/kWWecdRa/0fmuV1ylaWfa6+37MbKpFIvaWVsLTZZrE090qANs0sRzghM3D+E0Od1hjn41CgrQSgAAA",
+    "height": 723,
+    "blur": "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAAAQAgCdASoQAAkABABoJQBOj+ACxw3r5IJYAPKnKDu+01ZZTr264Yxb1wdXBhnU9yhIQdbMBCZCe6vtuJtjF1ENxWDPC69QAUAAAA==",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-480.0b686f8aca.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-17-how-the-founder-and-the-cto-agent-work-480.34f338b2e8.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-960.d05f1dd3dc.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-17-how-the-founder-and-the-cto-agent-work-960.ca339d4466.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-1280.f156f88d25.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-17-how-the-founder-and-the-cto-agent-work-1280.7250d9a136.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
+      "model": "FLUX.1 [schnell]",
       "licence": "Apache-2.0",
-      "engine": "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
-      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
-      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere. A long wooden table at the village edge under the orange sun, four small lanterns in a row along it and a wall board of pinned cards behind, a small glowing phone at one end; the five birds each stand once along the table, the pigeon carrying a card. Nobody else is in the picture. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor, a violet owl with two ear tufts and big round eyes, a red duck with a flat yellow bill and round glasses (a duck, not an owl: no ear tufts), a pink flamingo, a blue pigeon.",
-      "seed": "9118",
-      "size": "1280×720",
-      "seconds": 0,
-      "costUsd": 0,
-      "note": "Chapter 17 of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text."
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+      "machine": "RunPod L40S",
+      "via": "Orazaka Studio",
+      "size": "1360×768",
+      "note": "Chapter 17 of the image series, candidate A of batch 2026-10-30-blog-v2 (Orazaka Studio run 44caa163) chosen by the founder (krizaka-blog#193). No person, no text, no logo."
     },
     "renditions": {
       "avif": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-480.cc4b7b88ef.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-17-how-the-founder-and-the-cto-agent-work-480.e3045836a9.avif"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-768.8b7498c034.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-17-how-the-founder-and-the-cto-agent-work-768.0754277e2c.avif"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-1200.8ae726cb1a.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-17-how-the-founder-and-the-cto-agent-work-1200.4cd8e7b067.avif"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-1280.f702bb7f03.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-17-how-the-founder-and-the-cto-agent-work-1280.7504fc97fd.avif"
         }
       ],
       "webp": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-480.b3ab69f535.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-17-how-the-founder-and-the-cto-agent-work-480.a675e8cbcb.webp"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-768.a975a23f38.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-17-how-the-founder-and-the-cto-agent-work-768.db8b4521e6.webp"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-1200.db213fef03.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-17-how-the-founder-and-the-cto-agent-work-1200.15995bb8da.webp"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/site/blog/series/series-17-how-the-founder-and-the-cto-agent-work-1280.9b6513c56b.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-17-how-the-founder-and-the-cto-agent-work-1280.f62c315311.webp"
         }
       ]
     }

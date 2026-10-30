@@ -73,7 +73,7 @@ async function main() {
     m.renditions = renditions;
     folders.add(folder);
   }
-  writeFileSync(file, `${JSON.stringify(media, null, 1)}\n`);
+  writeFileSync(file, `${JSON.stringify(media, null, 2)}\n`);
   for (const f of folders)
     console.log(`upload: node scripts/cdn-assets.mjs upload ${join(out, f)} --to blog/${f} --env-file <env>`);
 }

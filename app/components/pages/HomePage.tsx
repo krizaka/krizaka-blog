@@ -10,8 +10,7 @@ import { chapterPath, postPath } from "@/lib/seo";
 import { coverOf, type Cover } from "@/lib/media";
 import { formatPeriod } from "./PostList";
 import { PostCard } from "./PostCard";
-import { Downloads } from "../Downloads";
-import { SERIES_KEY } from "@/lib/downloads";
+import { TakeStory } from "../TakeStory";
 import { NewsletterSection } from "../newsletter/NewsletterSection";
 
 const upperFirst = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -48,7 +47,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
         linkAs={Link}
       >
         <p className="bl-home-byline">{h.byline}</p>
-        <Downloads locale={locale} bookKey={SERIES_KEY} series />
+        <TakeStory locale={locale} />
       </PageHero>
       {featured && (
         <Section id="featured" title={h.featuredTitle} reveal={false} number={no()} margin>

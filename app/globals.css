@@ -1174,11 +1174,97 @@ picture {
   align-items: center;
   margin-top: 1.25rem;
 }
-.bl-downloads {
+/* « Take the story with you » (krizaka-blog#225): the Cahier's card. Tokens only; stacked on a phone. */
+.bl-take {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 1.25rem 1.75rem;
   align-items: center;
+  padding: 1.25rem;
+  border: 1px solid var(--kz-border, currentColor);
+  border-radius: var(--kz-radius-lg, 0.75rem);
+  background: var(--kz-surface, transparent);
+}
+.bl-take-cover {
+  width: 6rem;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: var(--kz-radius-sm, 0.25rem);
+  border: 1px solid var(--kz-border, currentColor);
+  box-shadow: 0 0.5rem 1.25rem color-mix(in srgb, var(--kz-fg, #000) 18%, transparent);
+  transform: rotate(-2deg);
+}
+.bl-take-body {
+  flex: 1 1 18rem;
+  display: grid;
+  gap: 0.75rem;
+}
+.bl-take-title {
+  margin: 0;
+  font-size: var(--kz-text-xl, 1.25rem);
+}
+.bl-take-meta {
+  margin: 0;
+  color: var(--kz-fg-muted, inherit);
+  font-size: 0.875rem;
+}
+.bl-take-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+}
+.bl-take-action {
+  display: grid;
+  gap: 0.375rem;
+  justify-items: start;
+}
+.bl-take-hint,
+.bl-take-for {
+  color: var(--kz-fg-muted, inherit);
+  font-size: 0.8125rem;
+}
+.bl-take-size {
+  opacity: 0.75;
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+.bl-take-quiet {
+  justify-self: start;
+}
+.bl-take-compact {
+  display: grid;
+  gap: 0.75rem;
+}
+.bl-take-compact .bl-take-title {
+  font-size: var(--kz-text-lg, 1.125rem);
+}
+.bl-take-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  align-items: center;
+}
+.bl-take-for {
+  min-width: 8rem;
+}
+@media (max-width: 36rem) {
+  .bl-take {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .bl-take-cover {
+    width: 5rem;
+  }
+  .bl-take-action > a,
+  .bl-take-quiet > div {
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bl-take-cover {
+    transform: none;
+  }
 }
 .bl-offline {
   display: flex;
