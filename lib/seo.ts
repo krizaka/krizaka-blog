@@ -50,6 +50,7 @@ export function pageMetadata(opts: {
       types: {
         "application/rss+xml": `${SITE_URL}${locale === "en" ? "" : "/fr"}/feed.xml`,
         "application/atom+xml": `${SITE_URL}${locale === "en" ? "" : "/fr"}/atom.xml`,
+        "application/feed+json": `${SITE_URL}${locale === "en" ? "" : "/fr"}/feed.json`,
       },
     },
     openGraph: {

@@ -1,4 +1,4 @@
-/* RSS 2.0 and Atom 1.0 of one language, as strings (written to out/ by route handlers, at build). */
+/* RSS 2.0, Atom 1.0 and JSON Feed 1.1 of one language, as strings (written to out/ by route handlers, at build). */
 import { chaptersOf } from "./chapters";
 import { getDictionary, type Locale } from "./i18n";
 import { publishedTime } from "./reading";
@@ -41,4 +41,32 @@ export function atom(locale: Locale, feed: FeedEntry[]): string {
     })
     .join("\n");
   return `<?xml version="1.0" encoding="UTF-8"?>\n<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="${locale}">\n  <title>${esc(t.site.name)}</title>\n  <link href="${absoluteUrl(locale, "/")}"/>\n  <link rel="self" href="${SITE_URL}${prefix(locale)}/atom.xml"/>\n  <id>${absoluteUrl(locale, "/")}</id>\n  <updated>${updated}</updated>\n  <subtitle>${esc(t.site.description)}</subtitle>\n${entries}\n</feed>\n`;
+}
+
+/** JSON Feed 1.1 (jsonfeed.org): the same entries as the RSS and the Atom, for readers that prefer JSON. */
+export function jsonFeed(locale: Locale, entries: FeedEntry[]): string {
+  const t = getDictionary(locale);
+  const items = entries.map(({ item: p, path }) => {
+    const url = absoluteUrl(locale, path);
+    return {
+      id: url,
+      url,
+      title: p.title,
+      summary: p.description,
+      content_text: plainText(p.body).slice(0, 600),
+      date_published: iso(p.date),
+      date_modified: iso(p.updated ?? p.date),
+      tags: p.tags,
+      language: locale,
+    };
+  });
+  const feed = {
+    version: "https://jsonfeed.org/version/1.1",
+    title: t.site.name,
+    home_page_url: absoluteUrl(locale, "/"),
+    feed_url: `${SITE_URL}${prefix(locale)}/feed.json`,
+    language: locale,
+    items,
+  };
+  return JSON.stringify(feed, null, 2);
 }
