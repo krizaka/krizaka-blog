@@ -14,8 +14,14 @@ const chapters = checkChapters(join(root, "content/chapters"), join(root, "conte
 problems.push(...chapters.problems);
 /* No media in the repository (they live on the CDN): an image file under content/ or public/ fails. */
 const IMAGE = /\.(png|jpe?g|gif|webp|avif|mp4|webm|mov)$/i;
-const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(join(d, e.name)) : [join(d, e.name)]));
-for (const dir of ["content", "public"]) for (const f of walk(join(root, dir))) if (IMAGE.test(f)) problems.push(`${f.replace(root + "/", "")}: media are never committed — upload to Bunny (blog/) and use its URL`);
+const walk = (d) =>
+  readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(join(d, e.name)) : [join(d, e.name)]));
+for (const dir of ["content", "public"])
+  for (const f of walk(join(root, dir)))
+    if (IMAGE.test(f))
+      problems.push(
+        `${f.replace(root + "/", "")}: media are never committed — upload to Bunny (blog/) and use its URL`,
+      );
 if (problems.length) {
   console.error(problems.join("\n"));
   process.exit(1);

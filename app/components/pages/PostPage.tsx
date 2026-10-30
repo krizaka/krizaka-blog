@@ -44,12 +44,23 @@ export default function PostPage({ post }: { post: Post }) {
       {post.draft && <p className="bl-draft">{t.post.draftNotice}</p>}
       {cover ? (
         /* The cover, once: the post's hero picture (cards and Featured show it too; the body never repeats it). */
-        <CoverImage className="bl-cover bl-img" cover={cover} sizes="(min-width: 64rem) 680px, calc(100vw - 64px)" alt={post.coverAlt ?? ""} priority style={{ backgroundImage: blurUrl(cover.blur) }} />
+        <CoverImage
+          className="bl-cover bl-img"
+          cover={cover}
+          sizes="(min-width: 64rem) 680px, calc(100vw - 64px)"
+          alt={post.coverAlt ?? ""}
+          priority
+          style={{ backgroundImage: blurUrl(cover.blur) }}
+        />
       ) : (
         post.image && <img className="bl-cover" src={post.image} alt="" width={1200} height={630} />
       )}
       <div className="bl-prose">
-        <MDXRemote source={post.body} components={mdxComponentsFor(locale)} options={{ mdxOptions: { remarkPlugins: [remarkGfm], rehypePlugins: [rehypeSlug] } }} />
+        <MDXRemote
+          source={post.body}
+          components={mdxComponentsFor(locale)}
+          options={{ mdxOptions: { remarkPlugins: [remarkGfm], rehypePlugins: [rehypeSlug] } }}
+        />
       </div>
       <PostEngage slug={post.slug} title={post.title} locale={locale} />
       {/* The way to follow: the e-mail form (the newsletter's, further down the page) first, the RSS feed as a quiet second
@@ -77,7 +88,15 @@ export default function PostPage({ post }: { post: Post }) {
         eyebrow={
           <span className="bl-eyebrow">
             {topic && <span>{tagLabel(locale, topic)}</span>}
-            {post.series && at >= 0 && <span>{format(t.post.inSeries, { series: seriesName(locale, post.series), part: String(at + 1), count: String(inSeries.length) })}</span>}
+            {post.series && at >= 0 && (
+              <span>
+                {format(t.post.inSeries, {
+                  series: seriesName(locale, post.series),
+                  part: String(at + 1),
+                  count: String(inSeries.length),
+                })}
+              </span>
+            )}
           </span>
         }
         title={post.title}
@@ -88,14 +107,42 @@ export default function PostPage({ post }: { post: Post }) {
         <Byline post={post} other={other} />
       </PageHero>
       <Section reveal={false} spacing="sm" className="bl-post-body">
-        {headings.length >= 3 ? <TocLayout className="bl-post-layout" toc={<Toc label={t.post.toc} items={headings.map((h) => ({ id: h.id, label: h.text }))} />}>{body}</TocLayout> : body}
+        {headings.length >= 3 ? (
+          <TocLayout
+            className="bl-post-layout"
+            toc={<Toc label={t.post.toc} items={headings.map((h) => ({ id: h.id, label: h.text }))} />}
+          >
+            {body}
+          </TocLayout>
+        ) : (
+          body
+        )}
       </Section>
       <NewsletterSection locale={locale} where="post" />
       {(prev || next) && post.series && (
         <Section title={seriesName(locale, post.series)} divider reveal={false}>
           <CardGrid min={280} reveal={false} className="bl-series-nav">
-            {prev && <LinkCard linkAs={Link} href={localizedPath(locale, postPath(prev.slug))} meta={t.post.prevInSeries} title={prev.title} icon={<BackIcon size={18} />} titleAs="h3" />}
-            {next && <LinkCard linkAs={Link} href={localizedPath(locale, postPath(next.slug))} meta={t.post.nextInSeries} title={next.title} icon={<ForwardIcon size={18} />} titleAs="h3" className="bl-series-next" />}
+            {prev && (
+              <LinkCard
+                linkAs={Link}
+                href={localizedPath(locale, postPath(prev.slug))}
+                meta={t.post.prevInSeries}
+                title={prev.title}
+                icon={<BackIcon size={18} />}
+                titleAs="h3"
+              />
+            )}
+            {next && (
+              <LinkCard
+                linkAs={Link}
+                href={localizedPath(locale, postPath(next.slug))}
+                meta={t.post.nextInSeries}
+                title={next.title}
+                icon={<ForwardIcon size={18} />}
+                titleAs="h3"
+                className="bl-series-next"
+              />
+            )}
           </CardGrid>
         </Section>
       )}

@@ -16,10 +16,17 @@ export function BasicsPage({ locale }: { locale: Locale }) {
   const lead = seriesLead(locale, "basics");
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(collectionJsonLd(locale, "/basics", name, lead)) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(collectionJsonLd(locale, "/basics", name, lead)) }}
+      />
       <PageHero eyebrow={t.home.eyebrow} title={name} lead={lead} backdrop="plain" linkAs={Link} />
       <Section reveal={false}>
-        {posts.length ? <PostList posts={posts} locale={locale} label={name} reveal={false} /> : <p className="bl-status">{t.tags.none}</p>}
+        {posts.length ? (
+          <PostList posts={posts} locale={locale} label={name} reveal={false} />
+        ) : (
+          <p className="bl-status">{t.tags.none}</p>
+        )}
         <p className="bl-story-link">
           <Link href={localizedPath(locale, "/")}>{t.series.story}</Link>
         </p>

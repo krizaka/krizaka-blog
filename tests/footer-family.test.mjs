@@ -16,7 +16,12 @@ const hidden = productSites.filter((s) => !FOOTER_PRODUCT_IDS.includes(s.id));
 
 /* The footer as the blog renders it: the package's own SiteFooter with the blog's props (SiteFooter.tsx), rendered to HTML. */
 const html = renderToStaticMarkup(
-  createElement(FamilyFooter, { current: "krizaka", products: FOOTER_PRODUCT_IDS, labels: familyLabels.en, "aria-label": "Footer" }),
+  createElement(FamilyFooter, {
+    current: "krizaka",
+    products: FOOTER_PRODUCT_IDS,
+    labels: familyLabels.en,
+    "aria-label": "Footer",
+  }),
 );
 const hrefs = [...html.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
 
@@ -35,14 +40,20 @@ test("the footer renders no product that the registry lists outside the focus", 
 
 test("the footer renders every focus product", () => {
   for (const site of productSites.filter((s) => FOOTER_PRODUCT_IDS.includes(s.id))) {
-    assert.ok(hrefs.some((href) => href.startsWith(site.url)), `${site.name} is missing`);
+    assert.ok(
+      hrefs.some((href) => href.startsWith(site.url)),
+      `${site.name} is missing`,
+    );
   }
 });
 
 test("the open-source column is the package's: every open-source project and GitHub", () => {
   const open = sites.filter((s) => s.group === "open-source" || s.group === "github");
   for (const site of open) {
-    assert.ok(hrefs.some((href) => href.startsWith(site.url)), `${site.name} is missing`);
+    assert.ok(
+      hrefs.some((href) => href.startsWith(site.url)),
+      `${site.name} is missing`,
+    );
   }
 });
 

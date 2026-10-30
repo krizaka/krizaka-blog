@@ -48,7 +48,7 @@ export function publishedBetween(changed, read) {
     if (!m) continue;
     if (isPublished(read.after(path)) && !isPublished(read.before(path))) slugs.add(m[1]);
   }
-  return [...slugs].sort((a, b) => (a < b ? -1 : 1)) /* a Set: never equal */;
+  return [...slugs].sort((a, b) => (a < b ? -1 : 1)); /* a Set: never equal */
 }
 
 /** The post's versions at a commit: { en?, fr? } with title, description, the public URL and the cover. Only published
@@ -59,16 +59,25 @@ export function versionsOf(slug, read, media = {}, { drafts = false } = {}) {
     const source = read(`content/posts/${slug}.${locale}.mdx`);
     if (source === null || (!drafts && !isPublished(source))) continue;
     const { data } = matter(source);
-    out[locale] = { title: String(data.title), description: String(data.description), url: pageUrl(locale, `/basics/${slug}/`) };
+    out[locale] = {
+      title: String(data.title),
+      description: String(data.description),
+      url: pageUrl(locale, `/basics/${slug}/`),
+    };
     const coverUrl = data.cover ? coverOf(media, data.cover) : undefined;
-    if (coverUrl) Object.assign(out[locale], { coverUrl, coverAlt: typeof data.coverAlt === "string" ? data.coverAlt : undefined });
+    if (coverUrl)
+      Object.assign(out[locale], { coverUrl, coverAlt: typeof data.coverAlt === "string" ? data.coverAlt : undefined });
   }
   return out;
 }
 
 /** Asks the send action to e-mail the list; it answers {sent, failed, total} or {already: true}. */
 export async function requestSend(slug, versions, token, fetchImpl = fetch, extra = {}) {
-  const res = await fetchImpl(`${SITE}/api/newsletter/send`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify({ slug, versions, ...extra }) });
+  const res = await fetchImpl(`${SITE}/api/newsletter/send`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ slug, versions, ...extra }),
+  });
   const body = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(`newsletter: the send action answered ${res.status} ${body.error ?? ""}`.trim());
   return body;
@@ -80,7 +89,10 @@ export const newsletterEnabled = (env = process.env) => env.MAIL_NEWSLETTER_ENAB
 /** A send that did not reach everyone is a failed run (a red check), never a green line: the list is small and every address counts. */
 export function assertDelivered(slug, result) {
   if (result.already) return `newsletter: ${slug} was already sent`;
-  if (result.failed > 0 || (result.total > 0 && result.sent === 0)) throw new Error(`newsletter: ${slug} reached ${result.sent} of ${result.total}; ${result.failed} failed (the mail provider rejected it?)`);
+  if (result.failed > 0 || (result.total > 0 && result.sent === 0))
+    throw new Error(
+      `newsletter: ${slug} reached ${result.sent} of ${result.total}; ${result.failed} failed (the mail provider rejected it?)`,
+    );
   return `newsletter: ${slug} sent to ${result.sent} of ${result.total}`;
 }
 
@@ -100,17 +112,20 @@ async function cli() {
   };
   const dry = process.argv.includes("--dry-run");
   const testTo = arg("--test-to");
-  if (!dry && !testTo && !newsletterEnabled()) return console.log("newsletter: sending is switched off (set the repository variable MAIL_NEWSLETTER_ENABLED to true); nothing sent");
+  if (!dry && !testTo && !newsletterEnabled())
+    return console.log(
+      "newsletter: sending is switched off (set the repository variable MAIL_NEWSLETTER_ENABLED to true); nothing sent",
+    );
   const before = arg("--before");
   const after = arg("--after") ?? "HEAD";
   let slugs;
   if (arg("--slug")) {
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(arg("--slug"))) throw new Error("newsletter: --slug must be a post's slug");
     slugs = [arg("--slug")];
-  }
-  else {
+  } else {
     // No "before" (a new branch, a forced history): nothing can be told apart, so nothing is sent automatically.
-    if (!before || ZERO.test(before)) return console.log("newsletter: no previous commit to compare with; use --slug to send by hand");
+    if (!before || ZERO.test(before))
+      return console.log("newsletter: no previous commit to compare with; use --slug to send by hand");
     const changed = git("diff", "--name-only", before, after, "--", "content/posts").split("\n");
     slugs = publishedBetween(changed.filter(Boolean), { before: (p) => show(before, p), after: (p) => show(after, p) });
   }
@@ -120,7 +135,15 @@ async function cli() {
   if (!dry && !token) throw new Error("newsletter: MAIL_SEND_TOKEN is not set");
   for (const slug of slugs) {
     /* A test may preview a draft (the working tree); a real send reads the published commit. */
-    const read = testTo ? (p) => { try { return readFileSync(p, "utf8"); } catch { return null; } } : (p) => show(after, p);
+    const read = testTo
+      ? (p) => {
+          try {
+            return readFileSync(p, "utf8");
+          } catch {
+            return null;
+          }
+        }
+      : (p) => show(after, p);
     const versions = versionsOf(slug, read, media, { drafts: Boolean(testTo) });
     if (!Object.keys(versions).length) {
       console.log(`newsletter: ${slug} is not published at ${after}`);
@@ -128,7 +151,17 @@ async function cli() {
     }
     const rendered = await withRenderedEmails(versions);
     if (dry) {
-      console.log(`newsletter (dry run): would send ${slug}`, JSON.stringify(Object.fromEntries(Object.entries(rendered).map(([l, v]) => [l, { title: v.title, url: v.url, subject: v.subject, cover: v.coverUrl ?? null, htmlBytes: v.html.length }]))));
+      console.log(
+        `newsletter (dry run): would send ${slug}`,
+        JSON.stringify(
+          Object.fromEntries(
+            Object.entries(rendered).map(([l, v]) => [
+              l,
+              { title: v.title, url: v.url, subject: v.subject, cover: v.coverUrl ?? null, htmlBytes: v.html.length },
+            ]),
+          ),
+        ),
+      );
       continue;
     }
     if (testTo) {
@@ -137,7 +170,8 @@ async function cli() {
       console.log(`newsletter: test e-mail of ${slug} (${r.locale}) sent to ${r.to} only`);
       continue;
     }
-    for (const v of Object.values(versions)) if (!(await waitLive(v.url))) throw new Error(`newsletter: ${v.url} is not live after 20 minutes; nothing sent`);
+    for (const v of Object.values(versions))
+      if (!(await waitLive(v.url))) throw new Error(`newsletter: ${v.url} is not live after 20 minutes; nothing sent`);
     const r = await requestSend(slug, rendered, token);
     console.log(assertDelivered(slug, r));
   }

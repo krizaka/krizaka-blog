@@ -3,7 +3,13 @@ import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
-const { makeState, checkState, authorizeUrl, resultPage, configured } = require("../functions/packages/oauth/auth/oauth.js");
+const {
+  makeState,
+  checkState,
+  authorizeUrl,
+  resultPage,
+  configured,
+} = require("../functions/packages/oauth/auth/oauth.js");
 const { main: auth } = require("../functions/packages/oauth/auth/index.js");
 const { main: callback } = require("../functions/packages/oauth/callback/index.js");
 

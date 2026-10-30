@@ -10,7 +10,8 @@ const css = read("app/globals.css").replace(/\/\*[\s\S]*?\*\//g, "");
 
 test("the faces are Young Serif, Atkinson Hyperlegible Next and Courier Prime", () => {
   const fonts = read("app/fonts.ts");
-  for (const face of ["atkinson-hyperlegible-next", "young-serif", "courier-prime"]) assert.match(fonts, new RegExp(face));
+  for (const face of ["atkinson-hyperlegible-next", "young-serif", "courier-prime"])
+    assert.match(fonts, new RegExp(face));
   assert.doesNotMatch(fonts, /inter-latin|plus-jakarta|jetbrains-mono/);
   assert.match(css, /--kz-font-display: var\(--font-kz-display\), "Young Serif"/);
 });
@@ -21,7 +22,11 @@ test("no tracked capitals, no frosted backdrop, no pill, no rounded card", () =>
   assert.doesNotMatch(css, /backdrop-filter:\s*blur\([1-9]/);
   assert.doesNotMatch(css, /border-radius:\s*(1\d|[2-9]\d)px/);
   const pills = [...css.matchAll(/([^{}]+)\{[^}]*border-radius:\s*999px/g)].map((m) => m[1].trim());
-  assert.deepEqual(pills.filter((sel) => !/mark|avatar|dot/.test(sel)), [], "a pill outside the marks");
+  assert.deepEqual(
+    pills.filter((sel) => !/mark|avatar|dot/.test(sel)),
+    [],
+    "a pill outside the marks",
+  );
 });
 
 test("the reading page: figures numbered in their captions, footnotes as a book's notes, lining figures", () => {
@@ -38,6 +43,6 @@ test("the footer is the family's single band: no link the family's columns alrea
 
 test("the home is the notebook: its sections numbered in the margin (Featured, the chapters, the basics), the chapters on lined paper", () => {
   const home = read("app/components/pages/HomePage.tsx");
-  assert.equal((home.match(/number=\{no\(\)\} margin/g) ?? []).length, 3);
+  assert.equal((home.match(/number=\{no\(\)\}\s+margin/g) ?? []).length, 3);
   assert.match(home, /paper="lines"/);
 });

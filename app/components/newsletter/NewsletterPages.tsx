@@ -16,14 +16,26 @@ import "./newsletter.css";
 export function newsletterJsonLd(locale: Locale, path: string, name: string, description: string) {
   const t = getDictionary(locale);
   const organization = { "@type": "Organization", "@id": ORGANIZATION_ID, name: "Krizaka", url: KRIZAKA_URL };
-  return { "@context": "https://schema.org", "@type": "WebPage", name, description, url: absoluteUrl(locale, path), inLanguage: locale, isPartOf: { "@type": "Blog", name: t.site.name, url: absoluteUrl(locale, "/"), publisher: organization }, publisher: organization };
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name,
+    description,
+    url: absoluteUrl(locale, path),
+    inLanguage: locale,
+    isPartOf: { "@type": "Blog", name: t.site.name, url: absoluteUrl(locale, "/"), publisher: organization },
+    publisher: organization,
+  };
 }
 
 export function NewsletterPage({ locale }: { locale: Locale }) {
   const n = getDictionary(locale).newsletter;
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(newsletterJsonLd(locale, "/newsletter", n.title, n.lead)) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(newsletterJsonLd(locale, "/newsletter", n.title, n.lead)) }}
+      />
       <PageHero eyebrow={n.eyebrow} title={n.title} lead={n.lead} backdrop="plain" linkAs={Link} />
       <Section reveal={false}>
         <div className="bl-nl-card">
@@ -45,11 +57,24 @@ export type NewsletterStatus = "confirmed" | "expired" | "unsubscribed" | "link-
 
 export function NewsletterStatusPage({ locale, status }: { locale: Locale; status: NewsletterStatus }) {
   const n = getDictionary(locale).newsletter;
-  const title = { confirmed: n.confirmedTitle, expired: n.expiredTitle, unsubscribed: n.unsubscribedTitle, "link-invalid": n.invalidTitle }[status];
-  const lead = { confirmed: n.confirmedLead, expired: n.expiredLead, unsubscribed: n.unsubscribedLead, "link-invalid": n.invalidLead }[status];
+  const title = {
+    confirmed: n.confirmedTitle,
+    expired: n.expiredTitle,
+    unsubscribed: n.unsubscribedTitle,
+    "link-invalid": n.invalidTitle,
+  }[status];
+  const lead = {
+    confirmed: n.confirmedLead,
+    expired: n.expiredLead,
+    unsubscribed: n.unsubscribedLead,
+    "link-invalid": n.invalidLead,
+  }[status];
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(newsletterJsonLd(locale, `/newsletter/${status}`, title, lead)) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(newsletterJsonLd(locale, `/newsletter/${status}`, title, lead)) }}
+      />
       <PageHero eyebrow={n.eyebrow} title={title} lead={lead} backdrop="plain" linkAs={Link}>
         <div className="bl-nl-actions">
           {status === "unsubscribed" && (

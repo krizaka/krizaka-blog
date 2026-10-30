@@ -46,19 +46,27 @@ export const TITLE_MAX = 60;
 export const DESCRIPTION_MAX = 155;
 
 /** The title tag of a post: its `seoTitle` when it has one, else its title followed by the blog's name. */
-export const titleTag = (p: { title: string; seoTitle?: string }, siteName: string): string => p.seoTitle?.trim() || `${p.title} — ${siteName}`;
+export const titleTag = (p: { title: string; seoTitle?: string }, siteName: string): string =>
+  p.seoTitle?.trim() || `${p.title} — ${siteName}`;
 
 /** The meta description of a post: its `seoDescription` when it has one, else its lead. */
-export const metaDescription = (p: { description: string; seoDescription?: string }): string => p.seoDescription?.trim() || p.description;
-
+export const metaDescription = (p: { description: string; seoDescription?: string }): string =>
+  p.seoDescription?.trim() || p.description;
 
 /** When a post went out: its `publishedAt` (date, time and offset), so posts of the same day keep their order. */
-export const publishedTime = (p: { publishedAt?: string; date?: string }): number => Date.parse(p.publishedAt ?? `${p.date ?? "1970-01-01"}T12:00:00Z`);
+export const publishedTime = (p: { publishedAt?: string; date?: string }): number =>
+  Date.parse(p.publishedAt ?? `${p.date ?? "1970-01-01"}T12:00:00Z`);
 
 /** The posts the home puts first: pinned ones (`featured: true`) newest first, then the others newest first; ties by slug. */
-export function featuredOrder<T extends { slug: string; featured?: boolean; publishedAt?: string; date?: string }>(posts: readonly T[], count = 3): T[] {
+export function featuredOrder<T extends { slug: string; featured?: boolean; publishedAt?: string; date?: string }>(
+  posts: readonly T[],
+  count = 3,
+): T[] {
   const newest = (a: T, b: T) => publishedTime(b) - publishedTime(a) || a.slug.localeCompare(b.slug);
-  return [...posts.filter((p) => p.featured).sort(newest), ...posts.filter((p) => !p.featured).sort(newest)].slice(0, count);
+  return [...posts.filter((p) => p.featured).sort(newest), ...posts.filter((p) => !p.featured).sort(newest)].slice(
+    0,
+    count,
+  );
 }
 
 export type Faq = { question: string; answer: string };
@@ -92,7 +100,8 @@ export function faqOf(body: string): Faq[] {
   let fence = false;
   let current: { question: string; lines: string[] } | undefined;
   const flush = () => {
-    if (current && current.lines.join("").trim()) out.push({ question: plainText(current.question), answer: plainText(current.lines.join("\n")) });
+    if (current && current.lines.join("").trim())
+      out.push({ question: plainText(current.question), answer: plainText(current.lines.join("\n")) });
     current = undefined;
   };
   for (const line of body.split("\n")) {
@@ -124,7 +133,8 @@ export function rehypeRounds() {
     let n = 0;
     const walk = (node: HastNode) => {
       for (const child of node.children ?? []) {
-        if (child.type === "element" && child.tagName === "h2") child.properties = { ...child.properties, dataRound: String(++n) };
+        if (child.type === "element" && child.tagName === "h2")
+          child.properties = { ...child.properties, dataRound: String(++n) };
         else if (child.type === "element" || child.type === "root") walk(child);
       }
     };

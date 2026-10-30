@@ -20,9 +20,16 @@ import "../globals.css";
 export default function SiteRoot({ locale, children }: { locale: Locale; children: ReactNode }) {
   const t = getDictionary(locale);
   /* The posts the language switch can land on in the other language (read at build, a few dozen slugs). */
-  const translated = postsOf(locale).filter((p) => translationOf(p)).map((p) => p.slug);
+  const translated = postsOf(locale)
+    .filter((p) => translationOf(p))
+    .map((p) => p.slug);
   return (
-    <html lang={locale} className={cn(textFace.variable, displayFace.variable, monoFace.variable, "h-full dark")} data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html
+      lang={locale}
+      className={cn(textFace.variable, displayFace.variable, monoFace.variable, "h-full dark")}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <head>
         <ThemeScript defaultMode="dark" />
         <meta name="theme-color" content="#0d0d0f" />

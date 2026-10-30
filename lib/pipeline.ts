@@ -30,7 +30,17 @@ function arrowBetween(from: number, a: PipelineBox, b: PipelineBox): PipelineArr
   return { from, x1: x, y1, x2: x, y2, head: head(x, y2, 0, 1) };
 }
 
-export function pipelineLayout(n: number, { cols, width, height = 60, gapX = 40, gapY = 36, pad = 4 }: { cols: number; width: number; height?: number; gapX?: number; gapY?: number; pad?: number }): PipelineLayout {
+export function pipelineLayout(
+  n: number,
+  {
+    cols,
+    width,
+    height = 60,
+    gapX = 40,
+    gapY = 36,
+    pad = 4,
+  }: { cols: number; width: number; height?: number; gapX?: number; gapY?: number; pad?: number },
+): PipelineLayout {
   const c = Math.max(1, Math.min(cols, n));
   const rows = Math.ceil(n / c);
   const boxes: PipelineBox[] = [];
@@ -41,5 +51,10 @@ export function pipelineLayout(n: number, { cols, width, height = 60, gapX = 40,
   }
   const arrows: PipelineArrow[] = [];
   for (let i = 0; i + 1 < n; i++) arrows.push(arrowBetween(i, boxes[i], boxes[i + 1]));
-  return { boxes, arrows, viewWidth: 2 * pad + c * width + (c - 1) * gapX, viewHeight: 2 * pad + rows * height + (rows - 1) * gapY };
+  return {
+    boxes,
+    arrows,
+    viewWidth: 2 * pad + c * width + (c - 1) * gapX,
+    viewHeight: 2 * pad + rows * height + (rows - 1) * gapY,
+  };
 }

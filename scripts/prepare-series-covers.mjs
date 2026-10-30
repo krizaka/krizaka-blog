@@ -19,7 +19,11 @@ const WIDTHS = [480, 960, 1280];
 export function promptOf(series, index) {
   const chapter = series.chapters[index];
   const looks = chapter.birds.map((b) => series.birdLooks[b]).join(", ");
-  const parts = [series.style, chapter.beat, `Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: ${looks}.`];
+  const parts = [
+    series.style,
+    chapter.beat,
+    `Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: ${looks}.`,
+  ];
   if (index > 0) parts.splice(1, 0, series.continuity);
   return parts.join(" ");
 }
@@ -42,7 +46,10 @@ async function main() {
     const input = join(src, `${String(i + 1).padStart(2, "0")}-${c.post}.png`);
     const srcs = [];
     for (const w of WIDTHS) {
-      const data = await sharp(input).resize({ width: w, withoutEnlargement: true }).webp({ quality: 80, effort: 5 }).toBuffer();
+      const data = await sharp(input)
+        .resize({ width: w, withoutEnlargement: true })
+        .webp({ quality: 80, effort: 5 })
+        .toBuffer();
       const hash = createHash("sha256").update(data).digest("hex").slice(0, 10);
       writeFileSync(join(out, "series", `${id}-${w}.webp`), data);
       srcs.push({ w, url: `${CDN}series/${id}-${w}.${hash}.webp` });
@@ -58,14 +65,18 @@ async function main() {
       made: {
         model: "FLUX.2 [klein] 4B",
         licence: "Apache-2.0",
-        engine: "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
+        engine:
+          "mflux (the image engine of Orazaka's media worker) on Metal, 4 steps, guidance 1.0, edit with the previous picture and the bird sprites as references",
         machine: "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
         prompt: promptOf(series, i),
         seed: String(c.seed),
         size: `${meta.width}×${meta.height}`,
         seconds: 0,
         costUsd: 0,
-        note: "Chapter " + (i + 1) + " of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text.",
+        note:
+          "Chapter " +
+          (i + 1) +
+          " of the image series (krizaka-blog#193): made locally with the media worker's own engine, not through an Orazaka Studio, so there is no run id. Each picture continues the previous one; reviewed at full size for duplicated birds, people, logos and text.",
       },
     };
     console.log(id, srcs.map((s) => s.url.split("/").pop()).join(" "));

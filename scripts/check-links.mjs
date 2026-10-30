@@ -10,7 +10,21 @@
 import { pathToFileURL } from "node:url";
 
 /** Hosts that answer robots with 401/403/429/999 whatever the link: reported, never fatal. Keep this list short. */
-export const SOFT_HOSTS = ["www.linkedin.com", "linkedin.com", "x.com", "twitter.com", "www.reddit.com", "reddit.com", "news.ycombinator.com", "www.facebook.com", "www.mastercard.us", "www.mastercard.com", "usa.visa.com", "www.visa.ca", "www.paypal.com"];
+export const SOFT_HOSTS = [
+  "www.linkedin.com",
+  "linkedin.com",
+  "x.com",
+  "twitter.com",
+  "www.reddit.com",
+  "reddit.com",
+  "news.ycombinator.com",
+  "www.facebook.com",
+  "www.mastercard.us",
+  "www.mastercard.com",
+  "usa.visa.com",
+  "www.visa.ca",
+  "www.paypal.com",
+];
 /** Schemes and targets that are not fetched: other schemes, fragments, and the paths the CDN's edge injects on the live
     site (Cloudflare's e-mail obfuscation rewrites a mailto: into /cdn-cgi/l/email-protection#…, decoded by its script). */
 const SKIP = /(?:^(?:mailto:|tel:|javascript:|data:|#)|\/cdn-cgi\/)/i;
@@ -57,7 +71,8 @@ export function extractLinks(html) {
     const name = m[1].toLowerCase();
     const value = decodeEntities(m[3] ?? m[4] ?? "").trim();
     if (!value) continue;
-    if (name === "srcset") for (const u of srcsetUrls(value)) out.add(u); else if (name === "content") {
+    if (name === "srcset") for (const u of srcsetUrls(value)) out.add(u);
+    else if (name === "content") {
       if (/^https?:\/\//.test(value) && !/\s/.test(value)) out.add(value);
     } else out.add(value);
   }
@@ -97,12 +112,26 @@ export async function follow(url, { method = "GET", fetchImpl = fetch, timeout =
   for (let hop = 0; hop <= max; hop++) {
     if (seen.has(current)) return { url, status: 0, error: `redirect loop at ${current}` };
     seen.add(current);
-    const res = await fetchImpl(current, { method, redirect: "manual", signal: AbortSignal.timeout(timeout), headers: { "User-Agent": "krizaka-blog-link-check (+https://github.com/krizaka/krizaka-blog)", Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" } });
+    const res = await fetchImpl(current, {
+      method,
+      redirect: "manual",
+      signal: AbortSignal.timeout(timeout),
+      headers: {
+        "User-Agent": "krizaka-blog-link-check (+https://github.com/krizaka/krizaka-blog)",
+        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      },
+    });
     if (res.status >= 300 && res.status < 400 && res.headers.get("location")) {
       current = new URL(res.headers.get("location"), current).toString();
       continue;
     }
-    return { url, status: res.status, final: current, type: res.headers.get("content-type"), body: method === "GET" ? res : null };
+    return {
+      url,
+      status: res.status,
+      final: current,
+      type: res.headers.get("content-type"),
+      body: method === "GET" ? res : null,
+    };
   }
   return { url, status: 0, error: `more than ${max} redirects` };
 }
@@ -117,7 +146,8 @@ export async function checkExternal(url, { fetchImpl = fetch, tries = 3, wait = 
   for (let i = 0; i < tries; i++) {
     try {
       last = await follow(url, { method: "HEAD", fetchImpl });
-      if (!last.error && [400, 403, 404, 405, 501].includes(last.status)) last = await follow(url, { method: "GET", fetchImpl });
+      if (!last.error && [400, 403, 404, 405, 501].includes(last.status))
+        last = await follow(url, { method: "GET", fetchImpl });
       if (last.body) await last.body.body?.cancel?.().catch(() => {});
       if (last.error) return { ...last, transient: false };
       if (last.status < 400) return { ...last, transient: false };
@@ -133,7 +163,17 @@ export async function checkExternal(url, { fetchImpl = fetch, tries = 3, wait = 
 }
 
 async function crawl({ base, host, external }) {
-  const start = ["/", "/fr/", "/feed.xml", "/atom.xml", "/fr/feed.xml", "/fr/atom.xml", "/sitemap.xml", "/llms.txt", "/404.html"].map((p) => new URL(p, base).toString());
+  const start = [
+    "/",
+    "/fr/",
+    "/feed.xml",
+    "/atom.xml",
+    "/fr/feed.xml",
+    "/fr/atom.xml",
+    "/sitemap.xml",
+    "/llms.txt",
+    "/404.html",
+  ].map((p) => new URL(p, base).toString());
   const queue = [...start];
   const seen = new Set(queue);
   const where = new Map(start.map((u) => [u, "(start)"]));

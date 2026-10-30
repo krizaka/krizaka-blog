@@ -78,22 +78,10 @@ export function WuSamaMark({ size = 32, title, className }: WuSamaMarkProps) {
       )}
 
       <g transform="translate(20 20)">
-        <path
-          d={SHIELD}
-          stroke={`url(#${inkId})`}
-          strokeWidth={22}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        <path d={SHIELD} stroke={`url(#${inkId})`} strokeWidth={22} strokeLinecap="round" strokeLinejoin="round" />
         <circle cx={NODE.cx} cy={NODE.cy} r={NODE.r} fill={`url(#${blueId})`} />
         <circle cx={NODE.cx} cy={NODE.cy} r={NODE.inner} fill="#dbeafe" />
-        <path
-          d={W_PATH}
-          stroke={`url(#${blueId})`}
-          strokeWidth={18}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        <path d={W_PATH} stroke={`url(#${blueId})`} strokeWidth={18} strokeLinecap="round" strokeLinejoin="round" />
       </g>
     </svg>
   );

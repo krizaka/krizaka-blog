@@ -17,7 +17,11 @@ export default function GlobalNotFound() {
   const en = getDictionary("en").notFound;
   const fr = getDictionary("fr").notFound;
   return (
-    <html lang="en" className={cn(textFace.variable, displayFace.variable, monoFace.variable, "dark")} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={cn(textFace.variable, displayFace.variable, monoFace.variable, "dark")}
+      suppressHydrationWarning
+    >
       <head>
         <ThemeScript defaultMode="dark" />
       </head>
@@ -42,7 +46,9 @@ export default function GlobalNotFound() {
                     <a href="/">{en.back}</a>
                   </Button>
                   <Button asChild variant="ghost" size="md">
-                    <a href="/fr/" lang="fr">{fr.back}</a>
+                    <a href="/fr/" lang="fr">
+                      {fr.back}
+                    </a>
                   </Button>
                 </div>
               }

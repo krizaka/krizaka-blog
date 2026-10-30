@@ -5,7 +5,13 @@ import { getDictionary } from "@/lib/i18n";
 import { blogJsonLd, pageMetadata } from "@/lib/seo";
 
 const t = getDictionary("fr");
-export const metadata: Metadata = pageMetadata({ locale: "fr", path: "/", title: t.home.seoTitle, description: t.home.seoDescription, alternates: ["en", "fr"] });
+export const metadata: Metadata = pageMetadata({
+  locale: "fr",
+  path: "/",
+  title: t.home.seoTitle,
+  description: t.home.seoDescription,
+  alternates: ["en", "fr"],
+});
 
 export default function Page() {
   return (
