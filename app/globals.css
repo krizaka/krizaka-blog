@@ -1140,21 +1140,45 @@ picture {
 .bl-card:is(:hover, :has(.bl-card-link:focus-visible)) .bl-card-cta-arrow {
   transform: translateX(3px);
 }
-.bl-basics-links {
+/* The basics' reading path (krizaka-blog#229): a numbered list, the number in the margin like a chapter's §, one card per step. */
+.bl-path-for {
+  max-width: 44rem;
+  margin: 0 0 1.5rem;
+  color: var(--kz-text-secondary);
+}
+.bl-path {
+  display: grid;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+}
+.bl-path-step {
   display: grid;
   gap: 0.5rem;
-  list-style: none;
-  padding: 0;
-  max-width: 48rem;
+  align-content: start;
 }
-.bl-basics-links a {
-  color: var(--kz-text-primary);
-  text-decoration: underline;
-  text-decoration-color: var(--kz-border-strong);
-  text-underline-offset: 4px;
+.bl-path-no {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+  margin: 0;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--kz-border-strong);
+  font-family: var(--kz-font-mono);
+  font-size: 0.8125rem;
+  color: var(--kz-text-secondary);
 }
-.bl-basics-links a:hover {
-  text-decoration-color: var(--kz-accent-text);
+.bl-path-no > span:first-child {
+  font-size: 1.25rem;
+  color: var(--kz-accent-text);
+}
+.bl-path-start {
+  margin-left: auto;
+  font-weight: 650;
+  color: var(--kz-accent-text);
 }
 .bl-story-link {
   margin-top: 2rem;

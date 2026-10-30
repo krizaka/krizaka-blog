@@ -7,6 +7,7 @@ import { internalLinkProblems } from "../scripts/content-rules.mjs";
 /* « Les bases » (the shelf of five posts) lives at /basics/<slug>/ (EN) and /fr/basics/<slug>/ (FR), with an index at /basics/
    and /fr/basics/. The series are retired: each series address is a stub to the story or to the shelf (lib/redirects.json). */
 const read = (file) => readFileSync(new URL(`../${file}`, import.meta.url), "utf8");
+const messages = { en: JSON.parse(read("messages/en.json")), fr: JSON.parse(read("messages/fr.json")) };
 const map = JSON.parse(read("lib/redirects.json"));
 const SHELF = [
   "understanding-ai-before-you-start",
@@ -107,4 +108,23 @@ test("the posts' newsletter address and the engage link use /basics/", () => {
   assert.doesNotMatch(read("scripts/newsletter-send.mjs"), /\/posts\/\$\{slug\}\//);
   assert.doesNotMatch(read("app/components/engage/PostEngage.tsx"), /\/posts\//);
   assert.doesNotMatch(read("scripts/postbuild.mjs"), /\/posts\/\$\{p\.slug\}/);
+});
+
+/* The reading path (krizaka-blog#229): one ordered list, the easiest way in, shown as a numbered list on the home and /basics/. */
+test("the reading path lists the shelf in order, starting with « Understanding AI before you start »", () => {
+  const src = read("lib/basics.ts");
+  const listed = [...src.matchAll(/^\s+"([a-z0-9-]+)",$/gm)].map((m) => m[1]);
+  assert.deepEqual([...listed].sort(), [...SHELF].sort(), "every basic is on the path, once");
+  assert.equal(listed[0], "understanding-ai-before-you-start");
+});
+
+test("home and /basics/ show the path as BasicsPath, with the intro; no nav entry in the bar", () => {
+  assert.match(read("app/components/pages/HomePage.tsx"), /<BasicsPath /);
+  assert.match(read("app/components/pages/BasicsPage.tsx"), /<BasicsPath /);
+  assert.match(read("app/components/pages/BasicsPath.tsx"), /<ol className="bl-path"/);
+  for (const l of ["en", "fr"]) {
+    const b = messages[l].basics;
+    assert.ok(b.for && b.startHere && b.step.includes("{n}") && b.step.includes("{total}"), `${l} words`);
+  }
+  assert.doesNotMatch(read("app/components/TopBar.tsx"), /basics/i);
 });
