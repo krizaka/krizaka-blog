@@ -62,6 +62,14 @@ Sur Android, on utilise [Maestro](https://maestro.dev). Les parcours sont de pet
 
 À chaque PR, le workflow [Mobile CI](https://github.com/krizaka/akinaza/blob/main/.github/workflows/mobile-ci.yml) construit l'application, démarre un émulateur Android et un serveur jetable avec la boutique de démonstration, puis lance les parcours en tant que la promeneuse de démo. Le contrôle `mobile-e2e / gate` est obligatoire. Ce job prend entre 16 et 19 minutes sur les huit derniers lancements réussis.
 
+Trois écrans de l'app, pris par le parcours des onglets dans l'exécution verte de `main` (personnage de démo, données de démo) : Aujourd'hui, Factures, Livres.
+
+<Row>
+<Figure id="maestro-today" alt="Émulateur Android, onglet Aujourd'hui : les deux rendez-vous du jour, un terminé, un prévu, sous le bandeau « Version de développement »" />
+<Figure id="maestro-invoices" alt="Émulateur Android, onglet Factures : la liste des factures de démo avec leurs totaux" />
+<Figure id="maestro-books" alt="Émulateur Android, onglet Livres : les deux montants de taxes de vente du trimestre à remettre, avec la mention qu'Akinaza prépare les chiffres et que le propriétaire produit la déclaration" />
+</Row>
+
 Ce que Maestro voit et que Playwright ne voit pas, c'est l'application réellement installée. Exemple vrai : après avoir effacé l'état de l'appli, un émulateur lent peint d'abord un écran blanc. Le test cherchait le champ e-mail trop tôt et échouait de temps en temps. La correction, dans [akinaza#435](https://github.com/krizaka/akinaza/pull/435), attend l'écran au lieu de l'affirmer tout de suite. Aucun test web n'aurait pu trouver ça.
 
 Il y a ici un écart avec ma règle du zéro rejeu, et je le dis : le workflow partagé relance un parcours qui a échoué, jusqu'à trois essais ([`flow-attempts`](https://github.com/krizaka/.github/blob/main/.github/workflows/mobile-e2e.yml)), parce qu'un émulateur sur un serveur partagé lâche un parcours de temps en temps. Seuls les parcours en échec sont relancés et chacun doit finir par passer, mais c'est bien un rejeu. Je ne l'ai pas encore supprimé.

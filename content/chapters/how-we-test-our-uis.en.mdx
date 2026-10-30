@@ -62,6 +62,14 @@ On Android we use [Maestro](https://maestro.dev). The journeys are small YAML fi
 
 On every PR, the [Mobile CI](https://github.com/krizaka/akinaza/blob/main/.github/workflows/mobile-ci.yml) workflow builds the app, starts an Android emulator and a throwaway server with the demo shop, then runs the journeys as the demo walker. The `mobile-e2e / gate` check is required. This job takes 16 to 19 minutes over the last eight successful runs.
 
+Three screens of the app, taken by the journey of the tabs in the green run of `main` (demo persona, demo data): Today, Invoices, Books.
+
+<Row>
+<Figure id="maestro-today" alt="Android emulator, Today tab: the day's two appointments, one done, one planned, under the "Development version" banner" />
+<Figure id="maestro-invoices" alt="Android emulator, Invoices tab: the list of demo invoices with their totals" />
+<Figure id="maestro-books" alt="Android emulator, Books tab: the quarter's two sales-tax figures to remit, with the note that Akinaza prepares the figures and the owner files the return" />
+</Row>
+
 What Maestro sees and Playwright cannot is the app actually installed. A true example: after clearing the app's state, a slow emulator first paints a blank screen. The test looked for the email field too early and failed now and then. The fix, in [akinaza#435](https://github.com/krizaka/akinaza/pull/435), waits for the screen instead of asserting it at once. No web test could have found that.
 
 There is a gap here with my zero-rerun rule, and I say so: the shared workflow reruns a journey that failed, up to three attempts ([`flow-attempts`](https://github.com/krizaka/.github/blob/main/.github/workflows/mobile-e2e.yml)), because an emulator on a shared runner drops a journey now and then. Only the failed journeys are rerun and each must end up passing, but it is a rerun. I have not removed it yet.

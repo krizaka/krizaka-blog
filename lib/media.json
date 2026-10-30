@@ -5759,5 +5759,83 @@
     }
    ]
   }
+ },
+ "maestro-today": {
+  "kind": "image",
+  "width": 1080,
+  "height": 2400,
+  "blur": "data:image/webp;base64,UklGRroAAABXRUJQVlA4IK4AAADQBQCdASoYADYAPu1qrlCppaQiqBgMATAdiWcAz2QIjleMGEgQL9vENLwLIQ17eE9h442pTPwAAP7t55WCLmxiyoQ3QyTjbUkR76wxMz4I60rRPVHfHXGy3XDbfjwr+4v/lmjP3hFn0A2Ci3m5Y5H/zHgOpGJIeuv95vplmGu0K7oagQBI/1HZ77E7RZUcIckXWoeYeIYukg4DhkvZ9SuQvHzt0ng+8g9GJUAAAAA=",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/maestro-today-480.59a52281c8.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/maestro-today-960.fe57b9315d.webp"
+   },
+   {
+    "w": 1080,
+    "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/maestro-today-1080.f3a600a98b.webp"
+   }
+  ],
+  "made": {
+   "model": "Maestro takeScreenshot (a test screenshot, no generative model)",
+   "licence": "n/a",
+   "machine": "GitHub Actions, Android emulator",
+   "note": "Taken by a Maestro journey of the Akinaza mobile app, in the green main run mobile-ci 41009319706 (artifact maestro-e2e, 2026-10-30). Demo persona and demo data only."
+  }
+ },
+ "maestro-invoices": {
+  "kind": "image",
+  "width": 1080,
+  "height": 2400,
+  "blur": "data:image/webp;base64,UklGRsoAAABXRUJQVlA4IL4AAAAQBgCdASoYADYAPu1uqlAppqOirBVbMTAdiWcnABU4AONtbSJbKuTuS3YsjMegjlrWE3f6iER0UAAA/u3nlYIua8nAZeBs1LZ1hKk99emd1mHF98WMYHwfoiMdYi86M7l/A5uZ1JKsJsiumGARQJqYJiVw+MLeYJ8AQBe1cmo2NWGsOOVgZhGeBQ2oZMM5D9M0MIxYmz8gJtcg0pKRpE/mMltNxj2uZxtteIAgypJhCFIsjy76du2NHeqRTcAA",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/maestro-invoices-480.929e5eb376.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/maestro-invoices-960.d9a5fb562b.webp"
+   },
+   {
+    "w": 1080,
+    "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/maestro-invoices-1080.a81a310b7d.webp"
+   }
+  ],
+  "made": {
+   "model": "Maestro takeScreenshot (a test screenshot, no generative model)",
+   "licence": "n/a",
+   "machine": "GitHub Actions, Android emulator",
+   "note": "Taken by a Maestro journey of the Akinaza mobile app, in the green main run mobile-ci 41009319706 (artifact maestro-e2e, 2026-10-30). Demo persona and demo data only."
+  }
+ },
+ "maestro-books": {
+  "kind": "image",
+  "width": 1080,
+  "height": 2400,
+  "blur": "data:image/webp;base64,UklGRpwAAABXRUJQVlA4IJAAAADQBQCdASoYADYAPu1krVEppSQirBVbMTAdiWkAABd6/wNFdhLLnh/3Pg5l1acgRSBqF6xA2jQAAP7t55WCLmprNuLDBe+Okyg+rU8Ao0+Gr07pYxATXH2w5xJHLJoz7iVh2vPfFEt88MZnSKTbgDk7/HEDZABk/AuzBIBpdxeLtvN/SE1fl70fNZ8g9GJUAAA=",
+  "srcs": [
+   {
+    "w": 480,
+    "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/maestro-books-480.dc76b426ca.webp"
+   },
+   {
+    "w": 960,
+    "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/maestro-books-960.e626287420.webp"
+   },
+   {
+    "w": 1080,
+    "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/maestro-books-1080.0ad3576163.webp"
+   }
+  ],
+  "made": {
+   "model": "Maestro takeScreenshot (a test screenshot, no generative model)",
+   "licence": "n/a",
+   "machine": "GitHub Actions, Android emulator",
+   "note": "Taken by a Maestro journey of the Akinaza mobile app, in the green main run mobile-ci 41009319706 (artifact maestro-e2e, 2026-10-30). Demo persona and demo data only."
+  }
  }
 }
