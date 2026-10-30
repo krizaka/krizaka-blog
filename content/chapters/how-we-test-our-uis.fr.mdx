@@ -104,6 +104,14 @@ L'application Mac d'Akinaza est faite avec Tauri. La CI ([`desktop.yml`](https:/
 
 Il n'y a aucun parcours d'interface sur le Mac. Personne n'ouvre l'application construite pour y cliquer. L'interface web qu'elle affiche est testée par les parcours web, ce qui couvre une partie du risque, mais la coque native (menus, fenêtre, signature) ne l'est pas. C'est un vrai trou.
 
+L'application Mac de Yomizaka, construite de la même façon, en a un. [`desktop-journey.mjs`](https://github.com/krizaka/yomizaka/blob/main/scripts/desktop-journey.mjs) lance l'application construite sur un runner macOS et la pilote par WebDriver : le personnage de démo se connecte, un dossier autorisé avant le lancement est listé, le test l'ouvre, vérifie son bail, attend le résultat, puis relance l'application et vérifie que le dossier et la session sont toujours là. Le film vient du même pilote : il prend des captures de la fenêtre elle-même, donc aucune permission d'enregistrement d'écran, il commence sur le premier écran qui montre quelque chose et coupe l'attente du moteur.
+
+<Clip
+  id="showcase-mac"
+  alt="Application Mac de Yomizaka : la bibliothèque avec un dossier de démo autorisé, le bail du dossier ouvert et envoyé à la vérification, les étapes de lecture, puis la bibliothèque après un relancement"
+  caption="Mac (Yomizaka). Le parcours ouvre la bibliothèque, entre dans un dossier de démo, vérifie un bail de démo et suit les étapes de lecture, puis relance l'application. Ce que vous voyez : l'application installée qui lit un bail depuis un dossier local, pilotée par le test."
+/>
+
 ## Des vidéos qui sortent des tests
 
 Les pages de téléchargement de nos produits montrent des vidéos des applications, et une vidéo filmée à la main vieillit dès la version suivante. Alors ce sont les tests qui les filment ([krizaka/.github#315](https://github.com/krizaka/.github/issues/315), règle [« app videos »](https://github.com/krizaka/.github/blob/main/docs/standards/app-videos.md)). Un seul parcours sert deux fois : à prouver, et à montrer.

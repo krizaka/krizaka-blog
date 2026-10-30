@@ -12,10 +12,10 @@ const tags = (lang) =>
 for (const lang of ["en", "fr"]) {
   test(`chapter 18 (${lang}): every figure and clip has an alt and a caption naming its client`, () => {
     const all = tags(lang);
-    assert.equal(all.length, 6);
+    assert.equal(all.length, 7);
     for (const t of all) {
       assert.match(t, /alt="[^"]{30,}"/, t);
-      assert.match(t, /caption="(Android|Web)[^"]{40,}"/, t);
+      assert.match(t, /caption="(Android|Web|Mac)[^"]{40,}"/, t);
     }
   });
 }
