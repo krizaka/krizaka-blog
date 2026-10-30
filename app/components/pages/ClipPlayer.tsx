@@ -60,7 +60,7 @@ export function ClipPlayer({
       controls
       preload="none"
       aria-label={label}
-      style={{ backgroundImage: blurUrl(blur) }}
+      style={{ backgroundImage: blurUrl(blur), aspectRatio: `${width} / ${height}` }}
     >
       <source src={webm} type="video/webm" />
       <source src={mp4} type="video/mp4" />

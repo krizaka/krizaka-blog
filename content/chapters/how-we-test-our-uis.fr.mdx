@@ -62,23 +62,35 @@ Sur Android, on utilise [Maestro](https://maestro.dev). Les parcours sont de pet
 
 À chaque PR, le workflow [Mobile CI](https://github.com/krizaka/akinaza/blob/main/.github/workflows/mobile-ci.yml) construit l'application, démarre un émulateur Android et un serveur jetable avec la boutique de démonstration, puis lance les parcours en tant que la promeneuse de démo. Le contrôle `mobile-e2e / gate` est obligatoire. Ce job prend entre 16 et 19 minutes sur les huit derniers lancements réussis.
 
-Trois écrans de l'app, pris par le parcours des onglets dans l'exécution verte de `main` (personnage de démo, données de démo) : Aujourd'hui, Factures, Livres.
+Trois écrans de l'app, pris par le parcours des onglets dans l'exécution verte de `main` (client Android, personnage de démo, données de démo) : Aujourd'hui, Factures, Livres. Chacun est un point de contrôle du parcours : Maestro touche l'onglet, attend l'écran, puis le vérifie et le photographie.
 
 <Row>
-<Figure id="maestro-today" alt="Émulateur Android, onglet Aujourd'hui : les deux rendez-vous du jour, un terminé, un prévu, sous le bandeau « Version de développement »" />
-<Figure id="maestro-invoices" alt="Émulateur Android, onglet Factures : la liste des factures de démo avec leurs totaux" />
-<Figure id="maestro-books" alt="Émulateur Android, onglet Livres : les deux montants de taxes de vente du trimestre à remettre, avec la mention qu'Akinaza prépare les chiffres et que le propriétaire produit la déclaration" />
+  <Figure
+    id="maestro-today"
+    alt="Émulateur Android, onglet Aujourd'hui : les deux rendez-vous du jour, un terminé, un prévu, sous le bandeau « Version de développement »"
+    caption="Android. Maestro ouvre l'app en tant que la promeneuse de démo et vérifie qu'Aujourd'hui liste les deux rendez-vous du jour, un terminé, un prévu."
+  />
+  <Figure
+    id="maestro-invoices"
+    alt="Émulateur Android, onglet Factures : la liste des factures de démo avec leurs totaux"
+    caption="Android. Maestro touche Factures et vérifie que la liste des factures de démo s'affiche avec ses totaux."
+  />
+  <Figure
+    id="maestro-books"
+    alt="Émulateur Android, onglet Livres : les deux montants de taxes de vente du trimestre à remettre, avec la mention qu'Akinaza prépare les chiffres et que le propriétaire produit la déclaration"
+    caption="Android. Maestro touche Livres et vérifie les deux montants de taxes de vente du trimestre et la mention que le propriétaire produit la déclaration."
+  />
 </Row>
 
-La même exécution verte a filmé les clients tels qu'ils tournent. D'abord le téléphone (émulateur Android, les onglets de l'app, personnage de démo, sans étape de connexion), puis la page publique d'une boutique de démonstration et le compositeur de l'administration dans le navigateur :
+La même exécution verte a aussi filmé le téléphone tel qu'il tourne, tout le parcours en une prise, sans étape de connexion :
 
 <Row>
-<Clip id="showcase-android" alt="Émulateur Android : l'onglet Aujourd'hui avec les rendez-vous du jour, puis l'onglet Livres avec les deux montants de taxes de vente du trimestre" />
+  <Clip
+    id="showcase-android"
+    alt="Émulateur Android : l'onglet Aujourd'hui avec les rendez-vous du jour, puis l'onglet Livres avec les deux montants de taxes de vente du trimestre"
+    caption="Android. L'enregistrement de Maestro : il ouvre Aujourd'hui, puis passe aux Livres et à leurs deux montants de taxes. Ce que vous voyez : l'app installée, pilotée par le test, en boucle."
+  />
 </Row>
-
-<Clip id="showcase-web-storefront" alt="Navigateur : la page publique d'un salon de coiffure de démonstration, de l'en-tête à ses services et ses photos, en thème sombre" />
-
-<Clip id="showcase-web-composer" alt="Navigateur : le compositeur de boutique de l'administration, qui active et désactive des sections pendant que l'aperçu téléphone suit" />
 
 Ce que Maestro voit et que Playwright ne voit pas, c'est l'application réellement installée. Exemple vrai : après avoir effacé l'état de l'appli, un émulateur lent peint d'abord un écran blanc. Le test cherchait le champ e-mail trop tôt et échouait de temps en temps. La correction, dans [akinaza#435](https://github.com/krizaka/akinaza/pull/435), attend l'écran au lieu de l'affirmer tout de suite. Aucun test web n'aurait pu trouver ça.
 
@@ -97,6 +109,20 @@ Il n'y a aucun parcours d'interface sur le Mac. Personne n'ouvre l'application c
 Les pages de téléchargement de nos produits montrent des vidéos des applications, et une vidéo filmée à la main vieillit dès la version suivante. Alors ce sont les tests qui les filment ([krizaka/.github#315](https://github.com/krizaka/.github/issues/315), règle [« app videos »](https://github.com/krizaka/.github/blob/main/docs/standards/app-videos.md)). Un seul parcours sert deux fois : à prouver, et à montrer.
 
 Côté web, [`showcase-web.mjs`](https://github.com/krizaka/akinaza/blob/main/apps/web/scripts/showcase-web.mjs) enregistre avec Playwright. La connexion se fait hors caméra, pour que rien de tapé ne soit filmé, avec le personnage de démo, et la bannière « version de développement » reste visible. Côté téléphone, ce sont les commandes `startRecording` et `stopRecording` de Maestro dans [`.maestro-showcase`](https://github.com/krizaka/akinaza/tree/main/apps/mobile/.maestro-showcase).
+
+Deux prises du web, de la même exécution verte :
+
+<Clip
+  id="showcase-web-storefront"
+  alt="Navigateur : la page publique d'un salon de coiffure de démonstration, de l'en-tête à ses services et ses photos, en thème sombre"
+  caption="Web, côté clients. Playwright ouvre la page publique d'un salon de démo et défile de l'en-tête aux services et aux photos, en thème sombre. Ce que vous voyez : la page où arrive un client."
+/>
+
+<Clip
+  id="showcase-web-composer"
+  alt="Navigateur : le compositeur de boutique de l'administration, qui active et désactive des sections pendant que l'aperçu téléphone suit"
+  caption="Web, côté propriétaire (admin). Playwright active et désactive les sections de la boutique dans le compositeur et vérifie que l'aperçu téléphone suit. Ce que vous voyez : le propriétaire qui compose sa page."
+/>
 
 Le workflow [`download-videos.yml`](https://github.com/krizaka/akinaza/blob/main/.github/workflows/download-videos.yml) tourne chaque nuit sur `main` et n'est jamais obligatoire, donc il ne peut bloquer aucune fusion. Le workflow partagé [`app-videos.yml`](https://github.com/krizaka/.github/blob/main/.github/workflows/app-videos.yml) encode en webm et mp4 avec une affiche (30 secondes au plus, sans son, 720 pixels de large au plus), envoie le tout sur notre stockage de médias sous un nom qui contient son empreinte, et ouvre une PR. Un test unitaire échoue si la page nomme une vidéo absente du manifeste ou plus vieille que 14 jours.
 
