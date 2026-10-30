@@ -17,6 +17,15 @@ const en = JSON.parse(readFileSync(join(root, "messages/en.json"), "utf8"));
 
 test("there are client components to check", () => assert.ok(clientFiles.length >= 8));
 
+/** `{ type A, type B }`: only types, checked without a backtracking pattern. */
+function isTypeOnlyBraces(names) {
+  const t = names.trim();
+  if (!t.startsWith("{") || !t.endsWith("}")) return false;
+  const parts = t.slice(1, -1).split(",");
+  if (parts.at(-1)?.trim() === "") parts.pop();
+  return parts.length > 0 && parts.every((x) => /^type \S+$/.test(x.trim()));
+}
+
 test("no client component imports the catalogues (lib/i18n or messages/*) as a value", () => {
   for (const f of clientFiles) {
     const src = readFileSync(f, "utf8");
@@ -25,7 +34,7 @@ test("no client component imports the catalogues (lib/i18n or messages/*) as a v
       const names = m[2];
       if (
         /^(@\/lib\/i18n|\.\.?\/.*\/?i18n)$/.test(m[3]) &&
-        !/^\{(\s*type\s+\w+\s*,?)+\s*\}$/.test(names.replace(/\s+/g, " "))
+        !isTypeOnlyBraces(names)
       )
         assert.fail(`${f} imports ${names} from ${m[3]}: use @/lib/locale`);
       assert.ok(!/messages\/(en|fr)(\.json)?$/.test(m[3]), `${f} imports the catalogue ${m[3]}`);
