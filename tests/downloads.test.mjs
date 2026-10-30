@@ -17,6 +17,7 @@ import {
   imagesWithoutAlt,
   manifestProblems,
   missingChapters,
+  plain,
   pdfProblems,
   planBooks,
   removeHidden,
@@ -206,4 +207,10 @@ test("the site links the downloads on each chapter, on the home and in the three
   assert.match(feeds, /attachments:/);
   assert.match(read("scripts/ci-after-build.sh"), /scripts\/gen-downloads\.mjs/);
   assert.deepEqual([...FORMATS], ["epub", "pdf"]);
+});
+
+test("plain drops every tag, nested or half-written, and reads the entities", () => {
+  assert.equal(plain("<p>a <b>b</b> &amp; c</p>"), "a b & c");
+  assert.equal(plain("<<script>x</script>y"), "xy");
+  assert.equal(plain("<a\nhref='x'>t</a>"), "t");
 });
