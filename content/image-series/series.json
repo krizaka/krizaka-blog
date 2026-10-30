@@ -125,6 +125,12 @@
       "seed": 9118,
       "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
       "beat": "A long wooden table at the village edge under the orange sun, four small lanterns in a row along it and a wall board of pinned cards behind, a small glowing phone at one end; the five birds each stand once along the table, the pigeon carrying a card. Nobody else is in the picture."
+    },
+    {
+      "post": "how-we-test-our-uis",
+      "seed": 3118,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "The cover was made apart, with sd-cli (see its note in lib/media.json): a small city model lit from inside on a walnut desk, a figure on a brass ruler, a stopwatch and a notebook of ticked lines. The series' cast is carried over unchanged."
     }
   ],
   "sprites": {
