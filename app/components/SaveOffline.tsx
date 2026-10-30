@@ -63,7 +63,8 @@ export function SaveSeries({ urls, quiet = false }: Readonly<{ urls: readonly st
         type="button"
         variant={quiet ? "ghost" : "primary"}
         shape={quiet ? undefined : "cut"}
-        size="md"
+        size={quiet ? "sm" : "md"}
+        className={quiet ? "bl-offline-quiet" : undefined}
         disabled={saving || all || state.status === "loading"}
         onClick={() => void offlineStore.save(urls)}
       >
