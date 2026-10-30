@@ -22,7 +22,10 @@ test("the site is open to search engines now that posts are published", () => {
 });
 
 test("the spec carries the captcha site key (public by design), never the secret key, and never « unset »", () => {
-  assert.match(spec, /key: NEXT_PUBLIC_ABUSE_CAPTCHA_SITE_KEY\n\s+scope: BUILD_TIME\n\s+value: 0x4[A-Za-z0-9_-]{15,}\n/);
+  assert.match(
+    spec,
+    /key: NEXT_PUBLIC_ABUSE_CAPTCHA_SITE_KEY\n\s+scope: BUILD_TIME\n\s+value: 0x4[A-Za-z0-9_-]{15,}\n/,
+  );
   assert.doesNotMatch(spec, /ABUSE_CAPTCHA_SECRET_KEY\n(\s+\w+: .*\n)*?\s+value:/);
 });
 

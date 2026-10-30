@@ -21,12 +21,29 @@
 export const ORG_ID = "https://www.krizaka.com/#organization";
 /** @type {string[]} */
 export const AI_CRAWLERS = [
-  "Googlebot", "Google-Extended", "Bingbot", "GPTBot", "OAI-SearchBot", "ChatGPT-User", "PerplexityBot", "Perplexity-User",
-  "Claude-SearchBot", "Claude-User", "ClaudeBot", "anthropic-ai", "Applebot", "Applebot-Extended", "CCBot",
+  "Googlebot",
+  "Google-Extended",
+  "Bingbot",
+  "GPTBot",
+  "OAI-SearchBot",
+  "ChatGPT-User",
+  "PerplexityBot",
+  "Perplexity-User",
+  "Claude-SearchBot",
+  "Claude-User",
+  "ClaudeBot",
+  "anthropic-ai",
+  "Applebot",
+  "Applebot-Extended",
+  "CCBot",
 ];
 
 const attr = (tag, name) => new RegExp(`${name}="([^"]*)"`, "i").exec(tag)?.[1];
-const decode = (s) => s.replace(/&#x27;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, "&");
+const decode = (s) =>
+  s
+    .replace(/&#x27;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, "&");
 const tags = (html, name) => [...html.matchAll(new RegExp(`<${name}\\s[^>]*>`, "gi"))].map((m) => m[0]);
 const strip = (u) => u.replace(/\/$/, "");
 
@@ -36,7 +53,8 @@ const strip = (u) => u.replace(/\/$/, "");
  * @returns {string[]} */
 export function auditRobots(text, { host, index = true, sitemap = true }) {
   const problems = [];
-  if (sitemap && !text.includes(`Sitemap: ${host}/sitemap.xml`)) problems.push(`robots.txt: no "Sitemap: ${host}/sitemap.xml" line`);
+  if (sitemap && !text.includes(`Sitemap: ${host}/sitemap.xml`))
+    problems.push(`robots.txt: no "Sitemap: ${host}/sitemap.xml" line`);
   const groups = text.split(/\n\s*\n/);
   const group = (bot) => groups.find((g) => new RegExp(`^user-agent:\\s*${bot}\\s*$`, "im").test(g));
   if (index) {
@@ -46,7 +64,8 @@ export function auditRobots(text, { host, index = true, sitemap = true }) {
       if (!g) problems.push(`robots.txt: ${bot} has no group (AI crawlers are welcome on public sites)`);
       else if (!/^allow:\s*\/\s*$/im.test(g)) problems.push(`robots.txt: ${bot} is not allowed`);
     }
-  } else if (!/user-agent:\s*\*[\s\S]*?disallow:\s*\/\s*(\n|$)/i.test(text)) problems.push("robots.txt: a site that is not indexed must Disallow: / for *");
+  } else if (!/user-agent:\s*\*[\s\S]*?disallow:\s*\/\s*(\n|$)/i.test(text))
+    problems.push("robots.txt: a site that is not indexed must Disallow: / for *");
   return problems;
 }
 
@@ -58,10 +77,12 @@ export function auditSitemap(xml, { host, minUrls = 1 }) {
   const problems = [];
   const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].trim());
   if (locs.length < minUrls) problems.push(`sitemap.xml: ${locs.length} URL(s), expected at least ${minUrls}`);
-  for (const loc of locs) if (!loc.startsWith(`${host}/`) && loc !== host) problems.push(`sitemap.xml: ${loc} is not on ${host}`);
+  for (const loc of locs)
+    if (!loc.startsWith(`${host}/`) && loc !== host) problems.push(`sitemap.xml: ${loc} is not on ${host}`);
   for (const link of tags(xml, "xhtml:link")) {
     const href = attr(link, "href");
-    if (href && !href.startsWith(`${host}/`) && href !== host) problems.push(`sitemap.xml: alternate ${href} is not on ${host}`);
+    if (href && !href.startsWith(`${host}/`) && href !== host)
+      problems.push(`sitemap.xml: alternate ${href} is not on ${host}`);
   }
   if (!/<lastmod>/.test(xml)) problems.push("sitemap.xml: no <lastmod>");
   return problems;
@@ -75,8 +96,10 @@ export function auditLlms(text, { host, full = false }) {
   const problems = [];
   if (!/^# \S/.test(text)) problems.push("llms.txt: must start with an H1 (# Name)");
   if (!/^> \S/m.test(text)) problems.push("llms.txt: no blockquote summary (> …)");
-  if (!/^- \[[^\]]+\]\(https?:\/\/[^)]+\)/m.test(text) && !/^- .*https?:\/\//m.test(text)) problems.push("llms.txt: no list of key pages");
-  if (!/(^|[\s(<])https:\/\/www\.krizaka\.com(?=[\s/)>#?]|$)/m.test(text)) problems.push("llms.txt: does not link to https://www.krizaka.com");
+  if (!/^- \[[^\]]+\]\(https?:\/\/[^)]+\)/m.test(text) && !/^- .*https?:\/\//m.test(text))
+    problems.push("llms.txt: no list of key pages");
+  if (!/(^|[\s(<])https:\/\/www\.krizaka\.com(?=[\s/)>#?]|$)/m.test(text))
+    problems.push("llms.txt: does not link to https://www.krizaka.com");
   if (!full && text.includes("{{")) problems.push("llms.txt: unfilled placeholder");
   if (/https:\/\/krizaka\.com/.test(text)) problems.push("llms.txt: declares the apex https://krizaka.com (use www)");
   if (host !== "https://www.krizaka.com" && !text.includes(host)) problems.push(`llms.txt: never mentions ${host}`);
@@ -96,9 +119,17 @@ export function jsonLd(html) {
 const refId = (v) => (typeof v === "string" ? v : v?.["@id"]);
 const leadsToOrg = (node) => {
   if (node["@id"] === ORG_ID) return true;
-  return ["publisher", "provider", "author", "creator", "isPartOf", "parentOrganization", "maintainer", "copyrightHolder", "brand"].some((k) =>
-    [].concat(node[k] ?? []).some((v) => refId(v) === ORG_ID),
-  );
+  return [
+    "publisher",
+    "provider",
+    "author",
+    "creator",
+    "isPartOf",
+    "parentOrganization",
+    "maintainer",
+    "copyrightHolder",
+    "brand",
+  ].some((k) => [].concat(node[k] ?? []).some((v) => refId(v) === ORG_ID));
 };
 
 /** One page of the site. `path` is its route ("/", "/fr/"); `host` the public origin.
@@ -115,19 +146,26 @@ export function auditHtml(html, path, { host, index = true, types = [], home = f
   const meta = (key, v) => metas.filter((m) => attr(m, key) === v).map((m) => attr(m, "content"));
   const desc = meta("name", "description");
   if (desc.length !== 1) problems.push(`${desc.length} meta description (expected 1)`);
-  else if (decode(desc[0]).length < 30 || decode(desc[0]).length > 400) problems.push(`description length ${decode(desc[0]).length}`);
+  else if (decode(desc[0]).length < 30 || decode(desc[0]).length > 400)
+    problems.push(`description length ${decode(desc[0]).length}`);
 
   const links = tags(html, "link");
   const canonical = links.filter((l) => /rel="canonical"/.test(l)).map((l) => attr(l, "href"));
   const expected = (u) => strip(u);
   if (canonical.length !== 1) problems.push(`${canonical.length} canonical (expected 1)`);
-  else if (!(canonical[0] === `${host}${path}` || expected(canonical[0]) === expected(`${host}${path}`))) problems.push(`canonical ${canonical[0]} is not ${host}${path}`);
+  else if (!(canonical[0] === `${host}${path}` || expected(canonical[0]) === expected(`${host}${path}`)))
+    problems.push(`canonical ${canonical[0]} is not ${host}${path}`);
   else if (!canonical[0].startsWith(host)) problems.push(`canonical ${canonical[0]} is off ${host}`);
   for (const l of links.filter((l) => /hreflang/i.test(l))) {
     const href = attr(l, "href");
     if (!href?.startsWith(host)) problems.push(`hreflang ${attr(l, "hreflang")} off host: ${href}`);
   }
-  for (const [what, v] of [["og:title", meta("property", "og:title")], ["og:description", meta("property", "og:description")], ["og:image", meta("property", "og:image")], ["twitter:card", meta("name", "twitter:card")]]) {
+  for (const [what, v] of [
+    ["og:title", meta("property", "og:title")],
+    ["og:description", meta("property", "og:description")],
+    ["og:image", meta("property", "og:image")],
+    ["twitter:card", meta("name", "twitter:card")],
+  ]) {
     if (v.length === 0 || !v[0]) problems.push(`${what} missing`);
   }
   const og = meta("property", "og:image")[0];
@@ -145,10 +183,14 @@ export function auditHtml(html, path, { host, index = true, types = [], home = f
   if (nodes.length === 0) problems.push("no JSON-LD");
   const have = new Set(nodes.flatMap((n) => [].concat(n["@type"] ?? [])));
   if (home) for (const t of types) if (!have.has(t)) problems.push(`home: ${t} JSON-LD missing`);
-  if (home && organizationHome && !nodes.some((n) => n["@id"] === ORG_ID)) problems.push(`home: the Organization node must carry @id ${ORG_ID}`);
+  if (home && organizationHome && !nodes.some((n) => n["@id"] === ORG_ID))
+    problems.push(`home: the Organization node must carry @id ${ORG_ID}`);
   if (!organizationHome) {
-    const subjects = nodes.filter((n) => !["BreadcrumbList", "ListItem", "Question", "Answer"].includes([].concat(n["@type"])[0]));
-    if (subjects.length && !subjects.some(leadsToOrg)) problems.push(`JSON-LD never points back to the Krizaka Organization (${ORG_ID})`);
+    const subjects = nodes.filter(
+      (n) => !["BreadcrumbList", "ListItem", "Question", "Answer"].includes([].concat(n["@type"])[0]),
+    );
+    if (subjects.length && !subjects.some(leadsToOrg))
+      problems.push(`JSON-LD never points back to the Krizaka Organization (${ORG_ID})`);
   }
   const declared = [...links, ...metas].join("\n");
   if (/https:\/\/krizaka\.com/.test(declared)) problems.push("the apex https://krizaka.com is declared (use www)");
@@ -159,7 +201,11 @@ export function auditHtml(html, path, { host, index = true, types = [], home = f
  * @param {string} html
  * @returns {string[]} */
 export function auditConsoleHtml(html) {
-  const robots = (tags(html, "meta").filter((m) => attr(m, "name") === "robots").map((m) => attr(m, "content"))[0] ?? "").toLowerCase();
+  const robots = (
+    tags(html, "meta")
+      .filter((m) => attr(m, "name") === "robots")
+      .map((m) => attr(m, "content"))[0] ?? ""
+  ).toLowerCase();
   return /noindex/.test(robots) ? [] : ['the page has no <meta name="robots" content="noindex">'];
 }
 
@@ -181,10 +227,13 @@ export function auditHeaders(headers, { index = true }) {
 export function auditDevRedirect(seen, { www }) {
   const problems = [];
   if (!/^disallow:\s*\/\s*$/im.test(seen.robotsText)) problems.push("robots.txt: a development host must Disallow: /");
-  if (!/noindex/i.test(seen.robotsHeaders.get?.("x-robots-tag") ?? "")) problems.push("robots.txt: no X-Robots-Tag noindex");
+  if (!/noindex/i.test(seen.robotsHeaders.get?.("x-robots-tag") ?? ""))
+    problems.push("robots.txt: no X-Robots-Tag noindex");
   if (seen.rootStatus !== 308) problems.push(`/ answers ${seen.rootStatus}, expected 308 to ${www}/`);
-  else if (!seen.rootLocation || !(seen.rootLocation === `${www}/` || seen.rootLocation.startsWith(`${www}/`))) problems.push(`/ goes to ${seen.rootLocation}, expected ${www}/…`);
-  if (!/noindex/i.test(seen.rootHeaders.get?.("x-robots-tag") ?? "")) problems.push("/: the redirect carries no X-Robots-Tag noindex");
+  else if (!seen.rootLocation || !(seen.rootLocation === `${www}/` || seen.rootLocation.startsWith(`${www}/`)))
+    problems.push(`/ goes to ${seen.rootLocation}, expected ${www}/…`);
+  if (!/noindex/i.test(seen.rootHeaders.get?.("x-robots-tag") ?? ""))
+    problems.push("/: the redirect carries no X-Robots-Tag noindex");
   return problems;
 }
 
@@ -212,7 +261,19 @@ async function main() {
   if (redirectsTo) {
     const robots = await get("/robots.txt");
     const root = await fetch(`${base}/`, { redirect: "manual" });
-    report("dev host", auditDevRedirect({ robotsText: await robots.text(), robotsHeaders: robots.headers, rootStatus: root.status, rootLocation: root.headers.get("location"), rootHeaders: root.headers }, { www: strip(redirectsTo) }));
+    report(
+      "dev host",
+      auditDevRedirect(
+        {
+          robotsText: await robots.text(),
+          robotsHeaders: robots.headers,
+          rootStatus: root.status,
+          rootLocation: root.headers.get("location"),
+          rootHeaders: root.headers,
+        },
+        { www: strip(redirectsTo) },
+      ),
+    );
     return done(2);
   }
   const consoleMode = args.includes("--console");
@@ -242,7 +303,9 @@ async function main() {
       process.stderr.write(`${`SEO family check: ${failed} problem(s) on ${pages} page(s) of ${host}`}\n`);
       process.exit(1);
     }
-    process.stdout.write(`${`SEO family check: ${pages} page(s) and robots.txt of ${host} (${index ? "indexed" : "noindex"}${consoleMode ? ", console" : ""}) — all good`}\n`);
+    process.stdout.write(
+      `${`SEO family check: ${pages} page(s) and robots.txt of ${host} (${index ? "indexed" : "noindex"}${consoleMode ? ", console" : ""}) — all good`}\n`,
+    );
   }
 }
 

@@ -2,7 +2,13 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
-import { publishedBetween, versionsOf, requestSend, newsletterEnabled, assertDelivered } from "../scripts/newsletter-send.mjs";
+import {
+  publishedBetween,
+  versionsOf,
+  requestSend,
+  newsletterEnabled,
+  assertDelivered,
+} from "../scripts/newsletter-send.mjs";
 
 const require = createRequire(import.meta.url);
 const nl = require("../functions/packages/newsletter/subscribe/newsletter.js");
@@ -18,9 +24,15 @@ function fakeDb({ subscribers = [], claimed = [] } = {}) {
   const posts = new Set(claimed);
   const sql = async (text, params = []) => {
     calls.push({ text, params });
-    if (text.startsWith("insert into newsletter_subscribers")) subs.set(params[0], { email: params[0], locale: params[1], consented_at: params[2] });
+    if (text.startsWith("insert into newsletter_subscribers"))
+      subs.set(params[0], { email: params[0], locale: params[1], consented_at: params[2] });
     else if (text.startsWith("delete from newsletter_subscribers")) subs.delete(params[0]);
-    else if (text.startsWith("select email, locale, consented_at")) return [...subs.values()].map((s) => ({ email: s.email, locale: s.locale, consented_at: s.consented_at ?? "2026-10-16T00:00:00Z" }));
+    else if (text.startsWith("select email, locale, consented_at"))
+      return [...subs.values()].map((s) => ({
+        email: s.email,
+        locale: s.locale,
+        consented_at: s.consented_at ?? "2026-10-16T00:00:00Z",
+      }));
     else if (text.startsWith("insert into newsletter_posts")) {
       if (posts.has(params[0])) return [];
       posts.add(params[0]);
@@ -57,7 +69,8 @@ function fakeFetch(answers = {}) {
 const SITEVERIFY = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
 test("every copy of the newsletter code is identical", () => {
-  const read = (a) => readFileSync(new URL(`../functions/packages/newsletter/${a}/newsletter.js`, import.meta.url), "utf8");
+  const read = (a) =>
+    readFileSync(new URL(`../functions/packages/newsletter/${a}/newsletter.js`, import.meta.url), "utf8");
   for (const a of ["confirm", "unsubscribe", "send"]) assert.equal(read(a), read("subscribe"), a);
 });
 
@@ -82,9 +95,26 @@ test("subscribe: refuses a bad address and a missing or refused CAPTCHA; sends n
 });
 
 test("subscribe: without mail or CAPTCHA configured it answers 503 (fails closed)", async () => {
-  assert.equal((await subscribe({ __ow_method: "post", email: "a@b.co" }, { ...ENV, ABUSE_CAPTCHA_SECRET_KEY: "unset" }, fakeFetch())).statusCode, 503);
-  assert.equal((await subscribe({ __ow_method: "post", email: "a@b.co" }, { ...ENV, MAIL_TOKEN_SECRET: "" }, fakeFetch())).statusCode, 503);
-  assert.equal((await subscribe({ __ow_method: "post", email: "a@b.co" }, { ...ENV, DATABASE_URL: "unset" }, fakeFetch())).statusCode, 503);
+  assert.equal(
+    (
+      await subscribe(
+        { __ow_method: "post", email: "a@b.co" },
+        { ...ENV, ABUSE_CAPTCHA_SECRET_KEY: "unset" },
+        fakeFetch(),
+      )
+    ).statusCode,
+    503,
+  );
+  assert.equal(
+    (await subscribe({ __ow_method: "post", email: "a@b.co" }, { ...ENV, MAIL_TOKEN_SECRET: "" }, fakeFetch()))
+      .statusCode,
+    503,
+  );
+  assert.equal(
+    (await subscribe({ __ow_method: "post", email: "a@b.co" }, { ...ENV, DATABASE_URL: "unset" }, fakeFetch()))
+      .statusCode,
+    503,
+  );
 });
 
 test("subscribe: the honeypot answers like a success and sends nothing", async () => {
@@ -96,7 +126,17 @@ test("subscribe: the honeypot answers like a success and sends nothing", async (
 
 test("subscribe: a valid request e-mails a confirmation link and stores nothing", async () => {
   const f = fakeFetch({ [SITEVERIFY]: { status: 200, body: { success: true } } });
-  const r = await subscribe({ __ow_method: "post", email: " A@B.co ", locale: "fr", captchaToken: "ok", __ow_headers: { "x-forwarded-for": "1.2.3.4, 5.6.7.8" } }, ENV, f);
+  const r = await subscribe(
+    {
+      __ow_method: "post",
+      email: " A@B.co ",
+      locale: "fr",
+      captchaToken: "ok",
+      __ow_headers: { "x-forwarded-for": "1.2.3.4, 5.6.7.8" },
+    },
+    ENV,
+    f,
+  );
   assert.equal(r.statusCode, 202);
   assert.match(f.calls[0].init.body, /remoteip=1.2.3.4/);
   const mail = f.calls.find((c) => c.url === "https://api.mailgun.net/v3/mg.example.com/messages");
@@ -110,12 +150,19 @@ test("subscribe: a valid request e-mails a confirmation link and stores nothing"
 });
 
 test("every e-mail says who sends it, why, where to read what is kept (CASL, Loi 25)", () => {
-  const c = nl.confirmationEmail({ email: "a@b.co", locale: "en" }, { ...ENV, MAIL_SENDER_ADDRESS: "1 rue X, Montréal (Québec) H0H 0H0" });
+  const c = nl.confirmationEmail(
+    { email: "a@b.co", locale: "en" },
+    { ...ENV, MAIL_SENDER_ADDRESS: "1 rue X, Montréal (Québec) H0H 0H0" },
+  );
   assert.match(c.text, /Technologies Krizaka Inc\./);
   assert.match(c.text, /1 rue X, Montréal/);
   assert.match(c.text, /subscription form of blog\.krizaka\.com/);
   assert.match(c.text, /blog\.krizaka\.com\/newsletter\//);
-  const p = nl.newPostEmail({ email: "a@b.co", locale: "fr", consentedAt: "2026-10-16T12:00:00Z" }, { title: "T", description: "D", url: "https://blog.krizaka.com/fr/posts/t/" }, ENV);
+  const p = nl.newPostEmail(
+    { email: "a@b.co", locale: "fr", consentedAt: "2026-10-16T12:00:00Z" },
+    { title: "T", description: "D", url: "https://blog.krizaka.com/fr/posts/t/" },
+    ENV,
+  );
   assert.match(p.text, /Se désinscrire en un clic : https:\/\/blog\.krizaka\.com\/api\/newsletter\/unsubscribe\?t=/);
   assert.match(p.text, /le 2026-10-16/);
   assert.match(p.text, /Montréal \(Québec\), Canada/);
@@ -147,7 +194,11 @@ test("confirm: an address already on the list, or a link opened twice, lands on 
   const now = Date.UTC(2026, 9, 28);
   const t = nl.makeToken({ email: "a@b.co", locale: "en", purpose: "c", now }, ENV.MAIL_TOKEN_SECRET);
   const db = fakeDb({ subscribers: [{ email: "a@b.co", locale: "fr" }] });
-  for (let i = 0; i < 2; i++) assert.equal((await confirm({ t }, ENV, db.sql, now + 1000)).headers.Location, "https://blog.krizaka.com/newsletter/confirmed/");
+  for (let i = 0; i < 2; i++)
+    assert.equal(
+      (await confirm({ t }, ENV, db.sql, now + 1000)).headers.Location,
+      "https://blog.krizaka.com/newsletter/confirmed/",
+    );
   assert.equal(db.subs.size, 1);
   assert.equal(db.subs.get("a@b.co").locale, "en", "the renewed consent keeps one row");
 });
@@ -157,8 +208,14 @@ test("confirm: only a genuine link past its date says expired; a forged one says
   const t = nl.makeToken({ email: "a@b.co", locale: "en", purpose: "c", now }, ENV.MAIL_TOKEN_SECRET);
   const late = (await confirm({ t }, ENV, fakeDb().sql, now + nl.CONFIRM_TTL_MS + 1)).headers.Location;
   assert.equal(late, "https://blog.krizaka.com/newsletter/expired/");
-  assert.equal((await confirm({ t: t.slice(0, -2) + "xx" }, ENV, fakeDb().sql, now)).headers.Location, "https://blog.krizaka.com/newsletter/link-invalid/");
-  assert.equal((await confirm({ t: undefined }, ENV, fakeDb().sql, now)).headers.Location, "https://blog.krizaka.com/newsletter/link-invalid/");
+  assert.equal(
+    (await confirm({ t: t.slice(0, -2) + "xx" }, ENV, fakeDb().sql, now)).headers.Location,
+    "https://blog.krizaka.com/newsletter/link-invalid/",
+  );
+  assert.equal(
+    (await confirm({ t: undefined }, ENV, fakeDb().sql, now)).headers.Location,
+    "https://blog.krizaka.com/newsletter/link-invalid/",
+  );
   const down = async () => Promise.reject(new Error("db"));
   const failed = await confirm({ t }, ENV, down, now);
   assert.equal(failed.statusCode, 503, "a database error is not an expired link");
@@ -172,7 +229,10 @@ test("send to click: the link of the confirmation e-mail, in its text and in its
   await subscribe({ __ow_method: "post", email: "a@b.co", locale: "fr", captchaToken: "ok" }, ENV, f);
   const mail = new URLSearchParams(f.calls.find((c) => c.url.includes("/messages")).init.body);
   const fromText = mail.get("text").match(/https:\/\/blog\.krizaka\.com\/api\/newsletter\/confirm\?[^\s]+/)[0];
-  const fromHtml = mail.get("html").match(/href="(https:\/\/blog\.krizaka\.com\/api\/newsletter\/confirm\?[^"]+)"/)[1].replaceAll("&amp;", "&");
+  const fromHtml = mail
+    .get("html")
+    .match(/href="(https:\/\/blog\.krizaka\.com\/api\/newsletter\/confirm\?[^"]+)"/)[1]
+    .replaceAll("&amp;", "&");
   assert.equal(fromHtml, fromText);
   const url = new URL(fromText);
   const db = fakeDb();
@@ -187,7 +247,11 @@ test("unsubscribe: one click by link (303) or by the mail client (RFC 8058 POST,
   const r = await unsubscribe({ t }, ENV, db.sql);
   assert.equal(r.headers.Location, "https://blog.krizaka.com/newsletter/unsubscribed/");
   assert.equal(db.subs.size, 0);
-  assert.equal((await unsubscribe({ t, __ow_method: "post", "List-Unsubscribe": "One-Click" }, ENV, db.sql)).statusCode, 200, "already gone is fine");
+  assert.equal(
+    (await unsubscribe({ t, __ow_method: "post", "List-Unsubscribe": "One-Click" }, ENV, db.sql)).statusCode,
+    200,
+    "already gone is fine",
+  );
   assert.equal((await unsubscribe({ t: "forged.x", __ow_method: "post" }, ENV, fakeDb().sql)).statusCode, 400);
   const confirmToken = nl.makeToken({ email: "a@b.co", locale: "en", purpose: "c" }, ENV.MAIL_TOKEN_SECRET);
   const wrong = fakeDb();
@@ -199,20 +263,53 @@ const versions = { fr: { title: "Titre", description: "D", url: "https://blog.kr
 const auth = { __ow_method: "post", __ow_headers: { authorization: "Bearer bearer-token" } };
 
 test("send: refuses without the bearer, with a bad slug or a URL off the blog", async () => {
-  assert.equal((await sendAction({ ...auth, __ow_headers: {}, slug: "x", versions }, ENV, fakeDb().sql)).statusCode, 401);
-  assert.equal((await sendAction({ ...auth, __ow_headers: { authorization: "Bearer nope" }, slug: "x", versions }, ENV, fakeDb().sql)).statusCode, 401);
+  assert.equal(
+    (await sendAction({ ...auth, __ow_headers: {}, slug: "x", versions }, ENV, fakeDb().sql)).statusCode,
+    401,
+  );
+  assert.equal(
+    (
+      await sendAction(
+        { ...auth, __ow_headers: { authorization: "Bearer nope" }, slug: "x", versions },
+        ENV,
+        fakeDb().sql,
+      )
+    ).statusCode,
+    401,
+  );
   assert.equal((await sendAction({ ...auth, slug: "../x", versions }, ENV, fakeDb().sql)).statusCode, 400);
-  assert.equal((await sendAction({ ...auth, slug: "x", versions: { en: { title: "T", description: "D", url: "https://evil.example/" } } }, ENV, fakeDb().sql)).statusCode, 400);
-  assert.equal((await sendAction({ ...auth, slug: "x", versions }, { ...ENV, MAIL_SEND_TOKEN: "unset" }, fakeDb().sql)).statusCode, 401);
+  assert.equal(
+    (
+      await sendAction(
+        { ...auth, slug: "x", versions: { en: { title: "T", description: "D", url: "https://evil.example/" } } },
+        ENV,
+        fakeDb().sql,
+      )
+    ).statusCode,
+    400,
+  );
+  assert.equal(
+    (await sendAction({ ...auth, slug: "x", versions }, { ...ENV, MAIL_SEND_TOKEN: "unset" }, fakeDb().sql)).statusCode,
+    401,
+  );
 });
 
 test("send: one e-mail per subscriber in their language (else the one the post has), and never twice", async () => {
-  const db = fakeDb({ subscribers: [{ email: "fr@x.co", locale: "fr" }, { email: "en@x.co", locale: "en" }, { email: "ko@x.co", locale: "en" }] });
+  const db = fakeDb({
+    subscribers: [
+      { email: "fr@x.co", locale: "fr" },
+      { email: "en@x.co", locale: "en" },
+      { email: "ko@x.co", locale: "en" },
+    ],
+  });
   const out = [];
   const send = async (m) => (m.to === "ko@x.co" ? Promise.reject(new Error("mail 500")) : out.push(m));
   const r = await sendAction({ ...auth, slug: "x", versions }, ENV, db.sql, send);
   assert.deepEqual(JSON.parse(r.body), { sent: 2, failed: 1, total: 3 });
-  assert.ok(out.every((m) => /Titre/.test(m.subject)), "the English reader gets the French post: it has no English version");
+  assert.ok(
+    out.every((m) => /Titre/.test(m.subject)),
+    "the English reader gets the French post: it has no English version",
+  );
   assert.match(out.find((m) => m.to === "en@x.co").subject, /^New on the Krizaka blog/);
   assert.ok(db.calls.some((c) => c.text.startsWith("update newsletter_posts set sent")));
   const again = await sendAction({ ...auth, slug: "x", versions }, ENV, db.sql, send);
@@ -222,7 +319,10 @@ test("send: one e-mail per subscriber in their language (else the one the post h
 
 test("the sender script calls the send action with the bearer and reports its answer", async () => {
   const calls = [];
-  const f = async (url, init) => (calls.push({ url, init }), { ok: true, status: 200, json: async () => ({ sent: 1, failed: 0, total: 1 }) });
+  const f = async (url, init) => (
+    calls.push({ url, init }),
+    { ok: true, status: 200, json: async () => ({ sent: 1, failed: 0, total: 1 }) }
+  );
   const r = await requestSend("x", versions, "tok", f);
   assert.equal(r.sent, 1);
   assert.equal(calls[0].url, "https://blog.krizaka.com/api/newsletter/send");
@@ -231,11 +331,22 @@ test("the sender script calls the send action with the bearer and reports its an
   await assert.rejects(requestSend("x", versions, "tok", bad), /401 unauthorized/);
 });
 
-const post = (draft, title = "T") => `---\ntitle: "${title}"\ndescription: "D"\ndate: 2026-10-16\ndraft: ${draft}\n---\nbody`;
+const post = (draft, title = "T") =>
+  `---\ntitle: "${title}"\ndescription: "D"\ndate: 2026-10-16\ndraft: ${draft}\n---\nbody`;
 
 test("a post is sent when it goes from draft to published or arrives published, never for an edit", () => {
-  const before = { "content/posts/a.en.mdx": post(true), "content/posts/b.en.mdx": post(false), "content/posts/c.fr.mdx": null, "content/posts/d.en.mdx": post(true) };
-  const after = { "content/posts/a.en.mdx": post(false), "content/posts/b.en.mdx": post(false, "edited"), "content/posts/c.fr.mdx": post(false), "content/posts/d.en.mdx": post(true) };
+  const before = {
+    "content/posts/a.en.mdx": post(true),
+    "content/posts/b.en.mdx": post(false),
+    "content/posts/c.fr.mdx": null,
+    "content/posts/d.en.mdx": post(true),
+  };
+  const after = {
+    "content/posts/a.en.mdx": post(false),
+    "content/posts/b.en.mdx": post(false, "edited"),
+    "content/posts/c.fr.mdx": post(false),
+    "content/posts/d.en.mdx": post(true),
+  };
   const read = { before: (p) => before[p] ?? null, after: (p) => after[p] ?? null };
   assert.deepEqual(publishedBetween([...Object.keys(after), "lib/x.ts"], read), ["a", "c"]);
 });
@@ -256,23 +367,52 @@ test("the pages of the form and of the e-mail links exist in both languages; the
       assert.match(src, new RegExp(`status="${s}"`));
     }
   }
-  for (const s of ["confirmed", "expired", "unsubscribed"]) assert.ok(nl.pageUrl("fr", `/newsletter/${s}/`).endsWith(`/fr/newsletter/${s}/`));
+  for (const s of ["confirmed", "expired", "unsubscribed"])
+    assert.ok(nl.pageUrl("fr", `/newsletter/${s}/`).endsWith(`/fr/newsletter/${s}/`));
 });
 
 test("the form is on the home and at the end of every post; it posts to the subscribe action", () => {
-  assert.match(readFileSync(new URL("../app/components/pages/HomePage.tsx", import.meta.url), "utf8"), /<NewsletterSection locale=\{locale\} where="home" \/>/);
-  assert.match(readFileSync(new URL("../app/components/pages/PostPage.tsx", import.meta.url), "utf8"), /<NewsletterSection locale=\{locale\} where="post" \/>/);
-  assert.match(readFileSync(new URL("../app/components/newsletter/SubscribeForm.tsx", import.meta.url), "utf8"), /SUBSCRIBE_URL = "\/api\/newsletter\/subscribe"/);
+  assert.match(
+    readFileSync(new URL("../app/components/pages/HomePage.tsx", import.meta.url), "utf8"),
+    /<NewsletterSection locale=\{locale\} where="home" \/>/,
+  );
+  assert.match(
+    readFileSync(new URL("../app/components/pages/PostPage.tsx", import.meta.url), "utf8"),
+    /<NewsletterSection locale=\{locale\} where="post" \/>/,
+  );
+  assert.match(
+    readFileSync(new URL("../app/components/newsletter/SubscribeForm.tsx", import.meta.url), "utf8"),
+    /SUBSCRIBE_URL = "\/api\/newsletter\/subscribe"/,
+  );
 });
 
 test("the app spec and the functions project name every variable the newsletter reads; secrets stay placeholders", () => {
   const spec = readFileSync(new URL("../.do/app.yaml", import.meta.url), "utf8");
   const project = readFileSync(new URL("../functions/project.yml", import.meta.url), "utf8");
-  for (const k of ["MAIL_API_KEY", "MAIL_DOMAIN", "MAIL_FROM", "MAIL_TOKEN_SECRET", "MAIL_SEND_TOKEN", "MAIL_SENDER_ADDRESS", "DATABASE_URL", "DATABASE_CA_CERT", "ABUSE_CAPTCHA_PROVIDER", "ABUSE_CAPTCHA_SECRET_KEY"]) {
+  for (const k of [
+    "MAIL_API_KEY",
+    "MAIL_DOMAIN",
+    "MAIL_FROM",
+    "MAIL_TOKEN_SECRET",
+    "MAIL_SEND_TOKEN",
+    "MAIL_SENDER_ADDRESS",
+    "DATABASE_URL",
+    "DATABASE_CA_CERT",
+    "ABUSE_CAPTCHA_PROVIDER",
+    "ABUSE_CAPTCHA_SECRET_KEY",
+  ]) {
     assert.match(spec, new RegExp(`key: ${k}\\b`));
     assert.match(project, new RegExp(`${k}: \\$\\{${k}\\}`));
   }
-  for (const k of ["MAIL_API_KEY", "MAIL_TOKEN_SECRET", "MAIL_SEND_TOKEN", "DATABASE_URL", "DATABASE_CA_CERT", "ABUSE_CAPTCHA_SECRET_KEY"]) assert.match(spec, new RegExp(`key: ${k}, scope: RUN_AND_BUILD_TIME, type: SECRET, value: unset`));
+  for (const k of [
+    "MAIL_API_KEY",
+    "MAIL_TOKEN_SECRET",
+    "MAIL_SEND_TOKEN",
+    "DATABASE_URL",
+    "DATABASE_CA_CERT",
+    "ABUSE_CAPTCHA_SECRET_KEY",
+  ])
+    assert.match(spec, new RegExp(`key: ${k}, scope: RUN_AND_BUILD_TIME, type: SECRET, value: unset`));
   assert.match(spec, /key: NEXT_PUBLIC_ABUSE_CAPTCHA_SITE_KEY/);
 });
 
@@ -309,7 +449,10 @@ test("the newsletter actions run on Node 18 and main() ignores a second argument
 /* The finding of 2026-10-17: the cluster refused new connections (25 in all, most reserved by the services' pools) and
    the warm newsletter actions held three idle ones. A statement opens and closes its own connection; no pool is kept. */
 test("the list's connection is opened per statement and closed, never pooled", () => {
-  const src = readFileSync(new URL("../functions/packages/newsletter/subscribe/newsletter.js", import.meta.url), "utf8");
+  const src = readFileSync(
+    new URL("../functions/packages/newsletter/subscribe/newsletter.js", import.meta.url),
+    "utf8",
+  );
   assert.doesNotMatch(src, /new Pool\(|\bPool\b\s*}/);
   assert.match(src, /await client\.end\(\)/);
 });
@@ -321,10 +464,21 @@ test("the e-mail's link unsubscribes in one click; a forged one lands on a clear
   const ok = await unsubscribe({ t, l: "fr" }, ENV, db.sql);
   assert.equal(ok.headers.Location, "https://blog.krizaka.com/fr/newsletter/unsubscribed/");
   assert.equal(db.subs.size, 0);
-  assert.equal((await unsubscribe({ t: "forged.token", l: "fr" }, ENV, fakeDb().sql)).headers.Location, "https://blog.krizaka.com/fr/newsletter/link-invalid/");
+  assert.equal(
+    (await unsubscribe({ t: "forged.token", l: "fr" }, ENV, fakeDb().sql)).headers.Location,
+    "https://blog.krizaka.com/fr/newsletter/link-invalid/",
+  );
   const confirmToken = nl.makeToken({ email: "a@b.co", locale: "fr", purpose: "c" }, ENV.MAIL_TOKEN_SECRET);
-  assert.equal((await unsubscribe({ t: confirmToken }, ENV, fakeDb().sql)).headers.Location, "https://blog.krizaka.com/newsletter/link-invalid/", "an expired-or-other-purpose token is not an unsubscribe link");
-  const viaPost = await unsubscribe({ t, __ow_method: "post", "List-Unsubscribe": "One-Click" }, ENV, fakeDb({ subscribers: [{ email: "a@b.co", locale: "fr" }] }).sql);
+  assert.equal(
+    (await unsubscribe({ t: confirmToken }, ENV, fakeDb().sql)).headers.Location,
+    "https://blog.krizaka.com/newsletter/link-invalid/",
+    "an expired-or-other-purpose token is not an unsubscribe link",
+  );
+  const viaPost = await unsubscribe(
+    { t, __ow_method: "post", "List-Unsubscribe": "One-Click" },
+    ENV,
+    fakeDb({ subscribers: [{ email: "a@b.co", locale: "fr" }] }).sql,
+  );
   assert.equal(viaPost.statusCode, 200);
 });
 
@@ -340,11 +494,18 @@ test("no lookup form: no unsubscribe-request action or page; the notice says the
   const fr = JSON.parse(readFileSync(new URL("../messages/fr.json", import.meta.url), "utf8")).newsletter;
   assert.match(fr.compactConsent, /Vous pourrez vous désabonner en un clic depuis chaque courriel/);
   for (const dir of ["app/(en)/newsletter", "app/fr/newsletter"]) {
-    for (const page of ["unsubscribed", "link-invalid"]) assert.match(readFileSync(new URL(`../${dir}/${page}/page.tsx`, import.meta.url), "utf8"), /robots: \{ index: false/);
+    for (const page of ["unsubscribed", "link-invalid"])
+      assert.match(
+        readFileSync(new URL(`../${dir}/${page}/page.tsx`, import.meta.url), "utf8"),
+        /robots: \{ index: false/,
+      );
   }
   const pages = readFileSync(new URL("../app/components/newsletter/NewsletterPages.tsx", import.meta.url), "utf8");
   assert.match(pages, /n\.resubscribeButton/, "« Me réabonner » on the unsubscribed page, a plain link");
-  assert.match(readFileSync(new URL("../app/components/newsletter/CaptchaWidget.tsx", import.meta.url), "utf8"), /appearance: "interaction-only"/);
+  assert.match(
+    readFileSync(new URL("../app/components/newsletter/CaptchaWidget.tsx", import.meta.url), "utf8"),
+    /appearance: "interaction-only"/,
+  );
 });
 
 /* The CAPTCHA is not part of the page load: Cloudflare's script (and the challenge frame, ~150 KB) is fetched when the form is
@@ -353,17 +514,32 @@ import { whenWanted } from "../lib/when-wanted.ts";
 
 function fakeForm() {
   const handlers = new Map();
-  return { addEventListener: (t, h) => handlers.set(t, h), removeEventListener: (t) => handlers.delete(t), fire: (t) => handlers.get(t)?.(), handlers };
+  return {
+    addEventListener: (t, h) => handlers.set(t, h),
+    removeEventListener: (t) => handlers.delete(t),
+    fire: (t) => handlers.get(t)?.(),
+    handlers,
+  };
 }
 function withObserver(fn) {
   const real = globalThis.IntersectionObserver;
   const made = [];
   globalThis.IntersectionObserver = class {
-    constructor(cb) { this.cb = cb; this.disconnected = false; made.push(this); }
+    constructor(cb) {
+      this.cb = cb;
+      this.disconnected = false;
+      made.push(this);
+    }
     observe() {}
-    disconnect() { this.disconnected = true; }
+    disconnect() {
+      this.disconnected = true;
+    }
   };
-  try { return fn(made); } finally { globalThis.IntersectionObserver = real; }
+  try {
+    return fn(made);
+  } finally {
+    globalThis.IntersectionObserver = real;
+  }
 }
 
 test("nothing is requested until the form is seen or focused", () =>
@@ -410,7 +586,10 @@ test("the widget only loads Cloudflare's script from the wait, never straight fr
   const effect = src.slice(src.indexOf("useEffect("));
   const calls = [...effect.matchAll(/loadScript\(\)/g)];
   assert.equal(calls.length, 1);
-  assert.ok(effect.indexOf("loadScript()") < effect.indexOf("whenWanted("), "loadScript() is inside start, defined before the wait");
+  assert.ok(
+    effect.indexOf("loadScript()") < effect.indexOf("whenWanted("),
+    "loadScript() is inside start, defined before the wait",
+  );
   assert.match(effect.slice(effect.indexOf("const start")), /^const start = \(\) => \{\s*loadScript\(\)/);
   assert.doesNotMatch(src, /<script[^>]*challenges\.cloudflare/);
 });
@@ -421,7 +600,11 @@ test("the send switch is off unless MAIL_NEWSLETTER_ENABLED is exactly true (fai
   assert.equal(newsletterEnabled({ MAIL_NEWSLETTER_ENABLED: "false" }), false);
   assert.equal(newsletterEnabled({ MAIL_NEWSLETTER_ENABLED: "1" }), false);
   assert.equal(newsletterEnabled({ MAIL_NEWSLETTER_ENABLED: "true" }), true);
-  assert.match(readFileSync(new URL("../.github/workflows/newsletter.yml", import.meta.url), "utf8"), /MAIL_NEWSLETTER_ENABLED: \$\{\{ vars\.MAIL_NEWSLETTER_ENABLED \}\}/, "the workflow passes the variable");
+  assert.match(
+    readFileSync(new URL("../.github/workflows/newsletter.yml", import.meta.url), "utf8"),
+    /MAIL_NEWSLETTER_ENABLED: \$\{\{ vars\.MAIL_NEWSLETTER_ENABLED \}\}/,
+    "the workflow passes the variable",
+  );
 });
 
 test("a send the provider rejected fails the run loudly; a complete one and an already-sent one do not", () => {
@@ -437,7 +620,10 @@ test("the subscribe action checks the CAPTCHA with @krizaka/rate-limit/turnstile
   assert.equal(readFileSync(EMAILS, "utf8"), await renderEmails(), "run `npm run functions:bundle`");
   // No second copy of the siteverify call in the functions.
   for (const a of ["subscribe", "confirm", "unsubscribe", "send"]) {
-    assert.doesNotMatch(readFileSync(new URL(`../functions/packages/newsletter/${a}/newsletter.js`, import.meta.url), "utf8"), /siteverify/);
+    assert.doesNotMatch(
+      readFileSync(new URL(`../functions/packages/newsletter/${a}/newsletter.js`, import.meta.url), "utf8"),
+      /siteverify/,
+    );
   }
   // A token the library saw once is refused the second time (replay), and the answer is the same « captcha ».
   const f = fakeFetch({ [SITEVERIFY]: { status: 200, body: { success: true } } });
@@ -449,9 +635,15 @@ test("the subscribe action checks the CAPTCHA with @krizaka/rate-limit/turnstile
 test("the confirmation e-mail is the designed one of @krizaka/email, EN and FR, with the signed link that confirms", async () => {
   for (const locale of ["en", "fr"]) {
     const f = fakeFetch({ [SITEVERIFY]: { status: 200, body: { success: true } } });
-    const r = await subscribe({ __ow_method: "post", email: "a@b.co", locale, captchaToken: `designed-${locale}` }, ENV, f);
+    const r = await subscribe(
+      { __ow_method: "post", email: "a@b.co", locale, captchaToken: `designed-${locale}` },
+      ENV,
+      f,
+    );
     assert.equal(r.statusCode, 202);
-    const body = new URLSearchParams(f.calls.find((c) => c.url === "https://api.mailgun.net/v3/mg.example.com/messages").init.body);
+    const body = new URLSearchParams(
+      f.calls.find((c) => c.url === "https://api.mailgun.net/v3/mg.example.com/messages").init.body,
+    );
     const [text, html] = [body.get("text"), body.get("html")];
     assert.match(html, /<table/, "the e-mail kit's layout: tables and inline styles");
     assert.match(body.get("subject"), locale === "fr" ? /Confirmez/ : /Confirm/);

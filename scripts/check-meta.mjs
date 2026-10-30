@@ -13,7 +13,14 @@ export const TITLE_MAX = 60;
 export const DESCRIPTION_MAX = 155;
 
 const decode = (s) =>
-  s.replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16))).replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d))).replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+  s
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
 
 /** The text between tags, outside <script> and <style> (a scan, not a sanitizer: the build's own HTML, read for a check).
     `prose`: also outside <pre>, the code blocks, where `undefined` is a word of the language quoted, not a broken figure. */
@@ -44,15 +51,19 @@ export function metaProblems(html) {
   const out = [];
   const title = decode(html.match(/<title>([^<]*)<\/title>/)?.[1] ?? "");
   if (!title) out.push("no title");
-  else if ([...title].length > TITLE_MAX) out.push(`title is ${[...title].length} characters (max ${TITLE_MAX}): ${title}`);
+  else if ([...title].length > TITLE_MAX)
+    out.push(`title is ${[...title].length} characters (max ${TITLE_MAX}): ${title}`);
   const description = html.match(/<meta name="description" content="([^"]*)"/)?.[1];
   if (description === undefined) out.push("no meta description");
-  else if ([...decode(description)].length > DESCRIPTION_MAX) out.push(`description is ${[...decode(description)].length} characters (max ${DESCRIPTION_MAX})`);
+  else if ([...decode(description)].length > DESCRIPTION_MAX)
+    out.push(`description is ${[...decode(description)].length} characters (max ${DESCRIPTION_MAX})`);
   const h1 = (html.match(/<h1[\s>]/g) ?? []).length;
   if (h1 !== 1) out.push(`${h1} h1 (one expected)`);
-  for (const img of html.match(/<img\b[^>]*>/g) ?? []) if (!/\balt=/.test(img)) out.push(`an image without alt: ${img.slice(0, 80)}`);
+  for (const img of html.match(/<img\b[^>]*>/g) ?? [])
+    if (!/\balt=/.test(img)) out.push(`an image without alt: ${img.slice(0, 80)}`);
   /* A number that failed to compute (a prop the renderer dropped) must never reach a reader. */
-  if (visibleText(html, { prose: true }).some((t) => /\b(NaN|undefined)\b/.test(t))) out.push("the page shows NaN or undefined");
+  if (visibleText(html, { prose: true }).some((t) => /\b(NaN|undefined)\b/.test(t)))
+    out.push("the page shows NaN or undefined");
   return out;
 }
 
@@ -68,7 +79,8 @@ export function coverProblems(html) {
   if (!attr(img, "sizes")) out.push("the cover's <img> needs sizes");
   if (!/^high$/i.test(attr(img, "fetchpriority") ?? "")) out.push('the cover is the LCP: fetchpriority="high"');
   const source = html.match(/<source\b[^>]*type="image\/avif"[^>]*>/i)?.[0];
-  if (!source || widths(attr(source, "srcset")) < 3) out.push("the cover needs an AVIF <source> with a srcset of at least three widths");
+  if (!source || widths(attr(source, "srcset")) < 3)
+    out.push("the cover needs an AVIF <source> with a srcset of at least three widths");
   const link = html.match(/<link\b[^>]*rel="preload"[^>]*as="image"[^>]*>/i)?.[0];
   if (!link || widths(attr(link, "imagesrcset")) < 3) out.push("the cover is preloaded in the head (imagesrcset)");
   return out;
@@ -83,11 +95,13 @@ export function stubProblems(html) {
   if (!refresh) out.push("a stub needs a 0-second refresh (meta http-equiv=refresh)");
   const canonical = html.match(/<link\b[^>]*rel="canonical"[^>]*>/i)?.[0].match(/\bhref="([^"]+)"/i)?.[1];
   if (!canonical) out.push("a stub needs a canonical");
-  else if (refresh && !canonical.replace(/\/+$/, "").endsWith(refresh.replace(/\/+$/, ""))) out.push(`the stub's canonical (${canonical}) is not its refresh target (${refresh})`);
+  else if (refresh && !canonical.replace(/\/+$/, "").endsWith(refresh.replace(/\/+$/, "")))
+    out.push(`the stub's canonical (${canonical}) is not its refresh target (${refresh})`);
   const robots = html.match(/<meta\b[^>]*name="robots"[^>]*>/i)?.[0] ?? "";
   if (!/\bcontent="[^"]*noindex/i.test(robots)) out.push("a stub is not noindex");
   if (refresh && !html.includes(`<a href="${refresh}"`)) out.push(`a stub has no visible link to ${refresh}`);
-  if (visibleText(html, { prose: true }).some((t) => /\b(NaN|undefined)\b/.test(t))) out.push("the page shows NaN or undefined");
+  if (visibleText(html, { prose: true }).some((t) => /\b(NaN|undefined)\b/.test(t)))
+    out.push("the page shows NaN or undefined");
   return out;
 }
 
@@ -102,12 +116,18 @@ export function homeProblems(html) {
   else if ((featured.match(/\bbl-card-feature\b/g) ?? []).length !== 1) out.push("Featured holds exactly one card");
   /* The chapters are @krizaka/ui's ChapterIndex: an <ol class="kz-chapters">, one <li> each, its number in .kz-chapter-no. */
   const list = html.match(/<ol\b[^>]*\bclass="[^"]*\bkz-chapters\b[^"]*"[\s\S]*?<\/ol>/)?.[0] ?? "";
-  const rows = [...list.matchAll(/<li\b([^>]*)>[\s\S]*?<span\b[^>]*\bclass="kz-chapter-no"[^>]*>(\d+)<\/span>[\s\S]*?<a\b[^>]*\bhref="([^"]+)"/g)].map((m) => ({ n: Number(m[2]), isNew: /\bdata-new\b/.test(m[1]), href: m[3] }));
+  const rows = [
+    ...list.matchAll(
+      /<li\b([^>]*)>[\s\S]*?<span\b[^>]*\bclass="kz-chapter-no"[^>]*>(\d+)<\/span>[\s\S]*?<a\b[^>]*\bhref="([^"]+)"/g,
+    ),
+  ].map((m) => ({ n: Number(m[2]), isNew: /\bdata-new\b/.test(m[1]), href: m[3] }));
   if (!rows.length) out.push("the home lists no chapter (ol.kz-chapters)");
   rows.forEach((r, i) => {
     if (i > 0 && r.n >= rows[i - 1].n) out.push(`the chapters are not newest first: row ${i + 1} is chapter ${r.n}`);
   });
-  const featuredHref = featured.match(/<a\b[^>]*\bclass="bl-card-link"[^>]*\bhref="([^"]+)"|<a\b[^>]*\bhref="([^"]+)"[^>]*\bclass="bl-card-link"/);
+  const featuredHref = featured.match(
+    /<a\b[^>]*\bclass="bl-card-link"[^>]*\bhref="([^"]+)"|<a\b[^>]*\bhref="([^"]+)"[^>]*\bclass="bl-card-link"/,
+  );
   const href = featuredHref?.[1] ?? featuredHref?.[2];
   if (href && rows.some((r) => r.href === href)) out.push(`Featured (${href}) is repeated in the list`);
   return out;
@@ -153,5 +173,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     console.error(problems.join("\n"));
     process.exit(1);
   }
-  console.log(`check-meta: ${n} pages — titles ≤ ${TITLE_MAX}, descriptions ≤ ${DESCRIPTION_MAX}, one h1, every image with an alt, the home's story, no link to a removed page`);
+  console.log(
+    `check-meta: ${n} pages — titles ≤ ${TITLE_MAX}, descriptions ≤ ${DESCRIPTION_MAX}, one h1, every image with an alt, the home's story, no link to a removed page`,
+  );
 }

@@ -20,7 +20,14 @@ export function readEntries(dir, show = false) {
     .filter((p) => show || p.data.draft !== true)
     .map((p) => {
       const [, slug, locale] = p.f.match(/^(.+)\.(en|fr)\.mdx$/);
-      return { slug, locale, title: p.data.title, description: p.data.description, date: dateOf(p.data.date), chapter: Number(p.data.chapter) || undefined };
+      return {
+        slug,
+        locale,
+        title: p.data.title,
+        description: p.data.description,
+        date: dateOf(p.data.date),
+        chapter: Number(p.data.chapter) || undefined,
+      };
     });
 }
 

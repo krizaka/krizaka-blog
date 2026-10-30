@@ -27,11 +27,33 @@ export function Provenance({ made, locale }: Readonly<{ made: Made; locale: Loca
   ];
   if (made.via) rows.push([t.via, made.via]);
   if (made.studio) rows.push([t.studio, <code key="s">{made.studio}</code>]);
-  if (made.prompt) rows.push([t.prompt, <q key="p" className="bl-prompt">{made.prompt}</q>]);
-  if (made.negativePrompt) rows.push([t.negative, <q key="n" className="bl-prompt">{made.negativePrompt}</q>]);
+  if (made.prompt)
+    rows.push([
+      t.prompt,
+      <q key="p" className="bl-prompt">
+        {made.prompt}
+      </q>,
+    ]);
+  if (made.negativePrompt)
+    rows.push([
+      t.negative,
+      <q key="n" className="bl-prompt">
+        {made.negativePrompt}
+      </q>,
+    ]);
   if (made.seed) rows.push([t.seed, <code key="d">{made.seed}</code>]);
-  if (made.size) rows.push([t.size, made.durationSeconds ? `${made.size} · ${format(t.frames, { fps: String(made.fps), duration: String(made.durationSeconds) })}` : made.size]);
-  rows.push([t.time, timeOf(made, t)], [t.cost, costOf(made, t)], [t.run, made.runId ? <code key="r">{made.runId}</code> : none]);
+  if (made.size)
+    rows.push([
+      t.size,
+      made.durationSeconds
+        ? `${made.size} · ${format(t.frames, { fps: String(made.fps), duration: String(made.durationSeconds) })}`
+        : made.size,
+    ]);
+  rows.push(
+    [t.time, timeOf(made, t)],
+    [t.cost, costOf(made, t)],
+    [t.run, made.runId ? <code key="r">{made.runId}</code> : none],
+  );
   if (made.note) rows.push([t.note, made.note]);
   if (made.sound) rows.push([t.sound, made.sound]);
   return (

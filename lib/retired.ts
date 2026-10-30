@@ -15,10 +15,14 @@ const SERIES = "series:";
 const PAGE = "page:";
 
 /** Every retired post slug (both languages share it): the removed posts and the shelf posts that moved. */
-export const retiredSlugs = (): string[] => Object.keys(MAP).filter((k) => !k.startsWith(SERIES) && !k.startsWith(PAGE));
+export const retiredSlugs = (): string[] =>
+  Object.keys(MAP).filter((k) => !k.startsWith(SERIES) && !k.startsWith(PAGE));
 
 /** Every retired series id (`building-krizaka`…): its address under /series/<id>/ is a stub. */
-export const retiredSeriesIds = (): string[] => Object.keys(MAP).filter((k) => k.startsWith(SERIES)).map((k) => k.slice(SERIES.length));
+export const retiredSeriesIds = (): string[] =>
+  Object.keys(MAP)
+    .filter((k) => k.startsWith(SERIES))
+    .map((k) => k.slice(SERIES.length));
 
 /** The key of a removed page: `page:/search/`. */
 export const pageKey = (path: string): string => `${PAGE}${path}`;

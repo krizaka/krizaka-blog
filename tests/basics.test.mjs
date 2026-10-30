@@ -56,12 +56,19 @@ test("every retired series has a stub under /series/<id>/ that leads to the stor
     const id = key.slice("series:".length);
     const target = map[key];
     assert.ok(target.en === "/" || target.en.startsWith("/basics/"), `${id} leads to the story or the shelf`);
-    assert.ok(target.fr === "/fr/" || target.fr.startsWith("/fr/basics/"), `${id} leads to the story or the shelf in FR`);
+    assert.ok(
+      target.fr === "/fr/" || target.fr.startsWith("/fr/basics/"),
+      `${id} leads to the story or the shelf in FR`,
+    );
   }
   for (const l of ["en", "fr"]) {
     const route = read(l === "en" ? "app/(en)/series/[series]/page.tsx" : "app/fr/series/[series]/page.tsx");
     assert.match(route, /retiredSeriesIds\(\)/, `${l} series route builds the stubs`);
-    assert.match(route, /<RetiredPost locale="[a-z]+" slug=\{`series:\$\{series\}`\} \/>/, `${l} series route renders the stub`);
+    assert.match(
+      route,
+      /<RetiredPost locale="[a-z]+" slug=\{`series:\$\{series\}`\} \/>/,
+      `${l} series route renders the stub`,
+    );
   }
 });
 

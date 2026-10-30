@@ -56,12 +56,19 @@ export function ShareBar({ url, title }: { url: string; title: string }) {
       </Button>
       {shareLinks(url, title).map(({ target, href }) => (
         <Button key={target} asChild variant="ghost" size="sm">
-          <a href={href} target={target === "email" ? undefined : "_blank"} rel="noopener noreferrer" aria-label={`${e.targets[target]} — ${e.opensNew}`}>
+          <a
+            href={href}
+            target={target === "email" ? undefined : "_blank"}
+            rel="noopener noreferrer"
+            aria-label={`${e.targets[target]} — ${e.opensNew}`}
+          >
             {e.targets[target]}
           </a>
         </Button>
       ))}
-      <span className="sr-only" role="status" aria-live="polite">{copied ? e.copied : ""}</span>
+      <span className="sr-only" role="status" aria-live="polite">
+        {copied ? e.copied : ""}
+      </span>
     </div>
   );
 }

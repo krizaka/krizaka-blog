@@ -9,8 +9,16 @@ const title = "What image & video generation costs — measured";
 
 test("every share link carries the post's URL, encoded, and points at the network's own share page", () => {
   const links = shareLinks(url, title);
-  assert.deepEqual(links.map((l) => l.target), [...SHARE_TARGETS]);
-  const hosts = { x: "x.com", linkedin: "www.linkedin.com", hackernews: "news.ycombinator.com", reddit: "www.reddit.com" };
+  assert.deepEqual(
+    links.map((l) => l.target),
+    [...SHARE_TARGETS],
+  );
+  const hosts = {
+    x: "x.com",
+    linkedin: "www.linkedin.com",
+    hackernews: "news.ycombinator.com",
+    reddit: "www.reddit.com",
+  };
   for (const { target, href } of links) {
     assert.ok(href.includes(encodeURIComponent(url)), `${target} carries the URL`);
     if (target === "email") {
@@ -43,7 +51,12 @@ test("a post's end shares it and saves nothing: no « Read later », no saved li
   const engage = read("app/components/engage/PostEngage.tsx");
   assert.match(engage, /<ShareBar /);
   assert.doesNotMatch(engage, /SaveButton|useSaved/);
-  for (const f of ["app/components/engage/SaveButton.tsx", "app/components/engage/useSaved.ts", "lib/saved.ts", "app/components/pages/SavedPage.tsx"]) {
+  for (const f of [
+    "app/components/engage/SaveButton.tsx",
+    "app/components/engage/useSaved.ts",
+    "lib/saved.ts",
+    "app/components/pages/SavedPage.tsx",
+  ]) {
     assert.ok(!existsSync(new URL(`../${f}`, import.meta.url)), `${f} is gone`);
   }
 });

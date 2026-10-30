@@ -55,7 +55,17 @@ export function mdxComponentsFor(locale: Locale) {
   return {
     pre: ({ children, ...rest }: ComponentProps<"pre">) => {
       const block = fenced(children);
-      return block ? <CodeBlock className="bl-code" code={block.code} language={block.language} copyLabel={t.copy} copiedLabel={t.copiedCode} /> : <pre {...rest}>{children}</pre>;
+      return block ? (
+        <CodeBlock
+          className="bl-code"
+          code={block.code}
+          language={block.language}
+          copyLabel={t.copy}
+          copiedLabel={t.copiedCode}
+        />
+      ) : (
+        <pre {...rest}>{children}</pre>
+      );
     },
     Numbers: ({ children }: { children: ReactNode }) => (
       <aside className="bl-numbers" aria-label={t.keyNumbers}>
@@ -63,18 +73,40 @@ export function mdxComponentsFor(locale: Locale) {
       </aside>
     ),
     Num: ({ value, label, hint }: { value: string; label: string; hint?: string }) => (
-      <Stat data-reveal="soft" className="bl-num" label={label} value={/^\d{1,9}$/.test(value) ? <NumberTicker value={Number(value)} locale={locale} /> : value} hint={hint} />
+      <Stat
+        data-reveal="soft"
+        className="bl-num"
+        label={label}
+        value={/^\d{1,9}$/.test(value) ? <NumberTicker value={Number(value)} locale={locale} /> : value}
+        hint={hint}
+      />
     ),
     Steps: ({ children }: { children: ReactNode }) => (
       <div className="bl-steps" data-reveal="soft">
         <Stepper
-          steps={childProps<{ title: string; children?: ReactNode }>(children).map((c) => ({ title: c.title, description: textOf(c.children).trim(), status: "done" as const }))}
+          steps={childProps<{ title: string; children?: ReactNode }>(children).map((c) => ({
+            title: c.title,
+            description: textOf(c.children).trim(),
+            status: "done" as const,
+          }))}
           labels={{ done: t.stepDone, current: t.stepCurrent, upcoming: t.stepUpcoming, error: t.stepError }}
         />
       </div>
     ),
     Step: () => null,
-    Compare: ({ label, topic, before, after, children }: { label: string; topic: string; before: string; after: string; children: ReactNode }) => (
+    Compare: ({
+      label,
+      topic,
+      before,
+      after,
+      children,
+    }: {
+      label: string;
+      topic: string;
+      before: string;
+      after: string;
+      children: ReactNode;
+    }) => (
       <div className="bl-compare">
         <ComparisonTable
           label={label}
@@ -84,10 +116,19 @@ export function mdxComponentsFor(locale: Locale) {
             { id: "after", label: after },
           ]}
           highlight="after"
-          rows={childProps<{ topic: string; before: string; after: string; beforeDetail?: string; afterDetail?: string }>(children).map((c, i) => ({
+          rows={childProps<{
+            topic: string;
+            before: string;
+            after: string;
+            beforeDetail?: string;
+            afterDetail?: string;
+          }>(children).map((c, i) => ({
             id: `case-${i}`,
             topic: c.topic,
-            answers: { before: { key: c.before, detail: c.beforeDetail }, after: { key: c.after, detail: c.afterDetail } },
+            answers: {
+              before: { key: c.before, detail: c.beforeDetail },
+              after: { key: c.after, detail: c.afterDetail },
+            },
           }))}
         />
       </div>
@@ -95,7 +136,9 @@ export function mdxComponentsFor(locale: Locale) {
     Case: () => null,
     CodeTabs: ({ children }: { children: ReactNode }) => {
       const tabs = Array.isArray(children) ? children : [children];
-      const items = tabs.filter(isValidElement).map((el, i) => ({ id: `t${i}`, props: (el as ReactElement<{ label: string; children?: ReactNode }>).props }));
+      const items = tabs
+        .filter(isValidElement)
+        .map((el, i) => ({ id: `t${i}`, props: (el as ReactElement<{ label: string; children?: ReactNode }>).props }));
       return (
         <TabsRoot className="bl-codetabs" variant="segmented" defaultValue={items[0]?.id}>
           <TabsList aria-label={t.code}>
@@ -122,7 +165,9 @@ export function mdxComponentsFor(locale: Locale) {
     Note: ({ children }: { children: React.ReactNode }) => <aside className="bl-note">{children}</aside>,
     Figure: (props: { id: string; alt: string; caption?: React.ReactNode }) => <Figure {...props} locale={locale} />,
     Clip: (props: { id: string; alt: string; caption?: React.ReactNode }) => <Clip {...props} locale={locale} />,
-    Utilization: (props: { hourly?: number | string; seconds?: number | string; hosted?: number | string }) => <Utilization {...props} locale={locale} />,
+    Utilization: (props: { hourly?: number | string; seconds?: number | string; hosted?: number | string }) => (
+      <Utilization {...props} locale={locale} />
+    ),
     /* The issue curve of chapter 10 (lib/issue-curve.json), with its text version: a table of the days named in `dates`. */
     IssueCurve: (props: { dates?: string }) => <IssueCurve {...props} locale={locale} />,
     /* A pipeline drawn from the tokens (chapter 11), with its text version: <Pipeline label><Stage title note? tone?>…</Stage></Pipeline>. */
@@ -130,7 +175,9 @@ export function mdxComponentsFor(locale: Locale) {
       <Pipeline
         label={label}
         locale={locale}
-        stages={childProps<{ title: string; note?: string; tone?: string; children?: ReactNode }>(children).map((c) => ({ title: c.title, note: c.note, tone: c.tone, text: textOf(c.children).trim() }))}
+        stages={childProps<{ title: string; note?: string; tone?: string; children?: ReactNode }>(children).map(
+          (c) => ({ title: c.title, note: c.note, tone: c.tone, text: textOf(c.children).trim() }),
+        )}
       />
     ),
     Stage: () => null,

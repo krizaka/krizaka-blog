@@ -1,9 +1,7 @@
 {
   "$comment": "What the blog may say about its author, and where it comes from. A place, a year or a step of his path that a post or the About page names must be listed here with its source; tests/author.test.mjs refuses anything else. Never: the name of his current employer, his birth date, photos of other people.",
   "source": "Oussama's own profile (LinkedIn) and Facebook, shared by him on 2026-10-16 for the blog and krizaka.com/story (company records: 00_FONDATEUR/parcours-oussama.md, outside this repository).",
-  "places": [
-    "Montréal"
-  ],
+  "places": ["Montréal"],
   "path": [
     {
       "year": "2010",

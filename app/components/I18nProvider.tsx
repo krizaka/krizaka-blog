@@ -9,7 +9,15 @@ import type { ClientMessages } from "@/lib/client-messages";
    from useI18n(); format and <Rich> stay @krizaka/i18n. */
 const engine = createI18nReact<ClientMessages, Locale>({ locales: ["en", "fr"], defaultLocale: "en" });
 
-export function I18nProvider({ locale, messages, children }: { locale: Locale; messages: ClientMessages; children: ReactNode }) {
+export function I18nProvider({
+  locale,
+  messages,
+  children,
+}: {
+  locale: Locale;
+  messages: ClientMessages;
+  children: ReactNode;
+}) {
   return (
     <engine.I18nProvider locale={locale} messages={messages} setLocale={() => undefined}>
       {children}

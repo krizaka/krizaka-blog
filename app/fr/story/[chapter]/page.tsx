@@ -8,12 +8,18 @@ type Props = { params: Promise<{ chapter: string }> };
 export const dynamicParams = false;
 
 /* `output: export` needs one param: with no chapter yet, a placeholder that renders the 404. */
-export const generateStaticParams = () => (chaptersOf("fr").length ? chaptersOf("fr").map((c) => ({ chapter: c.slug })) : [{ chapter: "_" }]);
+export const generateStaticParams = () =>
+  chaptersOf("fr").length ? chaptersOf("fr").map((c) => ({ chapter: c.slug })) : [{ chapter: "_" }];
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const chapter = chapterOf("fr", (await params).chapter);
   if (!chapter) return {};
-  return postMetadata(chapter, chapterTranslationOf(chapter) ? ["en", "fr"] : ["fr"], chapterPath(chapter.slug), chapterOgUrl("fr", chapter.slug));
+  return postMetadata(
+    chapter,
+    chapterTranslationOf(chapter) ? ["en", "fr"] : ["fr"],
+    chapterPath(chapter.slug),
+    chapterOgUrl("fr", chapter.slug),
+  );
 }
 
 export default async function Page({ params }: Props) {

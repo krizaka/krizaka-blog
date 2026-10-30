@@ -8,7 +8,9 @@ export function PostEngage({ slug, title, locale }: { slug: string; title: strin
   const url = `${SITE_URL}${locale === "en" ? "" : "/fr"}/basics/${slug}/`;
   return (
     <section className="bl-engage" aria-labelledby="bl-engage-title">
-      <h2 id="bl-engage-title" className="bl-engage-title">{t.engage.title}</h2>
+      <h2 id="bl-engage-title" className="bl-engage-title">
+        {t.engage.title}
+      </h2>
       <ShareBar url={url} title={title} />
     </section>
   );

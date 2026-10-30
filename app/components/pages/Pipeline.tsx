@@ -9,10 +9,21 @@ export type PipelineStage = { title: string; note?: string; tone?: string; text?
 
 const TONES = new Set(["gate", "ship"]);
 
-function Drawing({ stages, cols, width, className }: Readonly<{ stages: PipelineStage[]; cols: number; width: number; className: string }>) {
+function Drawing({
+  stages,
+  cols,
+  width,
+  className,
+}: Readonly<{ stages: PipelineStage[]; cols: number; width: number; className: string }>) {
   const { boxes, arrows, viewWidth, viewHeight } = pipelineLayout(stages.length, { cols, width });
   return (
-    <svg className={className} viewBox={`0 0 ${viewWidth} ${viewHeight}`} width={viewWidth} aria-hidden="true" focusable="false">
+    <svg
+      className={className}
+      viewBox={`0 0 ${viewWidth} ${viewHeight}`}
+      width={viewWidth}
+      aria-hidden="true"
+      focusable="false"
+    >
       {arrows.map((a) => (
         <g key={`a${a.from}`} className="bl-pipeline-arrow">
           <line x1={a.x1} y1={a.y1} x2={a.x2} y2={a.y2} />
@@ -43,7 +54,11 @@ function Drawing({ stages, cols, width, className }: Readonly<{ stages: Pipeline
   );
 }
 
-export function Pipeline({ label, stages, locale }: Readonly<{ label: string; stages: PipelineStage[]; locale: Locale }>) {
+export function Pipeline({
+  label,
+  stages,
+  locale,
+}: Readonly<{ label: string; stages: PipelineStage[]; locale: Locale }>) {
   const t = getDictionary(locale).pipeline;
   return (
     <figure className="bl-pipeline" data-reveal="soft">

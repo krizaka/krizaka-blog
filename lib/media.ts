@@ -32,12 +32,37 @@ export type Made = {
 /** The sizes a picture is sold in, per format (scripts/gen-renditions.mjs): AVIF for the browsers that read it, WebP for the rest. */
 export type Renditions = { avif: { w: number; url: string }[]; webp: { w: number; url: string }[] };
 /** `style: "diagram"`: a schema drawn from code (no provenance); the home shows at most one as a cover (scripts/content-rules.mjs). */
-export type ImageMedia = { kind: "image"; style?: "diagram"; width: number; height: number; blur: string; srcs: { w: number; url: string }[]; renditions?: Renditions; made?: Made };
-export type VideoMedia = { kind: "video"; width: number; height: number; blur: string; poster: string; mp4: string; webm: string; bytes?: { mp4: number; webm: number }; renditions?: Renditions; made?: Made };
+export type ImageMedia = {
+  kind: "image";
+  style?: "diagram";
+  width: number;
+  height: number;
+  blur: string;
+  srcs: { w: number; url: string }[];
+  renditions?: Renditions;
+  made?: Made;
+};
+export type VideoMedia = {
+  kind: "video";
+  width: number;
+  height: number;
+  blur: string;
+  poster: string;
+  mp4: string;
+  webm: string;
+  bytes?: { mp4: number; webm: number };
+  renditions?: Renditions;
+  made?: Made;
+};
 export type Media = ImageMedia | VideoMedia;
 
 /** The library as read, with every blur placeholder checked to be a webp data URL (it ends up in a CSS `url()`). */
-const LIBRARY: Record<string, Media> = Object.fromEntries(Object.entries(data as unknown as Record<string, Media>).map(([id, m]) => [id, { ...m, blur: BLUR.test(m.blur) ? m.blur : "" }]));
+const LIBRARY: Record<string, Media> = Object.fromEntries(
+  Object.entries(data as unknown as Record<string, Media>).map(([id, m]) => [
+    id,
+    { ...m, blur: BLUR.test(m.blur) ? m.blur : "" },
+  ]),
+);
 
 export const mediaIds = (): string[] => Object.keys(LIBRARY);
 export const hasMedia = (id: string): boolean => id in LIBRARY;
@@ -56,9 +81,22 @@ export function coverOf(id: string): Cover {
   if (r && r.webp.length > 0) {
     const webp = [...r.webp].sort((a, b) => a.w - b.w);
     const src = (webp.find((s) => s.w >= 768) ?? webp[webp.length - 1]).url;
-    return { src, srcSet: set(webp), avifSrcSet: r.avif.length ? set([...r.avif].sort((a, b) => a.w - b.w)) : undefined, width: m.width, height: m.height, blur: m.blur };
+    return {
+      src,
+      srcSet: set(webp),
+      avifSrcSet: r.avif.length ? set([...r.avif].sort((a, b) => a.w - b.w)) : undefined,
+      width: m.width,
+      height: m.height,
+      blur: m.blur,
+    };
   }
   if (m.kind === "video") return { src: m.poster, width: m.width, height: m.height, blur: m.blur };
   const sorted = [...m.srcs].sort((a, b) => a.w - b.w);
-  return { src: (sorted.find((s) => s.w >= 960) ?? sorted[sorted.length - 1]).url, srcSet: set(sorted), width: m.width, height: m.height, blur: m.blur };
+  return {
+    src: (sorted.find((s) => s.w >= 960) ?? sorted[sorted.length - 1]).url,
+    srcSet: set(sorted),
+    width: m.width,
+    height: m.height,
+    blur: m.blur,
+  };
 }

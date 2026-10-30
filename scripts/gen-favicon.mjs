@@ -21,7 +21,9 @@ export function hslToCss(hsl) {
   const a = s * Math.min(l, 1 - l);
   const f = (n) => Math.round(255 * (l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)))));
   const [r, g, b] = [f(0), f(8), f(4)];
-  return m[4] ? `rgba(${r}, ${g}, ${b}, ${m[4]})` : `#${[r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("")}`;
+  return m[4]
+    ? `rgba(${r}, ${g}, ${b}, ${m[4]})`
+    : `#${[r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("")}`;
 }
 const ink = values.dark;
 const mark = renderToStaticMarkup(createElement(KrizakaLogo, { size: 96, animated: false }))

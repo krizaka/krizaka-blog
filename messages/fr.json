@@ -204,9 +204,7 @@
     "labNote": "Mon premier contact avec l'IA date de 2011, au {lab}, bien avant que le mot soit à la mode.",
     "lab": "laboratoire d'informatique de Grenoble (LIG)",
     "placesLabel": "Vit à",
-    "places": [
-      "Montréal"
-    ]
+    "places": ["Montréal"]
   },
   "newsletter": {
     "eyebrow": "Infolettre",

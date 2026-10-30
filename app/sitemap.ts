@@ -13,15 +13,28 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const built = allPosts()[0]?.updated ?? allPosts()[0]?.date ?? new Date().toISOString().slice(0, 10);
   const both = ["/", "/basics", "/about", "/newsletter"].flatMap((path) => {
     const languages = Object.fromEntries(LOCALES.map((l) => [l, absoluteUrl(l, path)]));
-    return LOCALES.map((l) => ({ url: absoluteUrl(l, path), lastModified: built, changeFrequency: "weekly" as const, alternates: { languages } }));
+    return LOCALES.map((l) => ({
+      url: absoluteUrl(l, path),
+      lastModified: built,
+      changeFrequency: "weekly" as const,
+      alternates: { languages },
+    }));
   });
   const posts = allPosts().map((p) => {
     const langs = LOCALES.filter((l) => allPosts().some((q) => q.slug === p.slug && q.locale === l));
-    return { url: absoluteUrl(p.locale, postPath(p.slug)), lastModified: p.updated ?? p.date, alternates: { languages: Object.fromEntries(langs.map((l) => [l, absoluteUrl(l, postPath(p.slug))])) } };
+    return {
+      url: absoluteUrl(p.locale, postPath(p.slug)),
+      lastModified: p.updated ?? p.date,
+      alternates: { languages: Object.fromEntries(langs.map((l) => [l, absoluteUrl(l, postPath(p.slug))])) },
+    };
   });
   const chapters = allChapters().map((c) => {
     const langs = LOCALES.filter((l) => allChapters().some((q) => q.slug === c.slug && q.locale === l));
-    return { url: absoluteUrl(c.locale, chapterPath(c.slug)), lastModified: c.updated ?? c.date, alternates: { languages: Object.fromEntries(langs.map((l) => [l, absoluteUrl(l, chapterPath(c.slug))])) } };
+    return {
+      url: absoluteUrl(c.locale, chapterPath(c.slug)),
+      lastModified: c.updated ?? c.date,
+      alternates: { languages: Object.fromEntries(langs.map((l) => [l, absoluteUrl(l, chapterPath(c.slug))])) },
+    };
   });
   return [...both, ...chapters, ...posts];
 }

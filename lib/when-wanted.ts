@@ -11,7 +11,10 @@ export function whenWanted(form: WantedTarget, go: () => void): () => void {
     cleanup();
     go();
   };
-  const io = typeof IntersectionObserver === "undefined" ? null : new IntersectionObserver((entries) => entries.some((e) => e.isIntersecting) && fire());
+  const io =
+    typeof IntersectionObserver === "undefined"
+      ? null
+      : new IntersectionObserver((entries) => entries.some((e) => e.isIntersecting) && fire());
   io?.observe(form as Element);
   form.addEventListener("focusin", fire);
   function cleanup() {
