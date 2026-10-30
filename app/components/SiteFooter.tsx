@@ -30,6 +30,7 @@ export default function SiteFooter() {
       </FamilyFooter.Column>
       <FamilyFooter.Column title={f.project}>
         <FamilyFooter.Link href={`${feeds}/about/`}>{f.about}</FamilyFooter.Link>
+        <FamilyFooter.Link href={`${feeds}/offline/`}>{f.offline}</FamilyFooter.Link>
         <FamilyFooter.Link href={REPOSITORY_URL}>{f.source}</FamilyFooter.Link>
       </FamilyFooter.Column>
     </FamilyFooter>

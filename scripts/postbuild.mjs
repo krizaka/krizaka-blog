@@ -6,6 +6,7 @@ import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
+import { writeOffline } from "./offline.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 export const SITE = "https://blog.krizaka.com";
@@ -114,5 +115,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const posts = readEntries(join(root, "content/posts"), show);
   writeFileSync(join(root, "out/llms.txt"), llmsText({ chapters, posts }));
   writeFileSync(join(root, "out/llms-full.txt"), llmsFullText({ chapters, posts }));
+  if (!process.env.APP_PREVIEW_PATH) await writeOffline(join(root, "out"), chapters);
   console.log(`postbuild: llms.txt, llms-full.txt (${chapters.length} chapters, ${posts.length} posts)`);
 }

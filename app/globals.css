@@ -1157,3 +1157,51 @@ picture {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+/* Reading offline (krizaka-blog#211): the save buttons of a chapter, the offline page. Tokens only. */
+.bl-offline-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  align-items: center;
+  margin-top: 1.25rem;
+}
+.bl-offline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  align-items: center;
+}
+.bl-offline-state,
+.bl-offline-note,
+.bl-offline-hint,
+.bl-offline-lost {
+  color: var(--kz-fg-muted, inherit);
+  font-size: 0.875rem;
+}
+.bl-offline-note[hidden] {
+  display: none;
+}
+.bl-saved ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bl-saved li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--kz-border, currentColor);
+}
+.bl-saved-n {
+  font-family: var(--font-mono, monospace);
+  color: var(--kz-fg-muted, inherit);
+}
+@media print {
+  .bl-offline-bar {
+    display: none;
+  }
+}
