@@ -35,7 +35,11 @@ export default function ChapterPage({ chapter }: { chapter: Chapter }) {
   const next = nextChapter(chapter);
   const previous = previousChapter(chapter);
   const home = localizedPath(locale, "/");
-  const link = (c: Chapter) => ({ number: chapterNumber(c.chapter), title: c.title, href: localizedPath(locale, chapterPath(c.slug)) });
+  const link = (c: Chapter) => ({
+    number: chapterNumber(c.chapter),
+    title: c.title,
+    href: localizedPath(locale, chapterPath(c.slug)),
+  });
   /* The versus halves are written as the second half of a sentence (« Ce que j'ai affronté : un écran vert… »); as the
      standfirst the first starts with a capital. */
   const upperFirst = (s: string) => s.charAt(0).toLocaleUpperCase(locale) + s.slice(1);
@@ -50,7 +54,15 @@ export default function ChapterPage({ chapter }: { chapter: Chapter }) {
       const { "data-round": round, ...rest } = props;
       return (
         <>
-          {round && <StageBanner className="bl-round" variant="arcade" size="sm" stage={format(tc.round, { n: round })} aria-hidden="true" />}
+          {round && (
+            <StageBanner
+              className="bl-round"
+              variant="arcade"
+              size="sm"
+              stage={format(tc.round, { n: round })}
+              aria-hidden="true"
+            />
+          )}
           <h2 {...rest}>{children}</h2>
         </>
       );
@@ -60,7 +72,11 @@ export default function ChapterPage({ chapter }: { chapter: Chapter }) {
     <article className="bl-article">
       {chapter.draft && <p className="bl-draft">{t.post.draftNotice}</p>}
       <div className="bl-prose">
-        <MDXRemote source={chapter.body} components={components} options={{ mdxOptions: { remarkPlugins: [remarkGfm], rehypePlugins: [rehypeSlug, rehypeRounds] } }} />
+        <MDXRemote
+          source={chapter.body}
+          components={components}
+          options={{ mdxOptions: { remarkPlugins: [remarkGfm], rehypePlugins: [rehypeSlug, rehypeRounds] } }}
+        />
       </div>
       {chapter.stats.length > 0 && (
         <section className="bl-chapter-stats" aria-label={tc.stats}>
@@ -68,7 +84,15 @@ export default function ChapterPage({ chapter }: { chapter: Chapter }) {
           <div className="bl-numbers">
             {chapter.stats.map((s) => {
               const id = headings.find((h) => h.text === s.section)?.id;
-              return <Stat key={s.value + s.label} className="bl-num" label={s.label} value={s.value} hint={id ? <a href={`#${id}`}>{s.section}</a> : s.section} />;
+              return (
+                <Stat
+                  key={s.value + s.label}
+                  className="bl-num"
+                  label={s.label}
+                  value={s.value}
+                  hint={id ? <a href={`#${id}`}>{s.section}</a> : s.section}
+                />
+              );
             })}
           </div>
         </section>
@@ -78,7 +102,12 @@ export default function ChapterPage({ chapter }: { chapter: Chapter }) {
   return (
     <>
       <div className="bl-progress" aria-hidden="true" />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(postJsonLd(chapter, undefined, chapterPath(chapter.slug), chapterOgUrl(locale, chapter.slug))) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(postJsonLd(chapter, undefined, chapterPath(chapter.slug), chapterOgUrl(locale, chapter.slug))),
+        }}
+      />
       <Section reveal={false} spacing="sm" className="bl-chapter-top">
         <ChapterHead
           number={n}
@@ -91,10 +120,28 @@ export default function ChapterPage({ chapter }: { chapter: Chapter }) {
         >
           <Byline post={chapter} other={other} section="story" readingTime={false} />
         </ChapterHead>
-        {cover && <CoverImage className="bl-cover bl-img bl-chapter-cover" cover={cover} sizes="(min-width: 60rem) 896px, calc(100vw - 32px)" alt={chapter.coverAlt ?? ""} priority style={{ backgroundImage: blurUrl(cover.blur) }} />}
+        {cover && (
+          <CoverImage
+            className="bl-cover bl-img bl-chapter-cover"
+            cover={cover}
+            sizes="(min-width: 60rem) 896px, calc(100vw - 32px)"
+            alt={chapter.coverAlt ?? ""}
+            priority
+            style={{ backgroundImage: blurUrl(cover.blur) }}
+          />
+        )}
       </Section>
       <Section reveal={false} spacing="sm" className="bl-post-body">
-        {headings.length >= 3 ? <TocLayout className="bl-post-layout" toc={<Toc label={tc.toc} items={headings.map((h) => ({ id: h.id, label: h.text }))} />}>{body}</TocLayout> : body}
+        {headings.length >= 3 ? (
+          <TocLayout
+            className="bl-post-layout"
+            toc={<Toc label={tc.toc} items={headings.map((h) => ({ id: h.id, label: h.text }))} />}
+          >
+            {body}
+          </TocLayout>
+        ) : (
+          body
+        )}
       </Section>
       <Section reveal={false} spacing="sm">
         <ChapterFoot

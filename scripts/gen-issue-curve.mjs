@@ -27,9 +27,14 @@ if (!token) throw new Error("GITHUB_TOKEN is required: a GitHub token that can u
 /** Several searches in one GraphQL request (aliases), each one only its count. */
 const search = async (aliases) => {
   const query = `{ ${aliases.map(([alias, q]) => `${alias}: search(type: ISSUE, query: ${JSON.stringify(q)}, first: 0) { issueCount }`).join(" ")} }`;
-  const res = await fetch("https://api.github.com/graphql", { method: "POST", headers: { authorization: `Bearer ${token}`, "content-type": "application/json" }, body: JSON.stringify({ query }) });
+  const res = await fetch("https://api.github.com/graphql", {
+    method: "POST",
+    headers: { authorization: `Bearer ${token}`, "content-type": "application/json" },
+    body: JSON.stringify({ query }),
+  });
   const body = await res.json();
-  if (!res.ok || body.errors) throw new Error(`GitHub search failed (${res.status}): ${JSON.stringify(body.errors ?? body.message)}`);
+  if (!res.ok || body.errors)
+    throw new Error(`GitHub search failed (${res.status}): ${JSON.stringify(body.errors ?? body.message)}`);
   return Object.fromEntries(aliases.map(([alias]) => [alias, body.data[alias].issueCount]));
 };
 
@@ -37,9 +42,19 @@ const days = daysBetween(FROM, to);
 const daily = [];
 for (let i = 0; i < days.length; i += BATCH) {
   const slice = days.slice(i, i + BATCH);
-  const aliases = slice.flatMap((day, j) => Object.entries(queriesFor(ORG, day)).map(([kind, q]) => [`d${j}_${kind}`, q]));
+  const aliases = slice.flatMap((day, j) =>
+    Object.entries(queriesFor(ORG, day)).map(([kind, q]) => [`d${j}_${kind}`, q]),
+  );
   const counts = await search(aliases);
-  slice.forEach((date, j) => daily.push({ date, created: counts[`d${j}_created`], completed: counts[`d${j}_completed`], notPlanned: counts[`d${j}_notPlanned`], closed: counts[`d${j}_closed`] }));
+  slice.forEach((date, j) =>
+    daily.push({
+      date,
+      created: counts[`d${j}_created`],
+      completed: counts[`d${j}_completed`],
+      notPlanned: counts[`d${j}_notPlanned`],
+      closed: counts[`d${j}_closed`],
+    }),
+  );
 }
 /* The check: what the search says today, against what the days add up to. */
 const scope = `org:${ORG} is:issue is:public`;
@@ -53,7 +68,9 @@ const rows = cumulate(daily);
 const last = rows.at(-1);
 if (now.before !== 0) throw new Error(`${now.before} issues were opened before ${FROM}: move FROM back`);
 if (to === extractedAt.toISOString().slice(0, 10) && (last.created !== now.all || last.open !== now.open))
-  console.warn(`the days add up to ${last.created} opened / ${last.open} open; the search says ${now.all} / ${now.open} (issues reopened, or opened during the run)`);
+  console.warn(
+    `the days add up to ${last.created} opened / ${last.open} open; the search says ${now.all} / ${now.open} (issues reopened, or opened during the run)`,
+  );
 
 const file = {
   extractedAt: extractedAt.toISOString(),
@@ -64,6 +81,11 @@ const file = {
   daily,
 };
 /* One day per line: the file reads as a table in a diff. */
-const json = JSON.stringify({ ...file, daily: [] }, null, 2).replace('"daily": []', `"daily": [\n${daily.map((d) => `    ${JSON.stringify(d)}`).join(",\n")}\n  ]`);
+const json = JSON.stringify({ ...file, daily: [] }, null, 2).replace(
+  '"daily": []',
+  `"daily": [\n${daily.map((d) => `    ${JSON.stringify(d)}`).join(",\n")}\n  ]`,
+);
 writeFileSync(join(root, "lib/issue-curve.json"), json + "\n");
-console.log(`lib/issue-curve.json: ${daily.length} days, ${last.created} opened, ${last.completed} completed, ${last.notPlanned} not planned, ${last.open} open (${file.extractedAt})`);
+console.log(
+  `lib/issue-curve.json: ${daily.length} days, ${last.created} opened, ${last.completed} completed, ${last.notPlanned} not planned, ${last.open} open (${file.extractedAt})`,
+);

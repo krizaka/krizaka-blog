@@ -21,5 +21,6 @@ test("no page sets the product surface or a brand root on html or body", () => {
 });
 
 test("Plus Jakarta Sans is never loaded here, nor Google Fonts", () => {
-  for (const [file, src] of sources) assert.doesNotMatch(src, /plus-jakarta|Plus_Jakarta|font-product-display|next\/font\/google/i, file);
+  for (const [file, src] of sources)
+    assert.doesNotMatch(src, /plus-jakarta|Plus_Jakarta|font-product-display|next\/font\/google/i, file);
 });

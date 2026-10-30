@@ -3,10 +3,20 @@
 
 export type IssueDay = { date: string; created: number; completed: number; notPlanned: number; closed: number };
 export type IssueCurveRow = { date: string; created: number; completed: number; notPlanned: number; open: number };
-export type IssueCurveFile = { extractedAt: string; source: string; from: string; to: string; now: { before: number; open: number; all: number; openPullRequests: number }; daily: IssueDay[] };
+export type IssueCurveFile = {
+  extractedAt: string;
+  source: string;
+  from: string;
+  to: string;
+  now: { before: number; open: number; all: number; openPullRequests: number };
+  daily: IssueDay[];
+};
 
 /** The four searches of one UTC day: opened that day, closed as completed, closed as not planned, closed for any reason. */
-export function queriesFor(org: string, day: string): Record<"created" | "completed" | "notPlanned" | "closed", string> {
+export function queriesFor(
+  org: string,
+  day: string,
+): Record<"created" | "completed" | "notPlanned" | "closed", string> {
   const scope = `org:${org} is:issue is:public`;
   return {
     created: `${scope} created:${day}`,
@@ -20,7 +30,8 @@ export function queriesFor(org: string, day: string): Record<"created" | "comple
 export function daysBetween(from: string, to: string): string[] {
   const out: string[] = [];
   const end = Date.parse(`${to}T00:00:00Z`);
-  for (let t = Date.parse(`${from}T00:00:00Z`); t <= end; t += 86_400_000) out.push(new Date(t).toISOString().slice(0, 10));
+  for (let t = Date.parse(`${from}T00:00:00Z`); t <= end; t += 86_400_000)
+    out.push(new Date(t).toISOString().slice(0, 10));
   return out;
 }
 

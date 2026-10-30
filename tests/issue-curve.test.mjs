@@ -29,17 +29,24 @@ test("the running totals: open is opened minus closed for any reason (a duplicat
     { date: "a", created: 10, completed: 2, notPlanned: 1, open: 6 },
     { date: "b", created: 15, completed: 5, notPlanned: 1, open: 8 },
   ]);
-  assert.deepEqual(rowsAt(rows, ["b", "missing", "a"]).map((r) => r.date), ["b", "a"]);
+  assert.deepEqual(
+    rowsAt(rows, ["b", "missing", "a"]).map((r) => r.date),
+    ["b", "a"],
+  );
 });
 
 test("the stored curve is whole: every day from its start to its end, once, with its extraction time and GitHub's own totals", () => {
   assert.match(file.extractedAt, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/);
-  assert.deepEqual(file.daily.map((d) => d.date), daysBetween(file.from, file.to));
+  assert.deepEqual(
+    file.daily.map((d) => d.date),
+    daysBetween(file.from, file.to),
+  );
   assert.equal(file.now.before, 0, "no issue before the start");
   const last = cumulate(file.daily).at(-1);
   assert.equal(last.created, file.now.all, "the days add up to the search's total");
   assert.equal(last.open, file.now.open, "the days add up to the search's open count");
-  for (const d of file.daily) assert.ok(d.completed + d.notPlanned <= d.closed, `${d.date}: completed and not planned are part of closed`);
+  for (const d of file.daily)
+    assert.ok(d.completed + d.notPlanned <= d.closed, `${d.date}: completed and not planned are part of closed`);
 });
 
 test("chapter 10 gives the curve's own figures, in both languages", () => {
@@ -47,7 +54,21 @@ test("chapter 10 gives the curve's own figures, in both languages", () => {
   const at = (d) => rows.find((r) => r.date === d);
   const last = rows.at(-1);
   const day = (d) => file.daily.find((x) => x.date === d);
-  const want = [last.created, last.completed, last.notPlanned, last.open, file.now.openPullRequests, at("2026-10-09").open, day("2026-10-17").created, day("2026-10-22").created, day("2026-10-23").created, day("2026-10-20").notPlanned, at("2026-10-19").open, at("2026-10-20").open, at("2026-10-22").open];
+  const want = [
+    last.created,
+    last.completed,
+    last.notPlanned,
+    last.open,
+    file.now.openPullRequests,
+    at("2026-10-09").open,
+    day("2026-10-17").created,
+    day("2026-10-22").created,
+    day("2026-10-23").created,
+    day("2026-10-20").notPlanned,
+    at("2026-10-19").open,
+    at("2026-10-20").open,
+    at("2026-10-22").open,
+  ];
   const digits = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, "\u0001");
   for (const locale of ["fr", "en"]) {
     const body = read(`content/chapters/a-curve-that-climbs.${locale}.mdx`);

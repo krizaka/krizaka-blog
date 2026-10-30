@@ -36,7 +36,9 @@ export function CardLoop({ mp4, webm }: { mp4: string; webm: string }) {
       };
     }
     if (typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver(([e]) => (e.intersectionRatio >= 0.6 ? play() : pause()), { threshold: [0, 0.6] });
+    const io = new IntersectionObserver(([e]) => (e.intersectionRatio >= 0.6 ? play() : pause()), {
+      threshold: [0, 0.6],
+    });
     const start = () => io.observe(card);
     if (document.readyState === "complete") start();
     else window.addEventListener("load", start, { once: true });

@@ -47,7 +47,11 @@ export function SubscribeForm({ id = "nl" }: { id?: string }) {
     setStatus("sending");
     setError(null);
     try {
-      const res = await fetch(SUBSCRIBE_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: email.trim(), locale, captchaToken: captcha, website }) });
+      const res = await fetch(SUBSCRIBE_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), locale, captchaToken: captcha, website }),
+      });
       if (res.ok) {
         setStatus("sent");
         requestAnimationFrame(() => sentRef.current?.focus());
@@ -57,7 +61,15 @@ export function SubscribeForm({ id = "nl" }: { id?: string }) {
       setStatus("error");
       setCaptcha(null);
       setCaptchaKey((k) => k + 1);
-      setError(body.error === "invalid" ? n.errors.email : body.error === "captcha" ? n.errors.captcha : body.error === "unavailable" ? n.errors.unavailable : n.errors.other);
+      setError(
+        body.error === "invalid"
+          ? n.errors.email
+          : body.error === "captcha"
+            ? n.errors.captcha
+            : body.error === "unavailable"
+              ? n.errors.unavailable
+              : n.errors.other,
+      );
     } catch {
       setStatus("error");
       setError(n.errors.other);

@@ -26,7 +26,10 @@ test("the root renders it once, after <main>", () => {
 
 test("no other file renders a footer", () => {
   const offenders = walk("app")
-    .filter((file) => /\.tsx$/.test(file) && file !== "app/components/SiteFooter.tsx" && file !== "app/components/SiteRoot.tsx")
+    .filter(
+      (file) =>
+        /\.tsx$/.test(file) && file !== "app/components/SiteFooter.tsx" && file !== "app/components/SiteRoot.tsx",
+    )
     .filter((file) => /<SiteFooter\b|<footer\b/.test(read(file)));
   assert.deepEqual(offenders, []);
 });

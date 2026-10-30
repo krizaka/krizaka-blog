@@ -13,7 +13,12 @@ export const SENDER_ADDRESS = "__SENDER_ADDRESS__";
 const COVER_WIDTH = 1200;
 
 /** A value the template's schema bounds (a title, an excerpt): cut with an ellipsis rather than refuse the whole e-mail. */
-const clip = (v, max) => (String(v).length > max ? `${String(v).slice(0, max - 1).trimEnd()}…` : String(v));
+const clip = (v, max) =>
+  String(v).length > max
+    ? `${String(v)
+        .slice(0, max - 1)
+        .trimEnd()}…`
+    : String(v);
 
 /** The cover of a post as an e-mail shows it: a WebP of about 1200 px (every e-mail client that matters reads WebP except
     Outlook for Windows, where the alt text stands in; AVIF is not read by Gmail). `media` is lib/media.json. */
@@ -34,7 +39,8 @@ export async function renderPostEmail(locale, version) {
     address: SENDER_ADDRESS,
     links: { privacy: `${SITE}${locale === "fr" ? "/fr" : ""}/newsletter/` },
   };
-  if (version.coverUrl) Object.assign(props, { coverUrl: version.coverUrl, coverAlt: clip(version.coverAlt || version.title, 200) });
+  if (version.coverUrl)
+    Object.assign(props, { coverUrl: version.coverUrl, coverAlt: clip(version.coverAlt || version.title, 200) });
   const mail = await renderEmail("newPost", props, { locale });
   return { subject: mail.subject, html: mail.html, text: mail.text };
 }
@@ -47,7 +53,8 @@ export async function withRenderedEmails(versions) {
 }
 
 /** The image URLs of a rendered e-mail (what a client would fetch). */
-export const imagesOf = (html) => [...html.matchAll(/<img\b[^>]*?\ssrc="([^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, "&"));
+export const imagesOf = (html) =>
+  [...html.matchAll(/<img\b[^>]*?\ssrc="([^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, "&"));
 
 /** The placeholder of the signed token in the confirmation link, identical to the function's CONFIRM_TOKEN (tests/newsletter.test.mjs). */
 export const CONFIRM_TOKEN = "__CONFIRM_TOKEN__";

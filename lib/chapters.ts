@@ -34,7 +34,13 @@ export function parseChapter(file: string, source: string): Chapter {
     period: str(data.period),
     sources: Array.isArray(data.sources) ? data.sources.map(String) : [],
     versus: { faced: str(data.versus?.faced), built: str(data.versus?.built) },
-    stats: Array.isArray(data.stats) ? data.stats.map((s: Record<string, unknown>) => ({ value: str(s.value), label: str(s.label), section: str(s.section) })) : [],
+    stats: Array.isArray(data.stats)
+      ? data.stats.map((s: Record<string, unknown>) => ({
+          value: str(s.value),
+          label: str(s.label),
+          section: str(s.section),
+        }))
+      : [],
   };
 }
 
@@ -52,11 +58,19 @@ export function allChapters(): Chapter[] {
 }
 
 export const chaptersOf = (locale: Locale): Chapter[] => allChapters().filter((c) => c.locale === locale);
-export const chapterOf = (locale: Locale, slug: string): Chapter | undefined => chaptersOf(locale).find((c) => c.slug === slug);
-export const chapterTranslationOf = (c: Chapter): Chapter | undefined => chapterOf(LOCALES.find((l) => l !== c.locale)!, c.slug);
+export const chapterOf = (locale: Locale, slug: string): Chapter | undefined =>
+  chaptersOf(locale).find((c) => c.slug === slug);
+export const chapterTranslationOf = (c: Chapter): Chapter | undefined =>
+  chapterOf(
+    LOCALES.find((l) => l !== c.locale)!,
+    c.slug,
+  );
 /** The chapter that follows one in its language (the foot's « Next »), when it is out. */
 export const nextChapter = (c: Chapter): Chapter | undefined => chaptersOf(c.locale).find((x) => x.chapter > c.chapter);
 /** The chapter before it, in reading order (none on the first). */
-export const previousChapter = (c: Chapter): Chapter | undefined => chaptersOf(c.locale).filter((x) => x.chapter < c.chapter).at(-1);
+export const previousChapter = (c: Chapter): Chapter | undefined =>
+  chaptersOf(c.locale)
+    .filter((x) => x.chapter < c.chapter)
+    .at(-1);
 /** A chapter's number as the screens show it: 01, 02… */
 export const chapterNumber = (n: number): string => String(n).padStart(2, "0");

@@ -17,7 +17,9 @@ if (postsDir) {
   for (const prefix of ["", "fr/"])
     for (const section of ["basics", "story"]) {
       const dir = join(postsDir, prefix, section);
-      if (existsSync(dir)) for (const slug of readdirSync(dir)) if (existsSync(join(dir, slug, "index.html"))) paths.push(`/${prefix}${section}/${slug}/`);
+      if (existsSync(dir))
+        for (const slug of readdirSync(dir))
+          if (existsSync(join(dir, slug, "index.html"))) paths.push(`/${prefix}${section}/${slug}/`);
     }
 }
 const WIDTHS = [1750, 1366, 390, 360];
@@ -42,7 +44,10 @@ const chromePastEdge = () => {
     .filter(visible)
     .map((e) => ({ e, r: e.getBoundingClientRect() }))
     .filter(({ r }) => r.left < -0.5 || r.right > vw + 0.5)
-    .map(({ e, r }) => `${e.tagName.toLowerCase()} "${label(e)}" runs past the window (${Math.round(r.left)}–${Math.round(r.right)} of ${vw})`);
+    .map(
+      ({ e, r }) =>
+        `${e.tagName.toLowerCase()} "${label(e)}" runs past the window (${Math.round(r.left)}–${Math.round(r.right)} of ${vw})`,
+    );
 };
 
 /* Nothing of the content past the right edge: a wide table or code block scrolls inside its own box (overflow-x: auto), it never
@@ -50,7 +55,8 @@ const chromePastEdge = () => {
 const contentPastEdge = () => {
   const vw = document.documentElement.clientWidth;
   const scrolls = (e) => {
-    for (let p = e.parentElement; p && p !== document.body; p = p.parentElement) if (/(auto|scroll)/.test(getComputedStyle(p).overflowX)) return true;
+    for (let p = e.parentElement; p && p !== document.body; p = p.parentElement)
+      if (/(auto|scroll)/.test(getComputedStyle(p).overflowX)) return true;
     return false;
   };
   const past = [...document.querySelectorAll("main *")].find((e) => {
@@ -58,12 +64,18 @@ const contentPastEdge = () => {
     const r = e.getBoundingClientRect();
     return r.width > 0 && r.height > 0 && r.right > vw + 0.5;
   });
-  return past ? [`${past.tagName.toLowerCase()}.${String(past.className).split(" ")[0]} runs past the window (right ${Math.round(past.getBoundingClientRect().right)} of ${vw})`] : [];
+  return past
+    ? [
+        `${past.tagName.toLowerCase()}.${String(past.className).split(" ")[0]} runs past the window (right ${Math.round(past.getBoundingClientRect().right)} of ${vw})`,
+      ]
+    : [];
 };
 
 const titleOverflow = () => {
   const h1 = document.querySelector("h1");
-  return h1 && h1.scrollWidth > h1.clientWidth + 1 ? [`the h1 is wider than its box (${h1.scrollWidth} > ${h1.clientWidth})`] : [];
+  return h1 && h1.scrollWidth > h1.clientWidth + 1
+    ? [`the h1 is wider than its box (${h1.scrollWidth} > ${h1.clientWidth})`]
+    : [];
 };
 
 const LAYOUT_CHECKS = [sidewaysScroll, chromePastEdge, contentPastEdge, titleOverflow];
@@ -72,7 +84,12 @@ const ring = () => {
   const a = document.activeElement;
   const c = getComputedStyle(a);
   const shadow = c.boxShadow !== "none" && !/^(rgba\(0, 0, 0, 0\) 0px 0px 0px 0px,? ?)+$/.test(c.boxShadow);
-  return { tag: a.tagName, inBar: !!a.closest(".kz-site-bar"), outline: c.outlineStyle !== "none" && parseFloat(c.outlineWidth) > 0, shadow };
+  return {
+    tag: a.tagName,
+    inBar: !!a.closest(".kz-site-bar"),
+    outline: c.outlineStyle !== "none" && parseFloat(c.outlineWidth) > 0,
+    shadow,
+  };
 };
 
 const problems = [];
@@ -83,18 +100,21 @@ try {
       const page = await browser.newPage({ viewport: { width, height: 900 } });
       await page.goto(base + path, { waitUntil: "networkidle" });
       await page.evaluate(() => document.fonts.ready);
-      for (const check of LAYOUT_CHECKS) for (const p of await page.evaluate(check)) problems.push(`${path} @${width}: ${p}`);
+      for (const check of LAYOUT_CHECKS)
+        for (const p of await page.evaluate(check)) problems.push(`${path} @${width}: ${p}`);
       await page.close();
     }
     const page = await browser.newPage({ viewport: { width: 1366, height: 900 } });
     await page.goto(base + path, { waitUntil: "networkidle" });
     const onLoad = await page.evaluate(ring);
-    if (onLoad.inBar && (onLoad.outline || onLoad.shadow)) problems.push(`${path}: a bar link wears a focus ring on load`);
+    if (onLoad.inBar && (onLoad.outline || onLoad.shadow))
+      problems.push(`${path}: a bar link wears a focus ring on load`);
     const brand = page.locator(".kz-site-bar a").first();
     await brand.click();
     await page.waitForLoadState("networkidle");
     const clicked = await page.evaluate(ring);
-    if (clicked.inBar && (clicked.outline || clicked.shadow)) problems.push(`${path}: the logo keeps a focus ring after a click`);
+    if (clicked.inBar && (clicked.outline || clicked.shadow))
+      problems.push(`${path}: the logo keeps a focus ring after a click`);
     await page.goto(base + path, { waitUntil: "networkidle" });
     for (let i = 0; i < 4; i++) {
       await page.keyboard.press("Tab");
@@ -113,4 +133,6 @@ if (problems.length) {
   console.error(problems.join("\n"));
   process.exit(1);
 }
-console.log(`check-layout: ${paths.length} pages × ${WIDTHS.join(", ")} px, bar and h1 inside the window; focus rings for the keyboard only`);
+console.log(
+  `check-layout: ${paths.length} pages × ${WIDTHS.join(", ")} px, bar and h1 inside the window; focus rings for the keyboard only`,
+);

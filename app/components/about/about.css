@@ -61,7 +61,9 @@
   border: 1px solid var(--kz-border-subtle);
   background: radial-gradient(circle at 35% 30%, var(--kz-surface-raised, var(--kz-surface)), var(--kz-surface));
   box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .bl-about-slot:hover {

@@ -3,7 +3,9 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 
 const series = JSON.parse(readFileSync("content/image-series/series.json", "utf8"));
-const posts = readdirSync("content/chapters").filter((f) => f.endsWith(".en.mdx")).map((f) => f.replace(".en.mdx", ""));
+const posts = readdirSync("content/chapters")
+  .filter((f) => f.endsWith(".en.mdx"))
+  .map((f) => f.replace(".en.mdx", ""));
 const BIRDS = ["falcon", "owl", "duck", "flamingo", "pigeon"];
 
 test("every chapter has exactly one chapter, and only they", () => {
@@ -22,7 +24,10 @@ test("the cast only grows: birds arrive one by one and stay", () => {
   let previous = [];
   for (const c of series.chapters) {
     assert.ok(c.birds.every((b) => BIRDS.includes(b)));
-    assert.ok(previous.every((b) => c.birds.includes(b)), `${c.post} lost a bird`);
+    assert.ok(
+      previous.every((b) => c.birds.includes(b)),
+      `${c.post} lost a bird`,
+    );
     assert.ok(c.birds.length - previous.length <= 1, `${c.post} brings two birds at once`);
     previous = c.birds;
   }
@@ -35,5 +40,9 @@ test("legal guardrails: the prompts name no person, brand, character or lyric", 
     assert.ok(!text.includes(word), `the prompts name « ${word} »`);
   }
   assert.match(series.style, /No people, no text, no lettering, no logos/);
-  for (const b of BIRDS) assert.ok(!series.style.includes(b), "the style names no bird: a reference-based model draws every bird it is told of");
+  for (const b of BIRDS)
+    assert.ok(
+      !series.style.includes(b),
+      "the style names no bird: a reference-based model draws every bird it is told of",
+    );
 });

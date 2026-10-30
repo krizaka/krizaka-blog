@@ -10,7 +10,19 @@ import { formatDate } from "./PostList";
 /* Who wrote a post and when: the author (the company's mark for the team, Wu-sama's for Oussama: no photo), the date, the reading time, the update; then the
    post's actions in one row (the other language, and what the page passes). A chapter says its reading time in its head
    (ChapterHead), so it passes `readingTime={false}`. */
-export function Byline({ post, other, children, section = "basics", readingTime = true }: { post: Post; other?: Post; children?: React.ReactNode; section?: "basics" | "story"; readingTime?: boolean }) {
+export function Byline({
+  post,
+  other,
+  children,
+  section = "basics",
+  readingTime = true,
+}: {
+  post: Post;
+  other?: Post;
+  children?: React.ReactNode;
+  section?: "basics" | "story";
+  readingTime?: boolean;
+}) {
   const t = getDictionary(post.locale);
   /* The other language's address, from known values only: one of the two locales, a slug of lower-case words. */
   const otherLang: Locale = other?.locale === "fr" ? "fr" : "en";
@@ -19,7 +31,9 @@ export function Byline({ post, other, children, section = "basics", readingTime 
   const author = (t.authors as Record<string, string>)[post.author] ?? post.author;
   return (
     <div className="bl-byline">
-      <span className="bl-byline-mark" aria-hidden="true">{post.author === "krizaka" ? <KrizakaLogo size={28} animated={false} /> : <WuSamaMark size={28} />}</span>
+      <span className="bl-byline-mark" aria-hidden="true">
+        {post.author === "krizaka" ? <KrizakaLogo size={28} animated={false} /> : <WuSamaMark size={28} />}
+      </span>
       <div className="bl-byline-text">
         <p className="bl-byline-name">{author}</p>
         <p className="bl-byline-meta">

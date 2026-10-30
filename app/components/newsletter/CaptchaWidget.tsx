@@ -43,7 +43,15 @@ function loadScript(): Promise<void> {
 
 const currentTheme = () => (document.documentElement.classList.contains("light") ? "light" : "dark");
 
-export default function CaptchaWidget({ onToken, label, language }: { onToken: (token: string | null) => void; label: string; language: string }) {
+export default function CaptchaWidget({
+  onToken,
+  label,
+  language,
+}: {
+  onToken: (token: string | null) => void;
+  label: string;
+  language: string;
+}) {
   const host = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -67,16 +75,19 @@ export default function CaptchaWidget({ onToken, label, language }: { onToken: (
     };
     let watcher: MutationObserver | null = null;
     const start = () => {
-      loadScript().then(() => {
-        mount();
-        // The theme toggle flips `html.light`: draw the widget again in the other theme.
-        if (cancelled) return;
-        watcher = new MutationObserver(() => {
-          onToken(null);
+      loadScript().then(
+        () => {
           mount();
-        });
-        watcher.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-      }, () => onToken(null));
+          // The theme toggle flips `html.light`: draw the widget again in the other theme.
+          if (cancelled) return;
+          watcher = new MutationObserver(() => {
+            onToken(null);
+            mount();
+          });
+          watcher.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+        },
+        () => onToken(null),
+      );
     };
     const stopWaiting = whenWanted(el.closest("form") ?? el, start);
     return () => {

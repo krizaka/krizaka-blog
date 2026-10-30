@@ -7,12 +7,23 @@ const root = new URL("..", import.meta.url).pathname;
 const overlap = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
 
 test("a pipeline's boxes never overlap, in three columns and in one, and fit the drawing", () => {
-  for (const [n, cols] of [[1, 3], [5, 3], [9, 3], [9, 1], [6, 3], [7, 2]]) {
+  for (const [n, cols] of [
+    [1, 3],
+    [5, 3],
+    [9, 3],
+    [9, 1],
+    [6, 3],
+    [7, 2],
+  ]) {
     const { boxes, viewWidth, viewHeight } = pipelineLayout(n, { cols, width: 196 });
     assert.equal(boxes.length, n);
     for (let i = 0; i < n; i++) {
-      for (let j = i + 1; j < n; j++) assert.ok(!overlap(boxes[i], boxes[j]), `${n}/${cols}: boxes ${i} and ${j} overlap`);
-      assert.ok(boxes[i].x >= 0 && boxes[i].x + boxes[i].w <= viewWidth && boxes[i].y + boxes[i].h <= viewHeight, `${n}/${cols}: box ${i} is outside`);
+      for (let j = i + 1; j < n; j++)
+        assert.ok(!overlap(boxes[i], boxes[j]), `${n}/${cols}: boxes ${i} and ${j} overlap`);
+      assert.ok(
+        boxes[i].x >= 0 && boxes[i].x + boxes[i].w <= viewWidth && boxes[i].y + boxes[i].h <= viewHeight,
+        `${n}/${cols}: box ${i} is outside`,
+      );
     }
   }
 });
@@ -39,6 +50,8 @@ test("the MDX maps <Pipeline> and <Stage>, and the drawing ships with its text v
   assert.match(comp, /<ol className="bl-pipeline-text"/);
   assert.match(comp, /aria-hidden="true"/);
   /* Colours come from the tokens only. */
-  const css = readFileSync(`${root}app/globals.css`, "utf8").split("\n").filter((l) => l.includes(".bl-pipeline"));
+  const css = readFileSync(`${root}app/globals.css`, "utf8")
+    .split("\n")
+    .filter((l) => l.includes(".bl-pipeline"));
   for (const l of css) assert.doesNotMatch(l, /#[0-9a-f]{3,8}\b|rgb\(|hsl\(/i, l);
 });
