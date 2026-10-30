@@ -116,6 +116,15 @@
   JavaScript); a bad link lands on `/newsletter/link-invalid/`.
 - The form is compact (one line, one row: e-mail + « M'abonner », one muted notice line); the language is the page's; the
   CAPTCHA is invisible unless Cloudflare needs an action (`appearance: interaction-only`).
+- **Downloads** (krizaka-blog#211): each chapter and the whole story have an EPUB 3 and a tagged PDF, in each language, made by
+  `scripts/gen-downloads.mjs` from the pages the build exported (so from the same MDX): **pandoc** (maintained since 2006, run as a
+  separate program, pinned in `ci-after-build.sh`) writes the EPUB — table of contents, one file per chapter, `dc:language`, cover,
+  alt text, accessibility metadata — and **Chromium** (Playwright's) the PDF — structure tree, `/Lang`, title, outline. Diagrams and
+  clips stand for their label in the text; the links back to the chapters are absolute. The build checks that every chapter is in each
+  file. The files are hashed objects on Bunny (`sites/blog/posts/downloads/`, uploaded with krizaka-com's `cdn-assets.mjs upload --to
+  blog/downloads`, manifest committed there); `lib/downloads.json` records each book's source hash, file hashes and sizes, and the lint
+  fails when a chapter changed and its files were not made again (`node scripts/gen-downloads.mjs`, upload, `… record`). The links are on
+  each chapter, on the home, and in the feeds (RSS enclosure, Atom `rel="enclosure"`, JSON Feed `attachments`).
 - **RSS and Atom stay as files, not pages** (krizaka-blog#123): `/feed.xml` and `/atom.xml` are pure XML for readers (no XSLT:
   Chrome is removing it), and every « RSS » link names the file; the old `/feed/` page is a stub to the story.
 - **New post e-mail**: designed with `@krizaka/email` (`newPost`: the Krizaka mark, the cover, the title, the excerpt, one

@@ -35,6 +35,20 @@ node scripts/check-offline.mjs
 node scripts/check-offline-reading.mjs --base http://localhost:3000 --out out
 echo "::endgroup::"
 
+echo "::group::Downloads: the EPUB and the PDF of every chapter and of the series, in each language, each checked"
+# pandoc 3.13 (the EPUB), pinned by its checksum; Chromium (the PDF) is the one Playwright installed above.
+if ! command -v pandoc >/dev/null || [[ "$(pandoc --version | head -1)" != "pandoc 3.13" ]]; then
+  curl --proto "=https" --tlsv1.2 -fsSL -o /tmp/pandoc.deb https://github.com/jgm/pandoc/releases/download/3.13/pandoc-3.13-1-amd64.deb
+  echo "7e3736f255090296ca5d1a14291a76b9b3c43cd385011b1621a4d0c16091a70f  /tmp/pandoc.deb" | sha256sum -c -
+  sudo dpkg -i /tmp/pandoc.deb
+fi
+node scripts/gen-downloads.mjs --out downloads-out
+node scripts/gen-downloads.mjs check
+grep -q '<enclosure url="https://krizaka-assets.b-cdn.net/sites/blog/posts/downloads/' out/feed.xml
+grep -q 'rel="enclosure" type="application/pdf"' out/fr/atom.xml
+grep -q '"attachments"' out/feed.json
+echo "::endgroup::"
+
 echo "::group::Core Web Vitals budget (LCP <= 2.5 s, CLS <= 0.1, phone window, CPU x4)"
 node scripts/check-vitals.mjs --base http://localhost:3000 --posts out
 echo "::endgroup::"
