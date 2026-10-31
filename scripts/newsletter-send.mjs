@@ -86,6 +86,24 @@ export function versionsOf(slug, read, media = {}, { drafts = false } = {}) {
   return out;
 }
 
+const isCount = (n) => Number.isInteger(n) && n >= 0;
+
+/** The shape of the send action's answer: {already: true}, or {sent, failed, total} as whole numbers; with `test`, {test: true, sent: 1}.
+    Anything else (an empty body, a gateway page, a reply without counts) throws: a send we cannot read is a send we cannot vouch for. */
+export function parseSendAnswer(body, { test = false } = {}) {
+  if (body === null || typeof body !== "object" || Array.isArray(body))
+    throw new Error("newsletter: the send action's answer is not an object");
+  if (test) {
+    if (body.test !== true || body.sent !== 1)
+      throw new Error("newsletter: the send action did not confirm the test e-mail");
+    return body;
+  }
+  if (body.already === true) return { already: true };
+  if (!isCount(body.sent) || !isCount(body.failed) || !isCount(body.total))
+    throw new Error("newsletter: the send action's answer has no counts (sent, failed, total)");
+  return { sent: body.sent, failed: body.failed, total: body.total };
+}
+
 /** Asks the send action to e-mail the list; it answers {sent, failed, total} or {already: true}. */
 export async function requestSend(slug, versions, token, fetchImpl = fetch, extra = {}) {
   const res = await fetchImpl(`${SITE}/api/newsletter/send`, {
@@ -93,9 +111,17 @@ export async function requestSend(slug, versions, token, fetchImpl = fetch, extr
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     body: JSON.stringify({ slug, versions, ...extra }),
   });
-  const body = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(`newsletter: the send action answered ${res.status} ${body.error ?? ""}`.trim());
-  return body;
+  const text = await res.text();
+  let body;
+  try {
+    body = JSON.parse(text);
+  } catch {
+    body = undefined;
+  }
+  if (!res.ok) throw new Error(`newsletter: the send action answered ${res.status} ${body?.error ?? ""}`.trim());
+  if (body === undefined)
+    throw new Error(`newsletter: the send action answered ${res.status} with a body that is not JSON`);
+  return parseSendAnswer(body, { test: extra.test !== undefined });
 }
 
 /** The switch of the automatic and manual sends: off unless MAIL_NEWSLETTER_ENABLED is exactly "true" (fail closed). */
@@ -103,12 +129,15 @@ export const newsletterEnabled = (env = process.env) => env.MAIL_NEWSLETTER_ENAB
 
 /** A send that did not reach everyone is a failed run (a red check), never a green line: the list is small and every address counts. */
 export function assertDelivered(slug, result) {
-  if (result.already) return `newsletter: ${slug} was already sent`;
-  if (result.failed > 0 || (result.total > 0 && result.sent === 0))
+  const r = parseSendAnswer(result);
+  if (r.already) return `newsletter: ${slug} was already sent`;
+  if (r.sent + r.failed !== r.total)
+    throw new Error(`newsletter: ${slug} counts do not add up (${r.sent} sent + ${r.failed} failed of ${r.total})`);
+  if (r.failed > 0 || r.sent === 0)
     throw new Error(
-      `newsletter: ${slug} reached ${result.sent} of ${result.total}; ${result.failed} failed (the mail provider rejected it?)`,
+      `newsletter: ${slug} reached ${r.sent} of ${r.total}; ${r.failed} failed (the mail provider rejected it?)`,
     );
-  return `newsletter: ${slug} sent to ${result.sent} of ${result.total}`;
+  return `newsletter: ${slug} sent to ${r.sent} of ${r.total}`;
 }
 
 async function waitLive(url, minutes = 20) {

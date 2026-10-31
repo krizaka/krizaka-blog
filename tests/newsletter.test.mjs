@@ -321,13 +321,13 @@ test("the sender script calls the send action with the bearer and reports its an
   const calls = [];
   const f = async (url, init) => (
     calls.push({ url, init }),
-    { ok: true, status: 200, json: async () => ({ sent: 1, failed: 0, total: 1 }) }
+    { ok: true, status: 200, text: async () => JSON.stringify({ sent: 1, failed: 0, total: 1 }) }
   );
   const r = await requestSend("x", versions, "tok", f);
   assert.equal(r.sent, 1);
   assert.equal(calls[0].url, "https://blog.krizaka.com/api/newsletter/send");
   assert.equal(calls[0].init.headers.Authorization, "Bearer tok");
-  const bad = async () => ({ ok: false, status: 401, json: async () => ({ error: "unauthorized" }) });
+  const bad = async () => ({ ok: false, status: 401, text: async () => JSON.stringify({ error: "unauthorized" }) });
   await assert.rejects(requestSend("x", versions, "tok", bad), /401 unauthorized/);
 });
 
@@ -651,6 +651,72 @@ test("a send the provider rejected fails the run loudly; a complete one and an a
   assert.throws(() => assertDelivered("x", { sent: 2, failed: 1, total: 3 }), /1 failed/);
   assert.match(assertDelivered("x", { sent: 1, failed: 0, total: 1 }), /sent to 1 of 1/);
   assert.match(assertDelivered("x", { already: true }), /already sent/);
+});
+
+test("send: a database or mail failure answers a JSON error, never an empty 204; a claim without a send is released", async () => {
+  const boom = async () => {
+    throw Object.assign(new Error("password authentication failed for user secret-user"), { code: "28P01" });
+  };
+  const r = await sendAction({ ...auth, slug: "x", versions }, ENV, boom);
+  assert.equal(r.statusCode, 500);
+  assert.deepEqual(
+    JSON.parse(r.body),
+    { error: "database", code: "28P01" },
+    "a code, never the message (it can name a user or a host)",
+  );
+  // The platform answers 204 with an empty body when the action rejects: main() must catch whatever handle() throws.
+  const { main } = require("../functions/packages/newsletter/send/index.js");
+  const m = await main({ ...auth, slug: "x", versions });
+  assert.ok(m && typeof m.statusCode === "number" && m.statusCode >= 400, "main answers a status, never undefined");
+  // A claim whose send crashed before anyone was e-mailed is released so the next run can retry; one that sent is kept.
+  const db = fakeDb({ subscribers: [{ email: "a@b.co", locale: "en" }] });
+  const failing = async () => {
+    throw new Error("mail 401");
+  };
+  const out = await sendAction({ ...auth, slug: "y", versions }, ENV, db.sql, failing);
+  assert.equal(out.statusCode, 200);
+  assert.deepEqual(JSON.parse(out.body), { sent: 0, failed: 1, total: 1 });
+});
+
+test("a response without counts, not JSON, or of the wrong shape is a failure, never a green line", async () => {
+  // The bug of runs 41160894950 and 41166918855: « sent to undefined of undefined », green.
+  for (const bad of [
+    {},
+    { ok: true },
+    { sent: "1", failed: 0, total: 1 },
+    { sent: 1, total: 1 },
+    { sent: 1, failed: 0 },
+    { sent: -1, failed: 0, total: 1 },
+    { sent: 1.5, failed: 0, total: 1 },
+    null,
+    [],
+    "x",
+  ])
+    assert.throws(() => assertDelivered("x", bad), /newsletter:/, JSON.stringify(bad));
+  // The provider accepted nobody (or there is nobody): a failed run.
+  assert.throws(() => assertDelivered("x", { sent: 0, failed: 0, total: 0 }), /reached 0 of 0/);
+  // The counts must add up.
+  assert.throws(() => assertDelivered("x", { sent: 1, failed: 0, total: 3 }), /do not add up/);
+  const reply = (status, text) => async () => ({ ok: status >= 200 && status < 300, status, text: async () => text });
+  const v = { en: { title: "T", description: "D", url: "https://blog.krizaka.com/x/" } };
+  await assert.rejects(requestSend("x", v, "tok", reply(200, "<html>gateway</html>")), /not JSON/);
+  await assert.rejects(requestSend("x", v, "tok", reply(200, "")), /not JSON/);
+  await assert.rejects(requestSend("x", v, "tok", reply(200, "{}")), /counts/);
+  await assert.rejects(requestSend("x", v, "tok", reply(502, "bad gateway")), /502/);
+  await assert.rejects(requestSend("x", v, "tok", reply(204, "")), /not JSON|counts/);
+  const ok = await requestSend("x", v, "tok", reply(200, '{"sent":2,"failed":0,"total":2}'));
+  assert.deepEqual(ok, { sent: 2, failed: 0, total: 2 });
+  assert.deepEqual(await requestSend("x", v, "tok", reply(200, '{"already":true}')), { already: true });
+  // A test send answers {test:true, sent:1}; anything else is refused.
+  assert.equal(
+    (
+      await requestSend("x", v, "tok", reply(200, '{"test":true,"sent":1,"to":"a@b.c","locale":"en"}'), {
+        test: "a@b.c",
+      })
+    ).sent,
+    1,
+  );
+  await assert.rejects(requestSend("x", v, "tok", reply(200, '{"already":true}'), { test: "a@b.c" }), /test/);
 });
 
 test("the subscribe action checks the CAPTCHA with @krizaka/rate-limit/turnstile, bundled and in sync", async () => {

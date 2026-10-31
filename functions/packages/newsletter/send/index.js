@@ -34,12 +34,23 @@ async function handle(args = {}, env = process.env, sql = null, send = undefined
     return nl.json(200, { test: true, sent: 1, to, locale });
   }
   const db = sql ?? nl.connect(env);
-  if (!(await nl.claimPost(db, args.slug))) return nl.json(200, { already: true });
-  const result = await nl.sendPostToAll(db, versions, env, send);
-  await nl.recordSent(db, args.slug, result.sent, result.failed);
-  return nl.json(200, result);
+  /* Whatever fails below answers a JSON status: a rejected action makes the platform answer 204 with an empty body, which
+     the workflow once read as « sent to undefined of undefined ». Only a code is returned (a message can name a host or a user). */
+  let claimed = false;
+  try {
+    if (!(await nl.claimPost(db, args.slug))) return nl.json(200, { already: true });
+    claimed = true;
+    const result = await nl.sendPostToAll(db, versions, env, send);
+    /* Nobody was e-mailed (provider down, key refused): the claim is given back so that a retry is possible. */
+    if (result.sent === 0) await nl.releasePost(db, args.slug);
+    else await nl.recordSent(db, args.slug, result.sent, result.failed);
+    return nl.json(200, result);
+  } catch (e) {
+    console.error(`newsletter send: ${claimed ? "send" : "database"} failed (${e?.code ?? e?.name ?? "error"})`);
+    return nl.json(500, { error: claimed ? "send" : "database", code: String(e?.code ?? e?.name ?? "error") });
+  }
 }
 /* The platform calls main(args) — and may pass a context object second — so the injections (environment, database,
    fetch, clock) only go through handle(), which the tests call. */
-const main = (args) => handle(args);
+const main = (args) => handle(args).catch(() => nl.json(500, { error: "unexpected" }));
 module.exports = { main, handle };
