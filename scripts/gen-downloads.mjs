@@ -92,7 +92,9 @@ const A11Y = () => `<dc:rights>© Krizaka</dc:rights>
 const FONTS = join(root, "node_modules/@krizaka/fonts/files/web");
 const media = JSON.parse(readFileSync(join(root, "lib/media.json"), "utf8"));
 const esc = (s) => String(s).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-const cssString = (s) => String(s).replaceAll("\\", "\\\\").replaceAll('"', '\\"');
+// An absolute path, not a lookup in PATH (the CI runner keeps java here).
+const JAVA = "/usr/bin/java";
+const cssString = (s) => String(s).replaceAll(String.raw`\`, String.raw`\\`).replaceAll('"', String.raw`\"`);
 
 /** A chapter's cover picture (a media entry, 960 px wide when it has it) and its alt text. */
 function coverOf(c) {
@@ -319,7 +321,7 @@ function verifyBook(book, made) {
   const navText = run("unzip", ["-p", made.epub, "*nav.xhtml"]);
   for (const p of orderProblems(navText.replaceAll(/<a\b[^>]*>/g, "<h1>"))) problems.push(`epub toc ${p}`);
   if (process.env["EPUBCHECK_JAR"]) {
-    const r = spawnSync("java", ["-jar", process.env["EPUBCHECK_JAR"], "--failonwarnings", "--quiet", made.epub], {
+    const r = spawnSync(JAVA, ["-jar", process.env["EPUBCHECK_JAR"], "--failonwarnings", "--quiet", made.epub], {
       encoding: "utf8",
     });
     if (r.status !== 0) problems.push(`epubcheck: ${(r.stdout + r.stderr).slice(0, 900)}`);
