@@ -33,7 +33,10 @@ export function BasicsPath({ posts, locale, label }: { posts: Post[]; locale: Lo
                 {format(t.post.readingTime, { minutes: String(p.readingMinutes) })}
               </p>
               <h3 className="bl-path-title">
-                <Link href={localizedPath(locale, postPath(p.slug))} className="bl-path-link">
+                <Link
+                  href={localizedPath(locale, postPath(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(p.slug) ? p.slug : ""))}
+                  className="bl-path-link"
+                >
                   {p.title}
                 </Link>
               </h3>
