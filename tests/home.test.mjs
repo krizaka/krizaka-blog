@@ -63,7 +63,11 @@ test("today's chapters: chapter 19 Featured, then 18 → 1 in both languages", (
       locale,
     );
     assert.equal(rows.length + 1, 19, `${locale}: nineteen chapters, one of them Featured`);
-    assert.equal(latestChapter(list).slug, "tchou-tchou-how-our-pull-requests-catch-the-train", `${locale}: the latest chapter is Featured`);
+    assert.equal(
+      latestChapter(list).slug,
+      "tchou-tchou-how-our-pull-requests-catch-the-train",
+      `${locale}: the latest chapter is Featured`,
+    );
   }
 });
 

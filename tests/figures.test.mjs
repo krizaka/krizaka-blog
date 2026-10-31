@@ -104,5 +104,9 @@ test("the articles carry no icons: steps are numbered in mono, scopes and marker
   assert.doesNotMatch(readFileSync("app/components/TakeStory.tsx", "utf8"), /bl-book/);
   const css = readFileSync("app/globals.css", "utf8");
   assert.doesNotMatch(css, /content:\s*"[✕✓✔✗]/u, "no glyph markers in the figures");
-  assert.doesNotMatch(css, /\.bl-help\s*\{[^}]*border-radius:\s*50%/, "the « ? » is a plain text mark, not a drawn badge");
+  assert.doesNotMatch(
+    css,
+    /\.bl-help\s*\{[^}]*border-radius:\s*50%/,
+    "the « ? » is a plain text mark, not a drawn badge",
+  );
 });
