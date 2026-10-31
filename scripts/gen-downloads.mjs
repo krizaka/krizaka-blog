@@ -94,7 +94,8 @@ const media = JSON.parse(readFileSync(join(root, "lib/media.json"), "utf8"));
 const esc = (s) => String(s).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 // An absolute path, not a lookup in PATH (the CI runner keeps java here).
 const JAVA = "/usr/bin/java";
-const cssString = (s) => String(s).replaceAll(String.raw`\`, String.raw`\\`).replaceAll('"', String.raw`\"`);
+const BACKSLASH = String.fromCharCode(92);
+const cssString = (s) => String(s).replaceAll(/[\\"]/g, (c) => BACKSLASH + c);
 
 /** A chapter's cover picture (a media entry, 960 px wide when it has it) and its alt text. */
 function coverOf(c) {
