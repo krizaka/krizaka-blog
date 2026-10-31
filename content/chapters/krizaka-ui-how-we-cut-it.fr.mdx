@@ -42,7 +42,7 @@ Tout est dans [krizaka-ui](https://github.com/krizaka/krizaka-ui), et le mode d'
 
 Le 11 octobre au soir, j'ai compté ce que nos applications écrivaient à la main. C'est l'[ADR-001](https://github.com/krizaka/krizaka-ui/blob/main/docs/adr/ADR-001-tanstack-under-krizaka-facades.md), et les chiffres m'ont arrêté.
 
-Dans les produits : 36 formulaires écrits à la main, 42 tables, 23 listes mobiles sans virtualisation sérieuse. Orochia, côté web, portait environ 3 000 lignes de gestion maison de l'état du serveur, avec son propre client temps réel qui se reconnecte tout seul. Orazaka n'utilisait la bibliothèque de requêtes que dans 3 appels, sur 3 456 lignes de hooks. Le kit lui-même réécrivait un tableau de données (449 lignes, tri et sélection seulement), une pagination, un surligneur de code par expressions régulières, et ses graphiques reposaient sur ECharts, 157 ko compressés.
+Dans les produits : 36 formulaires écrits à la main, 42 tables, 23 listes mobiles sans virtualisation sérieuse. Un des produits, côté web, portait environ 3 000 lignes de gestion maison de l'état du serveur, avec son propre client temps réel qui se reconnecte tout seul. Orazaka n'utilisait la bibliothèque de requêtes que dans 3 appels, sur 3 456 lignes de hooks. Le kit lui-même réécrivait un tableau de données (449 lignes, tri et sélection seulement), une pagination, un surligneur de code par expressions régulières, et ses graphiques reposaient sur ECharts, 157 ko compressés.
 
 Ce n'est pas un procès. Chaque application avait avancé seule, et chacune avait raison de le faire à son moment. Mais l'addition était claire : on réécrivait partout la même chose, un peu différente à chaque fois.
 

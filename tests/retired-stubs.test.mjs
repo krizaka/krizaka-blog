@@ -53,6 +53,8 @@ test("every retired slug has its EN and FR stub; an absorbed post's file is gone
 test("every stub points to an existing, published chapter or shelf post of the same language, at a section anchor for a chapter", () => {
   for (const slug of slugs) {
     for (const locale of ["en", "fr"]) {
+      // A withdrawn post (krizaka/.github#413) points to the story itself, the home: no post to check.
+      if (map[slug][locale] === (locale === "en" ? "/" : "/fr/")) continue;
       const { file, anchor, kind } = targetOf(map[slug][locale], locale);
       assert.ok(existsSync(file), `${slug}: ${file.pathname} exists`);
       const { data, content } = matter(readFileSync(file, "utf8"));

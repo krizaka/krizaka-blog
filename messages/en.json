@@ -40,7 +40,7 @@
     "chaptersLead": "The earlier ones, newest first: each one says what I was up against, then what we built.",
     "new": "New",
     "basicsTitle": "The basics, to understand the rest",
-    "basicsLead": "Five short reads, in this order, that explain the words and the rules the chapters rely on. If a chapter loses you, come here, then go back."
+    "basicsLead": "Four short reads, in this order, that explain the words and the rules the chapters rely on. If a chapter loses you, come here, then go back."
   },
   "post": {
     "back": "The Krizaka story",
@@ -172,7 +172,7 @@
       "building-orazaka": "How a sovereign AI engine gets built on one Mac and a few rented GPUs: the choices, the migrations, what broke.",
       "measured": "Costs, times and results taken from real runs, with the records to check them. What we did not measure is said.",
       "building-krizaka": "What surrounds the code of a small software company, money and law first. Told as it happens, with what isn't decided yet.",
-      "basics": "Five short reads, in this order, that explain the words and the rules the chapters rely on. If a chapter loses you, come here, then go back."
+      "basics": "Four short reads, in this order, that explain the words and the rules the chapters rely on. If a chapter loses you, come here, then go back."
     },
     "story": "And the Krizaka story, chapter by chapter"
   },
