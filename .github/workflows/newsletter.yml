@@ -1,4 +1,4 @@
-# The "new post" e-mail (scripts/newsletter-send.mjs). After a push to main that publishes a post (draft → published, or
+# The "new post" e-mail (scripts/newsletter-send.mjs). After a push to main that publishes a post or story chapter (draft → published, or
 # a new published post), wait until the post is live on blog.krizaka.com, then ask the send action
 # (/api/newsletter/send, bearer MAIL_SEND_TOKEN) to e-mail the confirmed subscribers. The action claims the post in the
 # database first: a re-run, a manual run or a second push never sends the same post twice.
@@ -10,11 +10,11 @@ name: Newsletter
 on:
   push:
     branches: [main]
-    paths: ["content/posts/**"]
+    paths: ["content/posts/**", "content/chapters/**"]
   workflow_dispatch:
     inputs:
       slug:
-        description: "The post's slug (content/posts/<slug>.<en|fr>.mdx)"
+        description: "The slug of the post (content/posts/<slug>.<en|fr>.mdx) or chapter (content/chapters/<slug>.<en|fr>.mdx)"
         required: true
 
 permissions:

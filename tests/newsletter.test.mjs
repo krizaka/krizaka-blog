@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { createRequire } from "node:module";
 import {
   publishedBetween,
@@ -349,6 +349,45 @@ test("a post is sent when it goes from draft to published or arrives published, 
   };
   const read = { before: (p) => before[p] ?? null, after: (p) => after[p] ?? null };
   assert.deepEqual(publishedBetween([...Object.keys(after), "lib/x.ts"], read), ["a", "c"]);
+});
+
+test("a story chapter is sent when it goes from draft to published, at /story/, and a post still is", () => {
+  const before = {
+    "content/chapters/ch.en.mdx": post(true),
+    "content/chapters/ch.fr.mdx": post(true),
+    "content/chapters/old.en.mdx": post(false),
+    "content/posts/p.en.mdx": post(true),
+  };
+  const after = {
+    "content/chapters/ch.en.mdx": post(false),
+    "content/chapters/ch.fr.mdx": post(false, "Titre"),
+    "content/chapters/old.en.mdx": post(false, "edited"),
+    "content/posts/p.en.mdx": post(false),
+  };
+  const read = { before: (p) => before[p] ?? null, after: (p) => after[p] ?? null };
+  assert.deepEqual(publishedBetween(Object.keys(after), read), ["ch", "p"]);
+  const v = versionsOf("ch", (p) => after[p] ?? null);
+  assert.deepEqual(Object.keys(v).sort(), ["en", "fr"]);
+  assert.equal(v.en.url, "https://blog.krizaka.com/story/ch/");
+  assert.equal(v.fr.url, "https://blog.krizaka.com/fr/story/ch/");
+  assert.equal(versionsOf("p", (p) => after[p] ?? null).en.url, "https://blog.krizaka.com/basics/p/");
+});
+
+test("no slug is shared by a post and a chapter (they are claimed once, by slug)", () => {
+  const slugs = (d) =>
+    new Set(readdirSync(new URL(`../content/${d}/`, import.meta.url)).map((f) => f.replace(/\.(en|fr)\.mdx$/, "")));
+  const posts = slugs("posts");
+  assert.deepEqual(
+    [...slugs("chapters")].filter((s) => posts.has(s)),
+    [],
+  );
+});
+
+test("the Newsletter workflow triggers on chapters too", () => {
+  assert.match(
+    readFileSync(new URL("../.github/workflows/newsletter.yml", import.meta.url), "utf8"),
+    /paths: \["content\/posts\/\*\*", "content\/chapters\/\*\*"\]/,
+  );
 });
 
 test("versionsOf reads only the published versions of a post", () => {

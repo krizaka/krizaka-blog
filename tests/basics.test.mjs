@@ -104,7 +104,7 @@ test("the CI smoke checks read the shelf at /basics/ (a live post)", () => {
 });
 
 test("the posts' newsletter address and the engage link use /basics/", () => {
-  assert.match(read("scripts/newsletter-send.mjs"), /\/basics\/\$\{slug\}\//);
+  assert.match(read("scripts/newsletter-send.mjs"), /\["posts", "\/basics\/"\]/);
   assert.doesNotMatch(read("scripts/newsletter-send.mjs"), /\/posts\/\$\{slug\}\//);
   assert.doesNotMatch(read("app/components/engage/PostEngage.tsx"), /\/posts\//);
   assert.doesNotMatch(read("scripts/postbuild.mjs"), /\/posts\/\$\{p\.slug\}/);
