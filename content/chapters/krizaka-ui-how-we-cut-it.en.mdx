@@ -41,7 +41,7 @@ Everything is in [krizaka-ui](https://github.com/krizaka/krizaka-ui), and the ma
 
 On the evening of 11 October I counted what our apps were writing by hand. This is [ADR-001](https://github.com/krizaka/krizaka-ui/blob/main/docs/adr/ADR-001-tanstack-under-krizaka-facades.md), and the numbers stopped me.
 
-In the products: 36 hand-written forms, 42 tables, 23 mobile lists without serious virtualisation. Orochia's web app carried about 3,000 lines of home-made server state, with its own realtime client that reconnects by itself. Orazaka used the query library in 3 places, over 3,456 lines of hooks. The kit itself rewrote a data table (449 lines, sorting and selection only), a pagination, a regex code highlighter, and its charts sat on ECharts, 157 kB gzipped.
+In the products: 36 hand-written forms, 42 tables, 23 mobile lists without serious virtualisation. One product's web app carried about 3,000 lines of home-made server state, with its own realtime client that reconnects by itself. Orazaka used the query library in 3 places, over 3,456 lines of hooks. The kit itself rewrote a data table (449 lines, sorting and selection only), a pagination, a regex code highlighter, and its charts sat on ECharts, 157 kB gzipped.
 
 It is not an indictment. Each app had moved on its own, and each was right to do so at its moment. But the sum was clear: we were rewriting the same thing everywhere, a little different each time.
 

@@ -4,7 +4,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import matter from "gray-matter";
 import { internalLinkProblems } from "../scripts/content-rules.mjs";
 
-/* « Les bases » (the shelf of five posts) lives at /basics/<slug>/ (EN) and /fr/basics/<slug>/ (FR), with an index at /basics/
+/* « Les bases » (the shelf of four posts) lives at /basics/<slug>/ (EN) and /fr/basics/<slug>/ (FR), with an index at /basics/
    and /fr/basics/. The series are retired: each series address is a stub to the story or to the shelf (lib/redirects.json). */
 const read = (file) => readFileSync(new URL(`../${file}`, import.meta.url), "utf8");
 const messages = { en: JSON.parse(read("messages/en.json")), fr: JSON.parse(read("messages/fr.json")) };
@@ -14,10 +14,9 @@ const SHELF = [
   "ai-model-families-and-why-you-need-a-gpu",
   "anatomy-of-an-ai-prompt",
   "is-that-ai-model-really-open-source",
-  "payments-and-high-risk-industries",
 ];
 
-test("the shelf's five posts are in content/posts in both languages, without a series", () => {
+test("the shelf's four posts are in content/posts in both languages, without a series", () => {
   for (const slug of SHELF) {
     for (const l of ["en", "fr"]) {
       const file = new URL(`../content/posts/${slug}.${l}.mdx`, import.meta.url);
@@ -38,7 +37,14 @@ test("the shelf's posts are served at /basics/<slug>/ and /fr/basics/<slug>/, an
   assert.ok(existsSync(new URL("../app/fr/basics/page.tsx", import.meta.url)), "FR index");
   for (const l of ["en", "fr"]) {
     const route = read(l === "en" ? "app/(en)/basics/[slug]/page.tsx" : "app/fr/basics/[slug]/page.tsx");
-    assert.match(route, /postsOf\("[a-z]+"\)\.map/, `${l} route generates the live posts`);
+    assert.match(route, new RegExp(`basicsRoute\\("${l}"\\)`), `${l} route binds its language to the shared route`);
+  }
+  assert.match(
+    read("app/components/pages/BasicsRoute.tsx"),
+    /postsOf\(locale\)\.map/,
+    "the shared route generates the live posts",
+  );
+  {
   }
 });
 
@@ -80,6 +86,8 @@ test("each shelf slug is redirected from its old /posts/ address to /basics/, an
   }
   for (const [slug, targets] of Object.entries(map)) {
     if (slug.startsWith("series:") || slug.startsWith("page:") || SHELF.includes(slug)) continue;
+    // A withdrawn post (krizaka/.github#413) goes to the shelf (/basics/).
+    if (targets.en === "/basics/" && targets.fr === "/fr/basics/") continue;
     assert.match(targets.en, /^\/story\//, `${slug} goes to a chapter`);
     assert.match(targets.fr, /^\/fr\/story\//, `${slug} goes to a chapter in FR`);
   }
@@ -127,4 +135,12 @@ test("home and /basics/ show the path as BasicsPath, with the intro; no nav entr
     assert.ok(b.for && b.startHere && b.step.includes("{n}") && b.step.includes("{total}"), `${l} words`);
   }
   assert.doesNotMatch(read("app/components/TopBar.tsx"), /basics/i);
+});
+
+test("a withdrawn basic keeps a stub at its address, to the shelf (krizaka/.github#413)", () => {
+  const key = "page:/basics/payments-and-high-risk-industries/";
+  assert.deepEqual(map[key], { en: "/basics/", fr: "/fr/basics/" });
+  for (const l of ["en", "fr"])
+    assert.ok(!existsSync(new URL(`../content/posts/payments-and-high-risk-industries.${l}.mdx`, import.meta.url)), l);
+  assert.match(read("app/components/pages/BasicsRoute.tsx"), /retiredPagesUnder\("\/basics\/"\)/);
 });

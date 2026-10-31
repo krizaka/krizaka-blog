@@ -7,7 +7,6 @@ export const BASICS_PATH = [
   "anatomy-of-an-ai-prompt",
   "ai-model-families-and-why-you-need-a-gpu",
   "is-that-ai-model-really-open-source",
-  "payments-and-high-risk-industries",
 ] as const;
 
 export function basicsInOrder(posts: Post[]): Post[] {
