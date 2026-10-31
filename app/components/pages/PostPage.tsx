@@ -25,6 +25,8 @@ import { Byline } from "./Byline";
 import { Button } from "@krizaka/ui/button";
 import { RssMark } from "../RssMark";
 import { CoverImage } from "./CoverImage";
+import { MarkRead } from "./PathMark";
+import { BASICS_PATH } from "@/lib/basics";
 
 /* One post, a reading page: a hairline that follows the reading, the title block (topic and series, h1, lead, who wrote it,
    when, how long), the cover, the body at a reading measure with its contents in a sticky column (desktop), the previous and next parts of its series, and related posts. */
@@ -81,6 +83,7 @@ export default function PostPage({ post }: { post: Post }) {
   return (
     <>
       <div className="bl-progress" aria-hidden="true" />
+      {(BASICS_PATH as readonly string[]).includes(post.slug) && <MarkRead slug={post.slug} />}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(postJsonLd(post)) }} />
       <PageHero
         back={{ href: localizedPath(locale, "/"), label: t.post.back }}

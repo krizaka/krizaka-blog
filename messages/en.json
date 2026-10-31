@@ -358,8 +358,10 @@
     "takeChapters": "{n} chapters"
   },
   "basics": {
-    "for": "For anyone who is new to AI or to taking payments. No prior knowledge; each read stands on its own, and the order is only the easiest way in.",
+    "for": "For anyone who is new to AI. No prior knowledge; each read stands on its own, and the order is only the easiest way in.",
     "startHere": "Start here",
+    "next": "Next",
+    "read": "Read",
     "step": "Read {n} of {total}",
     "story": "Back to the story"
   },

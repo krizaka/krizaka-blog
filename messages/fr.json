@@ -358,8 +358,10 @@
     "takeChapters": "{n} chapitres"
   },
   "basics": {
-    "for": "Pour qui découvre l’IA ou l’encaissement. Aucun prérequis; chaque lecture tient seule, et l’ordre est seulement la voie la plus simple.",
+    "for": "Pour qui découvre l’IA. Aucun prérequis; chaque lecture tient seule, et l’ordre est seulement la voie la plus simple.",
     "startHere": "Commencer ici",
+    "next": "Ensuite",
+    "read": "Lu",
     "step": "Lecture {n} sur {total}",
     "story": "Retour à l’histoire"
   },

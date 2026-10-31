@@ -144,3 +144,31 @@ test("a withdrawn basic keeps a stub at its address, to the shelf (krizaka/.gith
     assert.ok(!existsSync(new URL(`../content/posts/payments-and-high-risk-industries.${l}.mdx`, import.meta.url)), l);
   assert.match(read("app/components/pages/BasicsRoute.tsx"), /retiredPagesUnder\("\/basics\/"\)/);
 });
+
+test("the path is a compact list: one link a row, read marks stay on the device, « Start here » and « Next » in both languages", () => {
+  const path = read("app/components/pages/BasicsPath.tsx");
+  assert.match(path, /<StepState /);
+  assert.match(path, /bl-path-link/);
+  assert.match(
+    path,
+    /\[a-z0-9\]\+\(\?:-\[a-z0-9\]\+\)\*\$\/\.test\(p\.slug\)/,
+    "a link only takes a slug of letters, digits and dashes (CodeQL stored-xss)",
+  );
+  assert.doesNotMatch(path, /PostCard/, "no big card in the path");
+  const store = read("lib/read-store.ts");
+  assert.match(store, /localStorage/);
+  assert.doesNotMatch(store, /fetch\(/, "the read marks are never sent anywhere");
+  assert.match(read("app/components/pages/PostPage.tsx"), /<MarkRead slug=\{post\.slug\} \/>/);
+  for (const l of ["en", "fr"]) {
+    const b = messages[l].basics;
+    assert.ok(b.startHere && b.next && b.read, `${l} labels`);
+  }
+});
+
+test("the path wears the series' art: a basic's cover is one of the chapters' covers, not a photo", () => {
+  const onPath = [...read("lib/basics.ts").matchAll(/^\s+"([a-z0-9-]+)",$/gm)].map((m) => m[1]);
+  assert.ok(onPath.length >= 4, "the path lists its reads");
+  for (const slug of onPath)
+    for (const l of ["en", "fr"])
+      assert.match(read(`content/posts/${slug}.${l}.mdx`), /^cover: series-\d\d-/m, `${slug}.${l}`);
+});

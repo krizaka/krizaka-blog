@@ -103,6 +103,25 @@ const titleOverflow = () => {
 
 const LAYOUT_CHECKS = [sidewaysScroll, chromePastEdge, contentPastEdge, bylineActions, titleOverflow];
 
+/* The basics' path (krizaka-internal#1869): at 1440×900 the whole ordered list fits one screen below the bar (so it reads in five
+   seconds), its steps read 01 → N in the DOM and top to bottom on the page, each with its one link. */
+const BASICS_FIT = { width: 1440, height: 900, max: 560 };
+const basicsPathFits = ({ max }) => {
+  const ol = document.querySelector("ol.bl-path");
+  if (!ol) return ["no basics path (ol.bl-path)"];
+  const out = [];
+  const box = ol.getBoundingClientRect();
+  if (box.height > max) out.push(`the path is ${Math.round(box.height)} px tall (max ${max}): it must fit one screen`);
+  const steps = [...ol.querySelectorAll(":scope > li")];
+  const tops = steps.map((li) => li.getBoundingClientRect().top);
+  const numbers = steps.map((li) => li.querySelector(".bl-path-no")?.textContent?.trim());
+  if (steps.length === 0) out.push("the path has no step");
+  if (numbers.some((n, i) => n !== String(i + 1).padStart(2, "0"))) out.push(`steps are numbered ${numbers.join(" ")}`);
+  if (tops.some((t, i) => i > 0 && t <= tops[i - 1])) out.push("the steps do not run top to bottom");
+  if (steps.some((li) => li.querySelectorAll("a.bl-path-link").length !== 1)) out.push("a step lacks its one link");
+  return out;
+};
+
 const ring = () => {
   const a = document.activeElement;
   const c = getComputedStyle(a);
@@ -118,6 +137,14 @@ const ring = () => {
 const problems = [];
 const browser = await chromium.launch();
 try {
+  for (const path of ["/basics/", "/fr/basics/", "/", "/fr/"]) {
+    const page = await browser.newPage({ viewport: { width: BASICS_FIT.width, height: BASICS_FIT.height } });
+    await page.goto(base + path, { waitUntil: "networkidle" });
+    await page.evaluate(() => document.fonts.ready);
+    for (const p of await page.evaluate(basicsPathFits, BASICS_FIT))
+      problems.push(`${path} @${BASICS_FIT.width}: ${p}`);
+    await page.close();
+  }
   for (const path of paths) {
     for (const width of WIDTHS) {
       const page = await browser.newPage({ viewport: { width, height: 900 } });
