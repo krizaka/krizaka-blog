@@ -63,6 +63,12 @@ In between sits **Spring AI 2**, the library that talks to model providers. We u
 
 **What we refuse:** LangChain4j, LangGraph4j, a second workflow engine, and `StructuredTaskScope` while it is a preview API. The reason is the same each time: two ways of doing one thing means two upgrade trains and two places where a run's state can drift apart. We already paid for the move to Spring AI 2. We already have a graph of steps, with its saga, its approvals and its credit holds. We do not want a second one.
 
+<Split label="We own the core, we integrate the edges (ADR-092): what Orazaka keeps, what it plugs in as it is, what it refuses.">
+  <Side title="We own" tone="own" items="The orchestration: a graph of typed steps | The control loop | The GPU lease | Live steering | Access, checked at retrieval and at the tool" />
+  <Side title="We plug in" tone="plug" items="MCP, through the official SDK | RabbitMQ and the outbox | The Python media worker | Spring AI 2, behind our ports" />
+  <Side title="We refuse" tone="refuse" items="LangChain4j | LangGraph4j | A second workflow engine | StructuredTaskScope while it is a preview" />
+</Split>
+
 ## One request, end to end
 
 The [orazaka](https://github.com/krizaka/orazaka) workspace brings together 20 repositories: reusable Krizaka building blocks (users, notifications, billing), the foundations (contracts, edge), the AI engine, the clients (web, mobile, command line), the media worker and the packs.
@@ -88,10 +94,12 @@ This is the part that matters most to me, and the one with the most work ahead o
 
 The idea is simple. A model produces an output. Before we hand it to anyone, we judge it. And we do not ask a model what a rule can check. Here is the intended order, for every step:
 
-1. **Deterministic checks first.** The schema holds, the file exists and can be read, the duration and the proportions are right. No model, no token. Target: under 10 ms.
-2. **A semantic judge next.** A model reads the output and returns a drift score: how far it strays from what was asked. It never runs on an output that step 1 rejected.
-3. **A correction, with the diff.** If the drift is above the threshold, we regenerate, telling the model what is wrong. At most K tries, and an error memory refuses a correction that repeats a failure already seen.
-4. **A human, last.** After K tries, or from the start when the policy says so, the decision goes to a person.
+<Pipeline label="The intended control loop of a step: rules before models, a person last">
+  <Stage title="Deterministic checks" note="first, no model">The schema holds, the file exists and can be read, the duration and the proportions are right. No token. Target: under 10 ms.</Stage>
+  <Stage title="A semantic judge" note="a drift score">A model reads the output and says how far it strays from what was asked. It never runs on an output the checks rejected.</Stage>
+  <Stage title="A correction" note="at most K tries" tone="gate">Above the threshold, we regenerate, telling the model what is wrong. An error memory refuses a correction that repeats a failure already seen.</Stage>
+  <Stage title="A human" note="last" tone="ship">After K tries, or from the start when the policy says so, the decision goes to a person.</Stage>
+</Pipeline>
 
 Every judgement is a typed verdict: `Validated`, `DriftAdjustment` or `HumanEscalation`. That is not a code detail. A typed verdict is written to the run's log, can be counted, can be read back. The thresholds, K and the policies are database rows that an administrator sets, not `if`s in the Java.
 

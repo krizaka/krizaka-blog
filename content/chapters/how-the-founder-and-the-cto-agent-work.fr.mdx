@@ -42,6 +42,11 @@ Moi, je fixe la direction, et je décide ce qui m'appartient : ce qui touche à 
 
 L'agent CTO décide le reste, à condition que ce soit réversible. Il choisit un ordre de travail, tranche un détail de conception, reporte une chose pour en faire une autre. Quand une dépense est possible, elle a un plafond écrit. Et dès que c'est irréversible ou payant, il s'arrête et me pose la question, au lieu de deviner.
 
+<Split label="Qui décide quoi. Ce qui ne se défait pas est à moi ; l'agent tranche ce qui peut se défaire, et s'arrête pour demander avant tout ce qui est payant ou irréversible.">
+  <Side title="À moi" tone="own" items="La direction | L'argent, les comptes, le juridique | Ce qu'on garde et ce qu'on abandonne | Tout ce qui ne se défait pas" />
+  <Side title="À l'agent CTO" tone="plug" items="L'ordre du travail | Un détail de design | Reporter une chose pour en faire une autre | Une dépense, sous un plafond écrit | Un rapport toutes les 3 heures, avec une prévision" />
+</Split>
+
 Toutes les 3 heures, il me fait un rapport : ce qui est fini, ce qui est en cours, ce qui bloque, et une prévision. Pas une promesse de date, une prévision, avec l'écart par rapport à la dernière. J'ai interdit les « ce soir » et les « demain » : on dit ce qui est fait, et ce qui vient ensuite, dans l'ordre.
 
 Ce partage est écrit, pour que chaque session le retrouve : ce qui est à moi d'un côté, ce que l'agent peut trancher seul de l'autre. Sans ça, il faudrait me le redemander à chaque fois, ou pire, deviner.
@@ -57,6 +62,13 @@ La réponse a été de couper en quatre voies : Plateforme, Yomizaka, Akinaza, O
 ## Tout est une issue
 
 Rien ne démarre sans une issue sur GitHub. Elles vivent toutes sur un seul tableau, et elles ont 3 étages : une épopée, qui est un grand objectif, des fonctionnalités dedans, et sous chaque fonctionnalité des tâches et des bogues. Chaque PR ferme ou référence une de ces tâches, donc la progression d'une fonctionnalité se lit sans que personne ait à la recalculer.
+
+<Layers label="Un seul tableau, trois niveaux. Chaque pull request ferme ou cite une Task ou un Bug, si bien que l'avancement d'une Feature se lit tout seul.">
+  <Layer tag="Epic" title="Un grand objectif" note="Ce qu'il en reste, c'est la vue que j'ouvre le plus." />
+  <Layer tag="Feature" title="Un livrable dans l'Epic" note="Son avancement se lit dans ses sous-issues." level="1" />
+  <Layer tag="Task" title="Un morceau de travail, une session" note="Fermé par une pull request." level="2" />
+  <Layer tag="Bug" title="Quelque chose de cassé" note="Corrigé test d'abord, avec sa garde." level="2" />
+</Layers>
 
 Il y a une règle qui m'a coûté cher à apprendre, et que j'aime bien : ce que l'agent trouve en route n'est pas une nouvelle carte du tableau par défaut. S'il est dans le périmètre, il le corrige. S'il est voisin, il l'ajoute en case à cocher de l'issue en cours. Sinon, il le range dans une colonne d'incubation que le tableau ne compte pas. Sans ça, un chantier qui se termine en laisse trois nouveaux, et le compteur ne descend jamais. Le tableau doit montrer le travail que les agents exécutent, pas le travail dont on rêve.
 
@@ -85,6 +97,14 @@ On y voit d'abord le rapport du jour : ce qui s'est passé depuis le dernier, et
 ## Les vrais moments
 
 Le plus fréquent, c'est ça : je teste une de nos applis sur mon téléphone, et quelque chose cloche. Je fais une capture, je l'envoie avec une phrase. L'agent CTO la transforme en issue, la range dans la bonne voie, et la session qui la prend écrit d'abord un test qui reproduit ce que j'ai vu. Puis le correctif, puis la question du garde.
+
+<Pipeline label="Le moment réel le plus fréquent : d'une capture sur mon téléphone à une garde">
+  <Stage title="Une capture" note="depuis mon téléphone">Quelque chose cloche dans une de nos apps : une capture et une phrase.</Stage>
+  <Stage title="Une issue" note="dans sa voie">L'agent CTO en fait une issue et la range dans la bonne voie.</Stage>
+  <Stage title="Un test qui échoue" note="d'abord" tone="gate">La session qui le prend reproduit ce que j'ai vu avant de toucher au code.</Stage>
+  <Stage title="La correction" note="le test passe au vert">Le test reste, comme preuve.</Stage>
+  <Stage title="La garde" note="pourquoi aucune garde ne l'a vu ?" tone="ship">Une règle de lint, un test d'architecture ou un audit de page, qui échoue sur main avant la correction.</Stage>
+</Pipeline>
 
 Un exemple récent, sur le blog que vous lisez. Un lien de confirmation d'abonnement me disait « lien expiré » alors qu'il ne l'était pas. En lisant le code, on a vu que toute erreur, une configuration manquante, une base injoignable, un jeton abîmé, une vraie expiration, renvoyait vers la même page « expiré ». Un lecteur avec un lien valide pouvait donc lire un mensonge parce que notre liste était indisponible. Le correctif sépare maintenant les cas : confirmé, expiré pour de vrai, lien invalide, et « réessayez » avec une trace dans les journaux quand c'est nous qui avons un problème. Chacun a son test, et un test suit le lien depuis le courriel jusqu'à la confirmation. On a ensuite reproduit les cas sur une vraie base locale avant de croire le résultat.
 

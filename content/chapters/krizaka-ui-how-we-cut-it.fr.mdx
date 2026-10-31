@@ -52,12 +52,12 @@ Toutes les coupes qui suivent répondent à la même question : où cette chose 
 
 Le dépôt contient aujourd'hui 19 paquets. La règle de placement tient en trois niveaux, et pas un de plus.
 
-| Niveau | Où | Ce qu'on y met |
-|:---|:---|:---|
-| 0, fondations | `@krizaka/tokens`, `@krizaka/tailwind` | Les jetons de design (`--kz-*`), le préréglage Tailwind. Aucun composant. |
-| 0, briques de plateforme | `intl`, `i18n`, `realtime`, `query`, `push`, `pacer`, `discovery`, `payments`, `email`, `app-config`… | Du code sans interface que chaque produit veut de la même façon : formats, messages, temps réel, état du serveur, notifications, paiements. |
-| 1, primitives | `@krizaka/ui/*` | Tout composant sans vocabulaire de produit : bouton, carte, boîte de dialogue, onglets. Les mots arrivent par les props. |
-| 2, composites de produit | un dépôt par produit | Le thème du produit et les composants qui portent son vocabulaire. Jamais une primitive copiée. |
+<Layers label="Les trois niveaux de Krizaka UI. Seuls les niveaux 0 et 1 vivent dans son dépôt ; les mots d'un produit restent au niveau 2.">
+  <Layer tag="0" title="Fondations" note="Les jetons de design et le préréglage Tailwind. Aucun composant." items="@krizaka/tokens | @krizaka/tailwind" />
+  <Layer tag="0" title="Briques de plateforme" note="Du code sans interface que chaque produit veut de la même façon : formats, messages, temps réel, état du serveur, notifications, paiements." items="intl | i18n | realtime | query | push | pacer | payments | email…" />
+  <Layer tag="1" title="Primitives" note="Tout composant sans vocabulaire de produit. Les mots arrivent par les props." items="@krizaka/ui/button | card | dialog | tabs…" />
+  <Layer tag="2" title="Composites de produit" note="Un dépôt par produit : son thème et les composants qui portent son vocabulaire. Jamais une primitive copiée." />
+</Layers>
 
 Le test de placement est une question : *un autre produit pourrait-il l'utiliser sans changer un mot ni un type ?* Oui, c'est le niveau 1. Est-ce que ça porte l'identité ou le domaine d'un produit ? C'est le niveau 2. Sinon, c'est une fonction de l'application. Seuls les niveaux 0 et 1 vivent dans ce dépôt.
 
@@ -109,6 +109,14 @@ Ce n'est pas une règle qu'on espère voir respectée. `krizakaStack()` (ESLint)
 
 Une bibliothèque partagée ne vaut que si la mise à jour est sans peur. Tout passe par des changesets : une pull request qui change ce qu'un paquet livre ajoute une note. Sur `main`, un robot ouvre une pull request « version packages ». La fusionner publie sur npm, avec une publication de confiance (OIDC) et une provenance, sans aucun jeton npm dans les secrets.
 
+<Pipeline label="Le chemin d'une version de Krizaka UI, d'une pull request jusqu'aux produits">
+  <Stage title="Un changeset" note="dans la pull request">Une pull request qui change ce qu'un paquet livre ajoute une note.</Stage>
+  <Stage title="La PR de version" note="ouverte par un robot">Sur main, un robot rassemble les notes dans une pull request « version packages ».</Stage>
+  <Stage title="npm" note="OIDC, provenance" tone="gate">La fusionner publie, avec la publication de confiance et la provenance. Aucun jeton npm dans les secrets.</Stage>
+  <Stage title="Le test d'installation" note="chaque jour" tone="gate">Les paquets publiés, depuis npm, vont dans une vraie app Next.js, une app Expo et un script Node, et chaque exemple compile.</Stage>
+  <Stage title="Les produits" note="Renovate" tone="ship">Une pull request par version dans chaque produit ; les correctifs fusionnent seuls quand la CI est verte.</Stage>
+</Pipeline>
+
 Deux garde-fous qui ont leur histoire. Chaque jour, et après chaque version, un test installe les paquets publiés depuis npm (jamais depuis le workspace) dans une vraie application Next.js 16, une application Expo SDK 57 et un script Node, et fait compiler tous les exemples. Si ça casse, la version est mauvaise, même si les tests du dépôt sont verts. Et chaque produit reçoit les mises à jour par Renovate : une pull request par version de la plateforme, les correctifs fusionnés tout seuls quand la CI est verte.
 
 La politique de support est écrite dans `SUPPORT.md` : deux majeures supportées, la courante et la précédente, avec des correctifs six mois après la sortie de la suivante. Un composant retiré vit une version mineure entière en dépréciation, avec un avertissement en développement, et n'est supprimé qu'à la majeure suivante, avec un outil de migration automatique quand le changement est mécanique.
@@ -122,6 +130,8 @@ C'est la partie que je préfère garder, parce que chaque coupe est née d'une e
 - **Trop de composants.** Le 25 octobre, j'ai demandé qu'on réduise : « on en a un peu trop ». L'audit de l'[ADR-006](https://github.com/krizaka/krizaka-ui/blob/main/docs/adr/ADR-006-krizaka-ui-2027.md) a compté 187 entrées de `@krizaka/ui`, et regardé qui les importait dans 24 dépôts. Après l'audit, 145 restent, 14 fusionnent dans une autre, 28 sont dépréciées puis retirées. La règle qui en sort : une entrée existe parce qu'un produit ou un site l'importe, ou qu'un ticket de produit la demande, ou qu'une autre entrée gardée s'appuie dessus. Sinon, elle est dépréciée. Les retraits sont prévus pour la 4.0, pas encore faits.
 - **Un look qui trahissait son origine.** Le chapitre 5 en parle. L'ADR-003 en a tiré un bleu acier, une seule forme de bouton et un survol discret ; l'ADR-004, le Cahier.
 - **Une première publication qui bloque.** Le premier envoi d'un nouveau paquet sur npm demande que quelqu'un déclare une fois, à la main, l'éditeur de confiance. C'est écrit dans le contrat du dépôt.
+
+<Bars label="L'audit de l'ADR-006 : les 187 entrées de @krizaka/ui, confrontées à qui les importe dans 24 dépôts." source="ADR-006, 25 octobre. Les retraits sont prévus pour la 4.0, pas encore faits." format="integer" series="Entrées:accent" data="Gardées=145; Fusionnées dans une autre=14; Dépréciées, puis retirées=28" />
 
 Et une décision en cours, que je ne tranche pas ici. L'[ADR-007](https://github.com/krizaka/krizaka-ui/blob/main/docs/adr/ADR-007-shop-composer.md), du 26 octobre, est encore une proposition : décrire une page de boutique comme des sections, des variantes et des blocs en données, pour que le propriétaire choisisse comment chaque section se dessine. Le point de départ est une mesure sur la page de démonstration d'un salon, sur dev : 7 355 px de haut sur ordinateur, 12,7 écrans sur téléphone, 3 photos différentes pour 9 emplacements. Ce n'est pas un problème de couleur. C'est que la page était un fichier fixe, où chaque section choisissait sa largeur, son rythme et sa photo.
 

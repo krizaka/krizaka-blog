@@ -366,5 +366,11 @@
     "startHere": "Start here",
     "step": "Read {n} of {total}",
     "story": "Back to the story"
+  },
+  "bars": {
+    "bar": "Bar chart",
+    "category": "Item",
+    "value": "Value",
+    "total": "Total"
   }
 }

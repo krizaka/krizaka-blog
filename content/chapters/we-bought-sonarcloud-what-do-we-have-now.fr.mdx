@@ -69,6 +69,11 @@ Au premier passage de l'analyse en CI, Sonar n'avait aucune version de référen
 
 Notre période de nouveau code est « version précédente » : Sonar juge ce qui a changé depuis la dernière version connue. Sans version, il n'y a pas de précédente. La correction est petite. [.github#354](https://github.com/krizaka/.github/pull/354) donne à chaque analyse de la CI une version, `ci-` suivi du numéro d'exécution, pour que la période soit le changement depuis l'analyse d'avant. Les défauts anciens restent visibles. Ils ne rendent plus la porte rouge à chaque PR. Dans l'historique des analyses de krizaka-ui, on voit les analyses « not provided », puis l'événement de version, quelques heures plus tard.
 
+<Split label="Pourquoi les portes sont passées au rouge, et la petite correction (.github#354) : Sonar juge le nouveau code depuis la version précédente, il lui faut donc une version.">
+  <Side title="Pas de version" tone="before" items="Sonar affiche « not provided » | Tout l'historique compte comme du nouveau code | Chaque vieux défaut est imputé au dernier changement | Des portes rouges partout d'un coup" />
+  <Side title="Une version par analyse" tone="after" items="Chaque analyse de la CI a une version : ci- et le numéro d'exécution | Le nouveau code, c'est ce qui a changé depuis l'analyse d'avant | Les vieux défauts restent visibles | La porte juge le changement" />
+</Split>
+
 Ce que j'en retiens : un outil acheté ne règle pas sa propre configuration. On a payé pour une porte, et la première chose qu'elle a faite, c'est dire non à tout.
 
 ## Ce que disent les chiffres
@@ -80,6 +85,8 @@ Dans krizaka-ui, la PR [krizaka-ui#781](https://github.com/krizaka/krizaka-ui/pu
 Sur les 9 dépôts que j'ai relus, la porte est verte dans 5 : krizaka-com, krizaka-ts, akinaza, yomizaka et orazaka-ai-engine. Elle est rouge dans 4 : krizaka-ui, krizaka-blog, le dépôt .github et krizaka-build. Dans les quatre cas, la porte échoue sur le nouveau code, d'abord sur des problèmes critiques, pas sur l'ancien. Je ne les ai pas contournés, et je ne les cache pas ici.
 
 Côté couverture, ce que Sonar reçoit maintenant : 78,9 % pour le blog que vous lisez, 68,5 % pour krizaka-com, 54,1 % pour krizaka-build, 39,5 % pour akinaza et 39,3 % pour yomizaka. Pour krizaka-ts, l'API affiche 0,0 % : le rapport n'y est pas encore envoyé, et nos standards le notent comme un trou connu. Pour krizaka-ui, il n'y a pas de chiffre du tout.
+
+<Bars label="La couverture de tests que Sonar reçoit maintenant, par dépôt, lue sur l'API publique de SonarCloud le 28 octobre." source="krizaka-ts affiche 0,0 % : son rapport n'est pas encore envoyé. krizaka-ui n'a aucun chiffre." format="number" series="Couverture, en %:accent" data="krizaka-blog=78.9; krizaka-com=68.5; krizaka-build=54.1; akinaza=39.5; yomizaka=39.3" />
 
 Ces nombres ne disent pas que le code est bon. Ils disent à quel endroit on regarde, ce qu'on ne regarde pas encore, et si ça progresse d'une semaine à l'autre. C'est pour ça que je les relis le jour où j'écris.
 

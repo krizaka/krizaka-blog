@@ -11,6 +11,9 @@ import { Clip } from "./Clip";
 import { Figure } from "./Figure";
 import { IssueCurve } from "./IssueCurve";
 import { Pipeline } from "./Pipeline";
+import { Split } from "./Split";
+import { Layers } from "./Layers";
+import { Bars } from "./Bars";
 import { Utilization } from "./Utilization";
 
 /** The text of a fenced block as MDX hands it over: `<pre><code className="language-x">text</code></pre>`. */
@@ -181,6 +184,35 @@ export function mdxComponentsFor(locale: Locale) {
       />
     ),
     Stage: () => null,
+    /* Figures drawn from the tokens (lib/figures.ts parses their string props), each its own text version, framed on a plate
+       with its caption: <Split label><Side title tone items/></Split>, <Layers label><Layer tag title note items level/></Layers>,
+       <Bars label source format stacked series data/>. */
+    Split: ({ label, children }: { label: string; children: ReactNode }) => (
+      <Split label={label} sides={childProps<{ title: string; tone?: string; items?: string }>(children)} />
+    ),
+    Side: () => null,
+    /* <Plate label>…</Plate>: a framed figure around blocks that are not a figure themselves (CodeTabs of real excerpts). */
+    Plate: ({ label, children }: { label: string; children: ReactNode }) => (
+      <figure className="bl-plate" data-reveal="soft">
+        <div className="bl-plate-paper">{children}</div>
+        <figcaption>{label}</figcaption>
+      </figure>
+    ),
+    Layers: ({ label, children }: { label: string; children: ReactNode }) => (
+      <Layers
+        label={label}
+        layers={childProps<{ tag?: string; title: string; note?: string; items?: string; level?: string }>(children)}
+      />
+    ),
+    Layer: () => null,
+    Bars: (props: {
+      label: string;
+      source?: string;
+      format?: string;
+      stacked?: string;
+      series: string;
+      data: string;
+    }) => <Bars {...props} locale={locale} />,
     Row: ({ children }: { children: React.ReactNode }) => <div className="bl-row">{children}</div>,
     /* A model named in a post, linked to its official page (lib/models.ts) — the first mention; the lint checks it. */
     Model: ({ id, children }: { id: string; children: ReactNode }) => (

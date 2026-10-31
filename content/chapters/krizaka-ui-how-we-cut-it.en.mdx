@@ -51,12 +51,12 @@ Every cut that follows answers the same question: where should this thing live s
 
 The repository holds 19 packages today. The placement rule has three levels, and no more.
 
-| Level | Where | What goes in |
-|:---|:---|:---|
-| 0, foundations | `@krizaka/tokens`, `@krizaka/tailwind` | The design tokens (`--kz-*`), the Tailwind preset. No components. |
-| 0, platform bricks | `intl`, `i18n`, `realtime`, `query`, `push`, `pacer`, `discovery`, `payments`, `email`, `app-config`… | Code without an interface that every product wants the same way: formats, messages, realtime, server state, notifications, payments. |
-| 1, primitives | `@krizaka/ui/*` | Any component with no product vocabulary: button, card, dialog, tabs. Words arrive through props. |
-| 2, product composites | one repository per product | The product's theme and the components that carry its vocabulary. Never a copied primitive. |
+<Layers label="The three levels of Krizaka UI. Only levels 0 and 1 live in its repository; a product's own words stay at level 2.">
+  <Layer tag="0" title="Foundations" note="The design tokens and the Tailwind preset. No components." items="@krizaka/tokens | @krizaka/tailwind" />
+  <Layer tag="0" title="Platform bricks" note="Code without an interface that every product wants the same way: formats, messages, realtime, server state, notifications, payments." items="intl | i18n | realtime | query | push | pacer | payments | email…" />
+  <Layer tag="1" title="Primitives" note="Any component with no product vocabulary. Words arrive through props." items="@krizaka/ui/button | card | dialog | tabs…" />
+  <Layer tag="2" title="Product composites" note="One repository per product: its theme and the components that carry its vocabulary. Never a copied primitive." />
+</Layers>
 
 The placement test is a question: *could another product use it without changing a word or a type?* If yes, level 1. Does it carry a product's identity or domain? Level 2. Otherwise it is an app feature. Only levels 0 and 1 live in this repository.
 
@@ -108,6 +108,14 @@ It is not a rule we hope to see respected. `krizakaStack()` (ESLint) warns, `kri
 
 A shared library is only worth it if updating is fearless. Everything goes through changesets: a pull request that changes what a package ships adds a note. On `main`, a bot opens a "version packages" pull request. Merging it publishes to npm, with trusted publishing (OIDC) and provenance, and no npm token in the secrets.
 
+<Pipeline label="The path of a Krizaka UI release, from a pull request to the products">
+  <Stage title="A changeset" note="in the pull request">A pull request that changes what a package ships adds a note.</Stage>
+  <Stage title="The version PR" note="opened by a bot">On main, a bot gathers the notes in a « version packages » pull request.</Stage>
+  <Stage title="npm" note="OIDC, provenance" tone="gate">Merging it publishes, with trusted publishing and provenance. No npm token in the secrets.</Stage>
+  <Stage title="The install test" note="every day" tone="gate">The published packages, from npm, go into a real Next.js app, an Expo app and a Node script, and every example compiles.</Stage>
+  <Stage title="The products" note="Renovate" tone="ship">One pull request per release in each product; fixes merge on their own when CI is green.</Stage>
+</Pipeline>
+
 Two safeguards that have their history. Every day, and after every release, a test installs the published packages from npm (never from the workspace) into a real Next.js 16 app, an Expo SDK 57 app and a Node script, and compiles every example. If that breaks, the release is bad, even if the repository's own tests are green. And each product receives updates through Renovate: one pull request per platform release, fixes merged on their own when CI is green.
 
 The support policy is written in `SUPPORT.md`: two supported majors, the current one and the previous one, with fixes for six months after the next one ships. A removed component lives a full minor version as deprecated, with a warning in development, and is only deleted in the next major, with an automatic migration tool when the change is mechanical.
@@ -121,6 +129,8 @@ This is the part I like to keep, because each cut was born from a mistake.
 - **Too many components.** On 25 October I asked us to cut back: "we have a few too many". The audit of [ADR-006](https://github.com/krizaka/krizaka-ui/blob/main/docs/adr/ADR-006-krizaka-ui-2027.md) counted 187 entries of `@krizaka/ui` and checked who imported them across 24 repositories. After the audit, 145 remain, 14 merge into another, 28 are deprecated and then removed. The rule that comes out of it: an entry exists because a product or a site imports it, or a product ticket asks for it, or another kept entry builds on it. Otherwise it is deprecated. The removals are planned for 4.0 and not done yet.
 - **A look that gave away where it came from.** Chapter 5 covers it. ADR-003 drew from it a steel blue, a single button shape and a quiet hover; ADR-004, the Cahier.
 - **A first publication that blocks.** The first upload of a new package to npm needs someone to declare the trusted publisher by hand, once. It is written in the repository's contract.
+
+<Bars label="The audit of ADR-006: the 187 entries of @krizaka/ui, checked against who imports them in 24 repositories." source="ADR-006, 25 October. The removals are planned for 4.0, not done yet." format="integer" series="Entries:accent" data="Kept=145; Merged into another=14; Deprecated, then removed=28" />
 
 And a decision in progress, which I do not settle here. [ADR-007](https://github.com/krizaka/krizaka-ui/blob/main/docs/adr/ADR-007-shop-composer.md), dated 26 October, is still a proposal: describe a shop page as sections, variants and blocks in data, so that the owner chooses how each section is drawn. The starting point is a measurement on a salon's demo page, on dev: 7,355 px tall on a computer, 12.7 screens on a phone, 3 distinct photos for 9 slots. It is not a colour problem. The page was a fixed file, where each section chose its own width, rhythm and photo.
 

@@ -112,6 +112,93 @@ L'application Mac de Yomizaka, construite de la même façon, en a un. [`desktop
   caption="Mac (Yomizaka). Le parcours ouvre la bibliothèque, entre dans un dossier de démo, vérifie un bail de démo et suit les étapes de lecture, puis relance l'application. Ce que vous voyez : l'application installée qui lit un bail depuis un dossier local, pilotée par le test."
 />
 
+Comment c'est réglé, en quatre courts extraits copiés des dépôts tels qu'ils sont sur `main` ([akinaza à 3b8edca](https://github.com/krizaka/akinaza/tree/3b8edcaf/apps/mobile/.maestro), [yomizaka à 17753f7](https://github.com/krizaka/yomizaka/tree/17753f7b)). L'extrait du Mac est celui de Yomizaka : depuis que j'ai écrit les lignes ci-dessus, son application Mac a son premier parcours ([yomizaka#636](https://github.com/krizaka/yomizaka/issues/636)), piloté par WebDriver. Celle d'Akinaza pas encore.
+
+<Plate label="Comment les tests sont réglés. Maestro : le parcours de la journée, dont la visite est réservée par la CI pour ne jamais dépendre de l'horloge, et le lancement partagé, relancé le temps qu'un émulateur lent se pose. Playwright : la configuration des parcours, qui refuse toute relance d'un test. Mac : la version de débogage avec son WebDriver, puis le parcours.">
+
+<CodeTabs>
+<Tab label="Aujourd’hui">
+
+```yaml
+# Akinaza, Android: the day's appointments, then the two moves of a visit.
+# Never a flow that depends on the clock: the CI backend books a demo
+# visit today at "now + 1 h", so the visit is always listed.
+appId: com.krizaka.akinaza
+tags:
+  - ci
+---
+- runFlow: shared/launch.yaml
+- runFlow: shared/sign-in.yaml
+- assertVisible: "Aujourd'hui|Today"
+- extendedWaitUntil:
+    visible: ".*Visite chiot.*|.*Puppy visit.*"
+    timeout: 30000
+- takeScreenshot: aujourdhui
+- tapOn: ".*Visite chiot.*|.*Puppy visit.*"
+- assertVisible: "Qui|Who"
+- scrollUntilVisible:
+    element: "Commencer|Start"
+- tapOn: "Commencer|Start"
+```
+
+</Tab>
+<Tab label="Lancement">
+
+```yaml
+# A cold app that has painted its first screen. On a slow emulator the
+# old task can kill the process just launched: the launch is retried
+# until the app is there, signed out or signed in.
+appId: com.krizaka.akinaza
+---
+- retry:
+    maxRetries: 3
+    commands:
+      - launchApp:
+          clearState: true
+      - extendedWaitUntil:
+          visible: "Se connecter|Sign in|Aujourd'hui|Today"
+          timeout: 25000
+```
+
+</Tab>
+<Tab label="Playwright">
+
+```js
+// Yomizaka, web: the customer journeys, run as the seeded cast.
+import { assertNoRetries } from "@krizaka/page-audit/journey";
+import { defineConfig } from "@playwright/test";
+
+const config = {
+  testMatch: "**/*.journey.mjs",
+  workers: 2,
+  retries: 0, // a flaky journey is a bug: fixed, or quarantined with an issue, never retried
+  timeout: 90_000,
+  use: { baseURL: process.env.VISUAL_BASE_URL ?? "http://localhost:3000" },
+};
+assertNoRetries(config);
+export default defineConfig(config);
+```
+
+</Tab>
+<Tab label="Mac">
+
+```yaml
+# Yomizaka, Mac: a debug build with its embedded WebDriver
+# (cargo feature `webdriver`, never a release), then the journey.
+- name: Build the app with its test driver
+  working-directory: apps/desktop
+  env:
+    VITE_APP_ENV: dev
+  run: pnpm exec tauri build --debug --no-bundle --features webdriver
+- name: Run the journey
+  run: node scripts/desktop-journey.mjs --app apps/desktop/src-tauri/target/debug/yomizaka-desktop --out "$JOURNEY_OUT"
+```
+
+</Tab>
+</CodeTabs>
+
+</Plate>
+
 ## Des vidéos qui sortent des tests
 
 Les pages de téléchargement de nos produits montrent des vidéos des applications, et une vidéo filmée à la main vieillit dès la version suivante. Alors ce sont les tests qui les filment ([krizaka/.github#315](https://github.com/krizaka/.github/issues/315), règle [« app videos »](https://github.com/krizaka/.github/blob/main/docs/standards/app-videos.md)). Un seul parcours sert deux fois : à prouver, et à montrer.
@@ -133,6 +220,14 @@ Deux prises du web, de la même exécution verte :
 />
 
 Le workflow [`download-videos.yml`](https://github.com/krizaka/akinaza/blob/main/.github/workflows/download-videos.yml) tourne chaque nuit sur `main` et n'est jamais obligatoire, donc il ne peut bloquer aucune fusion. Le workflow partagé [`app-videos.yml`](https://github.com/krizaka/.github/blob/main/.github/workflows/app-videos.yml) encode en webm et mp4 avec une affiche (30 secondes au plus, sans son, 720 pixels de large au plus), envoie le tout sur notre stockage de médias sous un nom qui contient son empreinte, et ouvre une PR. Un test unitaire échoue si la page nomme une vidéo absente du manifeste ou plus vieille que 14 jours.
+
+<Pipeline label="Quand chaque test tourne, et quand il filme">
+  <Stage title="Pull request" note="chaque changement">Lint, tests unitaires, build ; les parcours Playwright sur le web, ceux de Maestro sur un émulateur Android. La porte mobile est un contrôle requis.</Stage>
+  <Stage title="File de fusion" note="merge_group" tone="gate">Les mêmes contrôles, sur la branche de la file : le changement avec le dernier main fusionné.</Stage>
+  <Stage title="main vert" note="après la fusion">Les parcours mobiles tournent encore une fois sur main.</Stage>
+  <Stage title="Chaque nuit" note="download-videos">Sur main, Playwright et Maestro filment les parcours : 30 secondes au plus, sans son, 720 pixels de large au plus.</Stage>
+  <Stage title="Les films" note="empreinte, puis une PR" tone="ship">Envoyés sur notre stockage de médias sous un nom qui porte leur empreinte ; une PR met à jour le manifeste, et un test échoue si une vidéo manque ou a plus de 14 jours.</Stage>
+</Pipeline>
 
 Un vrai exemple : celui de Yomizaka, [le rapport en 10,6 secondes](https://krizaka-assets.b-cdn.net/sites/yomizaka/download/web-report.2813a67179.mp4) (son [affiche](https://krizaka-assets.b-cdn.net/sites/yomizaka/download/web-report.3ca0931124.jpg)), pris le 27 octobre par le test lui-même. Il pèse 134 Ko.
 

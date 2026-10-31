@@ -50,6 +50,11 @@ Deux modèles ont reçu exactement le même prompt.
 
 **Gemini 3.8 Flash**, de Google, dans l'éditeur Antigravity, lancé le même soir. Son accès n'était pas le même : il a lu les dépôts avec l'outil en ligne de commande de GitHub, sur ma machine, et a interrogé l'API publique de SonarCloud. En tout, 143 étapes, dont 69 commandes (59 appels à GitHub, 10 à SonarCloud).
 
+<Split label="Le protocole : un seul prompt, écrit d'avance et publié, donné à deux modèles qui n'avaient pas le même accès.">
+  <Side title="Claude Opus 5.5" tone="own" items="La recherche web et la lecture de pages, rien d'autre | Des pages d'abord résumées par Claude Haiku 5.5 | Un dossier vide : aucun réglage, aucune mémoire | 39 tours, 5 minutes" />
+  <Side title="Gemini 3.8 Flash" tone="plug" items="L'outil en ligne de commande de GitHub, sur ma machine, avec ma connexion | L'API publique de SonarCloud | 143 étapes, dont 69 commandes" />
+</Split>
+
 <Numbers>
   <Num value="39" label="échanges" hint="lectures et réponses du modèle" />
   <Num value="5" label="minutes" hint="du lancement à la réponse" />
@@ -170,6 +175,14 @@ Un audit par une IA est une liste de pistes, pas un verdict. J'ai repris les aff
 Les chiffres des deux modèles étaient exacts. Deux affirmations de Gemini sont plus fortes que la réalité, et je l'écris dans le tableau. Le défaut du préfixe [`TIMEOUT`](https://github.com/krizaka/orazaka-job-service/blob/main/src/main/java/com/krizaka/orazaka/jobservice/infrastructure/adapter/amqp/JobListener.java#L696-L702) est réel. Un ticket existait déjà pour découper ce fichier ([orazaka-job-service#50](https://github.com/krizaka/orazaka-job-service/issues/50)), mais il ne parlait que du crochet de simulation, qui lui est bien protégé par un réglage. J'y ai ajouté ce que le modèle a trouvé : une ligne qui avait échappé à notre propre ticket. Je l'ai corrigé le soir même : un prompt ne choisit plus son propre délai, seule la simulation de test le peut, derrière son réglage ([orazaka-job-service#72](https://github.com/krizaka/orazaka-job-service/pull/72)).
 
 Je n'ai pas vérifié le reste. L'affirmation sur les tâches qui continuent après leur délai, par exemple, le modèle lui-même dit ne pas l'avoir vérifiée jusqu'au bout. Elle reste une piste.
+
+<Pipeline label="Une ligne trouvée par un modèle, suivie jusqu'à sa correction">
+  <Stage title="L'affirmation" note="Claude">Un prompt qui commence par TIMEOUT obtient un délai de cinq secondes, sans garde.</Stage>
+  <Stage title="Mesuré" note="lignes 696 à 702">Vrai sur main : aucune propriété ne le protège.</Stage>
+  <Stage title="Notre propre issue" note="orazaka-job-service#50">Le découpage du fichier était prévu, mais ne couvrait que le crochet de simulation. La ligne y a été ajoutée.</Stage>
+  <Stage title="La correction" note="orazaka-job-service#72" tone="ship">Un prompt ne choisit plus son propre délai ; seule la simulation de test le peut, derrière son réglage.</Stage>
+  <Stage title="Ce que ça apprend" note="aucune règle ne l'a vue" tone="gate">Nos garde-fous attrapent ce pour quoi on a écrit une règle. Cette ligne n'en enfreignait aucune.</Stage>
+</Pipeline>
 
 ## Les limites de l'exercice
 
