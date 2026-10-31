@@ -37,7 +37,14 @@ test("the shelf's posts are served at /basics/<slug>/ and /fr/basics/<slug>/, an
   assert.ok(existsSync(new URL("../app/fr/basics/page.tsx", import.meta.url)), "FR index");
   for (const l of ["en", "fr"]) {
     const route = read(l === "en" ? "app/(en)/basics/[slug]/page.tsx" : "app/fr/basics/[slug]/page.tsx");
-    assert.match(route, /postsOf\("[a-z]+"\)\.map/, `${l} route generates the live posts`);
+    assert.match(route, new RegExp(`basicsRoute\\("${l}"\\)`), `${l} route binds its language to the shared route`);
+  }
+  assert.match(
+    read("app/components/pages/BasicsRoute.tsx"),
+    /postsOf\(locale\)\.map/,
+    "the shared route generates the live posts",
+  );
+  {
   }
 });
 
@@ -135,6 +142,5 @@ test("a withdrawn basic keeps a stub at its address, to the shelf (krizaka/.gith
   assert.deepEqual(map[key], { en: "/basics/", fr: "/fr/basics/" });
   for (const l of ["en", "fr"])
     assert.ok(!existsSync(new URL(`../content/posts/payments-and-high-risk-industries.${l}.mdx`, import.meta.url)), l);
-  for (const route of ["app/(en)/basics/[slug]/page.tsx", "app/fr/basics/[slug]/page.tsx"])
-    assert.match(read(route), /retiredPagesUnder\("\/basics\/"\)/, route);
+  assert.match(read("app/components/pages/BasicsRoute.tsx"), /retiredPagesUnder\("\/basics\/"\)/);
 });
