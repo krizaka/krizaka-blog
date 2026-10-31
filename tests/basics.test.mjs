@@ -149,6 +149,11 @@ test("the path is a compact list: one link a row, read marks stay on the device,
   const path = read("app/components/pages/BasicsPath.tsx");
   assert.match(path, /<StepState /);
   assert.match(path, /bl-path-link/);
+  assert.match(
+    path,
+    /\[a-z0-9\]\+\(\?:-\[a-z0-9\]\+\)\*\$\/\.test\(p\.slug\)/,
+    "a link only takes a slug of letters, digits and dashes (CodeQL stored-xss)",
+  );
   assert.doesNotMatch(path, /PostCard/, "no big card in the path");
   const store = read("lib/read-store.ts");
   assert.match(store, /localStorage/);
