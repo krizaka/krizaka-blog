@@ -166,7 +166,7 @@ An AI audit is a list of leads, not a verdict. I took the claims that can be che
   <Case topic="Versions of @krizaka/ui" before="about 83" after="83 on npm" />
   <Case topic="Open issues in krizaka-ui" before="128" after="128" />
   <Case topic="krizaka-ui on SonarCloud (Gemini)" before="172 bugs, 73 vulnerabilities" after="172 and 73" afterDetail="And the quality gate says « OK »: Gemini is right, it only judges new code." />
-  <Case topic="Orochia's password (Gemini)" before="« Blocker », in production" after="Overstated" afterDetail="A local-development address, already refused in production. Removed anyway, orochia#414." />
+  <Case topic="A demo app's password (Gemini)" before="« Blocker », in production" after="Overstated" afterDetail="A local-development address, already refused in production. Removed anyway." />
   <Case topic="Concatenated SQL (Gemini)" before="« Dynamic SQL »" after="Overstated" afterDetail="Constant fragments, the values bound as parameters: no injection, but the shape fools the scanner." />
   <Case topic="The empty infra (Gemini)" before="No .tf file" after="True when it read it" afterDetail="The first stack landed the same evening, with a read-only plan (krizaka-infra#8)." />
   <Case topic="The UTC day (Gemini)" before="8 repositories" after="True" afterDetail="Fixed in Yomizaka (#311), a rule now refuses the pattern; the other repositories follow." />

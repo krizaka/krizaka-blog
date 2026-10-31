@@ -2,12 +2,12 @@
 
 I read the organisation through public web pages, the GitHub REST API, raw files, Maven Central and the npm registry. The GitHub pages were summarised by a fetch tool. I checked the code claims that matter most (in `JobListener`, `TimeoutSimulationHook` and `SecurityConfig`) against the source files themselves. I did not clone or build anything.
 
-**What I did not open:** `krizaka-com`, `orochia`, `yomizaka`, `yasakia`, `kachizaka`, any TypeScript source, the `orazaka-end2end` suite, test file contents, the reusable `component.yml` workflow, and the `.github` repo's CONTRIBUTING/SECURITY text. GitHub's branch-protection settings need authentication (HTTP 401), so I couldn't see them.
+**What I did not open:** `krizaka-com`, `[redacted]`, `yomizaka`, `[redacted]`, `[redacted]`, any TypeScript source, the `orazaka-end2end` suite, test file contents, the reusable `component.yml` workflow, and the `.github` repo's CONTRIBUTING/SECURITY text. GitHub's branch-protection settings need authentication (HTTP 401), so I couldn't see them.
 
 ## 1. What the organisation is
 
 - **Size and age:** 43 public repositories, all Apache-2.0, all with 0 stars. Except `krizaka-com` (created 2026-05-31), every repo was created between 2026-10-06 and 2026-10-23, which is less than three weeks before this review. ([org repos API](https://api.github.com/orgs/krizaka/repos?per_page=100))
-- **Products:** The profile lists seven products. Two are marked "Available" (Orazaka, Orochia) and five "In development". ([org page](https://github.com/krizaka))
+- **Products:** The profile lists seven products. Two are marked "Available" (Orazaka, [redacted]) and five "In development". ([org page](https://github.com/krizaka))
 - **Main system:** Orazaka, a self-hosted AI platform. It is split across about 20 repositories: a Java 21 / Spring Boot microservice backend, a Python media worker, and Next.js and Expo clients. The `orazaka` repo is the workspace and governance hub. ([orazaka README](https://github.com/krizaka/orazaka))
 - **Who writes the code:** One human contributor, `oussamaABID` (160 commits), plus `krizaka-agents[bot]`, `orazaka[bot]`, Copilot, dependabot and github-actions. Most recent commits are co-authored by `claude`. ([contributors API](https://api.github.com/repos/krizaka/orazaka/contributors), [commits](https://github.com/krizaka/orazaka/commits/main))
 
