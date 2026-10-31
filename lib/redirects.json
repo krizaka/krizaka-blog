@@ -124,8 +124,8 @@
     "fr": "/fr/basics/is-that-ai-model-really-open-source/"
   },
   "payments-and-high-risk-industries": {
-    "en": "/",
-    "fr": "/fr/"
+    "en": "/basics/",
+    "fr": "/fr/basics/"
   },
   "series:building-krizaka": {
     "en": "/",
@@ -212,8 +212,8 @@
     "fr": "/fr/basics/anatomy-of-an-ai-prompt/"
   },
   "page:/tags/payments/": {
-    "en": "/",
-    "fr": "/fr/"
+    "en": "/basics/",
+    "fr": "/fr/basics/"
   },
   "page:/tags/basics/": {
     "en": "/basics/",
@@ -232,7 +232,7 @@
     "fr": "/fr/"
   },
   "page:/basics/payments-and-high-risk-industries/": {
-    "en": "/",
-    "fr": "/fr/"
+    "en": "/basics/",
+    "fr": "/fr/basics/"
   }
 }

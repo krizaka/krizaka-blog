@@ -79,8 +79,8 @@ test("each shelf slug is redirected from its old /posts/ address to /basics/, an
   }
   for (const [slug, targets] of Object.entries(map)) {
     if (slug.startsWith("series:") || slug.startsWith("page:") || SHELF.includes(slug)) continue;
-    // A withdrawn post (krizaka/.github#413) goes to the story itself, the home.
-    if (targets.en === "/" && targets.fr === "/fr/") continue;
+    // A withdrawn post (krizaka/.github#413) goes to the shelf (/basics/).
+    if (targets.en === "/basics/" && targets.fr === "/fr/basics/") continue;
     assert.match(targets.en, /^\/story\//, `${slug} goes to a chapter`);
     assert.match(targets.fr, /^\/fr\/story\//, `${slug} goes to a chapter in FR`);
   }
@@ -130,9 +130,9 @@ test("home and /basics/ show the path as BasicsPath, with the intro; no nav entr
   assert.doesNotMatch(read("app/components/TopBar.tsx"), /basics/i);
 });
 
-test("a withdrawn basic keeps a stub at its address, to the story (krizaka/.github#413)", () => {
+test("a withdrawn basic keeps a stub at its address, to the shelf (krizaka/.github#413)", () => {
   const key = "page:/basics/payments-and-high-risk-industries/";
-  assert.deepEqual(map[key], { en: "/", fr: "/fr/" });
+  assert.deepEqual(map[key], { en: "/basics/", fr: "/fr/basics/" });
   for (const l of ["en", "fr"])
     assert.ok(!existsSync(new URL(`../content/posts/payments-and-high-risk-industries.${l}.mdx`, import.meta.url)), l);
   for (const route of ["app/(en)/basics/[slug]/page.tsx", "app/fr/basics/[slug]/page.tsx"])

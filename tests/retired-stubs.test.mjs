@@ -40,7 +40,7 @@ test("every retired slug has its EN and FR stub; an absorbed post's file is gone
   for (const slug of slugs) {
     assert.ok(map[slug].en && map[slug].fr, `${slug} has both languages`);
     for (const l of ["en", "fr"]) {
-      const stays = map[slug][l].includes("/basics/");
+      const stays = /\/basics\/[^/]/.test(map[slug][l]); // the shelf index itself is a withdrawn post's stub
       assert.equal(
         posts.includes(`${slug}.${l}.mdx`),
         stays,
@@ -53,8 +53,8 @@ test("every retired slug has its EN and FR stub; an absorbed post's file is gone
 test("every stub points to an existing, published chapter or shelf post of the same language, at a section anchor for a chapter", () => {
   for (const slug of slugs) {
     for (const locale of ["en", "fr"]) {
-      // A withdrawn post (krizaka/.github#413) points to the story itself, the home: no post to check.
-      if (map[slug][locale] === (locale === "en" ? "/" : "/fr/")) continue;
+      // A withdrawn post (krizaka/.github#413) points to the shelf: no post to check.
+      if (map[slug][locale] === (locale === "en" ? "/basics/" : "/fr/basics/")) continue;
       const { file, anchor, kind } = targetOf(map[slug][locale], locale);
       assert.ok(existsSync(file), `${slug}: ${file.pathname} exists`);
       const { data, content } = matter(readFileSync(file, "utf8"));
