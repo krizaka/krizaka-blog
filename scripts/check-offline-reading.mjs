@@ -2,7 +2,7 @@
 /* Reading offline, in a real browser (krizaka-blog#211): open a chapter, save it, go offline, reload it and read it; a chapter that was
    not saved answers with the offline page; the newsletter is not answered from the cache. Playwright, Chromium.
    Usage: node scripts/check-offline-reading.mjs --base http://localhost:3000 --out out */
-import { existsSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { chromium } from "playwright";
 
@@ -23,6 +23,7 @@ const fail = (m) => {
   console.error(`offline e2e: ${m}`);
   process.exit(1);
 };
+const { offline } = JSON.parse(readFileSync(new URL("../messages/en.json", import.meta.url), "utf8")); // the words the page wears
 const browser = await chromium.launch();
 const context = await browser.newContext({ serviceWorkers: "allow" });
 const page = await context.newPage();
@@ -34,8 +35,8 @@ await page.evaluate(async () => {
 await page.reload(); // the worker now controls the page
 await page.waitForFunction(() => navigator.serviceWorker.controller !== null, null, { timeout: 15000 });
 
-await page.getByRole("button", { name: /^Save for offline$/ }).click();
-await page.getByText("Saved for offline", { exact: true }).waitFor({ timeout: 30000 });
+await page.getByRole("button", { name: offline.save, exact: true }).first().click();
+await page.getByText(offline.saved, { exact: true }).first().waitFor({ timeout: 30000 });
 
 await context.setOffline(true);
 await page.goto(`${base}/story/${saved}/`);
@@ -46,7 +47,7 @@ const unstyled = await page.evaluate(() => getComputedStyle(document.body).fontF
 if (!unstyled) fail("the saved chapter lost its styles offline");
 
 await page.goto(`${base}/story/${notSaved}/`);
-await page.getByRole("heading", { level: 1, name: "Read offline" }).waitFor({ timeout: 10000 });
+await page.getByRole("heading", { level: 1, name: offline.title }).waitFor({ timeout: 10000 });
 await page.locator(".bl-saved a", { hasText: h1.trim() }).first().waitFor({ timeout: 5000 });
 
 await context.setOffline(false);
