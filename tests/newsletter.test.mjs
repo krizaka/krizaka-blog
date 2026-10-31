@@ -323,9 +323,14 @@ test("send probe: claims a sentinel slug, refuses the second claim, gives it bac
   const r = await sendAction({ ...auth, probe: true }, ENV, db.sql, async (m) => out.push(m));
   assert.equal(r.statusCode, 200);
   assert.deepEqual(JSON.parse(r.body), { probe: true, claimed: true, again: false });
-  assert.ok(db.calls.some((c) => c.text.startsWith("delete from newsletter_posts")), "the claim is given back");
+  assert.ok(
+    db.calls.some((c) => c.text.startsWith("delete from newsletter_posts")),
+    "the claim is given back",
+  );
   assert.equal(out.length, 0);
-  const broken = await sendAction({ ...auth, probe: true }, ENV, async () => Promise.reject(Object.assign(new Error("x"), { code: "28P01" })));
+  const broken = await sendAction({ ...auth, probe: true }, ENV, async () =>
+    Promise.reject(Object.assign(new Error("x"), { code: "28P01" })),
+  );
   assert.equal(broken.statusCode, 500);
   assert.deepEqual(JSON.parse(broken.body), { error: "database", code: "28P01" });
   const anon = await sendAction({ probe: true }, ENV, db.sql);
