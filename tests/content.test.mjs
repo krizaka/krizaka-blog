@@ -222,16 +222,6 @@ test("the chapter about building with agents (the company's running) is sensitiv
     for (const c of ["<Numbers>", "<Steps>", "<Compare ", "<CodeTabs>"]) assert.ok(f.includes(c), `${l}: ${c}`);
   }
   const mdx = r("app/components/pages/mdx.tsx");
-  for (const c of [
-    "Steps:",
-    "Step:",
-    "Compare:",
-    "Case:",
-    "CodeTabs:",
-    "Tab:",
-    "NumberTicker",
-    "Stepper",
-    "ComparisonTable",
-  ])
+  for (const c of ["Steps:", "Step:", "Compare:", "Case:", "CodeTabs:", "Tab:", "NumberTicker", "ComparisonTable"])
     assert.ok(mdx.includes(c), c);
 });

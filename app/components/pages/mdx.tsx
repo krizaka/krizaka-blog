@@ -2,7 +2,6 @@ import { isValidElement, type ComponentProps, type ReactElement, type ReactNode 
 import { CodeBlock } from "@krizaka/ui/code-block";
 import { Stat } from "@krizaka/ui/stat";
 import { NumberTicker } from "@krizaka/ui/number-ticker";
-import { Stepper } from "@krizaka/ui/stepper";
 import { ComparisonTable } from "@krizaka/ui/comparison-table";
 import { TabsContent, TabsList, TabsRoot, TabsTrigger } from "@krizaka/ui/tabs";
 import { getDictionary, type Locale } from "@/lib/i18n";
@@ -49,7 +48,7 @@ export function childProps<P>(children: ReactNode): P[] {
    <Numbers> with <Num value label hint?/> (the key figures of a passage, set apart), and the media of the library —
    <Figure id alt caption?/> (an image, responsive, blur-up), <Model id> (a model's name linked to its official page) and <Clip id alt caption?/> (a light video player). Both
    show how the result was made. <Row> sets figures side by side (stacked on a phone). Nothing else — a post is prose,
-   tables, code and its media. Since the page language: <Steps><Step title>…</Step></Steps> (a journey, @krizaka/ui Stepper),
+   tables, code and its media. Since the page language: <Steps><Step title>…</Step></Steps> (a journey, an ordered list numbered in mono),
    <Compare label topic before after><Case topic before after [beforeDetail afterDetail]/></Compare> (ComparisonTable, a
    « before / after »), <CodeTabs><Tab label>```fence```</Tab></CodeTabs> (Tabs over CodeBlocks). A whole number in <Num> climbs
    with NumberTicker; blocks arrive with the motion system (`data-reveal`, still under reduced motion). */
@@ -84,17 +83,21 @@ export function mdxComponentsFor(locale: Locale) {
         hint={hint}
       />
     ),
+    /* A journey's steps, numbered in the margin's mono like the home's chapter numbers: no glyph, no icon (founder 2026-10-31). */
     Steps: ({ children }: { children: ReactNode }) => (
-      <div className="bl-steps" data-reveal="soft">
-        <Stepper
-          steps={childProps<{ title: string; children?: ReactNode }>(children).map((c) => ({
-            title: c.title,
-            description: textOf(c.children).trim(),
-            status: "done" as const,
-          }))}
-          labels={{ done: t.stepDone, current: t.stepCurrent, upcoming: t.stepUpcoming, error: t.stepError }}
-        />
-      </div>
+      <ol className="bl-steps" data-reveal="soft">
+        {childProps<{ title: string; children?: ReactNode }>(children).map((c, i) => (
+          <li key={c.title}>
+            <span className="bl-steps-n" aria-hidden="true">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <span className="bl-steps-body">
+              <strong>{c.title}</strong>
+              {textOf(c.children).trim() && <span>{textOf(c.children).trim()}</span>}
+            </span>
+          </li>
+        ))}
+      </ol>
     ),
     Step: () => null,
     Compare: ({

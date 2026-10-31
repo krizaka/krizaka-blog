@@ -1,24 +1,26 @@
 ---
 title: "Tchou-tchou : comment nos pull requests prennent le train"
-description: "Cent PR ouvertes, des sessions qui attendent la CI, et un petit script sans jeton qui les dépose une à une. Ce qui a cassé, ce qu'on a gardé, et les règles qui en sont sorties."
+description: "Cent quarante PR ouvertes, des sessions qui attendent la CI, et un petit script sans jeton qui les dépose une à une. Ce qui a cassé, ce qu'on a gardé, et les règles qui en sont sorties."
 seoTitle: "Tchou-tchou : nos pull requests prennent le train"
 seoDescription: "Comment Krizaka dépose ses pull requests une par une avec un petit train sans jeton, ce qui a cassé cette semaine et les gardes qui en sont sorties."
 date: 2026-10-30
-publishedAt: "2026-10-30T20:00:00-04:00"
+publishedAt: "2026-10-30T22:30:00-04:00"
 tags: [ai, integration, measurements]
 author: oussama
-draft: true
+cover: series-19-tchou-tchou-how-our-pull-requests-catch-the-train
+coverAlt: "Un canal à l'aube, à l'aquarelle, sous un soleil pâle : des maisons de brique à gauche, des réverbères le long du quai à droite, et un petit train qui traverse le pont de pierre, reflété dans l'eau immobile"
+draft: false
 sensitive: true
 chapter: 19
 period: "2026-10-28/2026-10-30"
 sources:
   - from-vibe-coding-to-agentic-engineering
 versus:
-  faced: "une centaine de PR ouvertes et des sessions qui attendaient la CI"
+  faced: "140 PR ouvertes et des sessions qui attendaient la CI"
   built: "des trains qui déposent, 5 PR par dépôt au plus, une garde par panne"
 stats:
-  - value: "~100"
-    label: "PR ouvertes dans l'organisation au plus fort de la pile"
+  - value: "140"
+    label: "PR ouvertes dans l'organisation au plus fort de la pile, vendredi à 2 h"
     section: "Le problème : une pile"
   - value: "24 → 4"
     label: "PR ouvertes sur le dépôt le plus chargé, avant et après"
@@ -34,19 +36,19 @@ Ce chapitre raconte le petit système qui a remis ça en mouvement. Je l'appelle
 
 ## Le problème : une pile
 
-Nous travaillons avec cinq lanes : une session par application (Yomizaka, Akinaza, Orazaka), une pour la plateforme, une pour la sécurité. Chacune ouvre ses PR. En fin de journée jeudi, il y avait une centaine de PR ouvertes dans l'organisation, et le dépôt d'Akinaza en portait 24 à lui seul.
+Nous travaillons avec cinq lanes : une session par application (Yomizaka, Akinaza, Orazaka), une pour la plateforme, une pour la sécurité. Chacune ouvre ses PR. En fin de journée jeudi, il y avait une centaine de PR ouvertes dans l'organisation. Vendredi à 2 h du matin, il y en avait 140, et une heure plus tard le dépôt d'Akinaza en portait 24 à lui seul.
 
 Le goulot n'était pas le code. C'était la capacité de la CI et de la file de fusion : une PR doit passer, une autre attend derrière, et si la branche change entre-temps, tout recommence. Une session qui attend, c'est une session qui brûle du budget pour regarder un cercle tourner.
 
 <Numbers>
   <Num value="5" label="lanes" hint="une session par application, la plateforme, la sécurité" />
-  <Num value="~100" label="PR ouvertes" hint="au plus fort de la pile" />
+  <Num value="140" label="PR ouvertes" hint="au plus fort de la pile, vendredi à 2 h" />
   <Num value="24" label="PR ouvertes sur un seul dépôt" hint="avant la règle des 5" />
 </Numbers>
 
 ## Le train
 
-Le train est un petit script : soixante-six lignes de shell, sans aucun jeton de modèle. Il prend des PR déjà relues, dans l'ordre, et pour chacune :
+Le train est un petit script : moins de quatre-vingts lignes de shell, sans aucun jeton de modèle. Il prend des PR déjà relues, dans l'ordre, et pour chacune :
 
 <Steps>
   <Step title="Attendre">La PR précédente est fusionnée. Pas avant.</Step>
@@ -58,8 +60,14 @@ Le train est un petit script : soixante-six lignes de shell, sans aucun jeton de
 
 Le point important : la relecture se fait avant, par la session qui a écrit la PR, pas par le train. Le train ne juge rien. Il fait le travail de quai, celui qu'un agent fait mal parce qu'il coûte cher de l'attendre.
 
-{/* ILLUSTRATION (lot de rendu de lundi) : un petit train de wagons « PR », trait à la main, dans le style Cahier de la série. À produire par un run Orazaka Studio, puis cdn-assets + lib/media.json ; ajouter le <Figure> ici et la légende « Un wagon par PR, un seul sens de circulation. » */}
-{/* DIAGRAMME (figure 1) : lane -> PR -> train (attendre, mettre à jour, approuver, mettre en file, arrêt au rouge) -> file de fusion -> main. Dessiné depuis le code, style "diagram". */}
+<Pipeline label="Le trajet d'une pull request, de sa branche à la production : la session écrit et relit, le train ne fait que porter.">
+  <Stage title="Branche" note="une session">Un worktree depuis main, une issue, le test d'abord. La session relit son propre diff avant d'ouvrir la PR.</Stage>
+  <Stage title="Checks" note="CI sur la PR">Lint, tests, build, analyse du code. Un check rouge arrête tout ici.</Stage>
+  <Stage title="Le train" note="aucun jeton" tone="gate">Il attend la PR précédente, met la branche à jour, approuve une fois par version, met en file. Il s'arrête au premier rouge.</Stage>
+  <Stage title="File de fusion" note="CI encore">Les checks repassent, sur la PR fusionnée avec ce qui la précède dans la file.</Stage>
+  <Stage title="main" note="un commit">La PR devient un seul commit sur main, et sa branche est supprimée.</Stage>
+  <Stage title="Déploiement" note="puis vérifié" tone="ship">Le site est construit et déployé ; un job vérifie ensuite que le site en ligne porte bien ce commit.</Stage>
+</Pipeline>
 
 ## Ce qui a cassé, et la garde qui en est sortie
 
@@ -87,17 +95,24 @@ Le train a aussi changé nos règles de travail, qui comptent plus que le script
 - **Une seule PR de masse par dépôt à la fois.** Une nouvelle règle d'organisation rejoint la PR de masse ouverte au lieu d'en ouvrir une autre.
 - **Un ordre d'atterrissage.** On empile deux PR seulement quand la première est déjà dans la file.
 
+Une règle qui vit dans un document s'oublie, alors chacune est devenue une garde qui refuse, avec son test :
+
+<Layers label="Ce qui arrête un train, ou ne le laisse jamais partir : quatre gardes écrites cette semaine, chacune avec son test.">
+  <Layer tag="Commit" title="Pas de ligne de co-auteur" note="Un commit ou une description de PR qui nomme une IA comme co-auteur est refusé avant de quitter la machine : notre application est le seul auteur." />
+  <Layer tag="Ouvrir" title="Cinq PR par dépôt" note="Ouvrir une sixième est refusé, bots de versions compris. À la limite, on fait atterrir d'abord." />
+  <Layer tag="Ronde" title="Pas d'orpheline" note="Un script liste les PR ouvertes qu'aucun train ne porte : verte, elle reçoit un train ; rouge, elle retourne à sa lane, nommée." />
+  <Layer tag="Rouge" title="Un rouge périmé est rafraîchi une fois" note="Un rouge sur une branche en retard sur main est souvent déjà corrigé là-bas : le train met la branche à jour une fois, puis juge le nouveau passage." />
+</Layers>
+
 Une pile de PR ouvertes me dit une chose : l'ordre du travail était mauvais. Le train soulage le symptôme, la règle des cinq soigne la cause.
 
 ## Ce que ça change
 
-Les chiffres que je peux donner sont ceux que je peux relire. Le dépôt d'Akinaza est passé de 24 PR ouvertes à 4. Dans l'organisation, nous sommes passés d'environ cent PR ouvertes à 75 au moment où j'écris ces lignes, et 273 PR ont été fusionnées aujourd'hui, dans la journée de vendredi.
+Les chiffres que je peux donner sont ceux que je peux relire. Je les ai comptés depuis l'API de GitHub : pour chaque heure, toutes les pull requests de l'organisation créées avant et pas encore fermées. Le dépôt d'Akinaza est passé de 24 PR ouvertes vendredi à 3 h du matin à 4 en soirée. Dans l'organisation, la pile est passée de 140 à 50 au moment où j'écris ces lignes, et 317 PR ont été fusionnées dans la journée de vendredi.
 
-<Compare label="PR ouvertes, avant et après" topic="Dépôt" before="Au plus fort" after="Maintenant">
-  <Case topic="akinaza" before="24" after="4" />
-  <Case topic="yomizaka" before="5, au plafond" after="2" />
-  <Case topic="organisation entière" before="environ 100" after="75" />
-</Compare>
+<Bars label="Les pull requests ouvertes dans l'organisation, toutes les six heures du jeudi matin au vendredi soir : la pile culmine à 140, puis les trains la font descendre." source="Compté depuis l'API de GitHub le 30 octobre : les pull requests créées avant chaque heure et pas encore fermées, dans les dépôts que l'organisation garde aujourd'hui ; heure de Montréal." format="integer" series="PR ouvertes:accent" data="Jeu. 8 h=119; Jeu. 14 h=89; Jeu. 20 h=107; Ven. 2 h=140; Ven. 8 h=77; Ven. 14 h=66; Ven. 20 h=66; Ven. 22 h 30=50" />
+
+Le pic de la nuit n'a rien de mystérieux : c'est le moment où les sessions finissent leur travail et ouvrent leurs PR, pendant que les trains attendent encore la CI. La baisse du matin, ce sont les trains, qui font atterrir une PR après l'autre.
 
 Je ne donne pas de « temps gagné » : je ne l'ai pas mesuré, et je préfère me taire que d'inventer un chiffre. Ce que je vois, c'est que les sessions ne passent plus leur temps à attendre, et qu'on a arrêté de se marcher dessus.
 

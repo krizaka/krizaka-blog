@@ -68,12 +68,9 @@ export function TakeStory({
   const hint = (f: "epub" | "pdf") => (f === "epub" ? d.epubHint : d.pdfHint);
 
   if (compact) {
-    const group = (name: string, meta: string | undefined, files: Download[], whole: boolean) =>
+    const group = (name: string, meta: string | undefined, files: Download[]) =>
       files.length > 0 && (
         <div className="bl-take-scope">
-          <span className={`bl-book${whole ? " bl-book-whole" : ""}`} aria-hidden="true">
-            <span className="bl-book-mark">§</span>
-          </span>
           <span className="bl-take-group">
             <span className="bl-take-for">
               <b>{name}</b>
@@ -101,8 +98,8 @@ export function TakeStory({
           {d.takeOffline}
         </h2>
         <div className="bl-take-scopes">
-          {group(d.takeChapter, undefined, own, false)}
-          {group(d.takeStory, format(d.takeChapters, { n: String(chapters.length) }), story, true)}
+          {group(d.takeChapter, undefined, own)}
+          {group(d.takeStory, format(d.takeChapters, { n: String(chapters.length) }), story)}
         </div>
       </aside>
     );

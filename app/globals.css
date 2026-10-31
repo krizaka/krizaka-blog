@@ -996,9 +996,7 @@ picture {
   color: var(--kz-text-secondary);
 }
 .bl-split-side[data-tone="refuse"] li::marker {
-  content: "✕  ";
   color: var(--kz-danger-text);
-  font-size: 0.75em;
 }
 .bl-prose .bl-layers ol {
   margin: 0;
@@ -1080,14 +1078,34 @@ picture {
 .bl-bars .bl-plate-paper {
   padding: 0.75rem 0.75rem 0.5rem;
 }
-.bl-steps ol {
-  margin: 0;
+/* A journey's steps: the number in the margin's mono (as the home's chapter numbers), the title, its line. No glyph. */
+.bl-prose .bl-steps {
   padding-inline-start: 0;
   list-style: none;
+  display: grid;
+  gap: 0.875rem;
 }
-.bl-steps li + li,
-.bl-prose .bl-steps li + li {
-  margin-top: 0;
+.bl-prose .bl-steps li {
+  display: flex;
+  gap: 0.875rem;
+  margin: 0;
+}
+.bl-steps-n {
+  flex: none;
+  min-width: 1.5rem;
+  padding-top: 0.2rem;
+  font-family: var(--kz-font-mono);
+  font-size: 0.75rem;
+  color: var(--kz-paper-rule-margin);
+}
+.bl-steps-body {
+  display: grid;
+  gap: 0.125rem;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+.bl-steps-body span {
+  color: var(--kz-text-secondary);
 }
 .bl-codetabs [role="tabpanel"] {
   margin-top: 0.75rem;
@@ -1420,7 +1438,7 @@ picture {
 .bl-offline-quiet:hover {
   text-decoration-color: var(--kz-accent-text);
 }
-/* The chapter's last line: two scopes, each with its book (a little cover drawn in CSS), « This chapter » and « The whole story · N chapters ». */
+/* The chapter's last line: two scopes in plain text, « This chapter » and « The whole story · N chapters » (no drawn book, founder 2026-10-31). */
 .bl-take-line {
   display: flex;
   flex-direction: column;
@@ -1439,29 +1457,6 @@ picture {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-}
-.bl-book {
-  position: relative;
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 2rem;
-  height: 2.75rem;
-  background: #f4efe3;
-  border: 1px solid #1b1a17;
-  border-inline-start-width: 3px;
-  color: #2b46c4;
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-}
-.bl-book-whole {
-  box-shadow:
-    3px 3px 0 -1px #f4efe3,
-    3px 3px 0 0 #1b1a17,
-    6px 6px 0 -1px #f4efe3,
-    6px 6px 0 0 #1b1a17;
-  margin-inline-end: 6px;
-  margin-block-end: 6px;
 }
 .bl-take-group {
   display: flex;
@@ -1517,19 +1512,20 @@ picture {
   place-items: center;
   width: 1.75rem;
   height: 1.75rem;
-  border: 1px solid var(--kz-border-strong);
-  border-radius: 50%;
+  border: 0;
   background: transparent;
   color: var(--kz-text-secondary);
   font-family: var(--kz-font-mono);
-  font-size: 0.8125rem;
-  font-weight: 700;
+  font-size: 0.75rem;
+  text-decoration: underline;
+  text-decoration-color: var(--kz-border-strong);
+  text-underline-offset: 4px;
   cursor: help;
 }
 .bl-help:hover,
 .bl-help[aria-expanded="true"] {
   color: var(--kz-accent-text);
-  border-color: var(--kz-accent-text);
+  text-decoration-color: var(--kz-accent-text);
 }
 .bl-help:focus-visible {
   outline: 2px solid var(--kz-accent-text);

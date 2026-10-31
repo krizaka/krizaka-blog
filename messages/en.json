@@ -70,11 +70,7 @@
     "keyNumbers": "Key numbers",
     "progress": "Reading progress",
     "subscribe": "Subscribe by e-mail",
-    "rssFeed": "RSS feed",
-    "stepDone": "Done",
-    "stepCurrent": "In progress",
-    "stepUpcoming": "Upcoming",
-    "stepError": "Failed"
+    "rssFeed": "RSS feed"
   },
   "chapter": {
     "label": "Chapter {n}",

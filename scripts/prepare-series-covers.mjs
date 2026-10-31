@@ -30,7 +30,8 @@ export function promptOf(series, index) {
 
 /** The founder's picks of batch 2026-10-30-blog-v2 (krizaka-blog#193): series index (1-based) -> candidate and Orazaka Studio run id.
     Chapter 10 keeps its cover. Chapter 18 was not in the batch: it wears the candidate left unpicked for chapter 16 (B, a desk of
-    measures), the third element naming the chapter it was rendered for. */
+    measures), chapter 19 the one left unpicked for chapter 11 (B, a train on a bridge at dawn); the third element names the chapter
+    it was rendered for. */
 export const PICKS = {
   1: ["a", "5b9b8a1f"],
   2: ["b", "4d45823d"],
@@ -49,6 +50,7 @@ export const PICKS = {
   16: ["a", "e7b9a24d"],
   17: ["a", "44caa163"],
   18: ["b", "5f03097e", 16],
+  19: ["b", "944108f9", 11],
 };
 
 export const coverId = (index, post) => `series-${String(index + 1).padStart(2, "0")}-${post}`;

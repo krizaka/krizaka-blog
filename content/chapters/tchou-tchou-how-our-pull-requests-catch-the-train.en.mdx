@@ -1,24 +1,26 @@
 ---
 title: "All aboard: how our pull requests catch the train"
-description: "A hundred open PRs, sessions waiting on CI, and a small token-free script that lands them one by one. What broke, what we kept, and the rules that came out of it."
+description: "A hundred and forty open PRs, sessions waiting on CI, and a small token-free script that lands them one by one. What broke, what we kept, and the rules that came out of it."
 seoTitle: "All aboard: our pull requests catch the train"
 seoDescription: "How Krizaka lands its pull requests one after the other with a small token-free train, what broke this week and the guards that came out of it."
 date: 2026-10-30
-publishedAt: "2026-10-30T20:00:00-04:00"
+publishedAt: "2026-10-30T22:30:00-04:00"
 tags: [ai, integration, measurements]
 author: oussama
-draft: true
+cover: series-19-tchou-tchou-how-our-pull-requests-catch-the-train
+coverAlt: "A watercolour canal at dawn under a pale sun: brick houses on the left, street lamps along the quay on the right, and a small train crossing the stone bridge, reflected in the still water"
+draft: false
 sensitive: true
 chapter: 19
 period: "2026-10-28/2026-10-30"
 sources:
   - from-vibe-coding-to-agentic-engineering
 versus:
-  faced: "about a hundred open PRs and sessions waiting on CI"
+  faced: "140 open PRs and sessions waiting on CI"
   built: "trains that land, 5 PRs per repository at most, a guard per failure"
 stats:
-  - value: "~100"
-    label: "open PRs across the organisation at the peak of the pile"
+  - value: "140"
+    label: "open PRs across the organisation at the peak of the pile, Friday 2 a.m."
     section: "The problem: a pile"
   - value: "24 → 4"
     label: "open PRs on the busiest repository, before and after"
@@ -34,19 +36,19 @@ This chapter tells the small system that got things moving again. I call it the 
 
 ## The problem: a pile
 
-We work with five lanes: one session per application (Yomizaka, Akinaza, Orazaka), one for the platform, one for security. Each opens its PRs. Thursday evening there were about a hundred open PRs across the organisation, and Akinaza's repository carried 24 of them alone.
+We work with five lanes: one session per application (Yomizaka, Akinaza, Orazaka), one for the platform, one for security. Each opens its PRs. Thursday evening there were about a hundred open PRs across the organisation. At 2 a.m. on Friday there were 140, and an hour later Akinaza's repository carried 24 of them alone.
 
 The bottleneck was not the code. It was the capacity of CI and of the merge queue: one PR passes, another waits behind it, and if the branch moves in between, everything starts over. A session that waits is a session burning budget to watch a circle turn.
 
 <Numbers>
   <Num value="5" label="lanes" hint="one session per application, the platform, security" />
-  <Num value="~100" label="open PRs" hint="at the peak of the pile" />
+  <Num value="140" label="open PRs" hint="at the peak of the pile, Friday 2 a.m." />
   <Num value="24" label="open PRs on one repository" hint="before the rule of 5" />
 </Numbers>
 
 ## The train
 
-The train is a small script: sixty-six lines of shell, with no model token at all. It takes PRs that have already been read, in order, and for each one:
+The train is a small script: under eighty lines of shell, with no model token at all. It takes PRs that have already been read, in order, and for each one:
 
 <Steps>
   <Step title="Wait">The previous PR is merged. Not before.</Step>
@@ -58,8 +60,14 @@ The train is a small script: sixty-six lines of shell, with no model token at al
 
 The important point: the review happens before, by the session that wrote the PR, not by the train. The train judges nothing. It does the platform work, the kind an agent does badly because waiting for it is expensive.
 
-{/* ILLUSTRATION (Monday's render batch): a little train of "PR" wagons, hand-drawn line, in the series' Cahier style. To be produced by an Orazaka Studio run, then cdn-assets + lib/media.json; add the <Figure> here with the caption "One wagon per PR, one direction of travel." */}
-{/* DIAGRAM (figure 1): lane -> PR -> train (wait, update, approve, enqueue, stop on red) -> merge queue -> main. Drawn from code, style "diagram". */}
+<Pipeline label="A pull request's journey, from its branch to production: the session writes and reviews, the train only carries.">
+  <Stage title="Branch" note="one session">A worktree from main, one issue, the test first. The session reads its own diff before it opens the PR.</Stage>
+  <Stage title="Checks" note="CI on the PR">Lint, tests, build, code analysis. A red check stops everything here.</Stage>
+  <Stage title="The train" note="no model token" tone="gate">It waits for the previous PR, updates the branch, approves once per version, enqueues. It stops at the first red.</Stage>
+  <Stage title="Merge queue" note="CI again">The checks run once more, on the PR merged with what is ahead of it in the queue.</Stage>
+  <Stage title="main" note="one commit">The PR becomes one commit on main, and its branch is deleted.</Stage>
+  <Stage title="Deploy" note="then checked" tone="ship">The site is built and deployed; a job then checks that the live site carries that commit.</Stage>
+</Pipeline>
 
 ## What broke, and the guard that came out of it
 
@@ -87,17 +95,24 @@ The train also changed our working rules, which matter more than the script:
 - **One bulk PR per repository at a time.** A new organisation rule joins the open bulk PR instead of opening another.
 - **A landing order.** Two PRs are stacked only when the first is already in the queue.
 
+Rules that live in a document get forgotten, so each one became a guard that refuses, with its test:
+
+<Layers label="What stops a train, or never lets it leave: four guards written this week, each with its test.">
+  <Layer tag="Commit" title="No co-author line" note="A commit or a PR body that names an AI as co-author is refused before it leaves the machine: our app is the only author." />
+  <Layer tag="Open" title="Five PRs per repository" note="Opening a sixth is refused, version bots included. At the limit, we land first." />
+  <Layer tag="Sweep" title="No orphan" note="A script lists the open PRs that no train carries: green, it gets a train; red, it goes back to its lane by name." />
+  <Layer tag="Red" title="A stale red is refreshed once" note="A red on a branch behind main is often already fixed there: the train updates the branch once, then judges the new run." />
+</Layers>
+
 A pile of open PRs tells me one thing: the order of the work was wrong. The train relieves the symptom, the rule of five treats the cause.
 
 ## What it changes
 
-The figures I can give are the ones I can read back. Akinaza's repository went from 24 open PRs to 4. Across the organisation we went from about a hundred open PRs to 75 as I write, and 273 PRs were merged today, Friday.
+The figures I can give are the ones I can read back. I counted them from the GitHub API: for each hour, every pull request of the organisation that was created before it and not yet closed. Akinaza's repository went from 24 open PRs at 3 a.m. on Friday to 4 by the evening. Across the organisation, the pile went from 140 to 50 as I write, and 317 PRs were merged on Friday.
 
-<Compare label="Open PRs, before and after" topic="Repository" before="At the peak" after="Now">
-  <Case topic="akinaza" before="24" after="4" />
-  <Case topic="yomizaka" before="5, at the ceiling" after="2" />
-  <Case topic="whole organisation" before="about 100" after="75" />
-</Compare>
+<Bars label="Open pull requests across the organisation, every six hours from Thursday morning to Friday night: the pile peaks at 140, then the trains bring it down." source="Counted from the GitHub API on 30 October: pull requests created before each hour and not closed yet, in the repositories the organisation holds today; Montréal time." format="integer" series="Open PRs:accent" data="Thu 8 a.m.=119; Thu 2 p.m.=89; Thu 8 p.m.=107; Fri 2 a.m.=140; Fri 8 a.m.=77; Fri 2 p.m.=66; Fri 8 p.m.=66; Fri 10:30 p.m.=50" />
+
+The peak at night is not a mystery: that is when the sessions finish their work and open their PRs, while the trains still wait for CI. The fall in the morning is the trains, landing one PR after the other.
 
 I give no "time saved": I did not measure it, and I would rather stay quiet than invent a number. What I see is that sessions no longer spend their time waiting, and that we stopped stepping on each other.
 

@@ -131,6 +131,12 @@
       "seed": 3118,
       "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
       "beat": "Not rendered for this chapter: it wears the candidate B rendered for chapter 16 in batch 2026-10-30-blog-v2 and left unpicked there (a drawing desk of measures: graph paper, pencils, a compass, a stopwatch, the pigeon). The series' cast is carried over unchanged."
+    },
+    {
+      "post": "tchou-tchou-how-our-pull-requests-catch-the-train",
+      "seed": 3119,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "Not rendered for this chapter: it wears the candidate B rendered for chapter 11 in batch 2026-10-30-blog-v2 and left unpicked there (a canal at dawn, a small train crossing the stone bridge). The series' cast is carried over unchanged."
     }
   ],
   "sprites": {
