@@ -182,6 +182,13 @@ For the legal review, I asked Orazaka, our own engine, to write the agent's prom
 
 We corrected it before publishing the issue, and left the raw output in a comment so we could compare. It is exactly the kind of error a legal document cannot afford. And an instruction does not fix the root: a model that cannot check anything does not know it is wrong. The real remedy is for the engine to read the sources itself, and cite them. That is Orazaka's next job.
 
+<Layers label="Four ways the night broke, and what each one changed. Mostly not the agents' fault: ours.">
+  <Layer tag="Push" title="Five empty PRs" note="A pre-push test read our CDN from a sandbox with no network. Now: a versioned file of hashes; the CDN check runs in CI." />
+  <Layer tag="CI" title="A check that never started" note="A push made by an agent waits for a human to approve the workflows. Now: our app pushes an empty commit." />
+  <Layer tag="Build" title="Java that did not compile" note="The agent had only the component, not the workspace. Now: an action sets the workspace up before it starts." />
+  <Layer tag="Prompt" title="A prompt that made things up" note="Two repositories, links and a 14-day rule that do not exist. Now: corrected before publishing; the engine must cite its sources." />
+</Layers>
+
 ## The rules we wrote
 
 All of that now sits in a section of our engineering charter, the one every repository of the organisation inherits. Build before you push, and if you cannot, say so and stop. Comment your progress on the issue, because that is where I follow the work. Tests that do not need the network. Invent nothing. Never weaken a guard to get to green, even when the guard lives in another repository. And let the administrator set every parameter, instead of writing it in the code.
@@ -219,6 +226,8 @@ There was the CI too. A push made by an agent does not start the workflows until
 Then came the review. The review agent looked at every PR, the agent corrected, the review started again, and we went round once more. Each round used quota, the very quota we needed for the work. I stopped re-running the review after every correction: one review per PR, when it is opened, and I fix the small remarks myself rather than sending the agent around once more.
 
 In early afternoon, the machine said stop. Seven sessions were running at the same time, with the review agent, and builds were launched in parallel, outside the lock we use to run only one at a time. Load reached 133 on 10 cores. At that level everything slows down, and builds get in each other's way. Agents are not extra capacity. They share the same machine.
+
+<Bars label="The machine's load at the peak, against its cores: seven sessions and builds outside the lock, on 10 cores." source="Load average read on the machine on 23 October; a load above the number of cores means work waiting its turn." format="integer" series="23 October, early afternoon:danger" data="Cores of the machine=10; Load at the peak=133" />
 
 I made a few decisions, and they fit in a few words. Three active sessions at most, and one heavy task at a time. Finish before you start: a study does not begin until the previous one is validated, and every ADR is validated before any line of code. Work outside the priorities is paused, and resumes one at a time, as soon as an active session ends, from its last state.
 

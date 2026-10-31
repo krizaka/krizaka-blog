@@ -146,6 +146,10 @@ La dernière ligne est la règle. Quand on corrige des violations, on enregistre
 
 Pourquoi pas tout corriger d'un coup ? Parce qu'une nouvelle règle trouve souvent des dizaines de cas. Les corriger tous dans la même PR, c'est une PR énorme que personne ne relit bien. Avec un cliquet, la règle protège tout de suite le nouveau code, et la dette existante descend petit à petit.
 
+Sur krizaka.com, le compte des tableaux et formulaires écrits à la main le montre bien. À l'arrivée du compteur, le 12 octobre, il en trouvait 20. Deux jours plus tard, quatre changements l'avaient fait passer à 11, 8, 3, puis 2, et il est resté à 2 depuis. Personne ne peut en ajouter un troisième.
+
+<Bars label="Un compteur qui ne fait que descendre : les tableaux et formulaires écrits à la main sur krizaka.com, tels qu'enregistrés dans son lint-ratchet.json." source="Lu dans l'historique du lint-ratchet.json de krizaka-com (compteur localTableOrForm), le 30 octobre." format="integer" series="Compte enregistré:accent" data="12 octobre=20; 14 octobre, 1er changement=11; 14 octobre, 2e changement=8; 14 octobre, 3e changement=3; 14 octobre, 4e changement=2; 30 octobre=2" />
+
 ## Un bug devient une règle
 
 C'est l'habitude qui a le plus changé notre façon de travailler. Quand on trouve un bug, on se demande s'il est seul, ou s'il fait partie d'une famille. Si c'est une famille, on écrit une règle qui la refuse, avec ses tests.
@@ -202,6 +206,14 @@ const oneRouter: NonNullable<Options["esbuildPlugins"]>[number] = {
 Un test vérifie que ce plugin est bien branché. Si quelqu'un le retire un jour, la CI le dira.
 
 Un bug corrigé, c'est un bug de moins. Une règle, c'est toute sa famille de moins, dans tous les dépôts qui partagent la règle.
+
+<Pipeline label="Un bug devient une règle : le « 514 » trouvé par hasard dans un UUID, d'un échec au hasard à une famille refusée partout">
+  <Stage title="Un échec au hasard" note="akinaza#341">Un test de confidentialité cherche « 514 » dans un contenu plein d'identifiants aléatoires : cinq échecs dans une seule CI.</Stage>
+  <Stage title="Seul, ou une famille ?" note="la question">Chercher une suite de chiffres dans un texte aléatoire échoue par hasard. C'est une famille, pas un test.</Stage>
+  <Stage title="Une règle" note="ast-grep" tone="gate">no-bare-digits-on-serialized refuse le motif, avec ses cas valides et refusés.</Stage>
+  <Stage title="Le cliquet" note="un compte enregistré">Une règle sans compte enregistré fait échouer la CI : on ne peut pas la glisser en douce.</Stage>
+  <Stage title="La famille revient" note="akinaza#358" tone="ship">« 4821 » dans un texte chiffré : une seconde règle, no-bare-digits-on-random-bytes. On corrige la classe, pas l'instance.</Stage>
+</Pipeline>
 
 ## Le mobile : Maestro dans la CI
 

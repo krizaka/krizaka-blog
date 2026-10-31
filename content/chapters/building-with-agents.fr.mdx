@@ -182,6 +182,13 @@ Pour la relecture juridique, j'ai demandé à Orazaka, notre propre moteur, d'é
 
 On a corrigé avant de publier l'issue, et on a laissé la sortie brute en commentaire, pour qu'on puisse comparer. C'est exactement le genre d'erreur qu'un document juridique ne peut pas se permettre. Et une consigne ne règle pas le fond : un modèle qui ne peut rien vérifier ne sait pas qu'il se trompe. Le vrai remède, c'est que le moteur aille lire les sources lui-même, et les cite. C'est le prochain chantier d'Orazaka.
 
+<Layers label="Quatre façons dont la nuit a cassé, et ce que chacune a changé. Rarement la faute des agents : la nôtre.">
+  <Layer tag="Push" title="Cinq PR vides" note="Un test avant le push lisait notre CDN depuis un bac à sable sans réseau. Désormais : un fichier versionné d'empreintes ; la comparaison au CDN se fait en CI." />
+  <Layer tag="CI" title="Une vérification jamais lancée" note="Un push fait par un agent attend qu'un humain approuve les workflows. Désormais : notre application pousse un commit vide." />
+  <Layer tag="Build" title="Du Java qui ne compilait pas" note="L'agent n'avait que le composant, pas l'espace de travail. Désormais : une action le prépare avant qu'il commence." />
+  <Layer tag="Prompt" title="Un prompt qui inventait" note="Deux dépôts, des liens et une règle de 14 jours qui n'existent pas. Désormais : corrigé avant publication ; le moteur devra citer ses sources." />
+</Layers>
+
 ## Les règles qu'on a écrites
 
 Tout ça tient maintenant dans une section de notre charte d'ingénierie, celle que chaque repo de l'organisation hérite. Construire avant de pousser, et si on ne peut pas, le dire et s'arrêter. Commenter son avancement sur l'issue, parce que c'est là que je suis le travail. Des tests qui n'ont pas besoin du réseau. Ne rien inventer. Ne jamais affaiblir un garde-fou pour passer au vert, même quand ce garde-fou vit dans un autre repo. Et laisser l'administrateur régler chaque paramètre, au lieu de l'écrire en dur.
@@ -219,6 +226,8 @@ Il y a eu aussi la CI. Un push fait par un agent ne lance pas les workflows tant
 Ensuite, il y a eu la relecture. L'agent de relecture regardait chaque PR, l'agent corrigeait, la relecture repartait, et on repartait pour un tour. Chaque tour consommait du quota, celui-là même dont on avait besoin pour le travail. J'ai arrêté de relancer la relecture à chaque correction : une seule relecture par PR, à son ouverture, et je règle moi-même les petites remarques plutôt que de renvoyer l'agent faire un tour de plus.
 
 En début d'après-midi, c'est la machine qui a dit stop. Sept sessions tournaient en même temps, avec l'agent de relecture, et des builds étaient lancés en parallèle, en dehors du verrou qu'on utilise pour n'en lancer qu'un à la fois. La charge a atteint 133 sur 10 cœurs. À ce niveau, tout ralentit, et les builds se gênent entre eux. Les agents ne sont pas une capacité en plus. Ils se partagent la même machine.
+
+<Bars label="La charge de la machine au plus fort, face à ses cœurs : sept sessions et des builds hors du verrou, sur 10 cœurs." source="Charge moyenne lue sur la machine le 23 octobre ; une charge au-dessus du nombre de cœurs, c'est du travail qui attend son tour." format="integer" series="23 octobre, début d'après-midi:danger" data="Cœurs de la machine=10; Charge au plus fort=133" />
 
 J'ai pris quelques décisions, et elles tiennent en peu de mots. Trois sessions actives au plus, et une seule tâche lourde à la fois. On finit avant de commencer : une étude ne démarre pas avant que la précédente soit validée, et chaque ADR est validé avant toute ligne de code. Les chantiers qui ne sont pas dans les priorités passent en pause, et reprennent un par un, dès qu'une session active se termine, depuis leur dernier état.
 

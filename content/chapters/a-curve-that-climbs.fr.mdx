@@ -58,6 +58,11 @@ La relecture est devenue l'endroit où tout attendait. Le 25 octobre, krizaka-ui
 
 Et chaque jour, il y avait le même casse-tête. Est-ce que je fais avancer une nouvelle fonctionnalité, ou est-ce que je fais descendre le nombre de tickets ? Les deux semblent urgents. Une fonctionnalité, ça se voit. Un ticket fermé, ça ne se voit presque pas. Mais un ticket ouvert, ça pèse.
 
+<Split label="Pourquoi la courbe monte : ouvrir du travail coûte une minute, le fermer demande quelqu'un qui lit, vérifie et décide.">
+  <Side title="Ouvrir" tone="plug" items="Une idée devient une issue en une minute | L'agent écrit le contexte, les critères, les liens | Une issue devient une PR presque aussi vite | Un agent sur une issue peut en ouvrir trois autres | 252 issues ouvertes le 17 octobre" />
+  <Side title="Fermer" tone="own" items="Quelqu'un lit le code | Vérifie que la CI a vraiment tourné | Que le test prouve ce qu'il dit | Que la PR ne casse rien ailleurs | Et décide : moi" />
+</Split>
+
 ## Le ménage ne suffit pas
 
 Le 20 octobre, j'ai fait le ménage. 148 tickets ont été fermés comme non prévus ce jour-là. Il y avait des listes de vérification créées deux fois par un script, du travail déjà fait, du travail remplacé par un autre ticket. Et il y avait des idées ambitieuses, des fonctionnalités que personne ne semblait avoir demandées. La courbe des tickets ouverts est descendue, de 584 à 498.
@@ -148,19 +153,13 @@ J'ai fait un balayage du tableau. 45 cartes étaient encore en In progress ou en
 
 Je ne voulais pas refaire ce balayage à la main. J'ai donc activé les workflows intégrés de GitHub Projects, dans les réglages du tableau. Avant, plusieurs étaient cassés : ils visaient une colonne « Todo » qui n'existait plus.
 
-| Quand | La carte va en |
-| :--- | :--- |
-| Un élément est fermé | Done |
-| Une pull request est fusionnée | Done |
-| Une pull request est liée à une issue | In review |
-| Un élément est ajouté au projet | Backlog |
-| Un élément est rouvert | Next |
-| Des changements sont demandés au code | In progress |
-| Une relecture est approuvée | In review |
-
-Trois autres réglages complètent le tout : l'issue se ferme quand la carte passe en Done, les vieilles cartes Done sont archivées, et les sous-issues sont ajoutées toutes seules.
-
-Il reste un filet de sécurité. Toutes les trois heures, un contrôle du plan repasse sur le tableau, trouve les cartes dont la colonne ne correspond pas à leur issue ou à leur PR, et les corrige.
+<Pipeline label="Le tableau se met à jour tout seul : les workflows intégrés de GitHub Projects font vivre la carte, et un contrôle toutes les trois heures rattrape le reste">
+  <Stage title="Ajouté au projet" note="→ Backlog">Une issue ou une pull request entre dans le tableau.</Stage>
+  <Stage title="Une pull request liée" note="→ In review">La PR est liée à son issue. Des changements demandés renvoient la carte en In progress ; une relecture approuvée la remet en In review.</Stage>
+  <Stage title="Fusionné ou fermé" note="→ Done" tone="ship">L'issue se ferme quand sa carte passe en Done, les vieilles cartes Done sont archivées, et les sous-issues sont ajoutées toutes seules.</Stage>
+  <Stage title="Rouvert" note="→ Next">Un élément rouvert retourne dans ce qui vient ensuite.</Stage>
+  <Stage title="Toutes les trois heures" note="le filet de sécurité" tone="gate">Un contrôle du plan trouve les cartes dont la colonne ne correspond pas à leur issue ou à leur PR, et les corrige.</Stage>
+</Pipeline>
 
 C'est le même principe que pour la CI : on automatise la vérification au lieu de la faire à la main.
 

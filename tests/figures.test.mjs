@@ -22,6 +22,11 @@ const DONE = [
   "the-audit-said-ai-code-we-measured",
   "how-the-founder-and-the-cto-agent-work",
   "how-we-test-our-uis",
+  "why-krizaka",
+  "building-with-agents",
+  "a-curve-that-climbs",
+  "how-we-built-our-ci",
+  "ci-the-error-never-leaves-the-editor",
 ];
 
 test("the figure props parse: items, tones, series and rows", () => {

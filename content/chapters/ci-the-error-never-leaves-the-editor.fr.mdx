@@ -64,6 +64,11 @@ Pour Java, la même idée s'écrit autrement. Dans [krizaka-build#107](https://g
 
 Cette dernière étape a eu sa panne à elle. Un dépôt qui n'avait pas le fichier d'exclusions de SpotBugs cassait au premier build. [krizaka-build#108](https://github.com/krizaka/krizaka-build/pull/108) rend le fichier facultatif et ajoute un job canari, qui construit un projet vide avec le parent à chaque changement. On a appris à ne pas publier un parent sans le faire essayer par un consommateur.
 
+<Split label="Tout Sonar au lint : ce que Sonar disait dix minutes après la PR, l'éditeur le dit pendant que l'agent écrit.">
+  <Side title="Avant" tone="before" items="Sonar répond sur la PR, dix minutes plus tard | Des barrières rouges sur le code neuf, presque toujours la complexité cognitive (S3776) | Un passage sur krizaka-ui trouve 37 bugs, dont 16 tris sans fonction de comparaison | L'agent est déjà passé à autre chose" />
+  <Side title="Maintenant" tone="after" items="@krizaka/config 0.11 : la complexité cognitive au lint, seuil 15 | 0.12 : tout eslint-plugin-sonarjs, une erreur Sonar devient une erreur de lint | La dette existante est comptée et gelée : elle ne fait que descendre | Sonar reste, comme dernier filet" />
+</Split>
+
 ## Les secrets et les workflows, au plus tôt
 
 Il y a des choses qu'une CI ne devrait jamais avoir à attraper. Un secret poussé dans un dépôt, par exemple : une fois dans l'historique, il est brûlé.
@@ -87,6 +92,14 @@ Un jour, la branche main de Yomizaka est devenue rouge. Trente avertissements de
 L'explication est bête. Deux PR étaient vertes chacune sur une base ancienne. La première a fusionné et a fixé le plafond. La seconde, partie avant, a fusionné après sans refaire le contrôle sur le nouveau main, et a ajouté ses avertissements. Aucune PR n'était fautive, et la somme l'était.
 
 La garde, c'est un réglage de GitHub : exiger que la branche soit à jour avant la fusion. Je l'ai mis sur Yomizaka, puis sur 12 dépôts, avec un petit script qui remet à jour les PR en attente de fusion automatique. J'avais d'abord cru que SonarCloud ne répondait que sur les PR. C'est vrai de son analyse automatique ; lancée par la CI, son analyse répond aussi sur les branches de la file de fusion. Je l'ai vérifié sur un dépôt : la file marche, Sonar compris. Alors on passe à la file de fusion, qui garde la même promesse sans remettre les PR à jour à la main.
+
+<Pipeline label="La course que personne ne voyait : deux PR vertes sur une vieille base, et un main rouge qu'aucune PR n'a causé seule">
+  <Stage title="Deux PR" note="vertes sur le même vieux main">Chacune est vérifiée contre le main d'où elle est partie.</Stage>
+  <Stage title="La première fusionne" note="le plafond passe à 27">Main est vert, avec ses avertissements de lint comptés.</Stage>
+  <Stage title="La seconde fusionne" note="sans nouvelle vérification">Partie plus tôt, elle fusionne sans être revérifiée sur le nouveau main, et ajoute ses avertissements.</Stage>
+  <Stage title="Main passe au rouge" note="30 avertissements, plafond 27" tone="gate">Aucune PR n'était fautive. C'était la somme.</Stage>
+  <Stage title="La garde" note="à jour avant de fusionner" tone="ship">Activée pour Yomizaka, puis 12 dépôts ; maintenant la file de fusion, qui tient la même promesse, Sonar compris.</Stage>
+</Pipeline>
 
 ## Un correctif sans garde n'est pas fini
 

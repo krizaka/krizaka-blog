@@ -146,6 +146,10 @@ The last line is the rule. When we fix violations, we record the new count, and 
 
 Why not fix everything at once? Because a new rule often finds dozens of cases. Fixing them all in the same PR makes a huge PR nobody reviews well. With a ratchet, the rule protects new code right away, and the existing debt goes down little by little.
 
+On krizaka.com, the count of hand-written tables and forms shows it well. When the counter arrived, on 12 October, it found 20. Two days later, four changes had brought it to 11, 8, 3, then 2, and it has stayed at 2 since. Nobody can add a third.
+
+<Bars label="A counter that only goes down: hand-written tables and forms on krizaka.com, as recorded in its lint-ratchet.json." source="Read from the history of krizaka-com's lint-ratchet.json (counter localTableOrForm), on 30 October." format="integer" series="Recorded count:accent" data="12 October=20; 14 October, 1st change=11; 14 October, 2nd change=8; 14 October, 3rd change=3; 14 October, 4th change=2; 30 October=2" />
+
 ## A bug becomes a rule
 
 This is the habit that changed our way of working the most. When we find a bug, we ask whether it is alone, or part of a family. If it is a family, we write a rule that refuses it, with its tests.
@@ -202,6 +206,14 @@ const oneRouter: NonNullable<Options["esbuildPlugins"]>[number] = {
 A test checks that this plugin is plugged in. If someone removes it one day, the CI will say so.
 
 A fixed bug is one bug less. A rule is its whole family less, in every repository that shares the rule.
+
+<Pipeline label="A bug becomes a rule: the « 514 » found by chance in a UUID, from a random failure to a family refused everywhere">
+  <Stage title="A random failure" note="akinaza#341">A privacy test looks for « 514 » in a payload full of random ids: five failures in one CI run.</Stage>
+  <Stage title="Alone, or a family?" note="the question">Searching a run of digits in random text fails by chance. That is a family, not one test.</Stage>
+  <Stage title="A rule" note="ast-grep" tone="gate">no-bare-digits-on-serialized refuses the pattern, with its valid and refused cases.</Stage>
+  <Stage title="The ratchet" note="a count recorded">A rule without a recorded count fails the CI: it cannot be slipped in quietly.</Stage>
+  <Stage title="The family comes back" note="akinaza#358" tone="ship">« 4821 » in an encrypted text: a second rule, no-bare-digits-on-random-bytes. The class is fixed, not the instance.</Stage>
+</Pipeline>
 
 ## Mobile: Maestro in CI
 

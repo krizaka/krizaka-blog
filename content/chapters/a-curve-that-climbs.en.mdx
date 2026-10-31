@@ -58,6 +58,11 @@ Review became the place where everything waited. On October 25, krizaka-ui had 2
 
 And every day there was the same puzzle. Do I move a new feature forward, or do I bring the number of open issues down? Both feel urgent. A feature shows. A closed issue barely shows. But an open issue weighs.
 
+<Split label="Why the curve climbs: opening work costs a minute, closing it takes a person who reads, checks and decides.">
+  <Side title="Opening" tone="plug" items="An idea becomes an issue in a minute | The agent writes the context, the criteria, the links | An issue becomes a PR almost as fast | An agent on one issue may open three more | 252 issues opened on 17 October" />
+  <Side title="Closing" tone="own" items="Someone reads the code | Checks that the CI really ran | That the test proves what it says | That the PR breaks nothing elsewhere | And decides: me" />
+</Split>
+
 ## Cleaning up is not enough
 
 On October 20, I cleaned up. 148 issues were closed as not planned that day. There were checklists a script had created twice, work already done, work replaced by another issue. And there were ambitious ideas, features nobody seemed to have asked for. The line of open issues came down, from 584 to 498.
@@ -148,19 +153,13 @@ I swept the board. 45 cards were still in In progress or In review although thei
 
 I did not want to do that sweep by hand again. So I turned on GitHub Projects' built-in workflows, in the board's settings. Before that, several were broken: they pointed to a « Todo » column that no longer existed.
 
-| When | The card goes to |
-| :--- | :--- |
-| An item is closed | Done |
-| A pull request is merged | Done |
-| A pull request is linked to an issue | In review |
-| An item is added to the project | Backlog |
-| An item is reopened | Next |
-| Changes are requested on the code | In progress |
-| A review is approved | In review |
-
-Three more settings finish the job: the issue closes when its card becomes Done, old Done cards are archived, and sub-issues are added by themselves.
-
-There is still a safety net. Every three hours, a plan check goes over the board again, finds the cards whose column does not match their issue or PR, and fixes them.
+<Pipeline label="The board updates itself: GitHub Projects' built-in workflows move a card through its life, and a check every three hours catches the rest">
+  <Stage title="Added to the project" note="→ Backlog">An issue or a pull request joins the board.</Stage>
+  <Stage title="A pull request linked" note="→ In review">The PR is linked to its issue. Changes requested send the card back to In progress; an approved review returns it to In review.</Stage>
+  <Stage title="Merged or closed" note="→ Done" tone="ship">The issue closes when its card becomes Done, old Done cards are archived, and sub-issues are added by themselves.</Stage>
+  <Stage title="Reopened" note="→ Next">A reopened item goes back to the work that comes next.</Stage>
+  <Stage title="Every three hours" note="the safety net" tone="gate">A plan check finds the cards whose column does not match their issue or PR, and fixes them.</Stage>
+</Pipeline>
 
 It is the same principle as for CI: automate the check instead of doing it by hand.
 
