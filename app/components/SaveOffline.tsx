@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { Button } from "@krizaka/ui/button";
+import { Popover } from "@krizaka/ui/popover";
 import { format } from "@/lib/locale";
 import { offlineStore, type OfflineState } from "@/lib/offline-store";
 import { useI18n } from "./I18nProvider";
@@ -18,6 +19,25 @@ function Notice({ state }: Readonly<{ state: OfflineState }>) {
     <output className="bl-offline-note" hidden={!message}>
       {message}
     </output>
+  );
+}
+
+/** The « ? » next to the save buttons: what « Read offline » does (kept in THIS browser, no account, nothing sent) and how to remove it.
+    A popover of @krizaka/ui: a button the keyboard reaches, Enter/Space open it, Escape closes it and gives the focus back, a tap on a phone. */
+export function OfflineHelp() {
+  const { t } = useI18n();
+  return (
+    <Popover.Root>
+      <Popover.Trigger asChild>
+        <button type="button" className="bl-help" aria-label={t.offline.helpLabel}>
+          <span aria-hidden="true">?</span>
+        </button>
+      </Popover.Trigger>
+      <Popover.Content className="bl-help-card" side="bottom" align="start">
+        <p>{t.offline.helpBody}</p>
+        <p>{t.offline.helpRemove}</p>
+      </Popover.Content>
+    </Popover.Root>
   );
 }
 

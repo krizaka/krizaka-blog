@@ -42,7 +42,11 @@ if ! command -v pandoc >/dev/null || [[ "$(pandoc --version | head -1)" != "pand
   echo "7e3736f255090296ca5d1a14291a76b9b3c43cd385011b1621a4d0c16091a70f  /tmp/pandoc.deb" | sha256sum -c -
   sudo dpkg -i /tmp/pandoc.deb
 fi
-node scripts/gen-downloads.mjs --out downloads-out
+# epubcheck 5.2.1 (W3C, Java is on the runner): every EPUB must validate with no error and no warning (gen-downloads runs it).
+curl --proto "=https" --tlsv1.2 -fsSL -o /tmp/epubcheck.zip https://github.com/w3c/epubcheck/releases/download/v5.2.1/epubcheck-5.2.1.zip
+echo "0532f6291faa2bb729dd253f958868a2a57dbd2c32f881a97c7c980c5940309e  /tmp/epubcheck.zip" | sha256sum -c -
+unzip -q -o /tmp/epubcheck.zip -d /tmp
+EPUBCHECK_JAR=/tmp/epubcheck-5.2.1/epubcheck.jar node scripts/gen-downloads.mjs --out downloads-out
 node scripts/gen-downloads.mjs check
 grep -q '<enclosure url="https://krizaka-assets.b-cdn.net/sites/blog/posts/downloads/' out/feed.xml
 grep -q 'rel="enclosure" type="application/pdf"' out/fr/atom.xml

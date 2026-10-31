@@ -47,7 +47,7 @@ test("a diagram or a clip stands for its label, never a silent hole; a decorativ
 
 test("cleanArticle drops script, button and blur placeholders, keeps alt, and makes links absolute", () => {
   const html =
-    '<article class="bl-article"><button>Save</button><script>1</script><noscript><img src="n.gif"></noscript>' +
+    '<article class="bl-article"><button>Save</button><script>1</script><noscript>Enable scripts</noscript>' +
     '<div aria-hidden="true"><span>Round 1</span></div><img src="https://cdn/x.webp" alt="A desk" style="background-image:url(data:image/webp;base64,AAA)" sizes="1px" srcSet="a 1w">' +
     '<a href="/story/x/">x</a><a href="#id">y</a></article>';
   const out = cleanArticle(html);
@@ -148,7 +148,13 @@ test("the book's source is a language-tagged page with each chapter as a section
       url: "https://blog.krizaka.com/story/one/",
     },
   ];
-  const labels = { lang: "fr", title: "T", readOnline: "À lire en ligne :", storyHeading: "Toute l'histoire" };
+  const labels = {
+    lang: "fr",
+    title: "T",
+    chapterLabel: "Chapter",
+    readOnline: "À lire en ligne :",
+    storyHeading: "Toute l'histoire",
+  };
   const html = bookSource({ chapters: parts, labels, all: parts });
   assert.match(html, /<html lang="fr">/);
   assert.match(html, /<section id="ch-one">\n<h1>01 · One &lt;b&gt;<\/h1>/);
@@ -209,4 +215,108 @@ test("plain drops every tag, nested or half-written, and reads the entities", ()
   assert.equal(plain("<p>a <b>b</b> &amp; c</p>"), "a b & c");
   assert.equal(plain("<<script>x</script>y"), "xy");
   assert.equal(plain("<a\nhref='x'>t</a>"), "t");
+});
+
+// ── krizaka-blog#235: the books carry the pictures, are designed, and run 1 → N ────────────────────────────────────────────────────
+
+import { FACES, coverHtml, epubCss, printCss } from "../lib/ebook-style.mjs";
+import { imageUrls, numberSections, orderProblems, scopeIds } from "../lib/downloads-core.mjs";
+import matter from "gray-matter";
+
+test("the lazy pictures are kept: the <noscript> twin holds the src the empty <img> lacks (the books had no picture before)", () => {
+  const page =
+    '<figure><img class="bl-img" width="1200" alt="A" style="background-image:url(&quot;x&quot;)"/><noscript><img class="bl-img" alt="A" decoding="async" src="https://cdn/x-960.webp" srcSet="https://cdn/x-480.webp 480w"/></noscript><figcaption>Caption</figcaption></figure>';
+  const clean = cleanArticle(page);
+  assert.deepEqual(imageUrls(clean), ["https://cdn/x-960.webp"]);
+  assert.equal((clean.match(/<img/g) ?? []).length, 1);
+  assert.match(clean, /<figcaption>Caption<\/figcaption>/);
+  assert.deepEqual(imagesWithoutAlt(clean), []);
+});
+
+test("section titles get their § number, and ids are scoped by chapter so an EPUB has no duplicate id", () => {
+  const body =
+    '<h2 id="what-i-take">What I take</h2><p><a href="#what-i-take">x</a></p><h2 id="b" aria-labelledby="zz">B</h2>';
+  const numbered = numberSections(body, 4);
+  assert.match(numbered, /<h2 id="what-i-take"><span class="sec">§&#160;4\.1<\/span> What I take/);
+  assert.match(numbered, /§&#160;4\.2<\/span> B/);
+  const a = scopeIds(numbered, "one");
+  const b = scopeIds(numbered, "two");
+  assert.match(a, /id="one--what-i-take"/);
+  assert.match(a, /href="#one--what-i-take"/);
+  assert.doesNotMatch(a, /aria-labelledby/);
+  const ids = [...(a + b).matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
+  assert.equal(new Set(ids).size, ids.length);
+});
+
+test("the book runs chapter 1 → N: the markup of the TOC and the body follow the numbers, never newest first", () => {
+  const h = (ns) => ns.map((n) => `<h1>${String(n).padStart(2, "0")} · T</h1>`).join("");
+  assert.deepEqual(orderProblems(h([1, 2, 3])), []);
+  assert.deepEqual(orderProblems(h([1, 2, 4])), [], "a language may lack a number");
+  assert.match(orderProblems(h([3, 2, 1]))[0], /not in number order/);
+  assert.match(orderProblems(h([2, 1, 3]))[0], /1 → N/);
+});
+
+test("the whole story of each language is planned and written in chapter order, from the real chapters (FR and EN)", () => {
+  const dir = new URL("../content/chapters/", import.meta.url);
+  const chapters = readdirSync(dir)
+    .filter((f) => f.endsWith(".mdx"))
+    .map((f) => {
+      const [, slug, locale] = f.match(/^(.+)\.(en|fr)\.mdx$/);
+      const { data } = matter(readFileSync(new URL(f, dir), "utf8"));
+      return {
+        slug,
+        locale,
+        chapter: Number(data.chapter),
+        title: String(data.title),
+        text: f,
+        draft: data.draft === true,
+      };
+    })
+    .filter((c) => !c.draft)
+    // the files are given newest-first on purpose: the order must come from the chapter numbers
+    .sort((a, b) => b.chapter - a.chapter);
+  for (const locale of ["en", "fr"]) {
+    const book = planBooks(chapters).find((b) => b.key === SERIES && b.locale === locale);
+    const own = chapters.filter((c) => c.locale === locale);
+    const numbers = book.slugs.map((s) => own.find((c) => c.slug === s).chapter);
+    assert.ok(numbers.length >= 2 && numbers[0] === Math.min(...numbers), `${locale} starts with its first chapter`);
+    assert.deepEqual(
+      numbers,
+      [...numbers].sort((a, b) => a - b),
+      `${locale} runs 1 → N`,
+    );
+    const parts = book.slugs.map((s) => {
+      const c = own.find((x) => x.slug === s);
+      return { ...c, description: "d", article: "<p>b</p>", url: "https://blog.krizaka.com/" };
+    });
+    const html = bookSource({
+      chapters: parts,
+      labels: { lang: locale, title: "T", readOnline: "r", storyHeading: "s" },
+    });
+    assert.deepEqual(orderProblems(html), [], `${locale} body`);
+  }
+});
+
+test("the books' look: the Cahier's faces are @krizaka/fonts files, embedded in the EPUB and the PDF, with a running header and footer", () => {
+  for (const f of FACES)
+    assert.ok(
+      readFileSync(new URL(`../node_modules/@krizaka/fonts/files/web/${f.file}`, import.meta.url)).length > 1000,
+      f.file,
+    );
+  assert.match(epubCss(), /@font-face\{font-family:"Krizaka Display"[^}]*young-serif/);
+  assert.match(epubCss(), /h2 \.sec/);
+  const css = printCss({ fontsBase: "fonts/", runningTitle: "T", runningKicker: "K" });
+  assert.match(css, /@top-left \{ content: "K"/);
+  assert.match(css, /@bottom-center \{ content: counter\(page\)/);
+  assert.match(css, /@page cover \{ margin: 0; \}/);
+  const cover = coverHtml({
+    lang: "fr",
+    kicker: "k",
+    title: "A <b>",
+    author: "a",
+    label: "l",
+    fontsBase: "file:///f/",
+  });
+  assert.match(cover, /<html lang="fr">/);
+  assert.match(cover, /A &lt;b&gt;/);
 });
