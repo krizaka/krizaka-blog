@@ -230,7 +230,6 @@ test("the chapter about building with agents (the company's running) is sensitiv
     "CodeTabs:",
     "Tab:",
     "NumberTicker",
-    "Stepper",
     "ComparisonTable",
   ])
     assert.ok(mdx.includes(c), c);

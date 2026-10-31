@@ -5862,5 +5862,72 @@
         }
       ]
     }
+  },
+  "series-19-tchou-tchou-how-our-pull-requests-catch-the-train": {
+    "kind": "image",
+    "width": 1280,
+    "height": 723,
+    "blur": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAAAQAgCdASoQAAkABABoJYwBTAA6c6sg/M6AAP7iPmckQmddoQzC0wKFvYlLtrP68U4KBfjz6wPQnTjFKQUugYVt6rqOpSg33XsGBFs/ZKNwMzgA",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-19-tchou-tchou-how-our-pull-requests-catch-the-train-480.b3437fcf5d.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-19-tchou-tchou-how-our-pull-requests-catch-the-train-960.314308e187.webp"
+      },
+      {
+        "w": 1280,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-19-tchou-tchou-how-our-pull-requests-catch-the-train-1280.dd3122c9f9.webp"
+      }
+    ],
+    "made": {
+      "model": "FLUX.1 [schnell]",
+      "licence": "Apache-2.0",
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+      "machine": "RunPod L40S",
+      "via": "Orazaka Studio",
+      "size": "1360×768",
+      "note": "Chapter 19 of the image series: candidate B of batch 2026-10-30-blog-v2 (Orazaka Studio run 944108f9), rendered for chapter 11 and left unpicked there (krizaka-blog#193). No person, no text, no logo."
+    },
+    "renditions": {
+      "avif": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-19-tchou-tchou-how-our-pull-requests-catch-the-train-480.03f13262eb.avif"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-19-tchou-tchou-how-our-pull-requests-catch-the-train-768.87376382a6.avif"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-19-tchou-tchou-how-our-pull-requests-catch-the-train-1200.0e470fce2f.avif"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-19-tchou-tchou-how-our-pull-requests-catch-the-train-1280.6c3de3663b.avif"
+        }
+      ],
+      "webp": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-19-tchou-tchou-how-our-pull-requests-catch-the-train-480.b6224cd13e.webp"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-19-tchou-tchou-how-our-pull-requests-catch-the-train-768.f1c6735abf.webp"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-19-tchou-tchou-how-our-pull-requests-catch-the-train-1200.2328db13c2.webp"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-19-tchou-tchou-how-our-pull-requests-catch-the-train-1280.67b8f9b35e.webp"
+        }
+      ]
+    }
   }
 }

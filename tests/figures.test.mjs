@@ -27,6 +27,7 @@ const DONE = [
   "a-curve-that-climbs",
   "how-we-built-our-ci",
   "ci-the-error-never-leaves-the-editor",
+  "tchou-tchou-how-our-pull-requests-catch-the-train",
 ];
 
 test("the figure props parse: items, tones, series and rows", () => {
@@ -93,4 +94,15 @@ test("a code block's bar is not numbered as a figure (only the chapter's figures
   const rule = css.match(/([^{}]+)figcaption::before\s*\{[^}]*counter-increment: bl-fig/);
   assert.ok(rule, "the figure counter");
   assert.match(rule[1], /:not\(\.kz-code\)/);
+});
+
+test("the articles carry no icons: steps are numbered in mono, scopes and markers are plain text (founder 2026-10-31)", () => {
+  const mdx = readFileSync("app/components/pages/mdx.tsx", "utf8");
+  assert.doesNotMatch(mdx, /@krizaka\/icons|@krizaka\/ui\/stepper|LoaderGlyph/);
+  for (const f of ["Pipeline", "Split", "Layers", "Bars", "Figure", "Clip", "IssueCurve"])
+    assert.doesNotMatch(readFileSync(`app/components/pages/${f}.tsx`, "utf8"), /@krizaka\/icons/, f);
+  assert.doesNotMatch(readFileSync("app/components/TakeStory.tsx", "utf8"), /bl-book/);
+  const css = readFileSync("app/globals.css", "utf8");
+  assert.doesNotMatch(css, /content:\s*"[✕✓✔✗]/u, "no glyph markers in the figures");
+  assert.doesNotMatch(css, /\.bl-help\s*\{[^}]*border-radius:\s*50%/, "the « ? » is a plain text mark, not a drawn badge");
 });

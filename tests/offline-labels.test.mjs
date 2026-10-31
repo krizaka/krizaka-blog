@@ -23,13 +23,13 @@ test("the helper says it stays in this browser, with no account and nothing sent
   for (const l of ["en", "fr"]) assert.match(msg(l).offline.helpRemove, /«/);
 });
 
-test("a chapter names its two scopes and carries the helper; the end line groups files by scope with a book for each", () => {
+test("a chapter names its two scopes and carries the helper; the end line groups files by scope, in plain text", () => {
   const page = read("app/components/pages/ChapterPage.tsx");
   assert.match(page, /bl-scope-label">\{t\.downloads\.takeChapter\}/);
   assert.match(page, /bl-scope-label">\{t\.downloads\.takeStory\}/);
   assert.match(page, /<OfflineHelp \/>/);
   const take = read("app/components/TakeStory.tsx");
-  assert.match(take, /bl-book bl-book-whole|bl-book\$\{whole/);
+  assert.doesNotMatch(take, /bl-book/, "no drawn book: the scopes are plain text (founder 2026-10-31)");
   assert.match(take, /takeChapters/);
 });
 
