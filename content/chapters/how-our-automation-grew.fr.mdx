@@ -1,0 +1,127 @@
+---
+title: "Comment notre automatisation a grandi : d'une CI lourde à des workflows par sujet"
+description: "En trois semaines, la CI de krizaka.com est passée de une minute et demie à plus de dix. Ce qu'on a ajouté, pourquoi, ce qu'on a mal fait, et comment on a découpé nos workflows par sujet avec un budget de vitesse."
+seoTitle: "Comment notre automatisation a grandi"
+seoDescription: "La CI de Krizaka en trois semaines : un contrôle ajouté après chaque bug, des workflows découpés par sujet, un budget de vitesse mesuré."
+date: 2026-10-31
+publishedAt: "2026-10-31T10:00:00-04:00"
+tags: [ai, integration, measurements]
+author: oussama
+cover: series-20-how-our-automation-grew
+coverAlt: "Une longue halle voûtée à l'aquarelle, des arches de pierre qui se répètent jusqu'au fond, des lampes suspendues sous la charpente et un petit canard rouge au milieu de l'allée"
+draft: false
+sensitive: true
+chapter: 20
+period: "2026-10-09/2026-10-31"
+sources:
+  - automate-running-your-company-with-scripts
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "une CI de plus en plus lourde, la même pour tout"
+  built: "des workflows par sujet, un budget de vitesse, une garde par bug"
+stats:
+  - value: "1,4 → 10,6"
+    label: "minutes, la médiane d'une CI réussie de krizaka.com sur une PR, première et dernière semaine"
+    section: "Une CI qui grossit"
+  - value: "16 003"
+    label: "exécutions de workflows en sept jours dans l'organisation"
+    section: "Mesurer avant de couper"
+  - value: "23 sur 41"
+    label: "couples dépôt et événement au-dessus du budget de vitesse"
+    section: "Mesurer avant de couper"
+---
+
+Il y a trois semaines, la CI de krizaka.com tenait en une minute et demie. Aujourd'hui, une pull request attend un peu plus de dix minutes avant de savoir si elle peut partir. Ce n'est pas un accident : chaque minute ajoutée correspond à un contrôle qu'on a voulu, souvent après un bug. Ce chapitre raconte cette croissance, ce qu'elle nous a appris, et comment on l'a remise en ordre.
+
+C'est la suite directe de [Tchou-tchou](/fr/story/tchou-tchou-how-our-pull-requests-catch-the-train/). Les trains déposent les pull requests une à une, mais un train ne roule jamais plus vite que la CI qu'il attend.
+
+## Une CI qui grossit
+
+Au début, krizaka.com avait sa propre CI : un fichier, quelques étapes, lint, tests, build. Puis, le 21 octobre, le site est passé sur le workflow commun de l'organisation, celui que partagent nos applications Node. Le 22, un contrôle de code dupliqué avec un cliquet. Le 26, l'analyse de SonarCloud avec la couverture des tests. Le 28, la file de fusion. Chacun de ces ajouts avait une raison, et chacun a coûté des minutes.
+
+<Bars label="La durée médiane d'une CI réussie sur une pull request de krizaka.com, par semaine : elle grandit à mesure qu'on ajoute des contrôles." source="Compté depuis l'API de GitHub le 31 octobre : les 1 000 dernières exécutions du workflow CI de krizaka.com depuis le 9 octobre, seulement les pull requests terminées en succès ; semaines du lundi au dimanche, la dernière jusqu'au 31 octobre." format="number" series="Minutes:accent" data="Sem. du 6 oct.=1.4; Sem. du 13 oct.=2.1; Sem. du 20 oct.=6.1; Sem. du 27 oct.=10.6" />
+
+En médiane, une CI réussie est passée de 1,4 minute à 10,6. Je ne vais pas présenter ce graphique comme une victoire. Il montre une CI qui devient plus lente, semaine après semaine. Ce qu'on a gagné ne se voit pas dans la barre : c'est ce que la CI arrête maintenant avant la production. Mais le coût est réel, et c'est lui qui nous a forcés à mesurer.
+
+## Le chemin d'une pull request, aujourd'hui
+
+Voici ce que fait la CI de krizaka.com quand une pull request s'ouvre. Le fichier du site fait quarante-cinq lignes : il appelle le workflow commun de l'organisation et lui dit quoi lancer. Tout le reste vit à un seul endroit, pour tous les dépôts Node.
+
+<Pipeline label="Le graphe de la CI de krizaka.com sur une pull request, redessiné : ce qui tourne, dans quel ordre, et ce qui est sauté quand rien ne le concerne.">
+  <Stage title="Fichiers modifiés" note="quelques secondes">Un premier job regarde ce que la PR touche. Une PR qui ne change que de la documentation saute tout le lourd.</Stage>
+  <Stage title="Plan" note="la matrice">Il lit les scripts du dépôt et en fait une liste de tâches à lancer en parallèle.</Stage>
+  <Stage title="Vérifier" note="en parallèle" tone="gate">Lint, types, tests et build, chacun dans son job. À côté, deux contrôles qui n'attendent personne : « un correctif a besoin d'une garde » et le code dupliqué.</Stage>
+  <Stage title="Parcours" note="en éclats">Les tests de bout en bout, découpés en plusieurs morceaux qui tournent en même temps, seulement si l'interface change.</Stage>
+  <Stage title="Image et analyse" note="après le vert">L'image du conteneur est construite et démarrée, et SonarCloud analyse le code. Les deux attendent que la vérification soit verte : inutile de payer le plus long pour une PR déjà rouge.</Stage>
+  <Stage title="Porte de la CI" note="un seul check" tone="ship">Un dernier job lit tous les autres et donne une seule réponse. C'est le seul check exigé sur main.</Stage>
+</Pipeline>
+
+Deux choix comptent plus que les autres. D'abord, sauter ce qui ne sert à rien : une PR qui ne touche pas l'interface ne lance pas les parcours, et une PR de documentation ne lance ni les tests ni l'image. Ensuite, un seul check exigé, la porte. Avant, chaque dépôt exigeait une liste de noms de jobs, et la moindre modification d'un nom bloquait les PR sur un check qui n'existait plus.
+
+## La boucle : un bug, une garde
+
+La règle qui a fait grossir la CI, c'est celle-ci : un bug veut dire qu'une garde manquait. On ne répare pas seulement, on se demande pourquoi rien ne l'a arrêté avant, et on ajoute ce qui l'aurait arrêté. Cette semaine, la boucle a produit ces contrôles :
+
+<Steps>
+  <Step title="Un correctif a besoin d'une garde">Une PR dont le titre commence par `fix` doit ajouter ou modifier un test, une règle ou un audit. Sinon le job est rouge. On peut s'en exempter, mais il faut écrire pourquoi.</Step>
+  <Step title="Pas de ligne de co-auteur">Un commit qui nomme une IA comme co-auteur est refusé. L'auteur, c'est notre application.</Step>
+  <Step title="Cinq PR par dépôt">Ouvrir une sixième pull request sur un dépôt est refusé, bots compris.</Step>
+  <Step title="Pas d'orpheline">Un script liste les PR ouvertes qu'aucun train ne porte. Verte, elle reçoit un train ; rouge, elle retourne à sa lane.</Step>
+  <Step title="Le référencement vérifié">Chaque site de la famille passe le même contrôle des fichiers pour les moteurs de recherche, en CI puis après chaque déploiement, sur le site en ligne.</Step>
+  <Step title="Le vert avant le lourd">L'image et l'analyse ne partent qu'après une vérification verte.</Step>
+</Steps>
+
+Chacune de ces gardes a son test. C'est ce qui les distingue d'une règle écrite dans un document : une règle s'oublie, une garde refuse.
+
+## Mesurer avant de couper
+
+Le 30 octobre, j'ai demandé qu'on arrête d'ajouter et qu'on mesure. Une semaine complète, lue depuis l'API de GitHub, pour les quarante dépôts actifs de l'organisation : 16 003 exécutions de workflows en sept jours. On s'est donné un budget simple : au 90ᵉ centile, une PR doit avoir sa réponse en 10 minutes, la file de fusion en 15. Résultat : 23 couples dépôt et événement sur 41 étaient au-dessus.
+
+<Numbers>
+  <Num value="16003" label="exécutions de workflows" hint="en sept jours, quarante dépôts" />
+  <Num value="23" label="couples au-dessus du budget" hint="sur 41, au 90ᵉ centile" />
+  <Num value="287" label="reconstructions forcées du site" hint="une par version d'un produit, en une semaine" />
+</Numbers>
+
+La mesure a d'abord trouvé des bugs, pas des lenteurs. Le pire : depuis le 25 octobre, le job de build relançait les tests que le job de test venait déjà de faire tourner. Sur Akinaza, ça coûtait près de neuf minutes à chaque PR et à chaque passage dans la file. Personne ne l'avait vu, parce que le résultat était vert.
+
+## Des workflows par sujet
+
+La décision s'appelle [ADR-018](https://github.com/krizaka/.github/blob/main/docs/adr/ADR-018-workflows-by-concern-profiles-budgets.md). Au lieu d'un gros workflow qui fait tout pour tout le monde, chaque workflow a un seul sujet, et son nom le dit : `ci-node`, `ui-visual`, `mobile-e2e`, `deps-automerge`, `release-changelog`.
+
+<Split label="Avant et après : un workflow qui fait tout, puis des workflows qui ont chacun un sujet, un moment et un budget.">
+  <Side title="Avant" tone="before" items="Un gros workflow par langage, qui fait tout | Le même travail sur chaque PR, quel que soit le changement | Une liste de checks exigés à recopier dans chaque dépôt | Aucune mesure de la durée" />
+  <Side title="Après" tone="after" items="Un workflow par sujet : ci, ui, mobile, deps, release, seo | Des filtres de chemins : on ne lance que ce que la PR concerne | Un profil par dépôt, et une seule porte exigée | Un budget de vitesse, mesuré chaque semaine" />
+</Split>
+
+Chaque dépôt déclare un profil (une bibliothèque, une application web, une application mobile, un service Java, un site) et reçoit l'ensemble de workflows qui va avec. Akinaza est à la fois une application web et une application mobile : elle compose les deux. Un test refuse un dépôt actif sans profil.
+
+## Ce qu'on a mal fait
+
+Je préfère le dire, parce que ce sont ces erreurs qui ont dessiné les règles.
+
+- **Des noms de jobs calculés.** Le nom d'un job de vérification était une expression. Quand le job était sauté, GitHub affichait l'expression brute au lieu du nom, et une PR restait bloquée sur un check qui n'arriverait jamais. Les noms sont maintenant littéraux, et un test le vérifie.
+- **Un délai de file trop court.** La file de fusion abandonnait une PR au bout de trente minutes, alors que certaines CI duraient plus longtemps. Des PR saines étaient éjectées. Le délai est maintenant plus long que la CI la plus lente.
+- **Des rouges périmés.** Un check rouge sur une branche en retard sur main était souvent déjà réparé sur main. On relançait à la main. Le train met maintenant la branche à jour une fois avant de juger.
+- **Une reconstruction par version.** Chaque version d'un produit forçait une reconstruction complète de krizaka.com : 287 en une semaine, plus de trente heures de machines qui attendaient.
+- **La CI de krizaka.com est trop lente.** Au 90ᵉ centile, une PR attend encore près de dix-sept minutes, au-dessus de notre propre budget. L'image du conteneur, avec son test de démarrage, en prend presque huit. Ce n'est pas réglé.
+
+## Ce que j'en retiens
+
+Une CI qui grossit n'est pas un échec. C'est le signe qu'on apprend de nos bugs. L'échec serait de la laisser grossir sans la mesurer. Ce que je retiens de ces trois semaines tient en trois idées : chaque bug laisse une garde, chaque garde a un sujet et un moment, et chaque minute est mesurée contre un budget.
+
+La suite est déjà écrite dans l'ADR : un tableau de santé pour chaque dépôt, qui prouve que les règles sont appliquées sans qu'un agent ait à le vérifier à la main.
+
+## Questions fréquentes
+
+### Pourquoi la CI de krizaka.com est-elle plus lente qu'avant ?
+
+Parce qu'elle fait beaucoup plus : des tests de bout en bout, l'image du conteneur démarrée, l'analyse du code, le contrôle des doublons. Le budget de vitesse sert à garder ces contrôles sans laisser la durée filer.
+
+### Pourquoi un seul check exigé ?
+
+Parce qu'une liste de noms de jobs à exiger se casse dès qu'un nom change. La porte lit tous les autres jobs et donne une seule réponse : c'est elle qu'on exige.
+
+### Un workflow par sujet, ça ne fait pas trop de fichiers ?
+
+Un peu plus de fichiers, mais chacun est court, porte un nom qui dit ce qu'il fait, et ne tourne que quand il est concerné. Le nom du fichier n'apparaît pas dans le nom du check, donc renommer un workflow ne casse aucune protection.

@@ -1,0 +1,127 @@
+---
+title: "How our automation grew: from one heavy CI to workflows by concern"
+description: "In three weeks, krizaka.com's CI went from a minute and a half to over ten. What we added, why, what we got wrong, and how we split our workflows by concern with a speed budget."
+seoTitle: "Our automation: from one heavy CI to workflows by concern"
+seoDescription: "How Krizaka's CI grew in three weeks: checks added after each bug, workflows split by concern and a measured speed budget."
+date: 2026-10-31
+publishedAt: "2026-10-31T10:00:00-04:00"
+tags: [ai, integration, measurements]
+author: oussama
+cover: series-20-how-our-automation-grew
+coverAlt: "A long vaulted hall in watercolour, stone arches repeating to the far end, lamps hanging under the roof beams and a small red duck in the middle of the aisle"
+draft: false
+sensitive: true
+chapter: 20
+period: "2026-10-09/2026-10-31"
+sources:
+  - automate-running-your-company-with-scripts
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "a CI growing heavier, the same for everything"
+  built: "workflows by concern, a speed budget, a guard for every bug"
+stats:
+  - value: "1.4 → 10.6"
+    label: "minutes, the median successful CI of a krizaka.com PR, first and last week"
+    section: "A CI that grows"
+  - value: "16,003"
+    label: "workflow runs in seven days across the organisation"
+    section: "Measure before you cut"
+  - value: "23 of 41"
+    label: "repository and event pairs over the speed budget"
+    section: "Measure before you cut"
+---
+
+Three weeks ago, krizaka.com's CI took a minute and a half. Today, a pull request waits a little over ten minutes to learn whether it can go. That is no accident: every added minute is a check we wanted, often after a bug. This chapter tells how it grew, what it taught us, and how we put it back in order.
+
+It follows straight on from [Tchou-tchou](/story/tchou-tchou-how-our-pull-requests-catch-the-train/). The trains land pull requests one by one, but a train never runs faster than the CI it waits for.
+
+## A CI that grows
+
+At first, krizaka.com had its own CI: one file, a few steps, lint, tests, build. Then, on 21 October, the site moved onto the organisation's shared workflow, the one our Node applications share. On the 22nd, a duplicate-code check with a ratchet. On the 26th, SonarCloud's analysis with test coverage. On the 28th, the merge queue. Each of these had a reason, and each cost minutes.
+
+<Bars label="The median duration of a successful CI run on a krizaka.com pull request, by week: it grows as checks are added." source="Counted from the GitHub API on 31 October: the last 1,000 runs of krizaka.com's CI workflow since 9 October, pull requests that succeeded only; weeks from Monday to Sunday, the last one up to 31 October." format="number" series="Minutes:accent" data="Week of 6 Oct=1.4; Week of 13 Oct=2.1; Week of 20 Oct=6.1; Week of 27 Oct=10.6" />
+
+At the median, a successful run went from 1.4 minutes to 10.6. I will not present this chart as a win. It shows a CI getting slower, week after week. What we gained does not show in the bar: it is what the CI now stops before production. But the cost is real, and it is what forced us to measure.
+
+## A pull request's path, today
+
+Here is what krizaka.com's CI does when a pull request opens. The site's file is forty-five lines: it calls the organisation's shared workflow and tells it what to run. Everything else lives in one place, for every Node repository.
+
+<Pipeline label="The graph of krizaka.com's CI on a pull request, redrawn: what runs, in what order, and what is skipped when nothing concerns it.">
+  <Stage title="Changed files" note="a few seconds">A first job looks at what the PR touches. A PR that only changes documentation skips all the heavy work.</Stage>
+  <Stage title="Plan" note="the matrix">It reads the repository's scripts and turns them into a list of tasks to run in parallel.</Stage>
+  <Stage title="Verify" note="in parallel" tone="gate">Lint, types, tests and build, each in its own job. Alongside, two checks that wait for no one: « a fix needs a guard » and duplicate code.</Stage>
+  <Stage title="Journeys" note="in shards">The end-to-end tests, cut into several pieces that run at the same time, only when the interface changes.</Stage>
+  <Stage title="Image and analysis" note="after green">The container image is built and started, and SonarCloud analyses the code. Both wait for verify to be green: no point paying for the longest jobs on a PR that is already red.</Stage>
+  <Stage title="CI gate" note="one check" tone="ship">A last job reads all the others and gives one answer. It is the only check required on main.</Stage>
+</Pipeline>
+
+Two choices matter more than the rest. First, skip what serves nothing: a PR that does not touch the interface does not run the journeys, and a documentation PR runs neither the tests nor the image. Second, one required check, the gate. Before, each repository required a list of job names, and the slightest rename blocked PRs on a check that no longer existed.
+
+## The loop: a bug, a guard
+
+The rule that made the CI grow is this one: a bug means a guard was missing. We do not only fix it, we ask why nothing stopped it earlier, and we add what would have. This week, the loop produced these checks:
+
+<Steps>
+  <Step title="A fix needs a guard">A PR whose title starts with `fix` must add or change a test, a rule or an audit. Otherwise the job is red. You can be exempted, but you have to write why.</Step>
+  <Step title="No co-author line">A commit that names an AI as co-author is refused. The author is our application.</Step>
+  <Step title="Five PRs per repository">Opening a sixth pull request on a repository is refused, bots included.</Step>
+  <Step title="No orphans">A script lists the open PRs no train carries. Green, it gets a train; red, it goes back to its lane.</Step>
+  <Step title="Search checked">Every site of the family passes the same check of the files search engines read, in CI and then after each deployment, on the live site.</Step>
+  <Step title="Green before heavy">The image and the analysis only start after a green verify.</Step>
+</Steps>
+
+Each of these guards has its test. That is what sets them apart from a rule written in a document: a rule gets forgotten, a guard refuses.
+
+## Measure before you cut
+
+On 30 October, I asked that we stop adding and measure. One full week, read from the GitHub API, for the organisation's forty active repositories: 16,003 workflow runs in seven days. We set a simple budget: at the 90th percentile, a PR must get its answer in 10 minutes, the merge queue in 15. The result: 23 repository and event pairs out of 41 were over.
+
+<Numbers>
+  <Num value="16003" label="workflow runs" hint="in seven days, forty repositories" />
+  <Num value="23" label="pairs over budget" hint="out of 41, at the 90th percentile" />
+  <Num value="287" label="forced rebuilds of the site" hint="one per product release, in one week" />
+</Numbers>
+
+The measurement found bugs first, not slowness. The worst: since 25 October, the build job ran again the tests the test job had just run. On Akinaza, that cost almost nine minutes on every PR and every pass through the queue. Nobody had seen it, because the result was green.
+
+## Workflows by concern
+
+The decision is called [ADR-018](https://github.com/krizaka/.github/blob/main/docs/adr/ADR-018-workflows-by-concern-profiles-budgets.md). Instead of one big workflow doing everything for everyone, each workflow has one concern, and its name says it: `ci-node`, `ui-visual`, `mobile-e2e`, `deps-automerge`, `release-changelog`.
+
+<Split label="Before and after: one workflow that does everything, then workflows that each have a concern, a moment and a budget.">
+  <Side title="Before" tone="before" items="One big workflow per language, doing everything | The same work on every PR, whatever the change | A list of required checks copied into every repository | No measure of the time" />
+  <Side title="After" tone="after" items="One workflow per concern: ci, ui, mobile, deps, release, seo | Path filters: only what the PR concerns runs | One profile per repository, and a single required gate | A speed budget, measured every week" />
+</Split>
+
+Each repository declares a profile (a library, a web application, a mobile application, a Java service, a site) and gets the set of workflows that goes with it. Akinaza is both a web and a mobile application: it composes the two. A test refuses an active repository without a profile.
+
+## What we got wrong
+
+I would rather say it, because these mistakes are what drew the rules.
+
+- **Computed job names.** The name of a verify job was an expression. When the job was skipped, GitHub showed the raw expression instead of the name, and a PR stayed blocked on a check that would never come. Names are now literal, and a test checks it.
+- **A queue timeout too short.** The merge queue gave up on a PR after thirty minutes, while some CI runs took longer. Healthy PRs were ejected. The timeout is now longer than the slowest CI.
+- **Stale reds.** A red check on a branch behind main had often already been fixed on main. We re-ran by hand. The train now updates the branch once before judging.
+- **One rebuild per release.** Every product release forced a full rebuild of krizaka.com: 287 in one week, over thirty hours of machines waiting.
+- **krizaka.com's CI is too slow.** At the 90th percentile, a PR still waits almost seventeen minutes, above our own budget. The container image, with its start-up test, takes almost eight. It is not solved.
+
+## What I take from it
+
+A CI that grows is not a failure. It is the sign that we learn from our bugs. The failure would be letting it grow without measuring it. What I take from these three weeks fits in three ideas: every bug leaves a guard, every guard has a concern and a moment, and every minute is measured against a budget.
+
+What comes next is already written in the ADR: a health scorecard for every repository, proving the rules are applied without an agent having to check them by hand.
+
+## Frequently asked questions
+
+### Why is krizaka.com's CI slower than before?
+
+Because it does much more: end-to-end tests, the container image started, code analysis, the duplicate check. The speed budget is there to keep these checks without letting the time drift.
+
+### Why a single required check?
+
+Because a list of job names to require breaks as soon as a name changes. The gate reads every other job and gives one answer: that is the one we require.
+
+### One workflow per concern, isn't that too many files?
+
+A few more files, but each is short, has a name that says what it does, and only runs when it is concerned. The file name is not part of the check's name, so renaming a workflow breaks no protection.
