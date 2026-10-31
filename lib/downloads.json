@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "70708e6438c3",
+      "source": "a8668b41438f",
       "files": {
         "epub": {
-          "hash": "0dfb00f80f",
-          "bytes": 5409364
+          "hash": "3b7578cbb8",
+          "bytes": 5409299
         },
         "pdf": {
-          "hash": "caf91102ba",
-          "bytes": 8038425
+          "hash": "a6de8c2aac",
+          "bytes": 8037991
         }
       }
     },
@@ -21,7 +21,7 @@
           "bytes": 744101
         },
         "pdf": {
-          "hash": "579dd0ac83",
+          "hash": "5cd8469ce9",
           "bytes": 1149139
         }
       }
@@ -34,7 +34,7 @@
           "bytes": 1656036
         },
         "pdf": {
-          "hash": "98339b9c78",
+          "hash": "9ca4bff33a",
           "bytes": 2508940
         }
       }
@@ -47,34 +47,34 @@
           "bytes": 1535490
         },
         "pdf": {
-          "hash": "78ea91fb2a",
+          "hash": "2eff507328",
           "bytes": 2077863
         }
       }
     },
     "en/from-a-clip-to-a-film": {
-      "source": "d92c5d7aa48e",
+      "source": "d03639709d61",
       "files": {
         "epub": {
-          "hash": "cf1c9cc18e",
-          "bytes": 1155204
+          "hash": "b75859c813",
+          "bytes": 1155194
         },
         "pdf": {
-          "hash": "cebc504286",
-          "bytes": 1743094
+          "hash": "892a3541d8",
+          "bytes": 1743062
         }
       }
     },
     "en/one-interface-everywhere": {
-      "source": "66240507d14d",
+      "source": "4dbfc1ff95e5",
       "files": {
         "epub": {
-          "hash": "427eba1729",
-          "bytes": 2287184
+          "hash": "9397112f37",
+          "bytes": 2287173
         },
         "pdf": {
-          "hash": "610ad89da3",
-          "bytes": 3242975
+          "hash": "3b1103cbc2",
+          "bytes": 3242886
         }
       }
     },
@@ -86,7 +86,7 @@
           "bytes": 1012426
         },
         "pdf": {
-          "hash": "70c9c3314d",
+          "hash": "e9fe0b4fa3",
           "bytes": 1555198
         }
       }
@@ -99,7 +99,7 @@
           "bytes": 655363
         },
         "pdf": {
-          "hash": "30f5a1274b",
+          "hash": "8c29883eac",
           "bytes": 1041239
         }
       }
@@ -112,34 +112,34 @@
           "bytes": 1372516
         },
         "pdf": {
-          "hash": "ffd5786689",
+          "hash": "b2ae6d5043",
           "bytes": 2106787
         }
       }
     },
     "en/what-claude-found-auditing-krizaka": {
-      "source": "e2b26ff79c17",
+      "source": "c951298a4d8f",
       "files": {
         "epub": {
-          "hash": "bb10d72d32",
-          "bytes": 786265
+          "hash": "985fd0290e",
+          "bytes": 786260
         },
         "pdf": {
-          "hash": "222f13b768",
-          "bytes": 1247400
+          "hash": "daea0c5015",
+          "bytes": 1247347
         }
       }
     },
     "en/a-curve-that-climbs": {
-      "source": "bf11190e2b04",
+      "source": "e381e97f0f30",
       "files": {
         "epub": {
-          "hash": "d2457a3a36",
-          "bytes": 1211116
+          "hash": "8c7332e918",
+          "bytes": 1211078
         },
         "pdf": {
-          "hash": "8a54fdd383",
-          "bytes": 2035934
+          "hash": "392edd7d06",
+          "bytes": 2035693
         }
       }
     },
@@ -151,21 +151,21 @@
           "bytes": 987039
         },
         "pdf": {
-          "hash": "4e00a5df6f",
+          "hash": "834646a467",
           "bytes": 1694413
         }
       }
     },
     "en/krizaka-ui-how-we-cut-it": {
-      "source": "4d733d294270",
+      "source": "b287014a273e",
       "files": {
         "epub": {
-          "hash": "b7e70e2125",
-          "bytes": 1191946
+          "hash": "cbfa3e3a9f",
+          "bytes": 1191944
         },
         "pdf": {
-          "hash": "01ac3018d8",
-          "bytes": 1920255
+          "hash": "3f0aebe2d8",
+          "bytes": 1920284
         }
       }
     },
@@ -177,7 +177,7 @@
           "bytes": 1302083
         },
         "pdf": {
-          "hash": "3e291ab013",
+          "hash": "4019a1211a",
           "bytes": 2163244
         }
       }
@@ -190,7 +190,7 @@
           "bytes": 511641
         },
         "pdf": {
-          "hash": "d9583353f9",
+          "hash": "594bf2e7ae",
           "bytes": 825347
         }
       }
@@ -203,7 +203,7 @@
           "bytes": 969878
         },
         "pdf": {
-          "hash": "4729a20f90",
+          "hash": "fc9a92c61f",
           "bytes": 1538379
         }
       }
@@ -216,7 +216,7 @@
           "bytes": 912644
         },
         "pdf": {
-          "hash": "4b37d0f423",
+          "hash": "dea7c5b887",
           "bytes": 1367178
         }
       }
@@ -229,7 +229,7 @@
           "bytes": 790379
         },
         "pdf": {
-          "hash": "166091a2fc",
+          "hash": "89e710d174",
           "bytes": 1154118
         }
       }
@@ -242,7 +242,7 @@
           "bytes": 1234646
         },
         "pdf": {
-          "hash": "1948966a18",
+          "hash": "d7458ef4e6",
           "bytes": 1903495
         }
       }
@@ -255,7 +255,7 @@
           "bytes": 879809
         },
         "pdf": {
-          "hash": "6bb3206d66",
+          "hash": "1d0ce3e21a",
           "bytes": 1412412
         }
       }
@@ -268,21 +268,21 @@
           "bytes": 1265568
         },
         "pdf": {
-          "hash": "bb5fec1b3e",
+          "hash": "68364caa94",
           "bytes": 1957849
         }
       }
     },
     "fr/story": {
-      "source": "e211d66ee6b4",
+      "source": "73bfcc07f269",
       "files": {
         "epub": {
-          "hash": "39cc43ecce",
-          "bytes": 5431563
+          "hash": "b1f2351cd5",
+          "bytes": 5431494
         },
         "pdf": {
-          "hash": "8f06fdea4b",
-          "bytes": 8192053
+          "hash": "f9248688d3",
+          "bytes": 8190857
         }
       }
     },
@@ -294,7 +294,7 @@
           "bytes": 750356
         },
         "pdf": {
-          "hash": "db3e2cef27",
+          "hash": "3b03f63ad9",
           "bytes": 1168135
         }
       }
@@ -307,7 +307,7 @@
           "bytes": 1670405
         },
         "pdf": {
-          "hash": "b6d8c1b36e",
+          "hash": "d6a9da3747",
           "bytes": 2538618
         }
       }
@@ -320,34 +320,34 @@
           "bytes": 1551853
         },
         "pdf": {
-          "hash": "3b55d7b4ff",
+          "hash": "82a5ce9f7d",
           "bytes": 2120505
         }
       }
     },
     "fr/from-a-clip-to-a-film": {
-      "source": "e702e8b9fec8",
+      "source": "61e1b5255edb",
       "files": {
         "epub": {
-          "hash": "df5e2f377a",
-          "bytes": 1160403
+          "hash": "50e8d7379a",
+          "bytes": 1160393
         },
         "pdf": {
-          "hash": "9c1093df00",
-          "bytes": 1774918
+          "hash": "332a0038d4",
+          "bytes": 1774887
         }
       }
     },
     "fr/one-interface-everywhere": {
-      "source": "21d7dfaccf98",
+      "source": "f7dbb59d6935",
       "files": {
         "epub": {
-          "hash": "85d40c1e74",
-          "bytes": 2288713
+          "hash": "989768eefb",
+          "bytes": 2288693
         },
         "pdf": {
-          "hash": "55d0277125",
-          "bytes": 3268479
+          "hash": "4bec6e668a",
+          "bytes": 3268466
         }
       }
     },
@@ -359,7 +359,7 @@
           "bytes": 1019023
         },
         "pdf": {
-          "hash": "a69dcf5f66",
+          "hash": "5befc5a13f",
           "bytes": 1589688
         }
       }
@@ -372,7 +372,7 @@
           "bytes": 660933
         },
         "pdf": {
-          "hash": "7b9a6652e2",
+          "hash": "441c1a3888",
           "bytes": 1072834
         }
       }
@@ -385,34 +385,34 @@
           "bytes": 1387261
         },
         "pdf": {
-          "hash": "b1a076d962",
+          "hash": "cd6594cb86",
           "bytes": 2138403
         }
       }
     },
     "fr/what-claude-found-auditing-krizaka": {
-      "source": "403a051f8a71",
+      "source": "0a1d4207f6c2",
       "files": {
         "epub": {
-          "hash": "b1e19864fd",
-          "bytes": 785533
+          "hash": "bcf3629cd5",
+          "bytes": 785530
         },
         "pdf": {
-          "hash": "5e864887af",
-          "bytes": 1269346
+          "hash": "3c900c6c57",
+          "bytes": 1269340
         }
       }
     },
     "fr/a-curve-that-climbs": {
-      "source": "13a8d370eda5",
+      "source": "5ada5bffcd19",
       "files": {
         "epub": {
-          "hash": "d480a667ed",
-          "bytes": 1224406
+          "hash": "7c5be9794f",
+          "bytes": 1224366
         },
         "pdf": {
-          "hash": "0cf4b1371a",
-          "bytes": 2068196
+          "hash": "0ecb1337ab",
+          "bytes": 2067180
         }
       }
     },
@@ -424,21 +424,21 @@
           "bytes": 1000973
         },
         "pdf": {
-          "hash": "30e8e8d811",
+          "hash": "281cece833",
           "bytes": 1729315
         }
       }
     },
     "fr/krizaka-ui-how-we-cut-it": {
-      "source": "3708bdea93db",
+      "source": "d648d3c85ebd",
       "files": {
         "epub": {
-          "hash": "a186e827a4",
-          "bytes": 1207920
+          "hash": "f554736382",
+          "bytes": 1207919
         },
         "pdf": {
-          "hash": "b4e0eac35c",
-          "bytes": 1958660
+          "hash": "7cae49700b",
+          "bytes": 1958601
         }
       }
     },
@@ -450,7 +450,7 @@
           "bytes": 1303457
         },
         "pdf": {
-          "hash": "bb7d16314b",
+          "hash": "52a88816e3",
           "bytes": 2192490
         }
       }
@@ -463,7 +463,7 @@
           "bytes": 506639
         },
         "pdf": {
-          "hash": "785385002d",
+          "hash": "9e2155d8ce",
           "bytes": 841957
         }
       }
@@ -476,7 +476,7 @@
           "bytes": 981308
         },
         "pdf": {
-          "hash": "c5b4af390f",
+          "hash": "b47bd06749",
           "bytes": 1569714
         }
       }
@@ -489,7 +489,7 @@
           "bytes": 926640
         },
         "pdf": {
-          "hash": "0f2f4a7f22",
+          "hash": "20f6e2eb48",
           "bytes": 1399246
         }
       }
@@ -502,7 +502,7 @@
           "bytes": 804489
         },
         "pdf": {
-          "hash": "96b17d5b1e",
+          "hash": "c9496dda12",
           "bytes": 1185980
         }
       }
@@ -515,7 +515,7 @@
           "bytes": 1254150
         },
         "pdf": {
-          "hash": "bb17f04854",
+          "hash": "9365503c8f",
           "bytes": 1940531
         }
       }
@@ -528,7 +528,7 @@
           "bytes": 891591
         },
         "pdf": {
-          "hash": "7607ef01df",
+          "hash": "a276445993",
           "bytes": 1439450
         }
       }
@@ -541,7 +541,7 @@
           "bytes": 1264274
         },
         "pdf": {
-          "hash": "eb6c64120b",
+          "hash": "9a3e04aad7",
           "bytes": 1973853
         }
       }
