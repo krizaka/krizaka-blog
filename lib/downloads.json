@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "228eb6e8eac9",
+      "source": "18db026a4f14",
       "files": {
         "epub": {
-          "hash": "20a78e0a0f",
-          "bytes": 5146085
+          "hash": "75690e1a73",
+          "bytes": 5149633
         },
         "pdf": {
-          "hash": "bff10e1e54",
-          "bytes": 7450928
+          "hash": "c6a9f0e268",
+          "bytes": 7540552
         }
       }
     },
@@ -118,15 +118,15 @@
       }
     },
     "en/what-claude-found-auditing-krizaka": {
-      "source": "0db92228dae5",
+      "source": "e2b26ff79c17",
       "files": {
         "epub": {
-          "hash": "27d8f68cb3",
-          "bytes": 785842
+          "hash": "4243b33770",
+          "bytes": 786159
         },
         "pdf": {
-          "hash": "267f074131",
-          "bytes": 1233965
+          "hash": "491800beeb",
+          "bytes": 1245435
         }
       }
     },
@@ -157,28 +157,28 @@
       }
     },
     "en/krizaka-ui-how-we-cut-it": {
-      "source": "4249cbfde693",
+      "source": "4d733d294270",
       "files": {
         "epub": {
-          "hash": "3b56a27aed",
-          "bytes": 1191364
+          "hash": "d98da67b8f",
+          "bytes": 1191840
         },
         "pdf": {
-          "hash": "c8cdc3d854",
-          "bytes": 1907963
+          "hash": "ba44dbad0e",
+          "bytes": 1918308
         }
       }
     },
     "en/orazaka-v2-the-architecture-we-build": {
-      "source": "bd2435a0ef0a",
+      "source": "f92fdee50e2e",
       "files": {
         "epub": {
-          "hash": "5f67342edd",
-          "bytes": 1301774
+          "hash": "555c264b7e",
+          "bytes": 1301977
         },
         "pdf": {
-          "hash": "2d90dd522c",
-          "bytes": 2148979
+          "hash": "9204f2603a",
+          "bytes": 2161278
         }
       }
     },
@@ -196,67 +196,67 @@
       }
     },
     "en/we-bought-sonarcloud-what-do-we-have-now": {
-      "source": "1da15091b738",
+      "source": "c1b0f32a5a71",
       "files": {
         "epub": {
-          "hash": "754da70edd",
-          "bytes": 969242
+          "hash": "8990650b82",
+          "bytes": 969772
         },
         "pdf": {
-          "hash": "d8d4abfa67",
-          "bytes": 1498373
+          "hash": "242515ee17",
+          "bytes": 1536435
         }
       }
     },
     "en/the-audit-said-ai-code-we-measured": {
-      "source": "150ef5d6cdbb",
+      "source": "70b54d938278",
       "files": {
         "epub": {
-          "hash": "a1418bde40",
-          "bytes": 912079
+          "hash": "2c5452d8e5",
+          "bytes": 912538
         },
         "pdf": {
-          "hash": "cad0f44360",
-          "bytes": 1346807
+          "hash": "b0975f4702",
+          "bytes": 1365231
         }
       }
     },
     "en/how-the-founder-and-the-cto-agent-work": {
-      "source": "ec9dffa4d3b4",
+      "source": "ac5409c9daea",
       "files": {
         "epub": {
-          "hash": "e6c8f0e26d",
-          "bytes": 789708
+          "hash": "4dd87378fb",
+          "bytes": 790273
         },
         "pdf": {
-          "hash": "2015646c08",
-          "bytes": 1138146
+          "hash": "cbfffc2947",
+          "bytes": 1152173
         }
       }
     },
     "en/how-we-test-our-uis": {
-      "source": "d1af21ce4f5c",
+      "source": "6e5de4be735c",
       "files": {
         "epub": {
-          "hash": "19c0f79ea8",
-          "bytes": 1233545
+          "hash": "97ee4a1c33",
+          "bytes": 1234540
         },
         "pdf": {
-          "hash": "3c0a3cd113",
-          "bytes": 1883719
+          "hash": "6f3e74b2e1",
+          "bytes": 1901530
         }
       }
     },
     "fr/story": {
-      "source": "6d03d7153203",
+      "source": "6e73df96bad7",
       "files": {
         "epub": {
-          "hash": "701ea0c4de",
-          "bytes": 5166861
+          "hash": "20b52afebc",
+          "bytes": 5170738
         },
         "pdf": {
-          "hash": "36d2f0d202",
-          "bytes": 7584626
+          "hash": "384217a218",
+          "bytes": 7678843
         }
       }
     },
@@ -365,15 +365,15 @@
       }
     },
     "fr/what-claude-found-auditing-krizaka": {
-      "source": "3e03475572b9",
+      "source": "403a051f8a71",
       "files": {
         "epub": {
-          "hash": "b0a2675d87",
-          "bytes": 785043
+          "hash": "4b837394bf",
+          "bytes": 785417
         },
         "pdf": {
-          "hash": "4bc0c3df29",
-          "bytes": 1254386
+          "hash": "fdc9a7d13d",
+          "bytes": 1266989
         }
       }
     },
@@ -404,28 +404,28 @@
       }
     },
     "fr/krizaka-ui-how-we-cut-it": {
-      "source": "91b8069103c5",
+      "source": "3708bdea93db",
       "files": {
         "epub": {
-          "hash": "4586a17be8",
-          "bytes": 1207297
+          "hash": "aae383c394",
+          "bytes": 1207804
         },
         "pdf": {
-          "hash": "77c2b99249",
-          "bytes": 1946262
+          "hash": "99fb27e866",
+          "bytes": 1956324
         }
       }
     },
     "fr/orazaka-v2-the-architecture-we-build": {
-      "source": "cbf04c85601c",
+      "source": "1c93f3475a36",
       "files": {
         "epub": {
-          "hash": "8c86cb1e70",
-          "bytes": 1303101
+          "hash": "3e2d0da2f3",
+          "bytes": 1303341
         },
         "pdf": {
-          "hash": "80fd3287a0",
-          "bytes": 2175059
+          "hash": "ec2c641b01",
+          "bytes": 2190123
         }
       }
     },
@@ -443,54 +443,54 @@
       }
     },
     "fr/we-bought-sonarcloud-what-do-we-have-now": {
-      "source": "9c21c7925262",
+      "source": "1e357e6b5a54",
       "files": {
         "epub": {
-          "hash": "babe7059a3",
-          "bytes": 980642
+          "hash": "6953460883",
+          "bytes": 981192
         },
         "pdf": {
-          "hash": "af5a0f1172",
-          "bytes": 1527708
+          "hash": "def78bc5fb",
+          "bytes": 1567381
         }
       }
     },
     "fr/the-audit-said-ai-code-we-measured": {
-      "source": "5a95d915230c",
+      "source": "d64f1eb945e8",
       "files": {
         "epub": {
-          "hash": "cdd5b8a810",
-          "bytes": 926027
+          "hash": "9706040aec",
+          "bytes": 926524
         },
         "pdf": {
-          "hash": "c674313d80",
-          "bytes": 1376282
+          "hash": "c7cee3095c",
+          "bytes": 1396910
         }
       }
     },
     "fr/how-the-founder-and-the-cto-agent-work": {
-      "source": "4fb91128de79",
+      "source": "cb1fa179b946",
       "files": {
         "epub": {
-          "hash": "d76832059e",
-          "bytes": 803734
+          "hash": "0c4865a7d0",
+          "bytes": 804373
         },
         "pdf": {
-          "hash": "52cd14ec3b",
-          "bytes": 1165791
+          "hash": "cec564bc82",
+          "bytes": 1183646
         }
       }
     },
     "fr/how-we-test-our-uis": {
-      "source": "8d6a8d8444eb",
+      "source": "3f81f1e494ca",
       "files": {
         "epub": {
-          "hash": "02a571803e",
-          "bytes": 1252958
+          "hash": "f086083855",
+          "bytes": 1254034
         },
         "pdf": {
-          "hash": "5629f9d87a",
-          "bytes": 1921643
+          "hash": "ceb758b22c",
+          "bytes": 1938170
         }
       }
     }
