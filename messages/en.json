@@ -209,9 +209,7 @@
     "labNote": "My first brush with AI was in 2011, at the {lab}, long before the word was in fashion.",
     "lab": "Grenoble Informatics Laboratory (LIG)",
     "placesLabel": "Lives in",
-    "places": [
-      "Montréal"
-    ]
+    "places": ["Montréal"]
   },
   "newsletter": {
     "eyebrow": "Newsletter",
