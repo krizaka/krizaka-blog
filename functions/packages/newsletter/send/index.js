@@ -13,26 +13,20 @@ const optionalText = (x, max) => x === undefined || (typeof x === "string" && x.
 const versionOk = (v) =>
   v && typeof v.title === "string" && typeof v.description === "string" && typeof v.url === "string" && v.url.startsWith(`${nl.SITE}/`) && optionalText(v.subject, 300) && optionalText(v.html, MAX_HTML) && optionalText(v.text, MAX_HTML) && (v.html === undefined) === (v.text === undefined);
 
-async function handle(args = {}, env = process.env, sql = null, send = undefined) {
-  if (String(args.__ow_method ?? "post").toLowerCase() !== "post") return nl.json(405, { error: "method" });
-  const bearer = String(args.__ow_headers?.authorization ?? "").replace(/^Bearer\s+/i, "");
-  if (!nl.sameSecret(bearer, env.MAIL_SEND_TOKEN)) return nl.json(401, { error: "unauthorized" });
-  const isTest = args.test !== undefined;
-  if (!nl.mailConfigured(env) || (!isTest && !nl.dbConfigured(env))) return nl.json(503, { error: "unavailable" });
-  const versions = Object.fromEntries(nl.LOCALES.filter((l) => versionOk(args.versions?.[l])).map((l) => [l, args.versions[l]]));
-  if (!SLUG.test(String(args.slug ?? "")) || !Object.keys(versions).length) return nl.json(400, { error: "invalid" });
-  if (isTest) {
-    const to = nl.normalizeEmail(args.test);
-    if (!nl.validEmail(to)) return nl.json(400, { error: "invalid" });
-    const locale = versions[args.locale] ? args.locale : Object.keys(versions)[0];
-    const message = nl.newPostEmail({ email: to, locale, consentedAt: null }, versions[locale], env);
-    try {
-      await (send ?? nl.sendEmail)({ ...message, subject: `[Test] ${message.subject}` }, env);
-    } catch {
-      return nl.json(502, { error: "mail" });
-    }
-    return nl.json(200, { test: true, sent: 1, to, locale });
+async function sendTest(args, versions, env, send) {
+  const to = nl.normalizeEmail(args.test);
+  if (!nl.validEmail(to)) return nl.json(400, { error: "invalid" });
+  const locale = versions[args.locale] ? args.locale : Object.keys(versions)[0];
+  const message = nl.newPostEmail({ email: to, locale, consentedAt: null }, versions[locale], env);
+  try {
+    await (send ?? nl.sendEmail)({ ...message, subject: `[Test] ${message.subject}` }, env);
+  } catch {
+    return nl.json(502, { error: "mail" });
   }
+  return nl.json(200, { test: true, sent: 1, to, locale });
+}
+
+async function sendToList(args, versions, env, sql, send) {
   const db = sql ?? nl.connect(env);
   /* Whatever fails below answers a JSON status: a rejected action makes the platform answer 204 with an empty body, which
      the workflow once read as « sent to undefined of undefined ». Only a code is returned (a message can name a host or a user). */
@@ -49,6 +43,18 @@ async function handle(args = {}, env = process.env, sql = null, send = undefined
     console.error(`newsletter send: ${claimed ? "send" : "database"} failed (${e?.code ?? e?.name ?? "error"})`);
     return nl.json(500, { error: claimed ? "send" : "database", code: String(e?.code ?? e?.name ?? "error") });
   }
+}
+
+async function handle(args = {}, env = process.env, sql = null, send = undefined) {
+  if (String(args.__ow_method ?? "post").toLowerCase() !== "post") return nl.json(405, { error: "method" });
+  const bearer = String(args.__ow_headers?.authorization ?? "").replace(/^Bearer\s+/i, "");
+  if (!nl.sameSecret(bearer, env.MAIL_SEND_TOKEN)) return nl.json(401, { error: "unauthorized" });
+  const isTest = args.test !== undefined;
+  if (!nl.mailConfigured(env) || (!isTest && !nl.dbConfigured(env))) return nl.json(503, { error: "unavailable" });
+  const versions = Object.fromEntries(nl.LOCALES.filter((l) => versionOk(args.versions?.[l])).map((l) => [l, args.versions[l]]));
+  if (!SLUG.test(String(args.slug ?? "")) || !Object.keys(versions).length) return nl.json(400, { error: "invalid" });
+  if (isTest) return sendTest(args, versions, env, send);
+  return sendToList(args, versions, env, sql, send);
 }
 /* The platform calls main(args) — and may pass a context object second — so the injections (environment, database,
    fetch, clock) only go through handle(), which the tests call. */
