@@ -15,3 +15,9 @@ test("the layout checks keep every rule", () => {
   assert.match(src, /scrolls\(e\) \|\| visuallyHidden\(e\)/);
   assert.match(src, /\.bl-byline-actions > :is\(a, button\)/);
 });
+
+test("the basics' path must fit one screen at 1440×900, numbered 01 → N top to bottom", () => {
+  assert.match(src, /const basicsPathFits = /);
+  assert.match(src, /BASICS_FIT = \{ width: 1440, height: 900/);
+  assert.match(src, /do not run top to bottom/);
+});

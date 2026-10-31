@@ -1334,38 +1334,136 @@ picture {
   color: var(--kz-text-secondary);
 }
 .bl-path {
+  position: relative;
   display: grid;
-  gap: 1.5rem;
+  gap: 0;
   list-style: none;
   margin: 0;
   padding: 0;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  max-width: 56rem;
+}
+/* The rail: a hairline through the numbers links the steps 1 → N. */
+.bl-path::before {
+  content: "";
+  position: absolute;
+  inset-block: 1.75rem;
+  inset-inline-start: 1.25rem;
+  width: 1px;
+  background: var(--kz-border-strong);
 }
 .bl-path-step {
+  position: relative;
   display: grid;
-  gap: 0.5rem;
-  align-content: start;
+  grid-template-columns: 2.5rem 6rem minmax(0, 1fr) auto;
+  gap: 0 1rem;
+  align-items: center;
+  padding: 0.625rem 0.5rem 0.625rem 0;
+  border-bottom: 1px solid var(--kz-border-subtle);
+}
+.bl-path-step:last-child {
+  border-bottom: 0;
 }
 .bl-path-no {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.25rem 0.75rem;
-  margin: 0;
-  padding-bottom: 0.25rem;
-  border-bottom: 1px solid var(--kz-border-strong);
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--kz-border-strong);
+  border-radius: 2px;
+  background: var(--kz-surface-0);
   font-family: var(--kz-font-mono);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
+  color: var(--kz-accent-text);
+}
+.bl-path-thumb {
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: var(--kz-radius-sm, 6px);
+  background: var(--kz-surface-2);
+}
+.bl-path-thumb .bl-cover-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.bl-path-body {
+  min-width: 0;
+}
+.bl-path-meta {
+  margin: 0 0 0.125rem;
+  font-family: var(--kz-font-mono);
+  font-size: 0.75rem;
   color: var(--kz-text-secondary);
 }
-.bl-path-no > span:first-child {
-  font-size: 1.25rem;
+.bl-path-title {
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.3;
+}
+.bl-path-link {
+  color: inherit;
+  text-decoration: none;
+}
+.bl-path-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+.bl-path-link:focus-visible {
+  outline: none;
+}
+.bl-path-step:has(.bl-path-link:focus-visible) {
+  outline: 2px solid var(--kz-ring, var(--kz-accent));
+  outline-offset: 2px;
+}
+.bl-path-step:is(:hover, :has(.bl-path-link:focus-visible)) .bl-path-link {
   color: var(--kz-accent-text);
 }
-.bl-path-start {
-  margin-left: auto;
+.bl-path-hook {
+  margin: 0.125rem 0 0;
+  font-size: 0.875rem;
+  color: var(--kz-text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.bl-path-state {
+  min-width: 5rem;
+  text-align: end;
+  font-family: var(--kz-font-mono);
+  font-size: 0.75rem;
   font-weight: 650;
   color: var(--kz-accent-text);
+}
+.bl-path-state[data-state="read"] {
+  font-weight: 400;
+  color: var(--kz-text-secondary);
+}
+.bl-path-step:has(.bl-path-state[data-state="read"]) .bl-path-no {
+  border-color: var(--kz-accent-text);
+}
+@media (max-width: 40rem) {
+  .bl-path-step {
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    padding-block: 0.875rem;
+  }
+  .bl-path-thumb {
+    display: none;
+  }
+  .bl-path-state {
+    grid-column: 2;
+    text-align: start;
+    margin-top: 0.25rem;
+  }
+  .bl-path-hook {
+    -webkit-line-clamp: 2;
+  }
 }
 .bl-story-link {
   margin-top: 2rem;
