@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "fe39fad45858",
+      "source": "228eb6e8eac9",
       "files": {
         "epub": {
-          "hash": "f11214f198",
-          "bytes": 5146015
+          "hash": "20a78e0a0f",
+          "bytes": 5146085
         },
         "pdf": {
-          "hash": "9db096238d",
-          "bytes": 7450734
+          "hash": "bff10e1e54",
+          "bytes": 7450928
         }
       }
     },
@@ -196,15 +196,15 @@
       }
     },
     "en/we-bought-sonarcloud-what-do-we-have-now": {
-      "source": "938abeec2610",
+      "source": "1da15091b738",
       "files": {
         "epub": {
-          "hash": "529fb630e9",
-          "bytes": 969172
+          "hash": "754da70edd",
+          "bytes": 969242
         },
         "pdf": {
-          "hash": "a89299103e",
-          "bytes": 1498178
+          "hash": "d8d4abfa67",
+          "bytes": 1498373
         }
       }
     },
@@ -248,15 +248,15 @@
       }
     },
     "fr/story": {
-      "source": "932a38991f04",
+      "source": "6d03d7153203",
       "files": {
         "epub": {
-          "hash": "32c69eb250",
-          "bytes": 5166791
+          "hash": "701ea0c4de",
+          "bytes": 5166861
         },
         "pdf": {
-          "hash": "e626bee31e",
-          "bytes": 7584284
+          "hash": "36d2f0d202",
+          "bytes": 7584626
         }
       }
     },
@@ -443,15 +443,15 @@
       }
     },
     "fr/we-bought-sonarcloud-what-do-we-have-now": {
-      "source": "6633fadc6fae",
+      "source": "9c21c7925262",
       "files": {
         "epub": {
-          "hash": "2db0e3d3ea",
-          "bytes": 980572
+          "hash": "babe7059a3",
+          "bytes": 980642
         },
         "pdf": {
-          "hash": "6b186871f1",
-          "bytes": 1527364
+          "hash": "af5a0f1172",
+          "bytes": 1527708
         }
       }
     },
