@@ -78,16 +78,15 @@ test("the home's bookplate: no box, no picture, small ghost Krizaka UI buttons, 
   assert.match(read("app/components/pages/HomePage.tsx"), /<TakeStory locale=\{locale\} \/>/);
 });
 
-test("the chapter's last line: typographic links with mono sizes, no button grid", () => {
+test("the chapter's end block: typographic links with mono sizes, no button grid, Read offline per scope", () => {
   const src = read("app/components/TakeStory.tsx");
   const compact = src.slice(src.indexOf("if (compact)"), src.indexOf('return (\n    <aside className="bl-take"'));
   assert.match(compact, /className="bl-take-line"/);
   assert.match(compact, /<FileLink /);
-  assert.ok(!/<FileButton|<Button/.test(compact), "no button at the end of a chapter");
-  assert.match(
-    read("app/components/pages/ChapterPage.tsx"),
-    /<TakeStory locale=\{locale\} bookKey=\{chapter\.slug\} compact \/>/,
-  );
+  assert.match(compact, /<SaveChapter /);
+  assert.match(compact, /<SaveSeries quiet/);
+  assert.match(compact, /<OfflineHelp \/>/);
+  assert.ok(!/<FileButton|<Button/.test(compact), "no download button at the end of a chapter");
 });
 
 test("the card's words exist in both languages, and no colour is hard-coded in its styles", () => {
@@ -102,7 +101,6 @@ test("the card's words exist in both languages, and no colour is hard-coded in i
       "pdfHint",
       "takeChapter",
       "takeStory",
-      "takeOffline",
     ])
       assert.ok(d[k], `${loc}.downloads.${k}`);
     assert.match(d.takeMeta, /\{n\}/);
