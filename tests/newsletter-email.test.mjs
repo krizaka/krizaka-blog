@@ -252,7 +252,7 @@ test("the sender script passes the test address and the rendered e-mails to the 
   const calls = [];
   const f = async (url, init) => (
     calls.push({ url, init }),
-    { ok: true, status: 200, json: async () => ({ test: true, sent: 1 }) }
+    { ok: true, status: 200, text: async () => JSON.stringify({ test: true, sent: 1 }) }
   );
   await requestSend("essai", rendered, "tok", f, { test: "me@example.com", locale: "fr" });
   const body = JSON.parse(calls[0].init.body);

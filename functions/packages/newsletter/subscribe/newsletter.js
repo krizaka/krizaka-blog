@@ -205,6 +205,11 @@ async function claimPost(sql, slug) {
   return rows.length === 1;
 }
 
+/** Gives a claim back: used only when the send reached nobody, so that the next run can try again (never after a delivery). */
+async function releasePost(sql, slug) {
+  await sql("delete from newsletter_posts where slug = $1 and coalesce(sent, 0) = 0", [slug]);
+}
+
 async function recordSent(sql, slug, sent, failed) {
   await sql("update newsletter_posts set sent = $2, failed = $3, finished_at = now() where slug = $1", [slug, sent, failed]);
 }
@@ -245,6 +250,6 @@ const redirect = (location) => ({ statusCode: 303, headers: { Location: location
 module.exports = {
   SITE, LOCALES, CONFIRM_TTL_MS, configured, normalizeEmail, validEmail, pickLocale, makeToken, readToken, pageUrl, actionUrl,
   confirmationEmail, newPostEmail, UNSUBSCRIBE_TOKEN, SENDER_ADDRESS, CONFIRM_TOKEN, footer, toHtml, sendEmail, mailConfigured, dbConfigured, connect, addSubscriber,
-  removeSubscriber, listSubscribers, claimPost, recordSent, sendPostToAll, sameSecret,
+  removeSubscriber, listSubscribers, claimPost, releasePost, recordSent, sendPostToAll, sameSecret,
   captchaConfigured, clientIp, json, redirect, WORDS,
 };
