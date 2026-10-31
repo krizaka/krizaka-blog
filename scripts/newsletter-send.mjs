@@ -57,18 +57,21 @@ export function publishedBetween(changed, read) {
   return [...slugs].sort((a, b) => (a < b ? -1 : 1)); /* a Set: never equal */
 }
 
+/** Where a slug lives: the first of KINDS (posts, then chapters) that has its file in this language. */
+function sourceOf(slug, locale, read) {
+  for (const [dir, base] of KINDS) {
+    const source = read(`content/${dir}/${slug}.${locale}.mdx`);
+    if (source !== null) return { source, base };
+  }
+  return { source: null, base: KINDS[0][1] };
+}
+
 /** The post's (or chapter's) versions at a commit: { en?, fr? } with title, description, the public URL and the cover. Only published
     versions. `media` is lib/media.json (the cover's e-mail-sized WebP). */
 export function versionsOf(slug, read, media = {}, { drafts = false } = {}) {
   const out = {};
   for (const locale of LOCALES) {
-    let source = null;
-    let base = KINDS[0][1];
-    for (const [dir, path] of KINDS) {
-      source = read(`content/${dir}/${slug}.${locale}.mdx`);
-      base = path;
-      if (source !== null) break;
-    }
+    const { source, base } = sourceOf(slug, locale, read);
     if (source === null || (!drafts && !isPublished(source))) continue;
     const { data } = matter(source);
     out[locale] = {
