@@ -118,7 +118,10 @@ export async function requestSend(slug, versions, token, fetchImpl = fetch, extr
   } catch {
     body = undefined;
   }
-  if (!res.ok) throw new Error(`newsletter: the send action answered ${res.status} ${body?.error ?? ""}`.trim());
+  if (!res.ok)
+    throw new Error(
+      `newsletter: the send action answered ${res.status} ${body?.error ?? ""} ${body?.code ?? ""}`.trim(),
+    );
   if (body === undefined)
     throw new Error(`newsletter: the send action answered ${res.status} with a body that is not JSON`);
   return parseSendAnswer(body, { test: extra.test !== undefined });

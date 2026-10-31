@@ -26,6 +26,21 @@ async function sendTest(args, versions, env, send) {
   return nl.json(200, { test: true, sent: 1, to, locale });
 }
 
+/* `probe: true` — the post-deploy guard: claims a sentinel slug, checks that a second claim is refused, gives it back.
+   It proves the whole database path (env, CA, role, grants, table) without any subscriber being e-mailed. */
+const PROBE_SLUG = "zz-claim-probe";
+async function probeClaim(env, sql) {
+  const db = sql ?? nl.connect(env);
+  try {
+    const first = await nl.claimPost(db, PROBE_SLUG);
+    const second = await nl.claimPost(db, PROBE_SLUG);
+    await nl.releasePost(db, PROBE_SLUG);
+    return nl.json(first && !second ? 200 : 409, { probe: true, claimed: first, again: second });
+  } catch (e) {
+    return nl.json(500, { error: "database", code: String(e?.code ?? e?.name ?? "error") });
+  }
+}
+
 async function sendToList(args, versions, env, sql, send) {
   const db = sql ?? nl.connect(env);
   /* Whatever fails below answers a JSON status: a rejected action makes the platform answer 204 with an empty body, which
@@ -49,6 +64,7 @@ async function handle(args = {}, env = process.env, sql = null, send = undefined
   if (String(args.__ow_method ?? "post").toLowerCase() !== "post") return nl.json(405, { error: "method" });
   const bearer = String(args.__ow_headers?.authorization ?? "").replace(/^Bearer\s+/i, "");
   if (!nl.sameSecret(bearer, env.MAIL_SEND_TOKEN)) return nl.json(401, { error: "unauthorized" });
+  if (args.probe === true) return nl.dbConfigured(env) ? probeClaim(env, sql) : nl.json(503, { error: "unavailable" });
   const isTest = args.test !== undefined;
   if (!nl.mailConfigured(env) || (!isTest && !nl.dbConfigured(env))) return nl.json(503, { error: "unavailable" });
   const versions = Object.fromEntries(nl.LOCALES.filter((l) => versionOk(args.versions?.[l])).map((l) => [l, args.versions[l]]));

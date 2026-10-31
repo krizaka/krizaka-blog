@@ -317,6 +317,26 @@ test("send: one e-mail per subscriber in their language (else the one the post h
   assert.equal(out.length, 2, "nothing more was sent");
 });
 
+test("send probe: claims a sentinel slug, refuses the second claim, gives it back, e-mails nobody (post-deploy guard)", async () => {
+  const db = fakeDb({ subscribers: [{ email: "a@x.co", locale: "en" }] });
+  const out = [];
+  const r = await sendAction({ ...auth, probe: true }, ENV, db.sql, async (m) => out.push(m));
+  assert.equal(r.statusCode, 200);
+  assert.deepEqual(JSON.parse(r.body), { probe: true, claimed: true, again: false });
+  assert.ok(
+    db.calls.some((c) => c.text.startsWith("delete from newsletter_posts")),
+    "the claim is given back",
+  );
+  assert.equal(out.length, 0);
+  const broken = await sendAction({ ...auth, probe: true }, ENV, async () =>
+    Promise.reject(Object.assign(new Error("x"), { code: "28P01" })),
+  );
+  assert.equal(broken.statusCode, 500);
+  assert.deepEqual(JSON.parse(broken.body), { error: "database", code: "28P01" });
+  const anon = await sendAction({ probe: true }, ENV, db.sql);
+  assert.equal(anon.statusCode, 401, "the probe needs the bearer too");
+});
+
 test("the sender script calls the send action with the bearer and reports its answer", async () => {
   const calls = [];
   const f = async (url, init) => (

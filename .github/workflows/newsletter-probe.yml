@@ -1,0 +1,29 @@
+# After every deploy of the blog (post-deploy succeeded), prove that the newsletter's database path works: the live send
+# action claims a sentinel slug twice and gives it back (scripts/newsletter-probe.mjs), nobody is e-mailed. Red when the
+# DATABASE_* env, the CA certificate, the role's grants or the table are wrong, instead of at the first real send.
+name: Newsletter probe
+
+on:
+  workflow_run:
+    workflows: [post-deploy]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - env:
+          MAIL_SEND_TOKEN: ${{ secrets.MAIL_SEND_TOKEN }}
+        run: node scripts/newsletter-probe.mjs
