@@ -5929,5 +5929,72 @@
         }
       ]
     }
+  },
+  "series-20-how-our-automation-grew": {
+    "kind": "image",
+    "width": 1280,
+    "height": 723,
+    "blur": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADwAQCdASoQAAkABABoJYgCdH8AEWM2YLwA/kur2n7nhkOiHHzqRfI7NCiw+4AJyW7+3WJta6py6O5frxB6Jc0rXNCHUw0wgAA=",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-20-how-our-automation-grew-480.4af495fa21.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-20-how-our-automation-grew-960.c05f964b89.webp"
+      },
+      {
+        "w": 1280,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-20-how-our-automation-grew-1280.f95e4e0ae5.webp"
+      }
+    ],
+    "made": {
+      "model": "FLUX.1 [schnell]",
+      "licence": "Apache-2.0",
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+      "machine": "RunPod L40S",
+      "via": "Orazaka Studio",
+      "size": "900×508",
+      "note": "Chapter 20 of the image series: candidate A of batch 2026-10-30-blog-v2 (Orazaka Studio run f4ad93a7), rendered for chapter 13 and left unpicked there (krizaka-blog#193). The full render was not kept: the files are made from its 900 px preview, enlarged to 1360 px (Lanczos). No person, no text, no logo."
+    },
+    "renditions": {
+      "avif": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-20-how-our-automation-grew-480.cb170d638d.avif"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-20-how-our-automation-grew-768.62060dbe0d.avif"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-20-how-our-automation-grew-1200.ee45e1febe.avif"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-20-how-our-automation-grew-1280.b05e47b10b.avif"
+        }
+      ],
+      "webp": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-20-how-our-automation-grew-480.1bc4dce647.webp"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-20-how-our-automation-grew-768.958450a50b.webp"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-20-how-our-automation-grew-1200.9158011a9a.webp"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-20-how-our-automation-grew-1280.335b2b9492.webp"
+        }
+      ]
+    }
   }
 }

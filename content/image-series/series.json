@@ -137,6 +137,12 @@
       "seed": 3119,
       "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
       "beat": "Not rendered for this chapter: it wears the candidate B rendered for chapter 11 in batch 2026-10-30-blog-v2 and left unpicked there (a canal at dawn, a small train crossing the stone bridge). The series' cast is carried over unchanged."
+    },
+    {
+      "post": "how-our-automation-grew",
+      "seed": 3120,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "Not rendered for this chapter: it wears the candidate A rendered for chapter 13 in batch 2026-10-30-blog-v2 and left unpicked there (a long vaulted hall of repeating arches, the duck in the aisle). The series' cast is carried over unchanged."
     }
   ],
   "sprites": {

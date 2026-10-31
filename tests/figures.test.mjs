@@ -28,6 +28,7 @@ const DONE = [
   "how-we-built-our-ci",
   "ci-the-error-never-leaves-the-editor",
   "tchou-tchou-how-our-pull-requests-catch-the-train",
+  "how-our-automation-grew",
 ];
 
 test("the figure props parse: items, tones, series and rows", () => {
