@@ -67,3 +67,41 @@ export function rowsOf(data: string, series: readonly BarSeries[]): BarRow[] {
   if (rows.length === 0) throw new Error("a <Bars> needs at least one row");
   return rows;
 }
+
+/* An annotated capture (<Annotated>, founder 2026-10-31: « the reader must see WHAT is tested »): numbered boxes drawn over a real
+   screen of a product, each one a thing its test asserts, told again in the legend under the picture.
+
+     <Annotated id="…" marks="6.2,26.1,64.4,36.5: the finding is shown | 72.9,1.5,13.9,4: the one action"/>
+
+   A mark is « x,y,w,h: what the test asserts », in percent of the picture (0–100), numbered from 1 in the order written. The boxes are
+   drawn into the picture itself by scripts/annotate-figures.mjs (so the books and the newsletter carry them too), and the picture
+   records the boxes it was drawn with (`marks` in lib/media.json, from marksKey): tests/figures.test.mjs fails when the legend and
+   the picture drift apart. */
+export type Mark = { n: number; x: number; y: number; w: number; h: number; label: string };
+
+/** `"x,y,w,h: label | …"` → the numbered marks; a box outside the picture, a missing label or more than 6 marks is refused. */
+export function marksOf(spec: string | undefined): Mark[] {
+  const marks = itemsOf(spec).map((part, i) => {
+    const at = part.indexOf(":");
+    if (at <= 0) throw new Error(`an <Annotated> mark needs « x,y,w,h: label »: ${part}`);
+    const box = part
+      .slice(0, at)
+      .split(",")
+      .map((v) => Number(v.trim()));
+    const label = part.slice(at + 1).trim();
+    if (box.length !== 4 || box.some((v) => !Number.isFinite(v)))
+      throw new Error(`an <Annotated> mark needs four numbers: ${part}`);
+    const [x, y, w, h] = box;
+    if (x < 0 || y < 0 || w <= 0 || h <= 0 || x + w > 100 || y + h > 100)
+      throw new Error(`an <Annotated> box must lie inside the picture (percent): ${part}`);
+    if (label.length < 12) throw new Error(`an <Annotated> mark says what the test asserts: ${part}`);
+    return { n: i + 1, x, y, w, h, label };
+  });
+  if (marks.length === 0 || marks.length > 6) throw new Error("an <Annotated> needs 1 to 6 marks");
+  return marks;
+}
+
+/** The boxes alone, in order (`x,y,w,h;…`): what the picture was drawn with, the same in every language. */
+export function marksKey(marks: readonly Mark[]): string {
+  return marks.map((m) => [m.x, m.y, m.w, m.h].join(",")).join(";");
+}

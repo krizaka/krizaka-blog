@@ -52,6 +52,22 @@ The references are made on Linux, in Playwright's official container, never on m
 
 The job runs in [about 2 minutes](https://github.com/krizaka/akinaza/actions/workflows/visual.yml) (the last eight successful runs I read today), and it is a required check of the merge queue. Dates, times and free slots are masked, and so is the map, since its tiles come from the network.
 
+What a reference screenshot checks is easier to see than to say. Two of them, as they are on `main`, with what their tests assert drawn over them; every number comes from the test's own configuration.
+
+<Annotated
+  id="ui-test-akinaza-booking"
+  alt="Akinaza in the dark theme, on a desktop: the demo customer books a walk with the demo shop Pattes de Saint-Henri; the price line goes from the price of the walk to the total through the two sales taxes, the cancellation rule is under it, and the Continue button closes the form"
+  caption="Web (Akinaza), dark theme: the booking summary of a walk, in the demo shop. Its reference screenshot is checked on every PR; the journey of an honest booking runs the same page to the receipt."
+  marks="6,27.3,31,3.6: `[data-booking-price]`: the price goes down to the total, through both sales taxes and « = » (the honest-booking journey) | 6,32.4,44.5,3.4: `[data-booking-cancel-rule]`: the cancellation rule is said before the person books, above the button | 7.2,77.8,9.8,7.2: every action of the page is at least 36 px tall (`minAction: 36`); this one is 48 | 0.4,0.4,99.2,99.2: the whole screen against its reference, 1280 × 800: at most 0.2 % of the pixels may differ (`maxDiffPixelRatio: 0.002`), clock frozen, French (Canada)"
+/>
+
+<Annotated
+  id="ui-test-yomizaka-report"
+  alt="Yomizaka in the light theme, on a desktop: the report of a demo lease for Éric Tremblay, with a blocking finding (no TAL notice) and the Section G finding, its explanation and its citation of the Civil Code"
+  caption="Web (Yomizaka), light theme: the report of a demo lease with no notice from the TAL. The Section G journey opens it as the demo tenant and reads the finding a customer reads."
+  marks="6.2,26.1,64.4,36.5: `#finding-TS-G-001`: the Section G finding is on the report, not just « the page loaded » | 10,58.5,14.6,3.2: `finding-citation`: the finding cites its source, the articles of the Civil Code | 72.8,1.2,14.2,4.6: the header's one action stays on screen at 360, 390, 1280, 1440 and 1600 px, in both themes (`check-app-pages`)"
+/>
+
 The configuration says one thing that matters more to me than the rest, in one line: [`retries: 0`](https://github.com/krizaka/akinaza/blob/main/apps/web/e2e/visual/playwright.config.mjs). No rerun. A test that fails and then passes on the second try does not pass for me, it hides a bug.
 
 The common core of these journeys (sign in once per process, masks, video hooks, a capped quarantine) is in `@krizaka/page-audit/journey`, written in [krizaka-ts#277](https://github.com/krizaka/krizaka-ts/pull/277) and published by [the version PR #278](https://github.com/krizaka/krizaka-ts/pull/278). The first product to use it is Yomizaka, with [yomizaka#623](https://github.com/krizaka/yomizaka/pull/623): a catalogue of journeys in one file, and a first journey, Section G of the lease. As I write, that PR is still in the merge queue. Akinaza does not have its catalogue yet.
@@ -62,25 +78,14 @@ On Android we use [Maestro](https://maestro.dev). The journeys are small YAML fi
 
 On every PR, the [Mobile CI](https://github.com/krizaka/akinaza/blob/main/.github/workflows/mobile-ci.yml) workflow builds the app, starts an Android emulator and a throwaway server with the demo shop, then runs the journeys as the demo walker. The `mobile-e2e / gate` check is required. This job takes 16 to 19 minutes over the last eight successful runs.
 
-Three screens of the app, taken by the journey of the tabs in the green run of `main` (Android client, demo persona, demo data): Today, Invoices, Books. Each one is a checkpoint of the journey: Maestro taps the tab, waits for the screen, then checks it and photographs it.
+One screen of the app, taken by the journey of the books in the green run of `main` (Android client, demo persona, demo data). Maestro taps the tab, checks what it was told to check, then photographs the screen: the boxes are its steps.
 
-<Row>
-  <Figure
-    id="maestro-today"
-    alt="Android emulator, Today tab: the day's two appointments, one done, one planned, under the Development version banner"
-    caption="Android. Maestro opens the app as the demo walker and checks that Today lists the day's two appointments, one done, one planned."
-  />
-  <Figure
-    id="maestro-invoices"
-    alt="Android emulator, Invoices tab: the list of demo invoices with their totals"
-    caption="Android. Maestro taps Invoices and checks that the list of demo invoices shows with its totals."
-  />
-  <Figure
-    id="maestro-books"
-    alt="Android emulator, Books tab: the quarter's two sales-tax figures to remit, with the note that Akinaza prepares the figures and the owner files the return"
-    caption="Android. Maestro taps Books and checks the quarter's two sales-tax figures and the note that the owner files the return."
-  />
-</Row>
+<Annotated
+  id="ui-test-maestro-books"
+  alt="Android emulator, Books tab of Akinaza: the third quarter of 2026, the two net sales-tax figures to remit, the See your figures button, and the note that Akinaza prepares the figures and the owner files the return"
+  caption="Android. The journey livres-chiffres.yaml, as the demo owner: the screenshot « livres » it takes before opening the figures."
+  marks="63,92,13.5,6: `tapOn`: Maestro taps the tab by its words, « Livres » in French or « Books » in English | 3.6,26.8,92.8,13.8: `assertVisible`: the first of the two sales-tax figures is on screen, by its words in either language, computed from the demo shop's invoices | 3.6,56.6,92.8,5: Maestro taps « See your figures » and waits up to 30 s (`timeout: 30000`) for the explained figures"
+/>
 
 The same green run also recorded the phone as it runs, the whole journey in one take, with no sign-in step:
 

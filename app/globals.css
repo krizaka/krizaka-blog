@@ -347,6 +347,46 @@ picture {
   line-height: 1.5;
   color: var(--kz-text-secondary);
 }
+/* An annotated capture (Annotated.tsx): the screen on a sheet of paper, its numbered boxes drawn into it in the margin red, and the
+   legend under the caption — one line per box, its number hung in the margin like a § note. One column on a phone; both themes. */
+.bl-annotated {
+  padding: 0.75rem;
+  border: 1px solid var(--kz-border-default);
+  border-inline-start: 2px solid var(--kz-paper-rule-margin, var(--kz-accent));
+  background-color: var(--kz-surface-1);
+}
+.bl-annotated .bl-img {
+  border-radius: 0;
+}
+.bl-tall .bl-img {
+  /* a phone's screen at a phone's size, not stretched to the column */
+  max-width: 20rem;
+  margin-inline: auto;
+}
+.bl-legend {
+  margin: 0.625rem 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: bl-mark;
+  display: grid;
+  gap: 0.375rem;
+  color: var(--kz-text-primary);
+}
+.bl-legend li {
+  counter-increment: bl-mark;
+  display: grid;
+  grid-template-columns: 1.75rem 1fr;
+  align-items: baseline;
+}
+.bl-legend li::before {
+  content: counter(bl-mark);
+  font-family: var(--kz-font-mono);
+  font-weight: 700;
+  color: var(--kz-paper-rule-margin, var(--kz-accent));
+}
+.bl-legend code {
+  font-size: 0.8125rem;
+}
 .bl-weight {
   font-family: var(--kz-font-mono);
   font-size: 0.8125rem;

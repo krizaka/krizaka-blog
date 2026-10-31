@@ -41,6 +41,8 @@ export type ImageMedia = {
   srcs: { w: number; url: string }[];
   renditions?: Renditions;
   made?: Made;
+  /** An annotated capture (<Annotated>): the boxes it was drawn with (lib/figures.ts marksKey), checked against the legend. */
+  marks?: string;
 };
 export type VideoMedia = {
   kind: "video";

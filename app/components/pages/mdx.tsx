@@ -7,6 +7,7 @@ import { TabsContent, TabsList, TabsRoot, TabsTrigger } from "@krizaka/ui/tabs";
 import { getDictionary, type Locale } from "@/lib/i18n";
 import { modelUrl } from "@/lib/models";
 import { Clip } from "./Clip";
+import { Annotated } from "./Annotated";
 import { Figure } from "./Figure";
 import { IssueCurve } from "./IssueCurve";
 import { Pipeline } from "./Pipeline";
@@ -171,6 +172,10 @@ export function mdxComponentsFor(locale: Locale) {
     Note: ({ children }: { children: React.ReactNode }) => <aside className="bl-note">{children}</aside>,
     Figure: (props: { id: string; alt: string; caption?: React.ReactNode }) => <Figure {...props} locale={locale} />,
     Clip: (props: { id: string; alt: string; caption?: React.ReactNode }) => <Clip {...props} locale={locale} />,
+    /* <Annotated id alt caption marks/>: a capture of a product with numbered boxes, each a thing its test asserts (lib/figures.ts marksOf). */
+    Annotated: (props: { id: string; alt: string; caption: string; marks: string }) => (
+      <Annotated {...props} locale={locale} />
+    ),
     Utilization: (props: { hourly?: number | string; seconds?: number | string; hosted?: number | string }) => (
       <Utilization {...props} locale={locale} />
     ),

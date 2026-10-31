@@ -13,19 +13,21 @@ export function Figure({
   caption,
   locale,
   priority = false,
+  className,
 }: {
   id: string;
   alt: string;
   caption?: React.ReactNode;
   locale: Locale;
   priority?: boolean;
+  className?: string;
 }) {
   const m = mediaOf(id);
   if (m.kind !== "image") throw new Error(`media "${id}" is a clip, use <Clip>`);
   const srcs = [...m.srcs].sort((a, b) => a.w - b.w);
   const best = srcs[srcs.length - 1];
   return (
-    <figure className="bl-figure">
+    <figure className={className ? `bl-figure ${className}` : "bl-figure"}>
       <LazyImg
         className="bl-img"
         src={(srcs.find((s) => s.w >= 960) ?? best).url}

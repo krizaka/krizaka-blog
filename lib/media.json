@@ -5931,5 +5931,86 @@
         }
       ]
     }
+  },
+  "ui-test-akinaza-booking": {
+    "kind": "image",
+    "width": 1280,
+    "height": 800,
+    "blur": "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAACwAwCdASoYAA8APxFysFAsJqSisAgBgCIJZwDMHCHZa8FqaT3o0AD+2WDmhU7BrS9HfopKTHPtzQ1DgI6ShuwQIHq9CP7/NrPFpCA6qvtGUxQ0AAA=",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/ui-test-akinaza-booking-480.7b16c86db3.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/ui-test-akinaza-booking-960.9afe3975d6.webp"
+      },
+      {
+        "w": 1280,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/ui-test-akinaza-booking-1280.81b9f06ee8.webp"
+      }
+    ],
+    "made": {
+      "model": "Playwright reference screenshot (a test capture, no generative model)",
+      "licence": "n/a",
+      "machine": "GitHub Actions, Playwright's Linux container",
+      "note": "Akinaza's reference screenshot booking-confirm-desktop-dark.png (apps/web/e2e/visual/__screenshots__, main at a6e28ed3, last updated 2026-10-31 by 91f37e64), 1280 × 800, fr-CA, clock frozen. Demo persona (Léa Beaulieu) and the demo shop only. The numbered boxes are drawn over it by scripts/annotate-figures.mjs."
+    },
+    "marks": "6,27.3,31,3.6;6,32.4,44.5,3.4;7.2,77.8,9.8,7.2;0.4,0.4,99.2,99.2"
+  },
+  "ui-test-yomizaka-report": {
+    "kind": "image",
+    "width": 1280,
+    "height": 800,
+    "blur": "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAADwAgCdASoYAA8APxFysFAsJqSisAgBgCIJaQAAep/DAAD+72fH5eCp3zoMyOsPZNNA1mNwtGRAAA==",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/ui-test-yomizaka-report-480.791084ce9f.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/ui-test-yomizaka-report-960.aa94af9191.webp"
+      },
+      {
+        "w": 1280,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/ui-test-yomizaka-report-1280.f5313ce224.webp"
+      }
+    ],
+    "made": {
+      "model": "Playwright reference screenshot (a test capture, no generative model)",
+      "licence": "n/a",
+      "machine": "GitHub Actions, Playwright's Linux container",
+      "note": "Yomizaka's reference screenshot report-section-g-desktop-light.png (apps/web/e2e/visual/__screenshots__, main at b9090bbb, last updated 2026-10-29 by f0878b69), 1280 × 800, fr-CA, clock frozen. Demo persona (Éric Tremblay) and demo data only. The numbered boxes are drawn over it by scripts/annotate-figures.mjs."
+    },
+    "marks": "6.2,26.1,64.4,36.5;10,58.5,14.6,3.2;72.8,1.2,14.2,4.6"
+  },
+  "ui-test-maestro-books": {
+    "kind": "image",
+    "width": 1080,
+    "height": 2400,
+    "blur": "data:image/webp;base64,UklGRsYAAABXRUJQVlA4ILoAAAAQBgCdASoYADUAPxF8rlGsKCQirAsxgCIJY1nyXTAPgHGxETb6F/T9c2bheN1hPBtw+256oy9e91AA/u72hV2bjmnw+xyl819pyrObS7tE6vNui2GjhqRbaS6W7S9bl2scJKfefiBNcHvIaVQ4H431xoErSMQQfOldoc/rGVCAvNBiwY4PHdkJYXwGMBqtme9oa5lGACPwcZDf+0F6wRmjaH9IYWxk+bCWtIIIN1XY3BJgtNKL6JJegAA=",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/ui-test-maestro-books-480.425f484081.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/ui-test-maestro-books-960.f1d5f6001d.webp"
+      },
+      {
+        "w": 1080,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-we-test-our-uis/ui-test-maestro-books-1080.45bc81ee11.webp"
+      }
+    ],
+    "made": {
+      "model": "Maestro takeScreenshot (a test screenshot, no generative model)",
+      "licence": "n/a",
+      "machine": "GitHub Actions, Android emulator",
+      "note": "The screenshot « livres » of the Maestro journey livres-chiffres.yaml of the Akinaza mobile app, in the green main run mobile-ci 41009319706 (artifact maestro-e2e, 2026-10-30). Demo persona and demo data only. The numbered boxes are drawn over it by scripts/annotate-figures.mjs."
+    },
+    "marks": "63,92,13.5,6;3.6,26.8,92.8,13.8;3.6,56.6,92.8,5"
   }
 }

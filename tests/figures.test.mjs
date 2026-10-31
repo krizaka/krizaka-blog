@@ -1,14 +1,15 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
-import { itemsOf, rowsOf, seriesOf, sideTone } from "../lib/figures.ts";
+import { itemsOf, marksKey, marksOf, rowsOf, seriesOf, sideTone } from "../lib/figures.ts";
+import { annotatedOf, overlaySvg } from "../scripts/annotate-figures.mjs";
 import media from "../lib/media.json" with { type: "json" };
 
 // The chapters' figures (krizaka-internal#716, founder 2026-10-30: « 2–3 figures in every chapter, framed with a caption »).
 const dir = "content/chapters";
 const body = (f) => readFileSync(`${dir}/${f}`, "utf8").split(/^---$/m).slice(2).join("---");
 const files = readdirSync(dir).filter((f) => f.endsWith(".mdx"));
-const FIGURE = /<(Figure|Clip|Pipeline|Split|Layers|Bars|IssueCurve|Plate)\b/g;
+const FIGURE = /<(Figure|Annotated|Clip|Pipeline|Split|Layers|Bars|IssueCurve|Plate)\b/g;
 const figuresOf = (f) => [...body(f).matchAll(FIGURE)].map((m) => m[1]);
 const tagsOf = (f, name) => [...body(f).matchAll(new RegExp(`<${name}\\b([^>]*?)/?>`, "g"))].map((m) => m[1]);
 const attr = (tag, name) => tag.match(new RegExp(`\\b${name}="([^"]*)"`))?.[1];
@@ -82,7 +83,7 @@ for (const f of files) {
   });
 
   test(`${f}: every image and clip has its alt text and is in the media library`, () => {
-    for (const name of ["Figure", "Clip"])
+    for (const name of ["Figure", "Annotated", "Clip"])
       for (const t of tagsOf(f, name)) {
         assert.ok((attr(t, "alt") ?? "").length >= 20, `${name}${t}`);
         assert.ok(media[attr(t, "id")], `unknown media ${attr(t, "id")}`);
@@ -109,5 +110,80 @@ test("the articles carry no icons: steps are numbered in mono, scopes and marker
     css,
     /\.bl-help\s*\{[^}]*border-radius:\s*50%/,
     "the « ? » is a plain text mark, not a drawn badge",
+  );
+});
+
+// The annotated captures (founder 2026-10-31: « the reader doesn't know WHAT is tested »): numbered boxes drawn over a real screen,
+// each one a thing the test asserts, told again in the legend; the picture and the legend can never drift apart.
+test("an annotated capture's marks parse, numbered in order, inside the picture, each saying what is asserted", () => {
+  const m = marksOf(
+    "6,27.3,31,3.6: the price goes down to the total | 0.4,0.4,99.2,99.2: the whole screen against its reference",
+  );
+  assert.deepEqual(
+    m.map((k) => [k.n, k.x, k.w]),
+    [
+      [1, 6, 31],
+      [2, 0.4, 99.2],
+    ],
+  );
+  assert.equal(marksKey(m), "6,27.3,31,3.6;0.4,0.4,99.2,99.2");
+  assert.equal(marksOf("1,1,1,1: `minAction: 36`, at least 36 px")[0].label, "`minAction: 36`, at least 36 px");
+  assert.throws(() => marksOf("90,1,20,1: runs out of the picture"), /inside the picture/);
+  assert.throws(() => marksOf("1,1,1: three numbers only"), /four numbers/);
+  assert.throws(() => marksOf("1,1,1,1: short"), /what the test asserts/);
+  assert.throws(() => marksOf("no box at all"), /x,y,w,h: label/);
+  assert.throws(() => marksOf(""), /1 to 6 marks/);
+});
+
+test("the drawing puts one box and one number per mark, the number off the content it frames", () => {
+  const svg = overlaySvg(
+    marksOf("10,10,20,20: a box with room on its left | 0,50,100,10: a full-width box"),
+    1000,
+    500,
+  );
+  assert.equal((svg.match(/<text\b/g) ?? []).length, 2);
+  assert.match(svg, />1<\/text>/);
+  assert.match(svg, />2<\/text>/);
+  const tags = [...svg.matchAll(/<rect x="([\d.]+)" y="([\d.]+)" width="(\d+)" height="\d+" fill="#d23a2c"/g)].map(
+    (t) => [+t[1], +t[3]],
+  );
+  assert.ok(tags[0][0] + tags[0][1] <= 100, "in the margin to the left of a box that has room");
+  assert.ok(tags[1][0] + tags[1][1] <= 1000 && tags[1][0] > 900, "inside the top-right corner of a full-width box");
+});
+
+for (const f of files.filter((f) => f.endsWith(".en.mdx"))) {
+  const fr = f.replace(".en.mdx", ".fr.mdx");
+  const tags = (file) => annotatedOf(body(file));
+  test(`${f}: every annotated capture is drawn with the boxes its legend numbers, the same in French`, () => {
+    const en = tags(f);
+    const other = tags(fr);
+    assert.deepEqual(
+      other.map((t) => t.id),
+      en.map((t) => t.id),
+    );
+    en.forEach((t, i) => {
+      const marks = marksOf(t.marks);
+      assert.equal(
+        marksKey(marksOf(other[i].marks)),
+        marksKey(marks),
+        `${t.id}: the French boxes are the English ones`,
+      );
+      assert.equal(
+        media[t.id]?.marks,
+        marksKey(marks),
+        `${t.id}: redraw it (scripts/annotate-figures.mjs), the legend moved`,
+      );
+      assert.ok(media[t.id].made?.note, `${t.id}: says which test took the screen`);
+    });
+  });
+}
+
+test("the chapter on UI tests shows what its tests assert: three annotated captures, Yomizaka, Akinaza web and Android", () => {
+  const ids = annotatedOf(body("how-we-test-our-uis.en.mdx")).map((t) => t.id);
+  assert.deepEqual(ids, ["ui-test-akinaza-booking", "ui-test-yomizaka-report", "ui-test-maestro-books"]);
+  assert.doesNotMatch(
+    body("how-we-test-our-uis.en.mdx"),
+    /id="maestro-(today|invoices|books)"/,
+    "no bare screenshot left",
   );
 });
