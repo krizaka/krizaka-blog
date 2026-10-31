@@ -97,7 +97,7 @@ And there is what Sonar does not replace: secrets, which must be stopped before 
 
 There is one SonarCloud feature I would like to try: the Architecture view. It lets you declare the intended architecture, for example « Spring AI only in its adapter » or « no database access in services », and see the deviations as issues, next to the rest. I wrote the idea down in [issue .github#355](https://github.com/krizaka/.github/issues/355), after looking at a capture of a « current architecture » view.
 
-It is open, and nothing is switched on. We still have to check what our plan allows, which projects to start with, and what overlaps with our ArchUnit rules. The principle I wrote in the issue is simple: never put the same rule in two places. Sonar would give the overview and the history, the build would keep the fast stop.
+Since then, I have settled the order. First a C4 diagram generated from the code: the overview, from the system down to the files. It will also run locally, so I see the code on my machine and not only what is deployed. Only then Sonar's Architecture view, with the intended architecture and its deviations. Nothing is switched on yet. The principle stays simple: never put the same rule in two places. Sonar would give the overview and the history, the build would keep the fast stop.
 
 ## What I keep from it
 
