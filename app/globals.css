@@ -702,6 +702,12 @@ picture {
   border-radius: 999px;
   border: 1px solid var(--kz-border-default);
   background: var(--kz-surface-1);
+  overflow: hidden;
+}
+.bl-byline-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .bl-byline-text {
   display: grid;
@@ -1476,13 +1482,6 @@ picture {
 }
 
 /* Reading offline (krizaka-blog#211): the save buttons of a chapter, the offline page. Tokens only. */
-.bl-offline-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem 1.75rem;
-  align-items: center;
-  margin-top: 1.25rem;
-}
 /* « Take the story with you » (krizaka-blog#225, redesigned in #228): a bookplate of the Cahier, not a card. A strip between two
    hairlines that takes the hero's whole measure under the byline: the title in mono (the voice of the § numbers), the
    meta, two small ghost buttons with mono sizes, the offline save as a quiet link. At the end of a chapter, one typographic line.
@@ -1536,7 +1535,7 @@ picture {
 .bl-offline-quiet:hover {
   text-decoration-color: var(--kz-accent-text);
 }
-/* The chapter's last line: two scopes in plain text, « This chapter » and « The whole story · N chapters » (no drawn book, founder 2026-10-31). */
+/* The chapter's ONE end block (krizaka-internal#2002): two scopes in plain text, each with its « Read offline » button and its EPUB · PDF links, « This chapter » and « The whole story · N chapters » (no drawn book, founder 2026-10-31). */
 .bl-take-line {
   display: flex;
   flex-direction: column;
@@ -1546,6 +1545,11 @@ picture {
   font-size: 0.875rem;
   color: var(--kz-text-secondary);
 }
+.bl-take-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 .bl-take-scopes {
   display: flex;
   flex-wrap: wrap;
@@ -1553,8 +1557,9 @@ picture {
 }
 .bl-take-scope {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem 0.75rem;
 }
 .bl-take-group {
   display: flex;
@@ -1592,18 +1597,6 @@ picture {
   .bl-take-scopes {
     flex-direction: column;
   }
-}
-/* « Read offline » at the head of a chapter: two scopes (this chapter, the whole story) and the « ? ». */
-.bl-scope {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.25rem 0.625rem;
-}
-.bl-scope-label {
-  font-family: var(--kz-font-mono);
-  font-size: 0.75rem;
-  color: var(--kz-text-secondary);
 }
 .bl-help {
   display: inline-grid;
@@ -1687,7 +1680,7 @@ picture {
   color: var(--kz-fg-muted, inherit);
 }
 @media print {
-  .bl-offline-bar {
+  .bl-take-line {
     display: none;
   }
 }

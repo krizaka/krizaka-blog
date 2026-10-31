@@ -4,13 +4,13 @@ import { downloadsOf, SERIES_KEY, type Download } from "@/lib/downloads";
 import { chaptersOf } from "@/lib/chapters";
 import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
 import { chapterPath } from "@/lib/seo";
-import { SaveSeries } from "./SaveOffline";
+import { OfflineHelp, SaveChapter, SaveSeries } from "./SaveOffline";
 
 /* « Take the story with you » / « Emportez l'histoire » (krizaka-blog#225, redesigned in krizaka-blog#228): the EPUB and the PDF of the
    whole story as a bookplate of the Cahier — no box, no picture: a strip between two hairlines under the byline, the title in the
    mono of the § numbers, « N chapters · FR/EN » as meta, EPUB and PDF as small ghost @krizaka/ui Buttons with their
-   size in mono, « Save for offline » as a quiet link. `compact` is the chapter's last line: « Read offline — This chapter EPUB · PDF
-   — The whole story EPUB · PDF », typographic links with mono sizes, no button grid.
+   size in mono, « Save for offline » as a quiet link. `compact` is the chapter's ONE end block (krizaka-internal#2002): per scope (this chapter, the whole story) the « Read offline »
+   button and the EPUB · PDF links with mono sizes, and the « ? » helper.
    Every link is the hashed file of lib/downloads.json (a book with no file shows nothing). */
 const MIME = { epub: "application/epub+zip", pdf: "application/pdf" } as const;
 
@@ -68,38 +68,47 @@ export function TakeStory({
   const hint = (f: "epub" | "pdf") => (f === "epub" ? d.epubHint : d.pdfHint);
 
   if (compact) {
-    const group = (name: string, meta: string | undefined, files: Download[]) =>
-      files.length > 0 && (
-        <div className="bl-take-scope">
-          <span className="bl-take-group">
-            <span className="bl-take-for">
-              <b>{name}</b>
-              {meta && <span className="bl-take-count"> · {meta}</span>}
-            </span>
-            <span className="bl-take-links">
-              {files.map((f, i) => (
-                <span key={f.format}>
-                  {i > 0 && (
-                    <span className="bl-take-dot" aria-hidden="true">
-                      {" "}
-                      ·{" "}
-                    </span>
-                  )}
-                  <FileLink file={f} locale={locale} label={label(f.format)} />
-                </span>
-              ))}
-            </span>
+    const storyUrls = chapters.map((c) => localizedPath(locale, chapterPath(c.slug)));
+    const group = (name: string, meta: string | undefined, files: Download[], save: React.ReactNode) => (
+      <div className="bl-take-scope">
+        <span className="bl-take-group">
+          <span className="bl-take-for">
+            <b>{name}</b>
+            {meta && <span className="bl-take-count"> · {meta}</span>}
           </span>
-        </div>
-      );
+          <span className="bl-take-links">
+            {files.map((f, i) => (
+              <span key={f.format}>
+                {i > 0 && (
+                  <span className="bl-take-dot" aria-hidden="true">
+                    {" "}
+                    ·{" "}
+                  </span>
+                )}
+                <FileLink file={f} locale={locale} label={label(f.format)} />
+              </span>
+            ))}
+          </span>
+        </span>
+        {save}
+      </div>
+    );
     return (
       <aside className="bl-take-line" aria-labelledby={`bl-take-${bookKey}`}>
-        <h2 id={`bl-take-${bookKey}`} className="bl-take-label">
-          {d.takeOffline}
-        </h2>
+        <div className="bl-take-head">
+          <h2 id={`bl-take-${bookKey}`} className="bl-take-label">
+            {d.takeTitle}
+          </h2>
+          <OfflineHelp />
+        </div>
         <div className="bl-take-scopes">
-          {group(d.takeChapter, undefined, own)}
-          {group(d.takeStory, format(d.takeChapters, { n: String(chapters.length) }), story)}
+          {group(d.takeChapter, undefined, own, <SaveChapter url={localizedPath(locale, chapterPath(bookKey))} />)}
+          {group(
+            d.takeStory,
+            format(d.takeChapters, { n: String(chapters.length) }),
+            story,
+            <SaveSeries quiet urls={storyUrls} />,
+          )}
         </div>
       </aside>
     );

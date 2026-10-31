@@ -23,14 +23,17 @@ test("the helper says it stays in this browser, with no account and nothing sent
   for (const l of ["en", "fr"]) assert.match(msg(l).offline.helpRemove, /«/);
 });
 
-test("a chapter names its two scopes and carries the helper; the end line groups files by scope, in plain text", () => {
-  const page = read("app/components/pages/ChapterPage.tsx");
-  assert.match(page, /bl-scope-label">\{t\.downloads\.takeChapter\}/);
-  assert.match(page, /bl-scope-label">\{t\.downloads\.takeStory\}/);
-  assert.match(page, /<OfflineHelp \/>/);
+test("a chapter names its two scopes and carries the helper in its one end block, in plain text", () => {
   const take = read("app/components/TakeStory.tsx");
+  assert.match(take, /d\.takeChapter/);
+  assert.match(take, /d\.takeStory/);
+  assert.match(take, /<OfflineHelp \/>/);
   assert.doesNotMatch(take, /bl-book/, "no drawn book: the scopes are plain text (founder 2026-10-31)");
   assert.match(take, /takeChapters/);
+  assert.doesNotMatch(
+    read("app/components/pages/ChapterPage.tsx"),
+    /SaveChapter|SaveSeries|OfflineHelp|bl-offline-bar/,
+  );
 });
 
 test("the helper is a @krizaka/ui Popover on a real button with an accessible name (keyboard, screen reader, touch)", () => {

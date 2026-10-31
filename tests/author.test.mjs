@@ -85,12 +85,14 @@ test("a post that tells the author's path names only sourced places and links to
   }
 });
 
-test("the author is shown by the Wu-sama mark, never a photo: the About page and the byline", () => {
-  for (const f of ["app/components/about/AboutPage.tsx", "app/components/pages/Byline.tsx"]) {
-    assert.match(read(f), /WuSamaMark/, `${f} draws the Wu-sama mark`);
-    assert.doesNotMatch(read(f), /<(img|Image)\b|@krizaka\/ui\/avatar/, `${f} shows no photo or avatar image`);
-  }
+test("the About page wears the Wu-sama mark; the byline wears the org JSON's default picture, never the mark (krizaka-internal#2002)", () => {
+  assert.match(read("app/components/about/AboutPage.tsx"), /WuSamaMark/);
   assert.doesNotMatch(read("app/components/about/AboutPage.tsx"), /KrizakaLogo/);
+  const byline = read("app/components/pages/Byline.tsx");
+  assert.match(byline, /authorPicture\(/);
+  assert.doesNotMatch(byline, /WuSamaMark/, "no « W » mark beside the founder's name");
+  assert.match(read("lib/author-picture.ts"), /defaultFor\("person"/);
+  assert.doesNotMatch(read("lib/author-picture.ts"), /https?:\/\//, "no picture URL typed in the code");
 });
 
 test("the About page mark's label names « Wu-sama », and the bio body keeps it retired", () => {

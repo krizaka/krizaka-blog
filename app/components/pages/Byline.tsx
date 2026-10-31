@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { KrizakaLogo } from "@krizaka/ui";
-import { WuSamaMark } from "../about/WuSamaMark";
 import { Button } from "@krizaka/ui/button";
 import { ClockIcon, GlobeIcon } from "@krizaka/icons";
 import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
 import type { Post } from "@/lib/posts";
+import { authorPicture } from "@/lib/author-picture";
 import { formatDate } from "./PostList";
 
-/* Who wrote a post and when: the author (the company's mark for the team, Wu-sama's for Oussama: no photo), the date, the reading time, the update; then the
+/* Who wrote a post and when: the author (the company's mark for the team, the org JSON's default picture for a person), the date, the reading time, the update; then the
    post's actions in one row (the other language, and what the page passes). A chapter says its reading time in its head
    (ChapterHead), so it passes `readingTime={false}`. */
 export function Byline({
@@ -29,10 +29,16 @@ export function Byline({
   const otherSlug = other && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(other.slug) ? other.slug : "";
   const otherHref = localizedPath(otherLang, `/${section}/${otherSlug}/`);
   const author = (t.authors as Record<string, string>)[post.author] ?? post.author;
+  const picture = authorPicture(post.author, 40);
   return (
     <div className="bl-byline">
       <span className="bl-byline-mark" aria-hidden="true">
-        {post.author === "krizaka" ? <KrizakaLogo size={28} animated={false} /> : <WuSamaMark size={28} />}
+        {picture ? (
+          // eslint-disable-next-line @next/next/no-img-element -- a 40 px default picture from the org JSON, already sized on the CDN
+          <img src={picture} alt="" width={40} height={40} loading="lazy" decoding="async" />
+        ) : (
+          <KrizakaLogo size={28} animated={false} />
+        )}
       </span>
       <div className="bl-byline-text">
         <p className="bl-byline-name">{author}</p>
