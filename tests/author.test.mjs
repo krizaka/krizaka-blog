@@ -85,14 +85,37 @@ test("a post that tells the author's path names only sourced places and links to
   }
 });
 
-test("the About page wears the Wu-sama mark; the byline wears the org JSON's default picture, never the mark (krizaka-internal#2002)", () => {
-  assert.match(read("app/components/about/AboutPage.tsx"), /WuSamaMark/);
-  assert.doesNotMatch(read("app/components/about/AboutPage.tsx"), /KrizakaLogo/);
+test("the author is shown by his own picture, the Wu-sama mark, never a default avatar: the About page and the byline (founder 2026-10-31, reverting krizaka-blog#244)", () => {
+  for (const f of ["app/components/about/AboutPage.tsx", "app/components/pages/Byline.tsx"])
+    assert.match(read(f), /<WuSamaMark\b/, `${f} draws the Wu-sama mark`);
+  assert.doesNotMatch(read("app/components/about/AboutPage.tsx"), /KrizakaLogo|<(img|Image)\b|@krizaka\/ui\/avatar/);
+  const pic = read("lib/author-picture.ts");
+  assert.match(pic, /CUSTOM_PICTURES = \["oussama"\]/, "Oussama has his own picture");
+  assert.match(pic, /defaultFor\("person"/, "the default pictures are for the authors without one");
+  assert.doesNotMatch(pic, /https?:\/\//, "no picture URL typed in the code");
+  // Every author of a published post or chapter who is a person wears his own picture: the default never reaches Oussama.
+  const authors = new Set();
+  for (const dir of ["content/posts", "content/chapters"])
+    for (const f of readdirSync(new URL(`../${dir}`, import.meta.url)).filter((x) => x.endsWith(".mdx")))
+      authors.add(String(matter(read(`${dir}/${f}`)).data.author ?? "oussama"));
+  assert.ok(authors.has("oussama"));
+});
+
+test("the link to Oussama's story (/about/) is there: the home's byline and every byline of his (founder 2026-10-31, lost in krizaka-blog#126)", () => {
+  const home = read("app/components/pages/HomePage.tsx");
+  assert.match(home, /className="bl-home-byline"[\s\S]{0,200}<Link href=\{localizedPath\(locale, "\/about\/"\)\}/);
   const byline = read("app/components/pages/Byline.tsx");
-  assert.match(byline, /authorPicture\(/);
-  assert.doesNotMatch(byline, /WuSamaMark/, "no « W » mark beside the founder's name");
-  assert.match(read("lib/author-picture.ts"), /defaultFor\("person"/);
-  assert.doesNotMatch(read("lib/author-picture.ts"), /https?:\/\//, "no picture URL typed in the code");
+  assert.match(
+    byline,
+    /hasStory\(post\.author\)[\s\S]{0,120}<Link href=\{localizedPath\(post\.locale, "\/about\/"\)\}/,
+  );
+  assert.match(read("lib/author-picture.ts"), /STORY_AUTHORS = \["oussama"\]/);
+  for (const l of ["en", "fr"]) {
+    const m = messages(l);
+    assert.match(m.home.byline, /\{author\}/, `${l}: the byline's name is the link`);
+    assert.ok(m.home.bylineStory && m.post.authorStory, `${l}: the link's title`);
+  }
+  assert.match(read("app/components/SiteFooter.tsx"), /\/about\//, "the footer keeps « About »");
 });
 
 test("the About page mark's label names « Wu-sama », and the bio body keeps it retired", () => {

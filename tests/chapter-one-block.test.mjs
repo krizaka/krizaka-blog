@@ -20,11 +20,11 @@ test("a chapter page renders exactly one download/offline block", () => {
   assert.equal(count(compact, /<OfflineHelp\b/g), 1);
 });
 
-test("a chapter page has exactly one author line, with a picture from the org JSON (never the « W » mark)", () => {
+test("a chapter page has exactly one author line, with the author's own picture (the « W » mark for Oussama), the org JSON's default otherwise", () => {
   assert.equal(count(page, /<Byline\b/g), 1, "one Byline");
   const byline = read("app/components/pages/Byline.tsx");
   assert.equal(count(byline, /className="bl-byline-name"/g), 1);
-  assert.doesNotMatch(byline, /WuSamaMark/);
+  assert.match(byline, /<WuSamaMark\b/);
   assert.match(byline, /authorPicture\(/);
 });
 

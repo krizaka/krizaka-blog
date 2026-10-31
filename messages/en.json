@@ -34,13 +34,14 @@
     "featuredTitle": "Featured",
     "seoTitle": "Krizaka Blog — sovereign AI, local LLMs, measured costs",
     "seoDescription": "The building notes of Krizaka in Montréal, chapter by chapter: sovereign AI, local LLMs, GPU costs, one interface, coding agents.",
-    "byline": "By Oussama Abid, founder of Krizaka.",
+    "byline": "By {author}, founder of Krizaka.",
     "readChapter": "Read the chapter",
     "chaptersTitle": "The chapters",
     "chaptersLead": "The earlier ones, newest first: each one says what I was up against, then what we built.",
     "new": "New",
     "basicsTitle": "The basics, to understand the rest",
-    "basicsLead": "Four short reads, in this order, that explain the words and the rules the chapters rely on. If a chapter loses you, come here, then go back."
+    "basicsLead": "Four short reads, in this order, that explain the words and the rules the chapters rely on. If a chapter loses you, come here, then go back.",
+    "bylineStory": "His story"
   },
   "post": {
     "back": "The Krizaka story",
@@ -70,7 +71,8 @@
     "keyNumbers": "Key numbers",
     "progress": "Reading progress",
     "subscribe": "Subscribe by e-mail",
-    "rssFeed": "RSS feed"
+    "rssFeed": "RSS feed",
+    "authorStory": "His story"
   },
   "chapter": {
     "label": "Chapter {n}",
@@ -84,7 +86,13 @@
     "toStory": "Back to the story",
     "previous": "Previous",
     "nextLabel": "Next",
-    "nav": "The chapters"
+    "nav": "The chapters",
+    "signature": {
+      "label": "The author's signature",
+      "quote": "We are not racing anyone. We build what is useful, and we build it well.",
+      "name": "Wu-sama",
+      "fullName": "Oussama Abid"
+    }
   },
   "engage": {
     "title": "Keep it, pass it on",
@@ -201,7 +209,9 @@
     "labNote": "My first brush with AI was in 2011, at the {lab}, long before the word was in fashion.",
     "lab": "Grenoble Informatics Laboratory (LIG)",
     "placesLabel": "Lives in",
-    "places": ["Montréal"]
+    "places": [
+      "Montréal"
+    ]
   },
   "newsletter": {
     "eyebrow": "Newsletter",
@@ -348,7 +358,8 @@
     "chaptersWord": "chapters",
     "coverLede": "Sovereign AI, built in Montréal — told chapter by chapter.",
     "coverLabel": "The story",
-    "takeChapters": "{n} chapters"
+    "takeChapters": "{n} chapters",
+    "chapterWord": "Chapter"
   },
   "basics": {
     "for": "For anyone who is new to AI. No prior knowledge; each read stands on its own, and the order is only the easiest way in.",

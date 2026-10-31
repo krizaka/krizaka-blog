@@ -14,7 +14,8 @@ import { spawnSync } from "node:child_process";
 import { copyFileSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { FACES, coverHtml, epubCss, printCss } from "../lib/ebook-style.mjs";
+import { FACES, TEXT_BLOCK, coverHtml, epubCss, printCss } from "../lib/ebook-style.mjs";
+import { MM, pdfLayoutProblems, pushedPictures, readPages } from "../lib/pdf-layout.mjs";
 import {
   FORMATS,
   SERIES,
@@ -157,6 +158,69 @@ async function shoot(browser, dir, name, html, width, height) {
 
 const images = new Map();
 
+/** The repair pass, in the print page: each picture the PDF shows pushed to the next page ({ index, room } from pushedPictures) is
+    shrunk to the room it left (back in the text block, its caption and margins counted, 8 mm to spare, 4 more at each pass) when it keeps 55 mm; otherwise the
+    paragraphs after it move before it, as many as the room holds, so the text fills the page and the picture opens the next one. */
+function placePictures({ pushed, ptToPx, mm, slack }) {
+  const pictures = [...document.querySelectorAll("section.chapter img")].filter((img) => !img.closest(".opener"));
+  let changed = 0;
+  for (const { index, room } of [...pushed].reverse()) {
+    const img = pictures[index];
+    const fig = img?.closest("figure");
+    if (!img || !fig) continue;
+    const roomPx = room * ptToPx;
+    const target = img.getBoundingClientRect().height - (fig.getBoundingClientRect().height - roomPx) - slack * mm;
+    if (target >= 55 * mm) {
+      img.style.maxHeight = `${Math.floor(target)}px`;
+      changed += 1;
+      continue;
+    }
+    let filled = 0;
+    let next = fig.nextElementSibling;
+    while (next && next.tagName === "P" && filled + next.getBoundingClientRect().height <= roomPx) {
+      filled += next.getBoundingClientRect().height;
+      const after = next.nextElementSibling;
+      fig.before(next);
+      next = after;
+      changed += 1;
+    }
+  }
+  return changed;
+}
+
+/** The fit pass, run in the print page before Chromium cuts it into pages (founder 2026-10-31: no caption pushed away from its
+    picture, no white page). It walks each chapter's pictures in order, as the A4 text block will hold them: a picture whose figure
+    (picture + caption, never split: break-inside: avoid) does not fit in the room left on its page is shrunk to that room when the
+    room is at least 30 % of a page and the picture keeps 55 mm; otherwise it opens the next page and the room it leaves (under
+    30 %) is counted. Then the PDF is read back page by page (placePictures, lib/pdf-layout.mjs). */
+function fitPictures({ pageHeight: H, mm }) {
+  const out = { shrunk: 0, pushed: 0 };
+  for (const section of document.querySelectorAll("section.chapter")) {
+    const flow = [...section.children].filter((el) => !el.classList.contains("opener"));
+    if (flow.length === 0) continue;
+    const y0 = flow[0].getBoundingClientRect().top + window.scrollY;
+    let shift = 0;
+    for (const fig of section.querySelectorAll("figure:not(.opener-pic)")) {
+      const img = fig.querySelector("img");
+      if (!img) continue;
+      const r = fig.getBoundingClientRect();
+      const top = r.top + window.scrollY - y0 + shift;
+      const room = H - (top % H);
+      if (r.height <= room) continue;
+      // 14 mm of slack: Chromium's own cuts (a heading kept with its text, three lines kept together) move the flow a little.
+      const target = img.getBoundingClientRect().height - (r.height - room) - 14 * mm;
+      if (room >= 0.3 * H && target >= 55 * mm) {
+        img.style.maxHeight = `${Math.floor(target)}px`;
+        out.shrunk += 1;
+      } else {
+        shift += room;
+        out.pushed += 1;
+      }
+    }
+  }
+  return out;
+}
+
 /** One book: its source HTML, covers, EPUB and PDF in `dir`; returns the files' names. */
 async function makeBook(browser, book, chapters, dir) {
   const t = message(book.locale);
@@ -187,6 +251,7 @@ async function makeBook(browser, book, chapters, dir) {
     title,
     readOnline: t.downloads.readOnline,
     storyHeading: t.downloads.storyHeading,
+    chapterWord: t.downloads.chapterWord,
   };
   const name = bookName(book.key, book.locale);
   const source = join(dir, `${name}.source.html`);
@@ -279,31 +344,49 @@ async function makeBook(browser, book, chapters, dir) {
     "-t",
     "html5",
     "-s",
-    "--toc",
-    "--toc-depth=2",
+    // A chapter's book has no contents page (one entry on a white page); the PDF's outline still lists its sections.
+    ...(single ? [] : ["--toc", "--toc-depth=2"]),
     `--include-in-header=${head}`,
     `--include-before-body=${before}`,
     "-o",
     printable,
   ]);
-  const page = await browser.newPage();
+  // The text block's width (the margins of @page), in print media: the fit pass measures the flow as Chromium will cut it.
+  const px = 96 / 25.4;
+  const page = await browser.newPage({ viewport: { width: Math.round(TEXT_BLOCK.width * px), height: 1200 } });
+  await page.emulateMedia({ media: "print" });
   await page.goto(`file://${printable}`, { waitUntil: "load" });
   await page.evaluate(() => document.fonts.ready);
-  const pdf = join(dir, `${name}.pdf`);
-  await page.pdf({
-    path: pdf,
-    format: "A4",
-    tagged: true,
-    outline: true,
-    printBackground: true,
-    preferCSSPageSize: true,
+  // The heading joins its opener page, after « § NN » (the source keeps it first for the contents).
+  await page.evaluate(() => {
+    for (const section of document.querySelectorAll("section.chapter")) {
+      const h1 = section.querySelector(":scope > h1");
+      const no = section.querySelector(":scope > div.opener div.opener-no");
+      if (h1 && no) no.after(h1);
+    }
   });
+  const fitted = await page.evaluate(fitPictures, { pageHeight: TEXT_BLOCK.height * px, mm: px });
+  const pdf = join(dir, `${name}.pdf`);
+  const print = () =>
+    page.pdf({ path: pdf, format: "A4", tagged: true, outline: true, printBackground: true, preferCSSPageSize: true });
+  await print();
+  // Then the renderer's own cut, read back: a picture still pushed to the next page (Chromium keeps a heading with its text, three
+  // lines together…) is shrunk to the room it left, measured in the PDF, or the text that follows it flows into that room. Up to
+  // four passes; the layout guard (verifyBook) judges the last one.
+  for (let pass = 0; pass < 4; pass++) {
+    const pushed = pushedPictures(await readPages(readFileSync(pdf)));
+    if (pushed.length === 0) break;
+    const changed = await page.evaluate(placePictures, { pushed, ptToPx: px / MM, mm: px, slack: 8 + 4 * pass });
+    fitted.repaired = (fitted.repaired ?? 0) + changed;
+    if (changed === 0) break;
+    await print();
+  }
   await page.close();
-  return { epub, pdf, parts, source: printable, series: !single };
+  return { epub, pdf, parts, source: printable, series: !single, fitted };
 }
 
 /** The checks of a made book: every chapter is in each file, the pictures are described, the PDF is tagged and tells its language. */
-function verifyBook(book, made) {
+async function verifyBook(book, made) {
   const problems = [];
   const text = run("unzip", ["-p", made.epub, "*.xhtml"]);
   const missing = missingChapters(text, made.parts);
@@ -333,12 +416,16 @@ function verifyBook(book, made) {
   if (gone.length > 0) problems.push(`pdf source lacks ${gone.join(" | ")}`);
   for (const p of pdfProblems(readFileSync(made.pdf), { lang: book.locale, pages: made.parts.length + 1 }))
     problems.push(`pdf ${p}`);
+  // The layout, page by page: no (nearly) blank page, every caption right under its picture.
+  for (const p of await pdfLayoutProblems(readFileSync(made.pdf))) problems.push(`pdf layout: ${p}`);
   return problems;
 }
 
 async function generate() {
   const chapters = await readChapters();
-  const books = planBooks(chapters);
+  const only = arg("only", "");
+  // `--only en/story,fr/why-krizaka`: make some books only (a check of the layout while it is being worked on; never recorded).
+  const books = planBooks(chapters).filter((b) => !only || only.split(",").includes(bookId(b)));
   rmSync(outDir, { recursive: true, force: true });
   mkdirSync(outDir, { recursive: true });
   const { chromium } = await import("playwright");
@@ -348,7 +435,8 @@ async function generate() {
   try {
     for (const book of books) {
       const made = await makeBook(browser, book, chapters, outDir);
-      const problems = verifyBook(book, made);
+      const problems = await verifyBook(book, made);
+      console.log(`${bookId(book)}: ${JSON.stringify(made.fitted)}`);
       for (const p of problems) failures.push(`${bookId(book)}: ${p}`);
       files[bookId(book)] = {
         source: book.source,
