@@ -1,28 +1,28 @@
 {
   "books": {
     "en/story": {
-      "source": "18db026a4f14",
+      "source": "8f91ce54e71a",
       "files": {
         "epub": {
-          "hash": "75690e1a73",
-          "bytes": 5149633
+          "hash": "ca663dbfc5",
+          "bytes": 5151894
         },
         "pdf": {
-          "hash": "c6a9f0e268",
-          "bytes": 7540552
+          "hash": "7ce0bfc9ab",
+          "bytes": 7600605
         }
       }
     },
     "en/why-krizaka": {
-      "source": "28c8ff6417db",
+      "source": "06e9c195b5ee",
       "files": {
         "epub": {
-          "hash": "45d7e3e8a1",
-          "bytes": 743563
+          "hash": "3bd67e0a6b",
+          "bytes": 743995
         },
         "pdf": {
-          "hash": "62200a63ec",
-          "bytes": 1132951
+          "hash": "f865a2c684",
+          "bytes": 1147195
         }
       }
     },
@@ -105,15 +105,15 @@
       }
     },
     "en/building-with-agents": {
-      "source": "746a02085cf7",
+      "source": "79265b7903ea",
       "files": {
         "epub": {
-          "hash": "438539440f",
-          "bytes": 1371914
+          "hash": "285905f155",
+          "bytes": 1372433
         },
         "pdf": {
-          "hash": "ee997f5a01",
-          "bytes": 2075659
+          "hash": "25fa894e91",
+          "bytes": 2104579
         }
       }
     },
@@ -131,28 +131,28 @@
       }
     },
     "en/a-curve-that-climbs": {
-      "source": "3c1de60b49da",
+      "source": "bf11190e2b04",
       "files": {
         "epub": {
-          "hash": "bcd4ef2672",
-          "bytes": 1210781
+          "hash": "2eae32db79",
+          "bytes": 1211010
         },
         "pdf": {
-          "hash": "2480042efd",
-          "bytes": 2025957
+          "hash": "a6dd8f065a",
+          "bytes": 2033955
         }
       }
     },
     "en/how-we-built-our-ci": {
-      "source": "836723cb45b3",
+      "source": "69c7646954e1",
       "files": {
         "epub": {
-          "hash": "bbb0742f5f",
-          "bytes": 986244
+          "hash": "cec9aec392",
+          "bytes": 986933
         },
         "pdf": {
-          "hash": "138fb9c854",
-          "bytes": 1656826
+          "hash": "1fb01d2c53",
+          "bytes": 1692426
         }
       }
     },
@@ -183,15 +183,15 @@
       }
     },
     "en/ci-the-error-never-leaves-the-editor": {
-      "source": "80f269880b79",
+      "source": "66fa261434ce",
       "files": {
         "epub": {
-          "hash": "ece23c7ec3",
-          "bytes": 511139
+          "hash": "f76e38b21f",
+          "bytes": 511535
         },
         "pdf": {
-          "hash": "243e2e9a0c",
-          "bytes": 809471
+          "hash": "6e51a6cbe5",
+          "bytes": 823406
         }
       }
     },
@@ -248,28 +248,28 @@
       }
     },
     "fr/story": {
-      "source": "6e73df96bad7",
+      "source": "be0f755bd174",
       "files": {
         "epub": {
-          "hash": "20b52afebc",
-          "bytes": 5170738
+          "hash": "9664062548",
+          "bytes": 5173239
         },
         "pdf": {
-          "hash": "384217a218",
-          "bytes": 7678843
+          "hash": "fec7b3892e",
+          "bytes": 7743600
         }
       }
     },
     "fr/why-krizaka": {
-      "source": "d10ef0c10292",
+      "source": "fcfba0825620",
       "files": {
         "epub": {
-          "hash": "15ccabb44e",
-          "bytes": 749787
+          "hash": "6c6fa978bd",
+          "bytes": 750240
         },
         "pdf": {
-          "hash": "daf4d6ca5d",
-          "bytes": 1150035
+          "hash": "2f72d1b6bc",
+          "bytes": 1165799
         }
       }
     },
@@ -352,15 +352,15 @@
       }
     },
     "fr/building-with-agents": {
-      "source": "5854d42c7f62",
+      "source": "c4c6333f98f5",
       "files": {
         "epub": {
-          "hash": "98d20da3a8",
-          "bytes": 1386564
+          "hash": "52f1e35e5d",
+          "bytes": 1387169
         },
         "pdf": {
-          "hash": "b7ce03e485",
-          "bytes": 2102710
+          "hash": "463689c915",
+          "bytes": 2136146
         }
       }
     },
@@ -378,28 +378,28 @@
       }
     },
     "fr/a-curve-that-climbs": {
-      "source": "77bb7bea4a2e",
+      "source": "13a8d370eda5",
       "files": {
         "epub": {
-          "hash": "1023ec39b4",
-          "bytes": 1224050
+          "hash": "944a04301e",
+          "bytes": 1224290
         },
         "pdf": {
-          "hash": "1121904971",
-          "bytes": 2057306
+          "hash": "3b7c34d098",
+          "bytes": 2065821
         }
       }
     },
     "fr/how-we-built-our-ci": {
-      "source": "7c952ef9c4dd",
+      "source": "0772b0dc6d4f",
       "files": {
         "epub": {
-          "hash": "233817cc45",
-          "bytes": 1000127
+          "hash": "d0b386c65a",
+          "bytes": 1000857
         },
         "pdf": {
-          "hash": "41dabfe714",
-          "bytes": 1688221
+          "hash": "2eb7c25e79",
+          "bytes": 1726930
         }
       }
     },
@@ -430,15 +430,15 @@
       }
     },
     "fr/ci-the-error-never-leaves-the-editor": {
-      "source": "e30a4d8547f3",
+      "source": "b671e80e88c0",
       "files": {
         "epub": {
-          "hash": "a105111c51",
-          "bytes": 506049
+          "hash": "48fc13adc6",
+          "bytes": 506523
         },
         "pdf": {
-          "hash": "0c1a6bbb6b",
-          "bytes": 824024
+          "hash": "b32df4a359",
+          "bytes": 839624
         }
       }
     },
