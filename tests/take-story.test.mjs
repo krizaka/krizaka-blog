@@ -20,7 +20,15 @@ const LOCAL_FREE = {
 };
 export function coverProvenance(id, made) {
   if (!made || typeof made.note !== "string") return false;
+  /* A Studio run of the series' model, or (chapter 22) a key frame of the film the chapter tells, a FLUX.2 [klein] Studio run with its run id. */
   if (/Studio run [0-9a-f]{8}\)/.test(made.note) && made.model === "FLUX.1 [schnell]") return true;
+  if (
+    made.via === "Orazaka Studio" &&
+    /^[0-9a-f-]{36}$/.test(made.runId ?? "") &&
+    /^FLUX\.2 \[klein\]/.test(made.model) &&
+    made.note.includes(`Studio run ${made.runId.slice(0, 8)})`)
+  )
+    return true;
   return (
     made.via === "local" &&
     typeof LOCAL_FREE[id] === "string" &&
@@ -40,6 +48,20 @@ test("a cover without a Studio run id passes only as a listed local-free excepti
   assert.ok(!coverProvenance(listed, { model: local.model, via: "local" }), "no note at all");
   assert.ok(!coverProvenance("series-22-unlisted", local), "unlisted id");
   assert.ok(!coverProvenance(listed, { ...local, via: "mac" }), "unnamed kind");
+  const run = "75cdc9c8-5d06-497d-bd54-9dcdad9ca7e7";
+  const klein = {
+    model: "FLUX.2 [klein] 4B",
+    via: "Orazaka Studio",
+    runId: run,
+    note: "shot 3 (Orazaka Studio run 75cdc9c8).",
+  };
+  assert.ok(coverProvenance("series-22-x", klein), "a FLUX.2 [klein] Studio run with its run id");
+  assert.ok(!coverProvenance("series-22-x", { ...klein, runId: undefined }), "no run id");
+  assert.ok(
+    !coverProvenance("series-22-x", { ...klein, note: "shot 3 (Orazaka Studio run deadbeef)." }),
+    "note names another run",
+  );
+  assert.ok(!coverProvenance("series-22-x", { ...klein, via: "local" }), "not a Studio run");
 });
 
 test("every chapter of the series but the 10th wears its series cover, and each cover is a media entry sold in every size", () => {

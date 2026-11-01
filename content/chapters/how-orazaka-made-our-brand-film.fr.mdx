@@ -1,0 +1,172 @@
+---
+title: "Montrer son travail : comment Orazaka a fait notre film"
+description: "Un film de 31 secondes, sans une parole, fait par notre propre moteur. Les fiches de référence, les images clés, la vidéo, le montage, et les quatre échecs payés qui nous ont chacun laissé une garde."
+seoTitle: "Montrer son travail : comment Orazaka a fait notre film"
+seoDescription: "Comment notre moteur Orazaka a fait le film de Krizaka : références, images clés, vidéo, montage, environ 16 $ de GPU et une garde par échec."
+date: 2026-11-01
+publishedAt: "2026-11-01T09:30:00-05:00"
+tags: [ai, orazaka, costs]
+author: oussama
+cover: series-22-how-orazaka-made-our-brand-film
+coverAlt: "Un petit hibou gris aux aigrettes et aux yeux jaunes, perché sur la rampe en fer noir d'un escalier extérieur de Montréal, devant un mur de brique, des feuilles d'érable rouges sur les marches mouillées, une feuille de papier sous une patte"
+draft: false
+newsletter: hold
+chapter: 22
+period: "2026-10-30/2026-11-01"
+sources:
+  - how-we-generate-cinematic-videos-with-ai
+  - real-cost-of-an-image-paying-for-intent
+versus:
+  faced: "un film qui ne disait rien de nous"
+  built: "un film fait par notre moteur, et une garde pour chaque échec payé"
+---
+
+Le 30 octobre, j'ai regardé le film de notre page « Notre histoire » et je me suis dit qu'il ne vendait rien. Il était joli. Il ne disait pas ce qu'on fait. J'ai demandé un autre film, avec une seule condition : qu'il soit fait par Orazaka, notre moteur d'IA. Pas par un service en ligne, pas à la main. Si on dit que nos logiciels montrent leur travail, le film devait le montrer lui aussi.
+
+Trois jours plus tard, il était fini, et il remplace l'ancien sur [krizaka.com](https://www.krizaka.com) à la prochaine mise en ligne du site. Ce chapitre raconte comment il a été fait, ce qui a raté en route, et ce que chaque raté nous a laissé. Il fait suite au [chapitre 4](/fr/story/from-a-clip-to-a-film/), où notre premier film était beau et raté.
+
+<Clip
+  id="film-montrer-son-travail"
+  alt="Le film « Montrer son travail », 31 secondes sans parole : un cahier ouvert sous une lampe, une goutte d'encre qui tombe dans une flaque d'une rue pavée, un hibou sur un escalier de fer, un castor dans un salon de barbier, un canard près d'un portable qui s'envole, le canal de Lachine à l'heure bleue, puis le cahier fermé avec une plume"
+  caption="« Montrer son travail », 31 secondes. Chaque image, chaque plan et la musique sont sortis d'Orazaka ; le montage et les titres ont été posés ensuite, à partir d'une liste de coupes."
+/>
+
+## L'intention : montrer son travail
+
+La phrase existait déjà sur notre site : un logiciel devrait montrer son travail. Le film devait la porter sans un mot. Pas de voix, pas de narrateur, des titres posés à la main dans nos propres polices. Le premier scénario, sorti du module de scénario d'Orazaka, faisait 36 secondes et neuf plans. Il avait de belles images et trop d'idées : un faucon, des pigeons, des oiseaux en formation, des noms de produits joués par des personnes.
+
+Avant de tourner quoi que ce soit, je l'ai fait relire par quatre agents, chacun dans un rôle : la marque, le marketing, ma voix et ce blog, la direction artistique. Ils ont coupé beaucoup. Il est resté trois animaux, un par promesse : le hibou qui lit, le castor qui tient la boutique, le canard qui fait tourner le moteur. Une seule journée de fin octobre après la pluie, une seule optique, un seul étalonnage. Au bout, sept plans et 31 secondes.
+
+## La chaîne
+
+<Pipeline label="La chaîne du film, dans l'ordre. Les étapes de contrôle sont gratuites ; elles passent avant ce qui coûte.">
+  <Stage title="Fiches de référence" note="FLUX.2 [klein]">
+    Le hibou, le cahier, le castor et le canard, dessinés une fois, choisis à l'œil.
+  </Stage>
+  <Stage title="Images clés" note="7 plans × 3 prises">
+    Chaque plan est rendu avec ses références, pour que le hibou du plan 3 soit celui de la fiche.
+  </Stage>
+  <Stage title="Critique" note="avant la vidéo" tone="gate">
+    Chaque image est relue. Trois plans sont refaits.
+  </Stage>
+  <Stage title="Vidéo" note="Wan 2.2 A14B, 4 étapes">
+    Une image devient un plan de cinq secondes. Le prompt ne décrit que le mouvement.
+  </Stage>
+  <Stage title="Bobine des transitions" note="avant le montage" tone="gate">
+    Chaque coupe seule, 1,5 seconde de chaque côté, pour juger les raccords.
+  </Stage>
+  <Stage title="Montage" note="titres, musique" tone="ship">
+    La liste de coupes, un étalonnage, nos polices, une musique générée.
+  </Stage>
+</Pipeline>
+
+### Les fiches de référence
+
+Un modèle d'image ne se souvient de rien d'une image à l'autre. Si on lui décrit « un hibou » sept fois, on obtient sept hiboux. Alors on a d'abord rendu une fiche par personnage avec <Model id="flux2-klein-4b">FLUX.2 [klein] 4B</Model> : le hibou, le castor, le canard, et le cahier, ouvert et fermé. Pour voir ce que ça change, on a aussi rendu les plans sans les fiches. Le hibou du plan 3 avait poussé des aigrettes et pris une face fauve. Le castor du plan 4 n'était plus le même. Les fiches ont eu une deuxième version : notre hibou dessiné a des aigrettes et de grands yeux ronds, et celui de la première fiche n'en avait pas. On a pris un petit-duc maculé gris, un hibou qui vit à Montréal et qui ressemble au nôtre.
+
+### Les images clés
+
+Sept plans, trois prises chacun, chaque prise rendue avec ses fiches. Puis une critique, image par image, avant de payer la moindre vidéo. Trois plans ont été refaits. Dans le salon de barbier, les trois prises avaient des affiches couvertes de fausses lettres. À côté du canard, l'écran du portable montrait des lignes de texte et quelque chose qui ressemblait à un logo ; on l'a refait vu de dos. Dans le dernier plan, chaque prise avait un deuxième pied de lampe, juste là où devait aller le carton de fin. Une prise du hibou avait aussi viré au brun ; on a gardé celle qui restait grise.
+
+<Row>
+  <Figure
+    id="film-keyframe-puddle"
+    alt="Une rue pavée mouillée de Montréal au ras du sol, une flaque qui reflète le ciel et les façades, une goutte d'encre bleue suspendue juste au-dessus"
+    caption="Plan 2, l'image clé : la goutte d'encre au-dessus de la flaque, une des trois prises."
+  />
+  <Figure
+    id="film-keyframe-beaver"
+    alt="Un castor assis sur le comptoir en bois d'un petit salon de barbier vide, un fauteuil de barbier, des serviettes blanches pliées, du soleil par la fenêtre"
+    caption="Plan 4, refait : les trois premières prises avaient des affiches avec de fausses lettres."
+  />
+</Row>
+
+### La vidéo
+
+Pour passer d'une image à un plan, on a donné le même test de deux secondes à trois réglages : le canard tourne la tête, puis s'envole. <Model id="wan22-ti2v-5b">Wan 2.2 TI2V 5B</Model> sur une L40S : 232 secondes, environ 7 cents, et le colvert devient un oiseau blanc, une sorte de goéland. Il a perdu son identité. <Model id="wan22-i2v-a14b">Wan 2.2 I2V A14B</Model> en version distillée à 4 étapes, sur une H200 : 77 secondes, environ 17 cents, la tête verte et le collier tiennent, l'envol est naturel. Le même A14B en 40 étapes : 341 secondes, 76 cents, et la tête passe du vert au bleu pendant que le corps gonfle. Plus lent, plus cher, et pas meilleur. On a pris le 4 étapes.
+
+<Figure
+  id="film-duck-5b-vs-a14b"
+  alt="Deux images côte à côte du même plan. À gauche, un oiseau au corps blanc qui s'envole d'un bureau près d'un portable. À droite, un colvert à tête verte et collier blanc, debout sur le même bureau"
+  caption="Le même test du plan 5. À gauche, le 5B : en plein envol, le colvert est devenu blanc. À droite, l'A14B en 4 étapes, juste avant l'envol : la tête verte et le collier tiennent, et ils tiennent pendant le vol."
+/>
+
+Chaque plan a ensuite été rendu en 1280×720, 81 images à 16 par seconde, en un peu moins de deux minutes sur une H200 : entre 111 et 115 secondes, environ 25 cents le plan. Pour le plan 1, une seule prise sur trois montrait une goutte qui quitte vraiment la plume et tombe. C'est celle-là qui ouvre le film.
+
+### Les raccords
+
+Avant le vrai montage, on a fait une bobine qui ne contient que les transitions : chaque coupe, 1,5 seconde de chaque côté, séparée par du noir. C'est là qu'on voit si un raccord marche, sans se laisser porter par le reste. La goutte qui tombe du cahier tombe dans la flaque : un raccord sur le geste. La flaque passe au hibou par un fondu de huit images. Le castor regarde vers sa fenêtre à droite, le canard vers la sienne à gauche : une coupe sur le regard. Le canard s'envole, et c'est un canard qui traverse le canal : une coupe dans l'action. La bobine a aussi montré ce qui ne marchait pas. Le raccord du papier du hibou vers les serviettes blanches du castor était faible, les deux blancs n'étaient pas au même endroit ; c'est la lumière qui porte cette coupe. Et la première bobine elle-même était fausse : elle gardait le début des plans du milieu au lieu de leur fin. On l'a refaite.
+
+### Les titres et la musique
+
+Les modèles ne savent pas écrire : les fausses lettres du salon de barbier le montraient encore. Alors aucun mot n'est généré. Les trois titres sont posés après coup dans nos polices, celles de `@krizaka/fonts`, avec les espaces de la typographie française : « Montrer son travail » sur la page de gauche du cahier, « Montréal · canal de Lachine » dans le ciel, « Krizaka » sur le carton de fin. La musique vient de <Model id="ace-step">ACE-Step</Model>, sous licence MIT, générée sur la même H200 : 40 secondes, sans voix, la moins écrasée de deux prises. L'agent qui a monté le film l'a mesurée, son volume, l'absence de silence et de saturation. Il ne pouvait pas l'écouter, et il l'a écrit.
+
+## Ce qui a raté, et ce que chaque raté a laissé
+
+Chez nous, un bug veut dire qu'il manquait une garde ; je le racontais au [chapitre 20](/fr/story/how-our-automation-grew/). Ce film en a eu quatre qui ont coûté de l'argent.
+
+### Le moteur n'a jamais répondu
+
+Le 31 octobre au soir, on loue une H200 pour les fiches. Pendant une vingtaine de minutes, chaque demande reçoit la même réponse : le modèle d'image ne tourne pas, son moteur est injoignable. 1,80 $ pour rien. Le contrôle gratuit d'avant le lancement était passé : il vérifiait seulement que le modèle existait dans le catalogue. La cause : la machine louée installait tout avant le moteur d'image, environ 49 Go de modèles vidéo sur un disque de 60 Go, une compilation pour trois générations de cartes, et le moteur d'image arrivait en dernier, trop tard. Depuis, une machine qui ne fait que des images ne charge que les images. Et surtout, avant la première demande, le lot prouve que le moteur répond à travers le Studio, et il s'arrête au bout de 15 minutes s'il ne répond pas. Trois « injoignable » de suite, ou cinq minutes d'affilée, et la machine est rendue. Le premier essai après ça, une petite carte avec un plafond de 2 $, a coûté 9 cents et rendu son image.
+
+### Les références lues chiffrées, puis perdues
+
+Le lot suivant échoue en une seconde, 21 fois sur 21 : « une image de référence doit être PNG, JPEG ou WebP ». Le serveur servait pourtant ces images comme des PNG. Le vrai problème : nos fichiers sont chiffrés au repos, et le service lisait les octets chiffrés pour deviner leur format. 3,03 $ de B200 sans une image. On a écrit d'abord un test qui reproduisait l'erreur exacte, puis le correctif : la référence passe par le même chemin que les autres fichiers, celui qui déchiffre. Après le déploiement, nouvel échec : un redéploiement efface le disque, et le service ne cherchait la référence que sur le disque, pas dans le stockage durable. 83 cents de plus. Deuxième test rouge, deuxième correctif.
+
+### Le lot qui changeait de carte
+
+Pendant ce temps, mon script de lot faisait une chose idiote : quand un travail échouait, il pensait que la carte était en cause et en louait une autre, une H200, puis une H100, puis une H100 NVL. 1,03 $ pour refaire la même erreur sur trois machines. Le script ne change plus de carte que s'il n'y en a aucune de libre. Et trois échecs d'une même demande rendent maintenant la machine.
+
+### L'agrandisseur cassé
+
+Sur la machine vidéo, l'outil qui devait passer les plans en 1080p avec <Model id="seedvr2">SeedVR2</Model> plantait à cause de deux bibliothèques en versions incompatibles. Deux plans perdus après leur rendu, environ 58 cents. Le film est passé en 1080p autrement, par une mise à l'échelle classique au montage. Celui-là n'a pas encore sa garde : elle est écrite dans une issue, un essai d'agrandissement au démarrage de chaque machine, avec deux autres trous trouvés le même jour. Je ne la compte pas tant qu'elle n'est pas là.
+
+<Pipeline label="La boucle qu'on suit après chaque échec payé. Le correctif ne suffit pas : on cherche ce qui aurait dû l'arrêter, et la garde reste.">
+  <Stage title="Un échec payé" note="1,80 $, 3,03 $…" tone="gate">
+    On note le coût lu chez le fournisseur, avant et après.
+  </Stage>
+  <Stage title="Pourquoi rien ne l'a arrêté" note="la vraie cause">
+    Le contrôle gratuit regardait le catalogue, pas le moteur.
+  </Stage>
+  <Stage title="Un test rouge" note="sur main">
+    Il reproduit l'erreur exacte, avant tout correctif.
+  </Stage>
+  <Stage title="Le correctif" note="le test passe au vert">
+    Une petite PR, qui prend le train comme les autres.
+  </Stage>
+  <Stage title="La garde reste" note="au prochain lot" tone="ship">
+    Le lot suivant prouve le moteur avant de payer.
+  </Stage>
+</Pipeline>
+
+## Les vrais chiffres
+
+Tout le film, échecs compris, a coûté environ 16 $ de GPU : 15,83 $, lus sur le solde du fournisseur avant et après chaque lot, avec zéro machine allumée après chacun. Les cartes : une A100 ou une H100 pour le premier storyboard, une H100 pour les premières fiches, une B200 pour les fiches et les images clés, une H100 pour les images refaites, une L40S pour le test du 5B, une H200 pour les plans vidéo et la musique, et une RTX 4090 pour l'essai à 9 cents.
+
+<Numbers>
+  <Num value="≈ 16 $" label="Le film entier" hint="GPU, échecs compris" />
+  <Num value="≈ 2 min" label="Un plan vidéo" hint="111 à 115 s sur une H200" />
+  <Num value="≈ 0,25 $" label="Un plan vidéo" hint="1280×720, 81 images" />
+</Numbers>
+
+Le chiffre qui m'apprend le plus, c'est l'autre : environ 7 $ de ces 16 $ sont partis dans les quatre échecs. Presque la moitié. Les images réussies, elles, coûtent quelques cents chacune.
+
+## Ce que vous pouvez en prendre
+
+Si vous louez des GPU pour générer des images ou des vidéos, mettez une garde avant de payer : prouvez que le moteur répond, avec la vraie requête, et arrêtez la machine dès qu'il ne répond plus. Donnez des références à vos modèles dès que vos personnages doivent revenir d'un plan à l'autre. Faites la critique sur les images, avant la vidéo, parce qu'une image refaite coûte des cents et un plan refait coûte des dollars. Et regardez vos transitions seules, avant le montage : c'est là que se voient les raccords qui ne marchent pas.
+
+Le reste, c'est ce que dit le film : montrer son travail. Celui-ci, je l'ai montré jusqu'aux échecs.
+
+## Questions fréquentes
+
+### Le film est-il vraiment fait par une IA ?
+
+Les images, les plans vidéo et la musique sont sortis d'Orazaka, notre moteur, avec des modèles ouverts. Le choix des prises, le montage, l'étalonnage et les titres ont été faits ensuite, à partir d'une liste de coupes écrite à la main. Aucun mot n'est généré.
+
+### Pourquoi pas le plus gros réglage du modèle vidéo ?
+
+Parce qu'on l'a mesuré. En 40 étapes, l'A14B coûtait 4,4 fois plus pour le même plan, et le canard changeait de couleur. Le 4 étapes gardait le canard.
+
+### Combien a coûté le film ?
+
+Environ 16 $ de GPU loués, échecs compris, dont environ 7 $ perdus dans des échecs qui ont chacun laissé une garde, sauf le dernier, encore en cours.
