@@ -195,17 +195,17 @@ function placePictures({ pushed, ptToPx, mm, slack }) {
     30 %) is counted. Then the PDF is read back page by page (placePictures, lib/pdf-layout.mjs). */
 function fitPictures({ pageHeight: H, mm }) {
   const out = { shrunk: 0, pushed: 0 };
-  for (const section of document.querySelectorAll("section.chapter")) {
+  // Runs in the page (page.evaluate serialises this function): the helpers are nested on purpose.
+  const walk = (section) => {
     const flow = [...section.children].filter((el) => !el.classList.contains("opener"));
-    if (flow.length === 0) continue;
+    if (flow.length === 0) return;
     const y0 = flow[0].getBoundingClientRect().top + window.scrollY;
     let shift = 0;
     for (const fig of section.querySelectorAll("figure:not(.opener-pic)")) {
       const img = fig.querySelector("img");
       if (!img) continue;
       const r = fig.getBoundingClientRect();
-      const top = r.top + window.scrollY - y0 + shift;
-      const room = H - (top % H);
+      const room = H - ((r.top + window.scrollY - y0 + shift) % H);
       if (r.height <= room) continue;
       // 14 mm of slack: Chromium's own cuts (a heading kept with its text, three lines kept together) move the flow a little.
       const target = img.getBoundingClientRect().height - (r.height - room) - 14 * mm;
@@ -217,13 +217,13 @@ function fitPictures({ pageHeight: H, mm }) {
         out.pushed += 1;
       }
     }
-  }
+  };
+  document.querySelectorAll("section.chapter").forEach(walk);
   return out;
 }
 
-/** One book: its source HTML, covers, EPUB and PDF in `dir`; returns the files' names. */
-async function makeBook(browser, book, chapters, dir) {
-  const t = message(book.locale);
+/** The chapters of a book: their article read from the built site, their pictures downloaded next to the book. */
+async function loadParts(browser, book, chapters, dir) {
   const own = book.slugs.map((s) => chapters.find((c) => c.slug === s && c.locale === book.locale));
   const parts = own.map((c) => {
     const html = readFileSync(
@@ -244,24 +244,11 @@ async function makeBook(browser, book, chapters, dir) {
     p.article = p.article.replace(/(<img\b[^>]*\ssrc=")([^"]+)(")/g, (m, a, u, z) => `${a}${images.get(u) ?? u}${z}`);
     if (p.cover) p.cover = { ...p.cover, src: images.get(p.cover.src) };
   }
-  const single = book.key !== SERIES;
-  const title = single ? parts[0].title : t.home.title;
-  const labels = {
-    lang: book.locale,
-    title,
-    readOnline: t.downloads.readOnline,
-    storyHeading: t.downloads.storyHeading,
-    chapterWord: t.downloads.chapterWord,
-  };
-  const name = bookName(book.key, book.locale);
-  const source = join(dir, `${name}.source.html`);
-  const sortedAll = chapters.filter((c) => c.locale === book.locale).sort((a, b) => a.chapter - b.chapter);
-  writeFileSync(
-    source,
-    bookSource({ chapters: parts, labels, all: single ? sortedAll.map((c) => ({ ...c, url: urlOf(c) })) : undefined }),
-  );
+  return parts;
+}
 
-  // The fonts next to the pages; the covers drawn with them, the same design at the e-book's and at the page's proportions.
+/** The fonts next to the pages; the covers drawn with them, the same design at the e-book's and at the page's proportions. */
+async function drawCovers(browser, { book, t, parts, single, title, name, dir }) {
   mkdirSync(join(dir, "fonts"), { recursive: true });
   for (const f of FACES) copyFileSync(join(FONTS, f.file), join(dir, "fonts", f.file));
   const coverArgs = {
@@ -276,7 +263,11 @@ async function makeBook(browser, book, chapters, dir) {
   };
   const ebookCover = await shoot(browser, dir, `${name}.cover-ebook`, coverHtml(coverArgs), 1200, 1800);
   const printCover = await shoot(browser, dir, `${name}.cover-print`, coverHtml(coverArgs), 1240, 1754);
+  return { ebookCover, printCover };
+}
 
+/** The EPUB, built by pandoc from the book source; also returns the pandoc arguments the PDF source shares. */
+function buildEpub({ book, t, parts, single, title, name, dir, ebookCover, source }) {
   const last = parts
     .map((p) => p.date)
     .sort((a, b) => a.localeCompare(b))
@@ -326,7 +317,11 @@ async function makeBook(browser, book, chapters, dir) {
     ],
     { SOURCE_DATE_EPOCH: epoch },
   );
+  return { common, epub };
+}
 
+/** The PDF: the print page cut by pandoc, fitted to the A4 text block, then repaired page by page from what Chromium really cut. */
+async function buildPdf(browser, { t, single, title, name, dir, common, source, printCover }) {
   const printable = join(dir, `${name}.print.html`);
   const head = join(dir, "print.css.html");
   writeFileSync(
@@ -382,11 +377,49 @@ async function makeBook(browser, book, chapters, dir) {
     await print();
   }
   await page.close();
+  return { pdf, printable, fitted };
+}
+
+/** One book: its source HTML, covers, EPUB and PDF in `dir`; returns the files' names. */
+async function makeBook(browser, book, chapters, dir) {
+  const t = message(book.locale);
+  const parts = await loadParts(browser, book, chapters, dir);
+  const single = book.key !== SERIES;
+  const title = single ? parts[0].title : t.home.title;
+  const labels = {
+    lang: book.locale,
+    title,
+    readOnline: t.downloads.readOnline,
+    storyHeading: t.downloads.storyHeading,
+    chapterWord: t.downloads.chapterWord,
+  };
+  const name = bookName(book.key, book.locale);
+  const source = join(dir, `${name}.source.html`);
+  const sortedAll = chapters.filter((c) => c.locale === book.locale).sort((a, b) => a.chapter - b.chapter);
+  writeFileSync(
+    source,
+    bookSource({ chapters: parts, labels, all: single ? sortedAll.map((c) => ({ ...c, url: urlOf(c) })) : undefined }),
+  );
+
+  const { ebookCover, printCover } = await drawCovers(browser, { book, t, parts, single, title, name, dir });
+
+  const { common, epub } = buildEpub({ book, t, parts, single, title, name, dir, ebookCover, source });
+
+  const { pdf, printable, fitted } = await buildPdf(browser, {
+    t,
+    single,
+    title,
+    name,
+    dir,
+    common,
+    source,
+    printCover,
+  });
   return { epub, pdf, parts, source: printable, series: !single, fitted };
 }
 
-/** The checks of a made book: every chapter is in each file, the pictures are described, the PDF is tagged and tells its language. */
-async function verifyBook(book, made) {
+/** The EPUB's checks: chapters, pictures described, language, accessibility metadata, cover, fonts, contents. */
+function epubChecks(book, made) {
   const problems = [];
   const text = run("unzip", ["-p", made.epub, "*.xhtml"]);
   const missing = missingChapters(text, made.parts);
@@ -404,21 +437,33 @@ async function verifyBook(book, made) {
   for (const p of orderProblems(readFileSync(made.source, "utf8"))) problems.push(`order: ${p}`);
   const navText = run("unzip", ["-p", made.epub, "*nav.xhtml"]);
   for (const p of orderProblems(navText.replaceAll(/<a\b[^>]*>/g, "<h1>"))) problems.push(`epub toc ${p}`);
-  if (process.env["EPUBCHECK_JAR"]) {
-    const r = spawnSync(JAVA, ["-jar", process.env["EPUBCHECK_JAR"], "--failonwarnings", "--quiet", made.epub], {
-      encoding: "utf8",
-    });
-    if (r.status !== 0) problems.push(`epubcheck: ${(r.stdout + r.stderr).slice(0, 900)}`);
-  }
   if (!text.includes("<nav") || !text.includes('epub:type="toc"')) problems.push("epub has no table of contents");
-  const html = readFileSync(made.source, "utf8");
-  const gone = missingChapters(html, made.parts);
+  return problems;
+}
+
+/** EPUBCheck, when its jar is configured. */
+function epubcheckProblems(made, jar) {
+  if (!jar) return [];
+  const r = spawnSync(JAVA, ["-jar", jar, "--failonwarnings", "--quiet", made.epub], { encoding: "utf8" });
+  return r.status === 0 ? [] : [`epubcheck: ${(r.stdout + r.stderr).slice(0, 900)}`];
+}
+
+/** The PDF's checks: its source holds every chapter, it is tagged and tells its language, its layout is right page by page. */
+async function pdfChecks(book, made) {
+  const problems = [];
+  const gone = missingChapters(readFileSync(made.source, "utf8"), made.parts);
   if (gone.length > 0) problems.push(`pdf source lacks ${gone.join(" | ")}`);
   for (const p of pdfProblems(readFileSync(made.pdf), { lang: book.locale, pages: made.parts.length + 1 }))
     problems.push(`pdf ${p}`);
   // The layout, page by page: no (nearly) blank page, every caption right under its picture.
   for (const p of await pdfLayoutProblems(readFileSync(made.pdf))) problems.push(`pdf layout: ${p}`);
   return problems;
+}
+
+/** The checks of a made book: every chapter is in each file, the pictures are described, the PDF is tagged and tells its language. */
+async function verifyBook(book, made) {
+  const jar = process.env.EPUBCHECK_JAR;
+  return [...epubChecks(book, made), ...epubcheckProblems(made, jar), ...(await pdfChecks(book, made))];
 }
 
 async function generate() {
