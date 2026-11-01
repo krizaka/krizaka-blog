@@ -204,8 +204,7 @@
     "role": "Founder",
     "body": [
       "My name is Oussama, and I build Krizaka in Montréal.",
-      "I studied mathematics and computer science, then turned to mathematics and computing applied to cognitive science.",
-      "Then came fifteen years of distributed systems in production: connected trains, healthcare, telecom, and IoT networks of millions of devices.",
+      "I studied mathematics and computer science.",
       "Today I build Krizaka with AI agents, and this blog is its engineering log: real measurements, choices, and problems still open."
     ],
     "labNote": "My first brush with AI was in 2011, at the {lab}, long before the word was in fashion.",
