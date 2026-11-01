@@ -54,3 +54,55 @@ test("the strokes draw once and stay still under reduced motion; ink and accent 
   assert.match(block, /stroke: currentColor/);
   assert.match(block, /stroke: var\(--kz-accent\)/);
 });
+
+test("the About page may render the signature too, once, after the sheet, with the same component and no quote of its own", () => {
+  const about = read("app/components/about/AboutPage.tsx");
+  assert.equal(count(about, /<Signature\b/g), 1);
+  assert.match(about, /import \{ Signature \} from "\.\.\/pages\/Signature"/);
+  assert.ok(about.indexOf("<Signature") > about.indexOf("</article>"), "after the sheet");
+  assert.doesNotMatch(
+    about,
+    /chapter\.signature|On pose nos briques/,
+    "the line is read inside Signature, from the messages",
+  );
+  // The only places that render it: the founder's chapters and the About page.
+  const users = ["app/components/pages/ChapterPage.tsx", "app/components/about/AboutPage.tsx"];
+  for (const f of users) assert.equal(count(read(f), /<Signature\b/g), 1, f);
+});
+
+test("the About line is typed by CSS: real text in the DOM, animated copy aria-hidden, reduced motion shows it at once", () => {
+  const typed = read("app/components/about/TypedLine.tsx");
+  const about = read("app/components/about/AboutPage.tsx");
+  const aboutCss = read("app/components/about/about.css");
+  assert.match(about, /<TypedLine className="bl-sheet-line" text=\{a\.line\} \/>/);
+  assert.match(typed, /className="bl-typed-real">\{text\}</, "the real text stays in the DOM");
+  assert.match(typed, /className="bl-typed" aria-hidden="true"/);
+  assert.doesNotMatch(typed, /use client|useEffect|requestAnimationFrame|setInterval/);
+  const block = aboutCss.slice(aboutCss.indexOf("/* Typed line"));
+  assert.match(block, /\.bl-typed-ch \{[^}]*animation: bl-type-in[^}]*visibility: hidden;/s);
+  assert.match(
+    block,
+    /prefers-reduced-motion: reduce\)\s*\{\s*\.bl-typed-ch \{\s*animation: none;\s*visibility: visible;/,
+  );
+  assert.doesNotMatch(block, /display: none/, "letters are laid out from the start: no layout shift");
+});
+
+test("the About header is a compact banner, in the size range of the other page headers (token type scale, no poster)", () => {
+  const css = read("app/components/about/about.css");
+  const rule = (sel) => css.match(new RegExp(`${sel.replace(/\./g, "\\.")} \\{([^}]*)\\}`))?.[1] ?? "";
+  assert.match(
+    rule(".bl-sheet-name"),
+    /font-size: var\(--kz-type-display-md-size\)/,
+    "the name is a display size of the scale",
+  );
+  assert.doesNotMatch(css, /min-height|clamp\(2\.5rem, 8vw/, "no forced height, no 4.75 rem name");
+  // Desktop padding bounds the banner at 1280 px to about 200 px (measured 2026-11-01), inside the 200-260 px range.
+  const desktop = css.match(/@media \(min-width: 48rem\) \{\s*\.bl-sheet \{([^}]*)\}/)?.[1] ?? "";
+  const pad = desktop.match(/padding-block: ([\d.]+)rem ([\d.]+)rem/);
+  assert.ok(pad && Number(pad[1]) + Number(pad[2]) <= 5, "banner padding stays compact");
+  assert.match(
+    read("app/components/about/AboutPage.tsx"),
+    /bl-about-body/,
+    "the bio is in the normal reading column below",
+  );
+});

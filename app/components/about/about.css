@@ -1,5 +1,6 @@
-/* The About page: one notebook sheet, the banner of his GitHub profile rebuilt as text (founder 2026-11-01). Squared paper,
-   the red margin and its notes, the Wu-sama mark, the name, the first sentence set large, then the rest. Tokens only: paper
+/* The About page: a compact banner (founder 2026-11-01: « trop gros »), the banner of his GitHub profile rebuilt as text:
+   squared paper, the red margin and its note, the Wu-sama mark, the name, the typed line. Same width and gutters as every page
+   (Section), then the bio in the normal reading column below. Tokens only: paper
    in light, slate in dark. Square corners, a solid paper offset, no glow, nothing moves (hover or not). */
 .bl-about-top {
   padding-top: var(--kz-hero-top);
@@ -10,8 +11,8 @@
   --bl-sheet-margin: 2.75rem;
   --bl-sheet-gap: 1rem;
   position: relative;
-  padding-block: 1.75rem 1.25rem;
-  padding-inline-end: 1.125rem;
+  padding-block: 1rem 0.75rem;
+  padding-inline-end: 1rem;
   border: 1px solid var(--kz-border-default);
   border-radius: 0;
   background-color: var(--kz-surface-1);
@@ -25,9 +26,9 @@
     var(--kz-paper-module) var(--kz-paper-module),
     var(--kz-paper-line) var(--kz-paper-line),
     var(--kz-paper-line) var(--kz-paper-line);
-  box-shadow: 0.5rem 0.5rem 0 0 var(--kz-border-default);
+  box-shadow: 0.375rem 0.375rem 0 0 var(--kz-border-default);
   display: grid;
-  gap: 2rem;
+  gap: 0.5rem;
 }
 
 /* The red margin rule of the notebook. */
@@ -45,9 +46,9 @@
   .bl-sheet {
     --bl-sheet-margin: 6.5rem;
     --bl-sheet-gap: 2rem;
-    padding-block: 3rem 1.75rem;
-    padding-inline-end: clamp(2rem, 5vw, 4rem);
-    gap: 2.5rem;
+    padding-block: 3rem 2rem;
+    padding-inline-end: 2rem;
+    gap: 0.75rem;
   }
 }
 
@@ -72,6 +73,10 @@
 }
 
 @media (min-width: 48rem) {
+  .bl-sheet-caption {
+    display: block;
+  }
+
   .bl-sheet-note {
     justify-self: end;
     padding-inline-end: 0.875rem;
@@ -84,7 +89,7 @@
 
 .bl-sheet-ident {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: clamp(0.875rem, 3vw, 1.75rem);
   min-width: 0;
@@ -92,7 +97,7 @@
 
 .bl-sheet-mark {
   flex: none;
-  width: clamp(4rem, 13vw, 7rem);
+  width: clamp(3rem, 8vw, 6rem);
   height: auto;
 }
 
@@ -112,7 +117,7 @@
 }
 
 .bl-sheet-kicker {
-  font-size: 0.8125rem;
+  font-size: var(--kz-type-caption-size);
   color: var(--kz-text-secondary);
 }
 
@@ -120,16 +125,20 @@
   margin: 0;
   font-family: var(--kz-font-display);
   font-weight: 400;
-  font-size: clamp(2.5rem, 8vw, 4.75rem);
-  line-height: 1;
+  font-size: var(--kz-type-display-md-size);
+  line-height: var(--kz-type-display-md-line-height);
   letter-spacing: -0.01em;
   white-space: nowrap;
   color: var(--kz-text-primary);
 }
 
 .bl-sheet-line {
-  font-size: clamp(0.8125rem, 2vw, 0.9375rem);
+  font-size: var(--kz-type-caption-size);
   color: var(--kz-accent-text);
+}
+
+.bl-about-body {
+  max-width: 42rem;
 }
 
 .bl-sheet-text {
@@ -187,7 +196,47 @@
 }
 
 .bl-sheet-caption {
+  display: none;
   padding-inline-start: calc(var(--bl-sheet-margin) + var(--bl-sheet-gap));
-  font-size: 0.75rem;
+  font-size: var(--kz-type-caption-size);
   color: var(--kz-text-secondary);
+}
+
+/* Typed line: the real text is kept for readers and search engines (visually hidden); the animated copy is laid out in full from
+   the start, each letter appears at its turn (40 ms apart, from 0.4 s), so nothing shifts. Reduced motion: all at once. */
+.bl-typed-real {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.bl-typed-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.bl-typed-ch {
+  animation: bl-type-in 0s steps(1, end) both;
+  animation-delay: calc(0.4s + var(--i) * 40ms);
+  visibility: hidden;
+}
+
+.bl-typed-sp {
+  white-space: pre;
+}
+
+@keyframes bl-type-in {
+  to {
+    visibility: visible;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bl-typed-ch {
+    animation: none;
+    visibility: visible;
+  }
 }
