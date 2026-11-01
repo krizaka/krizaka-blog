@@ -159,3 +159,13 @@ test("the About page names no product code name, in its messages, alt texts or c
   for (const f of ["app/components/about/AboutPage.tsx", "app/components/about/WuSamaMark.tsx"])
     assert.doesNotMatch(read(f), CODE_NAMES, `${f}: a code name`);
 });
+
+/* The opening sentence is a calm lead, not a display headline (founder, 2026-11-01: « trop gros »): its size comes from the
+   type scale tokens, never a magic number, and stays below the name's. */
+test("the About opening sentence is sized by type scale tokens, a calm lead", () => {
+  const css = read("app/components/about/about.css");
+  const rules = [...css.matchAll(/\.bl-sheet-opening\s*\{([^}]*)\}/g)].map((m) => m[1]).join("\n");
+  assert.match(rules, /font-size:\s*var\(--kz-type-body-lg-size\)/, "a lead on a phone");
+  assert.match(rules, /font-size:\s*var\(--kz-type-display-sm-size\)/, "a step up from 48rem");
+  assert.doesNotMatch(rules, /font-size:\s*clamp\(|font-size:\s*[\d.]+(rem|px)/, "no magic number");
+});
