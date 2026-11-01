@@ -41,6 +41,10 @@ test("the signature is drawn in code, one landmark, his line in both languages",
     );
     assert.ok(m.label);
   }
+  // Guard (krizaka-internal#2084): the founder's own words, not a polite paraphrase.
+  const quote = (l) => JSON.parse(read(`messages/${l}.json`)).chapter.signature.quote;
+  assert.equal(quote("fr"), "On pose nos briques à l'encre bleue, et c'est le temps qui signe.");
+  assert.equal(quote("en"), "We lay our bricks in blue ink, and time does the signing.");
 });
 
 test("the strokes draw once and stay still under reduced motion; ink and accent from the tokens", () => {
