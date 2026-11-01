@@ -52,20 +52,20 @@ The references are made on Linux, in Playwright's official container, never on m
 
 The job runs in [about 2 minutes](https://github.com/krizaka/akinaza/actions/workflows/visual.yml) (the last eight successful runs I read today), and it is a required check of the merge queue. Dates, times and free slots are masked, and so is the map, since its tiles come from the network.
 
-What a reference screenshot checks is easier to see than to say. Two of them, as they are on `main`, with what their tests assert drawn over them; every number comes from the test's own configuration.
+What a reference screenshot checks is easier to see than to say. Two of the pages they check, captured in showcase mode on the demo data, with what their tests assert marked over them in pen; every number comes from the test's own configuration.
 
 <Annotated
   id="ui-test-akinaza-booking"
-  alt="Akinaza in the dark theme, on a desktop: the demo customer books a walk with the demo shop Pattes de Saint-Henri; the price line goes from the price of the walk to the total through the two sales taxes, the cancellation rule is under it, and the Continue button closes the form"
-  caption="Web (Akinaza), dark theme: the booking summary of a walk, in the demo shop. Its reference screenshot is checked on every PR; the journey of an honest booking runs the same page to the receipt."
-  marks="6,27.3,31,3.6: `[data-booking-price]`: the price goes down to the total, through both sales taxes and « = » (the honest-booking journey) | 6,32.4,44.5,3.4: `[data-booking-cancel-rule]`: the cancellation rule is said before the person books, above the button | 7.2,77.8,9.8,7.2: every action of the page is at least 36 px tall (`minAction: 36`); this one is 48 | 0.4,0.4,99.2,99.2: the whole screen against its reference, 1280 × 800: at most 0.2 % of the pixels may differ (`maxDiffPixelRatio: 0.002`), clock frozen, French (Canada)"
+  alt="Akinaza in the dark theme, on a desktop: the demo customer Léa Beaulieu books a walk with the demo shop Pattes de Saint-Henri for Monday 2 November at 1 pm; the price goes from the walk to the total through the two sales taxes, free cancellation until 24 hours before is said under it, her name and phone are filled in, the consent is ticked, and the Continue button closes the form"
+  caption="Web (Akinaza), dark theme: the booking summary of a walk in the demo shop, filled in by the demo customer, captured in showcase mode on the seeded demo data. The same page is a reference screenshot checked on every PR; the honest-booking journey runs it to the receipt."
+  marks="11.7,23.1,24.6,3,under: `[data-booking-price]`: the price goes down to the total, through both sales taxes and « = » (the honest-booking journey) | 6.3,28.1,22,3,under: `[data-booking-cancel-rule]`: the cancellation rule is said before the person books, above the button | 7.6,73.8,8.6,6: every action of the page is at least 36 px tall (`minAction: 36`); this one is 48 | 0.4,0.4,99.2,99.2,frame: the whole screen against its reference, 1280 × 800: at most 0.2 % of the pixels may differ (`maxDiffPixelRatio: 0.002`), clock frozen, French (Canada)"
 />
 
 <Annotated
   id="ui-test-yomizaka-report"
-  alt="Yomizaka in the light theme, on a desktop: the report of a demo lease for Éric Tremblay, with a blocking finding (no TAL notice) and the Section G finding, its explanation and its citation of the Civil Code"
-  caption="Web (Yomizaka), light theme: the report of a demo lease with no notice from the TAL. The Section G journey opens it as the demo tenant and reads the finding a customer reads."
-  marks="6.2,26.1,64.4,36.5: `#finding-TS-G-001`: the Section G finding is on the report, not just « the page loaded » | 10,58.5,14.6,3.2: `finding-citation`: the finding cites its source, the articles of the Civil Code | 72.8,1.2,14.2,4.6: the header's one action stays on screen at 360, 390, 1280, 1440 and 1600 px, in both themes (`check-app-pages`)"
+  alt="Yomizaka in the light theme, on a desktop: the report of a demo lease for Éric Tremblay, two rules out of two need attention: a blocking finding (no TAL notice) and the Section G finding, with the figures to bring to the TAL, its deadline and its citation of the Civil Code"
+  caption="Web (Yomizaka), light theme: the report of a demo lease with no notice from the TAL, captured in showcase mode as the demo tenant. The Section G journey opens the same report and reads the finding a customer reads."
+  marks="6.3,42.5,64.4,36.8,bracket: `#finding-TS-G-001`: the Section G finding is on the report, not just « the page loaded » | 10.4,75.6,13.7,2,under: `finding-citation`: the finding cites its source, the articles of the Civil Code | 74.4,1.5,12.7,4: the header's one action stays on screen at 360, 390, 1280, 1440 and 1600 px, in both themes (`check-app-pages`)"
 />
 
 The configuration says one thing that matters more to me than the rest, in one line: [`retries: 0`](https://github.com/krizaka/akinaza/blob/main/apps/web/e2e/visual/playwright.config.mjs). No rerun. A test that fails and then passes on the second try does not pass for me, it hides a bug.
@@ -78,13 +78,13 @@ On Android we use [Maestro](https://maestro.dev). The journeys are small YAML fi
 
 On every PR, the [Mobile CI](https://github.com/krizaka/akinaza/blob/main/.github/workflows/mobile-ci.yml) workflow builds the app, starts an Android emulator and a throwaway server with the demo shop, then runs the journeys as the demo walker. The `mobile-e2e / gate` check is required. This job takes 16 to 19 minutes over the last eight successful runs.
 
-One screen of the app, taken by the journey of the books in the green run of `main` (Android client, demo persona, demo data). Maestro taps the tab, checks what it was told to check, then photographs the screen: the boxes are its steps.
+One screen of the app, taken by the journey of the books in the green run of `main` (Android client, demo persona, demo data). Maestro taps the tab, checks what it was told to check, then photographs the screen: the pen marks are its steps.
 
 <Annotated
   id="ui-test-maestro-books"
-  alt="Android emulator, Books tab of Akinaza: the third quarter of 2026, the two net sales-tax figures to remit, the See your figures button, and the note that Akinaza prepares the figures and the owner files the return"
-  caption="Android. The journey livres-chiffres.yaml, as the demo owner: the screenshot « livres » it takes before opening the figures."
-  marks="63,92,13.5,6: `tapOn`: Maestro taps the tab by its words, « Livres » in French or « Books » in English | 3.6,26.8,92.8,13.8: `assertVisible`: the first of the two sales-tax figures is on screen, by its words in either language, computed from the demo shop's invoices | 3.6,56.6,92.8,5: Maestro taps « See your figures » and waits up to 30 s (`timeout: 30000`) for the explained figures"
+  alt="Android emulator, Akinaza's Your figures screen, opened from the Books tab: the period of the fourth quarter of 2026, what to do now (follow up a late customer, open Monday 8:00 to bookings), then the first explained figure, what was billed in the period, on track"
+  caption="Android. The journey livres-chiffres.yaml, as the demo owner: the screenshot « chiffres-opened » it takes once the figures are open (the development notice above the app is cropped off)."
+  marks="64.8,92.2,10.2,4.7: `tapOn`: Maestro taps the tab by its words, « Livres » in French or « Books » in English, then « See your figures » | 40.5,7.4,19,1.8,under: `extendedWaitUntil`: it waits up to 30 s (`timeout: 30000`) for « Your figures », in either language | 3.9,60.3,92.2,24.9,bracket: `id: figure-invoiced`: the figure is found by its id, never by its wording, a card the API answers from the demo shop's data"
 />
 
 The same green run also recorded the phone as it runs, the whole journey in one take, with no sign-in step:
@@ -227,11 +227,23 @@ Two web takes, from the same green run:
 The [`download-videos.yml`](https://github.com/krizaka/akinaza/blob/main/.github/workflows/download-videos.yml) workflow runs every night on `main` and is never required, so it cannot block a merge. The shared [`app-videos.yml`](https://github.com/krizaka/.github/blob/main/.github/workflows/app-videos.yml) encodes webm and mp4 with a poster (30 seconds at most, no sound, 720 pixels wide at most), sends everything to our media storage under a name that holds its fingerprint, and opens a PR. A unit test fails if the page names a video missing from the manifest or older than 14 days.
 
 <Pipeline label="When each test runs, and when it films">
-  <Stage title="Pull request" note="every change">Lint, unit tests, the build; Playwright's journeys on the web, Maestro's on an Android emulator. The mobile gate is a required check.</Stage>
-  <Stage title="Merge queue" note="merge_group" tone="gate">The same checks again, on the queue's branch: the change with the latest main merged in.</Stage>
-  <Stage title="Green main" note="after the merge">The mobile journeys run once more on main.</Stage>
-  <Stage title="Every night" note="download-videos">On main, Playwright and Maestro film the journeys: 30 seconds at most, no sound, 720 pixels wide at most.</Stage>
-  <Stage title="The films" note="fingerprinted, then a PR" tone="ship">Sent to our media storage under a name that holds their fingerprint; a PR updates the manifest, and a test fails if a video is missing or older than 14 days.</Stage>
+  <Stage title="Pull request" note="every change">
+    Lint, unit tests, the build; Playwright's journeys on the web, Maestro's on an Android emulator. The mobile gate is
+    a required check.
+  </Stage>
+  <Stage title="Merge queue" note="merge_group" tone="gate">
+    The same checks again, on the queue's branch: the change with the latest main merged in.
+  </Stage>
+  <Stage title="Green main" note="after the merge">
+    The mobile journeys run once more on main.
+  </Stage>
+  <Stage title="Every night" note="download-videos">
+    On main, Playwright and Maestro film the journeys: 30 seconds at most, no sound, 720 pixels wide at most.
+  </Stage>
+  <Stage title="The films" note="fingerprinted, then a PR" tone="ship">
+    Sent to our media storage under a name that holds their fingerprint; a PR updates the manifest, and a test fails if
+    a video is missing or older than 14 days.
+  </Stage>
 </Pipeline>
 
 A real example: Yomizaka's [report, in 10.6 seconds](https://krizaka-assets.b-cdn.net/sites/yomizaka/download/web-report.2813a67179.mp4) (its [poster](https://krizaka-assets.b-cdn.net/sites/yomizaka/download/web-report.3ca0931124.jpg)), taken on October 27 by the test itself. It weighs 134 KB.

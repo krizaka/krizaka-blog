@@ -347,8 +347,9 @@ picture {
   line-height: 1.5;
   color: var(--kz-text-secondary);
 }
-/* An annotated capture (Annotated.tsx): the screen on a sheet of paper, its numbered boxes drawn into it in the margin red, and the
-   legend under the caption — one line per box, its number hung in the margin like a § note. One column on a phone; both themes. */
+/* An annotated capture (Annotated.tsx): the screen pasted on a sheet of the Cahier, its pen marks drawn into it in the margin red
+   (a loop, an underline, a bracket, the corners; scripts/annotate-figures.mjs), and the legend under the caption as a margin note:
+   the typewriter's numbers in the same pen circle as on the picture, a red rule in the margin. One column on a phone; both themes. */
 .bl-annotated {
   padding: 0.75rem;
   border: 1px solid var(--kz-border-default);
@@ -364,24 +365,33 @@ picture {
   margin-inline: auto;
 }
 .bl-legend {
-  margin: 0.625rem 0 0;
-  padding: 0;
+  margin: 0.75rem 0 0;
+  padding: 0.125rem 0 0.125rem 0.75rem;
+  border-inline-start: 1px solid var(--kz-paper-rule-margin, var(--kz-accent));
   list-style: none;
   counter-reset: bl-mark;
   display: grid;
-  gap: 0.375rem;
+  gap: 0.5rem;
   color: var(--kz-text-primary);
 }
 .bl-legend li {
   counter-increment: bl-mark;
   display: grid;
-  grid-template-columns: 1.75rem 1fr;
-  align-items: baseline;
+  grid-template-columns: 2rem 1fr;
+  align-items: start;
 }
 .bl-legend li::before {
   content: counter(bl-mark);
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.375rem;
+  block-size: 1.375rem;
+  border: 1.5px solid currentcolor;
+  border-radius: 50%;
   font-family: var(--kz-font-mono);
+  font-size: 0.8125rem;
   font-weight: 700;
+  line-height: 1;
   color: var(--kz-paper-rule-margin, var(--kz-accent));
 }
 .bl-legend code {

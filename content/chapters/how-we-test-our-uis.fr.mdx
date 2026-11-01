@@ -52,20 +52,20 @@ Les captures de référence sont faites sous Linux, dans le conteneur officiel d
 
 Le job tourne en [environ 2 minutes](https://github.com/krizaka/akinaza/actions/workflows/visual.yml) (les huit derniers lancements réussis que j'ai lus aujourd'hui), et c'est un contrôle obligatoire de la file de fusion. Dates, heures et créneaux libres sont masqués, la carte aussi, puisque ses tuiles viennent du réseau.
 
-Ce qu'une capture de référence vérifie se voit mieux qu'il ne se dit. En voici deux, telles qu'elles sont sur `main`, avec ce que leurs tests affirment dessiné par-dessus ; chaque nombre vient de la configuration du test lui-même.
+Ce qu'une capture de référence vérifie se voit mieux qu'il ne se dit. Voici deux des pages qu'elles vérifient, prises en mode vitrine sur les données de démo, avec ce que leurs tests affirment marqué au stylo par-dessus ; chaque nombre vient de la configuration du test lui-même.
 
 <Annotated
   id="ui-test-akinaza-booking"
-  alt="Akinaza en thème sombre, sur un écran de bureau : la cliente de démo réserve une promenade avec la boutique de démo Pattes de Saint-Henri ; la ligne de prix va du prix de la promenade au total en passant par les deux taxes de vente, la règle d'annulation est dessous, et le bouton Continuer ferme le formulaire"
-  caption="Web (Akinaza), thème sombre : le récapitulatif de réservation d'une promenade, dans la boutique de démo. Sa capture de référence est vérifiée à chaque PR ; le parcours d'une réservation honnête fait la même page jusqu'au reçu."
-  marks="6,27.3,31,3.6: `[data-booking-price]` : le prix va jusqu'au total, en passant par les deux taxes de vente et « = » (le parcours de la réservation honnête) | 6,32.4,44.5,3.4: `[data-booking-cancel-rule]` : la règle d'annulation est dite avant de réserver, au-dessus du bouton | 7.2,77.8,9.8,7.2: chaque action de la page fait au moins 36 px de haut (`minAction: 36`) ; celle-ci en fait 48 | 0.4,0.4,99.2,99.2: tout l'écran contre sa référence, 1280 × 800 : au plus 0,2 % des pixels peuvent différer (`maxDiffPixelRatio: 0.002`), horloge figée, français (Canada)"
+  alt="Akinaza en thème sombre, sur un écran de bureau : la cliente de démo Léa Beaulieu réserve une promenade avec la boutique de démo Pattes de Saint-Henri pour le lundi 2 novembre à 13 h ; le prix va de la promenade au total en passant par les deux taxes de vente, l'annulation sans frais jusqu'à 24 h avant est dite dessous, son nom et son téléphone sont remplis, le consentement est coché, et le bouton Continuer ferme le formulaire"
+  caption="Web (Akinaza), thème sombre : le récapitulatif de réservation d'une promenade dans la boutique de démo, rempli par la cliente de démo, pris en mode vitrine sur les données de démo semées. La même page est une capture de référence vérifiée à chaque PR ; le parcours d'une réservation honnête la fait jusqu'au reçu."
+  marks="11.7,23.1,24.6,3,under: `[data-booking-price]` : le prix va jusqu'au total, en passant par les deux taxes de vente et « = » (le parcours de la réservation honnête) | 6.3,28.1,22,3,under: `[data-booking-cancel-rule]` : la règle d'annulation est dite avant de réserver, au-dessus du bouton | 7.6,73.8,8.6,6: chaque action de la page fait au moins 36 px de haut (`minAction: 36`) ; celle-ci en fait 48 | 0.4,0.4,99.2,99.2,frame: tout l'écran contre sa référence, 1280 × 800 : au plus 0,2 % des pixels peuvent différer (`maxDiffPixelRatio: 0.002`), horloge figée, français (Canada)"
 />
 
 <Annotated
   id="ui-test-yomizaka-report"
-  alt="Yomizaka en thème clair, sur un écran de bureau : le rapport d'un bail de démo pour Éric Tremblay, avec un constat bloquant (avis du TAL non remis) et le constat de la section G, son explication et sa citation du Code civil"
-  caption="Web (Yomizaka), thème clair : le rapport d'un bail de démo sans avis du TAL. Le parcours de la section G l'ouvre comme le locataire de démo et lit le constat qu'un client lit."
-  marks="6.2,26.1,64.4,36.5: `#finding-TS-G-001` : le constat de la section G est dans le rapport, pas seulement « la page a chargé » | 10,58.5,14.6,3.2: `finding-citation` : le constat cite sa source, les articles du Code civil | 72.8,1.2,14.2,4.6: l'action unique de l'en-tête reste à l'écran à 360, 390, 1280, 1440 et 1600 px, dans les deux thèmes (`check-app-pages`)"
+  alt="Yomizaka en thème clair, sur un écran de bureau : le rapport d'un bail de démo pour Éric Tremblay, deux règles sur deux demandent attention : un constat bloquant (avis du TAL non remis) et le constat de la section G, avec les faits à apporter au TAL, son délai et sa citation du Code civil"
+  caption="Web (Yomizaka), thème clair : le rapport d'un bail de démo sans avis du TAL, pris en mode vitrine comme le locataire de démo. Le parcours de la section G ouvre le même rapport et lit le constat qu'un client lit."
+  marks="6.3,42.5,64.4,36.8,bracket: `#finding-TS-G-001` : le constat de la section G est dans le rapport, pas seulement « la page a chargé » | 10.4,75.6,13.7,2,under: `finding-citation` : le constat cite sa source, les articles du Code civil | 74.4,1.5,12.7,4: l'action unique de l'en-tête reste à l'écran à 360, 390, 1280, 1440 et 1600 px, dans les deux thèmes (`check-app-pages`)"
 />
 
 La configuration dit une chose qui m'importe plus que le reste, et qui tient en une ligne : [`retries: 0`](https://github.com/krizaka/akinaza/blob/main/apps/web/e2e/visual/playwright.config.mjs). Pas de rejeu. Un test qui échoue puis réussit au deuxième essai ne passe pas pour moi, il cache un bogue.
@@ -78,13 +78,13 @@ Sur Android, on utilise [Maestro](https://maestro.dev). Les parcours sont de pet
 
 À chaque PR, le workflow [Mobile CI](https://github.com/krizaka/akinaza/blob/main/.github/workflows/mobile-ci.yml) construit l'application, démarre un émulateur Android et un serveur jetable avec la boutique de démonstration, puis lance les parcours en tant que la promeneuse de démo. Le contrôle `mobile-e2e / gate` est obligatoire. Ce job prend entre 16 et 19 minutes sur les huit derniers lancements réussis.
 
-Un écran de l'application, pris par le parcours des livres dans le lancement vert de `main` (client Android, persona de démo, données de démo). Maestro touche l'onglet, vérifie ce qu'on lui a dit de vérifier, puis photographie l'écran : les cadres sont ses étapes.
+Un écran de l'application, pris par le parcours des livres dans le lancement vert de `main` (client Android, persona de démo, données de démo). Maestro touche l'onglet, vérifie ce qu'on lui a dit de vérifier, puis photographie l'écran : les traits de stylo sont ses étapes.
 
 <Annotated
   id="ui-test-maestro-books"
-  alt="Émulateur Android, onglet Livres d'Akinaza : le troisième trimestre 2026, les deux montants nets de taxes de vente à remettre, le bouton Voir vos chiffres, et la note qui dit qu'Akinaza prépare les chiffres et que la propriétaire produit la déclaration"
-  caption="Android. Le parcours livres-chiffres.yaml, comme la propriétaire de démo : la capture « livres » qu'il prend avant d'ouvrir les chiffres."
-  marks="63,92,13.5,6: `tapOn` : Maestro touche l'onglet par ses mots, « Livres » en français ou « Books » en anglais | 3.6,26.8,92.8,13.8: `assertVisible` : le premier des deux montants de taxes de vente est à l'écran, par ses mots dans l'une ou l'autre langue, calculé sur les factures de la boutique de démo | 3.6,56.6,92.8,5: Maestro touche « Voir vos chiffres » et attend jusqu'à 30 s (`timeout: 30000`) les chiffres expliqués"
+  alt="Émulateur Android, l'écran Vos chiffres d'Akinaza, ouvert depuis l'onglet Livres : la période du quatrième trimestre 2026, quoi faire maintenant (relancer un client en retard, ouvrir le lundi 8 h aux réservations), puis le premier chiffre expliqué, ce qui a été facturé sur la période, en bonne voie"
+  caption="Android. Le parcours livres-chiffres.yaml, comme la propriétaire de démo : la capture « chiffres-opened » qu'il prend une fois les chiffres ouverts (l'avis de développement au-dessus de l'app est rogné)."
+  marks="64.8,92.2,10.2,4.7: `tapOn` : Maestro touche l'onglet par ses mots, « Livres » en français ou « Books » en anglais, puis « Voir vos chiffres » | 40.5,7.4,19,1.8,under: `extendedWaitUntil` : il attend jusqu'à 30 s (`timeout: 30000`) « Vos chiffres », dans l'une ou l'autre langue | 3.9,60.3,92.2,24.9,bracket: `id: figure-invoiced` : le chiffre est trouvé par son id, jamais par ses mots, une carte que l'API répond à partir des données de la boutique de démo"
 />
 
 La même exécution verte a aussi filmé le téléphone tel qu'il tourne, tout le parcours en une prise, sans étape de connexion :
@@ -227,11 +227,23 @@ Deux prises du web, de la même exécution verte :
 Le workflow [`download-videos.yml`](https://github.com/krizaka/akinaza/blob/main/.github/workflows/download-videos.yml) tourne chaque nuit sur `main` et n'est jamais obligatoire, donc il ne peut bloquer aucune fusion. Le workflow partagé [`app-videos.yml`](https://github.com/krizaka/.github/blob/main/.github/workflows/app-videos.yml) encode en webm et mp4 avec une affiche (30 secondes au plus, sans son, 720 pixels de large au plus), envoie le tout sur notre stockage de médias sous un nom qui contient son empreinte, et ouvre une PR. Un test unitaire échoue si la page nomme une vidéo absente du manifeste ou plus vieille que 14 jours.
 
 <Pipeline label="Quand chaque test tourne, et quand il filme">
-  <Stage title="Pull request" note="chaque changement">Lint, tests unitaires, build ; les parcours Playwright sur le web, ceux de Maestro sur un émulateur Android. La porte mobile est un contrôle requis.</Stage>
-  <Stage title="File de fusion" note="merge_group" tone="gate">Les mêmes contrôles, sur la branche de la file : le changement avec le dernier main fusionné.</Stage>
-  <Stage title="main vert" note="après la fusion">Les parcours mobiles tournent encore une fois sur main.</Stage>
-  <Stage title="Chaque nuit" note="download-videos">Sur main, Playwright et Maestro filment les parcours : 30 secondes au plus, sans son, 720 pixels de large au plus.</Stage>
-  <Stage title="Les films" note="empreinte, puis une PR" tone="ship">Envoyés sur notre stockage de médias sous un nom qui porte leur empreinte ; une PR met à jour le manifeste, et un test échoue si une vidéo manque ou a plus de 14 jours.</Stage>
+  <Stage title="Pull request" note="chaque changement">
+    Lint, tests unitaires, build ; les parcours Playwright sur le web, ceux de Maestro sur un émulateur Android. La
+    porte mobile est un contrôle requis.
+  </Stage>
+  <Stage title="File de fusion" note="merge_group" tone="gate">
+    Les mêmes contrôles, sur la branche de la file : le changement avec le dernier main fusionné.
+  </Stage>
+  <Stage title="main vert" note="après la fusion">
+    Les parcours mobiles tournent encore une fois sur main.
+  </Stage>
+  <Stage title="Chaque nuit" note="download-videos">
+    Sur main, Playwright et Maestro filment les parcours : 30 secondes au plus, sans son, 720 pixels de large au plus.
+  </Stage>
+  <Stage title="Les films" note="empreinte, puis une PR" tone="ship">
+    Envoyés sur notre stockage de médias sous un nom qui porte leur empreinte ; une PR met à jour le manifeste, et un
+    test échoue si une vidéo manque ou a plus de 14 jours.
+  </Stage>
 </Pipeline>
 
 Un vrai exemple : celui de Yomizaka, [le rapport en 10,6 secondes](https://krizaka-assets.b-cdn.net/sites/yomizaka/download/web-report.2813a67179.mp4) (son [affiche](https://krizaka-assets.b-cdn.net/sites/yomizaka/download/web-report.3ca0931124.jpg)), pris le 27 octobre par le test lui-même. Il pèse 134 Ko.

@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { itemsOf, marksKey, marksOf, rowsOf, seriesOf, sideTone } from "../lib/figures.ts";
-import { annotatedOf, overlaySvg } from "../scripts/annotate-figures.mjs";
+import { annotatedOf, overlaySvg, PENS } from "../scripts/annotate-figures.mjs";
 import media from "../lib/media.json" with { type: "json" };
 
 // The chapters' figures (krizaka-internal#716, founder 2026-10-30: « 2–3 figures in every chapter, framed with a caption »).
@@ -113,21 +113,27 @@ test("the articles carry no icons: steps are numbered in mono, scopes and marker
   );
 });
 
-// The annotated captures (founder 2026-10-31: « the reader doesn't know WHAT is tested »): numbered boxes drawn over a real screen,
-// each one a thing the test asserts, told again in the legend; the picture and the legend can never drift apart.
+// The annotated captures (founder 2026-10-31: « the reader doesn't know WHAT is tested »): pen marks drawn over a real screen, each
+// one a thing the test asserts, told again in the legend; the picture and the legend can never drift apart. CTO review 2026-10-31:
+// the marks are the Cahier's pen (a loop, an underline, a bracket, the corners), not generic red boxes.
 test("an annotated capture's marks parse, numbered in order, inside the picture, each saying what is asserted", () => {
   const m = marksOf(
-    "6,27.3,31,3.6: the price goes down to the total | 0.4,0.4,99.2,99.2: the whole screen against its reference",
+    "6,27.3,31,3.6,under: the price goes down to the total | 0.4,0.4,99.2,99.2,frame: the whole screen against its reference | 7,70,9,6: the button, ringed by default",
   );
   assert.deepEqual(
-    m.map((k) => [k.n, k.x, k.w]),
+    m.map((k) => [k.n, k.x, k.w, k.shape]),
     [
-      [1, 6, 31],
-      [2, 0.4, 99.2],
+      [1, 6, 31, "under"],
+      [2, 0.4, 99.2, "frame"],
+      [3, 7, 9, "ring"],
     ],
   );
-  assert.equal(marksKey(m), "6,27.3,31,3.6;0.4,0.4,99.2,99.2");
+  assert.equal(marksKey(m), "6,27.3,31,3.6,under;0.4,0.4,99.2,99.2,frame;7,70,9,6,ring");
   assert.equal(marksOf("1,1,1,1: `minAction: 36`, at least 36 px")[0].label, "`minAction: 36`, at least 36 px");
+  assert.throws(
+    () => marksOf("1,1,1,1,box: a red box is not a pen mark"),
+    /shape is one of ring, under, bracket, frame/,
+  );
   assert.throws(() => marksOf("90,1,20,1: runs out of the picture"), /inside the picture/);
   assert.throws(() => marksOf("1,1,1: three numbers only"), /four numbers/);
   assert.throws(() => marksOf("1,1,1,1: short"), /what the test asserts/);
@@ -135,20 +141,36 @@ test("an annotated capture's marks parse, numbered in order, inside the picture,
   assert.throws(() => marksOf(""), /1 to 6 marks/);
 });
 
-test("the drawing puts one box and one number per mark, the number off the content it frames", () => {
-  const svg = overlaySvg(
-    marksOf("10,10,20,20: a box with room on its left | 0,50,100,10: a full-width box"),
-    1000,
-    500,
+test("the drawing is a pen stroke and a numbered pen circle per mark, in the ink of the screen's theme, never a filled box", () => {
+  const marks = marksOf(
+    "10,10,20,5,under: a line of text, underlined | 20,40,40,30,bracket: a block held in the margin | 70,80,10,6: a button ringed | 0.4,0.4,99.2,99.2,frame: the corners of the screen",
   );
-  assert.equal((svg.match(/<text\b/g) ?? []).length, 2);
-  assert.match(svg, />1<\/text>/);
-  assert.match(svg, />2<\/text>/);
-  const tags = [...svg.matchAll(/<rect x="([\d.]+)" y="([\d.]+)" width="(\d+)" height="\d+" fill="#d23a2c"/g)].map(
-    (t) => [+t[1], +t[3]],
+  const svg = overlaySvg(marks, 1000, 500, "dark");
+  assert.equal((svg.match(/<text\b/g) ?? []).length, 4);
+  for (const n of [1, 2, 3, 4]) assert.match(svg, new RegExp(`>${n}</text>`));
+  assert.deepEqual(
+    [...svg.matchAll(/data-shape="(\w+)"/g)].map((t) => t[1]),
+    ["under", "bracket", "ring", "frame"],
   );
-  assert.ok(tags[0][0] + tags[0][1] <= 100, "in the margin to the left of a box that has room");
-  assert.ok(tags[1][0] + tags[1][1] <= 1000 && tags[1][0] > 900, "inside the top-right corner of a full-width box");
+  assert.doesNotMatch(svg, /<rect\b/, "no box");
+  assert.ok(svg.includes(`stroke="${PENS.dark.ink}"`), "the slate's ink on a dark screen");
+  assert.ok(!overlaySvg(marks, 1000, 500, "light").includes(PENS.dark.ink), "the paper's ink on a light screen");
+  // The number of an underline sits after the line's end (the right of a line of text is where it is empty); every number stays inside.
+  const centres = [...svg.matchAll(/<circle cx="([\d.]+)" cy="([\d.]+)" r="([\d.]+)" fill="(?!none)/g)].map((t) => [
+    +t[1],
+    +t[2],
+    +t[3],
+  ]);
+  assert.equal(centres.length, 4);
+  assert.ok(centres[0][0] > 300, "after the underline's end");
+  for (const [cx, cy, r] of centres)
+    assert.ok(cx - r >= 0 && cy - r >= 0 && cx + r <= 1000 && cy + r <= 500, "inside the picture");
+  // Given what is drawn under each spot, a number goes where the screen is emptiest.
+  const busyRight = (cx) => (cx > 300 ? 50 : 0);
+  const left = [
+    ...overlaySvg(marks.slice(0, 1), 1000, 500, "light", busyRight).matchAll(/<circle cx="([\d.]+)"/g),
+  ][0][1];
+  assert.ok(+left < 100, "before the line when its end is busy");
 });
 
 for (const f of files.filter((f) => f.endsWith(".en.mdx"))) {
