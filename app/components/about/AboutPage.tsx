@@ -1,13 +1,7 @@
-import Link from "next/link";
-import { PageHero } from "@krizaka/ui/page-hero";
 import { Section } from "@krizaka/ui/page";
-import { Card } from "@krizaka/ui/card";
-import { Badge } from "@krizaka/ui/badge";
-import { Separator } from "@krizaka/ui/separator";
 import { Button } from "@krizaka/ui/button";
 import { WuSamaMark } from "./WuSamaMark";
 import { GitHubMark } from "../GitHubMark";
-import { GitHubBanner } from "./GitHubBanner";
 import { AUTHOR_GITHUB } from "@/lib/author-links";
 import { getDictionary, type Locale } from "@/lib/i18n";
 import { jsonLd } from "@/lib/json-ld";
@@ -41,72 +35,74 @@ export function aboutJsonLd(locale: Locale) {
 /* The 2011 lab, named at Oussama's request (content/authors/oussama.json, "lab"). */
 const LIG_URL = "https://www.liglab.fr/";
 
-/* /about/: who writes the blog. The author is shown by the Wu-sama mark. The home carries only his byline (krizaka-blog#123); the
-   note on his first brush with AI, at the LIG in 2011, is told here, after his path. */
+/* /about/: who writes the blog. The page is one notebook sheet, the banner of his GitHub profile rebuilt as real text (founder
+   2026-11-01): the squared paper, the red margin and its notes, the Wu-sama mark, the name, his first sentence set large,
+   then the rest of his path, the 2011 lab note and his GitHub. No card, no image: every word is a message (FR/EN) and the
+   sheet reflows from 360 px up. The mark is decorative: the name beside it says who he is. */
 export function AboutPage({ locale }: { locale: Locale }) {
   const a = getDictionary(locale).about;
-  const bio = a.body.slice(0, -1);
-  const mission = a.body[a.body.length - 1];
+  const [opening, ...rest] = a.body;
+  const path = rest.slice(0, -1);
+  const mission = rest[rest.length - 1];
   const [beforeLab, afterLab] = a.labNote.split("{lab}");
+  const [notePage, noteSection, noteNow] = a.notes;
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(aboutJsonLd(locale)) }} />
-      <PageHero eyebrow={a.eyebrow} title={a.title} lead={a.lead} backdrop="plain" linkAs={Link}>
-        <ul className="bl-about-places" aria-label={a.placesLabel}>
-          {a.places.map((p) => (
-            <li key={p}>{p}</li>
-          ))}
-        </ul>
-      </PageHero>
-      <Section reveal={false}>
-        <GitHubBanner label={a.githubLabel} alt={a.bannerAlt} />
-        <Card.Root tone="elevated" radius="xl" className="bl-about-card">
-          <Card.Body padding="lg" className="bl-about-card-body">
-            <div className="bl-about">
-              <aside className="bl-about-sidebar">
-                <figure className="bl-about-slot" aria-label={a.slot}>
-                  <WuSamaMark size={104} />
-                </figure>
-                <div className="bl-about-profile">
-                  <h2 className="bl-about-name">Oussama Abid</h2>
-                  <div className="bl-about-badges">
-                    <Badge tone="accent" size="sm">
-                      {a.role}
-                    </Badge>
-                    <Badge tone="neutral" size="sm">
-                      {a.places[0]}
-                    </Badge>
-                  </div>
-                  <Button asChild variant="secondary" size="sm" className="bl-about-github">
-                    <a href={AUTHOR_GITHUB.url} rel="noopener me" target="_blank" aria-label={a.githubLabel}>
-                      <GitHubMark size={15} />
-                      {a.github}
-                    </a>
-                  </Button>
-                </div>
-              </aside>
-              <div className="bl-about-content">
-                <div className="bl-about-text">
-                  {bio.map((p) => (
-                    <p key={p}>{p}</p>
-                  ))}
-                  <p>
-                    {beforeLab}
-                    <a href={LIG_URL} rel="noopener">
-                      {a.lab}
-                    </a>
-                    {afterLab}
-                  </p>
-                </div>
-                <Separator className="bl-about-separator" />
-                <div className="bl-about-mission">
-                  <p className="bl-about-mission-text">{mission}</p>
-                </div>
+      <Section reveal={false} spacing="sm" className="bl-about-top">
+        <article className="bl-sheet" aria-labelledby="bl-sheet-name">
+          <header className="bl-sheet-row bl-sheet-head">
+            <span className="bl-sheet-note" aria-hidden="true">
+              {notePage}
+            </span>
+            <div className="bl-sheet-ident">
+              <WuSamaMark size={112} emblem className="bl-sheet-mark" />
+              <div className="bl-sheet-names">
+                <p className="bl-sheet-kicker">{a.kicker}</p>
+                <h1 id="bl-sheet-name" className="bl-sheet-name">
+                  {a.name}
+                </h1>
+                <p className="bl-sheet-line">{a.line}</p>
               </div>
             </div>
-          </Card.Body>
-        </Card.Root>
+          </header>
+          <div className="bl-sheet-row">
+            <span className="bl-sheet-note" aria-hidden="true">
+              {noteSection}
+            </span>
+            <div className="bl-sheet-text">
+              <p className="bl-sheet-opening">{opening}</p>
+              {path.map((p) => (
+                <p key={p}>{p}</p>
+              ))}
+              <p>
+                {beforeLab}
+                <a href={LIG_URL} rel="noopener">
+                  {a.lab}
+                </a>
+                {afterLab}
+              </p>
+            </div>
+          </div>
+          <div className="bl-sheet-row">
+            <span className="bl-sheet-note" aria-hidden="true">
+              {noteNow}
+            </span>
+            <div className="bl-sheet-text">
+              <p className="bl-sheet-mission">{mission}</p>
+              <div className="bl-sheet-actions">
+                <Button asChild variant="secondary" size="md">
+                  <a href={AUTHOR_GITHUB.url} rel="noopener me" target="_blank" aria-label={a.githubLabel}>
+                    <GitHubMark size={16} />
+                    {a.github}
+                  </a>
+                </Button>
+              </div>
+            </div>
+          </div>
+          <p className="bl-sheet-caption">{a.caption}</p>
+        </article>
       </Section>
     </>
   );
