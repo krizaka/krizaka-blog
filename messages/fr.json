@@ -200,8 +200,9 @@
     "eyebrow": "À propos",
     "title": "Qui écrit ce blogue",
     "lead": "Oussama Abid. Il construit Krizaka à Montréal.",
-    "slot": "La marque Wu-sama, mon surnom, à la place d'une photo",
-    "role": "Fondateur",
+    "kicker": "à propos · qui écrit ce blogue",
+    "name": "Wu-sama",
+    "line": "oussama · fondateur de Krizaka · Montréal",
     "body": [
       "Je m'appelle Oussama, et je construis Krizaka à Montréal.",
       "J'ai étudié les mathématiques et l'informatique.",
@@ -209,11 +210,10 @@
     ],
     "labNote": "Mon premier contact avec l'IA date de 2011, au {lab}, bien avant que le mot soit à la mode.",
     "lab": "laboratoire d'informatique de Grenoble (LIG)",
-    "placesLabel": "Vit à",
-    "places": ["Montréal"],
     "github": "Mon GitHub",
     "githubLabel": "Le profil GitHub d'Oussama (oussamaABID), dans un nouvel onglet",
-    "bannerAlt": "La bannière de mon profil GitHub, une page de carnet quadrillé : le nom Wu-sama, « oussama · founder of krizaka · montréal », la ligne « building yomizaka, akinaza & orazaka », une fiche « spécimen n° 001 » et un tampon « fait à montréal »"
+    "notes": ["p. 1", "§ 0", "aujourd'hui"],
+    "caption": "fig. 1 · le carnet de terrain de la volée"
   },
   "newsletter": {
     "eyebrow": "Infolettre",

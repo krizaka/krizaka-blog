@@ -36,13 +36,6 @@
   "github": {
     "login": "oussamaABID",
     "url": "https://github.com/oussamaABID",
-    "note": "His public GitHub profile, linked wherever the blog presents him (founder request 2026-11-01, krizaka-internal#2071).",
-    "banner": {
-      "source": "The header of his GitHub profile README (github.com/oussamaABID/oussamaABID, assets/header-dark.svg and header-light.svg), copied unchanged to Bunny.",
-      "width": 1200,
-      "height": 360,
-      "dark": "https://krizaka-assets.b-cdn.net/sites/blog/posts/author/github-banner-dark.4b29ff9f0b.svg",
-      "light": "https://krizaka-assets.b-cdn.net/sites/blog/posts/author/github-banner-light.e8225432bc.svg"
-    }
+    "note": "His public GitHub profile, linked wherever the blog presents him (founder request 2026-11-01, krizaka-internal#2071)."
   }
 }

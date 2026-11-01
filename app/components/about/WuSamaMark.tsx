@@ -8,6 +8,8 @@ export interface WuSamaMarkProps {
   /** Accessible title (gives the SVG role="img" and aria-label). */
   title?: string;
   className?: string;
+  /** Draw only the emblem (no halo rings), whatever the size: the Cahier has no glow (the About page's banner). */
+  emblem?: boolean;
 }
 
 const SHIELD = "M259.7,134 L259.7,226 L180,272 L100.3,226 L100.3,134 L180,88 L212,106.5";
@@ -19,13 +21,13 @@ const NODE = { cx: 259.7, cy: 134, r: 19, inner: 6 };
  * It shares Krizaka's hexagonal shield contour and color palette (ink shield, open vertex with lit blue node),
  * with the W rendered in Krizaka blue at the center. Below 48 px it crops to the emblem.
  */
-export function WuSamaMark({ size = 32, title, className }: WuSamaMarkProps) {
+export function WuSamaMark({ size = 32, title, className, emblem = false }: WuSamaMarkProps) {
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const inkId = `wsm-ink-${uid}`;
   const blueId = `wsm-blue-${uid}`;
   const glowId = `wsm-glow-${uid}`;
 
-  const isCropped = size < 48;
+  const isCropped = emblem || size < 48;
   const viewBox = isCropped ? "86 82 228 228" : "0 0 400 400";
   const a11yProps = title ? { role: "img", "aria-label": title } : { "aria-hidden": true };
 

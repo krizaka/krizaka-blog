@@ -200,8 +200,9 @@
     "eyebrow": "About",
     "title": "Who writes this blog",
     "lead": "Oussama Abid. He builds Krizaka in Montréal.",
-    "slot": "The Wu-sama mark, my nickname, in place of a photo",
-    "role": "Founder",
+    "kicker": "about · who writes this blog",
+    "name": "Wu-sama",
+    "line": "oussama · founder of Krizaka · Montréal",
     "body": [
       "My name is Oussama, and I build Krizaka in Montréal.",
       "I studied mathematics and computer science.",
@@ -209,11 +210,10 @@
     ],
     "labNote": "My first brush with AI was in 2011, at the {lab}, long before the word was in fashion.",
     "lab": "Grenoble Informatics Laboratory (LIG)",
-    "placesLabel": "Lives in",
-    "places": ["Montréal"],
     "github": "My GitHub",
     "githubLabel": "Oussama’s GitHub profile (oussamaABID), in a new tab",
-    "bannerAlt": "The banner of my GitHub profile, a page of squared notebook paper: the name Wu-sama, « oussama · founder of krizaka · montréal », the line « building yomizaka, akinaza & orazaka », a « spécimen n° 001 » card and a « fait à montréal » stamp"
+    "notes": ["p. 1", "§ 0", "now"],
+    "caption": "fig. 1 · the field notebook of the flock"
   },
   "newsletter": {
     "eyebrow": "Newsletter",

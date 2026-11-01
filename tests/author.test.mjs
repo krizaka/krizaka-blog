@@ -32,7 +32,7 @@ test("the author's facts have a source and the list of what is never published",
 test("the About page and the home note tell the sourced path, and never the employer, a birth date, a former city or LinkedIn", () => {
   for (const l of ["en", "fr"]) {
     const a = messages(l).about;
-    const text = [a.lead, ...a.body, a.labNote, ...a.places].join("\n");
+    const text = [a.lead, a.line, ...a.body, a.labNote].join("\n");
     assert.ok(a.labNote.includes("{lab}"), `${l}: the About page's note names the 2011 lab`);
     assert.match(a.lab, new RegExp(LAB.source, "i"), `${l}: the lab is named as the LIG`);
     for (const [place] of text.matchAll(PATH_PLACES))
@@ -118,29 +118,44 @@ test("the link to Oussama's story (/about/) is there: the home's byline and ever
   assert.match(read("app/components/SiteFooter.tsx"), /\/about\//, "the footer keeps « About »");
 });
 
-test("the About page mark's label names « Wu-sama », and the bio body keeps it retired", () => {
+test("the About page's sheet is titled « Wu-sama » beside his mark, and the bio body keeps the nickname retired", () => {
   for (const l of ["en", "fr"]) {
     const a = messages(l).about;
     assert.equal(a.body.join("\n").match(/Wu-sama/g)?.length ?? 0, 0, `${l}: the nickname is not in the bio text`);
-    assert.match(a.slot, /Wu-sama/, `${l}: the mark's label`);
+    assert.equal(a.name, "Wu-sama", `${l}: the sheet's name`);
   }
 });
 
-test("the author's GitHub profile and its banner (dark and light) are data on the blog's CDN, and the pages that present him link it", () => {
+test("the author's GitHub profile is data, and the pages that present him link it", () => {
   const g = facts.github;
   assert.equal(g.url, `https://github.com/${g.login}`);
-  for (const theme of ["dark", "light"])
-    assert.match(
-      g.banner[theme],
-      /^https:\/\/krizaka-assets\.b-cdn\.net\/sites\/blog\/posts\/author\/github-banner-[a-z]+\.[0-9a-f]{10}\.svg$/,
-    );
-  assert.ok(g.banner.width > 0 && g.banner.height > 0);
-  for (const f of [
-    "app/components/about/AboutPage.tsx",
-    "app/components/about/GitHubBanner.tsx",
-    "app/components/pages/Signature.tsx",
-  ])
-    assert.match(read(f), /AUTHOR_GITHUB(\.url|;)|\{ url, banner \} = AUTHOR_GITHUB/, `${f} links his GitHub`);
+  for (const f of ["app/components/about/AboutPage.tsx", "app/components/pages/Signature.tsx"])
+    assert.match(read(f), /AUTHOR_GITHUB(\.url|;)/, `${f} links his GitHub`);
   assert.match(read("app/components/about/AboutPage.tsx"), /sameAs: \[AUTHOR_GITHUB\.url\]/);
-  for (const l of ["en", "fr"]) assert.ok(messages(l).about.bannerAlt.length > 40, `${l}: the banner has alt text`);
+});
+
+/* The About page is the banner of his GitHub profile rebuilt as text (founder 2026-11-01): real words from the messages,
+   no picture of words, no separate card; the W mark is the only drawing and it is decorative. */
+test("the About page is one sheet of real text: the Wu-sama mark, the name, the first sentence large, no image and no card", () => {
+  const page = read("app/components/about/AboutPage.tsx");
+  assert.ok(!existsSync(new URL("../app/components/about/GitHubBanner.tsx", import.meta.url)), "no banner image");
+  assert.doesNotMatch(page, /<(img|Image)\b|@krizaka\/ui\/card|<Card\./);
+  assert.match(page, /<WuSamaMark\b[^>]*\bemblem\b/, "the W mark, without a halo");
+  assert.doesNotMatch(page, /<WuSamaMark\b[^>]*\btitle=/, "the mark is decorative: the name beside it says who he is");
+  assert.match(page, /className="bl-sheet-opening">\{opening\}/, "his first sentence is the big text");
+  for (const l of ["en", "fr"]) {
+    const a = messages(l).about;
+    assert.equal(a.notes.length, 3, `${l}: the margin notes`);
+    assert.match(a.caption, /^fig\. 1 /, `${l}: the sheet's caption`);
+  }
+});
+
+/* Product code names stay internal (the commercial renaming, 2026-10-31): the About page names none, in its words or its
+   alternative texts. */
+const CODE_NAMES = /\b(Yomizaka|Akinaza|Orazaka|Kachizaka)\b/i;
+test("the About page names no product code name, in its messages, alt texts or code", () => {
+  for (const l of ["en", "fr"])
+    assert.doesNotMatch(JSON.stringify(messages(l).about), CODE_NAMES, `${l}: a code name in the About messages`);
+  for (const f of ["app/components/about/AboutPage.tsx", "app/components/about/WuSamaMark.tsx"])
+    assert.doesNotMatch(read(f), CODE_NAMES, `${f}: a code name`);
 });
