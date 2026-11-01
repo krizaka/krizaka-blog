@@ -187,3 +187,7 @@ test("the chapter on UI tests shows what its tests assert: three annotated captu
     "no bare screenshot left",
   );
 });
+
+test("a legend line is one cell beside its number: the words and the code of a mark are wrapped together", () => {
+  assert.match(readFileSync("app/components/pages/Annotated.tsx", "utf8"), /<li key=\{k\.n\} value=\{k\.n\}>\s*<span>/);
+});

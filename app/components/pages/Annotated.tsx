@@ -37,9 +37,11 @@ export function Annotated({
           <ol className="bl-legend">
             {list.map((k) => (
               <li key={k.n} value={k.n}>
-                {k.label
-                  .split("`")
-                  .map((part, i) => (i % 2 ? <code key={i}>{part}</code> : <Fragment key={i}>{part}</Fragment>))}
+                <span>
+                  {k.label
+                    .split("`")
+                    .map((part, i) => (i % 2 ? <code key={i}>{part}</code> : <Fragment key={i}>{part}</Fragment>))}
+                </span>
               </li>
             ))}
           </ol>
