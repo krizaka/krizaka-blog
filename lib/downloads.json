@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "5836cb2b2598",
+      "source": "db1440f08acf",
       "files": {
         "epub": {
-          "hash": "8a41a9ff58",
-          "bytes": 5664158
+          "hash": "37fc2988fb",
+          "bytes": 6017598
         },
         "pdf": {
-          "hash": "70c72898c7",
-          "bytes": 8163487
+          "hash": "02303bac5e",
+          "bytes": 8588424
         }
       }
     },
@@ -287,15 +287,15 @@
       }
     },
     "fr/story": {
-      "source": "673be976352e",
+      "source": "0c3983aa324d",
       "files": {
         "epub": {
-          "hash": "49e753b46f",
-          "bytes": 5684376
+          "hash": "526f981b7e",
+          "bytes": 6038615
         },
         "pdf": {
-          "hash": "25c2081120",
-          "bytes": 8313951
+          "hash": "2b97dd9056",
+          "bytes": 8743856
         }
       }
     },
@@ -569,6 +569,32 @@
         "pdf": {
           "hash": "695b713a25",
           "bytes": 1220602
+        }
+      }
+    },
+    "en/how-orazaka-made-our-brand-film": {
+      "source": "1fcb7cd968b6",
+      "files": {
+        "epub": {
+          "hash": "1f8fe99964",
+          "bytes": 963892
+        },
+        "pdf": {
+          "hash": "7fd03752fe",
+          "bytes": 1339677
+        }
+      }
+    },
+    "fr/how-orazaka-made-our-brand-film": {
+      "source": "94fdcfcacfc2",
+      "files": {
+        "epub": {
+          "hash": "15dcd0428f",
+          "bytes": 981691
+        },
+        "pdf": {
+          "hash": "e78c133211",
+          "bytes": 1369054
         }
       }
     }
