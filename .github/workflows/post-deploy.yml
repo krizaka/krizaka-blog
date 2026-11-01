@@ -27,3 +27,10 @@ jobs:
       expect: ${{ github.sha }}
       indexnow-key: 2092a507dc8d374a067779182f2ca9a0 # gitleaks:allow — the IndexNow key is public by design (served at /<key>.txt)
       seo-args: "--index on --limit 60"
+  probe:
+    needs: post-deploy
+    permissions:
+      contents: read
+    uses: ./.github/workflows/newsletter-probe.yml
+    secrets:
+      MAIL_SEND_TOKEN: ${{ secrets.MAIL_SEND_TOKEN }}
