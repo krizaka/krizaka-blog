@@ -6,7 +6,9 @@ import { readFileSync } from "node:fs";
 // a phone recording is not cropped to 16:9.
 const tags = (lang) =>
   [
-    ...readFileSync(`content/chapters/how-we-test-our-uis.${lang}.mdx`, "utf8").matchAll(/<(Figure|Annotated|Clip)\s[^>]*\/>/g),
+    ...readFileSync(`content/chapters/how-we-test-our-uis.${lang}.mdx`, "utf8").matchAll(
+      /<(Figure|Annotated|Clip)\s[^>]*\/>/g,
+    ),
   ].map((m) => m[0]);
 
 for (const lang of ["en", "fr"]) {
