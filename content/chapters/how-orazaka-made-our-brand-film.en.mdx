@@ -1,0 +1,172 @@
+---
+title: "Show your work: how Orazaka made our film"
+description: "A 31-second film without a word, made by our own engine. The reference sheets, the key frames, the video, the cut, and the four paid failures that each left us a guard."
+seoTitle: "Show your work: how Orazaka made our film"
+seoDescription: "How our engine Orazaka made Krizaka's film: references, key frames, video, the cut, about $16 of GPU and one guard per failure."
+date: 2026-11-01
+publishedAt: "2026-11-01T09:30:00-05:00"
+tags: [ai, orazaka, costs]
+author: oussama
+cover: series-22-how-orazaka-made-our-brand-film
+coverAlt: "A small grey owl with ear tufts and yellow eyes, perched on the black iron railing of a Montréal outdoor staircase, a brick wall behind, red maple leaves on the wet steps, a sheet of paper under one foot"
+draft: false
+newsletter: hold
+chapter: 22
+period: "2026-10-30/2026-11-01"
+sources:
+  - how-we-generate-cinematic-videos-with-ai
+  - real-cost-of-an-image-paying-for-intent
+versus:
+  faced: "a film that said nothing about us"
+  built: "a film made by our engine, and a guard for each paid failure"
+---
+
+On October 30, I watched the film on our « Our story » page and thought it sold nothing. It was pretty. It did not say what we do. I asked for another film, with one condition: that it be made by Orazaka, our AI engine. Not by an online service, not by hand. If we say our software shows its work, the film had to show it too.
+
+Three days later it was finished, and it replaces the old one on [krizaka.com](https://www.krizaka.com) with the site's next release. This chapter tells how it was made, what went wrong on the way, and what each failure left behind. It follows [chapter 4](/story/from-a-clip-to-a-film/), where our first film was beautiful and wrong.
+
+<Clip
+  id="film-montrer-son-travail"
+  alt="The film « Montrer son travail » (Show your work), 31 seconds without speech: an open copybook under a lamp, a drop of ink falling into a puddle on a cobbled street, an owl on an iron staircase, a beaver in a barbershop, a duck by a laptop taking off, the Lachine Canal at blue hour, then the closed copybook with a feather"
+  caption="« Montrer son travail », 31 seconds. Every picture, every shot and the music came out of Orazaka; the cut and the titles were laid on afterwards, from an edit decision list."
+/>
+
+## The intent: show your work
+
+The line was already on our site: software should show its work. The film had to carry it without a word. No voice, no narrator, titles set by hand in our own typefaces. The first script, from Orazaka's scenario module, ran 36 seconds over nine shots. It had beautiful pictures and too many ideas: a falcon, pigeons, birds in formation, product names played by people.
+
+Before shooting anything, I had it read by four agents, each in one role: the brand, marketing, my voice and this blog, art direction. They cut a lot. Three animals were left, one per promise: the owl that reads, the beaver that runs the shop, the duck that runs the engine. One day in late October after the rain, one lens package, one grade. In the end, seven shots and 31 seconds.
+
+## The chain
+
+<Pipeline label="The film's chain, in order. The checks are free; they come before what costs money.">
+  <Stage title="Reference sheets" note="FLUX.2 [klein]">
+    The owl, the copybook, the beaver and the duck, drawn once, picked by eye.
+  </Stage>
+  <Stage title="Key frames" note="7 shots × 3 takes">
+    Each shot is rendered with its references, so the owl of shot 3 is the owl of the sheet.
+  </Stage>
+  <Stage title="Critique" note="before video" tone="gate">
+    Every frame is read. Three shots are redone.
+  </Stage>
+  <Stage title="Video" note="Wan 2.2 A14B, 4 steps">
+    A frame becomes a five-second shot. The prompt describes only the motion.
+  </Stage>
+  <Stage title="Transitions reel" note="before the cut" tone="gate">
+    Each cut alone, 1.5 seconds on each side, to judge the joins.
+  </Stage>
+  <Stage title="The cut" note="titles, music" tone="ship">
+    The edit list, one grade, our typefaces, a generated score.
+  </Stage>
+</Pipeline>
+
+### The reference sheets
+
+An image model remembers nothing from one picture to the next. Describe « an owl » seven times and you get seven owls. So we first rendered one sheet per character with <Model id="flux2-klein-4b">FLUX.2 [klein] 4B</Model>: the owl, the beaver, the duck, and the copybook, open and closed. To see what that changes, we also rendered the shots without the sheets. The owl of shot 3 had grown ear tufts and a tawny face. The beaver of shot 4 was another beaver. The sheets got a second version: our drawn owl has ear tufts and big round eyes, and the one on the first sheet had none. We took a grey Eastern screech-owl, an owl that lives in Montréal and looks like ours.
+
+### The key frames
+
+Seven shots, three takes each, every take rendered with its sheets. Then a critique, frame by frame, before paying for any video. Three shots were redone. In the barbershop, all three takes had posters covered in fake lettering. Next to the duck, the laptop screen showed lines of text and something like a logo; we redid it seen from behind. In the last shot, every take had a second lamp base, right where the end card had to go. One owl take had also turned brown; we kept the one that stayed grey.
+
+<Row>
+  <Figure
+    id="film-keyframe-puddle"
+    alt="A wet cobbled street in Montréal at ground level, a puddle mirroring the sky and the façades, a drop of blue ink hanging just above it"
+    caption="Shot 2, the key frame: the ink drop above the puddle, one of three takes."
+  />
+  <Figure
+    id="film-keyframe-beaver"
+    alt="A beaver sitting on the wooden counter of a small empty barbershop, a barber chair, folded white towels, sunlight through the window"
+    caption="Shot 4, redone: the first three takes had posters with fake lettering."
+  />
+</Row>
+
+### The video
+
+To go from a frame to a shot, we gave the same two-second test to three settings: the duck turns its head, then takes off. <Model id="wan22-ti2v-5b">Wan 2.2 TI2V 5B</Model> on an L40S: 232 seconds, about 7 cents, and the mallard becomes a white bird, a kind of gull. It lost its identity. <Model id="wan22-i2v-a14b">Wan 2.2 I2V A14B</Model> in its 4-step distilled version, on an H200: 77 seconds, about 17 cents, the green head and the collar hold, the take-off looks natural. The same A14B at 40 steps: 341 seconds, 76 cents, and the head drifts from green to blue while the body swells. Slower, dearer, and no better. We took the 4-step one.
+
+<Figure
+  id="film-duck-5b-vs-a14b"
+  alt="Two frames of the same shot side by side. Left, a white-bodied bird taking off from a desk next to a laptop. Right, a mallard with a green head and white collar standing on the same desk"
+  caption="The same test of shot 5. Left, the 5B: in flight, the mallard has turned white. Right, the A14B in 4 steps, just before the take-off: the green head and the collar hold, and they hold through the flight."
+/>
+
+Each shot was then rendered at 1280×720, 81 frames at 16 per second, in a little under two minutes on an H200: between 111 and 115 seconds, about 25 cents a shot. For shot 1, only one take in three showed a drop that really leaves the nib and falls. That is the one that opens the film.
+
+### The joins
+
+Before the real cut, we made a reel of the transitions only: each cut, 1.5 seconds on each side, separated by black. That is where you see whether a join works, without being carried by the rest. The drop falling from the copybook falls into the puddle: a match on the action. The puddle goes to the owl through an eight-frame dissolve. The beaver looks right towards its window, the duck left towards its own: a cut on the eyeline. The duck takes off, and a duck crosses the canal: a cut on action. The reel also showed what did not work. The match from the owl's paper to the beaver's white towels was weak, the two whites were not in the same place; the light carries that cut. And the first reel itself was wrong: it kept the start of the middle shots instead of their end. We made it again.
+
+### The titles and the music
+
+Models cannot letter: the barbershop's fake lettering still showed it. So no word is generated. The three titles are set afterwards in our typefaces, from `@krizaka/fonts`, with French typographic spacing: « Montrer son travail » on the copybook's left page, « Montréal · canal de Lachine » in the sky, « Krizaka » on the end card. The music comes from <Model id="ace-step">ACE-Step</Model>, under the MIT licence, generated on the same H200: 40 seconds, no vocals, the less squashed of two takes. The agent who cut the film measured it: its loudness, no silence, no clipping. It could not listen to it, and it wrote so.
+
+## What went wrong, and what each failure left
+
+With us, a bug means a guard was missing; I told that in [chapter 20](/story/how-our-automation-grew/). This film had four that cost money.
+
+### The engine never answered
+
+On the evening of October 31, we rent an H200 for the sheets. For about twenty minutes, every request gets the same answer: the image model is not running, its engine cannot be reached. $1.80 for nothing. The free check before the launch had passed: it only checked that the model was in the catalogue. The cause: the rented machine installed everything before the image engine, about 49 GB of video models on a 60 GB disk, a build for three generations of cards, and the image engine came last, too late. Since then, a machine that only makes pictures only loads pictures. Above all, before the first request, the batch proves the engine answers through the Studio, and it stops after 15 minutes if it does not. Three « cannot be reached » in a row, or five minutes of them, and the machine is handed back. The first try after that, a small card with a $2 cap, cost 9 cents and rendered its picture.
+
+### References read encrypted, then lost
+
+The next batch fails in one second, 21 times out of 21: « a reference image must be PNG, JPEG or WebP ». Yet the server served those pictures as PNGs. The real problem: our files are encrypted at rest, and the service read the encrypted bytes to guess their format. $3.03 of B200 without a single picture. We first wrote a test that reproduced the exact error, then the fix: the reference goes through the same path as the other files, the one that decrypts. After the deploy, a new failure: a redeploy wipes the disk, and the service looked for the reference on the disk only, not in the durable store. 83 more cents. A second red test, a second fix.
+
+### The batch that changed cards
+
+Meanwhile, my batch script did something silly: when a job failed, it thought the card was to blame and rented another, an H200, then an H100, then an H100 NVL. $1.03 to repeat the same error on three machines. The script now changes cards only when none is free. And three failures of one request now hand the machine back.
+
+### The broken upscaler
+
+On the video machine, the tool that should have taken the shots to 1080p with <Model id="seedvr2">SeedVR2</Model> crashed on two libraries in mismatched versions. Two shots lost after rendering, about 58 cents. The film reached 1080p another way, with a classic scale in the cut. That one does not have its guard yet: it is written in an issue, an upscale test when each machine boots, with two other holes found the same day. I do not count it until it is there.
+
+<Pipeline label="The loop we follow after each paid failure. The fix is not enough: we look for what should have stopped it, and the guard stays.">
+  <Stage title="A paid failure" note="$1.80, $3.03…" tone="gate">
+    We note the cost read at the provider, before and after.
+  </Stage>
+  <Stage title="Why nothing stopped it" note="the real cause">
+    The free check looked at the catalogue, not the engine.
+  </Stage>
+  <Stage title="A red test" note="on main">
+    It reproduces the exact error, before any fix.
+  </Stage>
+  <Stage title="The fix" note="the test turns green">
+    A small PR that takes the train like the others.
+  </Stage>
+  <Stage title="The guard stays" note="at the next batch" tone="ship">
+    The next batch proves the engine before it pays.
+  </Stage>
+</Pipeline>
+
+## The real numbers
+
+The whole film, failures included, cost about $16 of GPU: $15.83, read from the provider's balance before and after each batch, with zero machines running after each one. The cards: an A100 or an H100 for the first storyboard, an H100 for the first sheets, a B200 for the sheets and the key frames, an H100 for the redone frames, an L40S for the 5B test, an H200 for the video shots and the music, and an RTX 4090 for the 9-cent try.
+
+<Numbers>
+  <Num value="≈ $16" label="The whole film" hint="GPU, failures included" />
+  <Num value="≈ 2 min" label="One video shot" hint="111 to 115 s on an H200" />
+  <Num value="≈ $0.25" label="One video shot" hint="1280×720, 81 frames" />
+</Numbers>
+
+The figure that teaches me the most is the other one: about $7 of those $16 went into the four failures. Almost half. The good pictures cost a few cents each.
+
+## What you can take from it
+
+If you rent GPUs to make pictures or video, put a guard before you pay: prove the engine answers, with the real request, and stop the machine as soon as it no longer does. Give your models references as soon as your characters must come back from one shot to the next. Do the critique on the frames, before the video, because a redone frame costs cents and a redone shot costs dollars. And look at your transitions on their own, before the cut: that is where the joins that do not work show.
+
+The rest is what the film says: show your work. This one, I showed down to the failures.
+
+## Frequently asked questions
+
+### Was the film really made by an AI?
+
+The pictures, the video shots and the music came out of Orazaka, our engine, with open models. Picking the takes, the cut, the grade and the titles were done afterwards, from an edit list written by hand. No word is generated.
+
+### Why not the video model's biggest setting?
+
+Because we measured it. At 40 steps, the A14B cost 4.4 times more for the same shot, and the duck changed colour. The 4-step version kept the duck.
+
+### How much did the film cost?
+
+About $16 of rented GPU, failures included, of which about $7 went into failures that each left a guard, except the last one, still in progress.

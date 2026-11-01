@@ -149,6 +149,12 @@
       "seed": 2101,
       "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
       "beat": "Not part of a series batch: rendered on the Mac with FLUX.2 [klein] 4B in the series’ ink-and-watercolour look (krizaka-internal#2071). An old railway signal box, its interlocked levers in a row, tracks merging outside in the snow, the duck perched on a lever by the lamp. The series' cast is carried over unchanged."
+    },
+    {
+      "post": "how-orazaka-made-our-brand-film",
+      "seed": 667052427,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "Not part of a series batch: the cover is a key frame of the film this chapter tells, shot 3 of « Montrer son travail », rendered by FLUX.2 [klein] 4B through the Orazaka Studio with its reference sheet (krizaka-internal#138): the owl on a Plateau iron staircase at dawn. The series' cast is carried over unchanged."
     }
   ],
   "sprites": {

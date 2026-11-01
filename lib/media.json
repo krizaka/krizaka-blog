@@ -6002,5 +6002,194 @@
         }
       ]
     }
+  },
+  "series-22-how-orazaka-made-our-brand-film": {
+    "kind": "image",
+    "width": 1280,
+    "height": 723,
+    "blur": "data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAADQAQCdASoQAAkABABoJQBOgCB/e/eAUAD+7LZhK63yMKrWRrW3TYsRlUHJf8XdBzwcI7R8aOy8dYZcZdWDTX6iAAA=",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-22-how-orazaka-made-our-brand-film-480.50f1dbe5a9.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-22-how-orazaka-made-our-brand-film-960.d76b2257fb.webp"
+      },
+      {
+        "w": 1280,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-22-how-orazaka-made-our-brand-film-1280.a287b83c10.webp"
+      }
+    ],
+    "made": {
+      "model": "FLUX.2 [klein] 4B",
+      "licence": "Apache-2.0",
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), with reference images, on a rented GPU",
+      "machine": "RunPod B200",
+      "via": "Orazaka Studio",
+      "runId": "75cdc9c8-5d06-497d-bd54-9dcdad9ca7e7",
+      "prompt": "Shot 3, 85 mm lens at f/2, eye level. The Eastern screech-owl from the reference, same grey mottled plumage, ear tufts and yellow eyes, perched on the black wrought-iron railing of a Plateau-Mont-Royal exterior spiral staircase; a red-brick wall in soft bokeh behind, red maple leaves on the wet steps; one sheet of plain paper with faint unreadable grey lines pinned under one talon on the railing. Dawn: cool blue ambient light, a warm porch-light rim on the owl's face. Photorealistic 35 mm motion-picture still, full-frame camera, spherical prime lens, natural colour, fine 500T film grain, gentle halation on highlights, realistic exposure, Montréal in late October after rain, animals with real anatomy and real scale, behaving naturally, an empty scene with plain surfaces, no lettering anywhere.",
+      "seed": "667052427",
+      "size": "1360×768",
+      "seconds": 6.8,
+      "note": "Chapter 22's cover: shot 3 of the film, the owl, picked from three takes (Orazaka Studio run 75cdc9c8). Key frame of the film « Montrer son travail » (krizaka-internal#138). No person, no text, no logo."
+    },
+    "renditions": {
+      "avif": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-22-how-orazaka-made-our-brand-film-480.b1f7fd2496.avif"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-22-how-orazaka-made-our-brand-film-768.530c8be833.avif"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-22-how-orazaka-made-our-brand-film-1200.7957503d16.avif"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-22-how-orazaka-made-our-brand-film-1280.b4bbb4b45c.avif"
+        }
+      ],
+      "webp": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-22-how-orazaka-made-our-brand-film-480.539636d612.webp"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-22-how-orazaka-made-our-brand-film-768.81cb12a147.webp"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-22-how-orazaka-made-our-brand-film-1200.4408c39133.webp"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-22-how-orazaka-made-our-brand-film-1280.5a7eebfe2f.webp"
+        }
+      ]
+    }
+  },
+  "film-keyframe-puddle": {
+    "kind": "image",
+    "width": 1360,
+    "height": 768,
+    "blur": "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAADwAQCdASoQAAkABABoJZwAAvyYIe5kzAAA/t192Gy1487Ul2ayOVpFkD1BVL1gB64oxPKUcZlmy/kz3jayq/Yvbb51//l0DOBAAA==",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-orazaka-made-our-brand-film/film-keyframe-puddle-480.0c53ce278e.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-orazaka-made-our-brand-film/film-keyframe-puddle-960.91525b5f95.webp"
+      },
+      {
+        "w": 1360,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-orazaka-made-our-brand-film/film-keyframe-puddle-1360.21cd85e617.webp"
+      }
+    ],
+    "made": {
+      "model": "FLUX.2 [klein] 4B",
+      "licence": "Apache-2.0",
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), with reference images, on a rented GPU",
+      "machine": "RunPod B200",
+      "via": "Orazaka Studio",
+      "runId": "fa443859-b0ee-4706-8eea-aa6bb739bdac",
+      "prompt": "Shot 2, 24 mm lens five centimetres above the stones. Ground level in an empty Old Montréal lane at dawn: wet dark cobblestones glistening, a still puddle in the foreground mirroring a pale dawn sky and grey-stone façades softly out of focus, a few red maple leaves on the stones; a single drop of deep blue ink frozen just above the centre of the puddle. Any shop sign or plaque far out of focus, soft and unreadable. Photorealistic 35 mm motion-picture still, full-frame camera, spherical prime lens, natural colour, fine 500T film grain, gentle halation on highlights, realistic exposure, Montréal in late October after rain, animals with real anatomy and real scale, behaving naturally, an empty scene with plain surfaces, no lettering anywhere.",
+      "seed": "4192726256",
+      "size": "1360×768",
+      "seconds": 6.7,
+      "note": "Shot 2, the ink drop over the puddle, picked from three takes (Orazaka Studio run fa443859). Key frame of the film « Montrer son travail » (krizaka-internal#138). No person, no text, no logo."
+    }
+  },
+  "film-keyframe-beaver": {
+    "kind": "image",
+    "width": 1360,
+    "height": 768,
+    "blur": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAAAQAgCdASoQAAkABABoJYgCdADSRtfUGfIAAP7XO2F8fuQFtFPWxvbgBfnVtkbAJvhD+uVE4kFs59vQN/8B4LBTqyP9kXveKrA8ObiMNwKLEaXNEnspAAAA",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-orazaka-made-our-brand-film/film-keyframe-beaver-480.e8d9e07018.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-orazaka-made-our-brand-film/film-keyframe-beaver-960.89a602af6a.webp"
+      },
+      {
+        "w": 1360,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-orazaka-made-our-brand-film/film-keyframe-beaver-1360.9ed6117fa4.webp"
+      }
+    ],
+    "made": {
+      "model": "FLUX.2 [klein] 4B",
+      "licence": "Apache-2.0",
+      "engine": "image-generation through Orazaka Studio (dev.orazaka.com), with reference images, on a rented GPU",
+      "machine": "RunPod H100",
+      "via": "Orazaka Studio",
+      "runId": "ee4259bd-eb4b-4b02-bdbe-47b7a2b04b5d",
+      "prompt": "Shot 4, 35 mm lens at f/2.8, medium wide. The beaver from the reference, same brown fur, size and flat scaly tail, sitting on the wooden counter of an empty small Saint-Henri barbershop at opening time: one vintage barber chair, a neat stack of folded white towels, a ceramic cup, a large window onto red-brick façades; bare plaster walls painted a plain warm cream, with no posters, no frames, no signs and no paper on them; raking low morning sun with dust motes in the beams, warm wood and cool shadows. Photorealistic 35 mm motion-picture still, full-frame camera, spherical prime lens, natural colour, fine 500T film grain, gentle halation on highlights, realistic exposure, Montréal in late October after rain, animals with real anatomy and real scale, behaving naturally, an empty scene with plain surfaces, no lettering anywhere.",
+      "seed": "1876958809",
+      "size": "1360×768",
+      "seconds": 7.7,
+      "note": "Shot 4, the beaver in the barbershop, re-rendered after the first three takes showed posters with fake lettering (Orazaka Studio run ee4259bd). Key frame of the film « Montrer son travail » (krizaka-internal#138). No person, no text, no logo."
+    }
+  },
+  "film-duck-5b-vs-a14b": {
+    "kind": "image",
+    "width": 1288,
+    "height": 352,
+    "blur": "data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAAAQAgCdASoQAAQABABoJYwCdH8AGDot5ZZAAP4nrm3LdVrghLkOvR1QYZvCaaRsdFWZNpGcmajaNOGjRNDEfHYsAAA=",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-orazaka-made-our-brand-film/film-duck-5b-vs-a14b-480.c1b2b3f3de.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-orazaka-made-our-brand-film/film-duck-5b-vs-a14b-960.fb30bcf1fb.webp"
+      },
+      {
+        "w": 1288,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-orazaka-made-our-brand-film/film-duck-5b-vs-a14b-1288.f080a6b3ad.webp"
+      }
+    ],
+    "made": {
+      "model": "Wan 2.2 TI2V 5B and Wan 2.2 I2V A14B (4-step distill)",
+      "licence": "Apache-2.0",
+      "engine": "video-generation through Orazaka Studio (dev.orazaka.com): the 5B on an L40S, the A14B on an H200",
+      "via": "Orazaka Studio",
+      "size": "two frames of 640×352, one from each test clip",
+      "note": "The same 2-second test of shot 5 from the same key frame, one frame of each clip. Left: TI2V 5B (Orazaka Studio run 8be06e55), 232 s, about $0.07: mid-flight, the mallard has turned white like a gull. Right: I2V A14B in 4 steps (Orazaka Studio run 15a6e688), 77 s, about $0.17: just before the take-off, the green head and the white collar hold, and they hold through the flight.",
+      "source": "krizaka-internal#138"
+    }
+  },
+  "film-montrer-son-travail": {
+    "kind": "video",
+    "width": 1280,
+    "height": 720,
+    "blur": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAADwAQCdASoQAAkABABoJbACdADwty7PZ0AA/qjSAxY3Q2y9wK0hvi5j5F5igtdCI/yErefv1pStpMuKzHaYmfCgDVNjASTksRAIYI9vPCPzgjlCh8L+QAAA",
+    "poster": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-orazaka-made-our-brand-film/montrer-son-travail-poster.0c18b0d20a.webp",
+    "mp4": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-orazaka-made-our-brand-film/montrer-son-travail.459f20b100.mp4",
+    "webm": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-orazaka-made-our-brand-film/montrer-son-travail.0bec72925a.webm",
+    "bytes": {
+      "mp4": 5066727,
+      "webm": 3005277
+    },
+    "made": {
+      "model": "FLUX.2 [klein] 4B key frames, Wan 2.2 I2V A14B (4-step distill) clips, ACE-Step 1.5 XL turbo music",
+      "licence": "Apache-2.0 (FLUX.2 [klein] 4B, Wan 2.2) and MIT (ACE-Step)",
+      "engine": "Orazaka Studio on dev.orazaka.com, rented GPUs (B200 and H100 for the stills, H200 for the clips and the music)",
+      "via": "Orazaka Studio for every picture, clip and the music; the cut, the grade and the titles assembled outside it from an edit decision list",
+      "size": "1920×1080, 31.5 s, shown here at 1280×720",
+      "costUsd": 15.83,
+      "note": "7 shots, 12 clips rendered (about 114 s and $0.25 each on an H200), 2 lost to a broken upscaler. GPU spend of the whole film, read from the provider's balance before and after each batch: about $15.83, failures included. Titles set in @krizaka/fonts, no speech.",
+      "source": "krizaka-internal#138"
+    }
   }
 }
