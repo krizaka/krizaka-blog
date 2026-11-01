@@ -11,6 +11,7 @@ import { coverOf, type Cover } from "@/lib/media";
 import { formatPeriod } from "./PostList";
 import { BasicsPath } from "./BasicsPath";
 import { PostCard } from "./PostCard";
+import { Signature } from "./Signature";
 import { TakeStory } from "../TakeStory";
 import { NewsletterSection } from "../newsletter/NewsletterSection";
 
@@ -25,6 +26,7 @@ const albumCover = (c: Cover) => ({ src: c.src, srcSet: c.srcSet, width: c.width
    - the chapters in reading order, 1 → N, one ruled line each (the number in the margin, the title the link, the quiet
      period), the latest marked « New »: a timeline you follow, never a feed (lib/home.ts); what was faced → built is on the
      chapter's own head, never repeated here (krizaka-blog#127);
+   - the founder's signature closes the story (one block, after the chapters);
    - at the end, « The basics » as quiet links, then the one newsletter line. The footer follows (SiteRoot).
    Every piece is a @krizaka/ui block: PageHero, Section (the Cahier's § in the margin), the post card, ChapterIndex. */
 export default function HomePage({ locale }: { locale: Locale }) {
@@ -99,6 +101,14 @@ export default function HomePage({ locale }: { locale: Locale }) {
               isNew,
             }))}
           />
+        </Section>
+      )}
+      {/* The story ends with his signature (founder 2026-11-01): after the last chapter, before the practical links, so it reads as
+          the author's mark on the whole timeline, not a banner. Same component as the chapters and About: drawn once on arrival,
+          still under reduced motion; the quote is read inside it from the messages. */}
+      {rows.length > 0 && (
+        <Section reveal={false} spacing="sm">
+          <Signature locale={locale} />
         </Section>
       )}
       {basics.length > 0 && (
