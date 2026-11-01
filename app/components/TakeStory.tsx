@@ -107,7 +107,7 @@ export function TakeStory({
             d.takeStory,
             format(d.takeChapters, { n: String(chapters.length) }),
             story,
-            <SaveSeries quiet urls={storyUrls} />,
+            <SaveSeries urls={storyUrls} />,
           )}
         </div>
       </aside>
@@ -125,7 +125,7 @@ export function TakeStory({
           <FileButton key={f.format} file={f} locale={locale} label={label(f.format)} hint={hint(f.format)} />
         ))}
       </div>
-      <SaveSeries quiet urls={chapters.map((c) => localizedPath(locale, chapterPath(c.slug)))} />
+      <SaveSeries urls={chapters.map((c) => localizedPath(locale, chapterPath(c.slug)))} />
     </aside>
   );
 }
