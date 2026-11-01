@@ -61,7 +61,7 @@
 - **The media library** is `lib/media.json`: every image and clip a post shows, by id, with the CDN URLs (`site/blog/…`),
   the sizes, a blur placeholder and the **provenance** of the result (model, prompt, seed, machine, time, cost, Orazaka run
   id). A post uses `<Figure id alt caption?/>` (responsive `srcset`, blur-up, size reserved, lazy), `<Clip id alt
-  caption?/>` (a light native player: muted loop while on screen, poster first, controls, never autostarts under
+caption?/>` (a light native player: muted loop while on screen, poster first, controls, never autostarts under
   `prefers-reduced-motion`) and `<Row>`; both show « How this was made » from the entry. Entries are produced, not typed:
   the Orazaka results come from `orazaka-web-client` (`gallery.ts`, `gallery-clips.ts`, `model-compare.ts`) and `orazaka`
   `docs/measurements/runs.json`; a result made outside an Orazaka run says so in `made.note`. `npm run lint` fails on an
@@ -131,7 +131,7 @@
   Chromium still pushed, then **fails** on a (nearly) blank page or a caption not right under its picture (`lib/pdf-layout.mjs`,
   `tests/pdf-layout.test.mjs`). `--only <locale>/<key>,…` makes some books only, to look at a layout.
   « Read offline » (the service worker, `SaveOffline`) is a different thing: it keeps the pages in this browser, no account. The files are hashed objects on Bunny (`sites/blog/posts/downloads/`, uploaded with krizaka-com's `cdn-assets.mjs upload --to
-  blog/downloads`, manifest committed there); `lib/downloads.json` records each book's source hash, file hashes and sizes, and the lint
+blog/downloads`, manifest committed there); `lib/downloads.json` records each book's source hash, file hashes and sizes, and the lint
   fails when a chapter changed and its files were not made again (`node scripts/gen-downloads.mjs`, upload, `… record`). The links are on
   each chapter, on the home, and in the feeds (RSS enclosure, Atom `rel="enclosure"`, JSON Feed `attachments`).
 - **RSS and Atom stay as files, not pages** (krizaka-blog#123): `/feed.xml` and `/atom.xml` are pure XML for readers (no XSLT:
@@ -142,7 +142,7 @@
   workflow (the cover is the post's e-mail-sized WebP of `lib/media.json`); the function only fills the placeholders of
   the reader's own values (their signed unsubscribe link) and the sender's postal address (`fillRendered`). Without a
   rendered e-mail it sends the plain one. **Test**: `MAIL_SEND_TOKEN=… node scripts/newsletter-send.mjs --slug <slug>
-  --test-to <address> [--locale fr|en]` (also on a draft) sends ONE e-mail, « [Test] » in the subject, to that address only:
+--test-to <address> [--locale fr|en]` (also on a draft) sends ONE e-mail, « [Test] » in the subject, to that address only:
   the list is not read and the post is not claimed. Screenshots of the rendered HTML go to Bunny (`pr-assets`), never the repo.
   `.github/workflows/newsletter.yml` runs `scripts/newsletter-send.mjs` after a push to main that
   publishes a post (draft → published, or new and published): it waits for the page to be live, then calls
@@ -191,6 +191,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## Before you open or update a pull request (coding agents)
 
 These are the defects code review found most often on 2026-10-23. Check them yourself before you open or update a pull request:
+
 1. **Checks:** run the repository's full check (lint, typecheck, tests, build) and fix it. Never push a red check.
 2. **Concurrency:** any « count then insert » or « check then write » runs in one transaction with a lock, and has a concurrency test.
 3. **One gate:** a rule (limit, permission, validation) is enforced in the service, so no route can skip it. Test every route.
@@ -240,3 +241,7 @@ A finding comes back to the agent (exit 2); a timeout is silent.
 ```
 
 In a TypeScript repository that already depends on `@krizaka/config`, use `npx --no-install krizaka-edit-check` (no download).
+
+## Commercial names (2026-11-01, krizaka-internal#2103)
+
+The pages say **Verikora** (code name yomizaka), **Folioviv** (akinaza) and **Sovkora** (orazaka); tag ids, series ids, slugs and addresses keep the code names. `krizaka-code-names messages` runs in `npm run lint`. The published chapters keep the names of their day (history is not rewritten): the built site is only reported (`scripts/ci-after-build.sh`, `--report`).

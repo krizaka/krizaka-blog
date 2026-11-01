@@ -119,9 +119,9 @@
       "ai": "IA",
       "montreal": "Montréal",
       "costs": "Coûts",
-      "orazaka": "Orazaka",
+      "orazaka": "Sovkora",
       "measurements": "Mesures",
-      "yomizaka": "Yomizaka",
+      "yomizaka": "Verikora",
       "documents": "Documents",
       "law": "Droit",
       "prompts": "Prompts",
@@ -154,7 +154,7 @@
     "via": "Via",
     "time": "Durée",
     "cost": "Coût",
-    "run": "Run Orazaka",
+    "run": "Run Sovkora",
     "sound": "Son",
     "studio": "Studio",
     "notRecorded": "non enregistré",
@@ -173,7 +173,7 @@
   },
   "series": {
     "names": {
-      "building-orazaka": "Construire Orazaka",
+      "building-orazaka": "Construire Sovkora",
       "measured": "Mesuré",
       "building-krizaka": "Construire Krizaka",
       "basics": "Les bases"
