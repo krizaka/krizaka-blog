@@ -1,4 +1,6 @@
 import { getDictionary, type Locale } from "@/lib/i18n";
+import { AUTHOR_GITHUB } from "@/lib/author-links";
+import { GitHubMark } from "../GitHubMark";
 
 /* The founder's signature at the end of his chapters (founder 2026-10-31): a short line of his, then « Wu-sama » written with a
    pen — an SVG drawn in code, its strokes laid down one after the other once, when the block arrives (the motion system's
@@ -42,7 +44,20 @@ export function Signature({ locale }: { locale: Locale }) {
             style={{ "--i": STROKES.length } as React.CSSProperties}
           />
         </svg>
-        <figcaption className="bl-sign-name">{s.fullName}</figcaption>
+        <figcaption className="bl-sign-name">
+          {s.fullName}
+          <span aria-hidden="true"> · </span>
+          <a
+            href={AUTHOR_GITHUB.url}
+            rel="noopener me"
+            target="_blank"
+            className="bl-sign-github"
+            aria-label={s.githubLabel}
+          >
+            <GitHubMark size={12} />
+            {s.github}
+          </a>
+        </figcaption>
       </figure>
     </aside>
   );

@@ -149,6 +149,8 @@
   `/api/newsletter/send` (bearer `MAIL_SEND_TOKEN`, the repository's only secret for this), which claims the post in
   `newsletter_posts` (primary key: never sent twice) and e-mails each confirmed subscriber in their language.
   Manual: Actions → Newsletter → Run workflow (slug).
+  **Hold**: a post or chapter whose front matter says `newsletter: hold` is published without the automatic e-mail (the founder sends
+  it by hand, with the manual run, when he decides); `publishedBetween` skips it, `tests/newsletter.test.mjs` guards it.
 
 ## 3.2 Reading offline (krizaka-blog#211)
 

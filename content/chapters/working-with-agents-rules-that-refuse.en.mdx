@@ -1,0 +1,143 @@
+---
+title: "Working with agents: rules that say no"
+description: "Our rules were written down, and the agents forgot them. We moved them into the commands: a command that refuses is never forgotten. The lanes, the trains, the guards, and what stays mine."
+seoTitle: "Working with agents: rules that say no"
+seoDescription: "How Krizaka works with agents: lanes, commands that refuse, trains, guards, time limits everywhere, and the founder at the decision points."
+date: 2026-10-31
+publishedAt: "2026-10-31T23:00:00-04:00"
+tags: [ai, integration]
+author: oussama
+cover: series-21-working-with-agents-rules-that-refuse
+coverAlt: "An old railway signal box in watercolour, a row of iron levers in front of wide windows, tracks merging outside in the snow, and a small red duck perched on a lever, by a lit lamp"
+draft: false
+newsletter: hold
+sensitive: true
+chapter: 21
+period: "2026-10-22/2026-10-31"
+sources:
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "written rules that sessions forgot"
+  built: "commands that refuse, a guard for every drift, and me at the decisions"
+---
+
+For weeks, our rules lived in a file. A long text every agent session reads when it starts: how to name an issue, how many pull requests may be open at most, who is allowed to merge. The agents read it. Then, a little further into the session, they forgot it. Not out of bad will: two hundred lines of text weigh little against the task at hand.
+
+This chapter tells how we moved those rules from the text into the commands. It follows [chapter 17](/story/how-the-founder-and-the-cto-agent-work/), where I told who decides what between the CTO agent and me, and [All aboard](/story/tchou-tchou-how-our-pull-requests-catch-the-train/), about our trains.
+
+## A written rule gets forgotten, a command that refuses does not
+
+It clicked after a string of small drifts, all in the same week. A session opens an issue with my account instead of its own. Another one pushes while skipping the repository's checks, by mistake. A third one makes up a co-author address for its commit, and a stranger shows up in the contributors list. Each time, the rule existed. It was written, in black and white.
+
+We ended up understanding one simple thing: if a rule can be broken, it will be, sooner or later, by someone in a hurry. A human as much as an agent. So we stopped adding sentences and put the rules where the work has to go through: in the commands.
+
+Today, an agent does not open an issue with GitHub's tool. It goes through our command, which files it in a private repository, gives it a standard title and its labels, puts it on the board, and refuses a duplicate. Same for a pull request: the command refuses a badly formed title, a PR without an issue, or a repository that already has five open PRs. At the end of a session, one last command refuses to close if a PR has no train, or if the session left no handoff.
+
+Here is the idea, stripped to the bone. It is not our code, it is its shape:
+
+```sh
+# open a PR: the command checks before it acts
+pr_open() {   # reads: title issue repo
+  read -r title issue repo
+  echo "$title" | grep -Eq '^[a-z]+\([a-z0-9-]+\): .+' \
+    || refuse "the title must be « type(scope): what »"
+  [ -n "$issue" ] || refuse "every PR closes an issue: create it first"
+  [ "$(open_prs "$repo")" -lt 5 ] \
+    || refuse "$repo already has 5 open PRs: land one first"
+  open_the_pr && start_the_train
+}
+```
+
+The refusal's message matters as much as the refusal. It says what to do next. An agent that reads « create it first » creates the issue, then comes back. It does not need to remember the rule: the command remembers it for it.
+
+Tonight, to write this chapter, I watched it work, in dry-run mode, creating nothing. I asked for a PR with a free-form title and no issue:
+
+```text
+$ pr-open … --title "Chapter 21" --dry-run
+pr-open: refused: title must be `type(scope): what` (conventional commit,
+lower-case type); every PR closes or refs a krizaka-internal issue
+(--closes N | --refs N; create it with issue-new)
+```
+
+Then an issue with a made-up type and an empty body, and another one I wanted to park in incubation:
+
+```text
+$ issue-new … --type feature --what "x" --body "" --dry-run
+issue-new: refused: --type must be one of [feat, fix, … post];
+the title text says what, in plain words (8+ characters);
+a body (--body or --body-file): what, why, done when
+
+$ issue-new … --type feat --status Incubation --dry-run
+issue-new: refused: … Incubation is only for the founder's ideas (--type idea)
+```
+
+What it led to: three refusals, exit code 2, nothing created, and each time the sentence that says what to fix. This chapter's real issue went through the same command on the first try, and it put it on the board as « In progress ». And the same evening, one more guard: the letter to subscribers went out by itself when a chapter was published. I first wrote the test that showed it, red, then the line that lets a chapter say `newsletter: hold`. The test turned green, and it stays.
+
+## The path of a change
+
+Nothing starts without an issue. Every issue belongs to a lane, and every lane has one session at a time. There are five today: Yomizaka, Akinaza, Orazaka, Platform and Security, plus a queue for my one-off requests, like the one that gave this chapter. The Security lane arrived this week: before, security slipped into Platform and came after the rest.
+
+<Pipeline label="The path of a change here. The commands refuse at the door, the train judges nothing, the merge queue runs the checks again, and nobody merges by hand.">
+  <Stage title="Issue" note="a command" tone="gate">Standard title, labels, a card on the board. A duplicate is refused.</Stage>
+  <Stage title="Lane session" note="one per lane">One agent, a model picked for the task, a budget. The test first, then the code.</Stage>
+  <Stage title="Pull request" note="a command" tone="gate">The title, the issue, the cap of five PRs per repository. The PR starts its train.</Stage>
+  <Stage title="Train" note="no tokens">It waits for the previous PR, updates the branch, queues it. It stops at the first red.</Stage>
+  <Stage title="Merge queue" note="CI again">The checks run again, on the PR merged with what comes before it.</Stage>
+  <Stage title="main" note="one commit" tone="ship">One commit, the branch deleted, then the deploy.</Stage>
+</Pipeline>
+
+On Saturday, October 31, 222 pull requests were merged in the organisation; GitHub's search counts them again in one query. We never merge by hand. I learned that one the hard way. Merging a PR « just this one, it's obvious » means going around the queue, and the queue is there precisely to see what we don't: two sound PRs that, together, break main.
+
+## Every drift leaves a guard
+
+The second habit is the one from [chapter 20](/story/how-our-automation-grew/): a bug means a guard was missing. We don't stop at the fix. We ask why nothing stopped it, and we add what will stop it next time.
+
+Our trains are full of them. One day, sessions started the same train up to four times for the same PR; each one approved and queued, and GitHub rate-limited us. Since then, a second train for a PR that already has one refuses to start. Another day, some twenty trains asked GitHub too often, and every session froze at once, out of quota. The trains now ask less often, through another path. And another day, a file lost its execute permission during a rewrite: for an hour, every train died without a sound. That case now has its test.
+
+The most recent one is from this week: when main is red in a repository, nothing gets in any more, except the PR that fixes it. An issue opens by itself so the red has an owner.
+
+None of these stories is one agent's fault. They are holes in the system. The text next to each guard keeps the date and the reason, in one line, so that nobody removes it thinking they are simplifying.
+
+## Time limits everywhere
+
+A waiting agent is expensive, and a stuck agent does not always know it. So everything has a limit. Every test has a timeout, two minutes by default. Every CI job has a timeout close to its real duration, not an hour « just in case ». Every session has a budget, and when it is reached, it starts nothing new: it finishes what it has in hand and leaves a handoff. Heavy work, like a build or a generated image, goes through a single lock, so the machine does not collapse under ten sessions at once.
+
+## The board, the CTO agent, and me
+
+Everything that happens is on one board, and one script alone may move the cards. The board tells the truth: if a card is « In progress », a session is really working on it.
+
+The CTO agent reads that board and starts the sessions. It picks the model for the task: a small model to land PRs already reviewed, a middle one for a feature or a fix, the largest for a design decision or research. Each session gets one issue and a budget. It reports to me every three hours.
+
+<Pipeline label="The loop between me, the CTO agent and the sessions. The board is the meeting point; anything paid, legal or irreversible always comes back up to me.">
+  <Stage title="Me" note="the direction" tone="gate">I set the direction and I decide money, accounts, legal matters and what cannot be undone.</Stage>
+  <Stage title="CTO agent" note="delegates">It cuts the work into issues, picks the order, the model and the budget of each session.</Stage>
+  <Stage title="Lane sessions" note="one per lane">They deliver: test, code, PR, train.</Stage>
+  <Stage title="The board" note="the truth">Every card moves with the work. What waits for me goes to the Blocked column, with one sentence.</Stage>
+  <Stage title="Back to me" note="every 3 h" tone="ship">A report: done, in progress, blocked, and a forecast. I settle what waits for me.</Stage>
+</Pipeline>
+
+What is mine does not move: money, accounts, legal matters, what cannot be undone. When a session runs into one of those, it does not guess. It moves the card to the Blocked column, writes in one sentence what I must do, and moves on. Nothing waits on me. That is tonight's rule, by the way: this chapter is published, but sending the letter to subscribers stays my call.
+
+## A team for design
+
+The last piece is arriving now. On design, we used to get one-off opinions, each one right, none repeated. This week we are adding a small intervention team of three roles that always go in the same order: someone who thinks about the market and the buyer, someone who thinks about the journey and the information, someone who thinks about the interface. What comes out is not an opinion: it is a before and after, the list of components to change in our library, and the issues. It has not made its first intervention yet; I will tell what it gives.
+
+## What you can take from it
+
+You don't need our tools to try this. Take the rule your team breaks most often, and put it into the command everybody already uses, with a message that says what to do. Then, at the next incident, don't stop at the fix: ask what should have stopped it.
+
+Our motto fits in one sentence, and it holds for the agents as much as for me: the work keeps flowing, the deadline is ours, it can move, quality never does.
+
+## Frequently asked questions
+
+### Why not just write better instructions?
+
+Because an instruction is read once and forgotten in the middle of a long task. A command that refuses is read again every time it is used, with no effort. We keep a short text for judgement, what a script cannot settle.
+
+### Do the agents merge on their own?
+
+No, and nobody merges by hand. The session reviews its own change, then the train puts the PR into GitHub's merge queue, which runs the checks again before writing to main.
+
+### What is left to the founder?
+
+The direction, money, accounts, legal matters and everything that cannot be undone. The rest, the CTO agent settles if it is reversible, with a written cap when a spend is possible.

@@ -5931,5 +5931,76 @@
         }
       ]
     }
+  },
+  "series-21-working-with-agents-rules-that-refuse": {
+    "kind": "image",
+    "width": 1280,
+    "height": 720,
+    "blur": "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAADwAQCdASoQAAkAA4BaJZwAAuuQWVN0UIAA4mwfPoM+jtW/lrm7b9yUzQ/g+g+mtcWI5OaXOjIY/9MBGYWHXkvQ2zL0thdlxuup1OK6mrp4eEC3AAA=",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-21-working-with-agents-rules-that-refuse-480.5adb4a8600.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-21-working-with-agents-rules-that-refuse-960.88967fffd2.webp"
+      },
+      {
+        "w": 1280,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-21-working-with-agents-rules-that-refuse-1280.b49d1d20d6.webp"
+      }
+    ],
+    "made": {
+      "model": "FLUX.2 [klein] 4B (Q8_0 GGUF)",
+      "licence": "Apache-2.0",
+      "engine": "stable-diffusion.cpp on Metal, 4 steps, guidance 1.0",
+      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+      "via": "local",
+      "prompt": "Hand-drawn ink and watercolor illustration on textured paper, Krizaka palette of deep indigo, teal, warm orange and soft cream. Inside an old wooden railway signal box at dusk: a long row of tall iron levers, some pulled and some locked upright, a brass interlocking frame below them, a paper diagram of the tracks pinned on the wall, a small oil lamp glowing. Through the wide windows, railway tracks branch and merge into one line under a pale winter sky with snow on the roofs of Montreal. A small red duck with a flat yellow bill and round glasses stands on the lever frame. Calm, orderly, quiet mood, loose ink lines, soft washes. No people, no text, no letters, no numbers, no logos, no watermark.",
+      "seed": "2101",
+      "size": "1536×864",
+      "seconds": 96,
+      "costUsd": 0,
+      "note": "Chapter 21 of the image series: rendered on the Mac with the same model and engine as Orazaka's media worker, outside an Orazaka Studio run (krizaka-internal#2071). A railway signal box: its interlocked levers refuse a route that conflicts with another, like the commands of the chapter. No person, no logo."
+    },
+    "renditions": {
+      "avif": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-21-working-with-agents-rules-that-refuse-480.31b73ef5da.avif"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-21-working-with-agents-rules-that-refuse-768.c6d8189727.avif"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-21-working-with-agents-rules-that-refuse-1200.202403380b.avif"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-21-working-with-agents-rules-that-refuse-1280.e721247cee.avif"
+        }
+      ],
+      "webp": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-21-working-with-agents-rules-that-refuse-480.bc4b4846f6.webp"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-21-working-with-agents-rules-that-refuse-768.e2b5213e23.webp"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-21-working-with-agents-rules-that-refuse-1200.94ba40e971.webp"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-21-working-with-agents-rules-that-refuse-1280.fb418bf774.webp"
+        }
+      ]
+    }
   }
 }

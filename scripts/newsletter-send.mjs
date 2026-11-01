@@ -45,13 +45,18 @@ const show = (rev, path) => {
   }
 };
 const isPublished = (source) => source !== null && matter(source).data.draft !== true;
+/* `newsletter: hold` in the front matter: the post is published without the automatic e-mail; the founder sends it by hand
+   (Actions → Newsletter → Run workflow) when he decides to (krizaka-internal#2071). */
+const isHeld = (source) => source !== null && matter(source).data.newsletter === "hold";
 
-/** The slugs published between two commits: a post or chapter file that is published after and was a draft (or absent) before. */
+/** The slugs published between two commits: a post or chapter file that is published after and was a draft (or absent) before,
+    and is not on hold (`newsletter: hold`). */
 export function publishedBetween(changed, read) {
   const slugs = new Set();
   for (const path of changed) {
     const m = path.match(FILE);
     if (!m) continue;
+    if (isHeld(read.after(path))) continue;
     if (isPublished(read.after(path)) && !isPublished(read.before(path))) slugs.add(m[1]);
   }
   return [...slugs].sort((a, b) => (a < b ? -1 : 1)); /* a Set: never equal */

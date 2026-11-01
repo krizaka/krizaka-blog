@@ -174,3 +174,41 @@
   margin-right: 0.5rem;
   color: var(--kz-accent-text);
 }
+
+/* The banner of his GitHub profile (krizaka-internal#2071): one file per theme, the other hidden; it scales to the column, so
+   at 360 px it is a 108 px strip that never overflows. */
+.bl-about-banner {
+  max-width: 58rem;
+  margin: 0 auto 1.5rem;
+}
+
+.bl-about-banner a {
+  display: block;
+  border-radius: 0.75rem;
+}
+
+.bl-about-banner a:focus-visible {
+  outline: 2px solid var(--kz-ring);
+  outline-offset: 3px;
+}
+
+.bl-about-banner img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  border: 1px solid var(--kz-border-subtle);
+}
+
+.bl-about-banner-light,
+html.light .bl-about-banner-dark {
+  display: none !important;
+}
+
+html.light .bl-about-banner-light {
+  display: block !important;
+}
+
+.bl-about-github {
+  margin-top: 0.75rem;
+}

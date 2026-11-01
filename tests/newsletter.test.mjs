@@ -784,3 +784,13 @@ test("the confirmation e-mail is the designed one of @krizaka/email, EN and FR, 
     assert.ok(db.subs.has("a@b.co"));
   }
 });
+
+test("a post or chapter whose front matter says `newsletter: hold` is published without the automatic e-mail (the founder sends it by hand)", () => {
+  const held = (draft) => post(draft).replace("draft:", "newsletter: hold\ndraft:");
+  const before = { "content/chapters/h.fr.mdx": held(true), "content/chapters/s.fr.mdx": post(true) };
+  const after = { "content/chapters/h.fr.mdx": held(false), "content/chapters/s.fr.mdx": post(false) };
+  const read = { before: (p) => before[p] ?? null, after: (p) => after[p] ?? null };
+  assert.deepEqual(publishedBetween(Object.keys(after), read), ["s"]);
+  /* By hand (--slug) it is still sent: the hold only stops the push-triggered send. */
+  assert.deepEqual(Object.keys(versionsOf("h", (p) => after[p] ?? null)), ["fr"]);
+});

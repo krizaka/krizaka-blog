@@ -91,7 +91,9 @@
       "label": "La signature de l'auteur",
       "quote": "On ne court contre personne. On construit ce qui sert, et on le construit bien.",
       "name": "Wu-sama",
-      "fullName": "Oussama Abid"
+      "fullName": "Oussama Abid",
+      "github": "GitHub",
+      "githubLabel": "Le profil GitHub d'Oussama (oussamaABID), dans un nouvel onglet"
     }
   },
   "engage": {
@@ -209,7 +211,10 @@
     "labNote": "Mon premier contact avec l'IA date de 2011, au {lab}, bien avant que le mot soit à la mode.",
     "lab": "laboratoire d'informatique de Grenoble (LIG)",
     "placesLabel": "Vit à",
-    "places": ["Montréal"]
+    "places": ["Montréal"],
+    "github": "Mon GitHub",
+    "githubLabel": "Le profil GitHub d'Oussama (oussamaABID), dans un nouvel onglet",
+    "bannerAlt": "La bannière de mon profil GitHub, une page de carnet quadrillé : le nom Wu-sama, « oussama · founder of krizaka · montréal », la ligne « building yomizaka, akinaza & orazaka », une fiche « spécimen n° 001 » et un tampon « fait à montréal »"
   },
   "newsletter": {
     "eyebrow": "Infolettre",

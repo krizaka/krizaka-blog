@@ -29,10 +29,14 @@ test("every chapter of the series but the 10th wears its series cover, and each 
     );
     assert.ok(m.renditions.avif.length > 0 && m.renditions.webp.length > 0, `${c.id} has renditions`);
     for (const u of [...m.srcs, ...m.renditions.avif, ...m.renditions.webp]) assert.match(u.url, CDN_HOSTS);
-    assert.ok(
-      /Studio run [0-9a-f]{8}\)/.test(m.made.note) && m.made.model === "FLUX.1 [schnell]",
-      `${c.id} says how it was made`,
-    );
+    /* A series batch run in Orazaka Studio, or (chapter 21 on) a render on the Mac with the media worker's model, which says
+       so in its note (lib/media.json: a result made outside an Orazaka run says so). */
+    const studio = /Studio run [0-9a-f]{8}\)/.test(m.made.note) && m.made.model === "FLUX.1 [schnell]";
+    const local =
+      m.made.via === "local" &&
+      /^FLUX\.2 \[klein\]/.test(m.made.model) &&
+      /outside an Orazaka Studio run/.test(m.made.note);
+    assert.ok(studio || local, `${c.id} says how it was made`);
   }
 });
 

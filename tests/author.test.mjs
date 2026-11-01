@@ -125,3 +125,22 @@ test("the About page mark's label names « Wu-sama », and the bio body keeps it
     assert.match(a.slot, /Wu-sama/, `${l}: the mark's label`);
   }
 });
+
+test("the author's GitHub profile and its banner (dark and light) are data on the blog's CDN, and the pages that present him link it", () => {
+  const g = facts.github;
+  assert.equal(g.url, `https://github.com/${g.login}`);
+  for (const theme of ["dark", "light"])
+    assert.match(
+      g.banner[theme],
+      /^https:\/\/krizaka-assets\.b-cdn\.net\/sites\/blog\/posts\/author\/github-banner-[a-z]+\.[0-9a-f]{10}\.svg$/,
+    );
+  assert.ok(g.banner.width > 0 && g.banner.height > 0);
+  for (const f of [
+    "app/components/about/AboutPage.tsx",
+    "app/components/about/GitHubBanner.tsx",
+    "app/components/pages/Signature.tsx",
+  ])
+    assert.match(read(f), /AUTHOR_GITHUB(\.url|;)|\{ url, banner \} = AUTHOR_GITHUB/, `${f} links his GitHub`);
+  assert.match(read("app/components/about/AboutPage.tsx"), /sameAs: \[AUTHOR_GITHUB\.url\]/);
+  for (const l of ["en", "fr"]) assert.ok(messages(l).about.bannerAlt.length > 40, `${l}: the banner has alt text`);
+});
