@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useSyncExternalStore, type ComponentProps } from "react";
 import { Button } from "@krizaka/ui/button";
 import { Popover } from "@krizaka/ui/popover";
 import { format } from "@/lib/locale";
@@ -41,6 +41,14 @@ export function OfflineHelp() {
   );
 }
 
+/** The ONE look of every « Read offline » control (founder, 2026-11-01): the quiet underlined link of the EPUB · PDF row, the Button's
+    focus ring kept. Both scopes use it, so they cannot drift (tests/offline-buttons.test.mjs). */
+function OfflineButton({ saved, ...props }: Readonly<ComponentProps<typeof Button> & { saved?: boolean }>) {
+  return (
+    <Button type="button" variant="ghost" size="sm" className="bl-offline-quiet" aria-pressed={saved} {...props} />
+  );
+}
+
 /** The chapter's own button: save it, then show it saved with a way to remove it. */
 export function SaveChapter({ url }: Readonly<{ url: string }>) {
   const { t } = useI18n();
@@ -51,16 +59,13 @@ export function SaveChapter({ url }: Readonly<{ url: string }>) {
   const label = saving ? t.offline.saving : t.offline[saved ? "remove" : "save"];
   return (
     <div className="bl-offline">
-      <Button
-        type="button"
-        variant={saved ? "ghost" : "secondary"}
-        size="md"
+      <OfflineButton
+        saved={saved}
         disabled={saving || state.status === "loading"}
-        aria-pressed={saved}
         onClick={() => (saved ? void offlineStore.remove([url]) : void offlineStore.save([url]))}
       >
         {label}
-      </Button>
+      </OfflineButton>
       {saved && <span className="bl-offline-state">{t.offline.saved}</span>}
       <Notice state={state} />
     </div>
@@ -68,7 +73,7 @@ export function SaveChapter({ url }: Readonly<{ url: string }>) {
 }
 
 /** Every chapter of the language in one go; the count says how many (the series is all of them). */
-export function SaveSeries({ urls, quiet = false }: Readonly<{ urls: readonly string[]; quiet?: boolean }>) {
+export function SaveSeries({ urls }: Readonly<{ urls: readonly string[] }>) {
   const { t } = useI18n();
   const state = useOffline();
   if (state.status === "unsupported" || urls.length === 0) return null;
@@ -79,17 +84,12 @@ export function SaveSeries({ urls, quiet = false }: Readonly<{ urls: readonly st
   if (saving && state.progress) label = `${t.offline.saving} ${state.progress.done}/${state.progress.total}`;
   return (
     <div className="bl-offline">
-      <Button
-        type="button"
-        variant={quiet ? "ghost" : "primary"}
-        shape={quiet ? undefined : "cut"}
-        size={quiet ? "sm" : "md"}
-        className={quiet ? "bl-offline-quiet" : undefined}
+      <OfflineButton
         disabled={saving || all || state.status === "loading"}
         onClick={() => void offlineStore.save(urls)}
       >
         {label}
-      </Button>
+      </OfflineButton>
       <Notice state={state} />
     </div>
   );

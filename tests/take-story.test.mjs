@@ -92,7 +92,7 @@ test("the home's bookplate: no box, no picture, small ghost Krizaka UI buttons, 
   assert.match(src, /from "@krizaka\/ui\/button"/);
   assert.match(src, /<Button asChild variant="ghost" size="sm"/);
   assert.ok(!/variant="primary"|shape="cut"|CoverImage|coverOf/.test(src), "no heavy button, no cover thumbnail");
-  assert.match(src, /<SaveSeries quiet/);
+  assert.match(src, /<SaveSeries urls/);
   assert.ok(!/<button|className="[^"]*btn/.test(src), "no hand-made button");
   const css = read("app/globals.css");
   const take = css.slice(css.indexOf("/* « Take the story with you »"), css.indexOf(".bl-offline {"));
@@ -111,7 +111,7 @@ test("the chapter's end block: typographic links with mono sizes, no button grid
   assert.match(compact, /className="bl-take-line"/);
   assert.match(compact, /<FileLink /);
   assert.match(compact, /<SaveChapter /);
-  assert.match(compact, /<SaveSeries quiet/);
+  assert.match(compact, /<SaveSeries urls/);
   assert.match(compact, /<OfflineHelp \/>/);
   assert.ok(!/<FileButton|<Button/.test(compact), "no download button at the end of a chapter");
 });
