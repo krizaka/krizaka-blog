@@ -28,6 +28,8 @@ import { formatPeriod } from "./PostList";
 import { Byline } from "./Byline";
 import { CoverImage } from "./CoverImage";
 import { TakeStory } from "../TakeStory";
+import { Signature } from "./Signature";
+import { signs } from "@/lib/author-picture";
 
 /* One chapter of the story, sober on the notebook lines (krizaka-blog#127):
    - the head (ChapterHead): « 01 » in the margin, the h1, one meta line (the period · the reading time), what I faced →
@@ -157,6 +159,11 @@ export default function ChapterPage({ chapter }: { chapter: Chapter }) {
           body
         )}
       </Section>
+      {signs(chapter.author) && (
+        <Section reveal={false} spacing="sm">
+          <Signature locale={locale} />
+        </Section>
+      )}
       <Section reveal={false} spacing="sm">
         <TakeStory locale={locale} bookKey={chapter.slug} compact />
       </Section>

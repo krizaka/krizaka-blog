@@ -47,7 +47,14 @@ export default function HomePage({ locale }: { locale: Locale }) {
         lead={<span className="bl-home-sentence">{h.lead}</span>}
         linkAs={Link}
       >
-        <p className="bl-home-byline">{h.byline}</p>
+        <p className="bl-home-byline">
+          {/* The name is the way to his story, /about/ (lost with « Who writes » in krizaka-blog#126, restored 2026-10-31). */}
+          {h.byline.split("{author}")[0]}
+          <Link href={localizedPath(locale, "/about/")} className="bl-home-story" title={h.bylineStory}>
+            {(t.authors as Record<string, string>).oussama}
+          </Link>
+          {h.byline.split("{author}")[1]}
+        </p>
         <TakeStory locale={locale} />
       </PageHero>
       {featured && (

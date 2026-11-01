@@ -124,7 +124,12 @@
   file, in number order 1 → N (TOC and body), that the EPUB carries the chapters' pictures (the pages draw them lazily, the real `src` is
   in the `<noscript>` twin — converted to JPEG, WebP not being an EPUB core type), embeds the Cahier's faces (`lib/ebook-style.mjs`,
   `@krizaka/fonts`), and validates with **epubcheck** (no error, no warning; `EPUBCHECK_JAR`, pinned in `ci-after-build.sh`). The look: a
-  designed cover, `§ n.k` section numbers, captions, a contents page, and for the PDF a running header and footer (CSS page margins).
+  designed cover, `§ n.k` section numbers, captions, a contents page (the whole story's), and for the PDF a running header and footer (CSS page margins).
+  The PDF is a story you hold (founder 2026-10-31): each chapter opens on a page of its own (cover edge to edge, « § NN », title,
+  standfirst, the big number), every picture is kept with its caption (`figure:has(img)` never split, nothing wider than the text
+  block); the generator shrinks a picture to the room left on its page, prints, reads the PDF back with pdf.js and repairs what
+  Chromium still pushed, then **fails** on a (nearly) blank page or a caption not right under its picture (`lib/pdf-layout.mjs`,
+  `tests/pdf-layout.test.mjs`). `--only <locale>/<key>,…` makes some books only, to look at a layout.
   « Read offline » (the service worker, `SaveOffline`) is a different thing: it keeps the pages in this browser, no account. The files are hashed objects on Bunny (`sites/blog/posts/downloads/`, uploaded with krizaka-com's `cdn-assets.mjs upload --to
   blog/downloads`, manifest committed there); `lib/downloads.json` records each book's source hash, file hashes and sizes, and the lint
   fails when a chapter changed and its files were not made again (`node scripts/gen-downloads.mjs`, upload, `… record`). The links are on

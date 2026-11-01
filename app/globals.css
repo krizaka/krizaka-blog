@@ -1320,6 +1320,20 @@ picture {
   font-size: 0.8125rem;
   color: var(--kz-text-secondary);
 }
+/* The author's name leads to his story (/about/): ink, a hairline under it, the accent on hover. */
+.bl-home-story,
+.bl-byline-story {
+  color: var(--kz-text-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--kz-border-strong, currentColor);
+}
+.bl-home-story:hover,
+.bl-byline-story:hover {
+  color: var(--kz-accent);
+  text-decoration-color: currentColor;
+}
 .bl-card-cta {
   margin-top: 1rem;
   font-weight: 650;
@@ -1682,5 +1696,89 @@ picture {
 @media print {
   .bl-take-line {
     display: none;
+  }
+}
+
+/* Signature (founder 2026-10-31): the founder's line and his pen signature at the end of his chapters. A page of the notebook:
+   the line in the display serif, tilted a hair like a note written in the margin; the strokes in ink (currentColor), the
+   underline in the accent. They draw themselves once, one after the other, when the block arrives; still under reduced motion. */
+.bl-sign {
+  display: grid;
+  gap: 1rem;
+  justify-items: end;
+  max-width: 42rem;
+  margin: 0.5rem auto 0;
+  padding: 1.5rem 0 0.5rem;
+  border-top: 1px dashed var(--kz-border-default);
+  color: var(--kz-text-primary);
+}
+.bl-sign-quote {
+  margin: 0;
+  justify-self: stretch;
+  font-family: var(--kz-font-display);
+  font-size: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
+  line-height: 1.45;
+  color: var(--kz-text-secondary);
+  transform: rotate(-0.6deg);
+  transform-origin: left center;
+}
+.bl-sign-quote p::before {
+  content: "« ";
+}
+.bl-sign-quote p::after {
+  content: " »";
+}
+.bl-sign-quote:lang(en) p::before {
+  content: "“";
+}
+.bl-sign-quote:lang(en) p::after {
+  content: "”";
+}
+.bl-sign-hand {
+  margin: 0;
+  display: grid;
+  justify-items: center;
+  gap: 0.125rem;
+}
+.bl-sign-svg {
+  width: clamp(9.5rem, 40vw, 13rem);
+  height: auto;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transform: rotate(-3deg);
+}
+.bl-sign-flourish {
+  stroke: var(--kz-accent);
+  stroke-width: 1.6;
+}
+.bl-sign-name {
+  font-family: var(--kz-font-mono);
+  font-size: 0.75rem;
+  color: var(--kz-text-tertiary, var(--kz-text-secondary));
+}
+.bl-sign.kz-in .bl-sign-svg path {
+  stroke-dasharray: 1;
+  animation: bl-sign-draw 0.42s cubic-bezier(0.5, 0, 0.3, 1) calc(0.25s + var(--i) * 0.3s) both;
+}
+@keyframes bl-sign-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bl-sign.kz-in .bl-sign-svg path {
+    animation: none;
+  }
+}
+@media print {
+  .bl-sign-svg path {
+    animation: none !important;
   }
 }

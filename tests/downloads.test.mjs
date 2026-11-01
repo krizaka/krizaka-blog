@@ -151,13 +151,17 @@ test("the book's source is a language-tagged page with each chapter as a section
   const labels = {
     lang: "fr",
     title: "T",
-    chapterLabel: "Chapter",
+    chapterWord: "Chapter",
     readOnline: "À lire en ligne :",
     storyHeading: "Toute l'histoire",
   };
   const html = bookSource({ chapters: parts, labels, all: parts });
   assert.match(html, /<html lang="fr">/);
-  assert.match(html, /<section id="ch-one">\n<h1>01 · One &lt;b&gt;<\/h1>/);
+  assert.match(
+    html,
+    /<section id="ch-one" class="chapter">\n<h1>01 · One &lt;b&gt;<\/h1>\n<div class="opener opener-plain">/,
+  );
+  assert.match(html, /<div class="opener-no">Chapter § 01<\/div>/);
   assert.match(html, /À lire en ligne : <a href="https:\/\/blog\.krizaka\.com\/story\/one\/">/);
   assert.match(html, /<section id="the-story">/);
   assert.doesNotMatch(bookSource({ chapters: parts, labels }), /the-story/);

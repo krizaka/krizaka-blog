@@ -34,13 +34,14 @@
     "featuredTitle": "À la une",
     "seoTitle": "Blogue Krizaka — IA souveraine, LLM locaux, coûts mesurés",
     "seoDescription": "Les notes de construction de Krizaka à Montréal, chapitre par chapitre : IA souveraine, LLM locaux, coûts des GPU, interface, agents.",
-    "byline": "Par Oussama Abid, fondateur de Krizaka.",
+    "byline": "Par {author}, fondateur de Krizaka.",
     "readChapter": "Lire le chapitre",
     "chaptersTitle": "Les chapitres",
     "chaptersLead": "Les précédents, du plus récent au plus ancien : chacun dit ce que j’avais en face, puis ce qu’on a construit.",
     "new": "Nouveau",
     "basicsTitle": "Les bases, pour comprendre",
-    "basicsLead": "Quatre lectures courtes, dans cet ordre, qui expliquent les mots et les règles sur lesquels les chapitres s’appuient. Si un chapitre vous perd, passez par ici, puis revenez."
+    "basicsLead": "Quatre lectures courtes, dans cet ordre, qui expliquent les mots et les règles sur lesquels les chapitres s’appuient. Si un chapitre vous perd, passez par ici, puis revenez.",
+    "bylineStory": "Son histoire"
   },
   "post": {
     "back": "L’histoire de Krizaka",
@@ -70,7 +71,8 @@
     "keyNumbers": "Chiffres clés",
     "progress": "Progression de la lecture",
     "subscribe": "S'abonner par courriel",
-    "rssFeed": "Flux RSS"
+    "rssFeed": "Flux RSS",
+    "authorStory": "Son histoire"
   },
   "chapter": {
     "label": "Chapitre {n}",
@@ -84,7 +86,13 @@
     "toStory": "Retour à l’histoire",
     "previous": "Précédent",
     "nextLabel": "Suivant",
-    "nav": "Les chapitres"
+    "nav": "Les chapitres",
+    "signature": {
+      "label": "La signature de l'auteur",
+      "quote": "On ne court contre personne. On construit ce qui sert, et on le construit bien.",
+      "name": "Wu-sama",
+      "fullName": "Oussama Abid"
+    }
   },
   "engage": {
     "title": "À garder, à partager",
@@ -348,7 +356,8 @@
     "chaptersWord": "chapitres",
     "coverLede": "L'IA souveraine, construite à Montréal — racontée chapitre par chapitre.",
     "coverLabel": "L'histoire",
-    "takeChapters": "{n} chapitres"
+    "takeChapters": "{n} chapitres",
+    "chapterWord": "Chapitre"
   },
   "basics": {
     "for": "Pour qui découvre l’IA. Aucun prérequis; chaque lecture tient seule, et l’ordre est seulement la voie la plus simple.",
