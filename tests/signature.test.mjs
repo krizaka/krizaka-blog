@@ -69,8 +69,12 @@ test("the About page may render the signature too, once, after the sheet, with t
     /chapter\.signature|On pose nos briques/,
     "the line is read inside Signature, from the messages",
   );
-  // The only places that render it: the founder's chapters and the About page.
-  const users = ["app/components/pages/ChapterPage.tsx", "app/components/about/AboutPage.tsx"];
+  // The only places that render it: the founder's chapters, the About page and the home.
+  const users = [
+    "app/components/pages/ChapterPage.tsx",
+    "app/components/about/AboutPage.tsx",
+    "app/components/pages/HomePage.tsx",
+  ];
   for (const f of users) assert.equal(count(read(f), /<Signature\b/g), 1, f);
 });
 
@@ -109,4 +113,12 @@ test("the About header is a compact banner, in the size range of the other page 
     /bl-about-body/,
     "the bio is in the normal reading column below",
   );
+});
+
+test("the home closes the story with the signature once, after the chapters and before the basics, no quote of its own", () => {
+  const home = read("app/components/pages/HomePage.tsx");
+  assert.equal(count(home, /<Signature\b/g), 1);
+  assert.ok(home.indexOf("<Signature") > home.indexOf('id="chapters"'), "after the chapters list");
+  assert.ok(home.indexOf("<Signature") < home.indexOf('id="basics"'), "before the basics");
+  assert.doesNotMatch(home, /chapter\.signature|On pose nos briques/, "the line is read inside Signature");
 });

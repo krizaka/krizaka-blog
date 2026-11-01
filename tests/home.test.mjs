@@ -121,7 +121,11 @@ test("the removed home blocks are gone: latest posts, series, who writes, where 
     home,
     /TopicFilter|AuthorNote|<PostList|seriesTitle|elsewhereTitle|KRIZAKA_URL|UI_URL|JAVA_URL|featuredPosts|\/story"\)/,
   );
-  assert.equal((home.match(/<Section\b/g) ?? []).length, 3, "three sections: Featured, the chapters, the basics");
+  assert.equal(
+    (home.match(/<Section\b/g) ?? []).length,
+    4,
+    "four sections: Featured, the chapters, the signature, the basics",
+  );
 });
 
 test("only @krizaka/ui blocks and the site's own modules: Krizaka first", () => {
