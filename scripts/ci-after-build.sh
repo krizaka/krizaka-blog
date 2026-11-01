@@ -18,6 +18,10 @@ echo "::group::What search engines read on every page (title <= 60, description 
 node scripts/check-meta.mjs out
 echo "::endgroup::"
 
+echo "::group::Commercial names (krizaka-internal#2103): the old chapters keep their historical names, so the built site is a report"
+node_modules/.bin/krizaka-code-names --report out | tail -1
+echo "::endgroup::"
+
 echo "::group::The family's SEO contract, every link, the layout"
 npm install --no-save --ignore-scripts --no-audit --no-fund serve@14.2.6
 node_modules/.bin/serve out -l 3000 >/dev/null 2>&1 &
