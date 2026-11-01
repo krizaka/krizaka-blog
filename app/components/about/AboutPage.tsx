@@ -1,6 +1,8 @@
 import { Section } from "@krizaka/ui/page";
 import { Button } from "@krizaka/ui/button";
 import { WuSamaMark } from "./WuSamaMark";
+import { TypedLine } from "./TypedLine";
+import { Signature } from "../pages/Signature";
 import { GitHubMark } from "../GitHubMark";
 import { AUTHOR_GITHUB } from "@/lib/author-links";
 import { getDictionary, type Locale } from "@/lib/i18n";
@@ -45,7 +47,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
   const path = rest.slice(0, -1);
   const mission = rest[rest.length - 1];
   const [beforeLab, afterLab] = a.labNote.split("{lab}");
-  const [notePage, noteSection, noteNow] = a.notes;
+  const [notePage] = a.notes;
 
   return (
     <>
@@ -63,46 +65,41 @@ export function AboutPage({ locale }: { locale: Locale }) {
                 <h1 id="bl-sheet-name" className="bl-sheet-name">
                   {a.name}
                 </h1>
-                <p className="bl-sheet-line">{a.line}</p>
+                <TypedLine className="bl-sheet-line" text={a.line} />
               </div>
             </div>
           </header>
-          <div className="bl-sheet-row">
-            <span className="bl-sheet-note" aria-hidden="true">
-              {noteSection}
-            </span>
-            <div className="bl-sheet-text">
-              <p className="bl-sheet-opening">{opening}</p>
-              {path.map((p) => (
-                <p key={p}>{p}</p>
-              ))}
-              <p>
-                {beforeLab}
-                <a href={LIG_URL} rel="noopener">
-                  {a.lab}
-                </a>
-                {afterLab}
-              </p>
-            </div>
-          </div>
-          <div className="bl-sheet-row">
-            <span className="bl-sheet-note" aria-hidden="true">
-              {noteNow}
-            </span>
-            <div className="bl-sheet-text">
-              <p className="bl-sheet-mission">{mission}</p>
-              <div className="bl-sheet-actions">
-                <Button asChild variant="secondary" size="md">
-                  <a href={AUTHOR_GITHUB.url} rel="noopener me" target="_blank" aria-label={a.githubLabel}>
-                    <GitHubMark size={16} />
-                    {a.github}
-                  </a>
-                </Button>
-              </div>
-            </div>
-          </div>
           <p className="bl-sheet-caption">{a.caption}</p>
         </article>
+      </Section>
+      <Section reveal={false} spacing="sm">
+        <div className="bl-about-body">
+          <div className="bl-sheet-text">
+            <p className="bl-sheet-opening">{opening}</p>
+            {path.map((p) => (
+              <p key={p}>{p}</p>
+            ))}
+            <p>
+              {beforeLab}
+              <a href={LIG_URL} rel="noopener">
+                {a.lab}
+              </a>
+              {afterLab}
+            </p>
+            <p className="bl-sheet-mission">{mission}</p>
+            <div className="bl-sheet-actions">
+              <Button asChild variant="secondary" size="md">
+                <a href={AUTHOR_GITHUB.url} rel="noopener me" target="_blank" aria-label={a.githubLabel}>
+                  <GitHubMark size={16} />
+                  {a.github}
+                </a>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </Section>
+      <Section reveal={false} spacing="sm">
+        <Signature locale={locale} />
       </Section>
     </>
   );
