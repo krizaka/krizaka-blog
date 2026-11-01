@@ -93,7 +93,7 @@ test("the About line is typed by CSS: real text in the DOM, animated copy aria-h
 
 test("the About header is a compact banner, in the size range of the other page headers (token type scale, no poster)", () => {
   const css = read("app/components/about/about.css");
-  const rule = (sel) => css.match(new RegExp(`${sel.replace(/\./g, "\\.")} \\{([^}]*)\\}`))?.[1] ?? "";
+  const rule = (sel) => css.match(new RegExp(`${sel.replace(/[\\.]/g, "\\$&")} \\{([^}]*)\\}`))?.[1] ?? "";
   assert.match(
     rule(".bl-sheet-name"),
     /font-size: var\(--kz-type-display-md-size\)/,
