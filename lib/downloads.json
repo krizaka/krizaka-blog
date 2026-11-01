@@ -1,28 +1,28 @@
 {
   "books": {
     "en/story": {
-      "source": "1df4b489a6be",
+      "source": "54d7d1b18ebe",
       "files": {
         "epub": {
-          "hash": "0fa6129037",
-          "bytes": 5617617
+          "hash": "412cd79ddd",
+          "bytes": 5617593
         },
         "pdf": {
-          "hash": "ede0bf1850",
-          "bytes": 8120528
+          "hash": "b9979d3f55",
+          "bytes": 8120388
         }
       }
     },
     "en/why-krizaka": {
-      "source": "920a8a3808e2",
+      "source": "5761ffef70cd",
       "files": {
         "epub": {
-          "hash": "ff2f70cca6",
-          "bytes": 743780
+          "hash": "9c2dfa9970",
+          "bytes": 743756
         },
         "pdf": {
-          "hash": "503b62cddf",
-          "bytes": 1143606
+          "hash": "6a08a4bcc2",
+          "bytes": 1143474
         }
       }
     },
@@ -287,28 +287,28 @@
       }
     },
     "fr/story": {
-      "source": "aef073c5cdb0",
+      "source": "b2731b6b4a7b",
       "files": {
         "epub": {
-          "hash": "1165117d80",
-          "bytes": 5639554
+          "hash": "6ef87f5234",
+          "bytes": 5639523
         },
         "pdf": {
-          "hash": "42163bf0ed",
-          "bytes": 8273763
+          "hash": "bc0970ede7",
+          "bytes": 8273618
         }
       }
     },
     "fr/why-krizaka": {
-      "source": "be17ce96213a",
+      "source": "f812aa32be53",
       "files": {
         "epub": {
-          "hash": "753837873b",
-          "bytes": 749982
+          "hash": "150b3976fc",
+          "bytes": 749951
         },
         "pdf": {
-          "hash": "c713373217",
-          "bytes": 1162250
+          "hash": "931977cae1",
+          "bytes": 1162097
         }
       }
     },
