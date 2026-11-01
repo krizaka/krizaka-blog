@@ -1,12 +1,13 @@
-# After every deploy of the blog (post-deploy succeeded), prove that the newsletter's database path works: the live send
+# After every deploy of the blog (called by post-deploy once it succeeded, no workflow_run trigger: zizmor dangerous-triggers), prove that the newsletter's database path works: the live send
 # action claims a sentinel slug twice and gives it back (scripts/newsletter-probe.mjs), nobody is e-mailed. Red when the
 # DATABASE_* env, the CA certificate, the role's grants or the table are wrong, instead of at the first real send.
 name: Newsletter probe
 
 on:
-  workflow_run:
-    workflows: [post-deploy]
-    types: [completed]
+  workflow_call:
+    secrets:
+      MAIL_SEND_TOKEN:
+        required: true
   workflow_dispatch:
 
 permissions:
@@ -14,7 +15,6 @@ permissions:
 
 jobs:
   probe:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

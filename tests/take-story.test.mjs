@@ -12,6 +12,36 @@ const series = json("content/image-series/series.json");
 const KEEPS = "a-curve-that-climbs"; // chapter 10 keeps its cover (founder, krizaka-blog#193)
 const CDN_HOSTS = /^https:\/\/krizaka-assets\.b-cdn\.net\/sites?\/blog\//;
 
+/* Provenance of a series cover: an Orazaka Studio run id (the default), or one explicit, named exception. A local render passes only
+   when it is listed here with its reason AND its own note repeats that it was made outside an Orazaka run. Anything else fails. */
+const LOCAL_FREE = {
+  "series-21-working-with-agents-rules-that-refuse":
+    "free local render on the Mac with the media worker's model, no paid run",
+};
+export function coverProvenance(id, made) {
+  if (!made || typeof made.note !== "string") return false;
+  if (/Studio run [0-9a-f]{8}\)/.test(made.note) && made.model === "FLUX.1 [schnell]") return true;
+  return (
+    made.via === "local" &&
+    typeof LOCAL_FREE[id] === "string" &&
+    LOCAL_FREE[id].length > 20 &&
+    /^FLUX\.2 \[klein\]/.test(made.model) &&
+    /outside an Orazaka Studio run/.test(made.note)
+  );
+}
+
+test("a cover without a Studio run id passes only as a listed local-free exception with its note", () => {
+  const studio = { model: "FLUX.1 [schnell]", note: "x (Orazaka Studio run 5b9b8a1f)" };
+  const local = { model: "FLUX.2 [klein] 4B", via: "local", note: "made outside an Orazaka Studio run" };
+  const listed = "series-21-working-with-agents-rules-that-refuse";
+  assert.ok(coverProvenance("series-01-x", studio));
+  assert.ok(coverProvenance(listed, local));
+  assert.ok(!coverProvenance(listed, { ...local, note: "rendered on the Mac" }), "no provenance note");
+  assert.ok(!coverProvenance(listed, { model: local.model, via: "local" }), "no note at all");
+  assert.ok(!coverProvenance("series-22-unlisted", local), "unlisted id");
+  assert.ok(!coverProvenance(listed, { ...local, via: "mac" }), "unnamed kind");
+});
+
 test("every chapter of the series but the 10th wears its series cover, and each cover is a media entry sold in every size", () => {
   const picked = series.chapters.map((c, i) => ({ ...c, id: `series-${String(i + 1).padStart(2, "0")}-${c.post}` }));
   for (const c of picked) {
@@ -29,14 +59,7 @@ test("every chapter of the series but the 10th wears its series cover, and each 
     );
     assert.ok(m.renditions.avif.length > 0 && m.renditions.webp.length > 0, `${c.id} has renditions`);
     for (const u of [...m.srcs, ...m.renditions.avif, ...m.renditions.webp]) assert.match(u.url, CDN_HOSTS);
-    /* A series batch run in Orazaka Studio, or (chapter 21 on) a render on the Mac with the media worker's model, which says
-       so in its note (lib/media.json: a result made outside an Orazaka run says so). */
-    const studio = /Studio run [0-9a-f]{8}\)/.test(m.made.note) && m.made.model === "FLUX.1 [schnell]";
-    const local =
-      m.made.via === "local" &&
-      /^FLUX\.2 \[klein\]/.test(m.made.model) &&
-      /outside an Orazaka Studio run/.test(m.made.note);
-    assert.ok(studio || local, `${c.id} says how it was made`);
+    assert.ok(coverProvenance(c.id, m.made), `${c.id} says how it was made`);
   }
 });
 
