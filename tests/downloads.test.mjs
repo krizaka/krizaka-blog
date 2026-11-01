@@ -20,6 +20,7 @@ import {
   plain,
   pdfProblems,
   planBooks,
+  recordBooks,
   removeHidden,
   replaceElements,
   sourceHash,
@@ -323,4 +324,17 @@ test("the books' look: the Cahier's faces are @krizaka/fonts files, embedded in 
   });
   assert.match(cover, /<html lang="fr">/);
   assert.match(cover, /A &lt;b&gt;/);
+});
+
+test("record merges by key: a book the run did not render keeps its entry (krizaka-internal#2081)", () => {
+  const file = (hash) => ({ hash, bytes: 10 });
+  const entry = (hash) => ({ source: "s", files: { epub: file(hash), pdf: file(hash) } });
+  const current = { books: { "en/story": entry("old1"), "fr/story": entry("old2") } };
+  const made = { books: { "en/story": { source: "s2", files: { epub: file("new1"), pdf: file("new1"), extra: 1 } } } };
+  const out = recordBooks(current, made);
+  assert.deepEqual(Object.keys(out.books).sort(), ["en/story", "fr/story"]);
+  assert.equal(out.books["fr/story"].files.pdf.hash, "old2");
+  assert.equal(out.books["en/story"].files.epub.hash, "new1");
+  assert.equal(out.books["en/story"].source, "s2");
+  assert.equal(recordBooks(undefined, made).books["en/story"].files.pdf.hash, "new1");
 });

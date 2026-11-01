@@ -14,7 +14,8 @@ import { spawnSync } from "node:child_process";
 import { copyFileSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { FACES, TEXT_BLOCK, coverHtml, epubCss, printCss } from "../lib/ebook-style.mjs";
+import { FACES, INK, PAPER, TEXT_BLOCK, coverHtml, epubCss, printCss } from "../lib/ebook-style.mjs";
+import { renderPlates } from "../lib/plates.mjs";
 import { MM, pdfLayoutProblems, pushedPictures, readPages } from "../lib/pdf-layout.mjs";
 import {
   FORMATS,
@@ -33,6 +34,7 @@ import {
   missingChapters,
   pdfProblems,
   planBooks,
+  recordBooks,
 } from "../lib/downloads-core.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -260,6 +262,14 @@ async function drawCovers(browser, { book, t, parts, single, title, name, dir })
     label: t.downloads.coverLabel,
     image: single && parts[0].cover ? `file://${join(dir, parts[0].cover.src)}` : undefined,
     fontsBase: `file://${join(dir, "fonts")}/`,
+    place: t.downloads.coverPlace,
+    // The year of the book: its latest chapter's.
+    year: parts
+      .map((p) => p.date)
+      .sort((a, b) => a.localeCompare(b))
+      .at(-1)
+      .slice(0, 4),
+    plates: await renderPlates({ ink: INK, paper: PAPER }),
   };
   const ebookCover = await shoot(browser, dir, `${name}.cover-ebook`, coverHtml(coverArgs), 1200, 1800);
   const printCover = await shoot(browser, dir, `${name}.cover-print`, coverHtml(coverArgs), 1240, 1754);
@@ -508,17 +518,11 @@ async function generate() {
 
 function record() {
   const made = JSON.parse(readFileSync(join(outDir, "files.json"), "utf8"));
-  const books = Object.fromEntries(
-    Object.entries(made.books).map(([id, b]) => [
-      id,
-      {
-        source: b.source,
-        files: Object.fromEntries(FORMATS.map((f) => [f, { hash: b.files[f].hash, bytes: b.files[f].bytes }])),
-      },
-    ]),
+  const merged = recordBooks(JSON.parse(readFileSync(MANIFEST, "utf8")), made);
+  writeFileSync(MANIFEST, `${JSON.stringify(merged, null, 2)}\n`);
+  console.log(
+    `downloads: lib/downloads.json records ${Object.keys(made.books).length} rendered book(s), ${Object.keys(merged.books).length} in all`,
   );
-  writeFileSync(MANIFEST, `${JSON.stringify({ books }, null, 2)}\n`);
-  console.log(`downloads: lib/downloads.json records ${Object.keys(books).length} books`);
 }
 
 async function check() {
