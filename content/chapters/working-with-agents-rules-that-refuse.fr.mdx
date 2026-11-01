@@ -1,0 +1,143 @@
+---
+title: "Travailler avec des agents : des règles qui disent non"
+description: "Nos règles étaient écrites, et les agents les oubliaient. On les a mises dans les commandes : une commande qui refuse ne s'oublie pas. Les voies, les trains, les gardes, et ce qui reste à moi."
+seoTitle: "Travailler avec des agents : des règles qui disent non"
+seoDescription: "Comment Krizaka travaille avec des agents : des voies, des commandes qui refusent, des trains, des gardes et des délais partout."
+date: 2026-10-31
+publishedAt: "2026-10-31T23:00:00-04:00"
+tags: [ai, integration]
+author: oussama
+cover: series-21-working-with-agents-rules-that-refuse
+coverAlt: "Un vieux poste d'aiguillage à l'aquarelle, une rangée de leviers de fer devant de grandes fenêtres, des voies qui se rejoignent dehors sous la neige, et un petit canard rouge perché sur un levier, près d'une lampe allumée"
+draft: false
+newsletter: hold
+sensitive: true
+chapter: 21
+period: "2026-10-22/2026-10-31"
+sources:
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "des règles écrites que les sessions oubliaient"
+  built: "des commandes qui refusent, une garde par dérive, et moi aux décisions"
+---
+
+Pendant des semaines, nos règles vivaient dans un fichier. Un long texte que chaque session d'agent lit en arrivant : comment nommer une issue, combien de pull requests ouvertes au plus, qui a le droit de fusionner. Les agents le lisaient. Et puis, un peu plus loin dans la session, ils l'oubliaient. Pas par mauvaise volonté : un texte de deux cents lignes pèse peu face à la tâche du moment.
+
+Ce chapitre raconte comment on a déplacé ces règles du texte vers les commandes. Il fait suite au [chapitre 17](/fr/story/how-the-founder-and-the-cto-agent-work/), où je racontais qui décide quoi entre l'agent CTO et moi, et à [Tchou-tchou](/fr/story/tchou-tchou-how-our-pull-requests-catch-the-train/), sur nos trains.
+
+## Une règle écrite s'oublie, une commande qui refuse non
+
+Le déclic est venu d'une série de petites dérives, toutes dans la même semaine. Une session ouvre une issue avec mon compte au lieu du sien. Une autre pousse en sautant les contrôles du dépôt, par erreur. Une troisième invente une adresse de co-auteur pour son commit, et un inconnu apparaît dans la liste des contributeurs. Chaque fois, la règle existait. Elle était écrite, noir sur blanc.
+
+On a fini par comprendre une chose simple : si une règle peut être enfreinte, elle le sera, tôt ou tard, par quelqu'un de pressé. Un humain comme un agent. Alors on a arrêté d'ajouter des phrases et on a mis les règles là où le travail passe forcément : dans les commandes.
+
+Aujourd'hui, un agent n'ouvre pas une issue avec l'outil de GitHub. Il passe par notre commande, qui la range dans un dépôt privé, lui donne un titre standard et ses étiquettes, la pose sur le tableau, et refuse un doublon. Pour une pull request, c'est pareil : la commande refuse un titre mal formé, une PR sans issue, ou un dépôt qui a déjà cinq PR ouvertes. En fin de session, une dernière commande refuse de clore si une PR n'a pas de train, ou si la session n'a pas laissé de passation.
+
+Voici l'idée, réduite à l'os. Ce n'est pas notre code, c'est sa forme :
+
+```sh
+# ouvrir une PR : la commande vérifie avant d'agir
+pr_open() {   # lit : titre issue dépôt
+  read -r titre issue depot
+  echo "$titre" | grep -Eq '^[a-z]+\([a-z0-9-]+\): .+' \
+    || refuse "le titre doit être « type(sujet): quoi »"
+  [ -n "$issue" ] || refuse "chaque PR ferme une issue : crée-la d'abord"
+  [ "$(prs_ouvertes "$depot")" -lt 5 ] \
+    || refuse "$depot a déjà 5 PR ouvertes : dépose-en une d'abord"
+  ouvrir_la_pr && lancer_le_train
+}
+```
+
+Le message du refus compte autant que le refus. Il dit quoi faire ensuite. Un agent qui lit « crée-la d'abord » crée l'issue, puis revient. Il n'a pas besoin de se souvenir de la règle : la commande s'en souvient pour lui.
+
+Ce soir, pour écrire ce chapitre, je l'ai regardée faire, en mode essai, sans rien créer. J'ai demandé une PR avec un titre libre et sans issue :
+
+```text
+$ pr-open … --title "Chapter 21" --dry-run
+pr-open: refused: title must be `type(scope): what` (conventional commit,
+lower-case type); every PR closes or refs a krizaka-internal issue
+(--closes N | --refs N; create it with issue-new)
+```
+
+Puis une issue avec un type inventé et un corps vide, et une autre que je voulais ranger en incubation :
+
+```text
+$ issue-new … --type feature --what "x" --body "" --dry-run
+issue-new: refused: --type must be one of [feat, fix, … post];
+the title text says what, in plain words (8+ characters);
+a body (--body or --body-file): what, why, done when
+
+$ issue-new … --type feat --status Incubation --dry-run
+issue-new: refused: … Incubation is only for the founder's ideas (--type idea)
+```
+
+Ce que ça a donné : trois refus, code de sortie 2, rien de créé, et chaque fois la phrase qui dit quoi corriger. La vraie issue de ce chapitre, elle, est passée du premier coup par la même commande, qui l'a posée sur le tableau en « En cours ». Et le même soir, une garde de plus : la lettre aux abonnés partait toute seule à la publication d'un chapitre. J'ai écrit d'abord le test qui le montrait, rouge, puis la ligne qui permet de dire `newsletter: hold`. Le test est passé au vert, et il reste là.
+
+## Le chemin d'un changement
+
+Rien ne démarre sans une issue. Chaque issue appartient à une voie, et chaque voie a une seule session à la fois. Il y en a cinq aujourd'hui : Yomizaka, Akinaza, Orazaka, la Plateforme et la Sécurité, plus une file pour mes demandes ponctuelles, comme celle qui a donné ce chapitre. La voie Sécurité est arrivée cette semaine : avant, la sécurité se glissait dans la Plateforme et passait après le reste.
+
+<Pipeline label="Le chemin d'un changement chez nous. Les commandes refusent à l'entrée, le train ne juge rien, la file de fusion rejoue les contrôles, et personne ne fusionne à la main.">
+  <Stage title="Issue" note="une commande" tone="gate">Titre standard, étiquettes, une carte sur le tableau. Un doublon est refusé.</Stage>
+  <Stage title="Session de voie" note="une par voie">Un agent, un modèle choisi pour la tâche, un budget. Le test d'abord, puis le code.</Stage>
+  <Stage title="Pull request" note="une commande" tone="gate">Le titre, l'issue, la limite de cinq PR par dépôt. La PR lance son train.</Stage>
+  <Stage title="Train" note="aucun jeton">Il attend la PR précédente, met la branche à jour, la met en file. Il s'arrête au premier rouge.</Stage>
+  <Stage title="File de fusion" note="CI encore">Les contrôles repassent, sur la PR mêlée à ce qui la précède.</Stage>
+  <Stage title="main" note="un commit" tone="ship">Un seul commit, la branche supprimée, puis le déploiement.</Stage>
+</Pipeline>
+
+Samedi 31 octobre, 222 pull requests ont été fusionnées dans l'organisation ; la recherche de GitHub le recompte en une requête. On ne fusionne jamais à la main. J'ai appris celle-là à mes dépens. Fusionner une PR « juste celle-là, elle est évidente », c'est court-circuiter la file, et la file est justement là pour voir ce qu'on ne voit pas : deux PR saines qui, ensemble, cassent main.
+
+## Chaque dérive laisse une garde
+
+La deuxième habitude, c'est celle du [chapitre 20](/fr/story/how-our-automation-grew/) : un bug veut dire qu'il manquait une garde. On ne se contente pas de corriger. On se demande pourquoi rien ne l'a arrêté, et on ajoute ce qui l'arrêtera la prochaine fois.
+
+Nos trains en sont pleins. Un jour, des sessions ont lancé le même train jusqu'à quatre fois pour la même PR ; chacun approuvait et mettait en file, et GitHub nous a limités. Depuis, un deuxième train pour une PR qui en a déjà un refuse de partir. Un autre jour, une vingtaine de trains interrogeaient GitHub trop souvent, et toutes les sessions se sont figées en même temps, faute de quota. Les trains interrogent maintenant moins souvent, par un autre chemin. Et un autre jour, un fichier a perdu son droit d'exécution pendant une réécriture : pendant une heure, tous les trains sont morts sans bruit. Ce cas a maintenant son test.
+
+La plus récente est de cette semaine : quand main est rouge dans un dépôt, plus rien n'y entre, sauf la PR qui le répare. Une issue s'ouvre toute seule pour que le rouge ait un responsable.
+
+Aucune de ces histoires n'est la faute d'un agent en particulier. Ce sont des trous dans le système. Le texte qui décrit chaque garde garde la date et la raison, en une ligne, pour que personne ne l'enlève en croyant la simplifier.
+
+## Des limites de temps partout
+
+Un agent qui attend coûte cher, et un agent bloqué ne le sait pas toujours. Alors tout a une limite. Chaque test a un délai, deux minutes par défaut. Chaque job de CI a un délai proche de sa vraie durée, pas une heure « au cas où ». Chaque session a un budget, et quand il est atteint, elle ne commence plus rien : elle termine ce qu'elle a en main et laisse une passation. Les travaux lourds, comme une compilation ou une image générée, passent par un seul verrou, pour que la machine ne s'écroule pas sous dix sessions à la fois.
+
+## Le tableau, l'agent CTO, et moi
+
+Tout ce qui se passe est sur un seul tableau, et un seul script a le droit de déplacer les cartes. Le tableau dit la vérité : si une carte est « En cours », une session y travaille vraiment.
+
+L'agent CTO lit ce tableau et lance les sessions. Il choisit le modèle selon la tâche : un petit modèle pour déposer des PR déjà relues, un modèle moyen pour une fonctionnalité ou un correctif, le plus grand pour une décision de conception ou une recherche. Chaque session reçoit une issue et un budget. Il me fait un rapport toutes les trois heures.
+
+<Pipeline label="La boucle entre moi, l'agent CTO et les sessions. Le tableau est le point de passage ; ce qui est payant, juridique ou irréversible remonte toujours jusqu'à moi.">
+  <Stage title="Moi" note="la direction" tone="gate">Je fixe la direction et je décide l'argent, les comptes, le juridique et l'irréversible.</Stage>
+  <Stage title="Agent CTO" note="délègue">Il découpe en issues, choisit l'ordre, le modèle et le budget de chaque session.</Stage>
+  <Stage title="Sessions de voie" note="une par voie">Elles livrent : test, code, PR, train.</Stage>
+  <Stage title="Le tableau" note="la vérité">Chaque carte bouge avec le travail. Ce qui m'attend va dans la colonne Bloqué, avec une phrase.</Stage>
+  <Stage title="Retour à moi" note="toutes les 3 h" tone="ship">Un rapport : fini, en cours, bloqué, et une prévision. Je tranche ce qui m'attend.</Stage>
+</Pipeline>
+
+Ce qui m'appartient ne bouge pas : l'argent, les comptes, le juridique, ce qui ne se défait pas. Quand une session tombe sur une de ces choses, elle ne devine pas. Elle déplace la carte dans la colonne Bloqué, écrit en une phrase ce que je dois faire, et passe à autre chose. Rien n'attend sur moi. C'est d'ailleurs la règle de ce soir : ce chapitre est publié, mais l'envoi de la lettre aux abonnés reste à moi.
+
+## Une équipe pour le design
+
+La dernière pièce est en train d'arriver. Sur le design, on recevait des avis ponctuels, chacun juste, aucun répété. Cette semaine, on ajoute une petite équipe d'intervention de trois rôles qui passent toujours dans le même ordre : quelqu'un qui pense au marché et à l'acheteur, quelqu'un qui pense au parcours et à l'information, quelqu'un qui pense à l'interface. Leur sortie n'est pas un avis, c'est un avant et après, la liste des composants à changer dans notre bibliothèque, et les issues. Elle n'a pas encore fait sa première intervention ; je raconterai ce qu'elle donne.
+
+## Ce que vous pouvez en prendre
+
+Vous n'avez pas besoin de nos outils pour essayer. Prenez la règle que votre équipe enfreint le plus souvent, et mettez-la dans la commande que tout le monde utilise déjà, avec un message qui dit quoi faire. Puis, au prochain incident, ne vous arrêtez pas au correctif : demandez-vous ce qui aurait dû l'arrêter.
+
+Notre devise tient en une phrase, et elle vaut pour les agents comme pour moi : le flux tourne, l'échéance est à nous, elle peut bouger, la qualité jamais.
+
+## Questions fréquentes
+
+### Pourquoi ne pas simplement écrire de meilleures instructions ?
+
+Parce qu'une instruction se lit une fois et s'oublie au milieu d'une longue tâche. Une commande qui refuse est relue à chaque fois qu'on l'utilise, sans effort. On garde un texte court pour le jugement, ce qu'un script ne sait pas trancher.
+
+### Est-ce que les agents fusionnent eux-mêmes ?
+
+Non, et personne ne fusionne à la main. La session relit son propre changement, puis le train met la PR dans la file de fusion de GitHub, qui rejoue les contrôles avant d'écrire sur main.
+
+### Qu'est-ce qui reste au fondateur ?
+
+La direction, l'argent, les comptes, le juridique et tout ce qui ne se défait pas. Le reste, l'agent CTO le tranche s'il est réversible, avec un plafond écrit quand une dépense est possible.

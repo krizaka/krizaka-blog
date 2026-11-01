@@ -91,7 +91,9 @@
       "label": "The author's signature",
       "quote": "We are not racing anyone. We build what is useful, and we build it well.",
       "name": "Wu-sama",
-      "fullName": "Oussama Abid"
+      "fullName": "Oussama Abid",
+      "github": "GitHub",
+      "githubLabel": "Oussama’s GitHub profile (oussamaABID), in a new tab"
     }
   },
   "engage": {
@@ -209,7 +211,10 @@
     "labNote": "My first brush with AI was in 2011, at the {lab}, long before the word was in fashion.",
     "lab": "Grenoble Informatics Laboratory (LIG)",
     "placesLabel": "Lives in",
-    "places": ["Montréal"]
+    "places": ["Montréal"],
+    "github": "My GitHub",
+    "githubLabel": "Oussama’s GitHub profile (oussamaABID), in a new tab",
+    "bannerAlt": "The banner of my GitHub profile, a page of squared notebook paper: the name Wu-sama, « oussama · founder of krizaka · montréal », the line « building yomizaka, akinaza & orazaka », a « spécimen n° 001 » card and a « fait à montréal » stamp"
   },
   "newsletter": {
     "eyebrow": "Newsletter",

@@ -7,7 +7,7 @@
     "height": 720
   },
   "steps": 4,
-  "guidance": 1.0,
+  "guidance": 1,
   "style": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos.",
   "continuity": "Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere.",
   "never": [
@@ -143,6 +143,12 @@
       "seed": 3120,
       "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
       "beat": "Not rendered for this chapter: it wears the candidate A rendered for chapter 13 in batch 2026-10-30-blog-v2 and left unpicked there (a long vaulted hall of repeating arches, the duck in the aisle). The series' cast is carried over unchanged."
+    },
+    {
+      "post": "working-with-agents-rules-that-refuse",
+      "seed": 2101,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "Not part of a series batch: rendered on the Mac with FLUX.2 [klein] 4B in the series’ ink-and-watercolour look (krizaka-internal#2071). An old railway signal box, its interlocked levers in a row, tracks merging outside in the snow, the duck perched on a lever by the lamp. The series' cast is carried over unchanged."
     }
   ],
   "sprites": {

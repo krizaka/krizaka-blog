@@ -4,7 +4,11 @@ import { Section } from "@krizaka/ui/page";
 import { Card } from "@krizaka/ui/card";
 import { Badge } from "@krizaka/ui/badge";
 import { Separator } from "@krizaka/ui/separator";
+import { Button } from "@krizaka/ui/button";
 import { WuSamaMark } from "./WuSamaMark";
+import { GitHubMark } from "../GitHubMark";
+import { GitHubBanner } from "./GitHubBanner";
+import { AUTHOR_GITHUB } from "@/lib/author-links";
 import { getDictionary, type Locale } from "@/lib/i18n";
 import { jsonLd } from "@/lib/json-ld";
 import { absoluteUrl } from "@/lib/seo";
@@ -27,6 +31,7 @@ export function aboutJsonLd(locale: Locale) {
       "@type": "Person",
       name: "Oussama Abid",
       homeLocation: { "@type": "Place", name: "Montréal" },
+      sameAs: [AUTHOR_GITHUB.url],
       worksFor: organization,
     },
     publisher: organization,
@@ -55,6 +60,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
         </ul>
       </PageHero>
       <Section reveal={false}>
+        <GitHubBanner label={a.githubLabel} alt={a.bannerAlt} />
         <Card.Root tone="elevated" radius="xl" className="bl-about-card">
           <Card.Body padding="lg" className="bl-about-card-body">
             <div className="bl-about">
@@ -72,6 +78,12 @@ export function AboutPage({ locale }: { locale: Locale }) {
                       {a.places[0]}
                     </Badge>
                   </div>
+                  <Button asChild variant="secondary" size="sm" className="bl-about-github">
+                    <a href={AUTHOR_GITHUB.url} rel="noopener me" target="_blank" aria-label={a.githubLabel}>
+                      <GitHubMark size={15} />
+                      {a.github}
+                    </a>
+                  </Button>
                 </div>
               </aside>
               <div className="bl-about-content">

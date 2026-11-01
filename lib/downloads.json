@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "858114aecfeb",
+      "source": "1df4b489a6be",
       "files": {
         "epub": {
-          "hash": "839cbf75a8",
-          "bytes": 5405668
+          "hash": "0fa6129037",
+          "bytes": 5617617
         },
         "pdf": {
-          "hash": "2588e6732d",
-          "bytes": 7854070
+          "hash": "ede0bf1850",
+          "bytes": 8120528
         }
       }
     },
@@ -17,12 +17,12 @@
       "source": "920a8a3808e2",
       "files": {
         "epub": {
-          "hash": "e592724385",
-          "bytes": 743742
+          "hash": "ff2f70cca6",
+          "bytes": 743780
         },
         "pdf": {
-          "hash": "067240d78e",
-          "bytes": 1142713
+          "hash": "503b62cddf",
+          "bytes": 1143606
         }
       }
     },
@@ -30,12 +30,12 @@
       "source": "25e4d01e7598",
       "files": {
         "epub": {
-          "hash": "4568fde278",
-          "bytes": 1655274
+          "hash": "06663eaf12",
+          "bytes": 1655312
         },
         "pdf": {
-          "hash": "afdb482c0e",
-          "bytes": 2467794
+          "hash": "e15db2a805",
+          "bytes": 2468689
         }
       }
     },
@@ -43,12 +43,12 @@
       "source": "e7b1f68f1e60",
       "files": {
         "epub": {
-          "hash": "0a2df64ad7",
-          "bytes": 1534669
+          "hash": "864c45567d",
+          "bytes": 1534707
         },
         "pdf": {
-          "hash": "17c4f224c1",
-          "bytes": 2040926
+          "hash": "6dbb1202a9",
+          "bytes": 2041830
         }
       }
     },
@@ -56,12 +56,12 @@
       "source": "47aa2466ed26",
       "files": {
         "epub": {
-          "hash": "d4aa31e720",
-          "bytes": 1154216
+          "hash": "09374a1150",
+          "bytes": 1154254
         },
         "pdf": {
-          "hash": "7c6ef3382d",
-          "bytes": 1695091
+          "hash": "8a7ba6de0a",
+          "bytes": 1695987
         }
       }
     },
@@ -69,12 +69,12 @@
       "source": "80c15c84fe97",
       "files": {
         "epub": {
-          "hash": "062ebfa211",
-          "bytes": 2286877
+          "hash": "00168c8f72",
+          "bytes": 2286915
         },
         "pdf": {
-          "hash": "83b4ed9ee0",
-          "bytes": 3208238
+          "hash": "3d7956f3a9",
+          "bytes": 3209136
         }
       }
     },
@@ -82,12 +82,12 @@
       "source": "b0740e1caa0a",
       "files": {
         "epub": {
-          "hash": "794cbd298a",
-          "bytes": 1012267
+          "hash": "2a67f2c449",
+          "bytes": 1012305
         },
         "pdf": {
-          "hash": "825b132410",
-          "bytes": 1549439
+          "hash": "170017cdc2",
+          "bytes": 1550335
         }
       }
     },
@@ -95,12 +95,12 @@
       "source": "d3f3e6a1e0b9",
       "files": {
         "epub": {
-          "hash": "0453f9bec9",
-          "bytes": 655164
+          "hash": "57ad6e622d",
+          "bytes": 655202
         },
         "pdf": {
-          "hash": "ec021db435",
-          "bytes": 1038439
+          "hash": "1fab2110fb",
+          "bytes": 1039337
         }
       }
     },
@@ -108,12 +108,12 @@
       "source": "5ed3442689bc",
       "files": {
         "epub": {
-          "hash": "c95dbf2523",
-          "bytes": 1372647
+          "hash": "360bcaa9fc",
+          "bytes": 1372685
         },
         "pdf": {
-          "hash": "bd44bbc1f0",
-          "bytes": 2103702
+          "hash": "e5c0885f15",
+          "bytes": 2104599
         }
       }
     },
@@ -121,12 +121,12 @@
       "source": "1235efe68d3e",
       "files": {
         "epub": {
-          "hash": "46567aa18f",
-          "bytes": 786383
+          "hash": "7a99ee5d96",
+          "bytes": 786421
         },
         "pdf": {
-          "hash": "48e65ad962",
-          "bytes": 1244716
+          "hash": "c72e50b220",
+          "bytes": 1245624
         }
       }
     },
@@ -134,12 +134,12 @@
       "source": "4cce97618e3e",
       "files": {
         "epub": {
-          "hash": "0667518de0",
-          "bytes": 1211034
+          "hash": "f8c8c3cbd7",
+          "bytes": 1211072
         },
         "pdf": {
-          "hash": "249b8d5eea",
-          "bytes": 2026730
+          "hash": "d0a10f9d4d",
+          "bytes": 2027641
         }
       }
     },
@@ -147,12 +147,12 @@
       "source": "5330fc52ed66",
       "files": {
         "epub": {
-          "hash": "74b1a2bc49",
-          "bytes": 987184
+          "hash": "68b5caede0",
+          "bytes": 987222
         },
         "pdf": {
-          "hash": "3ead97aec2",
-          "bytes": 1691387
+          "hash": "a9ab6deac5",
+          "bytes": 1692297
         }
       }
     },
@@ -160,12 +160,12 @@
       "source": "20d21f67700f",
       "files": {
         "epub": {
-          "hash": "1b92eb396e",
-          "bytes": 1192082
+          "hash": "a75fb5c4f0",
+          "bytes": 1192120
         },
         "pdf": {
-          "hash": "14ad5a0aed",
-          "bytes": 1925810
+          "hash": "bdc38ff7a9",
+          "bytes": 1926706
         }
       }
     },
@@ -173,12 +173,12 @@
       "source": "ab15a271a8e2",
       "files": {
         "epub": {
-          "hash": "2ce9a43961",
-          "bytes": 1302222
+          "hash": "61df955176",
+          "bytes": 1302260
         },
         "pdf": {
-          "hash": "78015f249c",
-          "bytes": 2168420
+          "hash": "3804fc3419",
+          "bytes": 2169326
         }
       }
     },
@@ -186,12 +186,12 @@
       "source": "0deb40c151e9",
       "files": {
         "epub": {
-          "hash": "1ddc156842",
-          "bytes": 511781
+          "hash": "9db1edd59e",
+          "bytes": 511819
         },
         "pdf": {
-          "hash": "fd8e61f233",
-          "bytes": 821481
+          "hash": "6188b79a17",
+          "bytes": 822377
         }
       }
     },
@@ -199,12 +199,12 @@
       "source": "dcf615fd8cb3",
       "files": {
         "epub": {
-          "hash": "902f930533",
-          "bytes": 970014
+          "hash": "09e9dab05e",
+          "bytes": 970052
         },
         "pdf": {
-          "hash": "8c2b3b8115",
-          "bytes": 1530552
+          "hash": "f14cb4aefd",
+          "bytes": 1531445
         }
       }
     },
@@ -212,12 +212,12 @@
       "source": "f969449a5056",
       "files": {
         "epub": {
-          "hash": "9dffc0fc8c",
-          "bytes": 912774
+          "hash": "b2d2484424",
+          "bytes": 912812
         },
         "pdf": {
-          "hash": "423961741e",
-          "bytes": 1363005
+          "hash": "089c4f939d",
+          "bytes": 1363902
         }
       }
     },
@@ -225,12 +225,12 @@
       "source": "7967a940bed6",
       "files": {
         "epub": {
-          "hash": "981661449a",
-          "bytes": 790514
+          "hash": "6947b3badb",
+          "bytes": 790552
         },
         "pdf": {
-          "hash": "97d3778275",
-          "bytes": 1150415
+          "hash": "3fc4939700",
+          "bytes": 1151310
         }
       }
     },
@@ -238,12 +238,12 @@
       "source": "9377a4610109",
       "files": {
         "epub": {
-          "hash": "2b829ee1fa",
-          "bytes": 1234357
+          "hash": "f149637cd6",
+          "bytes": 1234395
         },
         "pdf": {
-          "hash": "222d4a5401",
-          "bytes": 1875828
+          "hash": "6ea8951121",
+          "bytes": 1876724
         }
       }
     },
@@ -251,12 +251,12 @@
       "source": "05ba075f315a",
       "files": {
         "epub": {
-          "hash": "3f27b8bc88",
-          "bytes": 879941
+          "hash": "c26cdf7ae4",
+          "bytes": 879979
         },
         "pdf": {
-          "hash": "acc71997a1",
-          "bytes": 1410367
+          "hash": "1b52e65d4a",
+          "bytes": 1411274
         }
       }
     },
@@ -264,25 +264,38 @@
       "source": "58e85182419e",
       "files": {
         "epub": {
-          "hash": "6b5a9d3e63",
-          "bytes": 1265701
+          "hash": "823a21ae40",
+          "bytes": 1265739
         },
         "pdf": {
-          "hash": "2b5b166bc7",
-          "bytes": 1952485
+          "hash": "f8f9a32110",
+          "bytes": 1953380
+        }
+      }
+    },
+    "en/working-with-agents-rules-that-refuse": {
+      "source": "4995d424a51d",
+      "files": {
+        "epub": {
+          "hash": "93754c16c2",
+          "bytes": 1483840
+        },
+        "pdf": {
+          "hash": "c9bc5b0a19",
+          "bytes": 2169570
         }
       }
     },
     "fr/story": {
-      "source": "fe8020f27b89",
+      "source": "aef073c5cdb0",
       "files": {
         "epub": {
-          "hash": "4592e8767b",
-          "bytes": 5427028
+          "hash": "1165117d80",
+          "bytes": 5639554
         },
         "pdf": {
-          "hash": "93aeca158b",
-          "bytes": 8004021
+          "hash": "42163bf0ed",
+          "bytes": 8273763
         }
       }
     },
@@ -290,12 +303,12 @@
       "source": "be17ce96213a",
       "files": {
         "epub": {
-          "hash": "ad64f871ad",
-          "bytes": 749938
+          "hash": "753837873b",
+          "bytes": 749982
         },
         "pdf": {
-          "hash": "79fce6bf3d",
-          "bytes": 1161330
+          "hash": "c713373217",
+          "bytes": 1162250
         }
       }
     },
@@ -303,12 +316,12 @@
       "source": "eed091f5007d",
       "files": {
         "epub": {
-          "hash": "75fd928a0c",
-          "bytes": 1669549
+          "hash": "5f064938ed",
+          "bytes": 1669593
         },
         "pdf": {
-          "hash": "24ef046c96",
-          "bytes": 2497302
+          "hash": "5a320f8868",
+          "bytes": 2498229
         }
       }
     },
@@ -316,12 +329,12 @@
       "source": "916e35576b2a",
       "files": {
         "epub": {
-          "hash": "c9c0ebabc7",
-          "bytes": 1550925
+          "hash": "6c9df4953e",
+          "bytes": 1550969
         },
         "pdf": {
-          "hash": "a6be5fab47",
-          "bytes": 2079789
+          "hash": "6555055808",
+          "bytes": 2080722
         }
       }
     },
@@ -329,12 +342,12 @@
       "source": "185b9fdec695",
       "files": {
         "epub": {
-          "hash": "78404cb678",
-          "bytes": 1159177
+          "hash": "44f4405c47",
+          "bytes": 1159221
         },
         "pdf": {
-          "hash": "2cf5e22cbc",
-          "bytes": 1724031
+          "hash": "fa10b1fd2f",
+          "bytes": 1724955
         }
       }
     },
@@ -342,12 +355,12 @@
       "source": "687e75c3e180",
       "files": {
         "epub": {
-          "hash": "fbec34a4da",
-          "bytes": 2288287
+          "hash": "3cd455e3fe",
+          "bytes": 2288331
         },
         "pdf": {
-          "hash": "4f6df26e50",
-          "bytes": 3232491
+          "hash": "33807ee3da",
+          "bytes": 3233414
         }
       }
     },
@@ -355,12 +368,12 @@
       "source": "f6783400ef0c",
       "files": {
         "epub": {
-          "hash": "b453fd2e6e",
-          "bytes": 1018796
+          "hash": "a048561d54",
+          "bytes": 1018840
         },
         "pdf": {
-          "hash": "b97dec5c0a",
-          "bytes": 1583421
+          "hash": "bb9d8b7d55",
+          "bytes": 1584358
         }
       }
     },
@@ -368,12 +381,12 @@
       "source": "46ff3c601bec",
       "files": {
         "epub": {
-          "hash": "48223cfc08",
-          "bytes": 660667
+          "hash": "2cb7a16913",
+          "bytes": 660711
         },
         "pdf": {
-          "hash": "14358b8be0",
-          "bytes": 1069105
+          "hash": "7b3c1c017c",
+          "bytes": 1070031
         }
       }
     },
@@ -381,12 +394,12 @@
       "source": "506b92fd4cae",
       "files": {
         "epub": {
-          "hash": "c379bfee9c",
-          "bytes": 1387399
+          "hash": "1f248d7392",
+          "bytes": 1387443
         },
         "pdf": {
-          "hash": "dbad3b9dfa",
-          "bytes": 2134834
+          "hash": "df8e7b4e01",
+          "bytes": 2135757
         }
       }
     },
@@ -394,12 +407,12 @@
       "source": "0cf0a2843a30",
       "files": {
         "epub": {
-          "hash": "35a8dbb668",
-          "bytes": 785655
+          "hash": "f1d728a43e",
+          "bytes": 785699
         },
         "pdf": {
-          "hash": "db4266d31c",
-          "bytes": 1267341
+          "hash": "17a0633fe0",
+          "bytes": 1268273
         }
       }
     },
@@ -407,12 +420,12 @@
       "source": "210332ee136a",
       "files": {
         "epub": {
-          "hash": "2be29ed283",
-          "bytes": 1224293
+          "hash": "b7770ac6ce",
+          "bytes": 1224337
         },
         "pdf": {
-          "hash": "70e04e5643",
-          "bytes": 2057935
+          "hash": "afd508cd04",
+          "bytes": 2058874
         }
       }
     },
@@ -420,12 +433,12 @@
       "source": "833086ed8344",
       "files": {
         "epub": {
-          "hash": "7a4efdca4f",
-          "bytes": 1001115
+          "hash": "5c3d530e30",
+          "bytes": 1001159
         },
         "pdf": {
-          "hash": "39ddde4370",
-          "bytes": 1726797
+          "hash": "025510f6df",
+          "bytes": 1727735
         }
       }
     },
@@ -433,12 +446,12 @@
       "source": "19b7b0c80ec1",
       "files": {
         "epub": {
-          "hash": "2ea256b4b4",
-          "bytes": 1208058
+          "hash": "a829e977a0",
+          "bytes": 1208102
         },
         "pdf": {
-          "hash": "24cd2f63d3",
-          "bytes": 1962859
+          "hash": "cb1dd81496",
+          "bytes": 1963786
         }
       }
     },
@@ -446,12 +459,12 @@
       "source": "8e186320bd28",
       "files": {
         "epub": {
-          "hash": "860a5920c3",
-          "bytes": 1303595
+          "hash": "2efaaf537d",
+          "bytes": 1303639
         },
         "pdf": {
-          "hash": "1cd57605c6",
-          "bytes": 2194267
+          "hash": "d168284f89",
+          "bytes": 2195199
         }
       }
     },
@@ -459,12 +472,12 @@
       "source": "f145c1df0c47",
       "files": {
         "epub": {
-          "hash": "fe93ee03c9",
-          "bytes": 506776
+          "hash": "538db48c01",
+          "bytes": 506820
         },
         "pdf": {
-          "hash": "05bddc844c",
-          "bytes": 835764
+          "hash": "32206dd56e",
+          "bytes": 836688
         }
       }
     },
@@ -472,12 +485,12 @@
       "source": "9b09a59e8b32",
       "files": {
         "epub": {
-          "hash": "e3521c20f1",
-          "bytes": 981452
+          "hash": "37396fe236",
+          "bytes": 981496
         },
         "pdf": {
-          "hash": "ed95d1db6b",
-          "bytes": 1559443
+          "hash": "c8aade27c2",
+          "bytes": 1560381
         }
       }
     },
@@ -485,12 +498,12 @@
       "source": "1219e82f8281",
       "files": {
         "epub": {
-          "hash": "36378dc49e",
-          "bytes": 926781
+          "hash": "7a04a35d72",
+          "bytes": 926825
         },
         "pdf": {
-          "hash": "2b7dd1231a",
-          "bytes": 1393922
+          "hash": "e80eddfac0",
+          "bytes": 1394846
         }
       }
     },
@@ -498,12 +511,12 @@
       "source": "2b91f3d67af8",
       "files": {
         "epub": {
-          "hash": "c2fef2c436",
-          "bytes": 804629
+          "hash": "96fde2a79c",
+          "bytes": 804673
         },
         "pdf": {
-          "hash": "abf5605721",
-          "bytes": 1181355
+          "hash": "9afe97e04d",
+          "bytes": 1182275
         }
       }
     },
@@ -511,12 +524,12 @@
       "source": "a05a25797116",
       "files": {
         "epub": {
-          "hash": "686117677c",
-          "bytes": 1253779
+          "hash": "24d2f283c0",
+          "bytes": 1253823
         },
         "pdf": {
-          "hash": "97b7425a7f",
-          "bytes": 1910479
+          "hash": "ace202563f",
+          "bytes": 1911402
         }
       }
     },
@@ -524,12 +537,12 @@
       "source": "04c4b5a83b2b",
       "files": {
         "epub": {
-          "hash": "1e8f0588e1",
-          "bytes": 891723
+          "hash": "6c4f25bf89",
+          "bytes": 891767
         },
         "pdf": {
-          "hash": "a75e4be8f0",
-          "bytes": 1436523
+          "hash": "f5c5e1ff99",
+          "bytes": 1437457
         }
       }
     },
@@ -537,12 +550,25 @@
       "source": "f7ba00e66c65",
       "files": {
         "epub": {
-          "hash": "c02d5586b8",
-          "bytes": 1264411
+          "hash": "ca2d09912b",
+          "bytes": 1264455
         },
         "pdf": {
-          "hash": "087ac55a64",
-          "bytes": 1968234
+          "hash": "21bdd4c2f4",
+          "bytes": 1969159
+        }
+      }
+    },
+    "fr/working-with-agents-rules-that-refuse": {
+      "source": "3afc93ba2c69",
+      "files": {
+        "epub": {
+          "hash": "1dfb9bddc2",
+          "bytes": 1497217
+        },
+        "pdf": {
+          "hash": "f48f252103",
+          "bytes": 2198352
         }
       }
     }
