@@ -249,7 +249,7 @@ async function main() {
   const organizationHome = args.includes("--organization");
   let failed = 0;
   const report = (where, problems) => {
-    for (const p of problems) process.stderr.write(`${`✗ ${where}: ${p}`}\n`);
+    for (const p of problems) process.stderr.write(`✗ ${where}: ${p}\n`);
     failed += problems.length;
   };
   const get = async (p) => {
@@ -300,11 +300,11 @@ async function main() {
 
   function done(pages) {
     if (failed) {
-      process.stderr.write(`${`SEO family check: ${failed} problem(s) on ${pages} page(s) of ${host}`}\n`);
+      process.stderr.write(`SEO family check: ${failed} problem(s) on ${pages} page(s) of ${host}\n`);
       process.exit(1);
     }
     process.stdout.write(
-      `${`SEO family check: ${pages} page(s) and robots.txt of ${host} (${index ? "indexed" : "noindex"}${consoleMode ? ", console" : ""}) — all good`}\n`,
+      `SEO family check: ${pages} page(s) and robots.txt of ${host} (${index ? "indexed" : "noindex"}${consoleMode ? ", console" : ""}) — all good\n`,
     );
   }
 }
