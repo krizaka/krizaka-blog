@@ -300,11 +300,11 @@ async function main() {
 
   function done(pages) {
     if (failed) {
-      process.stderr.write(`${`SEO family check: ${failed} problem(s) on ${pages} page(s) of ${host}`}\n`);
+      process.stderr.write(`SEO family check: ${failed} problem(s) on ${pages} page(s) of ${host}\n`);
       process.exit(1);
     }
     process.stdout.write(
-      `${`SEO family check: ${pages} page(s) and robots.txt of ${host} (${index ? "indexed" : "noindex"}${consoleMode ? ", console" : ""}) — all good`}\n`,
+      `SEO family check: ${pages} page(s) and robots.txt of ${host} (${index ? "indexed" : "noindex"}${consoleMode ? ", console" : ""}) — all good\n`,
     );
   }
 }
