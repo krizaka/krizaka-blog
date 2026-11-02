@@ -78,3 +78,9 @@ test("an operator console: no sitemap needed, but it must say noindex", async ()
   assert.deepEqual(auditConsoleHtml('<meta name="robots" content="noindex, nofollow"/>'), []);
   assert.equal(auditConsoleHtml("<html></html>").length, 1);
 });
+
+test("check-seo-family.mjs has no nested template literal (S4624)", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const source = await readFile(new URL("../scripts/check-seo-family.mjs", import.meta.url), "utf8");
+  assert.doesNotMatch(source, /\$\{`/, "a template literal sits inside a ${…} of another one");
+});

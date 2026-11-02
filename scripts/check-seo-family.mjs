@@ -249,7 +249,7 @@ async function main() {
   const organizationHome = args.includes("--organization");
   let failed = 0;
   const report = (where, problems) => {
-    for (const p of problems) process.stderr.write(`${`✗ ${where}: ${p}`}\n`);
+    for (const p of problems) process.stderr.write(`✗ ${where}: ${p}\n`);
     failed += problems.length;
   };
   const get = async (p) => {
