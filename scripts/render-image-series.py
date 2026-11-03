@@ -3,6 +3,8 @@
 
   python3 scripts/render-image-series.py --worker <orazaka-worker-media dir> --anchor <brand picture> --out <name> [--only N]
 
+--worker is the media worker's checkout (orazaka-worker-media) with its .venv, mflux installed. A draft chapter needs its cover before its PR (check-content says so).
+
 --out is a folder NAME inside the scratch folder (SERIES_SCRATCH, default ~/.krizaka-worktrees/_scratch-media): nothing is rendered
 elsewhere, and a name with a separator or a dot-dot is refused.
 
@@ -41,7 +43,10 @@ def command(series: dict, index: int, sprite: dict[str, Path], previous: Path | 
     chapter = series["chapters"][index]
     arrived = [b for b in chapter["birds"] if index == 0 or b not in series["chapters"][index - 1]["birds"]]
     refs = ([str(previous)] if previous else []) + [str(sprite[b]) for b in arrived]
+    # 2026-11-03 (krizaka-internal#2324): the entry point's shebang names the venv's old path once the worker folder moved, so the
+    # script is run by the venv's own python (which reads pyvenv.cfg), never executed directly.
     return [
+        str(worker / ".venv/bin/python"),
         str(worker / ".venv/bin/mflux-generate-flux2-edit"),
         "--model", series["model"],
         "--prompt", prompt_of(series, index),
