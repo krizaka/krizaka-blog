@@ -155,6 +155,12 @@
       "seed": 667052427,
       "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
       "beat": "Not part of a series batch: the cover is a key frame of the film this chapter tells, shot 3 of « Montrer son travail », rendered by FLUX.2 [klein] 4B through the Orazaka Studio with its reference sheet (krizaka-internal#138): the owl on a Plateau iron staircase at dawn. The series' cast is carried over unchanged."
+    },
+    {
+      "post": "the-trains-second-version-rails-sidings-and-a-repair-train",
+      "seed": 2301,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "Not yet rendered (the chapter is a draft): the cover is made through the Orazaka Studio before it is published. A small rail yard at dusk after the first snow: three parallel tracks running to a modest station, one wagon resting on a siding under a red lamp, a little repair draisine with a lantern alone on the middle track, the pigeon perched on the points lever. The series’ cast is carried over unchanged."
     }
   ],
   "sprites": {

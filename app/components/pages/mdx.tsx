@@ -10,10 +10,13 @@ import { Clip } from "./Clip";
 import { Figure } from "./Figure";
 import { IssueCurve } from "./IssueCurve";
 import { Pipeline } from "./Pipeline";
+import { Rails } from "./Rails";
 import { Split } from "./Split";
 import { Layers } from "./Layers";
 import { Bars } from "./Bars";
 import { Utilization } from "./Utilization";
+
+type RailProps = { name: string; state?: string; station?: string; wagons: string };
 
 /** The text of a fenced block as MDX hands it over: `<pre><code className="language-x">text</code></pre>`. */
 function fenced(children: ReactNode): { code: string; language?: string } | undefined {
@@ -187,6 +190,26 @@ export function mdxComponentsFor(locale: Locale) {
       />
     ),
     Stage: () => null,
+    /* Trains drawn from the tokens (lib/rails.ts), with a legend and their text version, the beats in order:
+       <Rails label><Rail name state? station? wagons="PR 1:go | PR 2:wait"/><Beat>…</Beat></Rails>. */
+    Rails: ({ label, children }: { label: string; children: ReactNode }) => {
+      const parts = Array.isArray(children) ? children : [children];
+      const rails = parts
+        .filter(
+          (el): el is ReactElement<RailProps> => isValidElement(el) && (el.props as RailProps).wagons !== undefined,
+        )
+        .map((el) => el.props);
+      const beats = parts
+        .filter(
+          (el): el is ReactElement<{ children?: ReactNode }> =>
+            isValidElement(el) && (el.props as RailProps).wagons === undefined,
+        )
+        .map((el) => textOf(el.props.children).trim())
+        .filter(Boolean);
+      return <Rails label={label} rails={rails} beats={beats} locale={locale} />;
+    },
+    Rail: () => null,
+    Beat: () => null,
     /* Figures drawn from the tokens (lib/figures.ts parses their string props), each its own text version, framed on a plate
        with its caption: <Split label><Side title tone items/></Split>, <Layers label><Layer tag title note items level/></Layers>,
        <Bars label source format stacked series data/>. */

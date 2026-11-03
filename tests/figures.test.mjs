@@ -8,7 +8,7 @@ import media from "../lib/media.json" with { type: "json" };
 const dir = "content/chapters";
 const body = (f) => readFileSync(`${dir}/${f}`, "utf8").split(/^---$/m).slice(2).join("---");
 const files = readdirSync(dir).filter((f) => f.endsWith(".mdx"));
-const FIGURE = /<(Figure|Clip|Pipeline|Split|Layers|Bars|IssueCurve|Plate)\b/g;
+const FIGURE = /<(Figure|Clip|Pipeline|Split|Layers|Bars|IssueCurve|Plate|Rails)\b/g;
 const figuresOf = (f) => [...body(f).matchAll(FIGURE)].map((m) => m[1]);
 const tagsOf = (f, name) => [...body(f).matchAll(new RegExp(`<${name}\\b([^>]*?)/?>`, "g"))].map((m) => m[1]);
 const attr = (tag, name) => tag.match(new RegExp(`\\b${name}="([^"]*)"`))?.[1];
@@ -29,6 +29,7 @@ const DONE = [
   "ci-the-error-never-leaves-the-editor",
   "tchou-tchou-how-our-pull-requests-catch-the-train",
   "how-our-automation-grew",
+  "the-trains-second-version-rails-sidings-and-a-repair-train",
 ];
 
 test("the figure props parse: items, tones, series and rows", () => {
@@ -66,7 +67,7 @@ for (const f of files.filter((f) => f.endsWith(".en.mdx"))) {
 
 for (const f of files) {
   test(`${f}: every drawn figure has a caption that says what it shows`, () => {
-    for (const name of ["Pipeline", "Split", "Layers", "Bars", "Plate"])
+    for (const name of ["Pipeline", "Split", "Layers", "Bars", "Plate", "Rails"])
       for (const t of tagsOf(f, name)) assert.ok((attr(t, "label") ?? "").length >= 25, `${name}${t}`);
     for (const t of tagsOf(f, "Side")) assert.ok(itemsOf(attr(t, "items")).length > 0, `Side${t}`);
     for (const t of tagsOf(f, "Layer")) assert.ok(attr(t, "title"), `Layer${t}`);
@@ -100,7 +101,7 @@ test("a code block's bar is not numbered as a figure (only the chapter's figures
 test("the articles carry no icons: steps are numbered in mono, scopes and markers are plain text (founder 2026-10-31)", () => {
   const mdx = readFileSync("app/components/pages/mdx.tsx", "utf8");
   assert.doesNotMatch(mdx, /@krizaka\/icons|@krizaka\/ui\/stepper|LoaderGlyph/);
-  for (const f of ["Pipeline", "Split", "Layers", "Bars", "Figure", "Clip", "IssueCurve"])
+  for (const f of ["Pipeline", "Split", "Layers", "Bars", "Figure", "Clip", "IssueCurve", "Rails"])
     assert.doesNotMatch(readFileSync(`app/components/pages/${f}.tsx`, "utf8"), /@krizaka\/icons/, f);
   assert.doesNotMatch(readFileSync("app/components/TakeStory.tsx", "utf8"), /bl-book/);
   const css = readFileSync("app/globals.css", "utf8");

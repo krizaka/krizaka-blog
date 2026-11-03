@@ -1,0 +1,124 @@
+---
+title: "The trains, second version: rails, a siding and a repair train"
+description: "Green PRs that never arrived, a red main that blocked everyone, a repair our own tool refused, and a session that died without a sound. How our trains run now, without a single token."
+seoTitle: "Our PR trains, second version"
+seoDescription: "One queue per product, a siding for the red PR, a frozen rail when main is red, and a repair train. What broke from 1 to 3 November."
+date: 2026-11-03
+tags: [ai, integration, measurements]
+author: oussama
+draft: true
+sensitive: true
+chapter: 23
+period: "2026-11-01/2026-11-03"
+sources:
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "green PRs that never arrived and a red main that blocked everyone"
+  built: "one queue per product, a siding, a repair train, zero tokens"
+stats:
+  - value: "267"
+    label: "PRs brought to main by the trains, in a little over 30 hours"
+    section: "What the logs say"
+  - value: "196"
+    label: "times a train set a PR aside, each time with its reason"
+    section: "What the logs say"
+---
+
+In [chapter 19](/story/tchou-tchou-how-our-pull-requests-catch-the-train/) I told the story of our first trains: a small script that lands pull requests one by one, without a model token. It held for a week. From 1 to 3 November it broke in four ways I had not seen coming, and I rebuilt it. This chapter shows the new version with drawings of trains, because that is how I see it in my head.
+
+One note before we start. Our products go by code names here: Product A, Product B, Product C, and the platform. What matters is the mechanism, not the names.
+
+## Four moments of the weekend
+
+**Green PRs that never arrived.** On 1 November, PRs had been waiting for hours, every check green, and nothing carried them. The trains of the time had no order: several fought over the same repository, one PR had two, and some had been running for two days on a blocked PR, hiding the ready ones behind it.
+
+**A red main that blocks everyone.** When a repository's main branch turns red, every open PR turns red with it, even the ones that have nothing to do with it. On the evening of 2 November, on the platform, three PRs were red for the same reason: a weekly automatic update had pushed a size budget over the limit on main. None of the three could pass, and re-running them was pointless.
+
+**The repair our own tool refused.** The session that fixed main tried to open its PR. The opening tool refused it: it touched the same files as the PRs it was about to unblock. On a normal day that is a good rule, it keeps two PRs from stepping on each other. Here it blocked the one PR that could get everything moving again.
+
+**A session that died without a sound.** On 2 November around 9:45, one of our sessions stopped dead on the model's weekly usage limit. Nothing rang. Its record stayed open for hours, the next handoff said no session was running, and its cost was never recorded.
+
+## The rails
+
+The new version fits in one picture. Each product has its rail. On each rail, one ordered queue: the oldest PR in front. At most three PRs are active per repository; the others wait outside the window. The station is main.
+
+<Rails label="The happy path, on three rails: each product has its queue, the head PR leaves when its CI is green, arrives on main, and the next one moves up.">
+  <Rail name="Product A" wagons="PR 2:go | PR 3:wait | PR 4:wait | PR 1:done" />
+  <Rail name="Product B" wagons="PR 1:go | PR 2:wait" />
+  <Rail name="Product C" wagons="PR 2:go | PR 3:wait | PR 1:done" />
+  <Beat>A session opens its PR, then stops. The opening tool puts the PR in its product's queue, behind the older ones.</Beat>
+  <Beat>At most three PRs are active per repository. The others wait, and come in as one arrives.</Beat>
+  <Beat>Every three minutes the conductor looks at the head PR: up to date with main, checks green. It approves it and puts it in the merge queue.</Beat>
+  <Beat>The merge queue runs the checks again on the merged result. The PR arrives on main as a single commit, and its branch is deleted.</Beat>
+  <Beat>The next one leaves. The three rails run at the same time, and none waits for another.</Beat>
+</Rails>
+
+The conductor does not judge the code. Review happens before, by the session that wrote the PR. The conductor does the platform work: wait, update, approve, enqueue. Above all, it never stays stuck behind a PR that will not leave.
+
+## The worst cases
+
+This is where the new version changes everything. Before, a red PR at the head stopped the train, and everything behind it waited. Now the red PR is taken off the rail, put on a siding with its reason written down, and the next one leaves.
+
+A red main has its own rule. If main is red, a green PR proves nothing: its checks ran on a broken base. The rail is frozen. Only one train may pass, the repair train, a PR whose title starts with `fix(main)`. It goes ahead of everyone, outside the cap, and since 3 November the opening tool no longer refuses it when it touches the files of the PRs it unblocks: it notes it, and those PRs will update behind it.
+
+<Rails label="The worst cases: a red PR on the siding while the next one leaves, a frozen rail where only the repair train passes, and a stacked PR retargeted before its base disappears.">
+  <Rail name="Product A" wagons="PR 3:go | PR 4:wait | PR 2:red | PR 1:done" />
+  <Rail name="Product B" state="frozen" wagons="fix(main):fix | PR 5:wait | PR 6:wait" />
+  <Rail name="Product C" wagons="PR 7:go | PR 8:stack" />
+  <Beat>Product A: PR 2 is red. The conductor moves it to the siding with its reason, the red check and its link, and PR 3 leaves. PR 2 comes back into the queue as soon as a new commit arrives.</Beat>
+  <Beat>Product B: main is red, the rail is frozen. PRs 5 and 6 wait, even green, and the conductor opens an issue so the red has an owner.</Beat>
+  <Beat>Only the repair train leaves: the fix(main) PR goes first, outside the cap, even if it touches the files of the waiting PRs.</Beat>
+  <Beat>main turns green again. The frozen PRs come back into the queue by themselves, update onto the repair and leave in order.</Beat>
+  <Beat>Product C: PR 8 is built on PR 7's branch. Before putting PR 7 in the merge queue, the conductor retargets PR 8 to main, so deleting the branch at merge does not close it.</Beat>
+</Rails>
+
+The last case comes from a real loss. Before this rule, two stacked PRs closed on their own: their base had merged, its branch had been deleted, and GitHub closes a PR whose base no longer exists. The work was there, the PR was not.
+
+## Who does what, and what costs
+
+I work with agents. A pilot starts the sessions: one per product, one for the platform, one for security. Each session writes the code, runs the checks, opens its PR, writes its handoff and stops. Those two are models: they cost tokens.
+
+Everything else is a script. The queue and the conductor run as soon as a PR waits. The controller, which chases duplicate trains and heads stuck for an hour, and the watchdog, which reads and writes its alerts, pass every fifteen minutes. None of them costs a model token. Two GitHub Apps open, approve and enqueue. No human account works in the background.
+
+<Rails label="Who does what: the models stop at the opened PR; the queue, the conductor, the watchdog and the two apps are scripts that cost no tokens.">
+  <Rail name="Tokens" station="PR" wagons="session:model | pilot:model" />
+  <Rail name="Zero tokens" wagons="2 apps:free | conductor:free | queue:free" />
+  <Rail name="Watchdog" station="alert" wagons="watchdog:free" />
+  <Beat>The pilot starts a session. The session writes, tests, opens its PR, writes its handoff and stops. It never waits for CI.</Beat>
+  <Beat>From there on, no model at all: the queue files the PR, the conductor carries it, the two apps approve it and enqueue it.</Beat>
+  <Beat>Every fifteen minutes the watchdog reads the state of the repositories and writes an alert line: a red PR with no owner, a main red for thirty minutes, a frozen rail with green PRs, a dead session.</Beat>
+  <Beat>A model is woken only to repair what the watchdog flagged.</Beat>
+  <Beat>When the session ends, its cost is read from its transcript, not estimated.</Beat>
+</Rails>
+
+The dead session of 2 November left its guard behind. A session now records, when it starts, its process and its transcript. The watchdog calls it dead when the process is gone or when the transcript ends on an error such as a usage limit, and stalled when it has been silent for more than an hour. It is closed cleanly, and its cost is read from what it really did.
+
+## What the logs say
+
+Each queue writes one line per event. Between 1 November at 17:43, when the per-product queues started, and midnight on 3 November, a little over 30 hours, the trains brought 267 PRs to main. They set 196 aside, each time with a reason:
+
+| Reason | Times |
+| :--- | ---: |
+| a red check | 141 |
+| left the merge queue | 15 |
+| a required check that never ran | 13 |
+| a conflict | 12 |
+| main red, rail frozen | 10 |
+| already carried by another train | 4 |
+| a train over 24 hours | 1 |
+
+<Numbers>
+  <Num value="267" label="PRs arrived on main" hint="in a little over 30 hours, read from the queue logs" />
+  <Num value="196" label="PRs set aside" hint="each with its reason, and the next one left" />
+  <Num value="0" label="model tokens" hint="for the queue, the conductor, the controller and the watchdog" />
+</Numbers>
+
+A PR set aside is not a lost PR. It comes back when a new commit is pushed, or when main turns green again. What this table shows is 196 times when, before, the whole rail would have stopped.
+
+The watchdog wrote 359 alert lines since the evening of 1 November. The most frequent: 122 times a red or conflicting PR with no owner, 56 times a main red for more than thirty minutes, 38 times a frozen rail with green PRs waiting. None of them cost a token. They only tell a session where to look.
+
+Over the same 30 hours, 49 model sessions were recorded. Until 3 November their token cost was an estimate typed by the session itself; since then it is measured. So I give no « tokens saved »: I have no honest measure of what a session waiting on CI would have cost. What I know is that none waits any more.
+
+## What is left
+
+The frozen rail says main is red, it does not repair it: a session still has to write the `fix(main)`. The cap of three PRs per repository sometimes holds a good PR behind two red ones, and the answer is still human: land them or close them. And the watchdog warns, it does not decide. That is on purpose: a script that costs nothing can watch all the time, but repairing is still somebody's job.
