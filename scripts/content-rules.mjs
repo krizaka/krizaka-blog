@@ -400,6 +400,15 @@ export function chapterProblems(file, data, body, ctx, postSlugs) {
   }
   if (data.series !== undefined || data.part !== undefined)
     out.push(`${file}: a chapter has no "series" or "part" — "chapter" is its place`);
+  /* krizaka-blog#280: the build's meta check renders drafts too, so a draft chapter without a cover was red only in CI. Lint says it first. */
+  if (data.draft === true && !data.cover)
+    out.push(
+      `${file}: a chapter needs a "cover", even as a draft (the build's meta check renders drafts): render it with ` +
+        `python3 scripts/render-image-series.py --worker <orazaka-worker-media> --anchor <brand picture> --out <name> --only <chapter> ` +
+        `(docs/image-series.md), make its renditions with scripts/prepare-series-covers.mjs, then set "cover" and "coverAlt"`,
+    );
+  else if (data.draft === true && blank(data.coverAlt))
+    out.push(`${file}: a chapter needs "coverAlt", even as a draft: the words of its cover`);
   if (!Array.isArray(data.sources) || data.sources.length === 0)
     out.push(`${file}: "sources" must list the slugs of the posts it is written from`);
   else

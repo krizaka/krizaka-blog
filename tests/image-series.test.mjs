@@ -46,3 +46,17 @@ test("legal guardrails: the prompts name no person, brand, character or lyric", 
       "the style names no bird: a reference-based model draws every bird it is told of",
     );
 });
+
+test("the renderer runs mflux through the worker's own python, never the entry point's shebang (stale when the venv moved)", async () => {
+  const { execFileSync } = await import("node:child_process");
+  const py = [
+    "import importlib.util, json, pathlib, sys",
+    "spec = importlib.util.spec_from_file_location('ris', 'scripts/render-image-series.py')",
+    "m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)",
+    "s = json.load(open('content/image-series/series.json'))",
+    "sp = {b: pathlib.Path('/s/' + b) for b in s['sprites']}",
+    "print(json.dumps(m.command(s, 0, sp, None, pathlib.Path('/o.png'), pathlib.Path('/w'))[:2]))",
+  ].join("\n");
+  const head = JSON.parse(execFileSync("python3", ["-c", py], { encoding: "utf8" }));
+  assert.deepEqual(head, ["/w/.venv/bin/python", "/w/.venv/bin/mflux-generate-flux2-edit"]);
+});

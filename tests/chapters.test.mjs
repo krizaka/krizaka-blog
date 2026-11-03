@@ -51,6 +51,8 @@ const good = {
   description: "D",
   date: "2026-10-23",
   draft: true,
+  cover: "series-01-a",
+  coverAlt: "A valley at dusk",
   chapter: 1,
   period: "2026-10-16/2026-10-17",
   sources: ["a"],
@@ -73,6 +75,15 @@ test("a chapter without its story's fields, or with a source that is not a post,
   assert.match(p({ sources: ["gone"] }), /source "gone"/);
   assert.match(p({ versus: { faced: "x" } }), /versus\.built/);
   assert.match(p({ series: "measured", part: 1 }), /no "series"/);
+});
+
+test("a draft chapter needs its cover at lint, with how to render one: the build's meta check renders drafts (krizaka-blog#280)", () => {
+  const p = (data) => chapterProblems("c.en.mdx", { ...good, ...data }, body, undefined, slugs).join("\n");
+  assert.match(p({ cover: undefined }), /a chapter needs a "cover", even as a draft/);
+  assert.match(p({ cover: undefined }), /scripts\/render-image-series\.py --worker .* --only <chapter>/);
+  assert.match(p({ coverAlt: " " }), /"coverAlt"/);
+  /* A published chapter is told once, by the publication rule. */
+  assert.doesNotMatch(p({ draft: false, cover: undefined }), /even as a draft/);
 });
 
 test("a chapter period contains real calendar dates, including both ends of a range", () => {

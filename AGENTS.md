@@ -87,6 +87,11 @@ caption?/>` (a light native player: muted loop while on screen, poster first, co
   matter (`chapter`, `period`, `versus`), nothing typed; a new chapter appears by itself, Featured and marked « New ». Built from
   `@krizaka/ui` blocks only (`PageHero`, `Section`, `Card`, `LinkCard`, `Badge`); a missing block is an issue in krizaka-ui.
   Tested in `tests/home.test.mjs` and on the built page by `scripts/check-meta.mjs` (`homeProblems`).
+- **A new chapter, in order**: write it FR and EN (`draft: true`), then **its cover before the PR**: render it with
+  `python3 scripts/render-image-series.py --worker <orazaka-worker-media> --anchor <brand picture> --out <name> --only <chapter>`
+  (seed and beat in `content/image-series/series.json`, `docs/image-series.md`), `scripts/prepare-series-covers.mjs`, upload, then
+  `cover` and `coverAlt`. The build's meta check renders drafts, so `npm run lint` refuses a chapter without a cover, draft or not
+  (krizaka-blog#280 was red in CI for it). The renderer runs mflux through `<worker>/.venv/bin/python`, never the entry point's shebang.
 - **Questions sections answer search engines too**: a post's h2 « Questions fréquentes » / « Frequently asked questions »
   (or « FAQ ») turns its h3s and their text into FAQPage JSON-LD (`faqOf` in `lib/reading.ts`).
 - Every user-facing string of the site is in `messages/{en,fr}.json` (`krizaka-i18n check`). No `locale === "fr" ?`.
