@@ -30,13 +30,21 @@ Une précision avant de commencer. Nos produits portent ici des noms de code : P
 
 ## Quatre moments de la fin de semaine
 
-**Des PR vertes qui n'arrivaient jamais.** Le 1er novembre, des PR attendaient depuis des heures, tous les checks verts, et rien ne les portait. Les trains de l'époque n'avaient pas d'ordre : plusieurs se disputaient le même dépôt, une PR en avait deux, et certains tournaient depuis deux jours sur une PR bloquée en cachant celles qui étaient prêtes derrière.
+### Des PR vertes qui n'arrivaient jamais
 
-**Un main rouge qui bloque tout le monde.** Quand la branche principale d'un dépôt devient rouge, toutes les PR ouvertes le deviennent aussi, même celles qui n'y sont pour rien. Le 2 novembre au soir, sur la plateforme, trois PR étaient rouges pour la même raison : une mise à jour automatique de la semaine avait fait dépasser un budget de taille sur main. Aucune des trois ne pouvait passer, et les relancer ne servait à rien.
+Le 1er novembre, des PR attendaient depuis des heures, tous les checks verts, et rien ne les portait. Les trains de l'époque n'avaient pas d'ordre : plusieurs se disputaient le même dépôt, une PR en avait deux, et certains tournaient depuis deux jours sur une PR bloquée en cachant celles qui étaient prêtes derrière.
 
-**La réparation refusée par notre propre outil.** La session qui a corrigé main a voulu ouvrir sa PR. L'outil d'ouverture l'a refusée : elle touchait les mêmes fichiers que les PR qu'elle venait débloquer. C'est une bonne règle d'habitude, elle évite deux PR qui se marchent dessus. Mais ici, elle bloquait la seule PR qui pouvait tout remettre en route.
+### Un main rouge qui bloque tout le monde
 
-**Une session morte sans bruit.** Le 2 novembre vers 9 h 45, une de nos sessions s'est arrêtée net sur la limite d'usage hebdomadaire du modèle. Rien n'a sonné. Sa fiche est restée ouverte pendant des heures, la passation suivante disait qu'aucune session ne tournait, et son coût n'a jamais été enregistré.
+Quand la branche principale d'un dépôt devient rouge, toutes les PR ouvertes le deviennent aussi, même celles qui n'y sont pour rien. Le 2 novembre au soir, sur la plateforme, trois PR étaient rouges pour la même raison : une mise à jour automatique de la semaine avait fait dépasser un budget de taille sur main. Aucune des trois ne pouvait passer, et les relancer ne servait à rien.
+
+### La réparation refusée par notre propre outil
+
+La session qui a corrigé main a voulu ouvrir sa PR. L'outil d'ouverture l'a refusée : elle touchait les mêmes fichiers que les PR qu'elle venait débloquer. C'est une bonne règle d'habitude, elle évite deux PR qui se marchent dessus. Mais ici, elle bloquait la seule PR qui pouvait tout remettre en route.
+
+### Une session morte sans bruit
+
+Le 2 novembre vers 9 h 45, heure de Montréal, une de nos sessions s'est arrêtée net sur la limite d'usage hebdomadaire du modèle. Rien n'a sonné. Sa fiche est restée ouverte pendant des heures, la passation suivante disait qu'aucune session ne tournait, et son coût n'a jamais été enregistré.
 
 ## Les rails
 
@@ -95,7 +103,7 @@ La session morte du 2 novembre a laissé sa garde. Une session note maintenant, 
 
 ## Ce que disent les journaux
 
-Chaque file écrit une ligne par événement. Entre le 1er novembre à 17 h 43, quand les files par produit ont démarré, et le 3 novembre à minuit, soit un peu plus de 30 heures, les trains ont fait arriver 267 PR sur main. Ils en ont mis 196 de côté, chaque fois avec une raison :
+Chaque file écrit une ligne par événement. Entre le 1er novembre à 17 h 43 (heure de Montréal), quand les files par produit ont démarré, et le 3 novembre à minuit, soit un peu plus de 30 heures, les trains ont fait arriver 267 PR sur main. Ils en ont mis 196 de côté, chaque fois avec une raison :
 
 | Raison | Fois |
 | :--- | ---: |
@@ -122,3 +130,5 @@ Pendant ces mêmes 30 heures, 49 sessions de modèle ont été enregistrées. Le
 ## Ce qui reste
 
 Le rail gelé dit que main est rouge, il ne le répare pas : il faut encore une session pour écrire le `fix(main)`. Le plafond de trois PR par dépôt bloque parfois une bonne PR derrière deux PR rouges, et la réponse reste humaine, faire passer ou fermer. Et le veilleur prévient, il ne décide pas. C'est voulu : un script qui ne coûte rien peut surveiller tout le temps, mais réparer reste le travail de quelqu'un.
+
+Et le train de réparation peut lui-même rester à quai. Le 3 novembre au matin, sur le Produit A, la PR `fix(main)` est restée gelée avec les autres pendant environ deux heures : le chef de train reconnaît le train de réparation à une étiquette, et l'outil d'ouverture ne l'avait pas posée. Il a fallu l'ajouter à la main. La prochaine garde : l'outil pose l'étiquette dès que le titre commence par `fix(main)`, et un test le vérifie.

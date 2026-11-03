@@ -30,13 +30,21 @@ One note before we start. Our products go by code names here: Product A, Product
 
 ## Four moments of the weekend
 
-**Green PRs that never arrived.** On 1 November, PRs had been waiting for hours, every check green, and nothing carried them. The trains of the time had no order: several fought over the same repository, one PR had two, and some had been running for two days on a blocked PR, hiding the ready ones behind it.
+### Green PRs that never arrived
 
-**A red main that blocks everyone.** When a repository's main branch turns red, every open PR turns red with it, even the ones that have nothing to do with it. On the evening of 2 November, on the platform, three PRs were red for the same reason: a weekly automatic update had pushed a size budget over the limit on main. None of the three could pass, and re-running them was pointless.
+On 1 November, PRs had been waiting for hours, every check green, and nothing carried them. The trains of the time had no order: several fought over the same repository, one PR had two, and some had been running for two days on a blocked PR, hiding the ready ones behind it.
 
-**The repair our own tool refused.** The session that fixed main tried to open its PR. The opening tool refused it: it touched the same files as the PRs it was about to unblock. On a normal day that is a good rule, it keeps two PRs from stepping on each other. Here it blocked the one PR that could get everything moving again.
+### A red main that blocks everyone
 
-**A session that died without a sound.** On 2 November around 9:45, one of our sessions stopped dead on the model's weekly usage limit. Nothing rang. Its record stayed open for hours, the next handoff said no session was running, and its cost was never recorded.
+When a repository's main branch turns red, every open PR turns red with it, even the ones that have nothing to do with it. On the evening of 2 November, on the platform, three PRs were red for the same reason: a weekly automatic update had pushed a size budget over the limit on main. None of the three could pass, and re-running them was pointless.
+
+### The repair our own tool refused
+
+The session that fixed main tried to open its PR. The opening tool refused it: it touched the same files as the PRs it was about to unblock. On a normal day that is a good rule, it keeps two PRs from stepping on each other. Here it blocked the one PR that could get everything moving again.
+
+### A session that died without a sound
+
+On 2 November around 9:45, Montréal time, one of our sessions stopped dead on the model's weekly usage limit. Nothing rang. Its record stayed open for hours, the next handoff said no session was running, and its cost was never recorded.
 
 ## The rails
 
@@ -95,7 +103,7 @@ The dead session of 2 November left its guard behind. A session now records, whe
 
 ## What the logs say
 
-Each queue writes one line per event. Between 1 November at 17:43, when the per-product queues started, and midnight on 3 November, a little over 30 hours, the trains brought 267 PRs to main. They set 196 aside, each time with a reason:
+Each queue writes one line per event. Between 1 November at 17:43 (Montréal time), when the per-product queues started, and midnight on 3 November, a little over 30 hours, the trains brought 267 PRs to main. They set 196 aside, each time with a reason:
 
 | Reason | Times |
 | :--- | ---: |
@@ -122,3 +130,5 @@ Over the same 30 hours, 49 model sessions were recorded. Until 3 November their 
 ## What is left
 
 The frozen rail says main is red, it does not repair it: a session still has to write the `fix(main)`. The cap of three PRs per repository sometimes holds a good PR behind two red ones, and the answer is still human: land them or close them. And the watchdog warns, it does not decide. That is on purpose: a script that costs nothing can watch all the time, but repairing is still somebody's job.
+
+And the repair train itself can be left at the platform. On the morning of 3 November, on Product A, the `fix(main)` PR stayed frozen with the others for about two hours: the conductor recognises the repair train by a label, and the opening tool had not set it. It had to be added by hand. The next guard: the tool sets the label as soon as the title starts with `fix(main)`, and a test checks it.
