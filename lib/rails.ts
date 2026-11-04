@@ -103,7 +103,7 @@ function sidingOf(
   red: readonly Wagon[],
   trackX1: number,
   trackY: number,
-): { boxes: WagonBox[]; siding?: RailBox["siding"] } {
+): { boxes: WagonBox[]; siding?: NonNullable<RailBox["siding"]> } {
   if (red.length === 0) return { boxes: [] };
   const sy = trackY + SIDING_DROP;
   const { boxes, end } = row(red, trackX1 + 2, sy - WAGON_H - 3, 1);
