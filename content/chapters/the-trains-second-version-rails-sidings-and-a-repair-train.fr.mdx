@@ -135,3 +135,33 @@ Pendant ces mêmes 30 heures, 49 sessions de modèle ont été enregistrées. Le
 Le rail gelé dit que main est rouge, il ne le répare pas : il faut encore une session pour écrire le `fix(main)`. Le plafond de trois PR par dépôt bloque parfois une bonne PR derrière deux PR rouges, et la réponse reste humaine, faire passer ou fermer. Et le veilleur prévient, il ne décide pas. C'est voulu : un script qui ne coûte rien peut surveiller tout le temps, mais réparer reste le travail de quelqu'un.
 
 Et le train de réparation peut lui-même rester à quai. Le 3 novembre au matin, sur le Produit A, la PR `fix(main)` est restée gelée avec les autres pendant environ deux heures : le chef de train reconnaît le train de réparation à une étiquette, et l'outil d'ouverture ne l'avait pas posée. Il a fallu l'ajouter à la main. La prochaine garde : l'outil pose l'étiquette dès que le titre commence par `fix(main)`, et un test le vérifie.
+
+## Un pompier, et le vrai goulot
+
+Le 3 novembre au soir, j'ai ajouté un pompier. Sa règle est simple. Un dépôt qui a ses trois PR ouvertes, dont au moins une rouge, est en feu : plus personne ne peut y ouvrir de PR tant que la rouge est là. Toutes les cinq minutes, un script passe sur chaque dépôt. S'il trouve un feu, il pose une étiquette sur la PR rouge, laisse un commentaire, m'envoie une notification et écrit le brief de la session qui ira l'éteindre. Un feu passe avant tout nouveau travail. Si personne ne le prend en trente minutes, il devient urgent.
+
+Avant de dire s'il sert à quelque chose, j'ai voulu savoir d'où on partait. J'ai relu dans GitHub les quatorze jours d'avant : 38 dépôts, 3 871 PR. Avec la règle de trois PR, nos dépôts ont passé 1 487 heures bloqués, soit 11,6 % de leur temps. 27 dépôts sur 38 l'ont été au moins une fois.
+
+Le premier soir, il a trouvé trois feux. Le premier est sorti de l'état de feu en deux minutes, et la vraie réparation a atterri une vingtaine de minutes après l'alarme. Le deuxième s'est éteint tout seul au bout de trente minutes, sans que personne le prenne. Le troisième a été pris au bout de vingt-cinq minutes, et une session y travaillait encore quand j'ai écrit ces lignes.
+
+Ce qu'il nous a fait gagner, je ne le sais pas encore. Trois feux en une soirée, ce n'est pas une mesure. Je me suis fixé un minimum avant de comparer : sept jours et dix feux. Je n'ai qu'une anecdote, et elle est modeste : vingt minutes pour le premier feu, c'est à peu près la durée d'un blocage ordinaire d'avant. La moitié duraient déjà moins d'un quart d'heure.
+
+Il y a eu aussi une fausse alerte de mon côté. Pendant la première nuit, le journal du pompier s'est tu, et j'ai cru que son alarme était cassée. Il tournait, il n'avait juste rien de nouveau à dire. Il écrit maintenant l'heure de son dernier passage, et la session suivante voit tout de suite s'il s'est vraiment arrêté.
+
+### Le vrai goulot
+
+En cherchant d'où venaient ces 1 487 heures, je m'attendais à une CI trop lente. Ce n'est pas ça. Une PR rouge redevient verte en vingt-six minutes en médiane. Le temps bloqué vient d'ailleurs.
+
+<Numbers>
+  <Num value="92 %" label="des heures bloquées dues à des PR rouges fermées plus tard sans être fusionnées" hint="1 367 heures sur 1 487, cent PR" />
+  <Num value="66 %" label="dues à des PR rouges depuis plus d'un jour" hint="dont 39 % depuis plus de trois jours" />
+  <Num value="10" label="PR qui font à elles seules la moitié du blocage" hint="la pire est restée ouverte quatorze jours" />
+</Numbers>
+
+Le goulot, ce n'est pas la PR rouge du moment, c'est la rouge oubliée : une PR qui ne partira jamais, mais qui garde sa place parmi les trois. Personne n'en a la charge, alors elle reste là des jours, puis quelqu'un la ferme. Le pompier arrive vite sur un feu frais. Pour celle qui couve depuis une semaine, il ne fait rien.
+
+Un deuxième chiffre m'a surpris. En plus de ces heures bloquées, nos dépôts ont passé 1 178 heures avec leurs trois PR ouvertes, toutes vertes, à attendre que le train les fasse partir. Ce n'est pas un feu, mais c'est aussi une place prise.
+
+Je sépare ce qui est mesuré de ce qui est déduit. L'issue de chaque PR, depuis combien de temps elle était rouge, qui l'avait ouverte : c'est mesuré. Que 28 % des heures bloquées viennent d'une même panne partagée par plusieurs PR, comme un main rouge ou une CI commune cassée, je le déduis : le même check était rouge sur deux PR au même moment. Et GitHub ne garde les checks que du dernier commit d'une PR, donc certains chiffres sont des minimums. Les heures bloquées, elles, sont solides.
+
+On va s'attaquer à la rouge oubliée, mais pas tout de suite : d'autres sujets passent avant. L'idée est écrite. Une PR rouge depuis plus d'un jour, on la répare dans la journée, ou on la ferme avec une ligne qui dit pourquoi. En attendant, le pompier reste.
