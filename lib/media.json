@@ -6260,5 +6260,67 @@
         }
       ]
     }
+  },
+  "chapter-23-chouf": {
+    "kind": "image",
+    "width": 1280,
+    "height": 720,
+    "blur": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAAAwAgCdASoQAAkABABoJZACdAEWgZIUSJV1AAD+7t5+IJsf4viPYrO9tzeAmKZH/kBRp/10TJYTWHG7P9cmAQAz5AVfEexbUW6Q9aS+AAA=",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-23-chouf-480.48635474e4.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-23-chouf-960.097604f4ff.webp"
+      },
+      {
+        "w": 1280,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-23-chouf-1280.1d32a4993f.webp"
+      }
+    ],
+    "made": {
+      "model": "FLUX.2 [klein] 4B",
+      "licence": "Apache-2.0",
+      "engine": "Orazaka's media worker engine (mflux), edit with reference images (chapter 23's cover and the brand picture's bird crop)",
+      "machine": "the founder's Mac (Apple Metal GPU), no paid API",
+      "via": "local",
+      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. the orange falcon (the watcher) in a grey tracksuit with the hood up, on a folding chair at the edge of the tracks, a soda can in its wing. One bird only, no people, no text.",
+      "seed": "2311",
+      "size": "1280×720",
+      "note": "Chapter 23, section « Le chouf »: the orange falcon (the watcher) in a grey tracksuit with the hood up, on a folding chair at the edge of the tracks, a soda can in its wing. A free local render on the founder's Mac, outside an Orazaka Studio run (no paid run); looked at in full size before use. One bird, no person, no text, no logo."
+    }
+  },
+  "chapter-23-firefighter": {
+    "kind": "image",
+    "width": 1280,
+    "height": 720,
+    "blur": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAAAwAgCdASoQAAkABABoJZgCdDBHQX8YD+5wAAD+7tzfu6mirClP6OZd1LpaWC2QiLKzBRnI0lnPJMHBlgqWwp7H8rxR0tak2zyYOJ5ajci90GmHiHrMAA==",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-23-firefighter-480.194a749ddd.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-23-firefighter-960.c42ec16bbb.webp"
+      },
+      {
+        "w": 1280,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-23-firefighter-1280.d1713319f1.webp"
+      }
+    ],
+    "made": {
+      "model": "FLUX.2 [klein] 4B",
+      "licence": "Apache-2.0",
+      "engine": "Orazaka's media worker engine (mflux), edit with reference images (chapter 23's cover and the brand picture's bird crop)",
+      "machine": "the founder's Mac (Apple Metal GPU), no paid API",
+      "via": "local",
+      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. the red duck with round glasses in a firefighter helmet, spraying a jet of water on a small fire on the red wagon of the siding. One bird only, no people, no text.",
+      "seed": "2314",
+      "size": "1280×720",
+      "note": "Chapter 23, section « Le chouf »: the red duck with round glasses in a firefighter helmet, spraying a jet of water on a small fire on the red wagon of the siding. A free local render on the founder's Mac, outside an Orazaka Studio run (no paid run); looked at in full size before use. One bird, no person, no text, no logo."
+    }
   }
 }

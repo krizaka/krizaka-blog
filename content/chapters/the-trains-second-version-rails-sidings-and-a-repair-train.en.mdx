@@ -148,6 +148,20 @@ What it has gained us, I do not know yet. Three fires in one evening is not a me
 
 There was also a false alarm on my side. During the first night, the firefighter's log went quiet, and I thought its alarm was broken. It was running, it just had nothing new to say. It now writes the time of its last pass, and the next session sees at once whether it has really stopped.
 
+### The chouf
+
+The next day, I looked at what those firefighters cost. Each one had used between 110,000 and 135,000 tokens, and a good part of it did not go into putting the fire out: the session stayed awake to wait for the CI to pass and for the train to take the PRs. A firefighter waiting outside the station still costs something.
+
+So I split the two roles. The one who watches we call the chouf. In Arabic dialect, chouf means "look"; the chouf is the one who keeps watch. It is the script that passes every five minutes. It has no AI, it costs nothing, and it does one thing: it says when it is time to wake the firefighter.
+
+<Figure id="chapter-23-chouf" alt="The orange falcon in a grey tracksuit with the hood up, sitting on a folding chair at the edge of the tracks, a soda can in its wing, watching the little station at dusk" caption="The chouf: it watches the tracks, and it costs nothing." />
+
+The rule we are writing is simple. The chouf wakes the firefighter at most once an hour, for all fires at once, and only when a fire has lasted more than a quarter of an hour: many reds go out by themselves before that. The firefighter wakes with a light model and a token cap, and moves to the strongest model only when the same PR is red a second time. It repairs, puts the PR on the train, and goes back to sleep. It no longer waits for the landing: the train and the chouf take care of that. If it turns red again, the next wake deals with it.
+
+<Figure id="chapter-23-firefighter" alt="The red duck with round glasses and a firefighter helmet, spraying a jet of water on a small fire on the red wagon of the siding" caption="The firefighter: it puts the fire out, puts the PR on the train, and goes back to sleep." />
+
+The first two firefighters have already gone back to sleep that way. The rest, the hourly wake and the cap, is in the queue: I will say what it changes once I have measured it.
+
 ### The real bottleneck
 
 When I looked for where those 1,487 hours came from, I expected a CI that was too slow. That is not it. A red PR turns green again in twenty-six minutes, median. The blocked time comes from somewhere else.

@@ -148,6 +148,20 @@ Ce qu'il nous a fait gagner, je ne le sais pas encore. Trois feux en une soirée
 
 Il y a eu aussi une fausse alerte de mon côté. Pendant la première nuit, le journal du pompier s'est tu, et j'ai cru que son alarme était cassée. Il tournait, il n'avait juste rien de nouveau à dire. Il écrit maintenant l'heure de son dernier passage, et la session suivante voit tout de suite s'il s'est vraiment arrêté.
 
+### Le chouf
+
+Le lendemain, j'ai regardé ce que coûtaient ces pompiers. Chacun avait consommé entre 110 000 et 135 000 jetons, et une bonne part ne servait pas à éteindre le feu : la session restait éveillée pour attendre que la CI passe et que le train fasse partir les PR. Un pompier qui attend devant la caserne, ça coûte quand même.
+
+Alors j'ai séparé les deux rôles. Celui qui regarde, on l'appelle le chouf. En arabe dialectal, chouf veut dire « regarde » ; le chouf, c'est celui qui fait le guet. C'est le script qui passe toutes les cinq minutes. Il n'a pas d'IA, il ne coûte rien, et il ne fait qu'une chose : dire quand c'est le moment de réveiller le pompier.
+
+<Figure id="chapter-23-chouf" alt="Le faucon orange en survêtement gris, capuche sur la tête, assis sur une chaise pliante au bord des voies, une canette de soda à la main, qui regarde la petite gare au crépuscule" caption="Le chouf : il regarde les voies, et il ne coûte rien." />
+
+La règle qu'on écrit est simple. Le chouf réveille le pompier au plus une fois par heure, pour tous les feux à la fois, et seulement si un feu dure depuis plus d'un quart d'heure : beaucoup de rouges s'éteignent seuls avant. Le pompier se réveille avec un modèle léger et un plafond de jetons, et il ne passe au modèle le plus fort que si la même PR est rouge une deuxième fois. Il répare, il met la PR dans le train, et il se rendort. Il n'attend plus l'arrivée : le train et le chouf s'en occupent. Si ça redevient rouge, le prochain réveil s'en charge.
+
+<Figure id="chapter-23-firefighter" alt="Le canard rouge à lunettes, casque de pompier sur la tête, qui arrose d'un jet d'eau un petit feu sur le wagon rouge de la voie de garage" caption="Le pompier : il éteint, il met la PR dans le train, et il retourne dormir." />
+
+Les deux premiers pompiers se sont déjà rendormis comme ça. Le reste, l'heure de réveil et le plafond, est dans la file : je dirai ce que ça change quand je l'aurai mesuré.
+
 ### Le vrai goulot
 
 En cherchant d'où venaient ces 1 487 heures, je m'attendais à une CI trop lente. Ce n'est pas ça. Une PR rouge redevient verte en vingt-six minutes en médiane. Le temps bloqué vient d'ailleurs.
