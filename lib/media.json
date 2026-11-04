@@ -6219,7 +6219,8 @@
       "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere. A small rail yard at dusk after the first snow: three parallel tracks running to a modest station, one wagon resting on a siding under a red lamp, a little repair draisine with a lantern alone on the middle track, the pigeon perched on the points lever. The series’ cast is carried over unchanged. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor, a violet owl with two ear tufts and big round eyes, a red duck with a flat yellow bill and round glasses (a duck, not an owl: no ear tufts), a pink flamingo, a blue pigeon.",
       "seed": "2301",
       "size": "1280×720",
-      "note": "Chapter 23's cover: one take, looked at in full size before use. No person, no text, no logo; each bird once."
+      "via": "local",
+      "note": "Chapter 23's cover: a free local render on the founder's Mac, outside an Orazaka Studio run (no paid run); one take, looked at in full size before use. No person, no text, no logo; each bird once."
     },
     "renditions": {
       "avif": [
