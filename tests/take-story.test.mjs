@@ -17,6 +17,8 @@ const CDN_HOSTS = /^https:\/\/krizaka-assets\.b-cdn\.net\/sites?\/blog\//;
 const LOCAL_FREE = {
   "series-21-working-with-agents-rules-that-refuse":
     "free local render on the Mac with the media worker's model, no paid run",
+  "series-23-the-trains-second-version-rails-sidings-and-a-repair-train":
+    "free local render on the Mac with the media worker's model, no paid run",
 };
 export function coverProvenance(id, made) {
   if (!made || typeof made.note !== "string") return false;
