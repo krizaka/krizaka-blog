@@ -918,6 +918,161 @@ picture {
   display: block;
   color: var(--kz-text-secondary);
 }
+/* Trains (Rails, lib/rails.ts): rails drawn from the tokens on a plate, the station a post with its name, wagons on wheels,
+   a red wagon on its siding, a frozen rail dashed. A name column on a wide screen, the name above its rail on a phone; then
+   the legend and the text version (an ordered list). The drawing is decoration; the list is the content. */
+.bl-rails svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
+}
+.bl-rails-narrow {
+  display: none !important;
+}
+@media (max-width: 40rem) {
+  .bl-rails-wide {
+    display: none !important;
+  }
+  .bl-rails-narrow {
+    display: block !important;
+  }
+}
+.bl-rails-name {
+  fill: var(--kz-text-primary);
+  font-family: var(--kz-font-mono);
+  font-size: 12px;
+  font-weight: 700;
+}
+.bl-rails-frozen {
+  fill: var(--kz-danger-text);
+  font-family: var(--kz-font-mono);
+  font-size: 11px;
+  font-weight: 400;
+}
+.bl-rails-track,
+.bl-rails-siding line {
+  stroke: var(--kz-text-muted);
+  stroke-width: 2;
+}
+.bl-rails-rail[data-state="frozen"] .bl-rails-track {
+  stroke: var(--kz-danger);
+  stroke-dasharray: 6 4;
+}
+.bl-rails-post {
+  stroke: var(--kz-text-primary);
+  stroke-width: 2;
+}
+.bl-rails-station {
+  fill: var(--kz-text-primary);
+  font-family: var(--kz-font-mono);
+  font-size: 11px;
+  font-weight: 700;
+}
+.bl-rails-wagon rect {
+  fill: var(--kz-surface-0, var(--kz-surface-1));
+  stroke: var(--kz-border-strong, var(--kz-border-default));
+  stroke-width: 1.25;
+}
+.bl-rails-wagon circle {
+  fill: var(--kz-text-muted);
+}
+.bl-rails-wagon text {
+  fill: var(--kz-text-primary);
+  font-family: var(--kz-font-mono);
+  font-size: 11px;
+}
+.bl-rails-wagon[data-state="go"] rect {
+  fill: var(--kz-success-soft);
+  stroke: var(--kz-success);
+}
+/* arrived: the wagon is past, drawn quieter than the ones still on their way */
+.bl-rails-wagon[data-state="done"] rect {
+  fill: var(--kz-surface-2, var(--kz-surface-1));
+  stroke: var(--kz-text-muted);
+}
+.bl-rails-wagon[data-state="done"] text {
+  fill: var(--kz-text-secondary);
+}
+.bl-rails-wagon[data-state="red"] rect {
+  fill: var(--kz-danger-soft);
+  stroke: var(--kz-danger);
+}
+.bl-rails-wagon[data-state="fix"] rect {
+  fill: var(--kz-warning-soft);
+  stroke: var(--kz-warning);
+  stroke-width: 2;
+}
+.bl-rails-wagon[data-state="stack"] rect {
+  stroke: var(--kz-accent);
+  stroke-dasharray: 4 3;
+}
+.bl-rails-wagon[data-state="free"] rect {
+  fill: var(--kz-accent-soft);
+  stroke: var(--kz-accent);
+}
+.bl-rails-wagon[data-state="model"] rect {
+  fill: var(--kz-warning-soft);
+  stroke: var(--kz-warning);
+}
+.bl-prose .bl-rails-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem 1rem;
+  margin: 0.875rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--kz-font-mono);
+  font-size: 0.75rem;
+  color: var(--kz-text-secondary);
+}
+.bl-prose .bl-rails-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin: 0;
+}
+.bl-rails-legend li::before {
+  content: "";
+  inline-size: 0.875rem;
+  block-size: 0.625rem;
+  border: 1.25px solid var(--kz-border-strong, var(--kz-border-default));
+  background: var(--kz-surface-0, var(--kz-surface-1));
+}
+.bl-rails-legend li[data-state="go"]::before {
+  border-color: var(--kz-success);
+  background: var(--kz-success-soft);
+}
+.bl-rails-legend li[data-state="done"]::before {
+  border-color: var(--kz-text-muted);
+  background: var(--kz-surface-2, var(--kz-surface-1));
+}
+.bl-rails-legend li[data-state="red"]::before {
+  border-color: var(--kz-danger);
+  background: var(--kz-danger-soft);
+}
+.bl-rails-legend li:is([data-state="fix"], [data-state="model"])::before {
+  border-color: var(--kz-warning);
+  background: var(--kz-warning-soft);
+}
+.bl-rails-legend li[data-state="stack"]::before {
+  border: 1.25px dashed var(--kz-accent);
+}
+.bl-rails-legend li[data-state="free"]::before {
+  border-color: var(--kz-accent);
+  background: var(--kz-accent-soft);
+}
+.bl-prose .bl-rails-text {
+  margin: 1rem 0 0;
+  padding-inline-start: 1.75rem;
+  font-size: 0.9375rem;
+  list-style: decimal-leading-zero;
+}
+.bl-rails-text li::marker {
+  color: var(--kz-accent-text);
+  font-family: var(--kz-font-mono);
+  font-size: 0.8125rem;
+}
 /* Plates (Split, Layers, Bars — lib/figures.ts): a figure drawn from the tokens on a ruled sheet, framed like a print in a
    notebook, its caption under it (« fig. N — » from the Cahier's counter). One column on a phone; dark and light alike. */
 .bl-plate {

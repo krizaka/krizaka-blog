@@ -68,6 +68,8 @@ test("every chapter of the series but the 10th wears its series cover, and each 
   const picked = series.chapters.map((c, i) => ({ ...c, id: `series-${String(i + 1).padStart(2, "0")}-${c.post}` }));
   for (const c of picked) {
     if (c.post === KEEPS) continue;
+    // a draft owes no cover yet (content-rules: only a published chapter does); its cover is made before it is published
+    if (matter(read(`content/chapters/${c.post}.en.mdx`)).data.draft === true) continue;
     for (const loc of ["en", "fr"]) {
       const fm = matter(read(`content/chapters/${c.post}.${loc}.mdx`)).data;
       assert.equal(fm.cover, c.id, `${c.post}.${loc} cover`);
@@ -99,6 +101,8 @@ test("the covers are the founder's picks: no two chapters share a picture, none 
 test("every download link of the card resolves to a manifest entry, for the story and each chapter, in both languages", () => {
   const chapters = readdirSync(new URL("../content/chapters", import.meta.url))
     .filter((f) => f.endsWith(".en.mdx"))
+    /* a draft is not built, so it has no book yet (gen-downloads.mjs skips it the same way) */
+    .filter((f) => !/^draft: true$/m.test(readFileSync(new URL(`../content/chapters/${f}`, import.meta.url), "utf8")))
     .map((f) => f.replace(".en.mdx", ""));
   for (const loc of ["en", "fr"]) {
     for (const key of ["story", ...chapters]) {

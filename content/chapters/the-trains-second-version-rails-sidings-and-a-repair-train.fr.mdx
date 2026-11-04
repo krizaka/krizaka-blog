@@ -1,0 +1,136 @@
+---
+title: "Les trains, deuxième version : des rails, une voie de garage et un train de réparation"
+description: "Des PR vertes qui n'arrivaient jamais, un main rouge qui bloquait tout, une réparation refusée par notre propre outil et une session morte sans bruit. Comment nos trains roulent maintenant, sans un jeton."
+seoTitle: "Nos trains de PR, deuxième version"
+seoDescription: "Une file par produit, une voie de garage pour la PR rouge, un rail gelé quand main est rouge, un train de réparation : nos trains de PR, deuxième version."
+date: 2026-11-03
+tags: [ai, integration, measurements]
+author: oussama
+draft: true
+sensitive: true
+chapter: 23
+cover: series-23-the-trains-second-version-rails-sidings-and-a-repair-train
+coverAlt: "Une petite gare de triage au crépuscule après la première neige, sous une grande lune orange : un wagon garé sur une voie de garage sous une lampe rouge, une draisine de réparation avec sa lanterne sur la voie du milieu, et les cinq oiseaux de Krizaka (le faucon, la chouette, le canard, le flamant et le pigeon) alignés le long des rails"
+period: "2026-11-01/2026-11-03"
+sources:
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "des PR vertes qui n'arrivaient pas et un main rouge qui bloquait tout le monde"
+  built: "une file par produit, une voie de garage, un train de réparation, zéro jeton"
+stats:
+  - value: "267"
+    label: "PR arrivées sur main par les trains, en un peu plus de 30 heures"
+    section: "Ce que disent les journaux"
+  - value: "196"
+    label: "fois où un train a mis une PR de côté, chaque fois avec sa raison"
+    section: "Ce que disent les journaux"
+---
+
+Au [chapitre 19](/fr/story/tchou-tchou-how-our-pull-requests-catch-the-train/), j'ai raconté nos premiers trains : un petit script qui fait atterrir les pull requests une par une, sans jeton de modèle. Il a tenu une semaine. Du 1er au 3 novembre, il a cassé de quatre façons que je n'avais pas prévues, et je l'ai reconstruit. Ce chapitre montre la nouvelle version avec des dessins de trains, parce que c'est comme ça que je la vois dans ma tête.
+
+Une précision avant de commencer. Nos produits portent ici des noms de code : Produit A, Produit B, Produit C, et la plateforme. Ce qui compte, c'est la mécanique, pas les noms.
+
+## Quatre moments de la fin de semaine
+
+### Des PR vertes qui n'arrivaient jamais
+
+Le 1er novembre, des PR attendaient depuis des heures, tous les checks verts, et rien ne les portait. Les trains de l'époque n'avaient pas d'ordre : plusieurs se disputaient le même dépôt, une PR en avait deux, et certains tournaient depuis deux jours sur une PR bloquée en cachant celles qui étaient prêtes derrière.
+
+### Un main rouge qui bloque tout le monde
+
+Quand la branche principale d'un dépôt devient rouge, toutes les PR ouvertes le deviennent aussi, même celles qui n'y sont pour rien. Le 2 novembre au soir, sur la plateforme, trois PR étaient rouges pour la même raison : une mise à jour automatique de la semaine avait fait dépasser un budget de taille sur main. Aucune des trois ne pouvait passer, et les relancer ne servait à rien.
+
+### La réparation refusée par notre propre outil
+
+La session qui a corrigé main a voulu ouvrir sa PR. L'outil d'ouverture l'a refusée : elle touchait les mêmes fichiers que les PR qu'elle venait débloquer. C'est une bonne règle d'habitude, elle évite deux PR qui se marchent dessus. Mais ici, elle bloquait la seule PR qui pouvait tout remettre en route.
+
+### Une session morte sans bruit
+
+Le 2 novembre vers 9 h 45, heure de Montréal, une de nos sessions s'est arrêtée net sur la limite d'usage hebdomadaire du modèle. Rien n'a sonné. Sa fiche est restée ouverte pendant des heures, la passation suivante disait qu'aucune session ne tournait, et son coût n'a jamais été enregistré.
+
+## Les rails
+
+La nouvelle version tient en une image. Chaque produit a son rail. Sur chaque rail, une seule file, ordonnée : la PR la plus ancienne devant. Trois PR au plus sont actives par dépôt, les autres attendent hors de la fenêtre. La gare, c'est main.
+
+<Rails label="Le cas heureux, sur trois rails : chaque produit a sa file, la PR de tête part quand sa CI est verte, arrive sur main, et la suivante avance.">
+  <Rail name="Produit A" wagons="PR 2:go | PR 3:wait | PR 4:wait | PR 1:done" />
+  <Rail name="Produit B" wagons="PR 1:go | PR 2:wait" />
+  <Rail name="Produit C" wagons="PR 2:go | PR 3:wait | PR 1:done" />
+  <Beat>Une session ouvre sa PR, puis s'arrête. L'outil d'ouverture range la PR dans la file de son produit, derrière les plus anciennes.</Beat>
+  <Beat>Trois PR au plus sont actives par dépôt. Les autres attendent, et entrent quand une PR arrive.</Beat>
+  <Beat>Toutes les trois minutes, le chef de train regarde la PR de tête : à jour avec main, checks verts. Il l'approuve et la met dans la file de fusion.</Beat>
+  <Beat>La file de fusion refait passer les checks sur le résultat fusionné. La PR arrive sur main en un seul commit, et sa branche est supprimée.</Beat>
+  <Beat>La suivante part. Les trois rails roulent en même temps, et aucun n'attend l'autre.</Beat>
+</Rails>
+
+Le chef de train ne juge pas le code. La relecture se fait avant, par la session qui a écrit la PR. Lui fait le travail de quai : attendre, mettre à jour, approuver, mettre en file. Et surtout, il ne reste jamais bloqué derrière une PR qui ne partira pas.
+
+## Le pire
+
+C'est là que la nouvelle version change tout. Avant, une PR rouge en tête arrêtait le train, et tout ce qui était derrière attendait. Maintenant, la PR rouge est sortie du rail, mise sur une voie de garage avec sa raison écrite, et la suivante part.
+
+Le main rouge a sa propre règle. Si main est rouge, une PR verte ne prouve plus rien : ses checks ont tourné sur une base cassée. Le rail est gelé. Seul un train a le droit de passer, le train de réparation, une PR dont le titre commence par `fix(main)`. Il passe devant tout le monde, hors plafond, et depuis le 3 novembre l'outil d'ouverture ne le refuse plus quand il touche les fichiers des PR qu'il débloque : il le note, et ces PR se remettront à jour derrière lui.
+
+<Rails label="Les pires cas : une PR rouge sur la voie de garage pendant que la suivante part, un rail gelé où seul le train de réparation passe, et une PR empilée rebranchée avant que sa base disparaisse.">
+  <Rail name="Produit A" wagons="PR 3:go | PR 4:wait | PR 2:red | PR 1:done" />
+  <Rail name="Produit B" state="frozen" wagons="fix(main):fix | PR 5:wait | PR 6:wait" />
+  <Rail name="Produit C" wagons="PR 7:go | PR 8:stack" />
+  <Beat>Produit A : la PR 2 est rouge. Le chef de train la met sur la voie de garage avec sa raison, le check rouge et son lien, et la PR 3 part. La PR 2 revient dans la file dès qu'un nouveau commit arrive.</Beat>
+  <Beat>Produit B : main est rouge, le rail est gelé. Les PR 5 et 6 attendent, même vertes, et le chef de train ouvre une issue pour que ce rouge ait un responsable.</Beat>
+  <Beat>Seul le train de réparation part : la PR fix(main) passe devant, hors plafond, même si elle touche les fichiers des PR qui attendent.</Beat>
+  <Beat>main redevient vert. Les PR gelées reviennent d'elles-mêmes dans la file, se mettent à jour sur la réparation et repartent dans l'ordre.</Beat>
+  <Beat>Produit C : la PR 8 est construite sur la branche de la PR 7. Avant de mettre la PR 7 en file, le chef de train rebranche la PR 8 sur main, pour que la suppression de la branche à la fusion ne la ferme pas.</Beat>
+</Rails>
+
+Le dernier cas vient d'une vraie perte. Avant cette règle, deux PR empilées se sont fermées toutes seules : leur base avait fusionné, sa branche avait été supprimée, et GitHub ferme une PR dont la base n'existe plus. Le travail était là, la PR non.
+
+## Qui fait quoi, et ce qui coûte
+
+Je travaille avec des agents. Un pilote lance les sessions, une par produit, une pour la plateforme, une pour la sécurité. Chaque session écrit le code, lance les checks, ouvre sa PR, écrit sa passation et s'arrête. Ces deux-là sont des modèles : ils coûtent des jetons.
+
+Tout le reste est un script. La file et le chef de train roulent dès qu'une PR attend. Le contrôleur, qui chasse les trains en double et les têtes coincées depuis une heure, et le veilleur, qui lit et écrit ses alertes, passent toutes les quinze minutes. Aucun ne coûte de jeton de modèle. Deux applications GitHub ouvrent, approuvent et mettent en file. Aucun compte humain ne travaille en arrière-plan.
+
+<Rails label="Qui fait quoi : les modèles s'arrêtent à la PR ouverte ; la file, le chef de train, le veilleur et les deux applications sont des scripts qui ne coûtent aucun jeton.">
+  <Rail name="Avec jetons" station="PR" wagons="session:model | pilote:model" />
+  <Rail name="Sans jeton" wagons="2 apps:free | chef de train:free | file:free" />
+  <Rail name="Le veilleur" station="alerte" wagons="veilleur:free" />
+  <Beat>Le pilote lance une session. La session écrit, teste, ouvre sa PR, écrit sa passation et s'arrête. Elle n'attend jamais la CI.</Beat>
+  <Beat>À partir de là, plus aucun modèle : la file range la PR, le chef de train la porte, les deux applications l'approuvent et la mettent en file.</Beat>
+  <Beat>Toutes les quinze minutes, le veilleur lit l'état des dépôts et écrit une ligne d'alerte : une PR rouge sans responsable, un main rouge depuis trente minutes, un rail gelé avec des PR vertes, une session morte.</Beat>
+  <Beat>Un modèle n'est réveillé que pour réparer ce que le veilleur a signalé.</Beat>
+  <Beat>À la fin de la session, son coût est lu dans sa transcription, pas estimé.</Beat>
+</Rails>
+
+La session morte du 2 novembre a laissé sa garde. Une session note maintenant, en démarrant, son processus et sa transcription. Le veilleur la déclare morte quand le processus a disparu ou quand la transcription finit sur une erreur, comme une limite d'usage, et figée quand elle se tait depuis plus d'une heure. Elle est fermée proprement, et son coût est lu dans ce qu'elle a vraiment fait.
+
+## Ce que disent les journaux
+
+Chaque file écrit une ligne par événement. Entre le 1er novembre à 17 h 43 (heure de Montréal), quand les files par produit ont démarré, et le 3 novembre à minuit, soit un peu plus de 30 heures, les trains ont fait arriver 267 PR sur main. Ils en ont mis 196 de côté, chaque fois avec une raison :
+
+| Raison | Fois |
+| :--- | ---: |
+| un check rouge | 141 |
+| sortie de la file de fusion | 15 |
+| un check requis qui n'a jamais tourné | 13 |
+| un conflit | 12 |
+| main rouge, rail gelé | 10 |
+| déjà portée par un autre train | 4 |
+| un train de plus de 24 heures | 1 |
+
+<Numbers>
+  <Num value="267" label="PR arrivées sur main" hint="en un peu plus de 30 heures, lu dans les journaux des files" />
+  <Num value="196" label="PR mises de côté" hint="chacune avec sa raison, et la suivante est partie" />
+  <Num value="0" label="jeton de modèle" hint="pour la file, le chef de train, le contrôleur et le veilleur" />
+</Numbers>
+
+Une PR mise de côté n'est pas une PR perdue. Elle revient quand on pousse un nouveau commit, ou quand main redevient vert. Ce que montre ce tableau, c'est 196 fois où, avant, tout le rail se serait arrêté.
+
+Le veilleur, lui, a écrit 359 lignes d'alerte depuis le soir du 1er novembre. Les plus fréquentes : 122 fois une PR rouge ou en conflit sans responsable, 56 fois un main rouge depuis plus de trente minutes, 38 fois un rail gelé avec des PR vertes qui attendaient. Aucune n'a coûté un jeton. Elles disent seulement à une session où regarder.
+
+Pendant ces mêmes 30 heures, 49 sessions de modèle ont été enregistrées. Leur coût en jetons était, jusqu'au 3 novembre, une estimation tapée par la session elle-même ; depuis, il est mesuré. Je ne donne donc pas de « jetons économisés » : je n'ai pas de mesure honnête de ce qu'aurait coûté une session qui attend la CI. Ce que je sais, c'est qu'aucune n'attend plus.
+
+## Ce qui reste
+
+Le rail gelé dit que main est rouge, il ne le répare pas : il faut encore une session pour écrire le `fix(main)`. Le plafond de trois PR par dépôt bloque parfois une bonne PR derrière deux PR rouges, et la réponse reste humaine, faire passer ou fermer. Et le veilleur prévient, il ne décide pas. C'est voulu : un script qui ne coûte rien peut surveiller tout le temps, mais réparer reste le travail de quelqu'un.
+
+Et le train de réparation peut lui-même rester à quai. Le 3 novembre au matin, sur le Produit A, la PR `fix(main)` est restée gelée avec les autres pendant environ deux heures : le chef de train reconnaît le train de réparation à une étiquette, et l'outil d'ouverture ne l'avait pas posée. Il a fallu l'ajouter à la main. La prochaine garde : l'outil pose l'étiquette dès que le titre commence par `fix(main)`, et un test le vérifie.

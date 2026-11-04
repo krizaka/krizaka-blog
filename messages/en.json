@@ -322,6 +322,22 @@
   "pipeline": {
     "textVersion": "Text version of the pipeline"
   },
+  "rails": {
+    "textVersion": "Text version of the diagram, in order",
+    "legend": "Legend",
+    "station": "main",
+    "frozen": "frozen rail",
+    "states": {
+      "wait": "queued",
+      "go": "leaving, CI green",
+      "done": "arrived on main",
+      "red": "red, on the siding",
+      "fix": "fix(main) repair train",
+      "stack": "stacked on the PR ahead",
+      "free": "script, zero tokens",
+      "model": "model, costs tokens"
+    }
+  },
   "offline": {
     "eyebrow": "Offline",
     "title": "Read offline",

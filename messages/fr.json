@@ -322,6 +322,22 @@
   "pipeline": {
     "textVersion": "Version texte du pipeline"
   },
+  "rails": {
+    "textVersion": "Version texte du schéma, dans l'ordre",
+    "legend": "Légende",
+    "station": "main",
+    "frozen": "voie gelée",
+    "states": {
+      "wait": "en file",
+      "go": "en route, CI verte",
+      "done": "arrivée sur main",
+      "red": "rouge, sur la voie de garage",
+      "fix": "train de réparation fix(main)",
+      "stack": "empilée sur la PR devant elle",
+      "free": "script, zéro jeton",
+      "model": "modèle, coûte des jetons"
+    }
+  },
   "offline": {
     "eyebrow": "Hors ligne",
     "title": "Lire hors ligne",

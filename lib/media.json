@@ -6191,5 +6191,73 @@
       "note": "7 shots, 12 clips rendered (about 114 s and $0.25 each on an H200), 2 lost to a broken upscaler. GPU spend of the whole film, read from the provider's balance before and after each batch: about $15.83, failures included. Titles set in @krizaka/fonts, no speech.",
       "source": "krizaka-internal#138"
     }
+  },
+  "series-23-the-trains-second-version-rails-sidings-and-a-repair-train": {
+    "kind": "image",
+    "width": 1280,
+    "height": 720,
+    "blur": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAAAwAgCdASoQAAkABABoJZgCdAEW0/s+TP4gAAD+7ENk0HYSCKPH6jhARSlYz6FsYC4MHzkvYSSwzgk3BU+fZKy0nKgViH3wh60DAAAA",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-480.1326e6a1cc.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-960.90bb622b8f.webp"
+      },
+      {
+        "w": 1280,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-1280.e61be0797e.webp"
+      }
+    ],
+    "made": {
+      "model": "FLUX.2 [klein] 4B",
+      "licence": "Apache-2.0",
+      "engine": "Orazaka's media worker engine (mflux), edit with reference images (chapter 22 and the brand picture's bird crops), scripts/render-image-series.py",
+      "machine": "the founder's Mac (Apple Metal GPU), no paid API",
+      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. Same valley, same sun and mountains as the previous picture, same camera, same palette: keep everything already built and add only the new element. Only the birds named below appear, each exactly once; no human figures anywhere. A small rail yard at dusk after the first snow: three parallel tracks running to a modest station, one wagon resting on a siding under a red lamp, a little repair draisine with a lantern alone on the middle track, the pigeon perched on the points lever. The series’ cast is carried over unchanged. Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: an orange falcon with a dark visor, a violet owl with two ear tufts and big round eyes, a red duck with a flat yellow bill and round glasses (a duck, not an owl: no ear tufts), a pink flamingo, a blue pigeon.",
+      "seed": "2301",
+      "size": "1280×720",
+      "note": "Chapter 23's cover: one take, looked at in full size before use. No person, no text, no logo; each bird once."
+    },
+    "renditions": {
+      "avif": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-480.840b46c648.avif"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-768.7538ae68e4.avif"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-1200.0bff2d72ee.avif"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-1280.cebddaec15.avif"
+        }
+      ],
+      "webp": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-480.8283fe3ac9.webp"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-768.ea0b4159b4.webp"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-1200.c036cf85a9.webp"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-1280.855368a77b.webp"
+        }
+      ]
+    }
   }
 }
