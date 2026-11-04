@@ -31,7 +31,7 @@ for (const dir of ["content", "public"])
       );
 for (const dir of ["content/posts", "content/chapters"])
   for (const f of walk(join(root, dir)))
-    if (/\.mdx$/.test(f)) {
+    if (f.endsWith(".mdx")) {
       const text = readFileSync(f, "utf8");
       const file = f.replace(root + "/", "");
       problems.push(...attributeQuoteProblems(text, file), ...privateRepoLinkProblems(text, file));
