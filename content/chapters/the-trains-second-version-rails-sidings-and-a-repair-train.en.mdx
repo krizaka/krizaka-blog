@@ -135,3 +135,33 @@ Over the same 30 hours, 49 model sessions were recorded. Until 3 November their 
 The frozen rail says main is red, it does not repair it: a session still has to write the `fix(main)`. The cap of three PRs per repository sometimes holds a good PR behind two red ones, and the answer is still human: land them or close them. And the watchdog warns, it does not decide. That is on purpose: a script that costs nothing can watch all the time, but repairing is still somebody's job.
 
 And the repair train itself can be left at the platform. On the morning of 3 November, on Product A, the `fix(main)` PR stayed frozen with the others for about two hours: the conductor recognises the repair train by a label, and the opening tool had not set it. It had to be added by hand. The next guard: the tool sets the label as soon as the title starts with `fix(main)`, and a test checks it.
+
+## A firefighter, and the real bottleneck
+
+On the evening of 3 November, I added a firefighter. Its rule is simple. A repository with its three PRs open, at least one of them red, is on fire: nobody can open a new PR there while the red one stays. Every five minutes, a script goes over each repository. When it finds a fire, it puts a label on the red PR, leaves a comment, sends me a notification and writes the brief for the session that will put it out. A fire comes before any new work. If nobody takes it within thirty minutes, it becomes urgent.
+
+Before saying whether it helps, I wanted to know where we started from. I went back over the fourteen days before it in GitHub: 38 repositories, 3,871 PRs. With the three-PR rule, our repositories spent 1,487 hours blocked, 11.6% of their time. 27 of the 38 were blocked at least once.
+
+On its first evening it found three fires. The first one left the fire state in two minutes, and the real repair landed about twenty minutes after the alarm. The second went out by itself after thirty minutes, without anyone taking it. The third was taken after twenty-five minutes, and a session was still working on it when I wrote this.
+
+What it has gained us, I do not know yet. Three fires in one evening is not a measurement. I set myself a minimum before comparing: seven days and ten fires. All I have is an anecdote, and a modest one: twenty minutes for the first fire is about as long as an ordinary block before it. Half of them already lasted less than a quarter of an hour.
+
+There was also a false alarm on my side. During the first night, the firefighter's log went quiet, and I thought its alarm was broken. It was running, it just had nothing new to say. It now writes the time of its last pass, and the next session sees at once whether it has really stopped.
+
+### The real bottleneck
+
+When I looked for where those 1,487 hours came from, I expected a CI that was too slow. That is not it. A red PR turns green again in twenty-six minutes, median. The blocked time comes from somewhere else.
+
+<Numbers>
+  <Num value="92%" label="of the blocked hours came from red PRs later closed without being merged" hint="1,367 hours out of 1,487, a hundred PRs" />
+  <Num value="66%" label="came from PRs that had been red for more than a day" hint="39% from PRs red for more than three days" />
+  <Num value="10" label="PRs make up half of the blocked time on their own" hint="the worst one stayed open fourteen days" />
+</Numbers>
+
+The bottleneck is not the PR that is red right now. It is the forgotten red: a PR that will never leave, but keeps its place among the three. Nobody is in charge of it, so it sits there for days, and then someone closes it. The firefighter is quick on a fresh fire. For the one that has been smouldering for a week, it does nothing.
+
+A second figure surprised me. On top of those blocked hours, our repositories spent 1,178 hours with their three PRs open, all green, waiting for the train to take them. That is not a fire, but it is a place taken too.
+
+I keep what is measured apart from what is inferred. The outcome of each PR, how long it had been red, who opened it: that is measured. That 28% of the blocked hours come from one failure shared by several PRs, like a red main or a broken shared CI, I infer: the same check was red on two PRs at the same moment. And GitHub only keeps the checks of a PR's last commit, so some figures are lower bounds. The blocked hours are solid.
+
+We will go after the forgotten red, but not right away: other subjects come first. The idea is written down. A PR red for more than a day gets fixed that day, or closed with one line that says why. Meanwhile, the firefighter stays.
