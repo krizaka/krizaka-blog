@@ -18,8 +18,8 @@ const BANKS =
   /\b(RBC|Royal Bank|Banque Royale|TD Bank|Banque TD|BMO|Bank of Montreal|Banque de Montréal|Scotiabank|CIBC|Banque Nationale|National Bank|Desjardins|Laurentienne|Laurentian)\b/i;
 const BIRTH = /\b(né le|née le|born on|date de naissance|date of birth)\b/i;
 const EDU = {
-  en: "I studied mathematics and computer science.",
-  fr: "J'ai étudié les mathématiques et l'informatique.",
+  en: "I studied mathematics and computer science, then their use in cognitive science: how people read, and how they decide.",
+  fr: "J'ai étudié les mathématiques et l'informatique, puis leur usage en sciences cognitives : comment on lit, comment on décide.",
 };
 const posts = readdirSync(new URL("../content/posts/", import.meta.url)).filter((f) => f.endsWith(".mdx"));
 
