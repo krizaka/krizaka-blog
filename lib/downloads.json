@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "29f42ee2a0c3",
+      "source": "0cb6b3757de0",
       "files": {
         "epub": {
-          "hash": "cb9315e916",
-          "bytes": 6229530
+          "hash": "fb6c82b699",
+          "bytes": 6229541
         },
         "pdf": {
-          "hash": "73bf09af5d",
-          "bytes": 8963719
+          "hash": "fcfe92e110",
+          "bytes": 8963158
         }
       }
     },
@@ -144,15 +144,15 @@
       }
     },
     "en/how-we-built-our-ci": {
-      "source": "1e4d730a9a14",
+      "source": "799e229d6e71",
       "files": {
         "epub": {
-          "hash": "2d7660cf32",
-          "bytes": 659629
+          "hash": "90399622b1",
+          "bytes": 659640
         },
         "pdf": {
-          "hash": "8e78314262",
-          "bytes": 1080217
+          "hash": "1ff46a3e0d",
+          "bytes": 1079673
         }
       }
     },
@@ -287,15 +287,15 @@
       }
     },
     "fr/story": {
-      "source": "e9ca3b994f33",
+      "source": "eceb479cf753",
       "files": {
         "epub": {
-          "hash": "c161153ad8",
-          "bytes": 6251290
+          "hash": "c0ef08fa30",
+          "bytes": 6251307
         },
         "pdf": {
-          "hash": "a9c74fba7f",
-          "bytes": 9125388
+          "hash": "fe6b2d1923",
+          "bytes": 9124821
         }
       }
     },
@@ -430,15 +430,15 @@
       }
     },
     "fr/how-we-built-our-ci": {
-      "source": "ca744ab7469c",
+      "source": "bd1f17c70222",
       "files": {
         "epub": {
-          "hash": "96ea766a85",
-          "bytes": 672905
+          "hash": "4c564accbe",
+          "bytes": 672922
         },
         "pdf": {
-          "hash": "7d07f90501",
-          "bytes": 1117329
+          "hash": "1124c82887",
+          "bytes": 1116783
         }
       }
     },
