@@ -1,0 +1,126 @@
+---
+title: "Comment on reste synchronisés : le fondateur, le CTO, le business et les voies"
+description: "Une équipe business et design qui écrit avant qu'on construise, des voies qui livrent une issue à la fois, un consultant aux tournants. Une idée suivie du début à la fin, un go ou no-go, et ce qui a raté."
+seoTitle: "Fondateur, CTO, business : comment on se synchronise"
+seoDescription: "Qui décide quoi chez Krizaka, où l'on se retrouve, une idée suivie du début à la fin et le go ou no-go d'un MVP, raconté par le fondateur."
+date: 2026-11-03
+tags: [ai, integration]
+author: oussama
+draft: true
+sensitive: true
+chapter: 24
+cover: series-24-how-we-stay-in-sync
+coverAlt: "Au bord de la petite gare de triage, au crépuscule, un panneau d'affichage en bois sous un petit toit avec des fiches vierges en colonnes, un réverbère allumé, une boîte aux lettres sur un poteau, la draisine seule avec sa lanterne, et les cinq oiseaux de Krizaka (le faucon, la chouette, le canard, le flamant et le pigeon) le long des rails"
+period: "2026-10-29/2026-11-03"
+sources:
+  - from-vibe-coding-to-agentic-engineering
+  - accounts-and-keys-of-a-one-person-company
+versus:
+  faced: "trop de rôles pour une seule conversation, et des réponses qui partaient au mauvais endroit"
+  built: "des rôles avec leurs limites, une spec avant le code, et quatre endroits où l'on se retrouve"
+stats:
+  - value: "5"
+    label: "voies, une session chacune : trois produits, la plateforme, la sécurité"
+    section: "Qui fait quoi aujourd'hui"
+  - value: "4"
+    label: "rôles dans l'équipe business et design, toujours dans le même ordre"
+    section: "Le business écrit avant qu'on construise"
+  - value: "0"
+    label: "client le soir du go ou no-go, et aucune promesse faite à un client"
+    section: "Le virage : go ou no-go"
+---
+
+Au [chapitre 17](/fr/story/how-the-founder-and-the-cto-agent-work/), je racontais comment on travaille, l'agent CTO et moi : qui décide quoi, les voies, le tableau. C'était à deux. Depuis, la table s'est remplie. Il y a une équipe business et design, un pompier et un guetteur, et même un consultant. Plus il y a de monde, plus la vraie question devient simple à poser et difficile à tenir : comment on reste synchronisés ?
+
+Ce chapitre répond avec une seule journée, le 3 novembre. Ce jour-là, j'ai demandé des vidéos pour les carrousels de nos sites, et le même soir on a décidé de ne pas mettre de produit payant en production la semaine suivante. Les deux histoires passent par les mêmes endroits.
+
+## Qui fait quoi aujourd'hui
+
+Chaque rôle a une limite écrite. C'est ce qui permet de ne pas tout me demander, et de ne rien me cacher.
+
+<Layers label="Qui décide quoi en novembre. Plus on descend, plus le rôle est étroit et automatique ; ce qui coûte de l'argent ou ne se défait pas remonte toujours jusqu'à moi.">
+  <Layer tag="1" title="Moi, le fondateur" note="L'argent, le juridique, les comptes et la direction." items="un paiement | un compte | un avocat | où on va" />
+  <Layer tag="2" title="Le CTO, un agent qui pilote" note="Il tranche ce qui se défait, avec des plafonds, et il me rend compte." items="les choix de produit et d'orchestration | un essai payant estimé d'abord | un rapport dans ma boîte" />
+  <Layer tag="3" title="Le business et le design" note="Ils écrivent la spec avant que quelqu'un construise." items="stratège | UX | UI | critique" />
+  <Layer tag="3" title="Le consultant" note="Il observe aux grands tournants et il ne construit rien." level="1" />
+  <Layer tag="4" title="Les voies" note="Une session par voie, une issue à la fois." items="Verikora | Folioviv | Sovkora | Plateforme | Sécurité" />
+  <Layer tag="5" title="Le chouf et le pompier" note="Le chouf regarde gratuitement ; le pompier éteint une PR rouge qui bloque un dépôt." />
+  <Layer tag="6" title="Les gardes" note="Des commandes qui refusent, des tests, le train." />
+</Layers>
+
+Il y a 5 voies. Une par produit, Verikora, Folioviv et Sovkora, plus la Plateforme et la Sécurité. Chacune a une seule session à la fois, et elle livre une issue avant d'en prendre une autre. Le chouf et le pompier, je les ai racontés au [chapitre 23](/fr/story/the-trains-second-version-rails-sidings-and-a-repair-train/) : le premier est un script qui fait le guet sans IA, le second se réveille quand un dépôt a ses trois PR ouvertes et une rouge parmi elles.
+
+Ce qui a changé le plus depuis le chapitre 17, c'est le mandat du CTO. Le 2 novembre, je lui ai écrit : « je te laisse piloter. Juste attention au budget : les questions de budget, tu me les gardes. » Tout le reste, il le décide, il écrit sa décision en une ligne, et il agit. Il a aussi le droit, et même le devoir, de me contredire quand je me trompe. Je le lui ai demandé dès le début.
+
+## Le business écrit avant qu'on construise
+
+Le 24 octobre, j'ai posé une règle que je ne veux plus jamais lever : avant de construire, on sait où on va. Si on connaît la direction, on sait aussi ce qu'il ne faut pas faire, et on refait moins.
+
+Pour une page, une vidéo ou un écran, cette direction vient d'une petite équipe de 4 rôles, qui passent toujours dans le même ordre. D'abord le stratège : qui achète, où il nous voit en premier, ce qu'il doit croire en partant. Puis l'architecte UX : la structure, l'ordre, les mots en français et en anglais. Puis le designer UI : avec ce que Krizaka UI sait déjà faire, sans inventer de composant. Enfin la critique, faite par le CTO, qui écrit ce qui est retenu et ce qui est refusé, avec la raison.
+
+Ce sont des agents, chacun avec son rôle écrit. Ils ne codent rien et ne dépensent rien. Ce qui sort de leur passage, c'est un texte posé sur l'issue, et c'est ce texte que la voie suit ensuite.
+
+## Une idée, du début à la fin
+
+Le 3 novembre, j'ai écrit au CTO : « demande à la business, UI et UX ce qu'on peut proposer comme vidéo dans nos carrousels, surtout qu'on va prendre un virage bientôt ». J'ai ajouté que les vidéos devaient être dignes de notre savoir-faire, et qu'il fallait travailler les prompts que les tests allaient utiliser. Pour les plans qu'on ne peut pas filmer, j'ai ouvert un compte chez un service de vidéo générée et j'ai donné un budget, en dollars, avec un plafond.
+
+<Pipeline label="Le chemin d'une idée, le 3 novembre. Les cinq premières étapes sont faites ; les trois dernières sont dans la file de la voie Sovkora au moment où j'écris.">
+  <Stage title="Mon idée" note="une phrase, un budget">Des vidéos pour les carrousels, et un compte chez un service de vidéo générée, avec un plafond en dollars.</Stage>
+  <Stage title="Le CTO cadre" note="délégué ou à moi">Il range ce qu'il décide seul et ce qui reste à moi : le budget, le compte, le nom du projet chez le fournisseur, la copie de la clé à supprimer.</Stage>
+  <Stage title="Le business d'abord" note="le format">Où un gestionnaire nous voit en premier décide du format : l'écran large d'abord, le téléphone ensuite.</Stage>
+  <Stage title="UX et UI" note="la liste, les prompts">L'ordre des plans, ce que chacun montre, et les prompts écrits mot pour mot.</Stage>
+  <Stage title="La critique" note="retenu, refusé" tone="gate">Les vrais écrans sont la preuve ; aucun visage dans un plan généré ; un seul essai avant toute dépense.</Stage>
+  <Stage title="La voie construit" note="clé et run enregistré">Une clé protégée que l'on crée, lit, modifie et supprime dans Sovkora, puis un run enregistré par un test.</Stage>
+  <Stage title="Le train" note="fusion sans jeton" tone="ship">La PR verte part dans la file de son dépôt, et le train la fait arriver.</Stage>
+  <Stage title="Le point" note="dans ma boîte">Un rapport en français, avec ce qui attend encore ma décision.</Stage>
+</Pipeline>
+
+Le CTO a d'abord séparé ce qui était à lui de ce qui était à moi. Deux questions sur les diapositives, il les a tranchées seul, en écrivant que je pouvais revenir dessus : le consentement d'un locataire est coupé de l'image, et la vidéo de Sovkora reste sur sa carte tant que son test de bout en bout n'est pas vert. Le reste m'est revenu sous forme de liste : renommer le projet chez le fournisseur pour que les factures portent le bon nom, supprimer une copie en clair de la clé, rangée depuis dans le coffre. Et une règle pour la fin : quand le cas d'usage sera fini, l'agent supprime la clé dans Sovkora, et cette suppression est filmée elle aussi.
+
+Puis j'ai demandé : vertical ou horizontal, quel est le mieux ? Le CTO n'a pas répondu lui-même. Il a renvoyé la question au business d'abord. Le stratège a regardé où un gestionnaire d'immeubles nous voit en premier : un lien envoyé par courriel après une conversation, ouvert sur un ordinateur au bureau, ou sur un téléphone entre deux visites. C'est l'écran large qui prouve la valeur, avec la liste des dossiers, le rapport et le PDF signé. Donc l'horizontal est la version maîtresse, et le vertical est une vraie prise faite sur le téléphone, jamais un écran d'ordinateur recadré. On lit souvent qu'un réseau social professionnel favorise la vidéo verticale : ça vient de guides de vendeurs, personne ne l'a vérifié chez nous, alors la question a été ajoutée au script des conversations de découverte.
+
+L'UX et l'UI ont suivi. Un plan généré est fait une seule fois, à l'horizontale, composé pour être recadré au centre, puis recadré chez nous, gratuitement. La critique a refusé des choses aussi : une vidéo sur l'accessibilité financière qui n'avait pas de parcours de test derrière elle, et des visages dans les nouveaux plans générés.
+
+Au moment où j'écris, la liste et les prompts sont écrits, et la voie Sovkora a sa file : l'essai d'abord, puis le reste, sous le plafond. La clé, le run filmé et la PR ne sont pas encore arrivés. Je le raconterai quand ce sera fait, pas avant.
+
+## Où on se retrouve
+
+Personne ne lit tout. Alors chaque information a un seul endroit, et chacun sait où la chercher.
+
+<Split label="Les endroits où l'on se retrouve, et ce qui y passe. Une information a un seul endroit ; une décision s'écrit là où elle s'applique.">
+  <Side title="Le tableau et les issues" tone="own" items="Une carte, un seul statut | En cours veut dire actif maintenant | L'issue est le contrat : quoi, pourquoi, fini quand, ce qu'elle touche, le côté admin | Une décision s'écrit en commentaire sur l'issue" />
+  <Side title="Les PR et le train" tone="plug" items="Chaque PR ferme ou cite une issue | Trois PR ouvertes au plus par dépôt | Une file par dépôt, le train fusionne | Deux rouges : le modèle le plus fort, et une leçon écrite" />
+  <Side title="Ma boîte et les rendez-vous" tone="after" items="Un point toutes les quelques heures, en français | Ce qui attend ma décision, et sur quoi | La colonne Bloqué quand il faut ma signature | Un go ou no-go aux grands tournants" />
+</Split>
+
+Le tableau répond à « qui fait quoi maintenant ». Une carte n'a qu'un statut, et « En cours » veut dire qu'une session y travaille en ce moment, pas qu'elle y a pensé. L'issue est le contrat. Elle dit ce qu'on fait, pourquoi, quand c'est fini, ce qu'elle touche, et ce qu'un administrateur devra pouvoir régler. L'issue de ce chapitre a la même forme. Quand le CTO décide quelque chose, il l'écrit sur l'issue concernée, pas dans une conversation qui se perdra.
+
+Les PR et le train répondent à « qu'est-ce qui arrive sur main ». Ma boîte répond à « qu'est-ce qui m'attend ». Le CTO y dépose un point régulier, en français, sans secret : ce qui est livré, ce qui bloque et pourquoi, ses décisions, et ce qui attend la mienne. Quand une chose a besoin de moi, comme une signature ou un compte, sa carte passe dans Bloqué avec une ligne qui dit quoi faire, et rien d'autre n'attend derrière elle.
+
+## Le virage : go ou no-go
+
+Le 3 novembre au soir, on s'est posé une question franche : est-ce qu'on met un MVP payant en production la semaine prochaine ? Ce soir-là, on avait 0 client, et aucune promesse faite à un client.
+
+Chaque responsable de produit a fait son compte rendu, avec une règle : chaque affirmation est marquée vérifiée ou non vérifiée. Pas de « ça devrait marcher ». Verikora est en ligne avec ses pages légales, et un paiement est passé une fois, avec une carte de test. Folioviv a ses 12 parcours de test verts, mais l'inscription n'est pas construite. Sovkora est en ligne, avec un test de bout en bout rouge. Côté plateforme, le circuit de mise en production est prouvé : Kridoc tourne sur www.kridoc.com.
+
+Le business et le CTO ont décidé : no-go pour un MVP payant la semaine prochaine, go pour Verikora en premier, et Krizaka Entreprise en parallèle, qui ne vend qu'une tâche déjà démontrée. Ce qui manque n'est presque plus dans le code. C'est encaisser un paiement pour de vrai, être en règle, avoir un avocat, et parler à des gens.
+
+Le consultant a observé, puis il a ajouté ce que nous ne voyions pas. Avant de polir quoi que ce soit, il faut 10 conversations de découverte avec des gestionnaires. Et il a donné une définition de « prête à vendre » que je garde : le jour où un gestionnaire qu'on ne connaissait pas le mois dernier paie un dossier avec sa carte, sous des conditions relues par un avocat, et reçoit une réponse du support le jour même.
+
+Les décisions qui coûtent de l'argent, elles, me sont revenues, une par une, dans ma boîte. Les délais aussi ont été estimés, avec une confiance basse. Je ne les promets à personne.
+
+## Ce qui a raté
+
+Le même jour, deux sessions de pilotage ont tourné côte à côte. L'une menait, l'autre ne faisait que relever les chiffres, et leurs tâches automatiques faisaient doublon. C'est le point de la seconde qui me l'a dit, en me demandant de la fermer.
+
+Le matin, c'était l'inverse : personne ne pilotait. La fenêtre de budget était fermée, et 17 PR ouvertes n'avaient plus personne. Les points continuaient d'arriver dans ma boîte, et c'est comme ça que je l'ai su : « personne ne pilote ».
+
+Des réponses sont parties au mauvais endroit. La liste des vidéos, les décisions du CTO et même le compte rendu du go ou no-go ont été postés sur l'issue sous mon compte GitHub, alors que mon compte ne sert qu'à approuver et à fusionner. Le contenu était juste, la signature non. Une PR a aussi été fermée sans être fusionnée, et au dernier point, personne ne savait encore pourquoi. C'est écrit comme ça dans le rapport, sans arranger.
+
+Et puis les rouges qui reviennent. Une PR rouge deux fois passe maintenant au modèle le plus fort, et elle n'arrive sur main que si sa description a une section « Leçon » : ce qui était rouge, la cause, et l'endroit où l'erreur est désormais attrapée, le plus tôt possible. Les standards grandissent comme ça, une ligne à la fois.
+
+## Ce que je garde
+
+On a une devise depuis le 30 octobre : « Le flux tourne, l'échéance est à nous : elle peut bouger, la qualité jamais. » Le 3 novembre l'a mise à l'épreuve deux fois. On aurait pu filmer des plans tout de suite, et on a écrit la liste d'abord. On aurait pu lancer un produit payant la semaine suivante, et on a dit non, avec les raisons écrites.
+
+Se synchroniser, au fond, ce n'est pas faire plus de réunions. C'est savoir où chaque chose s'écrit, qui a le droit de la décider, et le dire quand ça rate.
