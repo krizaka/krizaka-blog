@@ -3,7 +3,14 @@
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { readdirSync, readFileSync } from "node:fs";
-import { attributeQuoteProblems, checkChapters, checkDir, mediaProblems, readContext } from "./content-rules.mjs";
+import {
+  attributeQuoteProblems,
+  checkChapters,
+  checkDir,
+  mediaProblems,
+  privateRepoLinkProblems,
+  readContext,
+} from "./content-rules.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ctx = readContext(root);
@@ -24,7 +31,11 @@ for (const dir of ["content", "public"])
       );
 for (const dir of ["content/posts", "content/chapters"])
   for (const f of walk(join(root, dir)))
-    if (/\.mdx$/.test(f)) problems.push(...attributeQuoteProblems(readFileSync(f, "utf8"), f.replace(root + "/", "")));
+    if (f.endsWith(".mdx")) {
+      const text = readFileSync(f, "utf8");
+      const file = f.replace(root + "/", "");
+      problems.push(...attributeQuoteProblems(text, file), ...privateRepoLinkProblems(text, file));
+    }
 if (problems.length) {
   console.error(problems.join("\n"));
   process.exit(1);

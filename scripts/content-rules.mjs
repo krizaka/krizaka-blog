@@ -531,3 +531,25 @@ export function attributeQuoteProblems(text, file) {
     (m) => `${file}: a straight double quote inside an attribute ends it early (${m[0].slice(0, 50)}…): use « » or “ ”`,
   );
 }
+
+/* A link to a private repository of the org is a 404 for every reader, and the external link check (ci / Verify) then
+   fails every pull request at once (krizaka-infra#9, krizaka-internal#2364). The list is the `visibility: "private"`
+   entries of krizaka/.github's repos.json, the org's single source: a repository made private is added here. */
+export const PRIVATE_REPOS = [
+  "cla-signatures",
+  "kachizaka",
+  "krizaka-agents",
+  "krizaka-coming-soon",
+  "krizaka-infra",
+  "krizaka-internal",
+];
+
+export function privateRepoLinkProblems(text, file) {
+  const link = /https?:\/\/github\.com\/krizaka\/([A-Za-z0-9._-]+)/g;
+  return [...text.matchAll(link)]
+    .filter((m) => PRIVATE_REPOS.includes(m[1].replace(/\.git$/, "")))
+    .map(
+      (m) =>
+        `${file}: links the private repository krizaka/${m[1]} (${m[0]}), a 404 for readers: say it without a link`,
+    );
+}
