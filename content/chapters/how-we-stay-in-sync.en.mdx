@@ -1,0 +1,127 @@
+---
+title: "How we stay in sync: the founder, the CTO, the business team and the lanes"
+description: "A business and design team that writes before anyone builds, lanes that deliver one issue at a time, a consultant at the turns, and the places where we meet. One idea followed end to end, a go or no-go, and what failed."
+seoTitle: "Founder, CTO, business and lanes: how we stay in sync"
+seoDescription: "Who decides what at Krizaka, where we meet, one idea followed end to end and the go or no-go of an MVP, told by the founder."
+date: 2026-11-03
+tags: [ai, integration]
+author: oussama
+publishedAt: "2026-11-03T23:45:00-05:00"
+draft: false
+sensitive: true
+chapter: 24
+cover: series-24-how-we-stay-in-sync
+coverAlt: "At the edge of the small rail yard at dusk, a wooden notice board under a little roof with blank cards in columns, a lit street lamp, a letterbox on a post, the draisine alone with its lantern, and the five Krizaka birds (the falcon, the owl, the duck, the flamingo and the pigeon) along the tracks"
+period: "2026-10-29/2026-11-03"
+sources:
+  - from-vibe-coding-to-agentic-engineering
+  - accounts-and-keys-of-a-one-person-company
+versus:
+  faced: "too many roles for one conversation, and answers that went to the wrong place"
+  built: "roles with their limits, a spec before the code, and four places where we meet"
+stats:
+  - value: "5"
+    label: "lanes, one session each: three products, the platform, security"
+    section: "Who does what today"
+  - value: "4"
+    label: "roles in the business and design team, always in the same order"
+    section: "Business writes before we build"
+  - value: "0"
+    label: "customers on the night of the go or no-go, and no promise made to one"
+    section: "The turn: go or no-go"
+---
+
+In [chapter 17](/story/how-the-founder-and-the-cto-agent-work/), I told how the CTO agent and I work: who decides what, the lanes, the board. There were two of us. Since then the table has filled up. There is a business and design team, a firefighter and a lookout, and even a consultant. The more people there are, the simpler the real question is to ask and the harder it is to hold: how do we stay in sync?
+
+This chapter answers with a single day, November 3. That day I asked for videos for our sites' carousels, and the same evening we decided not to put a paid product in production the following week. Both stories go through the same places.
+
+## Who does what today
+
+Every role has a written limit. That is what lets the team not ask me everything, and not hide anything from me.
+
+<Layers label="Who decides what in November. The lower you go, the narrower and more automatic the role; what costs money or cannot be undone always comes back up to me.">
+  <Layer tag="1" title="Me, the founder" note="Money, legal, accounts and direction." items="a payment | an account | a lawyer | where we go" />
+  <Layer tag="2" title="The CTO, an agent who pilots" note="It decides what can be undone, within caps, and reports to me." items="product and orchestration choices | a paid trial estimated first | a report in my inbox" />
+  <Layer tag="3" title="Business and design" note="They write the spec before anyone builds." items="strategist | UX | UI | critique" />
+  <Layer tag="3" title="The consultant" note="It observes at the big turns and builds nothing." level="1" />
+  <Layer tag="4" title="The lanes" note="One session per lane, one issue at a time." items="Verikora | Folioviv | Sovkora | Platform | Security" />
+  <Layer tag="5" title="The chouf and the firefighter" note="The chouf watches for free; the firefighter puts out a red PR that blocks a repository." />
+  <Layer tag="6" title="The guards" note="Commands that refuse, tests, the train." />
+</Layers>
+
+There are 5 lanes. One per product, Verikora, Folioviv and Sovkora, plus Platform and Security. Each has a single session at a time, and it delivers one issue before taking another. I told the chouf and the firefighter in [chapter 23](/story/the-trains-second-version-rails-sidings-and-a-repair-train/): the first is a script that keeps watch without AI, the second wakes up when a repository has its three PRs open and one of them is red.
+
+What changed most since chapter 17 is the CTO's mandate. On November 2 I wrote to it: « je te laisse piloter. Juste attention au budget : les questions de budget, tu me les gardes. » I leave the piloting to you; the money questions, you keep for me. Everything else it decides, writes its decision in one line, and acts. It also has the right, and even the duty, to contradict me when I am wrong. I asked for that from the start.
+
+## Business writes before we build
+
+On October 24 I set a rule I never want to lift: before building, we know where we are going. If we know the direction, we also know what not to do, and we redo less.
+
+For a page, a video or a screen, that direction comes from a small team of 4 roles, always in the same order. First the strategist: who buys, where they see us first, what they must believe when they leave. Then the UX architect: the structure, the order, the words in French and in English. Then the UI designer: with what Krizaka UI can already do, without inventing a component. Last the critique, done by the CTO, which writes what is kept and what is refused, with the reason.
+
+They are agents, each with its written role. They code nothing and spend nothing. What comes out of their pass is a text posted on the issue, and that text is what the lane follows next.
+
+## One idea, end to end
+
+On November 3 I wrote to the CTO: « demande à la business, UI et UX ce qu'on peut proposer comme vidéo dans nos carrousels, surtout qu'on va prendre un virage bientôt ». Ask business, UI and UX what videos we can offer in our carousels, especially since we are about to take a turn. I added that the videos had to be worthy of our craft, and that the prompts the tests would use had to be worked on. For the shots we cannot film, I opened an account with a generated-video service and gave a budget, in dollars, with a cap.
+
+<Pipeline label="The path of one idea, November 3. The first five steps are done; the last three are in the Sovkora lane's queue as I write.">
+  <Stage title="My idea" note="one sentence, a budget">Videos for the carousels, and an account with a generated-video service, with a cap in dollars.</Stage>
+  <Stage title="The CTO frames it" note="delegated or mine">It sorts what it decides alone from what stays mine: the budget, the account, the project's name at the provider, the copy of the key to delete.</Stage>
+  <Stage title="Business first" note="the format">Where a manager sees us first decides the format: the wide screen first, the phone second.</Stage>
+  <Stage title="UX and UI" note="the slate, the prompts">The order of the shots, what each one shows, and the prompts written word for word.</Stage>
+  <Stage title="The critique" note="kept, refused" tone="gate">The real screens are the proof; no face in a generated shot; one trial before any spend.</Stage>
+  <Stage title="The lane builds" note="key and recorded run">A protected key that can be created, read, changed and deleted in Sovkora, then a run recorded by a test.</Stage>
+  <Stage title="The train" note="a merge, no tokens" tone="ship">The green PR joins its repository's queue, and the train lands it.</Stage>
+  <Stage title="The checkpoint" note="in my inbox">A report in French, with what still waits for my decision.</Stage>
+</Pipeline>
+
+The CTO first separated what was its call from what was mine. Two questions about the slides it settled alone, writing that I could overrule them: a tenant's consent is cropped out of the picture, and Sovkora's video stays on its card until its end-to-end test is green. The rest came back to me as a list: rename the project at the provider so the invoices carry the right name, delete a plain copy of the key, which now sits in the vault. And a rule for the end: when the use case is done, the agent deletes the key in Sovkora, and that deletion is filmed too.
+
+Then I asked: vertical or horizontal, which is best? The CTO did not answer itself. It sent the question to business first. The strategist looked at where a property manager sees us first: a link sent by email after a conversation, opened on a desktop at the office, or on a phone between two visits. The wide screen is what proves the value, with the list of files, the report and the signed PDF. So horizontal is the master, and vertical is a real take made on the phone, never a desktop screen cropped. You often read that a professional social network favours vertical video: that comes from vendor guides, nobody has checked it for us, so the question was added to the script of the discovery conversations.
+
+UX and UI followed. A generated shot is made once, horizontal, composed to be cropped at the centre, then cropped on our side, for free. The critique refused things too: a video about affordability that had no test journey behind it, and faces in new generated shots.
+
+As I write, the slate and the prompts are written, and the Sovkora lane has its queue: the trial first, then the rest, under the cap. The key, the filmed run and the PR have not arrived yet. I will tell it once it is done, not before.
+
+## Where we meet
+
+Nobody reads everything. So each piece of information has one place, and everyone knows where to look for it.
+
+<Split label="The places where we meet, and what goes through each. A piece of information has one place; a decision is written where it applies.">
+  <Side title="The board and the issues" tone="own" items="One card, one status | In progress means active right now | The issue is the contract: what, why, done when, what it touches, the admin side | A decision is written as a comment on the issue" />
+  <Side title="The PRs and the train" tone="plug" items="Every PR closes or cites an issue | Three open PRs at most per repository | One queue per repository, the train merges | Two reds: the strongest model, and a written lesson" />
+  <Side title="My inbox and the meetings" tone="after" items="A checkpoint every few hours, in French | What waits for my decision, and on what | The Blocked column when my signature is needed | A go or no-go at the big turns" />
+</Split>
+
+The board answers « who is doing what now ». A card has only one status, and « In progress » means a session is working on it right now, not that someone thought about it. The issue is the contract. It says what we do, why, when it is done, what it touches, and what an administrator will need to be able to set. This chapter's issue has the same shape. When the CTO decides something, it writes it on the issue concerned, not in a conversation that will be lost.
+
+The PRs and the train answer « what is reaching main ». My inbox answers « what is waiting for me ». The CTO drops a regular checkpoint there, in French, with no secret: what shipped, what is blocked and why, its decisions, and what waits for mine. When something needs me, like a signature or an account, its card moves to Blocked with one line that says what to do, and nothing else waits behind it.
+
+## The turn: go or no-go
+
+On the evening of November 3 we asked ourselves a blunt question: do we put a paid MVP in production next week? That evening we had 0 customers, and no promise made to one.
+
+Each product owner gave a report, with one rule: every claim is marked verified or not verified. No « it should work ». Verikora is online with its legal pages, and a payment went through once, with a test card. Folioviv has its 12 test journeys green, but sign-up is not built. Sovkora is online, with one end-to-end test red. On the platform side, the path to production is proven: Kridoc runs on www.kridoc.com.
+
+Business and the CTO decided: no-go for a paid MVP next week, go for Verikora first, and Krizaka Entreprise in parallel, selling only a task already demonstrated. What is missing is hardly in the code any more. It is taking a real payment, being compliant, having a lawyer, and talking to people.
+
+The consultant observed, then added what we did not see. Before polishing anything, we need 10 discovery conversations with property managers. And it gave a definition of « ready to sell » that I keep: the day a manager we did not know last month pays for a file with their card, under terms a lawyer has read, and gets an answer from support the same day.
+
+The decisions that cost money came back to me, one by one, in my inbox. The timelines were estimated too, with low confidence. I promise them to no one.
+
+## What failed
+
+The same day, two piloting sessions ran side by side. One led, the other only took the readings, and their automatic jobs overlapped. It was the second one's checkpoint that told me, asking me to close it.
+
+In the morning it was the opposite: nobody was piloting. The budget window was closed, and 17 open PRs had no one left. The checkpoints kept arriving in my inbox, and that is how I knew: « personne ne pilote », nobody is piloting.
+
+Answers went to the wrong place. The video slate, the CTO's decisions and even the go or no-go report were posted on the issue under my GitHub account, when my account is only for approving and merging. The content was right, the signature was not. A PR was also closed without being merged, and at the last checkpoint nobody knew why yet. The report says so, as it is.
+
+And then the reds that come back. A PR that is red twice now goes to the strongest model, and it reaches main only if its description has a « Lesson » section: what was red, the cause, and where the error is now caught, as early as possible. The standards grow that way, one line at a time.
+
+## What I keep
+
+We have had a motto since October 30: « Le flux tourne, l'échéance est à nous : elle peut bouger, la qualité jamais. » Keep the flow moving; the deadline is ours and may move, the quality never does. November 3 tested it twice. We could have generated shots right away, and we wrote the slate first. We could have launched a paid product the following week, and we said no, with the reasons written down.
+
+Staying in sync, in the end, is not about more meetings. It is knowing where each thing is written, who has the right to decide it, and saying so when it fails.

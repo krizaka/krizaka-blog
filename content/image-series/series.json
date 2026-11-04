@@ -161,6 +161,12 @@
       "seed": 2301,
       "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
       "beat": "A small rail yard at dusk after the first snow: three parallel tracks running to a modest station, one wagon resting on a siding under a red lamp, a little repair draisine with a lantern alone on the middle track, the pigeon perched on the points lever. The series’ cast is carried over unchanged."
+    },
+    {
+      "post": "how-we-stay-in-sync",
+      "seed": 2405,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "At the edge of the same rail yard, a small wooden notice board on two posts under a little roof, a few blank cards pinned on it in neat columns, a lantern glowing at its corner, and a wooden letterbox on a post beside it. Nothing stands on the board or the letterbox. The little repair draisine stays alone and empty in the middle of the track, with no bird beside it; the five birds keep exactly their places from the previous picture, and no sixth bird is added. The cards carry no writing at all. The series’ cast is carried over unchanged."
     }
   ],
   "sprites": {

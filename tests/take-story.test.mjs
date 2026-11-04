@@ -19,6 +19,7 @@ const LOCAL_FREE = {
     "free local render on the Mac with the media worker's model, no paid run",
   "series-23-the-trains-second-version-rails-sidings-and-a-repair-train":
     "free local render on the Mac with the media worker's model, no paid run",
+  "series-24-how-we-stay-in-sync": "free local render on the Mac with the media worker's model, no paid run",
 };
 export function coverProvenance(id, made) {
   if (!made || typeof made.note !== "string") return false;
