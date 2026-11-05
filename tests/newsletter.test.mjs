@@ -24,8 +24,12 @@ function fakeDb({ subscribers = [], claimed = [] } = {}) {
   const posts = new Set(claimed);
   const sql = async (text, params = []) => {
     calls.push({ text, params });
-    if (text.startsWith("insert into newsletter_subscribers"))
+    if (text.startsWith("insert into newsletter_subscribers")) {
+      const before = subs.size;
+      if (!subs.has(params[0]) && before >= params[4]) return []; // the ceiling: nothing written
       subs.set(params[0], { email: params[0], locale: params[1], consented_at: params[2] });
+      return [{ inserted: before !== subs.size, before }];
+    } else if (text.startsWith("select count(*)")) return [{ n: subs.size }];
     else if (text.startsWith("delete from newsletter_subscribers")) subs.delete(params[0]);
     else if (text.startsWith("select email, locale, consented_at"))
       return [...subs.values()].map((s) => ({
@@ -136,6 +140,8 @@ test("subscribe: a valid request e-mails a confirmation link and stores nothing"
     },
     ENV,
     f,
+    Date.now(),
+    fakeDb().sql,
   );
   assert.equal(r.statusCode, 202);
   assert.match(f.calls[0].init.body, /remoteip=1.2.3.4/);
@@ -226,7 +232,13 @@ test("confirm: only a genuine link past its date says expired; a forged one says
 
 test("send to click: the link of the confirmation e-mail, in its text and in its HTML, confirms the subscriber (krizaka-blog#192)", async () => {
   const f = fakeFetch({ [SITEVERIFY]: { status: 200, body: { success: true } } });
-  await subscribe({ __ow_method: "post", email: "a@b.co", locale: "fr", captchaToken: "ok" }, ENV, f);
+  await subscribe(
+    { __ow_method: "post", email: "a@b.co", locale: "fr", captchaToken: "ok" },
+    ENV,
+    f,
+    Date.now(),
+    fakeDb().sql,
+  );
   const mail = new URLSearchParams(f.calls.find((c) => c.url.includes("/messages")).init.body);
   const fromText = mail.get("text").match(/https:\/\/blog\.krizaka\.com\/api\/newsletter\/confirm\?[^\s]+/)[0];
   const fromHtml = mail
@@ -753,8 +765,8 @@ test("the subscribe action checks the CAPTCHA with @krizaka/rate-limit/turnstile
   // A token the library saw once is refused the second time (replay), and the answer is the same « captcha ».
   const f = fakeFetch({ [SITEVERIFY]: { status: 200, body: { success: true } } });
   const args = { __ow_method: "post", email: "a@b.co", captchaToken: "once" };
-  assert.equal((await subscribe(args, ENV, f)).statusCode, 202);
-  assert.equal(JSON.parse((await subscribe(args, ENV, f)).body).error, "captcha");
+  assert.equal((await subscribe(args, ENV, f, Date.now(), fakeDb().sql)).statusCode, 202);
+  assert.equal(JSON.parse((await subscribe(args, ENV, f, Date.now(), fakeDb().sql)).body).error, "captcha");
 });
 
 test("the confirmation e-mail is the designed one of @krizaka/email, EN and FR, with the signed link that confirms", async () => {
@@ -764,6 +776,8 @@ test("the confirmation e-mail is the designed one of @krizaka/email, EN and FR, 
       { __ow_method: "post", email: "a@b.co", locale, captchaToken: `designed-${locale}` },
       ENV,
       f,
+      Date.now(),
+      fakeDb().sql,
     );
     assert.equal(r.statusCode, 202);
     const body = new URLSearchParams(
@@ -793,4 +807,87 @@ test("a post or chapter whose front matter says `newsletter: hold` is published 
   assert.deepEqual(publishedBetween(Object.keys(after), read), ["s"]);
   /* By hand (--slug) it is still sent: the hold only stops the push-triggered send. */
   assert.deepEqual(Object.keys(versionsOf("h", (p) => after[p] ?? null)), ["fr"]);
+});
+
+/* Bounded capacity (krizaka-internal#2441 family): the list cannot be filled by a flood of confirmed addresses. */
+const WITH_MAIL = () => fakeFetch({ [SITEVERIFY]: { status: 200, body: { success: true } } });
+const full = (n) => Array.from({ length: n }, (_, i) => ({ email: `u${i}@b.co`, locale: "en" }));
+
+test("subscribe: a full list answers 503 and e-mails nobody; the list that cannot be read refuses too", async () => {
+  const db = fakeDb({ subscribers: full(3) });
+  const f = WITH_MAIL();
+  assert.equal(await nl.listFull(db.sql, 3), true);
+  assert.equal(await nl.listFull(db.sql, 4), false);
+  // the action reads the ceiling from the same constant: a list that counts it
+  const atCeiling = async () => [{ n: nl.MAX_SUBSCRIBERS }];
+  const r = await subscribe(
+    { __ow_method: "post", email: "a@b.co", captchaToken: "ok" },
+    ENV,
+    f,
+    Date.now(),
+    atCeiling,
+  );
+  assert.equal(r.statusCode, 503);
+  assert.equal(JSON.parse(r.body).error, "capacity");
+  assert.ok(!f.calls.some((c) => c.url.includes("/messages")), "no e-mail left");
+  const broken = async () => {
+    throw new Error("down");
+  };
+  const f2 = WITH_MAIL();
+  const r2 = await subscribe({ __ow_method: "post", email: "a@b.co", captchaToken: "ok" }, ENV, f2, Date.now(), broken);
+  assert.equal(r2.statusCode, 503);
+  assert.ok(!f2.calls.some((c) => c.url.includes("/messages")), "no e-mail left when the list cannot be read");
+});
+
+test("confirm: at the ceiling the new address is refused and nothing is written; a known address is still renewed", async () => {
+  const now = Date.UTC(2026, 9, 16);
+  const tokenOf = (email) => nl.makeToken({ email, locale: "en", purpose: "c", now }, ENV.MAIL_TOKEN_SECRET);
+  const db = fakeDb({ subscribers: full(2) });
+  await assert.rejects(nl.addSubscriber(db.sql, { email: "new@b.co", locale: "en" }, new Date(now), 2), {
+    code: "LIST_FULL",
+  });
+  assert.equal(db.subs.size, 2, "no row written");
+  await nl.addSubscriber(db.sql, { email: "u0@b.co", locale: "fr" }, new Date(now), 2);
+  assert.equal(db.subs.get("u0@b.co").locale, "fr", "a known address is renewed even at the ceiling");
+  // through the action: the list refuses, the reader is told to try again (503), nothing stored
+  const empty = fakeDb();
+  const refusing = async (text, params) => (text.startsWith("insert into") ? [] : empty.sql(text, params));
+  const original = console.error;
+  console.error = () => {};
+  try {
+    const r = await confirm({ t: tokenOf("new@b.co"), l: "en" }, ENV, refusing, now + 1000);
+    assert.equal(r.statusCode, 503);
+    assert.equal(r.headers["Retry-After"], "300");
+  } finally {
+    console.error = original;
+  }
+  assert.equal(empty.subs.size, 0);
+});
+
+test("the list alerts once when it crosses 80 % of its ceiling, and not before or after", async () => {
+  const lines = [];
+  const original = console.error;
+  console.error = (...a) => void lines.push(a.join(" "));
+  try {
+    const db = fakeDb();
+    for (let i = 0; i < 10; i++) await nl.addSubscriber(db.sql, { email: `n${i}@b.co`, locale: "en" }, new Date(), 10);
+    assert.equal(lines.filter((l) => /ALERT/.test(l)).length, 1);
+    assert.match(
+      lines.find((l) => /ALERT/.test(l)),
+      /80 %.*8 of 10/,
+    );
+    await nl.addSubscriber(db.sql, { email: "n0@b.co", locale: "fr" }, new Date(), 10); // a renewal does not alert again
+    assert.equal(lines.filter((l) => /ALERT/.test(l)).length, 1);
+  } finally {
+    console.error = original;
+  }
+});
+
+test("the list's connection gives every statement a timeout", () => {
+  assert.equal(nl.STATEMENT_TIMEOUT_MS, 10_000);
+  const src = readFileSync(
+    new URL("../functions/packages/newsletter/subscribe/newsletter.js", import.meta.url),
+    "utf8",
+  );
+  assert.match(src, /new Client\(\{[^}]*statement_timeout: STATEMENT_TIMEOUT_MS/);
 });

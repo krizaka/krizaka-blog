@@ -116,6 +116,10 @@ caption?/>` (a light native player: muted loop while on screen, poster first, co
   (`MAIL_SENDER_ADDRESS`), why it is received, and links the privacy note. No tracking (`o:tracking=no`, no pixel).
   Mailgun only sends (the account's key is a sending key; it cannot hold lists). ADR-001 (accounts) links an account to
   this subscription; it does not keep a second list.
+  **Bounded capacity** (standard `bounded-capacity.md` of krizaka/.github): the list holds at most `MAX_SUBSCRIBERS` rows (one statement
+  inserts a new address only under the ceiling; a log alert at 80 %; at 100 % `confirm` answers 503 and `subscribe` e-mails nobody), and
+  every statement of the list's connection has a `statement_timeout`. The limiter (per address, per subject, global) joins when
+  `@krizaka/rate-limit` publishes its global ceiling; it is not copied here.
 - **Leaving** is the one-click link of every e-mail (`u` token, never expires) and the RFC 8058 header — nothing else (no
   lookup form: Oussama, 2026-10-17). It lands on `/newsletter/unsubscribed/` (« Me réabonner », a plain link, works without
   JavaScript); a bad link lands on `/newsletter/link-invalid/`.
