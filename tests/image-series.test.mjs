@@ -60,3 +60,42 @@ test("the renderer runs mflux through the worker's own python, never the entry p
   const head = JSON.parse(execFileSync("python3", ["-c", py], { encoding: "utf8" }));
   assert.deepEqual(head, ["/w/.venv/bin/python", "/w/.venv/bin/mflux-generate-flux2-edit"]);
 });
+
+/* One look for the whole series (krizaka-internal#2455): the covers are hand-drawn ink and watercolor on paper in the Krizaka
+   palette. Chapters 23 and 24 were once drawn as a flat vector night scene and broke the series. The only exception is the
+   chapter whose cover is a key frame of the film it tells (22, krizaka-internal#138) and chapter 10, whose cover the founder
+   chose to keep (« Chapter 10 keeps its cover », prepare-series-covers.mjs). */
+const WATERCOLOR = /hand-drawn ink and watercolor/i;
+const OUT_OF_LOOK = new Set(["series-10-a-curve-that-climbs", "series-22-how-orazaka-made-our-brand-film"]);
+const media = JSON.parse(readFileSync("lib/media.json", "utf8"));
+
+test("every cover of the series is hand-drawn ink and watercolor, but the two kept apart (10, 22)", () => {
+  const covers = Object.entries(media).filter(([id]) => id.startsWith("series-"));
+  assert.equal(covers.length, series.chapters.length);
+  for (const [id, entry] of covers) {
+    if (OUT_OF_LOOK.has(id)) continue;
+    const said = [entry.made?.prompt, entry.made?.engine].filter(Boolean).join(" ");
+    assert.match(said, WATERCOLOR, `${id} is not drawn in the series' look (ink and watercolor)`);
+    assert.doesNotMatch(said, /flat vector|photograph/i, `${id} breaks the series' look`);
+  }
+});
+
+test("every cover of the series has the same picture ratio (16:9) and its renditions", () => {
+  for (const [id, entry] of Object.entries(media).filter(([k]) => k.startsWith("series-"))) {
+    assert.ok(
+      Math.abs(entry.width / entry.height - 16 / 9) < 0.02,
+      `${id}: ${entry.width}×${entry.height} is not 16:9`,
+    );
+    assert.ok(entry.renditions?.avif && entry.renditions?.webp, `${id}: no renditions`);
+  }
+});
+
+test("a chapter the plan draws in watercolor says so, and the renderer prompts it with the watercolor style", () => {
+  assert.match(series.watercolorStyle, WATERCOLOR);
+  assert.match(series.watercolorStyle, /No people, no text, no letters, no numbers, no logos/);
+  const flagged = series.chapters.filter((c) => c.look === "watercolor");
+  assert.deepEqual(
+    flagged.map((c) => c.post),
+    ["the-trains-second-version-rails-sidings-and-a-repair-train", "how-we-stay-in-sync"],
+  );
+});
