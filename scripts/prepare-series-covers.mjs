@@ -18,7 +18,6 @@ const WIDTHS = [480, 960, 1280];
 
 export function promptOf(series, index) {
   const chapter = series.chapters[index];
-  if (chapter.look === "watercolor") return [series.watercolorStyle, chapter.beat].join(" ");
   const looks = chapter.birds.map((b) => series.birdLooks[b]).join(", ");
   const parts = [
     series.style,
@@ -72,9 +71,8 @@ async function main() {
   mkdirSync(join(out, "series"), { recursive: true });
   for (const [i, c] of series.chapters.entries()) {
     const id = coverId(i, c.post);
-    const local = c.look === "watercolor"; // rendered on the Mac by scripts/render-image-series.py (krizaka-internal#2455)
-    if ((!PICKS[i + 1] && !local) || (only && only !== i + 1)) continue;
-    const [pick, runId, renderedFor] = PICKS[i + 1] ?? [];
+    if (!PICKS[i + 1] || (only && only !== i + 1)) continue;
+    const [pick, runId, renderedFor] = PICKS[i + 1];
     const input = join(src, `${String(i + 1).padStart(2, "0")}-${c.post}.png`);
     const srcs = [];
     for (const w of WIDTHS) {
@@ -94,32 +92,18 @@ async function main() {
       height: Math.round((meta.height * Math.min(meta.width, WIDTHS[2])) / meta.width),
       blur: `data:image/webp;base64,${blur.toString("base64")}`,
       srcs,
-      made: local
-        ? {
-            model: "FLUX.2 [klein] 4B",
-            licence: "Apache-2.0",
-            engine:
-              "Orazaka's media worker engine (mflux) on Metal, 4 steps, text to image, scripts/render-image-series.py",
-            machine: "the founder's Mac (Apple Metal GPU), no paid API",
-            via: "local",
-            prompt: promptOf(series, i),
-            seed: String(c.seed),
-            size: `${meta.width}×${meta.height}`,
-            costUsd: 0,
-            note: `Chapter ${i + 1} of the image series, redrawn in the series' look (hand-drawn ink and watercolor) after the first take was a flat vector scene (krizaka-internal#2455): a free local render on the founder's Mac, outside an Orazaka Studio run; looked at in full size before use. No person, no text, no logo.`,
-          }
-        : {
-            model: "FLUX.1 [schnell]",
-            licence: "Apache-2.0",
-            engine:
-              "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
-            machine: "RunPod L40S",
-            via: "Orazaka Studio",
-            size: `${meta.width}×${meta.height}`,
-            note: renderedFor
-              ? `Chapter ${i + 1} of the image series: candidate ${pick.toUpperCase()} of batch 2026-10-30-blog-v2 (Orazaka Studio run ${runId}), rendered for chapter ${renderedFor} and left unpicked there (krizaka-blog#193). No person, no text, no logo.`
-              : `Chapter ${i + 1} of the image series, candidate ${pick.toUpperCase()} of batch 2026-10-30-blog-v2 (Orazaka Studio run ${runId}) chosen by the founder (krizaka-blog#193). No person, no text, no logo.`,
-          },
+      made: {
+        model: "FLUX.1 [schnell]",
+        licence: "Apache-2.0",
+        engine:
+          "image-generation through Orazaka Studio (dev.orazaka.com), one RunPod L40S batch, hand-drawn ink and watercolor in the Krizaka palette",
+        machine: "RunPod L40S",
+        via: "Orazaka Studio",
+        size: `${meta.width}×${meta.height}`,
+        note: renderedFor
+          ? `Chapter ${i + 1} of the image series: candidate ${pick.toUpperCase()} of batch 2026-10-30-blog-v2 (Orazaka Studio run ${runId}), rendered for chapter ${renderedFor} and left unpicked there (krizaka-blog#193). No person, no text, no logo.`
+          : `Chapter ${i + 1} of the image series, candidate ${pick.toUpperCase()} of batch 2026-10-30-blog-v2 (Orazaka Studio run ${runId}) chosen by the founder (krizaka-blog#193). No person, no text, no logo.`,
+      },
     };
     console.log(id, srcs.map((s) => s.url.split("/").pop()).join(" "));
   }
