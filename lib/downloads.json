@@ -1,14 +1,14 @@
 {
   "books": {
     "en/story": {
-      "source": "d33b5c1cafa2",
+      "source": "523464189b57",
       "files": {
         "epub": {
           "hash": "cfddce9887",
           "bytes": 6518832
         },
         "pdf": {
-          "hash": "2692978715",
+          "hash": "729ae92b97",
           "bytes": 9249838
         }
       }
@@ -287,14 +287,14 @@
       }
     },
     "fr/story": {
-      "source": "a8a3b06122fb",
+      "source": "3aaf6852ac7d",
       "files": {
         "epub": {
           "hash": "bfbd62d436",
           "bytes": 6540604
         },
         "pdf": {
-          "hash": "97b34ff1a5",
+          "hash": "acf4204590",
           "bytes": 9411251
         }
       }
@@ -599,53 +599,53 @@
       }
     },
     "en/the-trains-second-version-rails-sidings-and-a-repair-train": {
-      "source": "b24449a4a4b4",
+      "source": "d398ea1bed57",
       "files": {
         "epub": {
           "hash": "ebc127e36e",
           "bytes": 1010367
         },
         "pdf": {
-          "hash": "f12228cdbf",
+          "hash": "7bf34340ed",
           "bytes": 1322979
         }
       }
     },
     "fr/the-trains-second-version-rails-sidings-and-a-repair-train": {
-      "source": "9bbc1b77ba4c",
+      "source": "d176bb1b8932",
       "files": {
         "epub": {
           "hash": "f0b22f0dcd",
           "bytes": 1034702
         },
         "pdf": {
-          "hash": "4414e3905f",
+          "hash": "07e0d598b8",
           "bytes": 1353788
         }
       }
     },
     "en/how-we-stay-in-sync": {
-      "source": "f1dda67cf773",
+      "source": "1127124779a7",
       "files": {
         "epub": {
           "hash": "81b1171224",
           "bytes": 928577
         },
         "pdf": {
-          "hash": "d3a22e1dae",
+          "hash": "890ff0243f",
           "bytes": 1209664
         }
       }
     },
     "fr/how-we-stay-in-sync": {
-      "source": "fa99e6b54808",
+      "source": "e7ddee11182d",
       "files": {
         "epub": {
           "hash": "7327ffa357",
           "bytes": 928385
         },
         "pdf": {
-          "hash": "07729a4d84",
+          "hash": "3087642a4c",
           "bytes": 1224040
         }
       }
