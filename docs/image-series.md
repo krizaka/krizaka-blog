@@ -19,3 +19,11 @@ birds arrive one by one (falcon, owl, duck, flamingo, pigeon). The anchor is the
   AVIF/WebP renditions, and each chapter's `cover` points to its picture (the Open Graph image reads the cover). The old covers stay on Bunny.
 - **Review rule**: every picture is looked at in full size for a bird drawn twice, a person, a logo or text before it is used. Chapters 3, 15
   and 16 were re-rolled with other seeds for that reason (the seeds in `series.json` are the ones of the pictures in use).
+
+## The look (krizaka-internal#2455)
+
+The covers in use are **hand-drawn ink and watercolor on paper**, in the Krizaka palette (indigo, teal, orange, cream), 16:9, one small bird at most. Chapters 23
+and 24 were first drawn as the flat vector night scene of the plan above and broke the series; they were redrawn locally with
+`"look": "watercolor"` in `series.json` (the renderer then uses `watercolorStyle`, text to image, `mflux-generate-flux2`). Two covers stay apart on purpose: chapter 10
+(kept by the founder) and chapter 22 (a key frame of the film it tells). `tests/image-series.test.mjs` refuses any other cover whose provenance does not say
+ink and watercolor, or whose ratio is not 16:9.
