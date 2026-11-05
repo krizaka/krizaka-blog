@@ -22,8 +22,10 @@
   canonical + noindex + a visible link — the 308 a static host can give) to the story, or to the chapter or shelf post that absorbed
   them. Never link to one (`npm run lint` and `scripts/check-meta.mjs` refuse it); never bring one back as a page.
 - The bar is the family's (`@krizaka/ui/nav-bar`): the mark (the way home), the language (`NavBar.Language`) and the theme —
-  nothing else (no sections, no tag menu, no search, no second bar). The footer carries the chapters, « The basics », the feeds
-  (files), À propos and the family's columns (Krizaka, Krizaka UI, Krizaka Java…).
+  nothing else (no sections, no tag menu, no search, no second bar). The footer is **data, the same as krizaka.com's** (`lib/footer.ts`, the `FooterSettings` shape of `@krizaka/ui/site-footer`,
+  validated by `footerSettingsProblems`; `SiteFooter.tsx` only resolves words and locale; `tests/footer.test.mjs`): Products (commercial names),
+  Open source, Krizaka (absolute links to www.krizaka.com in the reader's language), the blog's own column (the story, « The basics »,
+  newsletter, the feeds as files, À propos), then one legal line that names the company once. Never a column typed in the component.
 
 ## 2. Content
 

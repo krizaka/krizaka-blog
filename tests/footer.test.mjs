@@ -33,3 +33,59 @@ test("no other file renders a footer", () => {
     .filter((file) => /<SiteFooter\b|<footer\b/.test(read(file)));
   assert.deepEqual(offenders, []);
 });
+
+/* The footer as krizaka.com draws it (founder, 2026-11-05): lib/footer.ts in the settings shape of the apps (@krizaka/ui
+   FooterSettings), valid by the admin's rules; the blog adds one column of its own. SiteFooter.tsx only resolves it. */
+const messages = (lang) => JSON.parse(read(`messages/${lang}.json`));
+
+test("the footer's settings pass the admin's validation and name the company once", async () => {
+  const { footerSettingsProblems } = await import("@krizaka/ui/site-footer");
+  const { footerSettings } = await import("../lib/footer.ts");
+  assert.deepEqual(footerSettingsProblems(footerSettings), []);
+  assert.deepEqual(
+    footerSettings.columns.map((c) => c.id),
+    ["products", "open-source", "company", "blog"],
+  );
+  assert.equal(footerSettings.legal.legalName, "Technologies Krizaka Inc.");
+  assert.match(footerSettings.legal.neq, /^\d{10}$/);
+  assert.equal(footerSettings.legal.city, "Montréal (Québec)");
+});
+
+test("the products are the commercial names on their www address, never a code name", async () => {
+  const { footerSettings } = await import("../lib/footer.ts");
+  const products = footerSettings.columns.find((c) => c.id === "products");
+  assert.deepEqual(products.links.map((l) => l.label).sort(), ["Folioviv", "Sovkora", "Verikora"]);
+  assert.equal(products.status, "development");
+  for (const l of products.links) assert.match(l.href, /^https:\/\/www\.(sovkora|verikora|folioviv)\.com$/);
+  assert.doesNotMatch(read("lib/footer.ts"), /orazaka\.com|yomizaka\.com|akinaza\.com|Orazaka|Yomizaka|Akinaza/);
+});
+
+test("every link to the company points to www.krizaka.com, in the reader's language", async () => {
+  const { footerSettings, localized } = await import("../lib/footer.ts");
+  const company = footerSettings.columns.find((c) => c.id === "company");
+  for (const l of company.links) assert.match(l.href, /^https:\/\/www\.krizaka\.com\//, l.href);
+  for (const l of footerSettings.legal.links) assert.match(l.href, /^https:\/\/www\.krizaka\.com\//, l.href);
+  assert.equal(localized("https://www.krizaka.com/story", "fr"), "https://www.krizaka.com/fr/story");
+  assert.equal(localized("https://www.krizaka.com/story", "en"), "https://www.krizaka.com/en/story");
+  assert.equal(localized("https://ui.krizaka.com", "fr"), "https://ui.krizaka.com");
+  assert.equal(localized("/newsletter", "fr"), "/fr/newsletter/");
+  assert.equal(localized("/feed.xml", "fr"), "/fr/feed.xml");
+  assert.equal(localized("/about", "en"), "/about/");
+});
+
+test("every message key of the footer exists in both languages", () => {
+  const keys = [...read("lib/footer.ts").matchAll(/(?:labelKey|titleKey): "([\w.]+)"/g)].map((m) => m[1]);
+  assert.ok(keys.length >= 12);
+  for (const l of ["en", "fr"]) {
+    for (const key of keys) {
+      assert.equal(typeof key.split(".").reduce((n, p) => n?.[p], messages(l)), "string", `${l}: ${key}`);
+    }
+  }
+});
+
+test("SiteFooter.tsx draws the settings and types no column", () => {
+  const footer = read("app/components/SiteFooter.tsx");
+  assert.match(footer, /resolveFooterSettings/);
+  assert.match(footer, /config=\{config\}/);
+  assert.doesNotMatch(footer, /<FamilyFooter\.Column|<FamilyFooter\.Link|FOOTER_PRODUCT_IDS/);
+});
