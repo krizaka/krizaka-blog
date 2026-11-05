@@ -41,16 +41,13 @@ test("the feed page is gone: /feed/ is a stub to the story in both languages, an
 
 test("every human-facing RSS link names the file (/feed.xml), never the removed /feed/ page", () => {
   const post = read("app/components/pages/PostPage.tsx");
-  const footer = read("app/components/SiteFooter.tsx");
-  for (const [name, src] of [
-    ["PostPage", post],
-    ["SiteFooter", footer],
-  ]) {
-    assert.match(src, /\/feed\.xml`/, `${name} links /feed.xml`);
-    assert.doesNotMatch(src, /\/feed\/`|localizedPath\(locale, "\/feed"\)/, `${name} does not link /feed/`);
-  }
+  const footer = read("lib/footer.ts");
+  assert.match(post, /\/feed\.xml`/, "PostPage links /feed.xml");
+  assert.doesNotMatch(post, /\/feed\/`|localizedPath\(locale, "\/feed"\)/, "PostPage does not link /feed/");
+  assert.match(footer, /href: "\/feed\.xml"/, "the footer links /feed.xml");
+  assert.doesNotMatch(footer, /"\/feed\/?"/, "the footer does not link /feed/");
   assert.doesNotMatch(read("app/components/TopBar.tsx"), /\/feed/, "the bar carries no feed");
-  assert.match(footer, /\/atom\.xml/, "the Atom file stays a file, for readers");
+  assert.match(footer, /"\/atom\.xml"/, "the Atom file stays a file, for readers");
 });
 
 test("on a post, « Subscribe » goes to the e-mail form and the feed is a secondary link", () => {

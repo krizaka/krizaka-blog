@@ -65,23 +65,20 @@ test("the root renders the one bar, and no page renders its own", () => {
   }
 });
 
-test("the footer carries one sentence and one link to the story, « The basics » and the feeds as files", () => {
+test("the footer carries the story, « The basics » and the feeds as files, drawn from lib/footer.ts", () => {
   const root = read("app/components/SiteRoot.tsx");
   assert.match(root, /<SiteFooter \/>/);
   assert.doesNotMatch(root, /chaptersOf/);
+  /* No chapter list (krizaka-blog#136): the home lists them; the footer links the story. */
   const footer = read("app/components/SiteFooter.tsx");
-  /* No chapter list (krizaka-blog#136): the home lists them; the footer says one sentence and links the story. */
-  assert.doesNotMatch(footer, /chapters\.map|\{ chapters \}/);
-  assert.match(footer, />\{f\.storyNote\}</);
-  assert.match(footer, /localizedPath\(locale, "\/"\)\}>\{f\.readStory\}/);
+  assert.doesNotMatch(footer, /chapters\.map|\{ chapters \}|allPosts/);
+  const data = read("lib/footer.ts");
+  assert.match(data, /labelKey: "footer\.readStory", href: "\/"/);
+  assert.match(data, /href: "\/basics"/);
+  assert.match(data, /href: "\/feed\.xml"/);
+  assert.match(data, /href: "\/atom\.xml"/);
+  assert.match(data, /href: "\/about"/);
   for (const lang of ["en", "fr"]) {
-    const f = JSON.parse(read(`messages/${lang}.json`)).footer;
-    assert.ok(f.storyNote && f.storyNote.length <= 90, `${lang}: footer.storyNote is one short sentence`);
-    assert.ok(f.readStory, `${lang}: footer.readStory`);
+    assert.ok(JSON.parse(read(`messages/${lang}.json`)).footer.readStory, `${lang}: footer.readStory`);
   }
-  assert.match(footer, /localizedPath\(locale, "\/basics"\)/);
-  assert.match(footer, /\/feed\.xml`/);
-  assert.match(footer, /\/atom\.xml`/);
-  assert.match(footer, /\/about\/`/);
-  assert.doesNotMatch(footer, /allPosts/);
 });

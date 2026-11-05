@@ -4,7 +4,15 @@ export const SITE_URL = "https://blog.krizaka.com";
 export const KRIZAKA_URL = "https://www.krizaka.com";
 export const UI_URL = "https://ui.krizaka.com";
 export const JAVA_URL = "https://java.krizaka.com";
-export const OPEN_SOURCE_URL = `${KRIZAKA_URL}/open-source`;
+export const OPEN_SOURCE_URL = `${KRIZAKA_URL}/docs`;
+export const TS_URL = "https://ts.krizaka.com";
+export const LAB_URL = "https://lab.krizaka.com";
+/** The publisher, as the law asks it (the same as krizaka.com's `COMPANY`). */
+export const COMPANY = {
+  legalName: "Technologies Krizaka Inc.",
+  neq: "1182652231",
+  city: "Montréal (Québec)",
+} as const;
 export const GITHUB_ORG_URL = "https://github.com/krizaka";
 export const REPOSITORY_URL = "https://github.com/krizaka/krizaka-blog";
 export const ORGANIZATION_ID = `${KRIZAKA_URL}/#organization`;

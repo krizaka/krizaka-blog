@@ -115,7 +115,7 @@ test("the link to Oussama's story (/about/) is there: the home's byline and ever
     assert.match(m.home.byline, /\{author\}/, `${l}: the byline's name is the link`);
     assert.ok(m.home.bylineStory && m.post.authorStory, `${l}: the link's title`);
   }
-  assert.match(read("app/components/SiteFooter.tsx"), /\/about\//, "the footer keeps « About »");
+  assert.match(read("lib/footer.ts"), /href: "\/about"/, "the footer keeps « About »");
 });
 
 test("the About page's sheet is titled « Wu-sama » beside his mark, and the bio body keeps the nickname retired", () => {
