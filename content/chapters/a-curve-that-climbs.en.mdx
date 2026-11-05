@@ -9,7 +9,7 @@ tags: [ai, measurements, integration]
 author: oussama
 draft: false
 cover: workshop-table
-coverAlt: "A long wooden table in a brick workshop in Montréal: « Krizaka, Made in Montréal » prints, illustrated portraits, the mascots (an owl, a beaver, a flamingo), colour swatches, pencil wireframes, open notebooks, a mug and a laptop with code on the screen"
+coverAlt: "A long wooden table in a brick workshop in Montréal, drawn in ink and pale watercolor: printed sheets, illustrated portraits, the mascots (an owl, a beaver, a flamingo), colour swatches, pencil wireframes, open notebooks, a mug and a laptop"
 chapter: 10
 period: "2026-10-09/2026-10-25"
 sources:
@@ -59,8 +59,16 @@ Review became the place where everything waited. On October 25, krizaka-ui had 2
 And every day there was the same puzzle. Do I move a new feature forward, or do I bring the number of open issues down? Both feel urgent. A feature shows. A closed issue barely shows. But an open issue weighs.
 
 <Split label="Why the curve climbs: opening work costs a minute, closing it takes a person who reads, checks and decides.">
-  <Side title="Opening" tone="plug" items="An idea becomes an issue in a minute | The agent writes the context, the criteria, the links | An issue becomes a PR almost as fast | An agent on one issue may open three more | 252 issues opened on 17 October" />
-  <Side title="Closing" tone="own" items="Someone reads the code | Checks that the CI really ran | That the test proves what it says | That the PR breaks nothing elsewhere | And decides: me" />
+  <Side
+    title="Opening"
+    tone="plug"
+    items="An idea becomes an issue in a minute | The agent writes the context, the criteria, the links | An issue becomes a PR almost as fast | An agent on one issue may open three more | 252 issues opened on 17 October"
+  />
+  <Side
+    title="Closing"
+    tone="own"
+    items="Someone reads the code | Checks that the CI really ran | That the test proves what it says | That the PR breaks nothing elsewhere | And decides: me"
+  />
 </Split>
 
 ## Cleaning up is not enough
@@ -87,7 +95,10 @@ So I chose. We focus on three things.
 
 **Akinaza**, right after. It handles appointments, invoices and the preparation of taxes for service businesses in Québec. Here too, it is a need I see around me: people who are good at their trade and lose their evenings to paperwork.
 
-<Figure id="paperwork-and-ink" alt="A graphic collage of slate and indigo ink, with the Seyès ruling of a school notebook, Québec lease clauses and audit stamps" />
+<Figure
+  id="paperwork-and-ink"
+  alt="A graphic collage of slate and indigo ink, with the Seyès ruling of a school notebook, Québec lease clauses and audit stamps"
+/>
 
 These two products are our flagships. The goal is for them to find their market: people using them because they need them, not because we showed them a demo.
 
@@ -98,10 +109,30 @@ The rest waits. The other ideas are not abandoned, but we open no new work there
 Choosing three projects is not enough if we keep working the same way. Here is what is in place today.
 
 <Compare label="Before and now" topic="Question" before="Before" after="Now">
-  <Case topic="Where does a task start?" before="From an idea, a conversation, an agent." after="From an issue." afterDetail="With a priority, on one board for the whole organisation." />
-  <Case topic="When is a PR ready?" before="When it looks finished." after="When the CI is green and SonarCloud passes." afterDetail="The SonarCloud check is required on main in 25 repositories." />
-  <Case topic="Who fixes a small review comment?" before="The agent, the PR goes back to it." after="The reviewer." afterDetail="They make the small fix themselves. Only a large change goes back to the author." />
-  <Case topic="What happens to a bug found in review?" before="We fix it." after="We fix it, and if it is a class of bugs, we write a rule." afterDetail="The rule refuses the pattern everywhere, the next time." />
+  <Case
+    topic="Where does a task start?"
+    before="From an idea, a conversation, an agent."
+    after="From an issue."
+    afterDetail="With a priority, on one board for the whole organisation."
+  />
+  <Case
+    topic="When is a PR ready?"
+    before="When it looks finished."
+    after="When the CI is green and SonarCloud passes."
+    afterDetail="The SonarCloud check is required on main in 25 repositories."
+  />
+  <Case
+    topic="Who fixes a small review comment?"
+    before="The agent, the PR goes back to it."
+    after="The reviewer."
+    afterDetail="They make the small fix themselves. Only a large change goes back to the author."
+  />
+  <Case
+    topic="What happens to a bug found in review?"
+    before="We fix it."
+    after="We fix it, and if it is a class of bugs, we write a rule."
+    afterDetail="The rule refuses the pattern everywhere, the next time."
+  />
   <Case topic="How many working sessions at once?" before="As many as possible." after="Three at most." />
 </Compare>
 
@@ -126,15 +157,15 @@ It is my 360° view. I see what moves from one column to the next, what gets stu
 
 Here is the board on October 25 at 3:55 pm, Montréal time, just after the ideas came back into Incubation.
 
-| Column | Cards |
-| :--- | ---: |
-| Incubation | 88 |
-| Backlog | 625 |
-| Next | 145 |
-| In progress | 16 |
-| In review | 74 |
-| Done | 522 |
-| Total | 1,470 |
+| Column      | Cards |
+| :---------- | ----: |
+| Incubation  |    88 |
+| Backlog     |   625 |
+| Next        |   145 |
+| In progress |    16 |
+| In review   |    74 |
+| Done        |   522 |
+| Total       | 1,470 |
 
 I count the columns with one command. No token in the text: the terminal's `gh` uses the session that is already open.
 
@@ -154,11 +185,22 @@ I swept the board. 45 cards were still in In progress or In review although thei
 I did not want to do that sweep by hand again. So I turned on GitHub Projects' built-in workflows, in the board's settings. Before that, several were broken: they pointed to a « Todo » column that no longer existed.
 
 <Pipeline label="The board updates itself: GitHub Projects' built-in workflows move a card through its life, and a check every three hours catches the rest">
-  <Stage title="Added to the project" note="→ Backlog">An issue or a pull request joins the board.</Stage>
-  <Stage title="A pull request linked" note="→ In review">The PR is linked to its issue. Changes requested send the card back to In progress; an approved review returns it to In review.</Stage>
-  <Stage title="Merged or closed" note="→ Done" tone="ship">The issue closes when its card becomes Done, old Done cards are archived, and sub-issues are added by themselves.</Stage>
-  <Stage title="Reopened" note="→ Next">A reopened item goes back to the work that comes next.</Stage>
-  <Stage title="Every three hours" note="the safety net" tone="gate">A plan check finds the cards whose column does not match their issue or PR, and fixes them.</Stage>
+  <Stage title="Added to the project" note="→ Backlog">
+    An issue or a pull request joins the board.
+  </Stage>
+  <Stage title="A pull request linked" note="→ In review">
+    The PR is linked to its issue. Changes requested send the card back to In progress; an approved review returns it to
+    In review.
+  </Stage>
+  <Stage title="Merged or closed" note="→ Done" tone="ship">
+    The issue closes when its card becomes Done, old Done cards are archived, and sub-issues are added by themselves.
+  </Stage>
+  <Stage title="Reopened" note="→ Next">
+    A reopened item goes back to the work that comes next.
+  </Stage>
+  <Stage title="Every three hours" note="the safety net" tone="gate">
+    A plan check finds the cards whose column does not match their issue or PR, and fixes them.
+  </Stage>
 </Pipeline>
 
 It is the same principle as for CI: automate the check instead of doing it by hand.
