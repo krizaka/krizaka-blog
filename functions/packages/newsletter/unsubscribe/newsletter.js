@@ -161,6 +161,26 @@ async function sendEmail(message, env, fetchImpl = fetch) {
 /* ---- The list: one small table in the Postgres cluster (database krizaka_newsletter, its own role; db/newsletter.sql).
    `sql(text, params)` returns the rows; the actions get it from connect(env), the tests pass a fake. ---- */
 
+/** How long one statement may run before the server cancels it: a replayed link or a flood cannot hold one of the cluster's
+    25 connections for long. */
+// @fixed: far above any statement of this table (a few milliseconds), far below the platform's own limit
+const STATEMENT_TIMEOUT_MS = 10_000;
+
+/** The most addresses the list holds (bounded capacity): a catch-all domain or a flood of confirmed addresses cannot fill the
+    database. Large on purpose; an alert warns at 80 % so the ceiling is raised, or looked into, before it refuses. */
+// @fixed: far above the readers a blog can have, far below what the shared cluster can hold
+const MAX_SUBSCRIBERS = 200_000;
+const ALERT_RATIO = 0.8;
+
+/** Raised when the list is at its ceiling: the write is refused, nothing is stored. */
+class ListFull extends Error {
+  constructor() {
+    super("the list is full: the subscriber ceiling is reached");
+    this.name = "ListFull";
+    this.code = "LIST_FULL";
+  }
+}
+
 /** A query function that opens a connection, runs one statement and closes it. Never a pool: the cluster has 25
     connections for every service, and a warm function container would keep an idle one (the platform freezes it between
     calls, so no idle timer ever fires). These actions are rare; one short connection per statement is the right size. */
@@ -170,7 +190,7 @@ function connect(env) {
   const url = new URL(env.DATABASE_URL);
   url.searchParams.delete("sslmode");
   return async (text, params = []) => {
-    const client = new Client({ connectionString: url.toString(), connectionTimeoutMillis: 8_000, ssl: ca ? { ca, rejectUnauthorized: true } : { rejectUnauthorized: true } });
+    const client = new Client({ connectionString: url.toString(), connectionTimeoutMillis: 8_000, statement_timeout: STATEMENT_TIMEOUT_MS, ssl: ca ? { ca, rejectUnauthorized: true } : { rejectUnauthorized: true } });
     await client.connect();
     try {
       return (await client.query(text, params)).rows;
@@ -180,12 +200,24 @@ function connect(env) {
   };
 }
 
-/** Adds (or renews) a confirmed subscriber, with the proof of consent (date and source). */
-async function addSubscriber(sql, { email, locale }, now = new Date()) {
-  await sql(
-    "insert into newsletter_subscribers (email, locale, consented_at, consent_source) values ($1, $2, $3, $4) on conflict (email) do update set locale = excluded.locale, consented_at = excluded.consented_at, consent_source = excluded.consent_source",
-    [email, locale, now.toISOString(), "blog.krizaka.com form, double opt-in (confirmation link)"],
+/** True when the list holds its ceiling: the subscribe action then e-mails nobody. */
+async function listFull(sql, max = MAX_SUBSCRIBERS) {
+  const [row] = await sql("select count(*)::int as n from newsletter_subscribers");
+  return Number(row?.n ?? 0) >= max;
+}
+
+/** Adds (or renews) a confirmed subscriber, with the proof of consent (date and source). One statement: a new address is
+    inserted only while the list is under its ceiling (a known address is always renewed). Crossing 80 % of the ceiling is
+    logged once (the alert); at the ceiling nothing is written and `ListFull` is thrown. */
+async function addSubscriber(sql, { email, locale }, now = new Date(), max = MAX_SUBSCRIBERS) {
+  const rows = await sql(
+    "insert into newsletter_subscribers (email, locale, consented_at, consent_source) select $1, $2, $3::timestamptz, $4 where exists (select 1 from newsletter_subscribers where email = $1) or (select count(*) from newsletter_subscribers) < $5 on conflict (email) do update set locale = excluded.locale, consented_at = excluded.consented_at, consent_source = excluded.consent_source returning (xmax = 0) as inserted, (select count(*)::int from newsletter_subscribers) as before",
+    [email, locale, now.toISOString(), "blog.krizaka.com form, double opt-in (confirmation link)", max],
   );
+  if (rows.length === 0) throw new ListFull();
+  const [{ inserted, before }] = rows;
+  if (inserted && Number(before) + 1 === Math.ceil(max * ALERT_RATIO))
+    console.error(`newsletter: ALERT the list reached ${Math.round(ALERT_RATIO * 100)} % of its ceiling (${Number(before) + 1} of ${max})`);
 }
 
 /** Removes a subscriber: nothing is kept about someone who left. Already gone is fine (a link clicked twice). */
@@ -249,7 +281,7 @@ const redirect = (location) => ({ statusCode: 303, headers: { Location: location
 
 module.exports = {
   SITE, LOCALES, CONFIRM_TTL_MS, configured, normalizeEmail, validEmail, pickLocale, makeToken, readToken, pageUrl, actionUrl,
-  confirmationEmail, newPostEmail, UNSUBSCRIBE_TOKEN, SENDER_ADDRESS, CONFIRM_TOKEN, footer, toHtml, sendEmail, mailConfigured, dbConfigured, connect, addSubscriber,
+  confirmationEmail, newPostEmail, UNSUBSCRIBE_TOKEN, SENDER_ADDRESS, CONFIRM_TOKEN, footer, toHtml, sendEmail, mailConfigured, dbConfigured, connect, addSubscriber, listFull, ListFull, MAX_SUBSCRIBERS, STATEMENT_TIMEOUT_MS,
   removeSubscriber, listSubscribers, claimPost, releasePost, recordSent, sendPostToAll, sameSecret,
   captchaConfigured, clientIp, json, redirect, WORDS,
 };

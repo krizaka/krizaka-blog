@@ -16,7 +16,7 @@ async function captchaOk(args, env, fetchImpl, now) {
   return (await verifier.check({ token: args.captchaToken, remoteIp: nl.clientIp(args) })).ok;
 }
 
-async function handle(args = {}, env = process.env, fetchImpl = fetch, now = Date.now()) {
+async function handle(args = {}, env = process.env, fetchImpl = fetch, now = Date.now(), sql = null) {
   if (args.__ow_method && args.__ow_method.toLowerCase() !== "post") return nl.json(405, { error: "method" });
   if (!nl.mailConfigured(env) || !nl.dbConfigured(env) || !nl.captchaConfigured(env)) return nl.json(503, { error: "unavailable" });
   // The honeypot: a field people never see. Filled = a robot; answer as if all went well.
@@ -25,6 +25,13 @@ async function handle(args = {}, env = process.env, fetchImpl = fetch, now = Dat
   if (!nl.validEmail(email)) return nl.json(400, { error: "invalid", field: "email" });
   const locale = nl.pickLocale(args.locale);
   if (!(await captchaOk(args, env, fetchImpl, now))) return nl.json(400, { error: "captcha" });
+  // Bounded capacity: a full list takes no new address, so no e-mail leaves for it. A list that cannot be read refuses too.
+  try {
+    if (await nl.listFull(sql ?? nl.connect(env))) return nl.json(503, { error: "capacity" });
+  } catch (error) {
+    console.error("newsletter subscribe: the list could not be read:", error instanceof Error ? error.message : "unknown");
+    return nl.json(503, { error: "unavailable" });
+  }
   try {
     await nl.sendEmail(nl.confirmationEmail({ email, locale }, env, now, designed), env, fetchImpl);
   } catch {
