@@ -1,11 +1,10 @@
 {
-  "about": "Images of the blog redrawn in the series' look with GPT Image 2.5 Sunburst through Runway (krizaka-internal#2455). Prompts, references, takes and the credits the account showed; the files are on Bunny, never committed.",
+  "about": "Images of the blog redrawn in the series' light, pastel hand-drawn look (ink and watercolor on white paper) with GPT Image 2.5 Sunburst through Runway (krizaka-internal#2455). Prompts, references, takes and the credits the account showed; the files are on Bunny, never committed. A first round (a darker, richer dusk look) was set aside by the founder on 2026-11-05 as too far from chapters 1 to 20.",
   "model": "gpt_image_2_5_sunburst",
   "references": [
     "series-01-why-krizaka",
-    "series-08-*",
-    "series-20-how-our-automation-grew",
-    "series-21-working-with-agents-rules-that-refuse"
+    "series-15-we-bought-sonarcloud-what-do-we-have-now",
+    "series-19-tchou-tchou-how-our-pull-requests-catch-the-train"
   ],
   "characters": {
     "chouf": "a small orange-brown kestrel (the watcher, watchdog.py): perched, looking down the tracks",
@@ -15,40 +14,102 @@
   "images": {
     "series-23-the-trains-second-version-rails-sidings-and-a-repair-train": {
       "file": "23-the-trains-second-version-rails-sidings-and-a-repair-train.png",
-      "quality": "high",
+      "quality": "medium",
       "ratio": "1920:1088",
-      "pick": "c23-t1",
+      "pick": "L23-t2",
       "takes": 2,
-      "prompt": "Use the four reference pictures only for their style: a real hand-drawn illustration, loose fine pen-and-ink linework of varying weight (thin, broken, scratchy lines, never uniform outlines), transparent watercolor washes that bleed and pool, visible cold-press paper grain, a deckled uneven unpainted paper margin, palette of deep indigo, teal, warm orange and soft cream, muted and slightly desaturated. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no digital smoothness, no anthropomorphism (birds stand and perch like real birds, no clothes, no hands). Birds are small in the frame and drawn naturalistically with a few ink strokes, as in the references. No people, no text, no letters, no numbers, no logos, no watermark.\nScene: a small railway yard at dusk after the first snow, seen from a low angle, wide landscape composition like the references: three tracks running toward a modest wooden station, a wagon resting on a siding under a red lamp, a little repair draisine with a glowing lantern alone on the middle track. On a signal post at the left edge a small orange-brown falcon (a kestrel) sits upright, watching the tracks: the watcher. Near the draisine stands a small red duck with a flat yellow bill and small round glasses, the repairer, seen from the side. Two small birds only, no others."
+      "references": [
+        "series-01-why-krizaka",
+        "series-15-we-bought-sonarcloud-what-do-we-have-now",
+        "series-19-tchou-tchou-how-our-pull-requests-catch-the-train",
+        "the first-round cover of chapter 23 (scene and characters to keep)"
+      ],
+      "prompt": "Use the first three reference pictures only for their style: a light, airy hand-drawn illustration on white paper, lots of unpainted white paper left around and inside the scene, soft pale transparent watercolor washes (pale blue, pale indigo, peach, light orange, cream), a light bright sky or none, delicate thin pen-and-ink linework of varying weight with some broken lines, gentle muted pastel colour, a few small touches of stronger colour only on the characters and one lamp. No dark night, no heavy saturated shadows, no photographic detail, no digital smoothness. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no clothes on the animals. Birds are small, drawn naturalistically with a few ink strokes. No people, no text, no letters, no numbers, no logos, no watermark.\nThe last reference picture shows the scene and the characters to keep exactly (same composition, same kestrel on the signal post, same red duck with round glasses beside the repair draisine with its lantern, same wagon on the siding under a red lamp, same station): redraw it in the light pastel style of the first three, at the end of a pale winter day with a soft pale peach and blue sky and snow left as white paper."
     },
     "series-24-how-we-stay-in-sync": {
       "file": "24-how-we-stay-in-sync.png",
       "quality": "medium",
       "ratio": "1920:1088",
-      "pick": "c24-t1",
-      "takes": 2,
-      "prompt": "Use the four reference pictures only for their style: a real hand-drawn illustration, loose fine pen-and-ink linework of varying weight (thin, broken, scratchy lines, never uniform outlines), transparent watercolor washes that bleed and pool, visible cold-press paper grain, a deckled uneven unpainted paper margin, palette of deep indigo, teal, warm orange and soft cream, muted and slightly desaturated. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no digital smoothness, no anthropomorphism (birds stand and perch like real birds, no clothes, no hands). Birds are small in the frame and drawn naturalistically with a few ink strokes, as in the references. No people, no text, no letters, no numbers, no logos, no watermark.\nThe first three reference pictures give the style; the last one (the rail yard) gives the setting and the small blue-grey pigeon is new (a natural rock pigeon with an iridescent neck, a few ink strokes).\nScene: the place where the team meets, at the edge of the same snowy rail yard at dusk: a small wooden notice board on two posts under a little roof, a few blank cream cards pinned on it in neat columns, a lantern glowing at its corner, and a wooden letterbox on a post beside it with one small pigeon perched on top. The rails fade into the distance behind, the little station with lit windows far away. One bird only. Wide landscape composition with a deckled paper margin."
+      "pick": "L24-t1",
+      "takes": 1,
+      "references": [
+        "series-01-why-krizaka",
+        "series-15-we-bought-sonarcloud-what-do-we-have-now",
+        "series-19-tchou-tchou-how-our-pull-requests-catch-the-train",
+        "the first-round cover of chapter 24"
+      ],
+      "prompt": "Use the first three reference pictures only for their style: a light, airy hand-drawn illustration on white paper, lots of unpainted white paper left around and inside the scene, soft pale transparent watercolor washes (pale blue, pale indigo, peach, light orange, cream), a light bright sky or none, delicate thin pen-and-ink linework of varying weight with some broken lines, gentle muted pastel colour, a few small touches of stronger colour only on the characters and one lamp. No dark night, no heavy saturated shadows, no photographic detail, no digital smoothness. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no clothes on the animals. Birds are small, drawn naturalistically with a few ink strokes. No people, no text, no letters, no numbers, no logos, no watermark.\nThe last reference picture shows the scene and the characters to keep exactly (same wooden notice board under its little roof with blank cards in columns, same lantern, same letterbox on a post with one small blue-grey pigeon on top, same rails and station far away): redraw it in the light pastel style of the first three, a pale winter dusk with a soft pale peach and blue sky and snow left as white paper."
     },
     "chapter-23-chouf": {
       "file": "chapter-23-chouf.png",
       "quality": "medium",
       "ratio": "1920:1088",
-      "pick": "chouf-t1",
-      "takes": 2,
-      "prompt": "Use the four reference pictures only for their style: a real hand-drawn illustration, loose fine pen-and-ink linework of varying weight (thin, broken, scratchy lines, never uniform outlines), transparent watercolor washes that bleed and pool, visible cold-press paper grain, a deckled uneven unpainted paper margin, palette of deep indigo, teal, warm orange and soft cream, muted and slightly desaturated. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no digital smoothness, no anthropomorphism (birds stand and perch like real birds, no clothes, no hands). Birds are small in the frame and drawn naturalistically with a few ink strokes, as in the references. No people, no text, no letters, no numbers, no logos, no watermark.\nThe first three reference pictures give the style; the last one (the rail yard) gives the two characters, to be drawn the same: the small orange-brown falcon (kestrel) of the watcher, and the small red duck with round glasses.\nScene: the watcher alone. At the edge of the tracks at dusk after the first snow, the small orange-brown kestrel sits upright on the back of a weathered wooden folding chair, a small lit lantern on the ground beside it, looking down the three tracks toward the little wooden station with lit windows in the distance. Quiet, patient, nothing else happening. One bird only. Wide landscape composition with a deckled paper margin."
+      "pick": "Lchouf-t1",
+      "takes": 1,
+      "references": [
+        "series-01-why-krizaka",
+        "series-15-we-bought-sonarcloud-what-do-we-have-now",
+        "series-19-tchou-tchou-how-our-pull-requests-catch-the-train",
+        "the first-round picture of the chouf"
+      ],
+      "prompt": "Use the first three reference pictures only for their style: a light, airy hand-drawn illustration on white paper, lots of unpainted white paper left around and inside the scene, soft pale transparent watercolor washes (pale blue, pale indigo, peach, light orange, cream), a light bright sky or none, delicate thin pen-and-ink linework of varying weight with some broken lines, gentle muted pastel colour, a few small touches of stronger colour only on the characters and one lamp. No dark night, no heavy saturated shadows, no photographic detail, no digital smoothness. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no clothes on the animals. Birds are small, drawn naturalistically with a few ink strokes. No people, no text, no letters, no numbers, no logos, no watermark.\nThe last reference picture shows the scene and the character to keep exactly (the same small orange-brown kestrel perched on the back of the same weathered wooden folding chair at the edge of the tracks, the same lantern on the ground, the same station with lit windows far away): redraw it in the light pastel style of the first three, a pale winter dusk, snow left as white paper."
     },
     "chapter-23-firefighter": {
       "file": "chapter-23-firefighter.png",
       "quality": "medium",
       "ratio": "1920:1088",
-      "pick": "fire-t1",
+      "pick": "Lfire-t2",
       "takes": 2,
-      "prompt": "Use the four reference pictures only for their style: a real hand-drawn illustration, loose fine pen-and-ink linework of varying weight (thin, broken, scratchy lines, never uniform outlines), transparent watercolor washes that bleed and pool, visible cold-press paper grain, a deckled uneven unpainted paper margin, palette of deep indigo, teal, warm orange and soft cream, muted and slightly desaturated. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no digital smoothness, no anthropomorphism (birds stand and perch like real birds, no clothes, no hands). Birds are small in the frame and drawn naturalistically with a few ink strokes, as in the references. No people, no text, no letters, no numbers, no logos, no watermark.\nThe first three reference pictures give the style; the last one (the rail yard) gives the two characters, to be drawn the same: the small orange-brown falcon of the watcher, and the small red duck with round glasses.\nScene: the repairer alone. On the siding at dusk after the first snow, a small red wooden wagon has a small fire burning on its roof edge; the small red duck with round glasses stands on the rail beside it, calm and upright, with a little leather bucket at its feet and a thin jet of water arcing from a short hose coil toward the flames, steam rising into the cold air. One bird only. Wide landscape composition with a deckled paper margin."
+      "references": [
+        "series-01-why-krizaka",
+        "series-15-we-bought-sonarcloud-what-do-we-have-now",
+        "series-19-tchou-tchou-how-our-pull-requests-catch-the-train",
+        "the first-round picture of the firefighter"
+      ],
+      "prompt": "Use the first three reference pictures only for their style: a light, airy hand-drawn illustration on white paper, lots of unpainted white paper left around and inside the scene, soft pale transparent watercolor washes (pale blue, pale indigo, peach, light orange, cream), a light bright sky or none, delicate thin pen-and-ink linework of varying weight with some broken lines, gentle muted pastel colour, a few small touches of stronger colour only on the characters and one lamp. No dark night, no heavy saturated shadows, no photographic detail, no digital smoothness. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no clothes on the animals. Birds are small, drawn naturalistically with a few ink strokes. No people, no text, no letters, no numbers, no logos, no watermark.\nThe last reference picture shows the scene and the character to keep exactly (the same small red duck with round glasses on the siding, the same little bucket at its feet, the same thin jet of water from a hose coil toward a small fire and steam on the roof of the same red wagon): redraw it in the light pastel style of the first three, a pale winter dusk, snow left as white paper."
+    },
+    "workshop-table": {
+      "file": "workshop-table.png",
+      "quality": "medium",
+      "ratio": "1920:1088",
+      "pick": "Lws-t1",
+      "takes": 1,
+      "references": [
+        "series-01-why-krizaka",
+        "series-15-we-bought-sonarcloud-what-do-we-have-now",
+        "series-19-tchou-tchou-how-our-pull-requests-catch-the-train",
+        "the former photographic cover of chapter 10"
+      ],
+      "prompt": "Use the first three reference pictures only for their style: a light, airy hand-drawn illustration on white paper, lots of unpainted white paper left around and inside the scene, soft pale transparent watercolor washes (pale blue, pale indigo, peach, light orange, cream), a light bright sky or none, delicate thin pen-and-ink linework of varying weight with some broken lines, gentle muted pastel colour, a few small touches of stronger colour only on the characters and one lamp. No dark night, no heavy saturated shadows, no photographic detail, no digital smoothness. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no clothes on the animals. Birds are small, drawn naturalistically with a few ink strokes. No people, no text, no letters, no numbers, no logos, no watermark.\nThe last reference picture shows the scene to keep (a long wooden table in a brick workshop in Montréal, seen at a slight angle, with printed sheets, illustrated portraits of faces drawn as loose sketches without any likeness of a real person, mascot drawings of an owl, a beaver and a flamingo, colour swatches, pencil wireframes, open notebooks, a mug and a laptop): redraw it in the light pastel style of the first three, bright morning light from a window, brick wall as pale washes, white paper everywhere. Nothing written on any sheet: blank or scribbled marks only."
+    },
+    "series-22-how-orazaka-made-our-brand-film": {
+      "file": "series-22-how-orazaka-made-our-brand-film.png",
+      "quality": "medium",
+      "ratio": "1920:1088",
+      "pick": "L22-t1",
+      "takes": 1,
+      "references": [
+        "series-01-why-krizaka",
+        "series-15-we-bought-sonarcloud-what-do-we-have-now",
+        "series-19-tchou-tchou-how-our-pull-requests-catch-the-train",
+        "the former photographic cover of chapter 22 (the owl of the film)"
+      ],
+      "prompt": "Use the first three reference pictures only for their style: a light, airy hand-drawn illustration on white paper, lots of unpainted white paper left around and inside the scene, soft pale transparent watercolor washes (pale blue, pale indigo, peach, light orange, cream), a light bright sky or none, delicate thin pen-and-ink linework of varying weight with some broken lines, gentle muted pastel colour, a few small touches of stronger colour only on the characters and one lamp. No dark night, no heavy saturated shadows, no photographic detail, no digital smoothness. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no clothes on the animals. Birds are small, drawn naturalistically with a few ink strokes. No people, no text, no letters, no numbers, no logos, no watermark.\nThe last reference picture shows the scene to keep (a small grey mottled Eastern screech-owl with ear tufts and yellow eyes perched on the black wrought-iron railing of an exterior spiral staircase of a Plateau-Mont-Royal brick building, a small blank paper tag hanging from its foot, a few autumn leaves): redraw it by hand in the light pastel style of the first three, at dawn, pale peach and blue light, the brick as pale washes, lots of white paper. The owl is naturalistic, with soft ink feather strokes."
     }
   },
   "credits": {
-    "takes": 8,
-    "perMediumTake": 6,
-    "note": "Runway's organization endpoint, balance before and after each take; the account is shared with the home session, so two deltas (65 and 62) include its own generations. This blog's takes: 7 medium (6 credits each) and 1 high (cover 23, at most 65)."
+    "rounds": [
+      {
+        "name": "dark dusk look (set aside)",
+        "takes": 8,
+        "credits": "7 medium at 6 and 1 high"
+      },
+      {
+        "name": "light pastel look (kept)",
+        "takes": 8,
+        "credits": "8 medium at 6 each, 48 in all"
+      }
+    ],
+    "note": "Runway's organization endpoint, balance before and after each take; the account is shared with the home session, so a few jumps of 62 and 65 credits in the log are its own generations, not this blog's. This round stays under the 100 credits the founder allowed."
   }
 }

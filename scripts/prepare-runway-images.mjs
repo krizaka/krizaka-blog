@@ -19,12 +19,12 @@ export function madeOf(spec, size) {
   return {
     model: "GPT Image 2.5 Sunburst",
     licence: "Runway terms of use (output owned by the customer)",
-    engine: `Runway API (gpt_image_2_5_sunburst), text to image with four of the series' covers (chapters 1, 8, 20, 21) as style references and, for the characters, the rail yard of chapter 23's cover; quality ${spec.quality}, ratio ${spec.ratio}; ${spec.takes} takes, the best kept`,
+    engine: `Runway API (gpt_image_2_5_sunburst), text to image with ${spec.references.length} reference pictures (three pale covers of the series for the style, the earlier version of the picture for the scene and the characters); quality ${spec.quality}, ratio ${spec.ratio}; ${spec.takes} take(s), the best kept`,
     machine: "Runway cloud",
     via: "Runway",
     prompt: spec.prompt,
     size,
-    note: "Hand-drawn ink and watercolor on paper, redrawn after a first take in a cartoon look (krizaka-internal#2455). Free of people, text and logos; looked at in full size before use.",
+    note: "Hand-drawn ink and watercolor on white paper, light and pastel like chapters 1 to 20, redrawn after a cartoon look and a darker one (krizaka-internal#2455). No text, no logo; looked at in full size before use.",
   };
 }
 

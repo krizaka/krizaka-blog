@@ -92,7 +92,7 @@ test("flagged.json lists only pictures the posts show, each with a reason and a 
   for (const f of flagged) {
     assert.ok(used.has(f.id), `${f.id} is not shown by a post: remove it from flagged.json`);
     assert.ok(f.why.length > 20, `${f.id}: say why`);
-    assert.ok(["demonstration", "founder-decides", "redraw-candidate"].includes(f.decision), `${f.id}: decision`);
+    assert.ok(f.decision === "demonstration", `${f.id}: decision`);
     assert.ok(!WATERCOLOR.test(said(media[f.id])), `${f.id} is in the series' look: take it off flagged.json`);
   }
 });
@@ -113,8 +113,10 @@ test("the redrawn pictures carry their Runway provenance: prompt, references, ta
   assert.deepEqual(Object.keys(runway.images).sort(), [
     "chapter-23-chouf",
     "chapter-23-firefighter",
+    "series-22-how-orazaka-made-our-brand-film",
     "series-23-the-trains-second-version-rails-sidings-and-a-repair-train",
     "series-24-how-we-stay-in-sync",
+    "workshop-table",
   ]);
   for (const [id, spec] of Object.entries(runway.images)) {
     assert.match(spec.prompt, /hand-drawn[\s\S]*watercolor/i, `${id}: the prompt asks for a hand-drawn watercolor`);
