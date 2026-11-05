@@ -57,10 +57,19 @@ La nouvelle version tient en une image. Chaque produit a son rail. Sur chaque ra
   <Rail name="Produit A" wagons="PR 2:go | PR 3:wait | PR 4:wait | PR 1:done" />
   <Rail name="Produit B" wagons="PR 1:go | PR 2:wait" />
   <Rail name="Produit C" wagons="PR 2:go | PR 3:wait | PR 1:done" />
-  <Beat>Une session ouvre sa PR, puis s'arrête. L'outil d'ouverture range la PR dans la file de son produit, derrière les plus anciennes.</Beat>
+  <Beat>
+    Une session ouvre sa PR, puis s'arrête. L'outil d'ouverture range la PR dans la file de son produit, derrière les
+    plus anciennes.
+  </Beat>
   <Beat>Trois PR au plus sont actives par dépôt. Les autres attendent, et entrent quand une PR arrive.</Beat>
-  <Beat>Toutes les trois minutes, le chef de train regarde la PR de tête : à jour avec main, checks verts. Il l'approuve et la met dans la file de fusion.</Beat>
-  <Beat>La file de fusion refait passer les checks sur le résultat fusionné. La PR arrive sur main en un seul commit, et sa branche est supprimée.</Beat>
+  <Beat>
+    Toutes les trois minutes, le chef de train regarde la PR de tête : à jour avec main, checks verts. Il l'approuve et
+    la met dans la file de fusion.
+  </Beat>
+  <Beat>
+    La file de fusion refait passer les checks sur le résultat fusionné. La PR arrive sur main en un seul commit, et sa
+    branche est supprimée.
+  </Beat>
   <Beat>La suivante part. Les trois rails roulent en même temps, et aucun n'attend l'autre.</Beat>
 </Rails>
 
@@ -76,11 +85,26 @@ Le main rouge a sa propre règle. Si main est rouge, une PR verte ne prouve plus
   <Rail name="Produit A" wagons="PR 3:go | PR 4:wait | PR 2:red | PR 1:done" />
   <Rail name="Produit B" state="frozen" wagons="fix(main):fix | PR 5:wait | PR 6:wait" />
   <Rail name="Produit C" wagons="PR 7:go | PR 8:stack" />
-  <Beat>Produit A : la PR 2 est rouge. Le chef de train la met sur la voie de garage avec sa raison, le check rouge et son lien, et la PR 3 part. La PR 2 revient dans la file dès qu'un nouveau commit arrive.</Beat>
-  <Beat>Produit B : main est rouge, le rail est gelé. Les PR 5 et 6 attendent, même vertes, et le chef de train ouvre une issue pour que ce rouge ait un responsable.</Beat>
-  <Beat>Seul le train de réparation part : la PR fix(main) passe devant, hors plafond, même si elle touche les fichiers des PR qui attendent.</Beat>
-  <Beat>main redevient vert. Les PR gelées reviennent d'elles-mêmes dans la file, se mettent à jour sur la réparation et repartent dans l'ordre.</Beat>
-  <Beat>Produit C : la PR 8 est construite sur la branche de la PR 7. Avant de mettre la PR 7 en file, le chef de train rebranche la PR 8 sur main, pour que la suppression de la branche à la fusion ne la ferme pas.</Beat>
+  <Beat>
+    Produit A : la PR 2 est rouge. Le chef de train la met sur la voie de garage avec sa raison, le check rouge et son
+    lien, et la PR 3 part. La PR 2 revient dans la file dès qu'un nouveau commit arrive.
+  </Beat>
+  <Beat>
+    Produit B : main est rouge, le rail est gelé. Les PR 5 et 6 attendent, même vertes, et le chef de train ouvre une
+    issue pour que ce rouge ait un responsable.
+  </Beat>
+  <Beat>
+    Seul le train de réparation part : la PR fix(main) passe devant, hors plafond, même si elle touche les fichiers des
+    PR qui attendent.
+  </Beat>
+  <Beat>
+    main redevient vert. Les PR gelées reviennent d'elles-mêmes dans la file, se mettent à jour sur la réparation et
+    repartent dans l'ordre.
+  </Beat>
+  <Beat>
+    Produit C : la PR 8 est construite sur la branche de la PR 7. Avant de mettre la PR 7 en file, le chef de train
+    rebranche la PR 8 sur main, pour que la suppression de la branche à la fusion ne la ferme pas.
+  </Beat>
 </Rails>
 
 Le dernier cas vient d'une vraie perte. Avant cette règle, deux PR empilées se sont fermées toutes seules : leur base avait fusionné, sa branche avait été supprimée, et GitHub ferme une PR dont la base n'existe plus. Le travail était là, la PR non.
@@ -95,9 +119,18 @@ Tout le reste est un script. La file et le chef de train roulent dès qu'une PR 
   <Rail name="Avec jetons" station="PR" wagons="session:model | pilote:model" />
   <Rail name="Sans jeton" wagons="2 apps:free | chef de train:free | file:free" />
   <Rail name="Le veilleur" station="alerte" wagons="veilleur:free" />
-  <Beat>Le pilote lance une session. La session écrit, teste, ouvre sa PR, écrit sa passation et s'arrête. Elle n'attend jamais la CI.</Beat>
-  <Beat>À partir de là, plus aucun modèle : la file range la PR, le chef de train la porte, les deux applications l'approuvent et la mettent en file.</Beat>
-  <Beat>Toutes les quinze minutes, le veilleur lit l'état des dépôts et écrit une ligne d'alerte : une PR rouge sans responsable, un main rouge depuis trente minutes, un rail gelé avec des PR vertes, une session morte.</Beat>
+  <Beat>
+    Le pilote lance une session. La session écrit, teste, ouvre sa PR, écrit sa passation et s'arrête. Elle n'attend
+    jamais la CI.
+  </Beat>
+  <Beat>
+    À partir de là, plus aucun modèle : la file range la PR, le chef de train la porte, les deux applications
+    l'approuvent et la mettent en file.
+  </Beat>
+  <Beat>
+    Toutes les quinze minutes, le veilleur lit l'état des dépôts et écrit une ligne d'alerte : une PR rouge sans
+    responsable, un main rouge depuis trente minutes, un rail gelé avec des PR vertes, une session morte.
+  </Beat>
   <Beat>Un modèle n'est réveillé que pour réparer ce que le veilleur a signalé.</Beat>
   <Beat>À la fin de la session, son coût est lu dans sa transcription, pas estimé.</Beat>
 </Rails>
@@ -108,15 +141,15 @@ La session morte du 2 novembre a laissé sa garde. Une session note maintenant, 
 
 Chaque file écrit une ligne par événement. Entre le 1er novembre à 17 h 43 (heure de Montréal), quand les files par produit ont démarré, et le 3 novembre à minuit, soit un peu plus de 30 heures, les trains ont fait arriver 267 PR sur main. Ils en ont mis 196 de côté, chaque fois avec une raison :
 
-| Raison | Fois |
-| :--- | ---: |
-| un check rouge | 141 |
-| sortie de la file de fusion | 15 |
-| un check requis qui n'a jamais tourné | 13 |
-| un conflit | 12 |
-| main rouge, rail gelé | 10 |
-| déjà portée par un autre train | 4 |
-| un train de plus de 24 heures | 1 |
+| Raison                                | Fois |
+| :------------------------------------ | ---: |
+| un check rouge                        |  141 |
+| sortie de la file de fusion           |   15 |
+| un check requis qui n'a jamais tourné |   13 |
+| un conflit                            |   12 |
+| main rouge, rail gelé                 |   10 |
+| déjà portée par un autre train        |    4 |
+| un train de plus de 24 heures         |    1 |
 
 <Numbers>
   <Num value="267" label="PR arrivées sur main" hint="en un peu plus de 30 heures, lu dans les journaux des files" />
@@ -154,11 +187,19 @@ Le lendemain, j'ai regardé ce que coûtaient ces pompiers. Chacun avait consomm
 
 Alors j'ai séparé les deux rôles. Celui qui regarde, on l'appelle le chouf. En arabe dialectal, chouf veut dire « regarde » ; le chouf, c'est celui qui fait le guet. C'est le script qui passe toutes les cinq minutes. Il n'a pas d'IA, il ne coûte rien, et il ne fait qu'une chose : dire quand c'est le moment de réveiller le pompier.
 
-<Figure id="chapter-23-chouf" alt="Le faucon orange en survêtement gris, capuche sur la tête, assis sur une chaise pliante au bord des voies, une canette de soda à la main, qui regarde la petite gare au crépuscule" caption="Le chouf : il regarde les voies, et il ne coûte rien." />
+<Figure
+  id="chapter-23-chouf"
+  alt="Le faucon orange en survêtement gris, capuche sur la tête, assis sur une chaise pliante au bord des voies, une canette de soda à la main, qui regarde la petite gare au crépuscule"
+  caption="Le chouf : il regarde les voies, et il ne coûte rien."
+/>
 
 La règle qu'on écrit est simple. Le chouf réveille le pompier au plus une fois par heure, pour tous les feux à la fois, et seulement si un feu dure depuis plus d'un quart d'heure : beaucoup de rouges s'éteignent seuls avant. Le pompier se réveille avec un modèle léger et un plafond de jetons, et il ne passe au modèle le plus fort que si la même PR est rouge une deuxième fois. Il répare, il met la PR dans le train, et il se rendort. Il n'attend plus l'arrivée : le train et le chouf s'en occupent. Si ça redevient rouge, le prochain réveil s'en charge.
 
-<Figure id="chapter-23-firefighter" alt="Le canard rouge à lunettes, casque de pompier sur la tête, qui arrose d'un jet d'eau un petit feu sur le wagon rouge de la voie de garage" caption="Le pompier : il éteint, il met la PR dans le train, et il retourne dormir." />
+<Figure
+  id="chapter-23-firefighter"
+  alt="Le canard rouge à lunettes, casque de pompier sur la tête, qui arrose d'un jet d'eau un petit feu sur le wagon rouge de la voie de garage"
+  caption="Le pompier : il éteint, il met la PR dans le train, et il retourne dormir."
+/>
 
 Les deux premiers pompiers se sont déjà rendormis comme ça. Le reste, l'heure de réveil et le plafond, est dans la file : je dirai ce que ça change quand je l'aurai mesuré.
 
@@ -167,9 +208,17 @@ Les deux premiers pompiers se sont déjà rendormis comme ça. Le reste, l'heure
 En cherchant d'où venaient ces 1 487 heures, je m'attendais à une CI trop lente. Ce n'est pas ça. Une PR rouge redevient verte en vingt-six minutes en médiane. Le temps bloqué vient d'ailleurs.
 
 <Numbers>
-  <Num value="92 %" label="des heures bloquées dues à des PR rouges fermées plus tard sans être fusionnées" hint="1 367 heures sur 1 487, cent PR" />
+  <Num
+    value="92 %"
+    label="des heures bloquées dues à des PR rouges fermées plus tard sans être fusionnées"
+    hint="1 367 heures sur 1 487, cent PR"
+  />
   <Num value="66 %" label="dues à des PR rouges depuis plus d'un jour" hint="dont 39 % depuis plus de trois jours" />
-  <Num value="10" label="PR qui font à elles seules la moitié du blocage" hint="la pire est restée ouverte quatorze jours" />
+  <Num
+    value="10"
+    label="PR qui font à elles seules la moitié du blocage"
+    hint="la pire est restée ouverte quatorze jours"
+  />
 </Numbers>
 
 Le goulot, ce n'est pas la PR rouge du moment, c'est la rouge oubliée : une PR qui ne partira jamais, mais qui garde sa place parmi les trois. Personne n'en a la charge, alors elle reste là des jours, puis quelqu'un la ferme. Le pompier arrive vite sur un feu frais. Pour celle qui couve depuis une semaine, il ne fait rien.

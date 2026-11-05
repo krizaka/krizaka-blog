@@ -40,12 +40,36 @@ Ce chapitre répond avec une seule journée, le 3 novembre. Ce jour-là, j'ai de
 Chaque rôle a une limite écrite. C'est ce qui permet de ne pas tout me demander, et de ne rien me cacher.
 
 <Layers label="Qui décide quoi en novembre. Plus on descend, plus le rôle est étroit et automatique ; ce qui coûte de l'argent ou ne se défait pas remonte toujours jusqu'à moi.">
-  <Layer tag="1" title="Moi, le fondateur" note="L'argent, le juridique, les comptes et la direction." items="un paiement | un compte | un avocat | où on va" />
-  <Layer tag="2" title="Le CTO, un agent qui pilote" note="Il tranche ce qui se défait, avec des plafonds, et il me rend compte." items="les choix de produit et d'orchestration | un essai payant estimé d'abord | un rapport dans ma boîte" />
-  <Layer tag="3" title="Le business et le design" note="Ils écrivent la spec avant que quelqu'un construise." items="stratège | UX | UI | critique" />
+  <Layer
+    tag="1"
+    title="Moi, le fondateur"
+    note="L'argent, le juridique, les comptes et la direction."
+    items="un paiement | un compte | un avocat | où on va"
+  />
+  <Layer
+    tag="2"
+    title="Le CTO, un agent qui pilote"
+    note="Il tranche ce qui se défait, avec des plafonds, et il me rend compte."
+    items="les choix de produit et d'orchestration | un essai payant estimé d'abord | un rapport dans ma boîte"
+  />
+  <Layer
+    tag="3"
+    title="Le business et le design"
+    note="Ils écrivent la spec avant que quelqu'un construise."
+    items="stratège | UX | UI | critique"
+  />
   <Layer tag="3" title="Le consultant" note="Il observe aux grands tournants et il ne construit rien." level="1" />
-  <Layer tag="4" title="Les voies" note="Une session par voie, une issue à la fois." items="Verikora | Folioviv | Sovkora | Plateforme | Sécurité" />
-  <Layer tag="5" title="Le chouf et le pompier" note="Le chouf regarde gratuitement ; le pompier éteint une PR rouge qui bloque un dépôt." />
+  <Layer
+    tag="4"
+    title="Les voies"
+    note="Une session par voie, une issue à la fois."
+    items="Verikora | Folioviv | Sovkora | Plateforme | Sécurité"
+  />
+  <Layer
+    tag="5"
+    title="Le chouf et le pompier"
+    note="Le chouf regarde gratuitement ; le pompier éteint une PR rouge qui bloque un dépôt."
+  />
   <Layer tag="6" title="Les gardes" note="Des commandes qui refusent, des tests, le train." />
 </Layers>
 
@@ -66,14 +90,31 @@ Ce sont des agents, chacun avec son rôle écrit. Ils ne codent rien et ne dépe
 Le 3 novembre, j'ai écrit au CTO : « demande à la business, UI et UX ce qu'on peut proposer comme vidéo dans nos carrousels, surtout qu'on va prendre un virage bientôt ». J'ai ajouté que les vidéos devaient être dignes de notre savoir-faire, et qu'il fallait travailler les prompts que les tests allaient utiliser. Pour les plans qu'on ne peut pas filmer, j'ai ouvert un compte chez un service de vidéo générée et j'ai donné un budget, en dollars, avec un plafond.
 
 <Pipeline label="Le chemin d'une idée, le 3 novembre. Les cinq premières étapes sont faites ; les trois dernières sont dans la file de la voie Sovkora au moment où j'écris.">
-  <Stage title="Mon idée" note="une phrase, un budget">Des vidéos pour les carrousels, et un compte chez un service de vidéo générée, avec un plafond en dollars.</Stage>
-  <Stage title="Le CTO cadre" note="délégué ou à moi">Il range ce qu'il décide seul et ce qui reste à moi : le budget, le compte, le nom du projet chez le fournisseur, la copie de la clé à supprimer.</Stage>
-  <Stage title="Le business d'abord" note="le format">Où un gestionnaire nous voit en premier décide du format : l'écran large d'abord, le téléphone ensuite.</Stage>
-  <Stage title="UX et UI" note="la liste, les prompts">L'ordre des plans, ce que chacun montre, et les prompts écrits mot pour mot.</Stage>
-  <Stage title="La critique" note="retenu, refusé" tone="gate">Les vrais écrans sont la preuve ; aucun visage dans un plan généré ; un seul essai avant toute dépense.</Stage>
-  <Stage title="La voie construit" note="clé et run enregistré">Une clé protégée que l'on crée, lit, modifie et supprime dans Sovkora, puis un run enregistré par un test.</Stage>
-  <Stage title="Le train" note="fusion sans jeton" tone="ship">La PR verte part dans la file de son dépôt, et le train la fait arriver.</Stage>
-  <Stage title="Le point" note="dans ma boîte">Un rapport en français, avec ce qui attend encore ma décision.</Stage>
+  <Stage title="Mon idée" note="une phrase, un budget">
+    Des vidéos pour les carrousels, et un compte chez un service de vidéo générée, avec un plafond en dollars.
+  </Stage>
+  <Stage title="Le CTO cadre" note="délégué ou à moi">
+    Il range ce qu'il décide seul et ce qui reste à moi : le budget, le compte, le nom du projet chez le fournisseur, la
+    copie de la clé à supprimer.
+  </Stage>
+  <Stage title="Le business d'abord" note="le format">
+    Où un gestionnaire nous voit en premier décide du format : l'écran large d'abord, le téléphone ensuite.
+  </Stage>
+  <Stage title="UX et UI" note="la liste, les prompts">
+    L'ordre des plans, ce que chacun montre, et les prompts écrits mot pour mot.
+  </Stage>
+  <Stage title="La critique" note="retenu, refusé" tone="gate">
+    Les vrais écrans sont la preuve ; aucun visage dans un plan généré ; un seul essai avant toute dépense.
+  </Stage>
+  <Stage title="La voie construit" note="clé et run enregistré">
+    Une clé protégée que l'on crée, lit, modifie et supprime dans Sovkora, puis un run enregistré par un test.
+  </Stage>
+  <Stage title="Le train" note="fusion sans jeton" tone="ship">
+    La PR verte part dans la file de son dépôt, et le train la fait arriver.
+  </Stage>
+  <Stage title="Le point" note="dans ma boîte">
+    Un rapport en français, avec ce qui attend encore ma décision.
+  </Stage>
 </Pipeline>
 
 Le CTO a d'abord séparé ce qui était à lui de ce qui était à moi. Deux questions sur les diapositives, il les a tranchées seul, en écrivant que je pouvais revenir dessus : le consentement d'un locataire est coupé de l'image, et la vidéo de Sovkora reste sur sa carte tant que son test de bout en bout n'est pas vert. Le reste m'est revenu sous forme de liste : renommer le projet chez le fournisseur pour que les factures portent le bon nom, supprimer une copie en clair de la clé, rangée depuis dans le coffre. Et une règle pour la fin : quand le cas d'usage sera fini, l'agent supprime la clé dans Sovkora, et cette suppression est filmée elle aussi.
@@ -89,9 +130,21 @@ Au moment où j'écris, la liste et les prompts sont écrits, et la voie Sovkora
 Personne ne lit tout. Alors chaque information a un seul endroit, et chacun sait où la chercher.
 
 <Split label="Les endroits où l'on se retrouve, et ce qui y passe. Une information a un seul endroit ; une décision s'écrit là où elle s'applique.">
-  <Side title="Le tableau et les issues" tone="own" items="Une carte, un seul statut | En cours veut dire actif maintenant | L'issue est le contrat : quoi, pourquoi, fini quand, ce qu'elle touche, le côté admin | Une décision s'écrit en commentaire sur l'issue" />
-  <Side title="Les PR et le train" tone="plug" items="Chaque PR ferme ou cite une issue | Trois PR ouvertes au plus par dépôt | Une file par dépôt, le train fusionne | Deux rouges : le modèle le plus fort, et une leçon écrite" />
-  <Side title="Ma boîte et les rendez-vous" tone="after" items="Un point toutes les quelques heures, en français | Ce qui attend ma décision, et sur quoi | La colonne Bloqué quand il faut ma signature | Un go ou no-go aux grands tournants" />
+  <Side
+    title="Le tableau et les issues"
+    tone="own"
+    items="Une carte, un seul statut | En cours veut dire actif maintenant | L'issue est le contrat : quoi, pourquoi, fini quand, ce qu'elle touche, le côté admin | Une décision s'écrit en commentaire sur l'issue"
+  />
+  <Side
+    title="Les PR et le train"
+    tone="plug"
+    items="Chaque PR ferme ou cite une issue | Trois PR ouvertes au plus par dépôt | Une file par dépôt, le train fusionne | Deux rouges : le modèle le plus fort, et une leçon écrite"
+  />
+  <Side
+    title="Ma boîte et les rendez-vous"
+    tone="after"
+    items="Un point toutes les quelques heures, en français | Ce qui attend ma décision, et sur quoi | La colonne Bloqué quand il faut ma signature | Un go ou no-go aux grands tournants"
+  />
 </Split>
 
 Le tableau répond à « qui fait quoi maintenant ». Une carte n'a qu'un statut, et « En cours » veut dire qu'une session y travaille en ce moment, pas qu'elle y a pensé. L'issue est le contrat. Elle dit ce qu'on fait, pourquoi, quand c'est fini, ce qu'elle touche, et ce qu'un administrateur devra pouvoir régler. L'issue de ce chapitre a la même forme. Quand le CTO décide quelque chose, il l'écrit sur l'issue concernée, pas dans une conversation qui se perdra.

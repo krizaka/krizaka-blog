@@ -57,10 +57,18 @@ The new version fits in one picture. Each product has its rail. On each rail, on
   <Rail name="Product A" wagons="PR 2:go | PR 3:wait | PR 4:wait | PR 1:done" />
   <Rail name="Product B" wagons="PR 1:go | PR 2:wait" />
   <Rail name="Product C" wagons="PR 2:go | PR 3:wait | PR 1:done" />
-  <Beat>A session opens its PR, then stops. The opening tool puts the PR in its product's queue, behind the older ones.</Beat>
+  <Beat>
+    A session opens its PR, then stops. The opening tool puts the PR in its product's queue, behind the older ones.
+  </Beat>
   <Beat>At most three PRs are active per repository. The others wait, and come in as one arrives.</Beat>
-  <Beat>Every three minutes the conductor looks at the head PR: up to date with main, checks green. It approves it and puts it in the merge queue.</Beat>
-  <Beat>The merge queue runs the checks again on the merged result. The PR arrives on main as a single commit, and its branch is deleted.</Beat>
+  <Beat>
+    Every three minutes the conductor looks at the head PR: up to date with main, checks green. It approves it and puts
+    it in the merge queue.
+  </Beat>
+  <Beat>
+    The merge queue runs the checks again on the merged result. The PR arrives on main as a single commit, and its
+    branch is deleted.
+  </Beat>
   <Beat>The next one leaves. The three rails run at the same time, and none waits for another.</Beat>
 </Rails>
 
@@ -76,11 +84,26 @@ A red main has its own rule. If main is red, a green PR proves nothing: its chec
   <Rail name="Product A" wagons="PR 3:go | PR 4:wait | PR 2:red | PR 1:done" />
   <Rail name="Product B" state="frozen" wagons="fix(main):fix | PR 5:wait | PR 6:wait" />
   <Rail name="Product C" wagons="PR 7:go | PR 8:stack" />
-  <Beat>Product A: PR 2 is red. The conductor moves it to the siding with its reason, the red check and its link, and PR 3 leaves. PR 2 comes back into the queue as soon as a new commit arrives.</Beat>
-  <Beat>Product B: main is red, the rail is frozen. PRs 5 and 6 wait, even green, and the conductor opens an issue so the red has an owner.</Beat>
-  <Beat>Only the repair train leaves: the fix(main) PR goes first, outside the cap, even if it touches the files of the waiting PRs.</Beat>
-  <Beat>main turns green again. The frozen PRs come back into the queue by themselves, update onto the repair and leave in order.</Beat>
-  <Beat>Product C: PR 8 is built on PR 7's branch. Before putting PR 7 in the merge queue, the conductor retargets PR 8 to main, so deleting the branch at merge does not close it.</Beat>
+  <Beat>
+    Product A: PR 2 is red. The conductor moves it to the siding with its reason, the red check and its link, and PR 3
+    leaves. PR 2 comes back into the queue as soon as a new commit arrives.
+  </Beat>
+  <Beat>
+    Product B: main is red, the rail is frozen. PRs 5 and 6 wait, even green, and the conductor opens an issue so the
+    red has an owner.
+  </Beat>
+  <Beat>
+    Only the repair train leaves: the fix(main) PR goes first, outside the cap, even if it touches the files of the
+    waiting PRs.
+  </Beat>
+  <Beat>
+    main turns green again. The frozen PRs come back into the queue by themselves, update onto the repair and leave in
+    order.
+  </Beat>
+  <Beat>
+    Product C: PR 8 is built on PR 7's branch. Before putting PR 7 in the merge queue, the conductor retargets PR 8 to
+    main, so deleting the branch at merge does not close it.
+  </Beat>
 </Rails>
 
 The last case comes from a real loss. Before this rule, two stacked PRs closed on their own: their base had merged, its branch had been deleted, and GitHub closes a PR whose base no longer exists. The work was there, the PR was not.
@@ -95,9 +118,18 @@ Everything else is a script. The queue and the conductor run as soon as a PR wai
   <Rail name="Tokens" station="PR" wagons="session:model | pilot:model" />
   <Rail name="Zero tokens" wagons="2 apps:free | conductor:free | queue:free" />
   <Rail name="Watchdog" station="alert" wagons="watchdog:free" />
-  <Beat>The pilot starts a session. The session writes, tests, opens its PR, writes its handoff and stops. It never waits for CI.</Beat>
-  <Beat>From there on, no model at all: the queue files the PR, the conductor carries it, the two apps approve it and enqueue it.</Beat>
-  <Beat>Every fifteen minutes the watchdog reads the state of the repositories and writes an alert line: a red PR with no owner, a main red for thirty minutes, a frozen rail with green PRs, a dead session.</Beat>
+  <Beat>
+    The pilot starts a session. The session writes, tests, opens its PR, writes its handoff and stops. It never waits
+    for CI.
+  </Beat>
+  <Beat>
+    From there on, no model at all: the queue files the PR, the conductor carries it, the two apps approve it and
+    enqueue it.
+  </Beat>
+  <Beat>
+    Every fifteen minutes the watchdog reads the state of the repositories and writes an alert line: a red PR with no
+    owner, a main red for thirty minutes, a frozen rail with green PRs, a dead session.
+  </Beat>
   <Beat>A model is woken only to repair what the watchdog flagged.</Beat>
   <Beat>When the session ends, its cost is read from its transcript, not estimated.</Beat>
 </Rails>
@@ -108,15 +140,15 @@ The dead session of 2 November left its guard behind. A session now records, whe
 
 Each queue writes one line per event. Between 1 November at 17:43 (Montréal time), when the per-product queues started, and midnight on 3 November, a little over 30 hours, the trains brought 267 PRs to main. They set 196 aside, each time with a reason:
 
-| Reason | Times |
-| :--- | ---: |
-| a red check | 141 |
-| left the merge queue | 15 |
-| a required check that never ran | 13 |
-| a conflict | 12 |
-| main red, rail frozen | 10 |
-| already carried by another train | 4 |
-| a train over 24 hours | 1 |
+| Reason                           | Times |
+| :------------------------------- | ----: |
+| a red check                      |   141 |
+| left the merge queue             |    15 |
+| a required check that never ran  |    13 |
+| a conflict                       |    12 |
+| main red, rail frozen            |    10 |
+| already carried by another train |     4 |
+| a train over 24 hours            |     1 |
 
 <Numbers>
   <Num value="267" label="PRs arrived on main" hint="in a little over 30 hours, read from the queue logs" />
@@ -154,11 +186,19 @@ The next day, I looked at what those firefighters cost. Each one had used betwee
 
 So I split the two roles. The one who watches we call the chouf. In Arabic dialect, chouf means "look"; the chouf is the one who keeps watch. It is the script that passes every five minutes. It has no AI, it costs nothing, and it does one thing: it says when it is time to wake the firefighter.
 
-<Figure id="chapter-23-chouf" alt="The orange falcon in a grey tracksuit with the hood up, sitting on a folding chair at the edge of the tracks, a soda can in its wing, watching the little station at dusk" caption="The chouf: it watches the tracks, and it costs nothing." />
+<Figure
+  id="chapter-23-chouf"
+  alt="The orange falcon in a grey tracksuit with the hood up, sitting on a folding chair at the edge of the tracks, a soda can in its wing, watching the little station at dusk"
+  caption="The chouf: it watches the tracks, and it costs nothing."
+/>
 
 The rule we are writing is simple. The chouf wakes the firefighter at most once an hour, for all fires at once, and only when a fire has lasted more than a quarter of an hour: many reds go out by themselves before that. The firefighter wakes with a light model and a token cap, and moves to the strongest model only when the same PR is red a second time. It repairs, puts the PR on the train, and goes back to sleep. It no longer waits for the landing: the train and the chouf take care of that. If it turns red again, the next wake deals with it.
 
-<Figure id="chapter-23-firefighter" alt="The red duck with round glasses and a firefighter helmet, spraying a jet of water on a small fire on the red wagon of the siding" caption="The firefighter: it puts the fire out, puts the PR on the train, and goes back to sleep." />
+<Figure
+  id="chapter-23-firefighter"
+  alt="The red duck with round glasses and a firefighter helmet, spraying a jet of water on a small fire on the red wagon of the siding"
+  caption="The firefighter: it puts the fire out, puts the PR on the train, and goes back to sleep."
+/>
 
 The first two firefighters have already gone back to sleep that way. The rest, the hourly wake and the cap, is in the queue: I will say what it changes once I have measured it.
 
@@ -167,9 +207,21 @@ The first two firefighters have already gone back to sleep that way. The rest, t
 When I looked for where those 1,487 hours came from, I expected a CI that was too slow. That is not it. A red PR turns green again in twenty-six minutes, median. The blocked time comes from somewhere else.
 
 <Numbers>
-  <Num value="92%" label="of the blocked hours came from red PRs later closed without being merged" hint="1,367 hours out of 1,487, a hundred PRs" />
-  <Num value="66%" label="came from PRs that had been red for more than a day" hint="39% from PRs red for more than three days" />
-  <Num value="10" label="PRs make up half of the blocked time on their own" hint="the worst one stayed open fourteen days" />
+  <Num
+    value="92%"
+    label="of the blocked hours came from red PRs later closed without being merged"
+    hint="1,367 hours out of 1,487, a hundred PRs"
+  />
+  <Num
+    value="66%"
+    label="came from PRs that had been red for more than a day"
+    hint="39% from PRs red for more than three days"
+  />
+  <Num
+    value="10"
+    label="PRs make up half of the blocked time on their own"
+    hint="the worst one stayed open fourteen days"
+  />
 </Numbers>
 
 The bottleneck is not the PR that is red right now. It is the forgotten red: a PR that will never leave, but keeps its place among the three. Nobody is in charge of it, so it sits there for days, and then someone closes it. The firefighter is quick on a fresh fire. For the one that has been smouldering for a week, it does nothing.
