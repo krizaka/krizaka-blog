@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "523464189b57",
+      "source": "3dedf568fe51",
       "files": {
         "epub": {
-          "hash": "cfddce9887",
-          "bytes": 6518832
+          "hash": "a82d4a9ac8",
+          "bytes": 6858228
         },
         "pdf": {
-          "hash": "729ae92b97",
-          "bytes": 9249838
+          "hash": "c76b8cecb8",
+          "bytes": 9586675
         }
       }
     },
@@ -287,15 +287,15 @@
       }
     },
     "fr/story": {
-      "source": "3aaf6852ac7d",
+      "source": "c785b2e8a8c0",
       "files": {
         "epub": {
-          "hash": "bfbd62d436",
-          "bytes": 6540604
+          "hash": "bd43442d96",
+          "bytes": 6880003
         },
         "pdf": {
-          "hash": "acf4204590",
-          "bytes": 9411251
+          "hash": "2b6272a6b5",
+          "bytes": 9748535
         }
       }
     },
@@ -599,54 +599,54 @@
       }
     },
     "en/the-trains-second-version-rails-sidings-and-a-repair-train": {
-      "source": "d398ea1bed57",
+      "source": "9afc1556c1f7",
       "files": {
         "epub": {
-          "hash": "ebc127e36e",
-          "bytes": 1010367
+          "hash": "681884ea62",
+          "bytes": 1357049
         },
         "pdf": {
-          "hash": "7bf34340ed",
-          "bytes": 1322979
+          "hash": "4d6acb056b",
+          "bytes": 1650361
         }
       }
     },
     "fr/the-trains-second-version-rails-sidings-and-a-repair-train": {
-      "source": "d176bb1b8932",
+      "source": "959b24d83bd0",
       "files": {
         "epub": {
-          "hash": "f0b22f0dcd",
-          "bytes": 1034702
+          "hash": "ab98c3b58f",
+          "bytes": 1382334
         },
         "pdf": {
-          "hash": "07e0d598b8",
-          "bytes": 1353788
+          "hash": "f6030fa2b0",
+          "bytes": 1681619
         }
       }
     },
     "en/how-we-stay-in-sync": {
-      "source": "1127124779a7",
+      "source": "c878b570a7c2",
       "files": {
         "epub": {
-          "hash": "81b1171224",
-          "bytes": 928577
+          "hash": "48cf5a2262",
+          "bytes": 943440
         },
         "pdf": {
-          "hash": "890ff0243f",
-          "bytes": 1209664
+          "hash": "65f6215081",
+          "bytes": 1223002
         }
       }
     },
     "fr/how-we-stay-in-sync": {
-      "source": "e7ddee11182d",
+      "source": "19c4864b9ced",
       "files": {
         "epub": {
-          "hash": "7327ffa357",
-          "bytes": 928385
+          "hash": "256334fecc",
+          "bytes": 942400
         },
         "pdf": {
-          "hash": "3087642a4c",
-          "bytes": 1224040
+          "hash": "24c6622810",
+          "bytes": 1237371
         }
       }
     }

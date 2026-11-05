@@ -6195,69 +6195,67 @@
   "series-23-the-trains-second-version-rails-sidings-and-a-repair-train": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAADQAQCdASoQAAkABABoJQBWACHfWzcWkAD5eNWBzilkhxtY3x0+KQ4k5l+89d+JqM4R+Rf8cqOyw+3tfaXgfxvZB35Quk1GR29lNqy60vi4AAAA",
+    "height": 725,
+    "blur": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAAAQAgCdASoQAAkABABoJZQCdAEN82BD6B4gAOIfBnEShxJJwWmu0/bF3g7qIzsltR0+BB3rylOUMxLv7cLdyVT4aCAHRt8iAMB8XAAA",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-480.f8a79b6a1f.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-480.3c7fb42188.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-960.9e009a8916.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-960.9d5e57d4c7.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-1280.7bc9b44ef0.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-1280.ba583924f8.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
-      "licence": "Apache-2.0",
-      "engine": "Orazaka's media worker engine (mflux) on Metal, 4 steps, text to image, scripts/render-image-series.py",
-      "machine": "the founder's Mac (Apple Metal GPU), no paid API",
-      "via": "local",
-      "prompt": "Hand-drawn ink and watercolor illustration on textured paper, Krizaka palette of deep indigo, teal, warm orange and soft cream, loose ink lines, soft washes. Calm, orderly, quiet mood. No people, no text, no letters, no numbers, no logos, no watermark. A small railway yard at dusk after the first snow, seen from a low angle: three parallel tracks running to a modest wooden station, one wagon resting on a siding under a red lamp, a little repair draisine with a glowing lantern alone on the middle track, a small blue pigeon with a round body perched on the points lever.",
-      "seed": "2311",
-      "size": "1536×864",
-      "costUsd": 0,
-      "note": "Chapter 23 of the image series, redrawn in the series' look (hand-drawn ink and watercolor) after the first take was a flat vector scene (krizaka-internal#2455): a free local render on the founder's Mac, outside an Orazaka Studio run; looked at in full size before use. No person, no text, no logo."
+      "model": "GPT Image 2.5 Sunburst",
+      "licence": "Runway terms of use (output owned by the customer)",
+      "engine": "Runway API (gpt_image_2_5_sunburst), text to image with four of the series' covers (chapters 1, 8, 20, 21) as style references and, for the characters, the rail yard of chapter 23's cover; quality high, ratio 1920:1088; 2 takes, the best kept",
+      "machine": "Runway cloud",
+      "via": "Runway",
+      "prompt": "Use the four reference pictures only for their style: a real hand-drawn illustration, loose fine pen-and-ink linework of varying weight (thin, broken, scratchy lines, never uniform outlines), transparent watercolor washes that bleed and pool, visible cold-press paper grain, a deckled uneven unpainted paper margin, palette of deep indigo, teal, warm orange and soft cream, muted and slightly desaturated. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no digital smoothness, no anthropomorphism (birds stand and perch like real birds, no clothes, no hands). Birds are small in the frame and drawn naturalistically with a few ink strokes, as in the references. No people, no text, no letters, no numbers, no logos, no watermark.\nScene: a small railway yard at dusk after the first snow, seen from a low angle, wide landscape composition like the references: three tracks running toward a modest wooden station, a wagon resting on a siding under a red lamp, a little repair draisine with a glowing lantern alone on the middle track. On a signal post at the left edge a small orange-brown falcon (a kestrel) sits upright, watching the tracks: the watcher. Near the draisine stands a small red duck with a flat yellow bill and small round glasses, the repairer, seen from the side. Two small birds only, no others.",
+      "size": "1920×1088",
+      "note": "Hand-drawn ink and watercolor on paper, redrawn after a first take in a cartoon look (krizaka-internal#2455). Free of people, text and logos; looked at in full size before use."
     },
     "renditions": {
       "avif": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-480.be7b4cd298.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-480.f0f5c2a69e.avif"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-768.19e69141e9.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-768.7174b80b2c.avif"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-1200.1620ae7996.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-1200.8a708d1004.avif"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-1280.09ce73bd59.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-1280.f4745cd8f4.avif"
         }
       ],
       "webp": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-480.8abb39ce5d.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-480.19d0b4473e.webp"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-768.a0da0aff50.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-768.e2c82c620a.webp"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-1200.fe12fb3de6.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-1200.ea5c79f4f0.webp"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-1280.0d35ae076c.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-23-the-trains-second-version-rails-sidings-and-a-repair-train-1280.560a14f2b1.webp"
         }
       ]
     }
@@ -6265,131 +6263,127 @@
   "chapter-23-chouf": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAAAwAgCdASoQAAkABABoJZACdAEWgZIUSJV1AAD+7t5+IJsf4viPYrO9tzeAmKZH/kBRp/10TJYTWHG7P9cmAQAz5AVfEexbUW6Q9aS+AAA=",
+    "height": 725,
+    "blur": "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAADwAQCdASoQAAkABABoJYwCdAEPAAwnc6AA8/3lQlkXa/RCGsphlK7UEDKbYRLygt8m+bEIdXNQwIAluijxNoEqdIwiYAAA",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-23-chouf-480.48635474e4.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-23-chouf-480.4362a58555.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-23-chouf-960.097604f4ff.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-23-chouf-960.9b8fbbae8e.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-23-chouf-1280.1d32a4993f.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-23-chouf-1280.197aeec232.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
-      "licence": "Apache-2.0",
-      "engine": "Orazaka's media worker engine (mflux), edit with reference images (chapter 23's cover and the brand picture's bird crop)",
-      "machine": "the founder's Mac (Apple Metal GPU), no paid API",
-      "via": "local",
-      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. the orange falcon (the watcher) in a grey tracksuit with the hood up, on a folding chair at the edge of the tracks, a soda can in its wing. One bird only, no people, no text.",
-      "seed": "2311",
-      "size": "1280×720",
-      "note": "Chapter 23, section « Le chouf »: the orange falcon (the watcher) in a grey tracksuit with the hood up, on a folding chair at the edge of the tracks, a soda can in its wing. A free local render on the founder's Mac, outside an Orazaka Studio run (no paid run); looked at in full size before use. One bird, no person, no text, no logo."
+      "model": "GPT Image 2.5 Sunburst",
+      "licence": "Runway terms of use (output owned by the customer)",
+      "engine": "Runway API (gpt_image_2_5_sunburst), text to image with four of the series' covers (chapters 1, 8, 20, 21) as style references and, for the characters, the rail yard of chapter 23's cover; quality medium, ratio 1920:1088; 2 takes, the best kept",
+      "machine": "Runway cloud",
+      "via": "Runway",
+      "prompt": "Use the four reference pictures only for their style: a real hand-drawn illustration, loose fine pen-and-ink linework of varying weight (thin, broken, scratchy lines, never uniform outlines), transparent watercolor washes that bleed and pool, visible cold-press paper grain, a deckled uneven unpainted paper margin, palette of deep indigo, teal, warm orange and soft cream, muted and slightly desaturated. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no digital smoothness, no anthropomorphism (birds stand and perch like real birds, no clothes, no hands). Birds are small in the frame and drawn naturalistically with a few ink strokes, as in the references. No people, no text, no letters, no numbers, no logos, no watermark.\nThe first three reference pictures give the style; the last one (the rail yard) gives the two characters, to be drawn the same: the small orange-brown falcon (kestrel) of the watcher, and the small red duck with round glasses.\nScene: the watcher alone. At the edge of the tracks at dusk after the first snow, the small orange-brown kestrel sits upright on the back of a weathered wooden folding chair, a small lit lantern on the ground beside it, looking down the three tracks toward the little wooden station with lit windows in the distance. Quiet, patient, nothing else happening. One bird only. Wide landscape composition with a deckled paper margin.",
+      "size": "1920×1088",
+      "note": "Hand-drawn ink and watercolor on paper, redrawn after a first take in a cartoon look (krizaka-internal#2455). Free of people, text and logos; looked at in full size before use."
     }
   },
   "chapter-23-firefighter": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAAAwAgCdASoQAAkABABoJZgCdDBHQX8YD+5wAAD+7tzfu6mirClP6OZd1LpaWC2QiLKzBRnI0lnPJMHBlgqWwp7H8rxR0tak2zyYOJ5ajci90GmHiHrMAA==",
+    "height": 725,
+    "blur": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADQAQCdASoQAAkABABoJQBOgCFNbF00AADiEuCKMalEt0Tj+aJsT9eQOxegVckmkdrvQE1aTmZfboyLL0j5gS+QytDMYRZL4AA=",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-23-firefighter-480.194a749ddd.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-23-firefighter-480.9b76370f87.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-23-firefighter-960.c42ec16bbb.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-23-firefighter-960.ea36373b8b.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-23-firefighter-1280.d1713319f1.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-23-firefighter-1280.8e8396a743.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
-      "licence": "Apache-2.0",
-      "engine": "Orazaka's media worker engine (mflux), edit with reference images (chapter 23's cover and the brand picture's bird crop)",
-      "machine": "the founder's Mac (Apple Metal GPU), no paid API",
-      "via": "local",
-      "prompt": "Flat vector illustration in the Krizaka brand style: simple geometric shapes, clean outlines, soft gradients, no photographic texture. Deep indigo and violet night sky fading to dark ink, a large warm orange sun disc, faint blue constellation lines with round nodes, cyan and magenta dots, layered triangular mountains with thin bright edges, a dark curved ground line. No people, no text, no lettering, no logos. the red duck with round glasses in a firefighter helmet, spraying a jet of water on a small fire on the red wagon of the siding. One bird only, no people, no text.",
-      "seed": "2314",
-      "size": "1280×720",
-      "note": "Chapter 23, section « Le chouf »: the red duck with round glasses in a firefighter helmet, spraying a jet of water on a small fire on the red wagon of the siding. A free local render on the founder's Mac, outside an Orazaka Studio run (no paid run); looked at in full size before use. One bird, no person, no text, no logo."
+      "model": "GPT Image 2.5 Sunburst",
+      "licence": "Runway terms of use (output owned by the customer)",
+      "engine": "Runway API (gpt_image_2_5_sunburst), text to image with four of the series' covers (chapters 1, 8, 20, 21) as style references and, for the characters, the rail yard of chapter 23's cover; quality medium, ratio 1920:1088; 2 takes, the best kept",
+      "machine": "Runway cloud",
+      "via": "Runway",
+      "prompt": "Use the four reference pictures only for their style: a real hand-drawn illustration, loose fine pen-and-ink linework of varying weight (thin, broken, scratchy lines, never uniform outlines), transparent watercolor washes that bleed and pool, visible cold-press paper grain, a deckled uneven unpainted paper margin, palette of deep indigo, teal, warm orange and soft cream, muted and slightly desaturated. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no digital smoothness, no anthropomorphism (birds stand and perch like real birds, no clothes, no hands). Birds are small in the frame and drawn naturalistically with a few ink strokes, as in the references. No people, no text, no letters, no numbers, no logos, no watermark.\nThe first three reference pictures give the style; the last one (the rail yard) gives the two characters, to be drawn the same: the small orange-brown falcon of the watcher, and the small red duck with round glasses.\nScene: the repairer alone. On the siding at dusk after the first snow, a small red wooden wagon has a small fire burning on its roof edge; the small red duck with round glasses stands on the rail beside it, calm and upright, with a little leather bucket at its feet and a thin jet of water arcing from a short hose coil toward the flames, steam rising into the cold air. One bird only. Wide landscape composition with a deckled paper margin.",
+      "size": "1920×1088",
+      "note": "Hand-drawn ink and watercolor on paper, redrawn after a first take in a cartoon look (krizaka-internal#2455). Free of people, text and logos; looked at in full size before use."
     }
   },
   "series-24-how-we-stay-in-sync": {
     "kind": "image",
     "width": 1280,
-    "height": 720,
-    "blur": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAADQAQCdASoQAAkABABoJZQCdAEOqPP/AAD+2E8mV2ykEuoWBC8OLKrlGLZTwzJOQ+SawHMwso25GbOA7ZQULs1OLa4djTNRQElgJjZNLDDAAA==",
+    "height": 725,
+    "blur": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAADwAQCdASoQAAkABABoJYwCdAEN360F/YAA/bmKtL5ifXdnn+GMlANPWj8aX9PwBJRVoPXtxLh9P0o51FMoHq4Et2C3RYUSYZWRtAdQAAA=",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-480.882ee7a9ac.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-480.054b3e1338.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-960.014f85816f.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-960.f226c73054.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-1280.0951877dcb.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-1280.2792155e14.webp"
       }
     ],
     "made": {
-      "model": "FLUX.2 [klein] 4B",
-      "licence": "Apache-2.0",
-      "engine": "Orazaka's media worker engine (mflux) on Metal, 4 steps, text to image, scripts/render-image-series.py",
-      "machine": "the founder's Mac (Apple Metal GPU), no paid API",
-      "via": "local",
-      "prompt": "Hand-drawn ink and watercolor illustration on textured paper, Krizaka palette of deep indigo, teal, warm orange and soft cream, loose ink lines, soft washes. Calm, orderly, quiet mood. No people, no text, no letters, no numbers, no logos, no watermark. At the edge of a snowy railway yard at dusk, a small wooden notice board on two posts under a little roof, a few blank cream cards pinned on it in neat columns, a lantern glowing at its corner, and a wooden letterbox on a post beside it, a small blue pigeon with a round body perched on the letterbox, the rails fading into the distance behind.",
-      "seed": "2413",
-      "size": "1536×864",
-      "costUsd": 0,
-      "note": "Chapter 24 of the image series, redrawn in the series' look (hand-drawn ink and watercolor) after the first take was a flat vector scene (krizaka-internal#2455): a free local render on the founder's Mac, outside an Orazaka Studio run; looked at in full size before use. No person, no text, no logo."
+      "model": "GPT Image 2.5 Sunburst",
+      "licence": "Runway terms of use (output owned by the customer)",
+      "engine": "Runway API (gpt_image_2_5_sunburst), text to image with four of the series' covers (chapters 1, 8, 20, 21) as style references and, for the characters, the rail yard of chapter 23's cover; quality medium, ratio 1920:1088; 2 takes, the best kept",
+      "machine": "Runway cloud",
+      "via": "Runway",
+      "prompt": "Use the four reference pictures only for their style: a real hand-drawn illustration, loose fine pen-and-ink linework of varying weight (thin, broken, scratchy lines, never uniform outlines), transparent watercolor washes that bleed and pool, visible cold-press paper grain, a deckled uneven unpainted paper margin, palette of deep indigo, teal, warm orange and soft cream, muted and slightly desaturated. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no digital smoothness, no anthropomorphism (birds stand and perch like real birds, no clothes, no hands). Birds are small in the frame and drawn naturalistically with a few ink strokes, as in the references. No people, no text, no letters, no numbers, no logos, no watermark.\nThe first three reference pictures give the style; the last one (the rail yard) gives the setting and the small blue-grey pigeon is new (a natural rock pigeon with an iridescent neck, a few ink strokes).\nScene: the place where the team meets, at the edge of the same snowy rail yard at dusk: a small wooden notice board on two posts under a little roof, a few blank cream cards pinned on it in neat columns, a lantern glowing at its corner, and a wooden letterbox on a post beside it with one small pigeon perched on top. The rails fade into the distance behind, the little station with lit windows far away. One bird only. Wide landscape composition with a deckled paper margin.",
+      "size": "1920×1088",
+      "note": "Hand-drawn ink and watercolor on paper, redrawn after a first take in a cartoon look (krizaka-internal#2455). Free of people, text and logos; looked at in full size before use."
     },
     "renditions": {
       "avif": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-480.f2ccd49bc7.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-480.4f0e558871.avif"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-768.467e1c6b90.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-768.04cb77fe43.avif"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-1200.a6a497de26.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-1200.e4f4e3be11.avif"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-1280.448a5f382f.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-1280.9c95d181d0.avif"
         }
       ],
       "webp": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-480.9db3f72332.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-480.a7f2f6fc1f.webp"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-768.2552d97b5d.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-768.6821630fef.webp"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-1200.db6678606e.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-1200.31c4a8f13b.webp"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-1280.e996256543.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-24-how-we-stay-in-sync-1280.4fd8066d9b.webp"
         }
       ]
     }

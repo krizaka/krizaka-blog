@@ -22,8 +22,15 @@ birds arrive one by one (falcon, owl, duck, flamingo, pigeon). The anchor is the
 
 ## The look (krizaka-internal#2455)
 
-The covers in use are **hand-drawn ink and watercolor on paper**, in the Krizaka palette (indigo, teal, orange, cream), 16:9, one small bird at most. Chapters 23
-and 24 were first drawn as the flat vector night scene of the plan above and broke the series; they were redrawn locally with
-`"look": "watercolor"` in `series.json` (the renderer then uses `watercolorStyle`, text to image, `mflux-generate-flux2`). Two covers stay apart on purpose: chapter 10
-(kept by the founder) and chapter 22 (a key frame of the film it tells). `tests/image-series.test.mjs` refuses any other cover whose provenance does not say
-ink and watercolor, or whose ratio is not 16:9.
+The covers and the pictures drawn for a chapter are **hand-drawn ink and watercolor on paper**, in the Krizaka palette (indigo, teal, orange, cream), 16:9,
+birds small and natural (no clothes, no big eyes, no cel shading, no uniform outlines): not a cartoon. Chapters 23 and 24 were first a flat vector
+night scene, then a cartoon, and broke the series. They (the two covers and the chapter 23 pictures of the watcher, « le chouf », a kestrel
+perched by the tracks, and of the repairer, « le pompier », a red duck with round glasses on the siding) are redrawn with **GPT Image 2.5 Sunburst
+through Runway** (`gpt_image_2_5_sunburst`, text to image with four covers of the series as style references; medium quality costs 6 credits a take,
+high up to 24): `content/image-series/runway.json` holds the prompts, references, takes and credits; `scripts/prepare-runway-images.mjs` makes the web
+files and the `lib/media.json` entries. Several takes, the one that sits best next to chapters 21 and 22 is kept.
+
+- **Guard**: `tests/image-series.test.mjs` refuses a generated still of a post that is not in that look unless it is listed with its reason in
+  `content/image-series/flagged.json` (a demonstration, a pick for the founder to decide, a candidate to redraw).
+- **See it**: `node scripts/media-contact-sheet.mjs <dir>` draws every cover and every inline picture side by side (`covers.png`, `inline.png`,
+  `list.json`); a PR that touches a picture links them (captures through krizaka-com's `pr-assets.mjs`).

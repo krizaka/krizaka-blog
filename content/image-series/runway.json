@@ -1,0 +1,54 @@
+{
+  "about": "Images of the blog redrawn in the series' look with GPT Image 2.5 Sunburst through Runway (krizaka-internal#2455). Prompts, references, takes and the credits the account showed; the files are on Bunny, never committed.",
+  "model": "gpt_image_2_5_sunburst",
+  "references": [
+    "series-01-why-krizaka",
+    "series-08-*",
+    "series-20-how-our-automation-grew",
+    "series-21-working-with-agents-rules-that-refuse"
+  ],
+  "characters": {
+    "chouf": "a small orange-brown kestrel (the watcher, watchdog.py): perched, looking down the tracks",
+    "pompier": "a small red duck with round glasses (the firefighter, since replaced by the crack): on the siding beside the fire",
+    "pigeon": "a small blue-grey rock pigeon, which delivers (the letterbox)"
+  },
+  "images": {
+    "series-23-the-trains-second-version-rails-sidings-and-a-repair-train": {
+      "file": "23-the-trains-second-version-rails-sidings-and-a-repair-train.png",
+      "quality": "high",
+      "ratio": "1920:1088",
+      "pick": "c23-t1",
+      "takes": 2,
+      "prompt": "Use the four reference pictures only for their style: a real hand-drawn illustration, loose fine pen-and-ink linework of varying weight (thin, broken, scratchy lines, never uniform outlines), transparent watercolor washes that bleed and pool, visible cold-press paper grain, a deckled uneven unpainted paper margin, palette of deep indigo, teal, warm orange and soft cream, muted and slightly desaturated. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no digital smoothness, no anthropomorphism (birds stand and perch like real birds, no clothes, no hands). Birds are small in the frame and drawn naturalistically with a few ink strokes, as in the references. No people, no text, no letters, no numbers, no logos, no watermark.\nScene: a small railway yard at dusk after the first snow, seen from a low angle, wide landscape composition like the references: three tracks running toward a modest wooden station, a wagon resting on a siding under a red lamp, a little repair draisine with a glowing lantern alone on the middle track. On a signal post at the left edge a small orange-brown falcon (a kestrel) sits upright, watching the tracks: the watcher. Near the draisine stands a small red duck with a flat yellow bill and small round glasses, the repairer, seen from the side. Two small birds only, no others."
+    },
+    "series-24-how-we-stay-in-sync": {
+      "file": "24-how-we-stay-in-sync.png",
+      "quality": "medium",
+      "ratio": "1920:1088",
+      "pick": "c24-t1",
+      "takes": 2,
+      "prompt": "Use the four reference pictures only for their style: a real hand-drawn illustration, loose fine pen-and-ink linework of varying weight (thin, broken, scratchy lines, never uniform outlines), transparent watercolor washes that bleed and pool, visible cold-press paper grain, a deckled uneven unpainted paper margin, palette of deep indigo, teal, warm orange and soft cream, muted and slightly desaturated. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no digital smoothness, no anthropomorphism (birds stand and perch like real birds, no clothes, no hands). Birds are small in the frame and drawn naturalistically with a few ink strokes, as in the references. No people, no text, no letters, no numbers, no logos, no watermark.\nThe first three reference pictures give the style; the last one (the rail yard) gives the setting and the small blue-grey pigeon is new (a natural rock pigeon with an iridescent neck, a few ink strokes).\nScene: the place where the team meets, at the edge of the same snowy rail yard at dusk: a small wooden notice board on two posts under a little roof, a few blank cream cards pinned on it in neat columns, a lantern glowing at its corner, and a wooden letterbox on a post beside it with one small pigeon perched on top. The rails fade into the distance behind, the little station with lit windows far away. One bird only. Wide landscape composition with a deckled paper margin."
+    },
+    "chapter-23-chouf": {
+      "file": "chapter-23-chouf.png",
+      "quality": "medium",
+      "ratio": "1920:1088",
+      "pick": "chouf-t1",
+      "takes": 2,
+      "prompt": "Use the four reference pictures only for their style: a real hand-drawn illustration, loose fine pen-and-ink linework of varying weight (thin, broken, scratchy lines, never uniform outlines), transparent watercolor washes that bleed and pool, visible cold-press paper grain, a deckled uneven unpainted paper margin, palette of deep indigo, teal, warm orange and soft cream, muted and slightly desaturated. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no digital smoothness, no anthropomorphism (birds stand and perch like real birds, no clothes, no hands). Birds are small in the frame and drawn naturalistically with a few ink strokes, as in the references. No people, no text, no letters, no numbers, no logos, no watermark.\nThe first three reference pictures give the style; the last one (the rail yard) gives the two characters, to be drawn the same: the small orange-brown falcon (kestrel) of the watcher, and the small red duck with round glasses.\nScene: the watcher alone. At the edge of the tracks at dusk after the first snow, the small orange-brown kestrel sits upright on the back of a weathered wooden folding chair, a small lit lantern on the ground beside it, looking down the three tracks toward the little wooden station with lit windows in the distance. Quiet, patient, nothing else happening. One bird only. Wide landscape composition with a deckled paper margin."
+    },
+    "chapter-23-firefighter": {
+      "file": "chapter-23-firefighter.png",
+      "quality": "medium",
+      "ratio": "1920:1088",
+      "pick": "fire-t1",
+      "takes": 2,
+      "prompt": "Use the four reference pictures only for their style: a real hand-drawn illustration, loose fine pen-and-ink linework of varying weight (thin, broken, scratchy lines, never uniform outlines), transparent watercolor washes that bleed and pool, visible cold-press paper grain, a deckled uneven unpainted paper margin, palette of deep indigo, teal, warm orange and soft cream, muted and slightly desaturated. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no digital smoothness, no anthropomorphism (birds stand and perch like real birds, no clothes, no hands). Birds are small in the frame and drawn naturalistically with a few ink strokes, as in the references. No people, no text, no letters, no numbers, no logos, no watermark.\nThe first three reference pictures give the style; the last one (the rail yard) gives the two characters, to be drawn the same: the small orange-brown falcon of the watcher, and the small red duck with round glasses.\nScene: the repairer alone. On the siding at dusk after the first snow, a small red wooden wagon has a small fire burning on its roof edge; the small red duck with round glasses stands on the rail beside it, calm and upright, with a little leather bucket at its feet and a thin jet of water arcing from a short hose coil toward the flames, steam rising into the cold air. One bird only. Wide landscape composition with a deckled paper margin."
+    }
+  },
+  "credits": {
+    "takes": 8,
+    "perMediumTake": 6,
+    "note": "Runway's organization endpoint, balance before and after each take; the account is shared with the home session, so two deltas (65 and 62) include its own generations. This blog's takes: 7 medium (6 credits each) and 1 high (cover 23, at most 65)."
+  }
+}
