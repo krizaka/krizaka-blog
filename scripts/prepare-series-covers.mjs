@@ -7,14 +7,12 @@
      node scripts/cdn-assets.mjs upload <out-dir>/series --to blog/series   (from krizaka-com)
      node scripts/gen-renditions.mjs <out-dir>                              (avif + webp renditions, then upload them too)
    The pictures are never committed. */
-import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { CDN_V2 } from "./content-rules.mjs";
+import { WIDTHS, webSources } from "./series-web-files.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const WIDTHS = [480, 960, 1280];
 
 export function promptOf(series, index) {
   const chapter = series.chapters[index];
@@ -74,16 +72,7 @@ async function main() {
     if (!PICKS[i + 1] || (only && only !== i + 1)) continue;
     const [pick, runId, renderedFor] = PICKS[i + 1];
     const input = join(src, `${String(i + 1).padStart(2, "0")}-${c.post}.png`);
-    const srcs = [];
-    for (const w of WIDTHS) {
-      const data = await sharp(input)
-        .resize({ width: w, withoutEnlargement: true })
-        .webp({ quality: 80, effort: 5 })
-        .toBuffer();
-      const hash = createHash("sha256").update(data).digest("hex").slice(0, 10);
-      writeFileSync(join(out, "series", `${id}-${w}.webp`), data);
-      srcs.push({ w, url: `${CDN_V2}series/${id}-${w}.${hash}.webp` });
-    }
+    const srcs = await webSources(sharp, input, out, id);
     const blur = await sharp(input).resize({ width: 16 }).webp({ quality: 30 }).toBuffer();
     const meta = await sharp(input).metadata();
     media[id] = {
