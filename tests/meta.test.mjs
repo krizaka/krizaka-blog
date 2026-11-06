@@ -151,3 +151,55 @@ test("no live page links to a removed address; a chapter, a shelf post, the shel
   );
   assert.match(pageProblems(page({ body: '<h1>x</h1><a href="/tags/ai/">ai</a>' })).join(), /removed address/);
 });
+
+/* ADR-026 phase D: the page is read by a parser (scripts/html-tree.mjs), not by regexes. The checks above were recorded from the
+   regex version, and 80,000 generated pages (titles, descriptions, images, covers, stubs, homes) gave the same problems. */
+import { hasClass, readHtml } from "../scripts/html-tree.mjs";
+import { isRemovedAddress } from "../scripts/check-meta.mjs";
+
+test("readHtml: elements by name and test, attributes in any order and quotes, the tag as written", () => {
+  const page = readHtml(`<body><img src=a.webp><img alt='x' class="a bl-cover">&amp;<h1 id=t>T &amp; U</h1></body>`);
+  assert.equal(page.tags("img").length, 2);
+  assert.equal(page.tags("img", (el) => "alt" in el.attribs).length, 1);
+  assert.equal(page.source(page.tags("img")[0]), "<img src=a.webp>");
+  assert.equal(page.text(page.tags("h1")[0]), "T &amp; U", "entities are left as written");
+  assert.equal(hasClass(page.tags("img")[1], "bl-cover"), true);
+  assert.equal(hasClass(page.tags("img")[1], "bl"), false, "a whole class name, not a part");
+});
+
+test("an attribute in another order or quote is still found (the regexes needed name before content, double quotes)", () => {
+  assert.deepEqual(
+    metaProblems(
+      `<html><head><title>T</title><meta content='d' name='description'></head><body><h1>x</h1></body></html>`,
+    ),
+    [],
+  );
+});
+
+test("removed addresses: the sections with anything after, the two indexes exactly, in both languages", () => {
+  for (const href of [
+    "/tags/",
+    "/tags/ai/",
+    "/fr/series/x",
+    "/search/",
+    "/saved/",
+    "/feed/",
+    "/fr/feed/",
+    "/story/",
+    "/fr/story/",
+    "/posts/",
+  ])
+    assert.equal(isRemovedAddress(href), true, href);
+  for (const href of [
+    "/story/why/",
+    "/basics/",
+    "/basics/x/",
+    "/feed.xml",
+    "/atom.xml",
+    "/",
+    "/fr/",
+    "/posts/x/",
+    "/tags",
+  ])
+    assert.equal(isRemovedAddress(href), false, href);
+});
