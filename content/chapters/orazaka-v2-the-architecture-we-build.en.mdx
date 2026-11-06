@@ -145,7 +145,7 @@ How do we know that is true, and that it stays true? A rule of ADR-092 says it: 
 
 The same goes for media. There is no video module in the core. There is the media worker, and packs that use it.
 
-**Products go through the API, and only the API.** Yomizaka never talks to a model. It calls the pack's Studios on the edge with a service key, and keeps the run id of every analysis: that is the trace of what ran. Akinaza follows the same rule. The shared client, [`@krizaka/orazaka-client`](https://github.com/krizaka/krizaka-ts/tree/main/packages/orazaka-client), starts a run with an idempotency key, reads its state and waits for its end. Consent, budget, audit and idempotency are written once, in the engine. A product that went around it would have to write them again, and one day it would forget one.
+**Products go through the API, and only the API.** Yomizaka never talks to a model. It calls the pack's Studios on the edge with a service key, and keeps the run id of every analysis: that is the trace of what ran. Akinaza follows the same rule. The shared client, [`@krizaka/orazaka-client`](https://github.com/krizaka/krizaka-ts/tree/main/packages/sovkora-client), starts a run with an idempotency key, reads its state and waits for its end. Consent, budget, audit and idempotency are written once, in the engine. A product that went around it would have to write them again, and one day it would forget one.
 
 ## Where we are
 

@@ -1,14 +1,14 @@
 {
   "books": {
     "en/story": {
-      "source": "210f25154174",
+      "source": "5246d124a9d3",
       "files": {
         "epub": {
-          "hash": "4608f08ad0",
-          "bytes": 6969108
+          "hash": "d5463c492d",
+          "bytes": 6969124
         },
         "pdf": {
-          "hash": "7fa3bdddfd",
+          "hash": "3e8daaf68c",
           "bytes": 9838063
         }
       }
@@ -118,15 +118,15 @@
       }
     },
     "en/what-claude-found-auditing-krizaka": {
-      "source": "087cb3d4c394",
+      "source": "92698aa8f3cb",
       "files": {
         "epub": {
-          "hash": "bcfc0f2e2e",
-          "bytes": 543974
+          "hash": "c4785fe37e",
+          "bytes": 544024
         },
         "pdf": {
-          "hash": "a60e77eae1",
-          "bytes": 827103
+          "hash": "e977646442",
+          "bytes": 827980
         }
       }
     },
@@ -170,15 +170,15 @@
       }
     },
     "en/orazaka-v2-the-architecture-we-build": {
-      "source": "5930a6871781",
+      "source": "25e0a6021840",
       "files": {
         "epub": {
-          "hash": "364dd18ee7",
-          "bytes": 816496
+          "hash": "70b696e417",
+          "bytes": 816540
         },
         "pdf": {
-          "hash": "08384faf7c",
-          "bytes": 1277746
+          "hash": "68f3103452",
+          "bytes": 1278637
         }
       }
     },
@@ -287,14 +287,14 @@
       }
     },
     "fr/story": {
-      "source": "9edeb70fbc3a",
+      "source": "c265e79388cc",
       "files": {
         "epub": {
-          "hash": "bf395b16b0",
-          "bytes": 6991696
+          "hash": "135632791c",
+          "bytes": 6991712
         },
         "pdf": {
-          "hash": "159cde2c4f",
+          "hash": "48d34e3cb4",
           "bytes": 10004361
         }
       }
@@ -404,15 +404,15 @@
       }
     },
     "fr/what-claude-found-auditing-krizaka": {
-      "source": "259af96804e6",
+      "source": "2911f95b45cd",
       "files": {
         "epub": {
-          "hash": "91a458182b",
-          "bytes": 542683
+          "hash": "9f44445430",
+          "bytes": 542737
         },
         "pdf": {
-          "hash": "9f6eec0747",
-          "bytes": 851986
+          "hash": "1e7c2a6622",
+          "bytes": 852923
         }
       }
     },
@@ -456,15 +456,15 @@
       }
     },
     "fr/orazaka-v2-the-architecture-we-build": {
-      "source": "a1fdb5b420b7",
+      "source": "0883fba5231b",
       "files": {
         "epub": {
-          "hash": "8c9f6a0cf4",
-          "bytes": 824038
+          "hash": "5a1170b895",
+          "bytes": 824087
         },
         "pdf": {
-          "hash": "a5248d66c9",
-          "bytes": 1306646
+          "hash": "6794df83e0",
+          "bytes": 1307584
         }
       }
     },
