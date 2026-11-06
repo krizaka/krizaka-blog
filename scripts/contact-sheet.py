@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """A contact sheet of the series, in chapter order (to be validated by the founder): python3 scripts/contact-sheet.py <dir> <out.png>
-Needs Pillow (the Orazaka media worker's venv has it)."""
+Needs Pillow (the Sovkora media worker's venv has it)."""
 import json, sys
 from pathlib import Path
 from PIL import Image, ImageDraw

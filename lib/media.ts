@@ -1,7 +1,7 @@
 /* The blog's media library: every image and clip a post shows, by id. The files live on the media CDN (Bunny
    `krizaka-assets`, prefix `blog/`) — `lib/media.json` holds their URLs, a tiny blur placeholder, and the provenance of each
-   result (model, prompt, seed, machine, time, cost, Orazaka run id) read from the Orazaka records that made it
-   (`orazaka-web-client` gallery.ts · gallery-clips.ts · model-compare.ts, `orazaka` docs/measurements/runs.json).
+   result (model, prompt, seed, machine, time, cost, Sovkora run id) read from the Sovkora records that made it
+   (`sovkora-web` gallery.ts · gallery-clips.ts · model-compare.ts, `sovkora` docs/measurements/runs.json).
    A figure of a post is `<Figure id="…" alt="…" />`; a clip is `<Clip id="…" alt="…" />`. Nothing here is typed by hand. */
 import data from "./media.json";
 import { BLUR } from "./blur";
@@ -25,7 +25,7 @@ export type Made = {
   costUsd?: number | null;
   runId?: string;
   sound?: string;
-  /** Said when the result was not made through an Orazaka run. */
+  /** Said when the result was not made through a Sovkora run. */
   note?: string;
   source?: string;
 };

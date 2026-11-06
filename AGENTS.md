@@ -31,7 +31,7 @@
 
 - A post is `content/posts/<slug>.<en|fr>.mdx`: front matter `title`, `description` (≤ 220), `date` (YYYY-MM-DD),
   `tags` (lower-case ids; their names are `tags.names.*` in the messages), `author` (`authors.*`), `draft`, optional
-  `cover` (a media id, below), `featured` (kept in the front matter; the home's Featured is the latest chapter), `series` (an id of `series.names.*`: `building-orazaka`,
+  `cover` (a media id, below), `featured` (kept in the front matter; the home's Featured is the latest chapter), `series` (an id of `series.names.*`: `building-sovkora`,
   `measured`) with its `part` (a post's place; unique per series and language), optional `image`. A post may exist in one language only; in both, they share the slug and name each other (hreflang).
 - **Search**: optional `seoTitle` (≤ 60 characters, the whole title tag) and `seoDescription` (≤ 155) when the title or the
   lead is too long for a search result; the h1 and the lead stay the post's own words. A topic is a word on a card
@@ -52,7 +52,7 @@
   bank word. Patterns are described, internals never.
 - **A published post has a `publishedAt`** (quoted date, time and offset, e.g. `"2026-10-16T21:44:17-04:00"`, on its `date`):
   posts of one day keep their order. **A published post has a `cover` and its `coverAlt`**, shown **once**: the post's hero and its
-  cards — never again in the body (lint refuses its id or URL there); a picture in the text is another, relevant one. A cover is made, not found: an Orazaka Studio run (provenance in `lib/media.json`), never a stock photo.
+  cards — never again in the body (lint refuses its id or URL there); a picture in the text is another, relevant one. A cover is made, not found: a Sovkora Studio run (provenance in `lib/media.json`), never a stock photo.
 - **`draft: true` is not published**: the build leaves it out (`APP_SHOW_DRAFTS=1` previews it). Publishing = `draft: false`.
 - **Prove, don't invent.** A figure comes from a run, a measurement or a line of code that the post can point to; what is
   not measured is said. Sober, factual, no superlatives.
@@ -61,12 +61,12 @@
   and a post names them by their CDN URL.
 - **Two CDN prefixes.** Older media sit under `site/blog/<post>/`; new uploads of krizaka-com's `cdn-assets.mjs` land under `sites/blog/posts/<post>/` (layout v2, ADR-014). The rules accept both (`onBlogCdn`).
 - **The media library** is `lib/media.json`: every image and clip a post shows, by id, with the CDN URLs (`site/blog/…`),
-  the sizes, a blur placeholder and the **provenance** of the result (model, prompt, seed, machine, time, cost, Orazaka run
+  the sizes, a blur placeholder and the **provenance** of the result (model, prompt, seed, machine, time, cost, Sovkora run
   id). A post uses `<Figure id alt caption?/>` (responsive `srcset`, blur-up, size reserved, lazy), `<Clip id alt
 caption?/>` (a light native player: muted loop while on screen, poster first, controls, never autostarts under
   `prefers-reduced-motion`) and `<Row>`; both show « How this was made » from the entry. Entries are produced, not typed:
-  the Orazaka results come from `orazaka-web-client` (`gallery.ts`, `gallery-clips.ts`, `model-compare.ts`) and `orazaka`
-  `docs/measurements/runs.json`; a result made outside an Orazaka run says so in `made.note`. `npm run lint` fails on an
+  the Sovkora results come from `sovkora-web` (`gallery.ts`, `gallery-clips.ts`, `model-compare.ts`) and `sovkora`
+  `docs/measurements/runs.json`; a result made outside a Sovkora run says so in `made.note`. `npm run lint` fails on an
   unknown id, an image without size or blur, a URL off the blog's CDN prefix, or a cover/clip mix-up. Never hot-link an
   original: files are sized webp (480/960/full) and mp4/webm with a poster.
 - **Covers ship in renditions.** Bunny's Optimizer is not enabled (no width parameter), so every cover is made once at 480, 768, 1200 and
@@ -90,7 +90,7 @@ caption?/>` (a light native player: muted loop while on screen, poster first, co
   `@krizaka/ui` blocks only (`PageHero`, `Section`, `Card`, `LinkCard`, `Badge`); a missing block is an issue in krizaka-ui.
   Tested in `tests/home.test.mjs` and on the built page by `scripts/check-meta.mjs` (`homeProblems`).
 - **A new chapter, in order**: write it FR and EN (`draft: true`), then **its cover before the PR**: render it with
-  `python3 scripts/render-image-series.py --worker <orazaka-worker-media> --anchor <brand picture> --out <name> --only <chapter>`
+  `python3 scripts/render-image-series.py --worker <sovkora-worker-media> --anchor <brand picture> --out <name> --only <chapter>`
   (seed and beat in `content/image-series/series.json`, `docs/image-series.md`), `scripts/prepare-series-covers.mjs`, upload, then
   `cover` and `coverAlt`. The build's meta check renders drafts, so `npm run lint` refuses a chapter without a cover, draft or not
   (krizaka-blog#280 was red in CI for it). The renderer runs mflux through `<worker>/.venv/bin/python`, never the entry point's shebang.
@@ -255,4 +255,4 @@ In a TypeScript repository that already depends on `@krizaka/config`, use `npx -
 
 ## Commercial names (2026-11-01, krizaka-internal#2103)
 
-The pages say **Verikora** (code name yomizaka), **Folioviv** (akinaza) and **Sovkora** (orazaka); tag ids, series ids, slugs and addresses keep the code names. `krizaka-code-names messages` runs in `npm run lint`. The published chapters keep the names of their day (history is not rewritten): the built site is only reported (`scripts/ci-after-build.sh`, `--report`).
+The pages and the code say **Verikora**, **Folioviv** and **Sovkora** (founder, 2026-11-06, krizaka-internal#2659: no code name anywhere; the one mapping table is `docs/standards/renames-2026-11-06.md` of krizaka/.github and `CODE_NAMES` of @krizaka/org). Series ids are the commercial names. What keeps an old name: history (the published chapters' prose and slugs, which are their addresses; the old addresses in `lib/redirects.json`), and until the follow-up of krizaka-internal#2688 the chapters' tag ids and links (a change to a chapter remakes its books: `scripts/gen-downloads.mjs`, upload, record), Bunny paths until their copy under the new name, and the ids @krizaka/org still requires until its commercial-id major. Links in a published chapter never point to a dead host: the commercial one. `krizaka-code-names messages` runs in `npm run lint`. The published chapters keep the names of their day (history is not rewritten): the built site is only reported (`scripts/ci-after-build.sh`, `--report`).

@@ -56,7 +56,7 @@ collections:
       - { name: seoDescription, label: "Search description (optional, 155 characters at most)", widget: text, required: false, i18n: true, pattern: ["^.{0,155}$", "At most 155 characters"] }
       - { name: date, label: Date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD", picker_utc: true, i18n: duplicate }
       - { name: publishedAt, label: "Published at (date, time and offset, e.g. 2026-10-16T21:44:17-04:00): the order of posts of one day", widget: string, required: false, i18n: duplicate, pattern: ["^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2})?(Z|[+-]\\d{2}:\\d{2})$", "Date, time and offset"] }
-      - { name: tags, label: Topics (lower-case ids, e.g. costs, orazaka), widget: list, i18n: true, required: false }
+      - { name: tags, label: Topics (lower-case ids, e.g. costs, ai), widget: list, i18n: true, required: false }
       - name: author
         label: Author
         widget: select
@@ -68,6 +68,6 @@ collections:
       - { name: cover, label: "Cover (an id of the media library, lib/media.json — e.g. gallery-tea-pour)", widget: string, required: false, i18n: duplicate }
       - { name: coverAlt, label: "Cover's words (alt): what the picture shows — the cover is shown once, never again in the text", widget: string, required: false, i18n: true }
       - { name: featured, label: "Featured (shown first on the home)", widget: boolean, default: false, required: false, i18n: duplicate }
-      - { name: series, label: "Series (basics, building-orazaka, building-krizaka, measured)", widget: string, required: false, i18n: duplicate }
+      - { name: series, label: "Series (basics, building-sovkora, building-krizaka, measured)", widget: string, required: false, i18n: duplicate }
       - { name: part, label: "Place in the series", widget: number, value_type: int, min: 1, required: false, i18n: duplicate }
       - { name: body, label: Text, widget: markdown, i18n: true, hint: "Images: upload with `node scripts/cdn-assets.mjs upload <file> --to blog/<post>` in krizaka-com, then paste the CDN URL." }
