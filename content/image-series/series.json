@@ -173,6 +173,12 @@
       "seed": 2501,
       "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
       "beat": "Not rendered by the series' renderer: drawn with GPT Image 2.5 (Sunburst) through Runway in the series' light, pastel ink-and-watercolor look, with three pale pictures of the series as style references (prompt and references in lib/media.json). The yard of chapters 23 and 24 on a pale winter morning, a train leaving, a red wagon on its siding, and the crack, a small violet-grey owl, on the footbridge over the tracks. The series' cast is carried over unchanged."
+    },
+    {
+      "post": "the-big-clean-up-and-our-real-names",
+      "seed": 2601,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "Not rendered by the series' renderer: to be drawn with GPT Image 2.5 (Sunburst) through Runway in the series' light, pastel ink-and-watercolor look, with pale pictures of the series as style references, once the CTO accepts its cost. The yard of chapters 23 to 25 on a clear pale morning after a tidy-up: one long open goods shed where identical small wooden crates stand in a single neat row, a handcart taking a heap of old mismatched crates away to a small shed at the edge of the yard, the owl on the footbridge with its rolled plan, the pigeon on a freshly painted blank sign board. The series' cast is carried over unchanged."
     }
   ],
   "sprites": {

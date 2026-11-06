@@ -1,0 +1,349 @@
+---
+title: "The big clean-up: one folder, one config and our real names"
+description: "On 6 November we stopped everything to tidy up: 1.1 TB of agent clones, paths typed by hand, two names for every product. One folder, one local config, our commercial names."
+seoTitle: "The big clean-up: one folder, one config, our real names"
+seoDescription: "An agent company tidied in one day: 1.1 TB of clones, one folder, one local config every tool reads, and 24 repositories renamed."
+date: 2026-11-06
+tags: [ai, integration]
+author: oussama
+draft: true
+sensitive: true
+chapter: 26
+period: "2026-11-06"
+sources:
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "clones everywhere, paths typed by hand and two names for every product"
+  built: "one folder, one copy per repository, one local config and our commercial names"
+stats:
+  - value: "1.1 TB"
+    label: "of agent clones piled up, in 2,095 folders"
+    section: "Why we stopped everything"
+  - value: "36"
+    label: "reference copies, one per repository, and a worktree per piece of work"
+    section: "One folder: the HQ"
+  - value: "24"
+    label: "repositories renamed to their commercial name"
+    section: "Our real names"
+---
+
+In [chapter 25](/story/why-we-slowed-down-and-how-we-work-now/) I told why we were slowing down, and what we changed on 5 November. The next day, 6 November, I wrote the CTO an even shorter sentence: « we stop everything now ».
+
+This time it was not about speed. It was about order. A first human contributor was joining us, and he had to be able to understand the organisation on his own, without asking me where things are. So nothing would move before everything was tidied and named.
+
+This chapter tells the day of 6 November: what we found, how we deleted without losing anything, the one folder, the one config, our real names, and how we work now.
+
+## Why we stopped everything
+
+That day everything stopped, except krizaka.com and its carousel. The automatic sessions were switched off, and the line that restarts the trains was commented out. The CTO first took the inventory, read-only.
+
+The first finding was on the Mac. Every agent session cloned its own copy of the repositories, and nobody removed it. The folder of agent clones held 2,095 folders and weighed 1.1 TB. Inside the website's folder there were still 48 GB of old clones, including 13 copies of krizaka-ui. And our tools typed about 45 paths to the old folder by hand.
+
+<Numbers>
+  <Num value="1.1 TB" label="of agent clones" hint="in 2,095 folders, nearly one per session" />
+  <Num value="13" label="copies of krizaka-ui" hint="hidden in the website's folder, among 48 GB of old clones" />
+  <Num value="45" label="paths typed by hand" hint="about, in our tools, to the old folder" />
+</Numbers>
+
+The second finding was about names. Our products had two names. A code name, which the repositories, the packages and the dev addresses still carried: Yomizaka, Akinaza, Orazaka, Kachizaka. And a commercial name, the one on the website: Verikora, Folioviv, Sovkora, Kridoc. A newcomer who reads « akinaza » in a repository and « Folioviv » on the home page cannot guess it is the same product.
+
+The third was code living twice. An audit looked for everything that lived in two places. It found a package published from two repositories at once, security code copied into a product when the library already existed, and registries that still listed deleted repositories.
+
+So I took the decision that is scary: « we change everything; we break everything and we fix where it breaks ». No compatibility alias. No transition symlink. We break, we look at what breaks, and we fix it at the source.
+
+## Check before deleting
+
+Break, yes. Lose, no. I gave one instruction for the clean-up: « check before you delete things we use ». The CTO turned it into a proof in four steps, run again for every folder, in this order. Otherwise we do not touch it.
+
+<Steps>
+  <Step title="Do we use it?">
+    No program has it open, and no cron, no setting, no tool names it.
+  </Step>
+  <Step title="Does git keep it?">
+    The whole local history goes into a verified bundle, even what git says is already pushed.
+  </Step>
+  <Step title="Are there changes left?">
+    Uncommitted changes become a patch, and untracked files an archive.
+  </Step>
+  <Step title="The corbeille, then the purge">
+    The folder goes into a dated corbeille, our trash folder. On the day of the purge we run the first two checks again.
+  </Step>
+</Steps>
+
+The second step looks excessive. It is not. After a squash merge, git counts as « not pushed » commits that are already on main in another form. In the 13 copies of krizaka-ui it announced 151 unpushed commits, all the same. The counter lies. So we bundle everything, without asking its opinion.
+
+And once, that caution saved real work. At the end of October we had folded several small repositories into the one of our Java libraries. One of them had kept moving after the fold, on 1 and 2 November. When we deleted it, three of its commits had never reached their new home, one of them a security feature. The only copy left was the local, read-only mirror that codegraph indexes. We got them back, ported them with their tests, and they shipped in krizaka-java 0.12.0, on Maven Central. The CTO made it a rule: before deleting a repository, compare every commit since the fold, make a verified bundle, and delete only after a proven restore.
+
+## The clean-up in figures
+
+Here is what is done, with its proof, from the clean-up report.
+
+On the Mac, the 48 GB of old clones in the website's folder were bundled, then deleted. The agent clones were saved, 1,930 in all, as 1,273 bundles, patches and the untracked files, then moved to the corbeille. The free space on the disk went from 426 GB to 691 GB. And it is not over: the corbeille still holds about 1 TB, which goes after a new check.
+
+Off the Mac, we deleted only what was proven dead, with a backup whenever the tool allowed one. The SonarCloud projects went from 45 to 36, one per repository. The dead branches, 60 of them, are gone, all kept in verified bundles. About 2 GB of media left our CDN, the ones nothing named any more and those of departed products, after a full copy. Five orphan database users were removed, and so were 35 DNS records of the code-name domains.
+
+<Numbers>
+  <Num value="691 GB" label="free on the disk" hint="against 426 GB before the clean-up, and the corbeille is not emptied yet" />
+  <Num value="36" label="SonarCloud projects" hint="one per repository, after 9 dead projects were deleted" />
+  <Num value="60" label="dead branches deleted" hint="all kept in verified bundles" />
+</Numbers>
+
+Everything that costs money, or is still in doubt, was not touched. It is on my list, not the agents'.
+
+## One folder: the HQ
+
+Before, the code and the company were scattered across my home folder. Now there is one folder, at the root, outside any sync: the HQ. I open it in one VS Code window, and everything is inside.
+
+<Split label="The Mac before and after 6 November: clones everywhere, then one folder where each thing has its place and its guard.">
+  <Side
+    title="Before"
+    tone="before"
+    items="A clone per session, never removed | 2,095 folders of agent clones, 1.1 TB | 48 GB of old clones in the website's folder | About 45 paths typed by hand in the tools | The company and the code in separate folders"
+  />
+  <Side
+    title="Now"
+    tone="after"
+    items="One folder, the HQ, opened in one window | One reference copy per repository, 36 in all | A worktree per piece of work, removed on merge | A hook refuses git clone | Every path read from one config"
+  />
+</Split>
+
+The HQ holds two folders, side by side. The company folder first: our notes, our reports, my cockpit. It is never a repository, and it never goes to GitHub. A hook refuses a git command that names one of its paths, and a test refuses a tool that types it. Then the workspace, where the code lives.
+
+<Layers label="The HQ folder: the company beside the code, one reference copy per repository, a worktree per piece of work, and one config everyone reads.">
+  <Layer tag="HQ" title="The HQ folder" note="One folder at the root, outside any sync, opened in one window." />
+  <Layer
+    tag="1"
+    title="The company folder"
+    note="The notes, the reports, the founder's cockpit. Never a repository, never on GitHub."
+    level="1"
+  />
+  <Layer
+    tag="2"
+    title="krizaka.config.json"
+    note="The local config: every path and every shared value. Never committed."
+    level="1"
+  />
+  <Layer tag="3" title="The workspace" note="Where the code lives. Every tool finds its path in the config." level="1" />
+  <Layer
+    tag="repos"
+    title="One reference copy per repository"
+    note="36 repositories, always on main, never edited by hand. Only workspace-sync makes them and moves them forward."
+    level="2"
+  />
+  <Layer
+    tag="worktrees"
+    title="A worktree per piece of work"
+    note="wt-new makes one for a ticket; wt-done removes it when its PR has merged and nothing waits to be pushed."
+    level="2"
+  />
+  <Layer
+    tag="and also"
+    title="Logs, temporary files, models, rescue"
+    note="What the crons write, the files of a day, the model weights, and what a clean-up kept."
+    level="2"
+  />
+</Layers>
+
+The base rule fits in one sentence I said that day: « every session clones: that is not allowed at all ». There is now one copy of each repository. Only the tool `workspace-sync` makes it, and a cron moves it forward on main every 30 minutes. A session never works in it. It asks for a worktree, a working branch set beside it, which shares the same git history without copying it:
+
+```bash
+cd "$(wt-new krizaka-blog 2726)"   # a worktree for a ticket, from a fresh main
+wt-done --sweep                    # removes the merged worktrees that hold nothing unpushed
+```
+
+This is not a convention we hope people follow. It is a guard. A Claude Code hook refuses `git clone`, `gh repo clone` and a worktree made anywhere else. It also refuses a write at the root of my home folder: logs and temporary files go to the workspace. A test fails if one of our agents' tools makes a clone. And a cron counts the clones lying around outside the reference copies, with an alert while any is left. The « Workspace » page of the cockpit shows me the same count.
+
+As I write, about a hundred old clones are left in the old folder. They will go through the same four steps.
+
+The HQ also has a file that tells every session who it is and where it works. The CTO got a name there: Mouloud, a Gabonese grey parrot. It is the bird that listens, remembers, and repeats exactly what is true.
+
+## One config: krizaka.config.json
+
+The second problem was the paths typed by hand. Moving a folder meant fixing dozens of scripts, and always forgetting one.
+
+Now every value that two tools or more share lives in one file, `krizaka.config.json`, at the root of the HQ: the folders, the GitHub organisation, the numbers of the board, the cockpit's port, the ids of our GitHub apps, the model to use per task, the train's limits. This file is local. It is never committed, because the company never goes to GitHub. The repository of our tools keeps only the reader, a schema, and an example filled with placeholders, of which here is an excerpt:
+
+```json
+{
+  "companyDir": "<company folder, relative to hq>",
+  "workspace": "workspace",
+  "repos": "{workspace}/repos",
+  "worktrees": "{workspace}/worktrees",
+  "tools": "{repos}/<the tools repository>/tools",
+  "logs": "{workspace}/logs",
+  "org": "<github organisation>",
+  "boardProject": 0,
+  "modelByTask": { "landing": "<model id>", "feature": "<model id>", "design": "<model id>" },
+  "train": { "prCapPerLane": 0 }
+}
+```
+
+Two small commands read it. `kz-config` gives one value. `kz-run` runs a tool with those values. The crons, the Claude Code hooks, the git hooks and the Mac's LaunchAgent now name only `kz-run`, never a path:
+
+```bash
+kz-config repos                                     # the folder of the reference copies
+kz-run --log board-cache board-cache.py refresh     # a cron line, with no path at all
+```
+
+<Layers label="One local config, two readers, and everything else going through them. Moving the HQ is changing one value, then moving the folder.">
+  <Layer
+    tag="1"
+    title="krizaka.config.json"
+    note="The values two tools or more share. Local, never committed."
+    items="the folders | the organisation | the board | the cockpit's port | the model per task | the train's limits"
+  />
+  <Layer tag="2" title="kz-config" note="Gives one value: kz-config repos, kz-config tools." level="1" />
+  <Layer tag="3" title="kz-run" note="Runs a tool with those values, and lets a hook pass when its tool is missing." level="1" />
+  <Layer
+    tag="4"
+    title="What goes through them"
+    note="None of them knows a path of the Mac any more."
+    items="the scheduled jobs | the Claude Code hooks | the git hooks | the LaunchAgent | the cockpit"
+    level="2"
+  />
+</Layers>
+
+An environment variable can override a value, which is what the tests use. And a test, `no-hardcoded-paths`, fails when a tool, a skill or a doc types a path the config knows.
+
+The CTO proved it works with a throwaway HQ, in a temporary folder: our tools' test suite passes on it. We change the logs folder, and nothing breaks.
+
+## The move, and the hook that refused everything
+
+Then we moved. The company folder and the workspace went into the HQ, with no link left to the old places. And it broke, as expected, but not where we expected.
+
+The install script of our tools had added the new hooks next to the old ones, instead of replacing them. The old hook called a guard at a path that no longer existed. It exited with code 2, and for Claude Code that code means « refused ». The result: every command, every write, every edit of every session on the Mac was refused. The agents could do nothing, not even repair themselves. I fixed it myself, with a `sed` in the Terminal.
+
+The fix took two rules, written in the code and tested:
+
+- **A hook is replaced, never doubled.** The install removes any hook that names the same tool, or an old place, before it adds the new one.
+- **A hook lets the call pass when its tool is missing, and blocks only on a real refusal.** Checked both ways: a missing tool exits without error, and `git clone` is still refused.
+
+The tests of the no-clone guard (11 out of 11) and those of the hooks pass. The lesson is one line of our lessons file, like every other since chapter 25.
+
+There was a second hitch, a quieter one. When it ran again, the install script switched the trains' line back on, while the organisation was frozen. The CTO commented it out again within the minute, and the cron had not run in between. A guard has been asked for so it does not happen again.
+
+Then we ran everything once, by hand. The cockpit was rebuilt, and its « Workspace » and « Organisation » pages answer. The scheduled jobs were each run once through `kz-run`: all 13 ended without error, and the trains, frozen, wait for the end of the freeze. The cockpit still has 22 layout overflows and two lint errors to fix.
+
+## Our real names
+
+The same day, we decided that no code name would stay where a person reads it. To do it, we first needed a naming rule, on one page, that a newcomer understands alone:
+
+- a product is called by its commercial name: `verikora`, `folioviv`, `sovkora`, `kridoc`;
+- a piece of a product is the product and its role: `sovkora-web`, `sovkora-engine`, `sovkora-job-service`;
+- what is shared starts with `krizaka-`, followed by what it is for a human, never the name of a tool: `krizaka-java` rather than `krizaka-build`, `krizaka-desktop` rather than `krizaka-tauri-kit`;
+- a template starts with `krizaka-template-`.
+
+Every repository also got a one-sentence description, the commercial name first, saying what it does for someone, and its public address when it has one, never the dev one. In all, 24 repositories were renamed. And behind a repository, there is everything that carries its name.
+
+<Compare
+  label="What changed names on 6 November, from the code name to the commercial name"
+  topic="What"
+  before="Before"
+  after="Now"
+>
+  <Case
+    topic="The products"
+    before="Yomizaka, Akinaza, Orazaka, Kachizaka"
+    after="Verikora, Folioviv, Sovkora, Kridoc"
+  />
+  <Case
+    topic="The repositories"
+    before="yomizaka, akinaza, orazaka-web-client, orazaka-ai-engine…"
+    after="verikora, folioviv, sovkora-web, sovkora-engine…"
+    afterDetail="24 repositories renamed, with their description and address rewritten."
+  />
+  <Case
+    topic="The shared libraries"
+    before="krizaka-build, krizaka-tauri-kit, template-next-app"
+    after="krizaka-java, krizaka-desktop, krizaka-template-web"
+    afterDetail="The name says what it is, not the tool that makes it."
+  />
+  <Case
+    topic="The addresses"
+    before="dev. and admin. on the code-name domain"
+    after="dev.verikora.com, admin.verikora.com, dev.folioviv.com…"
+    afterDetail="35 DNS records of the old domains deleted."
+  />
+  <Case
+    topic="The npm packages"
+    before="@krizaka/orazaka-client"
+    after="@krizaka/sovkora-client 1.0.0"
+    afterDetail="The old package is deprecated, not erased. And @krizaka/org 1.0.0 names every product by its commercial name."
+  />
+  <Case
+    topic="The Java packages"
+    before="krizaka-build and its module krizaka-platform-kit"
+    after="krizaka-java 0.12.0 on Maven Central, module krizaka-service-kit"
+  />
+  <Case
+    topic="The CDN's media"
+    before="paths under the code name"
+    after="copied under the commercial name"
+    afterDetail="The switch and the purge of the old copy come next; no media file is written in two places."
+  />
+  <Case
+    topic="Quality and the board"
+    before="SonarCloud keys and labels under the code name"
+    after="krizaka_verikora, lane:verikora, lane:folioviv…"
+    afterDetail="78 labels, the GitHub teams and the agents' lanes followed."
+  />
+</Compare>
+
+Some names cannot change. They are all in one table, with the reason:
+
+- `.github`, because GitHub imposes that name;
+- the id of an iOS app already submitted to Apple;
+- the packages already published: a public registry erases nothing, so they stay readable, deprecated, and are never published again;
+- history: the commits, the closed tickets, the changelogs. The published chapters of this blog also keep the names of their day. We do not rewrite history.
+
+Outside that table, a tool, `krizaka-code-names`, refuses the four code names. It is what told us where things broke, and it is what keeps them from coming back.
+
+Not everything is finished, and I would rather say so. Sovkora's internal names, those of its databases and its configuration keys, will change in a second wave, all at once, because both sides read them. And until the new major versions of our libraries are published, some of Verikora's e-mails still say the old name. Sovkora dev fell over in the rename, and it is back up.
+
+## A new board
+
+The board of our tickets had grown with us, and it carried the old names too. I asked the CTO to destroy it and build a new one, better fitted to our needs. He started with a full backup: 2,649 cards, with all their values. GitHub announced 2,650; one is not readable through the API.
+
+There are now two boards. The shared board, which our new contributor can read, received 2,491 cards. The restricted board, for the founder, the CTO and our robots, received 157. Why two? Because a restricted ticket must show nothing to the contributor, not even a masked line.
+
+The columns are the same on both: Incubation, Backlog, Next, Blocked, In progress, In review, À valider, À valider – fondateur, Done. The cards carry a priority, a product (by its commercial name), a lane, a size and a horizon. The tools find the boards' numbers in the config. Once the cards were moved and the tools pointed at the new boards, the old one was deleted.
+
+## The life of a change, now
+
+With the folder, the config, the names and the board in place, the path of a change reads from one end to the other. It is also what the newcomer's guide we wrote, in French and in English, says.
+
+<Pipeline label="The life of a change: from the ticket to the check on the live platform. A session never clones and never merges; the train and the recette do the end.">
+  <Stage title="The issue" note="done when">
+    Everything starts with a ticket in our private ticket repository, with its « done when » lines and the list of files it touches.
+  </Stage>
+  <Stage title="Next" note="validated by the CTO">
+    The card enters Next only when the CTO validates it, within its lane's cap.
+  </Stage>
+  <Stage title="The worktree" note="wt-new">
+    A session takes the card and makes its worktree from a fresh main. It never clones.
+  </Stage>
+  <Stage title="The PR" note="pr-open">
+    pr-open opens the PR: the ticket, its « done when » lines mirrored with their proof, the code formatted.
+  </Stage>
+  <Stage title="The review" note="the ticket first" tone="gate">
+    We check first that the PR does what the ticket asks, then the architecture, the tests and the guards.
+  </Stage>
+  <Stage title="The train" note="one commit" tone="gate">
+    The PR waits its turn in its repository's queue and lands on main as one commit. Nobody merges by hand.
+  </Stage>
+  <Stage title="À valider" note="the recette" tone="ship">
+    Once merged, the recette, our acceptance check, verifies it live before the ticket is closed. The worktree is removed.
+  </Stage>
+</Pipeline>
+
+And to know whether a rule really holds somewhere, the reference does not change: it is the conformance matrix. Every day a script crosses every repository with every rule. We read the cell, not an agent's memory.
+
+## What I keep
+
+As I write, the freeze still holds. It lifts when every point has its proof: the workspace and its guard in place, zero code name flagged, Maven Central up to date, the dev apps answering, the libraries' sites republished, the corbeille emptied. Only then will the lanes start again, Verikora first.
+
+What I take from that day is that the mess of an agent company does not show. Nobody opened those 2,095 folders. No agent complained about a path typed by hand. The mess cost nothing, until the day someone new had to find their way in it.
+
+A rule I keep in my head does not last a night. A rule that lives in a hook, with a test, lasts. The hook that refused everything after the move reminded me in its own way: a badly written guard blocks as hard as a good one. So we write the guards with the same care as the code, and we test them both ways.
+
+And a name is for the people who read it. The code names were handy for us. For everyone else, they were a riddle.
