@@ -6437,5 +6437,130 @@
       "size": "1920×1088",
       "note": "Chapter 25, section « Le pompier s'en va, le crack arrive »: the chouf of chapter 23 (the kestrel on its folding chair, its lantern) still watches; the crack (the owl) sits far away on the footbridge. Take 1 of 3, picked after looking at all three in full size. Runway task 1ad3d11e-9f22-40d2-975f-c557aedc5d35, 9 credits. Made outside an Orazaka Studio run; no person, no text, no logo."
     }
+  },
+  "series-26-the-big-clean-up-and-our-real-names": {
+    "kind": "image",
+    "width": 1280,
+    "height": 725,
+    "blur": "data:image/webp;base64,UklGRjwAAABXRUJQVlA4IDAAAADQAQCdASoQAAkABABoJaQAAueGojZaAAD+8Bp8efT6YHxunCtpxAaI8p8xpAcMAAA=",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-26-the-big-clean-up-and-our-real-names-480.b85c1ada55.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-26-the-big-clean-up-and-our-real-names-960.427f83aa73.webp"
+      },
+      {
+        "w": 1280,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-26-the-big-clean-up-and-our-real-names-1280.d599e7436d.webp"
+      }
+    ],
+    "made": {
+      "model": "GPT Image 2.5 Sunburst",
+      "engine": "Runway API (gpt_image_2_5_sunburst), text to image with 4 reference pictures (three pale pictures of the series for the style, the last for the scene and the characters: series-19-tchou-tchou-how-our-pull-requests-catch-the-train-1280.dd3122c9f9.webp, series-24-how-we-stay-in-sync-1280.14bfb23999.webp, chapter-25-handover-1280.85cf40980e.webp, series-25-why-we-slowed-down-and-how-we-work-now-1280.bc867e6b08.webp); quality high, ratio 1920:1088; 2 takes, the best kept",
+      "machine": "Runway's hosted service, the company account",
+      "via": "Runway",
+      "prompt": "Use the first three reference pictures only for their style: a light, airy hand-drawn illustration on white paper, lots of unpainted white paper left around and inside the scene, soft pale transparent watercolor washes (pale blue, pale indigo, peach, light orange, cream), a light bright sky or none, delicate thin pen-and-ink linework of varying weight with some broken lines, gentle muted pastel colour, a few small touches of stronger colour only on the characters and one lamp. No dark night, no heavy saturated shadows, no photographic detail, no digital smoothness. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no clothes on the animals. Birds are small, drawn naturalistically with a few ink strokes. No people, no text, no letters, no numbers, no logos, no watermark. Hand-drawn ink and watercolor.\nThe last reference picture shows the place to keep (the same small snowy railway yard, the same station with lit windows, the same wooden footbridge, the same hills). Draw it on a clear pale winter morning after a tidy-up: beside the tracks, one long open wooden goods shed where identical small wooden crates stand in a single neat row on one shelf; a small handcart carries a heap of old mismatched crates away towards a little shed at the far edge of the yard; a broom leans against the goods shed. On the railing of the footbridge sits a small owl with soft violet-grey feathers and two ear tufts, a rolled paper plan of the yard beside it; on top of a freshly painted, completely blank wooden sign board stands a small blue-grey rock pigeon. Exactly two birds. Snow left as white paper.",
+      "size": "1920×1088",
+      "note": "Chapter 26 of the image series (cover): the yard of chapters 23 to 25 after a tidy-up, a row of identical crates in the goods shed, a handcart taking old crates away, the owl on the footbridge and the pigeon on a blank sign board. Take 1 of 2, picked after looking at all of them in full size. take 1: Runway task 89547665-c1ff-4e14-b93a-ff8384d8edc1, 9 credits; take 2: Runway task cd9c8ee6-fdd2-4046-8585-759bcf2c9939, 9 credits. Made outside a Sovkora Studio run; no person, no text, no logo."
+    },
+    "renditions": {
+      "avif": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-26-the-big-clean-up-and-our-real-names-480.08c9f172d5.avif"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-26-the-big-clean-up-and-our-real-names-768.2abdba5e5a.avif"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-26-the-big-clean-up-and-our-real-names-1200.54ba0d6cbc.avif"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-26-the-big-clean-up-and-our-real-names-1280.2e1a016b4c.avif"
+        }
+      ],
+      "webp": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-26-the-big-clean-up-and-our-real-names-480.109b3d7316.webp"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-26-the-big-clean-up-and-our-real-names-768.4d70487db4.webp"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-26-the-big-clean-up-and-our-real-names-1200.075028db9b.webp"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-26-the-big-clean-up-and-our-real-names-1280.a9febfd600.webp"
+        }
+      ]
+    }
+  },
+  "chapter-26-one-notebook": {
+    "kind": "image",
+    "width": 1280,
+    "height": 725,
+    "blur": "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAADwAQCdASoQAAkABABoJYwCdAD0YsnfymAA/rQPmIrmsJDaa70EXIlLMjvkrGZ5GIwOA2xdUGt1NqN27TJEBpHUlSTriRmC1kAAAA==",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-26-one-notebook-480.a317e0e9ed.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-26-one-notebook-960.f3c2480a50.webp"
+      },
+      {
+        "w": 1280,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-26-one-notebook-1280.3f2da59fcc.webp"
+      }
+    ],
+    "made": {
+      "model": "GPT Image 2.5 Sunburst",
+      "engine": "Runway API (gpt_image_2_5_sunburst), text to image with 4 reference pictures (three pale pictures of the series for the style, the last for the scene and the characters: series-19-tchou-tchou-how-our-pull-requests-catch-the-train-1280.dd3122c9f9.webp, series-24-how-we-stay-in-sync-1280.14bfb23999.webp, chapter-25-handover-1280.85cf40980e.webp, chapter-25-chouf-1280.8b6a4a194f.webp); quality high, ratio 1920:1088; 2 takes, the best kept",
+      "machine": "Runway's hosted service, the company account",
+      "via": "Runway",
+      "prompt": "Use the first three reference pictures only for their style: a light, airy hand-drawn illustration on white paper, lots of unpainted white paper left around and inside the scene, soft pale transparent watercolor washes (pale blue, pale indigo, peach, light orange, cream), a light bright sky or none, delicate thin pen-and-ink linework of varying weight with some broken lines, gentle muted pastel colour, a few small touches of stronger colour only on the characters and one lamp. No dark night, no heavy saturated shadows, no photographic detail, no digital smoothness. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no clothes on the animals. Birds are small, drawn naturalistically with a few ink strokes. No people, no text, no letters, no numbers, no logos, no watermark. Hand-drawn ink and watercolor.\nThe last reference picture shows the character and the place to keep (the same small orange-brown kestrel, the same snowy yard and station). Draw the inside of the small station master's office at the edge of that yard on a pale winter morning: on a plain wooden desk, one single open notebook with a pen beside it, its pages blank; from the notebook a few thin threads run out through the open window to the lamps of the yard, the signal lever and the points, as if one notebook lit them all. Outside the window, the small kestrel perched on a lamp post looks in. One bird only. Snow left as white paper.",
+      "size": "1920×1088",
+      "note": "Chapter 26, section « Une seule config » : one notebook on the station master's desk, its threads running to the lamps, the signal and the points of the yard; the kestrel of chapter 25 on a lamp post. Take 2 of 2, picked after looking at all of them in full size. take 1: Runway task abdcc982-fba7-41f6-bbb2-42e31321af1d, 9 credits; take 2: Runway task a24b48fc-32ee-4425-afcb-9f62520116b3, 9 credits. Made outside a Sovkora Studio run; no person, no text, no logo."
+    }
+  },
+  "chapter-26-new-signs": {
+    "kind": "image",
+    "width": 1280,
+    "height": 725,
+    "blur": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADQAQCdASoQAAkABABoJZwAAt1ulb8KAAD+9O5sRL/dMP/wdpOwvEBSdrzz8e+okgiZPcK72FdwDGHAAAA=",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-26-new-signs-480.bda18852ef.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-26-new-signs-960.f77f725c5b.webp"
+      },
+      {
+        "w": 1280,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/chapter-26-new-signs-1280.6de0605ca7.webp"
+      }
+    ],
+    "made": {
+      "model": "GPT Image 2.5 Sunburst",
+      "engine": "Runway API (gpt_image_2_5_sunburst), text to image with 4 reference pictures (three pale pictures of the series for the style, the last for the scene and the characters: series-19-tchou-tchou-how-our-pull-requests-catch-the-train-1280.dd3122c9f9.webp, series-24-how-we-stay-in-sync-1280.14bfb23999.webp, chapter-25-handover-1280.85cf40980e.webp, the picked cover of chapter 26); quality high, ratio 1920:1088; 2 takes, the best kept",
+      "machine": "Runway's hosted service, the company account",
+      "via": "Runway",
+      "prompt": "Use the first three reference pictures only for their style: a light, airy hand-drawn illustration on white paper, lots of unpainted white paper left around and inside the scene, soft pale transparent watercolor washes (pale blue, pale indigo, peach, light orange, cream), a light bright sky or none, delicate thin pen-and-ink linework of varying weight with some broken lines, gentle muted pastel colour, a few small touches of stronger colour only on the characters and one lamp. No dark night, no heavy saturated shadows, no photographic detail, no digital smoothness. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no clothes on the animals. Birds are small, drawn naturalistically with a few ink strokes. No people, no text, no letters, no numbers, no logos, no watermark. Hand-drawn ink and watercolor.\nThe last reference picture shows the place and the pigeon to keep (the same small snowy station, the same small blue-grey rock pigeon). Draw the platform of that station on a pale winter morning: the small pigeon, perched on the top of a short wooden ladder, paints a long wooden station sign board in a fresh pale colour with a small brush held in its beak; the sign board is completely blank. Beside the ladder, a few old weathered sign boards lean against the station wall, also completely blank, waiting to be taken away. One bird only. Snow left as white paper.",
+      "size": "1920×1088",
+      "note": "Chapter 26, section « Nos vrais noms » : the pigeon on a ladder repaints the station's sign board, old blank boards waiting beside it. Take 2 of 2, picked after looking at all of them in full size. take 1: Runway task 6597e552-144e-4b21-992c-91f2c5c4ce23, 9 credits; take 2: Runway task 19f53fed-132a-4fc1-8eae-8b0a12da86e5, 9 credits. Made outside a Sovkora Studio run; no person, no text, no logo."
+    }
   }
 }
