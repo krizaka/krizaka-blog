@@ -135,7 +135,7 @@ ADR-091 sets three rules:
 - **The right is in the query.** Every indexed passage carries the rights of its source. The filter is part of the search itself, before ranking. A passage you may not read is never read, so it cannot leak through a snippet, a count or a cache.
 - **Every tool declares its roles.** A tool that declares nothing is for administrators only. Without an identity, nothing runs.
 
-The fix is in progress ([orazaka-ai-engine#107](https://github.com/krizaka/orazaka-ai-engine/issues/107)), before we index anything sensitive. I will not go into more detail until it ships.
+The fix is in progress, before we index anything sensitive. I will not go into more detail until it ships.
 
 ## Packs, and the proof that the core stays generic
 
@@ -151,11 +151,11 @@ The same goes for media. There is no video module in the core. There is the medi
 
 That is the direction. Here is what the code says on 26 October. The audit and the counter-review found it, and I would rather write it here than let someone discover it.
 
-- **The core still imports Spring AI.** 52 engine files import it: 36 in the core, 14 in the interceptors, 2 in the tools (measured in ADR-092). An ArchUnit test will count those files, and the count will only be allowed to go down. No big bang: we move one slice at a time to the adapter module, down to zero ([orazaka-ai-engine#112](https://github.com/krizaka/orazaka-ai-engine/issues/112)).
+- **The core still imports Spring AI.** 52 engine files import it: 36 in the core, 14 in the interceptors, 2 in the tools (measured in ADR-092). An ArchUnit test will count those files, and the count will only be allowed to go down. No big bang: we move one slice at a time to the adapter module, down to zero.
 - **The core's `DagCompiler` is a stub.** Two task names written by hand, no executor, and nothing calls it. The real graph is the Studio's plan: it has its dependencies, its parallelism, its output contracts and its approval steps. The stub will be deleted.
-- **The control loop has a flaw.** On each new try, the interceptor checked the same text again instead of generating a new one, and after the last try it served the answer without it being validated. A fix is in progress ([orazaka-ai-engine#116](https://github.com/krizaka/orazaka-ai-engine/issues/116)). Typed verdicts, the drift score and escalation come next ([orazaka-ai-engine#114](https://github.com/krizaka/orazaka-ai-engine/issues/114)).
-- **The GPU lease does not exist yet.** Nothing calls `/api/ps` today, and nothing sets `keep_alive`. The worker manages its own memory, and that is all ([orazaka-ai-engine#113](https://github.com/krizaka/orazaka-ai-engine/issues/113)).
-- **Live steering is designed, not built** ([ADR-088](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-088-runs-as-background-tasks.md)). We can approve a step, resume from a step and cancel a whole run. Not yet cancel a single branch ([orazaka-studio#87](https://github.com/krizaka/orazaka-studio/issues/87)).
+- **The control loop has a flaw.** On each new try, the interceptor checked the same text again instead of generating a new one, and after the last try it served the answer without it being validated. The fix has been merged since ([sovkora-engine#117](https://github.com/krizaka/sovkora-engine/pull/117)). Typed verdicts, the drift score and escalation come next.
+- **The GPU lease does not exist yet.** Nothing calls `/api/ps` today, and nothing sets `keep_alive`. The worker manages its own memory, and that is all.
+- **Live steering is designed, not built** ([ADR-088](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-088-runs-as-background-tasks.md)). We can approve a step, resume from a step and cancel a whole run. Not yet cancel a single branch.
 - **The cache works per run, not per step.** An identical run is served from the cache. One changed step redoes the whole run.
 - **The access control of the previous section** is not finished.
 
@@ -167,7 +167,7 @@ And what it costs, measured:
 
 ## In incubation: Recipes
 
-One more idea, not built. It sits in incubation, at the top of the column ([.github#302](https://github.com/krizaka/.github/issues/302)).
+One more idea, not built. It sits in incubation, at the top of the column.
 
 When you type a good prompt in the chat, you lose it. The idea: keep it as a **recipe**. A recipe is private by default. The engine spots what changes from one time to the next (a document, a date, an amount, a name) and turns it into typed variables. You press ▶ Play, a short form asks for the document or the date, and the run starts.
 
@@ -185,9 +185,9 @@ Its goal stays the same: do the same work faster, for less, with outputs we can 
 
 1. **The boundary.** Spring AI in one adapter module, the domain in plain Java 21, the ArchUnit count at zero, the graph stub deleted.
 2. **The verdict.** First the test that reproduces the loop's flaw, then the typed verdicts, the judge, the K corrections with the diff, and escalation.
-3. **The GPU arbiter.** The lease per device, checked eviction, jobs grouped by model so we do not reload tens of gigabytes between two clips. The worker reports its memory and its loaded models ([orazaka-worker-media#83](https://github.com/krizaka/orazaka-worker-media/issues/83)).
+3. **The GPU arbiter.** The lease per device, checked eviction, jobs grouped by model so we do not reload tens of gigabytes between two clips. The worker reports its memory and its loaded models.
 4. **Steering.** Commands between two steps, typed edges, cancelling a single branch.
-5. **The per-step cache.** One key per step, computed from its inputs, so a change only redoes the branches it touches ([orazaka-studio#88](https://github.com/krizaka/orazaka-studio/issues/88)).
+5. **The per-step cache.** One key per step, computed from its inputs, so a change only redoes the branches it touches.
 
 The last three answer the measured pains directly. A warm GPU and the arbiter go after model loading. Steering, and events instead of re-reading state, go after waiting. The per-step cache goes after work redone for nothing.
 

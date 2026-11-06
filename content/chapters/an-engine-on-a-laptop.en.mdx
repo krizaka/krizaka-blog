@@ -45,7 +45,7 @@ Even without AI, a platform needs several things at once: a database, a message 
 
 My answer on 12 October was simple, almost dumb: a lock. Before a heavy task (a native build, a Docker stack, a generation), a session creates a `.heavy.lock` folder. If the folder already exists, it waits a minute and tries again. Like the single bathroom key in a café: one person at a time, the others wait. Everyone slows down a little, but nothing collapses any more.
 
-The Java services take their share too. Orazaka has up to eleven Spring Boot services. An open proposal ([orazaka#132](https://github.com/krizaka/orazaka/issues/132)) estimates 4 to 6 GB at rest for the lot, and suggests a single-JVM development profile. Those are estimates, not measurements, and it hasn't shipped.
+The Java services take their share too. Orazaka has up to eleven Spring Boot services. An open proposal estimates 4 to 6 GB at rest for the lot, and suggests a single-JVM development profile. Those are estimates, not measurements, and it hasn't shipped.
 
 ## Models become data
 

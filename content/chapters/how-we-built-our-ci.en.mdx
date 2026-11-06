@@ -154,7 +154,7 @@ On krizaka.com, the count of hand-written tables and forms shows it well. When t
 
 This is the habit that changed our way of working the most. When we find a bug, we ask whether it is alone, or part of a family. If it is a family, we write a rule that refuses it, with its tests.
 
-The first example comes from Akinaza. A privacy test checked that a webhook did not leak a client's phone number. It searched the payload for « 514 ». But that payload holds random ids, and about one time in ten, a UUID contains « 514 ». The test failed at random. We saw it in [akinaza#341](https://github.com/krizaka/akinaza/issues/341): five failures in a single CI run, which passed when run again.
+The first example comes from Akinaza. A privacy test checked that a webhook did not leak a client's phone number. It searched the payload for « 514 ». But that payload holds random ids, and about one time in ten, a UUID contains « 514 ». The test failed at random. We saw it in Akinaza: five failures in a single CI run, which passed when run again.
 
 We could have run it again and moved on. We wrote `rules/no-bare-digits-on-serialized.yml`:
 
@@ -182,7 +182,7 @@ invalid:
 
 The first case passes: the pattern looks for words, not a run of digits. The second is refused.
 
-A few days later, the same mistake came back in another form: a test looked for « 4821 » in an encrypted text, and an encrypted text is random bytes too. The issue [akinaza#358](https://github.com/krizaka/akinaza/issues/358) says: fix the class, not the instance. The tests now check the whole plain text, and a second rule, `no-bare-digits-on-random-bytes`, refuses the pattern.
+A few days later, the same mistake came back in another form: a test looked for « 4821 » in an encrypted text, and an encrypted text is random bytes too. The issue for it says: fix the class, not the instance. The tests now check the whole plain text, and a second rule, `no-bare-digits-on-random-bytes`, refuses the pattern.
 
 <Compare label="Three bugs, three rules" topic="Repository" before="The bug" after="The rule">
   <Case topic="akinaza" before="« 514 » found by chance in a UUID." after="no-bare-digits-on-serialized" afterDetail="An ast-grep rule, with its valid and refused cases." />
@@ -219,7 +219,7 @@ A fixed bug is one bug less. A rule is its whole family less, in every repositor
 
 For the web, this was already in place. For mobile, until this week, an agent opened the emulator and checked by hand. That cost a model session every time, and proved nothing the next day.
 
-The issue [krizaka/.github#241](https://github.com/krizaka/.github/issues/241) changed that. The `mobile-e2e.yml` workflow runs everything in GitHub Actions:
+One issue changed that. The `mobile-e2e.yml` workflow runs everything in GitHub Actions:
 
 <Pipeline label="A mobile test in CI (Yomizaka, Akinaza)">
   <Stage title="Throwaway backend" note="a fresh PostgreSQL">An empty PostgreSQL database and the built web app, on the CI machine. Nothing leaves the machine.</Stage>
@@ -316,7 +316,7 @@ Branch protection decides when the PR is merged. Not the agent, and not me click
 
 A major update stays manual.
 
-**An unstable test is a bug.** We do not run it again blindly. The issue [yomizaka#354](https://github.com/krizaka/yomizaka/issues/354), a browser test racing a page transition, says it plainly: start with a test that fails every time, by repeating it twenty times locally, and never make the check optional or retry it blindly. It is the same idea as the rules above: we fix the family.
+**An unstable test is a bug.** We do not run it again blindly. The issue about a browser test racing a page transition says it plainly: start with a test that fails every time, by repeating it twenty times locally, and never make the check optional or retry it blindly. It is the same idea as the rules above: we fix the family.
 
 **An agent does not watch the CI run.** Waiting for a CI run to finish is, for an agent, a model session running for nothing. GitHub knows how to wait, for free. The agent pushes, arms the merge, and stops. If the CI fails, we read the report and the captures the workflow kept. Nobody opens an emulator to check by hand.
 
@@ -327,7 +327,7 @@ We also stopped using Copilot's coding agent, after a cost spike. I give no figu
 I got this wrong in the first version of this chapter: I drew a queue, verify, container, Sonar, CodeQL. It was not true. verify and container ran at the same time, and so did CodeQL and SonarCloud. Here is what I changed, and why.
 
 - **CodeQL stayed in parallel, and required.** It reads the source. It needs neither the build nor the tests, so it gives the fastest answer. Putting it behind verify would have made it wait for nothing. The only thing to do was to check that it is required: it is, by a rule, in Akinaza, Orazaka and Yomizaka.
-- **Sonar moved into the pipeline, after the tests.** It is the only way to read coverage: automatic analysis cannot import it, so the « 80 % on new code » condition was never evaluated. The `sonar` job waits for verify, takes the coverage reports from the tests, and we wait for SonarCloud's verdict. It is the issue [krizaka/.github#237](https://github.com/krizaka/.github/issues/237). It runs on krizaka.com, Akinaza and Yomizaka. For each repository I switched automatic analysis off (the two cannot run together), then re-ran the CI at once, ready to switch it back on if the CI was red. It was green, and all three stayed. The other repositories will follow one by one. Orazaka first needs Java coverage added to the shared parent.
+- **Sonar moved into the pipeline, after the tests.** It is the only way to read coverage: automatic analysis cannot import it, so the « 80 % on new code » condition was never evaluated. The `sonar` job waits for verify, takes the coverage reports from the tests, and we wait for SonarCloud's verdict. It is the issue we opened for it. It runs on krizaka.com, Akinaza and Yomizaka. For each repository I switched automatic analysis off (the two cannot run together), then re-ran the CI at once, ready to switch it back on if the CI was red. It was green, and all three stayed. The other repositories will follow one by one. Orazaka first needs Java coverage added to the shared parent.
 - **The image waits for verify, and it is scanned.** Before, it was built even when lint failed, which cost time for nothing. Now it comes after verify. Trivy looks for vulnerabilities and the job fails on a fixable high or critical finding; an accepted exception is written in a file, with its reason and an end date. An SBOM is kept on every run.
 - **Images are published only from main, after the merge.** That did not change: a PR's image is never published, and the deploy builds from the `production` branch. Only code that passed every required check ships.
 
@@ -339,7 +339,7 @@ The [krizaka/.github](https://github.com/krizaka/.github) repository also has it
 
 There are still holes, and I would rather name them.
 
-**Coverage does not reach SonarCloud everywhere yet.** It does for krizaka.com, Akinaza and Yomizaka. The other repositories, Orazaka included, keep automatic analysis, which reads the code but not our tests. The 80 % coverage threshold on new code is still to be required, after a week in the green ([krizaka/.github#237](https://github.com/krizaka/.github/issues/237)).
+**Coverage does not reach SonarCloud everywhere yet.** It does for krizaka.com, Akinaza and Yomizaka. The other repositories, Orazaka included, keep automatic analysis, which reads the code but not our tests. The 80 % coverage threshold on new code is still to be required, after a week in the green.
 
 **The iOS test has not started.** The mobile workflow only does Android. iOS is one line in its header, nothing more.
 

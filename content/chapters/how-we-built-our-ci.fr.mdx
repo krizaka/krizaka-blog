@@ -154,7 +154,7 @@ Sur krizaka.com, le compte des tableaux et formulaires écrits à la main le mon
 
 C'est l'habitude qui a le plus changé notre façon de travailler. Quand on trouve un bug, on se demande s'il est seul, ou s'il fait partie d'une famille. Si c'est une famille, on écrit une règle qui la refuse, avec ses tests.
 
-Le premier exemple vient d'Akinaza. Un test de confidentialité vérifiait qu'un webhook ne laissait pas fuir le numéro de téléphone d'un client. Il cherchait « 514 » dans le contenu envoyé. Mais ce contenu contient des identifiants aléatoires, et environ une fois sur dix, un UUID contient « 514 ». Le test échouait au hasard. On l'a vu dans [akinaza#341](https://github.com/krizaka/akinaza/issues/341) : cinq échecs dans un seul passage de CI, qui passaient en le relançant.
+Le premier exemple vient d'Akinaza. Un test de confidentialité vérifiait qu'un webhook ne laissait pas fuir le numéro de téléphone d'un client. Il cherchait « 514 » dans le contenu envoyé. Mais ce contenu contient des identifiants aléatoires, et environ une fois sur dix, un UUID contient « 514 ». Le test échouait au hasard. On l'a vu dans Akinaza : cinq échecs dans un seul passage de CI, qui passaient en le relançant.
 
 On aurait pu relancer et passer à autre chose. On a écrit `rules/no-bare-digits-on-serialized.yml` :
 
@@ -182,7 +182,7 @@ invalid:
 
 Le premier cas passe : le motif cherche des mots, pas une suite de chiffres. Le second est refusé.
 
-Quelques jours plus tard, la même erreur est revenue sous une autre forme : un test cherchait « 4821 » dans un texte chiffré, et un texte chiffré, c'est aussi des octets au hasard. Le ticket [akinaza#358](https://github.com/krizaka/akinaza/issues/358) dit : corriger la famille, pas le cas. Les tests vérifient maintenant le texte en clair en entier, et une deuxième règle, `no-bare-digits-on-random-bytes`, refuse le motif.
+Quelques jours plus tard, la même erreur est revenue sous une autre forme : un test cherchait « 4821 » dans un texte chiffré, et un texte chiffré, c'est aussi des octets au hasard. Le ticket correspondant dit : corriger la famille, pas le cas. Les tests vérifient maintenant le texte en clair en entier, et une deuxième règle, `no-bare-digits-on-random-bytes`, refuse le motif.
 
 <Compare label="Trois bugs, trois règles" topic="Dépôt" before="Le bug" after="La règle">
   <Case topic="akinaza" before="« 514 » trouvé au hasard dans un UUID." after="no-bare-digits-on-serialized" afterDetail="Une règle ast-grep, avec ses cas valides et refusés." />
@@ -219,7 +219,7 @@ Un bug corrigé, c'est un bug de moins. Une règle, c'est toute sa famille de mo
 
 Pour le web, c'était déjà en place. Pour le mobile, jusqu'à cette semaine, un agent ouvrait l'émulateur et vérifiait à la main. Ça coûtait une session de modèle à chaque fois, et ça ne prouvait rien le lendemain.
 
-Le ticket [krizaka/.github#241](https://github.com/krizaka/.github/issues/241) a changé ça. Le workflow `mobile-e2e.yml` fait tout tourner dans GitHub Actions :
+Un ticket a changé ça. Le workflow `mobile-e2e.yml` fait tout tourner dans GitHub Actions :
 
 <Pipeline label="Un test mobile dans la CI (Yomizaka, Akinaza)">
   <Stage title="Backend jetable" note="PostgreSQL neuf">Une base PostgreSQL vide et l'application web construite, sur la machine de CI. Rien ne sort de la machine.</Stage>
@@ -316,7 +316,7 @@ C'est la protection de branche qui décide quand la PR est fusionnée. Pas l'age
 
 Une mise à jour majeure reste à la main.
 
-**Un test instable est un bug.** On ne relance pas à l'aveugle. Le ticket [yomizaka#354](https://github.com/krizaka/yomizaka/issues/354), un test du navigateur qui faisait la course avec une transition de page, le dit en toutes lettres : commencer par un test qui échoue à coup sûr, en le répétant vingt fois en local, et ne jamais rendre la vérification optionnelle ni la relancer à l'aveugle. C'est la même idée que les règles plus haut : on corrige la famille.
+**Un test instable est un bug.** On ne relance pas à l'aveugle. Le ticket sur un test du navigateur qui faisait la course avec une transition de page le dit en toutes lettres : commencer par un test qui échoue à coup sûr, en le répétant vingt fois en local, et ne jamais rendre la vérification optionnelle ni la relancer à l'aveugle. C'est la même idée que les règles plus haut : on corrige la famille.
 
 **Un agent ne regarde pas la CI tourner.** Attendre qu'un passage de CI finisse, pour un agent, c'est une session de modèle qui tourne pour rien. GitHub sait attendre, gratuitement. L'agent pousse, arme la fusion, et s'arrête. Si la CI échoue, on lit le rapport et les captures gardées par le workflow. Personne n'ouvre un émulateur pour vérifier à la main.
 
@@ -327,7 +327,7 @@ On a aussi arrêté d'utiliser l'agent de code de Copilot, après un pic de coû
 Je me suis trompé dans la première version de ce chapitre : je dessinais une file, verify, container, Sonar, CodeQL. Ce n'était pas vrai. verify et container tournaient en même temps, CodeQL et SonarCloud aussi. Voici ce que j'ai changé, et pourquoi.
 
 - **CodeQL est resté en parallèle, et exigé.** Il lit le code source. Il n'a besoin ni du build ni des tests, donc c'est lui qui répond le plus vite. Le mettre derrière verify l'aurait fait attendre pour rien. La seule chose à faire a été de vérifier qu'il est bien exigé : c'est le cas, par une règle, dans Akinaza, Orazaka et Yomizaka.
-- **Sonar est entré dans le pipeline, après les tests.** C'est la seule façon de lire la couverture : l'analyse automatique ne sait pas l'importer, donc la condition « 80 % sur le nouveau code » n'était jamais évaluée. Le job `sonar` attend verify, reprend les rapports de couverture des tests, et on attend le verdict de SonarCloud. C'est le ticket [krizaka/.github#237](https://github.com/krizaka/.github/issues/237). Il tourne sur krizaka.com, Akinaza et Yomizaka. Pour chaque dépôt, j'ai coupé l'analyse automatique (les deux ne peuvent pas tourner ensemble) puis relancé la CI aussitôt, prêt à la remettre si la CI était rouge. Elle a été verte, et les trois sont passés. Les autres dépôts suivront un par un. Orazaka demande d'abord d'ajouter la couverture Java au parent commun.
+- **Sonar est entré dans le pipeline, après les tests.** C'est la seule façon de lire la couverture : l'analyse automatique ne sait pas l'importer, donc la condition « 80 % sur le nouveau code » n'était jamais évaluée. Le job `sonar` attend verify, reprend les rapports de couverture des tests, et on attend le verdict de SonarCloud. C'est le ticket qu'on a ouvert pour ça. Il tourne sur krizaka.com, Akinaza et Yomizaka. Pour chaque dépôt, j'ai coupé l'analyse automatique (les deux ne peuvent pas tourner ensemble) puis relancé la CI aussitôt, prêt à la remettre si la CI était rouge. Elle a été verte, et les trois sont passés. Les autres dépôts suivront un par un. Orazaka demande d'abord d'ajouter la couverture Java au parent commun.
 - **L'image attend verify, et elle est analysée.** Avant, elle était construite même quand le lint échouait, ce qui coûtait du temps pour rien. Maintenant elle passe après verify. Trivy y cherche les vulnérabilités et le job échoue sur une faille corrigeable de niveau élevé ou critique ; une exception acceptée s'écrit dans un fichier, avec sa raison et une date de fin. Un SBOM est gardé à chaque passage.
 - **Les images ne sont publiées que depuis main, après la fusion.** Ça n'a pas changé : l'image d'une PR n'est jamais publiée, et le déploiement construit depuis la branche `production`. Seul du code qui a passé toutes les vérifications exigées part en ligne.
 
@@ -339,7 +339,7 @@ Le dépôt [krizaka/.github](https://github.com/krizaka/.github) a aussi son pro
 
 Il reste des trous, et je préfère les nommer.
 
-**La couverture n'arrive pas encore partout à SonarCloud.** Elle y arrive pour krizaka.com, Akinaza et Yomizaka. Les autres dépôts, Orazaka compris, gardent l'analyse automatique, qui lit le code mais pas nos tests. Le seuil de 80 % de couverture sur le nouveau code reste à exiger, après une semaine au vert ([krizaka/.github#237](https://github.com/krizaka/.github/issues/237)).
+**La couverture n'arrive pas encore partout à SonarCloud.** Elle y arrive pour krizaka.com, Akinaza et Yomizaka. Les autres dépôts, Orazaka compris, gardent l'analyse automatique, qui lit le code mais pas nos tests. Le seuil de 80 % de couverture sur le nouveau code reste à exiger, après une semaine au vert.
 
 **Le test iOS n'est pas commencé.** Le workflow mobile ne fait qu'Android. iOS est une ligne dans son en-tête, rien de plus.
 

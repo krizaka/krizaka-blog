@@ -97,7 +97,7 @@ This is the part I am least proud of, and the one that taught me most.
 
 When we add a rule, we think we put it everywhere. In reality it reaches a few repositories and we move on to the next one. The blog you are reading proves it: it had its own CI and its own Sonar, but no security scan, because the new guards had never reached it.
 
-The decision was simple. Every rule of the organisation is declared once, in a registry, with the check that proves a repository follows it. A matrix of repositories by rules runs every week and in the three-hour checkpoint. A script opens the fix in every red repository. And a rule is done only when its column is green everywhere, no exceptions ([.github#393](https://github.com/krizaka/.github/issues/393)).
+The decision was simple. Every rule of the organisation is declared once, in a registry, with the check that proves a repository follows it. A matrix of repositories by rules runs every week and in the three-hour checkpoint. A script opens the fix in every red repository. And a rule is done only when its column is green everywhere, no exceptions.
 
 The first run of the matrix, over 36 active repositories: 155 green cells, 150 red. Tonight, running it again on the main branch of the `.github` repository, I read 198 green and 112 red. It is not finished, and I will not make it look better than it is. The edit-hook rule, for example, is still red in all 36 repositories, because it is not in place yet.
 

@@ -112,7 +112,7 @@ Yomizaka's Mac app, built the same way, does have one. [`desktop-journey.mjs`](h
   caption="Mac (Yomizaka). The journey opens the library, enters a demo folder, checks a demo lease and follows the reading steps, then relaunches the app. What you see: the installed app reading a lease from a local folder, driven by the test."
 />
 
-How it is set up, in four short excerpts copied from the repositories as they are on `main` ([akinaza at 3b8edca](https://github.com/krizaka/akinaza/tree/3b8edcaf/apps/mobile/.maestro), [yomizaka at 17753f7](https://github.com/krizaka/yomizaka/tree/17753f7b)). The Mac excerpt is Yomizaka's: since I wrote the lines above, its Mac app has its first journey ([yomizaka#636](https://github.com/krizaka/yomizaka/issues/636)), driven through WebDriver. Akinaza's does not yet.
+How it is set up, in four short excerpts copied from the repositories as they are on `main` ([akinaza at 3b8edca](https://github.com/krizaka/akinaza/tree/3b8edcaf/apps/mobile/.maestro), [yomizaka at 17753f7](https://github.com/krizaka/yomizaka/tree/17753f7b)). The Mac excerpt is Yomizaka's: since I wrote the lines above, its Mac app has its first journey, driven through WebDriver. Akinaza's does not yet.
 
 <Plate label="How the tests are set up. Maestro: the flow of the day, whose visit is booked by the CI so it never depends on the clock, and the shared launch, retried while a slow emulator settles. Playwright: the journeys' config, which refuses any retry of a test. Mac: the debug build with its WebDriver, then the journey.">
 
@@ -201,7 +201,7 @@ export default defineConfig(config);
 
 ## Videos that come out of the tests
 
-The download pages of our products show videos of the apps, and a video filmed by hand gets old with the next version. So the tests film them ([krizaka/.github#315](https://github.com/krizaka/.github/issues/315), the ["app videos" rule](https://github.com/krizaka/.github/blob/main/docs/standards/app-videos.md)). One journey serves twice: to prove, and to show.
+The download pages of our products show videos of the apps, and a video filmed by hand gets old with the next version. So the tests film them (the ["app videos" rule](https://github.com/krizaka/.github/blob/main/docs/standards/app-videos.md)). One journey serves twice: to prove, and to show.
 
 On the web, [`showcase-web.mjs`](https://github.com/krizaka/akinaza/blob/main/apps/web/scripts/showcase-web.mjs) records with Playwright. Sign-in happens off camera, so nothing typed is filmed, with the demo character, and the "development version" banner stays visible. On the phone, it is Maestro's `startRecording` and `stopRecording` commands in [`.maestro-showcase`](https://github.com/krizaka/akinaza/tree/main/apps/mobile/.maestro-showcase).
 
@@ -263,7 +263,7 @@ What comes from the repositories today:
 And what is missing:
 
 - The ADR sets 15 minutes for a PR's CI. Akinaza is between 23 and 28. We are not there.
-- I have no flake rate before and after. The indicator is planned ([krizaka/.github#357](https://github.com/krizaka/.github/issues/357)), it is not there yet. I prefer to give no figure than to invent one.
+- I have no flake rate before and after. The indicator is planned, it is not there yet. I prefer to give no figure than to invent one.
 - No iOS in CI, no journey on the Mac, Maestro's three-attempt rerun, no journey catalogue for Akinaza, and no Akinaza video published through this path.
 
 What I take from it: journeys cost more than a unit test, and they are the only ones that answer my opening question. The rest is discipline: zero reruns, a clock we control, and a guard for every failure.
