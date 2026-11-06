@@ -36,7 +36,7 @@ Those internal settings are called parameters. Qwen 2.5 7B has 7.6 billion of th
 
 Stored in 16 bits, 7.6 billion numbers weigh about 15 GB. The version I use is quantized (Q4_K_M): each number is rounded to fit in a little over 4 bits, and the file drops to 4.7 GB. It's the difference between a photo in RAW and the same photo in JPEG. You lose a little detail, you gain a lot of room.
 
-You also need memory for the context, on top of the model. On my 64 GB Mac, a quantized 7-billion-parameter model fits without trouble. A video model doesn't, and I learned that the hard way in [the post about the Mac](/story/an-engine-on-a-laptop/). In [Orazaka](https://www.orazaka.com/docs/models), the engine I'm building, each model is a row in a database, with its size and where it runs.
+You also need memory for the context, on top of the model. On my 64 GB Mac, a quantized 7-billion-parameter model fits without trouble. A video model doesn't, and I learned that the hard way in [the post about the Mac](/story/an-engine-on-a-laptop/). In [Orazaka](https://dev.sovkora.com/docs/models), the engine I'm building, each model is a row in a database, with its size and where it runs.
 
 ## Embeddings and RAG: a library shelved by meaning
 
@@ -54,7 +54,7 @@ A model can do nothing but produce text. It can't read a file, search the web or
 
 It's a chef who never leaves the stove. He asks the kitchen help to fetch the saffron from the store room, and keeps stirring his sauce.
 
-In Orazaka, tools are attached to each turn of a conversation, and only the ones that turn needs. The search tool, for example, queries the sources the knowledge service holds for the signed-in person. The list is [in the documentation](https://www.orazaka.com/docs/tools), generated from the code.
+In Orazaka, tools are attached to each turn of a conversation, and only the ones that turn needs. The search tool, for example, queries the sources the knowledge service holds for the signed-in person. The list is [in the documentation](https://dev.sovkora.com/docs/tools), generated from the code.
 
 ## MCP: a standard socket for tools
 
