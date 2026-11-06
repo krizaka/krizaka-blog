@@ -6,9 +6,12 @@ seoDescription: "Une compagnie d'agents rangée en une journée : 1,1 To de clon
 date: 2026-11-06
 tags: [ai, integration]
 author: oussama
-draft: true
+publishedAt: "2026-11-06T13:00:00-05:00"
+draft: false
 sensitive: true
 chapter: 26
+cover: series-26-the-big-clean-up-and-our-real-names
+coverAlt: "La petite gare de triage enneigée par un matin d'hiver clair, à l'encre et à l'aquarelle légère : un hangar à marchandises où de petites caisses identiques sont alignées sur une seule étagère, une charrette à bras qui emporte un tas de vieilles caisses dépareillées vers une cabane au bout de la cour, un balai contre le hangar, le petit hibou gris-violet sur la passerelle avec son plan roulé, et un petit pigeon sur un panneau de bois fraîchement peint, encore vierge"
 period: "2026-11-06"
 sources:
   - from-vibe-coding-to-agentic-engineering
@@ -161,6 +164,12 @@ Le HQ a aussi un fichier qui dit à chaque session qui elle est et où elle trav
 
 Le deuxième problème, c'était les chemins écrits en dur. Déplacer un dossier voulait dire corriger des dizaines de scripts, et en oublier toujours un.
 
+<Figure
+  id="chapter-26-one-notebook"
+  alt="Dans le petit bureau du chef de gare, à l'encre et à l'aquarelle pâle : un seul cahier ouvert sur une table en bois, un stylo à côté, et de fins fils lumineux qui partent du cahier par la fenêtre vers les lampadaires, le signal et l'aiguillage de la gare enneigée ; dehors, une petite crécerelle perchée sur un lampadaire regarde à l'intérieur"
+  caption="Un seul cahier, et tout ce qui s'allume dans la gare le lit. C'est notre config locale."
+/>
+
 Maintenant, chaque valeur que deux outils ou plus partagent vit dans un seul fichier, `krizaka.config.json`, à la racine du HQ : les dossiers, l'organisation GitHub, les numéros du tableau, le port du cockpit, les identifiants de nos applications GitHub, le modèle à utiliser par tâche, les limites du train. Ce fichier est local. Il n'est jamais commité, parce que la compagnie ne va jamais sur GitHub. Le dépôt de nos outils ne garde que le lecteur, un schéma, et un exemple rempli de valeurs factices, dont voici un extrait :
 
 ```json
@@ -288,6 +297,12 @@ Chaque dépôt a aussi reçu une description d'une phrase, le nom commercial en 
     afterDetail="78 labels, les équipes GitHub et les voies des agents ont suivi."
   />
 </Compare>
+
+<Figure
+  id="chapter-26-new-signs"
+  alt="Sur le quai enneigé de la petite gare, à l'encre et à l'aquarelle pâle : un petit pigeon gris-bleu perché en haut d'un escabeau en bois repeint au pinceau un long panneau de gare encore vierge ; à côté, de vieux panneaux usés, vierges eux aussi, sont appuyés contre le mur près d'un pot de peinture"
+  caption="Le pigeon repeint le panneau de la gare. Les anciens attendent à côté, le temps de vérifier que plus personne ne les lit."
+/>
 
 Certains noms ne peuvent pas changer. Ils sont tous dans une seule table, avec la raison :
 

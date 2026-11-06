@@ -6,9 +6,12 @@ seoDescription: "An agent company tidied in one day: 1.1 TB of clones, one folde
 date: 2026-11-06
 tags: [ai, integration]
 author: oussama
-draft: true
+publishedAt: "2026-11-06T13:00:00-05:00"
+draft: false
 sensitive: true
 chapter: 26
+cover: series-26-the-big-clean-up-and-our-real-names
+coverAlt: "The small snowy railway yard on a clear winter morning, in light ink and watercolor: a goods shed where small identical crates stand in a row on one shelf, a handcart taking a heap of old mismatched crates to a little shed at the edge of the yard, a broom against the shed, the small violet-grey owl on the footbridge with its rolled plan, and a small pigeon on a freshly painted wooden sign board, still blank"
 period: "2026-11-06"
 sources:
   - from-vibe-coding-to-agentic-engineering
@@ -161,6 +164,12 @@ The HQ also has a file that tells every session who it is and where it works. Th
 
 The second problem was the paths typed by hand. Moving a folder meant fixing dozens of scripts, and always forgetting one.
 
+<Figure
+  id="chapter-26-one-notebook"
+  alt="In the small station master's office, in pale ink and watercolor: one single notebook open on a wooden desk, a pen beside it, and thin glowing threads running from the notebook through the window to the lamps, the signal and the points of the snowy station; outside, a small kestrel perched on a lamp post looks in"
+  caption="One notebook, and everything that lights up in the station reads it. That is our local config."
+/>
+
 Now every value that two tools or more share lives in one file, `krizaka.config.json`, at the root of the HQ: the folders, the GitHub organisation, the numbers of the board, the cockpit's port, the ids of our GitHub apps, the model to use per task, the train's limits. This file is local. It is never committed, because the company never goes to GitHub. The repository of our tools keeps only the reader, a schema, and an example filled with placeholders, of which here is an excerpt:
 
 ```json
@@ -288,6 +297,12 @@ Every repository also got a one-sentence description, the commercial name first,
     afterDetail="78 labels, the GitHub teams and the agents' lanes followed."
   />
 </Compare>
+
+<Figure
+  id="chapter-26-new-signs"
+  alt="On the snowy platform of the small station, in pale ink and watercolor: a small blue-grey pigeon at the top of a wooden stepladder repaints a long station sign board, still blank, with a brush; beside it, old weathered boards, blank too, lean against the wall near a paint pot"
+  caption="The pigeon repaints the station's sign. The old ones wait beside it, until we have checked that nobody reads them any more."
+/>
 
 Some names cannot change. They are all in one table, with the reason:
 

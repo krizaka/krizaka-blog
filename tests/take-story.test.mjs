@@ -21,7 +21,10 @@ const LOCAL_FREE = {
 /* The covers redrawn with GPT Image 2.5 Sunburst through Runway (content/image-series/runway.json: prompt, references, takes, credits). */
 const RUNWAY = JSON.parse(readFileSync(new URL("../content/image-series/runway.json", import.meta.url), "utf8")).images;
 /* The covers drawn with GPT Image 2.5 Sunburst through Runway whose note names the Runway task. */
-const RUNWAY_TASK = new Set(["series-25-why-we-slowed-down-and-how-we-work-now"]);
+const RUNWAY_TASK = new Set([
+  "series-25-why-we-slowed-down-and-how-we-work-now",
+  "series-26-the-big-clean-up-and-our-real-names",
+]);
 export function coverProvenance(id, made) {
   if (!made || typeof made.note !== "string") return false;
   if (

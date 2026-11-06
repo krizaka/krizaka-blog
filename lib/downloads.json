@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "afbea6494ff8",
+      "source": "3d417351275e",
       "files": {
         "epub": {
-          "hash": "747235438d",
-          "bytes": 7135691
+          "hash": "2f116e6c91",
+          "bytes": 7615720
         },
         "pdf": {
-          "hash": "71ee2be7dd",
-          "bytes": 9984650
+          "hash": "cc466c7567",
+          "bytes": 10628529
         }
       }
     },
@@ -287,15 +287,15 @@
       }
     },
     "fr/story": {
-      "source": "c5b28ec673a4",
+      "source": "e8ec12b54afa",
       "files": {
         "epub": {
-          "hash": "8bf55704f7",
-          "bytes": 7158305
+          "hash": "ec3559aa02",
+          "bytes": 7639194
         },
         "pdf": {
-          "hash": "d382549d57",
-          "bytes": 10151859
+          "hash": "a705d02797",
+          "bytes": 10803376
         }
       }
     },
@@ -673,6 +673,32 @@
         "pdf": {
           "hash": "c4863bd168",
           "bytes": 1341147
+        }
+      }
+    },
+    "en/the-big-clean-up-and-our-real-names": {
+      "source": "bf34a82b4d09",
+      "files": {
+        "epub": {
+          "hash": "0caf575fbd",
+          "bytes": 1061439
+        },
+        "pdf": {
+          "hash": "380e3a5e1c",
+          "bytes": 1352882
+        }
+      }
+    },
+    "fr/the-big-clean-up-and-our-real-names": {
+      "source": "3ddbdfbcc24c",
+      "files": {
+        "epub": {
+          "hash": "ba78bae156",
+          "bytes": 1063651
+        },
+        "pdf": {
+          "hash": "ddcccd5d9c",
+          "bytes": 1380093
         }
       }
     }
