@@ -125,3 +125,10 @@ test("the redrawn pictures carry their Runway provenance: prompt, references, ta
     assert.equal(media[id].made.prompt, spec.prompt, `${id}: the entry carries the prompt`);
   }
 });
+
+test("lib/media.json names no cover or chapter picture outside the series' look (a redraw that never reached main slipped once)", () => {
+  for (const [id, entry] of Object.entries(media)) {
+    if (!/^(series|chapter)-/.test(id) || FLAGGED.has(id)) continue;
+    assert.match(said(entry), WATERCOLOR, `${id} is in media.json but neither ink and watercolor nor in flagged.json`);
+  }
+});
