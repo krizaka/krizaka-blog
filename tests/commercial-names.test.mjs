@@ -14,6 +14,6 @@ for (const lang of ["en", "fr"]) {
     );
     assert.equal(m.tags.names.orazaka, "Sovkora");
     assert.equal(m.tags.names.yomizaka, "Verikora");
-    assert.match(m.series.names["building-sovkora"], /Sovkora/);
+    assert.match(m.series.names["building-orazaka"], /Sovkora/);
   });
 }
