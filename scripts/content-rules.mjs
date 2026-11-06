@@ -150,7 +150,7 @@ function frontMatterProblems(file, data) {
   return out;
 }
 
-/** The same picture under another id counts too: the same Orazaka run, or the same file stem on the CDN. */
+/** The same picture under another id counts too: the same Sovkora run, or the same file stem on the CDN. */
 const stemOf = (u) =>
   u
     .split("/")
@@ -296,7 +296,7 @@ export function homeCoverProblems(posts, media) {
     const diagrams = first.filter((p) => media[p.cover]?.style === "diagram");
     if (diagrams.length > HOME_DIAGRAM_COVERS_MAX)
       out.push(
-        `home (${locale}): ${diagrams.length} of the first ${HOME_CARDS} cards have a diagram as cover (${diagrams.map((p) => p.slug).join(", ")}) — at most ${HOME_DIAGRAM_COVERS_MAX}: give a post an evocative picture or clip (an Orazaka run) and keep its diagram in the text`,
+        `home (${locale}): ${diagrams.length} of the first ${HOME_CARDS} cards have a diagram as cover (${diagrams.map((p) => p.slug).join(", ")}) — at most ${HOME_DIAGRAM_COVERS_MAX}: give a post an evocative picture or clip (a Sovkora run) and keep its diagram in the text`,
       );
   }
   return out;
@@ -404,7 +404,7 @@ export function chapterProblems(file, data, body, ctx, postSlugs) {
   if (data.draft === true && !data.cover)
     out.push(
       `${file}: a chapter needs a "cover", even as a draft (the build's meta check renders drafts): render it with ` +
-        `python3 scripts/render-image-series.py --worker <orazaka-worker-media> --anchor <brand picture> --out <name> --only <chapter> ` +
+        `python3 scripts/render-image-series.py --worker <sovkora-worker-media> --anchor <brand picture> --out <name> --only <chapter> ` +
         `(docs/image-series.md), make its renditions with scripts/prepare-series-covers.mjs, then set "cover" and "coverAlt"`,
     );
   else if (data.draft === true && blank(data.coverAlt))
@@ -537,7 +537,7 @@ export function attributeQuoteProblems(text, file) {
    entries of krizaka/.github's repos.json, the org's single source: a repository made private is added here. */
 export const PRIVATE_REPOS = [
   "cla-signatures",
-  "kachizaka",
+  "kridoc",
   "krizaka-agents",
   "krizaka-coming-soon",
   "krizaka-infra",

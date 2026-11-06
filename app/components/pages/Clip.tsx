@@ -3,7 +3,7 @@ import { mediaOf } from "@/lib/media";
 import { ClipPlayer } from "./ClipPlayer";
 import { Provenance } from "./Provenance";
 
-/* A clip of a post, from the library: the light player, then how it was made. The sound (a music bed Orazaka made) is on the
+/* A clip of a post, from the library: the light player, then how it was made. The sound (a music bed Sovkora made) is on the
    file; the player starts muted. */
 export function Clip({
   id,

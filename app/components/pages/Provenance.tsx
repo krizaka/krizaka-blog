@@ -1,11 +1,11 @@
 import { format, getDictionary, type Locale } from "@/lib/i18n";
 import type { Made } from "@/lib/media";
 
-/* « How this was made »: what the run recorded about a result — model, prompt, seed, machine, time, cost, Orazaka run id.
+/* « How this was made »: what the run recorded about a result — model, prompt, seed, machine, time, cost, Sovkora run id.
    Only recorded fields are shown; an absent one says so instead of being filled in. */
 type Words = ReturnType<typeof getDictionary>["media"];
 
-/** The time row: the run's own time; « the run was interrupted » only for a run; a picture made outside Orazaka has no recorded time. */
+/** The time row: the run's own time; « the run was interrupted » only for a run; a picture made outside Sovkora has no recorded time. */
 function timeOf(made: Made, t: Words): string {
   if (made.seconds) return format(t.timeValue, { seconds: String(made.seconds) });
   return made.runId ? t.timeInterrupted : t.notRecorded;
