@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "046b183d25b1",
+      "source": "94653b1c5cfa",
       "files": {
         "epub": {
-          "hash": "a2dc06716d",
-          "bytes": 6968770
+          "hash": "747235438d",
+          "bytes": 7135691
         },
         "pdf": {
-          "hash": "d2139a5347",
-          "bytes": 9818417
+          "hash": "711a26b4fa",
+          "bytes": 9984650
         }
       }
     },
@@ -131,15 +131,15 @@
       }
     },
     "en/a-curve-that-climbs": {
-      "source": "ac3828357a56",
+      "source": "6b119679a6e2",
       "files": {
         "epub": {
-          "hash": "6547b6ad85",
-          "bytes": 793462
+          "hash": "91533c3fcc",
+          "bytes": 818528
         },
         "pdf": {
-          "hash": "c49900a411",
-          "bytes": 1233158
+          "hash": "0db3b41909",
+          "bytes": 1217965
         }
       }
     },
@@ -287,15 +287,15 @@
       }
     },
     "fr/story": {
-      "source": "d06ec4c88aa6",
+      "source": "5607188a56e6",
       "files": {
         "epub": {
-          "hash": "72d53f6a0d",
-          "bytes": 6991361
+          "hash": "8bf55704f7",
+          "bytes": 7158305
         },
         "pdf": {
-          "hash": "dee55b8aa5",
-          "bytes": 9985071
+          "hash": "76afdcbe32",
+          "bytes": 10151859
         }
       }
     },
@@ -417,15 +417,15 @@
       }
     },
     "fr/a-curve-that-climbs": {
-      "source": "883fc6f57aee",
+      "source": "052536e838d1",
       "files": {
         "epub": {
-          "hash": "b1a5c023fa",
-          "bytes": 798856
+          "hash": "c8f51c098d",
+          "bytes": 823943
         },
         "pdf": {
-          "hash": "a6f1983f39",
-          "bytes": 1258614
+          "hash": "d73d31397a",
+          "bytes": 1243328
         }
       }
     },
@@ -573,80 +573,80 @@
       }
     },
     "en/how-orazaka-made-our-brand-film": {
-      "source": "1fcb7cd968b6",
+      "source": "eb3546c7b7e6",
       "files": {
         "epub": {
-          "hash": "3f63df284e",
-          "bytes": 963999
+          "hash": "dc3b1b9480",
+          "bytes": 1012722
         },
         "pdf": {
-          "hash": "3acadc8d94",
-          "bytes": 1341618
+          "hash": "46bf123057",
+          "bytes": 1320539
         }
       }
     },
     "fr/how-orazaka-made-our-brand-film": {
-      "source": "94fdcfcacfc2",
+      "source": "b7ba403cb8d6",
       "files": {
         "epub": {
-          "hash": "55735dbc0d",
-          "bytes": 981818
+          "hash": "d492ded657",
+          "bytes": 1030789
         },
         "pdf": {
-          "hash": "beb43abbad",
-          "bytes": 1371100
+          "hash": "711120d2bd",
+          "bytes": 1349974
         }
       }
     },
     "en/the-trains-second-version-rails-sidings-and-a-repair-train": {
-      "source": "d398ea1bed57",
+      "source": "8cca3680836b",
       "files": {
         "epub": {
-          "hash": "ebc127e36e",
-          "bytes": 1010367
+          "hash": "6ce1fa148a",
+          "bytes": 1108140
         },
         "pdf": {
-          "hash": "7bf34340ed",
-          "bytes": 1322979
+          "hash": "c263d91e5c",
+          "bytes": 1366016
         }
       }
     },
     "fr/the-trains-second-version-rails-sidings-and-a-repair-train": {
-      "source": "d176bb1b8932",
+      "source": "b223b1faf015",
       "files": {
         "epub": {
-          "hash": "f0b22f0dcd",
-          "bytes": 1034702
+          "hash": "377d26397a",
+          "bytes": 1133203
         },
         "pdf": {
-          "hash": "07e0d598b8",
-          "bytes": 1353788
+          "hash": "16311f660c",
+          "bytes": 1397238
         }
       }
     },
     "en/how-we-stay-in-sync": {
-      "source": "1127124779a7",
+      "source": "e3d979d7d719",
       "files": {
         "epub": {
-          "hash": "81b1171224",
-          "bytes": 928577
+          "hash": "203ce39fd3",
+          "bytes": 767443
         },
         "pdf": {
-          "hash": "890ff0243f",
-          "bytes": 1209664
+          "hash": "93058fd0c2",
+          "bytes": 991842
         }
       }
     },
     "fr/how-we-stay-in-sync": {
-      "source": "e7ddee11182d",
+      "source": "60c00e2b4ddf",
       "files": {
         "epub": {
-          "hash": "7327ffa357",
-          "bytes": 928385
+          "hash": "3d6de706d7",
+          "bytes": 766502
         },
         "pdf": {
-          "hash": "3087642a4c",
-          "bytes": 1224040
+          "hash": "e5dbc63599",
+          "bytes": 1006295
         }
       }
     },
