@@ -76,7 +76,11 @@ test("every cover of the series is hand-drawn ink and watercolor, but the two ke
     if (OUT_OF_LOOK.has(id)) continue;
     const said = [entry.made?.prompt, entry.made?.engine].filter(Boolean).join(" ");
     assert.match(said, WATERCOLOR, `${id} is not drawn in the series' look (ink and watercolor)`);
-    assert.doesNotMatch(said, /flat vector|photograph/i, `${id} breaks the series' look`);
+    /* A prompt may name what it refuses (« no flat vector fills, no photographic detail »): the look is judged on the engine,
+       and on a prompt that does not refuse it. */
+    const refused = /\bno (flat vector|photograph)/i.test(entry.made?.prompt ?? "");
+    const claims = [refused ? "" : entry.made?.prompt, entry.made?.engine].filter(Boolean).join(" ");
+    assert.doesNotMatch(claims, /flat vector|photograph/i, `${id} breaks the series' look`);
   }
 });
 

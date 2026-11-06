@@ -1,67 +1,67 @@
 {
   "books": {
     "en/story": {
-      "source": "523464189b57",
+      "source": "2301a780a210",
       "files": {
         "epub": {
-          "hash": "cfddce9887",
-          "bytes": 6518832
+          "hash": "9b8dfdae6c",
+          "bytes": 6969088
         },
         "pdf": {
-          "hash": "729ae92b97",
-          "bytes": 9249838
+          "hash": "75d14277a7",
+          "bytes": 9838063
         }
       }
     },
     "en/why-krizaka": {
-      "source": "5c079f643466",
+      "source": "a453d653f343",
       "files": {
         "epub": {
-          "hash": "b995a571fa",
-          "bytes": 522160
+          "hash": "0a77d8d3bc",
+          "bytes": 522198
         },
         "pdf": {
-          "hash": "f1bfcf5afe",
-          "bytes": 730357
+          "hash": "91c94d2fd1",
+          "bytes": 731226
         }
       }
     },
     "en/an-engine-on-a-laptop": {
-      "source": "0083ae4ea8d8",
+      "source": "437ebb23a549",
       "files": {
         "epub": {
-          "hash": "b7b59d739c",
-          "bytes": 1225796
+          "hash": "422d504fd8",
+          "bytes": 1225832
         },
         "pdf": {
-          "hash": "126b67cd73",
-          "bytes": 1579959
+          "hash": "3036b84783",
+          "bytes": 1580828
         }
       }
     },
     "en/what-a-gpu-costs": {
-      "source": "adc91c9ea88f",
+      "source": "68ec212379a8",
       "files": {
         "epub": {
-          "hash": "0f17739e97",
-          "bytes": 1296028
+          "hash": "348ca174b1",
+          "bytes": 1296064
         },
         "pdf": {
-          "hash": "2eb3714f02",
-          "bytes": 1622756
+          "hash": "772edade95",
+          "bytes": 1623634
         }
       }
     },
     "en/from-a-clip-to-a-film": {
-      "source": "2cff289aca44",
+      "source": "3320cbcd55d5",
       "files": {
         "epub": {
-          "hash": "8fc087fefb",
-          "bytes": 850966
+          "hash": "0cdfa885f1",
+          "bytes": 851000
         },
         "pdf": {
-          "hash": "e9eb96fe6a",
-          "bytes": 1136469
+          "hash": "45ffca5e0f",
+          "bytes": 1137338
         }
       }
     },
@@ -79,15 +79,15 @@
       }
     },
     "en/the-first-products": {
-      "source": "b136f2620a29",
+      "source": "231a8fac07b1",
       "files": {
         "epub": {
-          "hash": "a939d1b51b",
-          "bytes": 729340
+          "hash": "df2cab3ed2",
+          "bytes": 729373
         },
         "pdf": {
-          "hash": "667f7574de",
-          "bytes": 1034285
+          "hash": "38a9bfacf6",
+          "bytes": 1035151
         }
       }
     },
@@ -287,67 +287,67 @@
       }
     },
     "fr/story": {
-      "source": "3aaf6852ac7d",
+      "source": "9dab8001eb9a",
       "files": {
         "epub": {
-          "hash": "bfbd62d436",
-          "bytes": 6540604
+          "hash": "7ed9a1174a",
+          "bytes": 6991674
         },
         "pdf": {
-          "hash": "acf4204590",
-          "bytes": 9411251
+          "hash": "ec684061dd",
+          "bytes": 10004361
         }
       }
     },
     "fr/why-krizaka": {
-      "source": "d76e1e4d99e5",
+      "source": "1554deb97f78",
       "files": {
         "epub": {
-          "hash": "035f2572b0",
-          "bytes": 526283
+          "hash": "339941e607",
+          "bytes": 526326
         },
         "pdf": {
-          "hash": "376f1ef007",
-          "bytes": 750070
+          "hash": "00343da0a9",
+          "bytes": 750994
         }
       }
     },
     "fr/an-engine-on-a-laptop": {
-      "source": "de2cc2b53625",
+      "source": "f97369f37a4c",
       "files": {
         "epub": {
-          "hash": "e3b71ad0b8",
-          "bytes": 1237658
+          "hash": "2035e636fa",
+          "bytes": 1237700
         },
         "pdf": {
-          "hash": "a9ce1b6c99",
-          "bytes": 1607532
+          "hash": "5f7b59dde2",
+          "bytes": 1608458
         }
       }
     },
     "fr/what-a-gpu-costs": {
-      "source": "bcfb2b71ce0c",
+      "source": "60f050fe5057",
       "files": {
         "epub": {
-          "hash": "226d5d98b3",
-          "bytes": 1308300
+          "hash": "6421b53111",
+          "bytes": 1308341
         },
         "pdf": {
-          "hash": "dc32f146cf",
-          "bytes": 1663079
+          "hash": "c554eb3c12",
+          "bytes": 1664014
         }
       }
     },
     "fr/from-a-clip-to-a-film": {
-      "source": "126fb8d6f01d",
+      "source": "b53580f386cc",
       "files": {
         "epub": {
-          "hash": "8504f7c789",
-          "bytes": 856303
+          "hash": "fdc8250010",
+          "bytes": 856341
         },
         "pdf": {
-          "hash": "384e2e6c4c",
-          "bytes": 1168332
+          "hash": "b7365a5b8c",
+          "bytes": 1169260
         }
       }
     },
@@ -365,15 +365,15 @@
       }
     },
     "fr/the-first-products": {
-      "source": "9cb26e080503",
+      "source": "eaceea07ee6c",
       "files": {
         "epub": {
-          "hash": "60bf59b5c3",
-          "bytes": 730786
+          "hash": "01c2230c47",
+          "bytes": 730824
         },
         "pdf": {
-          "hash": "67818c1418",
-          "bytes": 1064490
+          "hash": "eb064190da",
+          "bytes": 1065419
         }
       }
     },
@@ -647,6 +647,32 @@
         "pdf": {
           "hash": "3087642a4c",
           "bytes": 1224040
+        }
+      }
+    },
+    "en/why-we-slowed-down-and-how-we-work-now": {
+      "source": "36e16f9ea997",
+      "files": {
+        "epub": {
+          "hash": "c38ece434c",
+          "bytes": 1016918
+        },
+        "pdf": {
+          "hash": "4f687f5114",
+          "bytes": 1309547
+        }
+      }
+    },
+    "fr/why-we-slowed-down-and-how-we-work-now": {
+      "source": "e7b07d8097cf",
+      "files": {
+        "epub": {
+          "hash": "371f86c318",
+          "bytes": 1034175
+        },
+        "pdf": {
+          "hash": "c4863bd168",
+          "bytes": 1341147
         }
       }
     }
