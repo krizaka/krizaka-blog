@@ -21,8 +21,19 @@ const LOCAL_FREE = {
     "free local render on the Mac with the media worker's model, no paid run",
   "series-24-how-we-stay-in-sync": "free local render on the Mac with the media worker's model, no paid run",
 };
+/* The covers drawn with GPT Image 2.5 Sunburst through Runway: listed here, and their note names the Runway task. */
+const RUNWAY = new Set(["series-25-why-we-slowed-down-and-how-we-work-now"]);
 export function coverProvenance(id, made) {
   if (!made || typeof made.note !== "string") return false;
+  if (
+    RUNWAY.has(id) &&
+    made.via === "Runway" &&
+    made.model === "GPT Image 2.5 Sunburst" &&
+    /^Runway API \(gpt_image_2_5_sunburst\)/.test(made.engine ?? "") &&
+    /Runway task [0-9a-f-]{36}/.test(made.note) &&
+    /hand-drawn ink and watercolor/i.test(made.prompt ?? "")
+  )
+    return true;
   /* A Studio run of the series' model, or (chapter 22) a key frame of the film the chapter tells, a FLUX.2 [klein] Studio run with its run id. */
   if (/Studio run [0-9a-f]{8}\)/.test(made.note) && made.model === "FLUX.1 [schnell]") return true;
   if (
@@ -51,6 +62,19 @@ test("a cover without a Studio run id passes only as a listed local-free excepti
   assert.ok(!coverProvenance(listed, { model: local.model, via: "local" }), "no note at all");
   assert.ok(!coverProvenance("series-22-unlisted", local), "unlisted id");
   assert.ok(!coverProvenance(listed, { ...local, via: "mac" }), "unnamed kind");
+  const runway = {
+    model: "GPT Image 2.5 Sunburst",
+    via: "Runway",
+    engine: "Runway API (gpt_image_2_5_sunburst), text to image",
+    prompt: "Hand-drawn ink and watercolor.",
+    note: "Runway task 0f53c8d4-5bcf-433f-b0f3-a61fa604cbf1, 9 credits.",
+  };
+  assert.ok(coverProvenance("series-25-why-we-slowed-down-and-how-we-work-now", runway));
+  assert.ok(!coverProvenance("series-26-unlisted", runway), "a Runway cover not listed");
+  assert.ok(
+    !coverProvenance("series-25-why-we-slowed-down-and-how-we-work-now", { ...runway, note: "made on Runway" }),
+    "no task",
+  );
   const run = "75cdc9c8-5d06-497d-bd54-9dcdad9ca7e7";
   const klein = {
     model: "FLUX.2 [klein] 4B",

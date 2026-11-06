@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "523464189b57",
+      "source": "c6678c0cd770",
       "files": {
         "epub": {
-          "hash": "cfddce9887",
-          "bytes": 6518832
+          "hash": "198b940349",
+          "bytes": 6969105
         },
         "pdf": {
-          "hash": "729ae92b97",
-          "bytes": 9249838
+          "hash": "b93c89e631",
+          "bytes": 9838063
         }
       }
     },
@@ -287,15 +287,15 @@
       }
     },
     "fr/story": {
-      "source": "3aaf6852ac7d",
+      "source": "bdeecb333aad",
       "files": {
         "epub": {
-          "hash": "bfbd62d436",
-          "bytes": 6540604
+          "hash": "097c0568db",
+          "bytes": 6991692
         },
         "pdf": {
-          "hash": "acf4204590",
-          "bytes": 9411251
+          "hash": "f015ce7f3f",
+          "bytes": 10004361
         }
       }
     },
@@ -647,6 +647,32 @@
         "pdf": {
           "hash": "3087642a4c",
           "bytes": 1224040
+        }
+      }
+    },
+    "en/why-we-slowed-down-and-how-we-work-now": {
+      "source": "36e16f9ea997",
+      "files": {
+        "epub": {
+          "hash": "c38ece434c",
+          "bytes": 1016918
+        },
+        "pdf": {
+          "hash": "4f687f5114",
+          "bytes": 1309547
+        }
+      }
+    },
+    "fr/why-we-slowed-down-and-how-we-work-now": {
+      "source": "e7b07d8097cf",
+      "files": {
+        "epub": {
+          "hash": "371f86c318",
+          "bytes": 1034175
+        },
+        "pdf": {
+          "hash": "c4863bd168",
+          "bytes": 1341147
         }
       }
     }

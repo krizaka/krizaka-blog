@@ -1,0 +1,306 @@
+---
+title: "Why we slowed down, and how we work now"
+description: "Our product features fell from about forty a day to fewer than five, while the pipe stayed fast. Five measured causes, our 87 rules reviewed, the crack who replaces the firefighter."
+seoTitle: "Why we slowed down, and what we changed"
+seoDescription: "Our merged product features fell 88 % in four days. The five measured causes, the rules we kept, relaxed or removed, and how we work now."
+date: 2026-11-05
+tags: [ai, integration, measurements]
+author: oussama
+publishedAt: "2026-11-05T21:30:00-05:00"
+draft: false
+sensitive: true
+chapter: 25
+cover: series-25-why-we-slowed-down-and-how-we-work-now
+coverAlt: "A small snowy railway yard on a pale winter morning, in light ink and watercolor: a small violet-grey owl perched on the wooden footbridge over the tracks, a rolled plan beside it, a train of wagons leaving towards the station and a red wagon on a siding"
+period: "2026-11-02/2026-11-05"
+sources:
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "stacked gates that stopped everything, and sessions that no longer started"
+  built: "a lane blocked only by its own PRs, rules that count their refusals, sessions that start by themselves"
+stats:
+  - value: "−88 %"
+    label: "product features merged per day, from 2 to 5 November"
+    section: "A feeling, then a measure"
+  - value: "87"
+    label: "rules reviewed one by one: kept, relaxed or removed"
+    section: "The meeting on 87 rules"
+  - value: "3"
+    label: "indicators we follow, and a first measure on 8 November"
+    section: "Three indicators, and a date"
+---
+
+In [chapter 23](/story/the-trains-second-version-rails-sidings-and-a-repair-train/) I told the story of the rails, the firefighter and the chouf. In [chapter 24](/story/how-we-stay-in-sync/), how we stay in sync. On the morning of 5 November I wrote the CTO a less proud sentence: « I have the feeling we are not moving at the speed we want ». I asked him to study our speed and how we work with the agents, and to give me a plan.
+
+This chapter tells what he found, what we decided the same day, and why. It ends without a result, because the first measure falls on 8 November.
+
+## A feeling, then a measure
+
+The report was made read-only: no issue, no PR, no setting touched. It counts the PRs of 41 repositories since 22 October, the issues, the board and the logs of our tools.
+
+The first line confirmed the feeling. From 22 to 28 October we merged about 40 product features a day. From 29 October to 1 November, 39. From 2 to 5 November, 4.8. That is a drop of 88 %. For Verikora, our priority, we went from 18 features and fixes a day to 4.
+
+The second line surprised me. The pipe itself had not slowed down. An open PR merged in 20 minutes, median. The train took 7 minutes from the head of the queue to the merge. A red PR turned green again in 26 minutes, median too. It was not the CI, not the train, not the review.
+
+<Numbers>
+  <Num value="4.8" label="product features merged per day" hint="from 2 to 5 November, against about forty before" />
+  <Num value="20 min" label="from an open PR to its merge" hint="median: the pipe stayed fast" />
+  <Num value="7 min" label="from the head of the queue to the merge" hint="the train was not the problem either" />
+</Numbers>
+
+The report puts it in one sentence I keep: the work no longer entered the machine.
+
+## Five causes, and none of them was the CI
+
+### Sessions no longer ran
+
+On 1 November, 51 sessions ran. On the 4th, 13. On the 5th, when the report was written, 3. A session only starts when someone launches it, and the rule « relaunch a lane as soon as it finishes » depended on me or on the CTO. And those that started often ended without a PR: 37 % since 31 October.
+
+The case of Verikora, on the evening of the 4th, sums it up. The session built and tested two slices. It could not open their PRs: the repository already had its three PRs, and main stayed red for 886 minutes, because of a smoke test and an automatic dependency update. None of it came from the feature's code. The work stayed on a branch, and up to the report, no Verikora session was launched again.
+
+### The gates had piled up
+
+Since 2 November, every incident had produced its rule. In 72 hours, about ten new gates: the cap cut from five PRs to three, the strongest model and a written lesson after two reds, the firefighter turned into the crack, the ticket's proof in the PR, the acceptance check, the format and the quality analysis at the train's door, freshness, complexity, the list of commit identities. Each one was reasonable. Together, they stacked the stops.
+
+<Pipeline label="Before: the path of a session to main. Each gate refused on its own, and one was enough for the session to stop without a PR.">
+  <Stage title="The session" note="if launched">
+    It starts only when someone thinks of launching it.
+  </Stage>
+  <Stage title="New work?" note="NO" tone="gate">
+    Refused as soon as a PR of any author was stuck in one of the lane's repositories, robots included.
+  </Stage>
+  <Stage title="The card" note="set aside" tone="gate">
+    A card without the list of files it touches was set aside: that was 73 % of the ready cards.
+  </Stage>
+  <Stage title="The cap" note="3 per repo" tone="gate">
+    Three open PRs per repository, all authors counted. At the limit, no more opening.
+  </Stage>
+  <Stage title="The proof" note="refused" tone="gate">
+    A PR that did not copy every « done when » line of its ticket, with its proof, was refused.
+  </Stage>
+  <Stage title="The freeze" note="red main" tone="gate">
+    A red on main, whatever its cause, stopped every merge of the repository.
+  </Stage>
+  <Stage title="main" note="at last" tone="ship">
+    Once all of it was passed, the train did the rest in a few minutes.
+  </Stage>
+</Pipeline>
+
+The freeze did the most damage. Of the reds on main from 2 to 5 November, most did not come from product code: 46 automatic dependency updates, 30 quality analyses, 19 releases. Each one froze the whole repository. The watchdog raised 96 « frozen » alerts in four days.
+
+<Rails label="Before, from 2 to 5 November: a red that was not the product's froze the rails of Verikora and Sovkora, while the platform's rail kept rolling.">
+  <Rail name="Verikora" state="frozen" wagons="PR 1:wait | PR 2:wait | PR 3:wait" />
+  <Rail name="Sovkora" state="frozen" wagons="PR 4:wait | PR 5:wait" />
+  <Rail name="Platform" wagons="rule:go | tool:wait | pins:wait | pins:wait" />
+  <Beat>
+    Verikora: main is red because of a smoke test and an automatic update, nothing that comes from the product. The rail
+    is frozen, and the three PRs wait, even green ones.
+  </Beat>
+  <Beat>
+    The cap counts everyone's PRs. With its three places taken, the lane can no longer open anything: two tested slices
+    stay on a branch.
+  </Beat>
+  <Beat>Sovkora: the same, for a red that did not come from its code either.</Beat>
+  <Beat>Meanwhile the platform's rail rolls: pins, a rule, a tool. That is where the capacity went.</Beat>
+</Rails>
+
+### The factory ate the capacity
+
+I call « the factory » everything that serves to produce: the agents' tools, the rules, the CI, the robots that bump versions. From 2 to 5 November, 60 % of merges came from robots. In 14 days they had opened 748 pin PRs, one per version and per repository. And 52 % of the PRs written by agents went to the factory itself: 83 PRs in four days in the two repositories of rules and tools, roughly one new rule or tool an hour.
+
+The factory had become our agents' first customer. A factory delivers nothing to anyone.
+
+### The board no longer guided
+
+There were 311 cards in « Next », the column of ready work, for a target of about sixty. The platform alone had 202. In 14 days we had created 1,749 issues and closed 950. 94 % were written by agents, often from audits: 179 on 2 November alone.
+
+And the cards were not ready. Only 27 % had the list of files they touch, the one the session requires when it starts. So a session spent its budget redoing the slicing before writing a line.
+
+### Reds we could catch at home
+
+In 14 days, about 2,000 CI runs failed, roughly two reds per branch. A note of 4 November had sorted them: 43 % would have been caught in a few seconds by a local check, 56 % with a common git hook. It was not « too many tests ». It was tests in the wrong place, in CI instead of on the machine, and checks outside the product that blocked the product.
+
+## The meeting on 87 rules
+
+The same day, the CTO brought security, business, UI and UX and the strategy adviser around an inventory: our 87 working rules, each with its date, the place it lives and what it protects. They were reviewed one by one.
+
+The adviser proposed a principle, and everyone took it up. A rule:
+
+- prevents the irreversible;
+- acts at the source, in a few seconds;
+- names the indicator it must move, or it goes;
+- counts its refusals, or it has no right to refuse;
+- protects the customer and the founder, not the factory.
+
+With that principle, the sorting was simpler than I thought. Everything about security stayed as it was, unanimously, and security had the last word. The trains remain the only ones that merge, and the release train remains the only gate to production. Honest pages, accessibility, identical texts in French and English: kept too.
+
+<Compare label="The rules that changed on 5 November, before and now" topic="Rule" before="Before" after="Now">
+  <Case
+    topic="The PR cap"
+    before="Three per repository, all authors counted."
+    after="Five per repository, counting only the lane's PRs."
+  />
+  <Case
+    topic="The freeze"
+    before="Any red on main froze the repository."
+    after="Only a red of the product's tests or of security freezes."
+    afterDetail="And the freeze blocks the merge, never the opening of a PR."
+  />
+  <Case
+    topic="The card and its proof"
+    before="Refused when incomplete."
+    after="A warning."
+    afterDetail="The PR refers to its ticket by default, and closes it only when every line is proven."
+  />
+  <Case
+    topic="Two reds"
+    before="A written lesson, or no merge."
+    after="One line in a file of lessons."
+    afterDetail="No longer a gate: the train goes on."
+  />
+  <Case
+    topic="The quality analysis"
+    before="It blocked a PR on all its ratings."
+    after="Only the security rating blocks a PR."
+    afterDetail="The three best ratings stay the target before production."
+  />
+  <Case
+    topic="The reference screenshots"
+    before="They blocked every PR."
+    after="They warn on the PR."
+    afterDetail="They block only the release to production."
+  />
+  <Case
+    topic="Version pins"
+    before="One PR per version and per repository."
+    after="A single PR per repository and per day."
+  />
+</Compare>
+
+Four rules went, among them a local complexity rule that duplicated the quality analysis, and the firefighter, replaced by the crack. Three others, about the board, are now one.
+
+Two conditions came with it. First, every gate logs its refusals: it is not one more rule, it is the measure without which no rule can be judged. Second, the list of what will become strict again is written now: the day a real document can enter our products, the screenshots will block every PR again, and the rest will follow.
+
+And a moratorium. The report proposed fourteen days without a new rule; I chose three, until 8 November. During those three days, a PR that adds a gate, a hook or a workflow step is refused by a check, unless it says why it is an exception. The one factory project allowed was the local check.
+
+To know whether a rule is really in place, the reference does not change: it is the conformance matrix. Every day a script crosses every repository with every rule and answers green, red or out of scope. Not an agent saying « done ». During the moratorium, the matrix's list of rules is frozen at 35, and only the security rules must still reach every repository the same day.
+
+## The firefighter leaves, the crack arrives
+
+In chapter 23, the firefighter woke up when a repository had its PRs at the cap, with a red one among them. The chouf watched for free and woke him at the right time. The firefighter lasted only one day.
+
+What was wrong was where he started. He started from the red PR, and he fixed it. But chapter 23 had already measured it: 92 % of the blocked hours came from red PRs that ended up closed without being merged. The firefighter could put out a fire very well in a house we were about to pull down.
+
+<Figure
+  id="chapter-25-handover"
+  alt="On the snowy platform of a small station, on a pale winter morning: the small red duck walks away to the left with its bucket and hose, while a small violet-grey owl, just arrived on the roof of the lantern-lit notice board, looks over the tracks, a rolled plan beside it"
+  caption="The firefighter leaves with his bucket and hose. The crack has arrived, with the plan of the whole station."
+/>
+
+On 4 November I replaced him with the crack, an expert in platforms and software sold online. His first reflex is not the red PR. When he is called, he first understands the goal and the value each open PR brings to the turn we are taking. Then he takes the whole view: the repository's PRs and their cousins in other repositories. What still makes sense stays. A duplicate is closed, with a link to the one we keep. Small PRs that belong together are folded into one. What is out of the direction is closed or parked, with its reason, and its issue goes back to the board. Only then does he fix the red of what is worth landing. And he writes the lesson: why the PRs piled up, at the earliest place it can be caught.
+
+The chouf stays. Every five minutes, without a model, he looks at every repository. If nobody takes a call within a quarter of an hour, a crack session starts by itself, with a cap on turns and duration, and at most four a day.
+
+<Figure
+  id="chapter-25-chouf"
+  alt="The kestrel perched on the back of a wooden folding chair by the tracks, its lantern lit in the snow, watching a train roll towards the station at dawn; far away, a tiny owl sits on the footbridge"
+  caption="The chouf still watches. He costs nothing, and now it is the crack he wakes up."
+/>
+
+## What changed on 5 November
+
+That day, 19 PRs changed our tools, in our agents' repository and in the organisation's. The rails are drawn like this now.
+
+<Rails label="Now: each lane counts its own PRs, a red that is not the product's freezes nothing, and the pins leave once a day.">
+  <Rail name="Verikora" wagons="PR 2:go | PR 3:wait | PR 4:wait | PR 1:done" />
+  <Rail name="Sovkora" wagons="PR 6:go | PR 7:wait | PR 5:done" />
+  <Rail name="Platform" wagons="pins:go | PR 8:red" />
+  <Beat>
+    A lane is blocked only by its own stuck PRs. The cap is five per repository, and it counts only the lane's PRs: the
+    robots' and the other lanes' take none of its places.
+  </Beat>
+  <Beat>
+    A red of an automatic update, a quality analysis, a release or pins on main freezes nothing. It raises an alert that
+    has an owner, the platform lane.
+  </Beat>
+  <Beat>
+    Only a red of the product's tests, or of security, still freezes a rail. Even frozen, a PR can be opened and queued:
+    only the merge waits.
+  </Beat>
+  <Beat>The pins leave in a single PR per repository and per day, instead of one per version.</Beat>
+  <Beat>A red PR goes to the siding, as before, and the next one leaves.</Beat>
+</Rails>
+
+A session's path changed too. It has fewer gates, and they sit earlier.
+
+<Pipeline label="Now: the path of a session to main. The local check blocks before the push, the card and the proof warn, and the train does the rest.">
+  <Stage title="A ready card" note="validated by the CTO">
+    Every card that enters Next is validated by the CTO, and each lane has its cap of cards.
+  </Stage>
+  <Stage title="The session starts" note="by itself, capped">
+    A product lane with a ready card and no session gets one, without waiting for someone to think of it.
+  </Stage>
+  <Stage title="The local check" note="about 5 s" tone="gate">
+    Before the push, on the changed files: lint, types, the touched tests, generators. A red stops here.
+  </Stage>
+  <Stage title="The PR" note="warns">
+    An incomplete card or a missing proof gives a warning, no longer a refusal.
+  </Stage>
+  <Stage title="The train" note="the lane's queue">
+    The PR takes its place in its repository's queue, and the train carries it.
+  </Stage>
+  <Stage title="main" note="one commit" tone="ship">
+    The PR arrives as a single commit, and the next one leaves.
+  </Stage>
+</Pipeline>
+
+The detail, in the order it matters:
+
+- **Sessions that start by themselves.** When the Verikora or Sovkora lane has a ready card and no live session, a script launches one. The caps are written in the code: at most two at a time, six per 24 hours, 80 turns and 90 minutes each, and a switch to stop it all.
+- **A board that guides.** The CTO validates every card that enters Next, with a cap per lane: 15 for Verikora, 15 for Sovkora, 10 for the platform, 10 for security, 0 for Folioviv, which is paused.
+- **Audits wait.** What an audit finds goes to a triage column, never straight into Next. Every four days, an incubation lane rereads that column and my ideas: it groups, re-evaluates, promotes what deserves it, and never puts anything into Next itself.
+- **A local copy of the board.** Before, every tool reread the board on GitHub at every pass, and my quota of calls was spent. Now a local copy is refreshed every 20 minutes, and every tool that moves a card writes it to the copy too. After the change, I had 4,976 calls left out of 5,000.
+- **The local check.** One command runs, on the changed files, what the repository already declares: lint, types, touched tests, generators. It took 4.8 seconds on its own branch, and the common git hook runs it before every push.
+- **Every refusal is written down.** One line per refusal, with the tool, the rule, the repository and the PR. That is what will let us judge each rule.
+
+<Split label="What watches without a model, and what it is for. None of the three costs a token.">
+  <Side
+    title="The board's copy"
+    tone="own"
+    items="Refreshed every 20 minutes | Written by every tool that moves a card | The quota of calls is no longer spent"
+  />
+  <Side
+    title="The matrix"
+    tone="plug"
+    items="Every repository crossed with every rule | Green, red or out of scope, every day | The reference to say a rule is in place"
+  />
+  <Side
+    title="The refusals log"
+    tone="after"
+    items="One line per refusal | The tool, the rule, the repository, the PR | The proof that a rule serves, or not"
+  />
+</Split>
+
+## Three indicators, and a date
+
+The report said it too: we measured a lot, but mostly the factory's activity. With the robots, more than 1,400 merges in 14 days gave a false impression of speed. So we now follow only three figures:
+
+<Steps>
+  <Step title="Product features per day">
+    The feature or fix PRs merged in the repositories of the turn, without pins, robots or releases.
+  </Step>
+  <Step title="Hours the product is blocked">
+    The sum of the hours a product repository is frozen, or at the cap with a red PR.
+  </Step>
+  <Step title="Reds that do not come from the product">
+    How many reds on main still come from an update, an analysis, a release or a pin.
+  </Step>
+</Steps>
+
+The first measure is planned for 8 November, at the end of the moratorium. That day, every rule will also pass its review, with its refusals counted. As I write, I have no result. I do not know yet whether the features are coming back, nor how fast. I will say it once I have measured it, even if the figure is bad.
+
+## What I keep
+
+None of our rules was absurd. Each answered a real incident, and I had asked for many of them myself. It was their sum that stopped everything, and nobody looked at it, because no rule said what it cost.
+
+Since 30 October our motto has said: « The flow keeps running, the deadline is ours: it may move, the quality never does. » On 5 November I understood that we had protected quality by stopping the flow. That is not what the motto says. A rule that refuses must prove it protects something, and count what it refuses. Otherwise it is just one more stop on the line.

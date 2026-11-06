@@ -170,6 +170,12 @@
       "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
       "look": "watercolor",
       "beat": "At the edge of a snowy railway yard at dusk, a small wooden notice board on two posts under a little roof, a few blank cream cards pinned on it in neat columns, a lantern glowing at its corner, and a wooden letterbox on a post beside it, a small blue pigeon with a round body perched on the letterbox, the rails fading into the distance behind."
+    },
+    {
+      "post": "why-we-slowed-down-and-how-we-work-now",
+      "seed": 2501,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "Not rendered by the series' renderer: drawn with GPT Image 2.5 (Sunburst) through Runway in the series' light, pastel ink-and-watercolor look, with three pale pictures of the series as style references (prompt and references in lib/media.json). The yard of chapters 23 and 24 on a pale winter morning, a train leaving, a red wagon on its siding, and the crack, a small violet-grey owl, on the footbridge over the tracks. The series' cast is carried over unchanged."
     }
   ],
   "sprites": {
