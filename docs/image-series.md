@@ -32,5 +32,5 @@ files and the `lib/media.json` entries. Several takes, the one that sits best ne
 
 - **Guard**: `tests/image-series.test.mjs` refuses a generated still of a post that is not in that look unless it is listed with its reason in
   `content/image-series/flagged.json` (a demonstration, a pick for the founder to decide, a candidate to redraw).
-- **See it**: `node scripts/media-contact-sheet.mjs <dir>` draws every cover and every inline picture side by side (`covers.png`, `inline.png`,
+- **See it**: `node scripts/media-contact-sheet.mjs` (into `<tmpdir>/media-contact-sheet/`) draws every cover and every inline picture side by side (`covers.png`, `inline.png`,
   `list.json`); a PR that touches a picture links them (captures through krizaka-com's `pr-assets.mjs`).

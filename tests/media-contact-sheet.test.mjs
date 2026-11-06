@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { kindOf, labelOf, outDirOf, usedImages } from "../scripts/media-contact-sheet.mjs";
+import { kindOf, labelOf, OUT_DIR, usedImages } from "../scripts/media-contact-sheet.mjs";
 
 test("the contact sheet lists every cover and every inline picture of the posts, in chapter order", () => {
   const rows = usedImages();
@@ -21,9 +21,8 @@ test("a diagram, a screen capture or a model comparison is judged by nature, a g
   assert.equal(kindOf({ kind: "image", made: { model: "GPT Image 2.5 Sunburst" } }), "generated");
 });
 
-test("the output folder is a plain name under the temporary folder, never a path", () => {
-  assert.match(outDirOf("pr-300"), /media-contact-sheet[\\/]pr-300$/);
-  for (const bad of ["../x", "/etc", "a/b", ".hidden", "", undefined]) assert.equal(outDirOf(bad), null);
+test("the output folder is fixed under the temporary folder: no argument decides where files go", () => {
+  assert.match(OUT_DIR, /media-contact-sheet$/);
 });
 
 test("a tile label names the chapter or the post, escapes SVG and flags a picture judged by nature", () => {

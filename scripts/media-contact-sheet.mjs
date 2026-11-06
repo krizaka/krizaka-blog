@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 /* A side-by-side contact sheet of every picture the posts show, to be looked at by a human before a PR that touches a picture
    (krizaka-internal#2455): the series reads as one, or it does not.
-     node scripts/media-contact-sheet.mjs <name>        writes <tmpdir>/media-contact-sheet/<name>/covers.png (every cover, in chapter
-                                                        order) and inline.png (every picture inside a post), then upload them
-                                                        with krizaka-com's pr-assets.mjs and paste them in the PR. <name> is a
-                                                        plain word (letters, digits, - _ .), never a path.
+     node scripts/media-contact-sheet.mjs               writes <tmpdir>/media-contact-sheet/covers.png (every cover, in chapter
+                                                        order) and inline.png (every picture inside a post), prints the folder,
+                                                        then upload them with krizaka-com's pr-assets.mjs and paste them in the PR.
    `usedImages` is the list the sheets are made from (tested: tests/media-contact-sheet.test.mjs). Diagrams, screen captures,
    test screenshots and clips are listed but flagged by their kind: only generated stills are judged on the look. */
 import { readFileSync, readdirSync, mkdirSync, writeFileSync } from "node:fs";
@@ -55,11 +54,8 @@ export function usedImages(base = root) {
   return rows.sort((a, b) => a.order - b.order);
 }
 
-/** The folder a run writes to: a plain name under the system's temporary folder, so an argument can never walk out of it. */
-export function outDirOf(name) {
-  if (!/^[\w.-]+$/.test(name ?? "") || name.startsWith(".")) return null;
-  return join(tmpdir(), "media-contact-sheet", name);
-}
+/** The folder a run writes to: fixed, under the system's temporary folder (no argument decides where files go). */
+export const OUT_DIR = join(tmpdir(), "media-contact-sheet");
 
 const W = 480;
 const H = 270;
@@ -102,11 +98,7 @@ async function writeSheet(sharp, tiles, file) {
 }
 
 async function main() {
-  const out = outDirOf(process.argv[2]);
-  if (!out) {
-    console.error("usage: node scripts/media-contact-sheet.mjs <name>   (a plain word: letters, digits, - _ .)");
-    process.exit(2);
-  }
+  const out = OUT_DIR;
   mkdirSync(out, { recursive: true });
   const { default: sharp } = await import("sharp");
   const rows = usedImages();
