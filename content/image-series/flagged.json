@@ -1,0 +1,117 @@
+{
+  "about": "Generated stills inside the posts that are not hand-drawn ink and watercolor, kept as they are by the founder (2026-11-05): demonstrations of what the models make (chapter 2 renders, model comparisons, the prompt layers, the tea), key frames of the film and illustrative photos of the posts. tests/image-series.test.mjs refuses a generated still of a post that is neither in the series' look nor listed here with its reason.",
+  "images": [
+    {
+      "id": "gallery-mini-skating",
+      "chapter": 2,
+      "post": "an-engine-on-a-laptop",
+      "why": "photographic render (miniature scene): it shows what the engine makes, not an illustration of the series (kept as it is: founder, 2026-11-05)",
+      "decision": "demonstration"
+    },
+    {
+      "id": "gallery-mini-souk",
+      "chapter": 2,
+      "post": "an-engine-on-a-laptop",
+      "why": "photographic render (souk): it shows what the engine makes (kept as it is: founder, 2026-11-05)",
+      "decision": "demonstration"
+    },
+    {
+      "id": "gallery-mtl-ruelle",
+      "chapter": 2,
+      "post": "an-engine-on-a-laptop",
+      "why": "photographic render (Montréal lane at night, neon): it shows what the engine makes (kept as it is: founder, 2026-11-05)",
+      "decision": "demonstration"
+    },
+    {
+      "id": "compare-moroccan-riad-flux",
+      "chapter": 3,
+      "post": "what-a-gpu-costs",
+      "why": "photographic render in a three-model comparison (FLUX, SD 3.5, SD 1.5): a comparison cannot be redrawn (kept as it is: founder, 2026-11-05)",
+      "decision": "demonstration"
+    },
+    {
+      "id": "birds-rejected-keyframes",
+      "chapter": 4,
+      "post": "from-a-clip-to-a-film",
+      "why": "a contact sheet of rejected key frames of the film: evidence of a process (kept as it is: founder, 2026-11-05)",
+      "decision": "demonstration"
+    },
+    {
+      "id": "paperwork-and-ink",
+      "chapter": 10,
+      "post": "a-curve-that-climbs",
+      "why": "a dark photographic still, provenance not recorded (kept as it is: founder, 2026-11-05)",
+      "decision": "demonstration"
+    },
+    {
+      "id": "film-keyframe-puddle",
+      "chapter": 22,
+      "post": "how-orazaka-made-our-brand-film",
+      "why": "photographic key frame of the film, shown as a step of its making (kept as it is: founder, 2026-11-05)",
+      "decision": "demonstration"
+    },
+    {
+      "id": "film-keyframe-beaver",
+      "chapter": 22,
+      "post": "how-orazaka-made-our-brand-film",
+      "why": "photographic key frame of the film, shown as a step of its making (kept as it is: founder, 2026-11-05)",
+      "decision": "demonstration"
+    },
+    {
+      "id": "gpu-card",
+      "chapter": 100,
+      "post": "ai-model-families-and-why-you-need-a-gpu",
+      "why": "photographic close-up of a graphics card: an illustration that could be drawn (kept as it is: founder, 2026-11-05)",
+      "decision": "demonstration"
+    },
+    {
+      "id": "anatomy-flux-l0",
+      "chapter": 100,
+      "post": "anatomy-of-an-ai-prompt",
+      "why": "photographic render: one layer of the prompt demonstration (the images are the lesson) (kept as it is: founder, 2026-11-05)",
+      "decision": "demonstration"
+    },
+    {
+      "id": "anatomy-flux-l1",
+      "chapter": 100,
+      "post": "anatomy-of-an-ai-prompt",
+      "why": "photographic render: one layer of the prompt demonstration (kept as it is: founder, 2026-11-05)",
+      "decision": "demonstration"
+    },
+    {
+      "id": "anatomy-flux-l2",
+      "chapter": 100,
+      "post": "anatomy-of-an-ai-prompt",
+      "why": "photographic render: one layer of the prompt demonstration (kept as it is: founder, 2026-11-05)",
+      "decision": "demonstration"
+    },
+    {
+      "id": "anatomy-flux-l3",
+      "chapter": 100,
+      "post": "anatomy-of-an-ai-prompt",
+      "why": "photographic render: one layer of the prompt demonstration (kept as it is: founder, 2026-11-05)",
+      "decision": "demonstration"
+    },
+    {
+      "id": "gallery-tea-pour",
+      "chapter": 100,
+      "post": "anatomy-of-an-ai-prompt",
+      "why": "photographic render of the post's example (a man pouring tea) (kept as it is: founder, 2026-11-05)",
+      "decision": "demonstration"
+    },
+    {
+      "id": "basics-adapter",
+      "chapter": 100,
+      "post": "understanding-ai-before-you-start",
+      "why": "photographic render (a power adapter): an illustration that could be drawn (kept as it is: founder, 2026-11-05)",
+      "decision": "demonstration"
+    },
+    {
+      "id": "basics-fog",
+      "chapter": 100,
+      "post": "understanding-ai-before-you-start",
+      "why": "photographic render (a street in the fog): an illustration that could be drawn (kept as it is: founder, 2026-11-05)",
+      "decision": "demonstration"
+    }
+  ]
+}

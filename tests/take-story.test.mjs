@@ -17,16 +17,15 @@ const CDN_HOSTS = /^https:\/\/krizaka-assets\.b-cdn\.net\/sites?\/blog\//;
 const LOCAL_FREE = {
   "series-21-working-with-agents-rules-that-refuse":
     "free local render on the Mac with the media worker's model, no paid run",
-  "series-23-the-trains-second-version-rails-sidings-and-a-repair-train":
-    "free local render on the Mac with the media worker's model, no paid run",
-  "series-24-how-we-stay-in-sync": "free local render on the Mac with the media worker's model, no paid run",
 };
-/* The covers drawn with GPT Image 2.5 Sunburst through Runway: listed here, and their note names the Runway task. */
-const RUNWAY = new Set(["series-25-why-we-slowed-down-and-how-we-work-now"]);
+/* The covers redrawn with GPT Image 2.5 Sunburst through Runway (content/image-series/runway.json: prompt, references, takes, credits). */
+const RUNWAY = JSON.parse(readFileSync(new URL("../content/image-series/runway.json", import.meta.url), "utf8")).images;
+/* The covers drawn with GPT Image 2.5 Sunburst through Runway whose note names the Runway task. */
+const RUNWAY_TASK = new Set(["series-25-why-we-slowed-down-and-how-we-work-now"]);
 export function coverProvenance(id, made) {
   if (!made || typeof made.note !== "string") return false;
   if (
-    RUNWAY.has(id) &&
+    RUNWAY_TASK.has(id) &&
     made.via === "Runway" &&
     made.model === "GPT Image 2.5 Sunburst" &&
     /^Runway API \(gpt_image_2_5_sunburst\)/.test(made.engine ?? "") &&
@@ -41,6 +40,14 @@ export function coverProvenance(id, made) {
     /^[0-9a-f-]{36}$/.test(made.runId ?? "") &&
     /^FLUX\.2 \[klein\]/.test(made.model) &&
     made.note.includes(`Studio run ${made.runId.slice(0, 8)})`)
+  )
+    return true;
+  if (
+    made.via === "Runway" &&
+    RUNWAY[id] &&
+    made.model === "GPT Image 2.5 Sunburst" &&
+    made.prompt === RUNWAY[id].prompt &&
+    /Runway API \(gpt_image_2_5_sunburst\)/.test(made.engine)
   )
     return true;
   return (
