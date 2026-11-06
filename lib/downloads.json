@@ -1,66 +1,66 @@
 {
   "books": {
     "en/story": {
-      "source": "2301a780a210",
+      "source": "210f25154174",
       "files": {
         "epub": {
-          "hash": "9b8dfdae6c",
-          "bytes": 6969088
+          "hash": "4608f08ad0",
+          "bytes": 6969108
         },
         "pdf": {
-          "hash": "75d14277a7",
+          "hash": "7fa3bdddfd",
           "bytes": 9838063
         }
       }
     },
     "en/why-krizaka": {
-      "source": "a453d653f343",
+      "source": "5ef452555c6b",
       "files": {
         "epub": {
-          "hash": "0a77d8d3bc",
-          "bytes": 522198
+          "hash": "5b1f6b7d0f",
+          "bytes": 522202
         },
         "pdf": {
-          "hash": "91c94d2fd1",
+          "hash": "820419a79d",
           "bytes": 731226
         }
       }
     },
     "en/an-engine-on-a-laptop": {
-      "source": "437ebb23a549",
+      "source": "d39a745fafa3",
       "files": {
         "epub": {
-          "hash": "422d504fd8",
-          "bytes": 1225832
+          "hash": "24aca078c2",
+          "bytes": 1225835
         },
         "pdf": {
-          "hash": "3036b84783",
+          "hash": "09976b1321",
           "bytes": 1580828
         }
       }
     },
     "en/what-a-gpu-costs": {
-      "source": "68ec212379a8",
+      "source": "3895a47590b2",
       "files": {
         "epub": {
-          "hash": "348ca174b1",
-          "bytes": 1296064
+          "hash": "b8205e6994",
+          "bytes": 1296071
         },
         "pdf": {
-          "hash": "772edade95",
+          "hash": "c1ef46b2a3",
           "bytes": 1623634
         }
       }
     },
     "en/from-a-clip-to-a-film": {
-      "source": "3320cbcd55d5",
+      "source": "1081c1b295e0",
       "files": {
         "epub": {
-          "hash": "0cdfa885f1",
-          "bytes": 851000
+          "hash": "f34ce67e64",
+          "bytes": 851003
         },
         "pdf": {
-          "hash": "45ffca5e0f",
+          "hash": "baa84ceb18",
           "bytes": 1137338
         }
       }
@@ -79,14 +79,14 @@
       }
     },
     "en/the-first-products": {
-      "source": "231a8fac07b1",
+      "source": "af215cbe3401",
       "files": {
         "epub": {
-          "hash": "df2cab3ed2",
-          "bytes": 729373
+          "hash": "6072e928ed",
+          "bytes": 729378
         },
         "pdf": {
-          "hash": "38a9bfacf6",
+          "hash": "0f05cc5aa9",
           "bytes": 1035151
         }
       }
@@ -287,66 +287,66 @@
       }
     },
     "fr/story": {
-      "source": "9dab8001eb9a",
+      "source": "9edeb70fbc3a",
       "files": {
         "epub": {
-          "hash": "7ed9a1174a",
-          "bytes": 6991674
+          "hash": "bf395b16b0",
+          "bytes": 6991696
         },
         "pdf": {
-          "hash": "ec684061dd",
+          "hash": "159cde2c4f",
           "bytes": 10004361
         }
       }
     },
     "fr/why-krizaka": {
-      "source": "1554deb97f78",
+      "source": "1a0582b57614",
       "files": {
         "epub": {
-          "hash": "339941e607",
-          "bytes": 526326
+          "hash": "d88628dbd3",
+          "bytes": 526330
         },
         "pdf": {
-          "hash": "00343da0a9",
+          "hash": "211fe2a42b",
           "bytes": 750994
         }
       }
     },
     "fr/an-engine-on-a-laptop": {
-      "source": "f97369f37a4c",
+      "source": "b2d117b82859",
       "files": {
         "epub": {
-          "hash": "2035e636fa",
-          "bytes": 1237700
+          "hash": "e1c73a11c7",
+          "bytes": 1237703
         },
         "pdf": {
-          "hash": "5f7b59dde2",
+          "hash": "d7cf319038",
           "bytes": 1608458
         }
       }
     },
     "fr/what-a-gpu-costs": {
-      "source": "60f050fe5057",
+      "source": "c93f435ba377",
       "files": {
         "epub": {
-          "hash": "6421b53111",
-          "bytes": 1308341
+          "hash": "df565bab4a",
+          "bytes": 1308348
         },
         "pdf": {
-          "hash": "c554eb3c12",
+          "hash": "d5abaa0d68",
           "bytes": 1664014
         }
       }
     },
     "fr/from-a-clip-to-a-film": {
-      "source": "b53580f386cc",
+      "source": "35152b6dace7",
       "files": {
         "epub": {
-          "hash": "fdc8250010",
-          "bytes": 856341
+          "hash": "3c391b644f",
+          "bytes": 856344
         },
         "pdf": {
-          "hash": "b7365a5b8c",
+          "hash": "67293495a4",
           "bytes": 1169260
         }
       }
@@ -365,14 +365,14 @@
       }
     },
     "fr/the-first-products": {
-      "source": "eaceea07ee6c",
+      "source": "2e9bd17a0ac7",
       "files": {
         "epub": {
-          "hash": "01c2230c47",
-          "bytes": 730824
+          "hash": "9c8cacd5a6",
+          "bytes": 730830
         },
         "pdf": {
-          "hash": "eb064190da",
+          "hash": "05cbd7b42b",
           "bytes": 1065419
         }
       }
