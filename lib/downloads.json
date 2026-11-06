@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "5246d124a9d3",
+      "source": "046b183d25b1",
       "files": {
         "epub": {
-          "hash": "d5463c492d",
-          "bytes": 6969124
+          "hash": "a2dc06716d",
+          "bytes": 6968770
         },
         "pdf": {
-          "hash": "3e8daaf68c",
-          "bytes": 9838063
+          "hash": "d2139a5347",
+          "bytes": 9818417
         }
       }
     },
@@ -27,15 +27,15 @@
       }
     },
     "en/an-engine-on-a-laptop": {
-      "source": "d39a745fafa3",
+      "source": "98f9d854860e",
       "files": {
         "epub": {
-          "hash": "24aca078c2",
-          "bytes": 1225835
+          "hash": "7168cb6f3a",
+          "bytes": 1225815
         },
         "pdf": {
-          "hash": "09976b1321",
-          "bytes": 1580828
+          "hash": "8877df823b",
+          "bytes": 1580148
         }
       }
     },
@@ -66,28 +66,28 @@
       }
     },
     "en/one-interface-everywhere": {
-      "source": "973591d3829e",
+      "source": "ef9a9e434e05",
       "files": {
         "epub": {
-          "hash": "7c4b5e299e",
-          "bytes": 1744734
+          "hash": "8f97abd3af",
+          "bytes": 1744767
         },
         "pdf": {
-          "hash": "60a454c6df",
-          "bytes": 2192287
+          "hash": "20e64fc39c",
+          "bytes": 2193221
         }
       }
     },
     "en/the-first-products": {
-      "source": "af215cbe3401",
+      "source": "0b576a80dbee",
       "files": {
         "epub": {
-          "hash": "6072e928ed",
-          "bytes": 729378
+          "hash": "1fcca859f4",
+          "bytes": 729331
         },
         "pdf": {
-          "hash": "0f05cc5aa9",
-          "bytes": 1035151
+          "hash": "8ab90f46c0",
+          "bytes": 1033005
         }
       }
     },
@@ -118,15 +118,15 @@
       }
     },
     "en/what-claude-found-auditing-krizaka": {
-      "source": "92698aa8f3cb",
+      "source": "20d645f35729",
       "files": {
         "epub": {
-          "hash": "c4785fe37e",
-          "bytes": 544024
+          "hash": "aef640f0b2",
+          "bytes": 544010
         },
         "pdf": {
-          "hash": "e977646442",
-          "bytes": 827980
+          "hash": "f0d54e41e4",
+          "bytes": 826913
         }
       }
     },
@@ -144,15 +144,15 @@
       }
     },
     "en/how-we-built-our-ci": {
-      "source": "799e229d6e71",
+      "source": "e3049ede5e3b",
       "files": {
         "epub": {
-          "hash": "90399622b1",
-          "bytes": 659640
+          "hash": "8e4f36a9c2",
+          "bytes": 659603
         },
         "pdf": {
-          "hash": "1ff46a3e0d",
-          "bytes": 1079673
+          "hash": "d6c4cd1897",
+          "bytes": 1075798
         }
       }
     },
@@ -170,15 +170,15 @@
       }
     },
     "en/orazaka-v2-the-architecture-we-build": {
-      "source": "25e0a6021840",
+      "source": "11d605bb099b",
       "files": {
         "epub": {
-          "hash": "70b696e417",
-          "bytes": 816540
+          "hash": "84867664a5",
+          "bytes": 816433
         },
         "pdf": {
-          "hash": "68f3103452",
-          "bytes": 1278637
+          "hash": "a1c506e89f",
+          "bytes": 1271825
         }
       }
     },
@@ -196,28 +196,28 @@
       }
     },
     "en/we-bought-sonarcloud-what-do-we-have-now": {
-      "source": "c4ce010dfc43",
+      "source": "44d84be8f592",
       "files": {
         "epub": {
-          "hash": "ad46154bf9",
-          "bytes": 646832
+          "hash": "f801aadc70",
+          "bytes": 646853
         },
         "pdf": {
-          "hash": "8d41d2b6d2",
-          "bytes": 933977
+          "hash": "67ac10d1bf",
+          "bytes": 934016
         }
       }
     },
     "en/the-audit-said-ai-code-we-measured": {
-      "source": "73de1f36fc2d",
+      "source": "1f45e55a8bce",
       "files": {
         "epub": {
-          "hash": "45d0710965",
-          "bytes": 620822
+          "hash": "d79df7ec82",
+          "bytes": 620842
         },
         "pdf": {
-          "hash": "3636008cf3",
-          "bytes": 885781
+          "hash": "d7ea32186d",
+          "bytes": 885943
         }
       }
     },
@@ -235,15 +235,15 @@
       }
     },
     "en/how-we-test-our-uis": {
-      "source": "b1893a8ca46a",
+      "source": "3f5ea1488ee5",
       "files": {
         "epub": {
-          "hash": "0773ed803f",
-          "bytes": 910686
+          "hash": "c2e1cba466",
+          "bytes": 910675
         },
         "pdf": {
-          "hash": "b1a6c47371",
-          "bytes": 1300015
+          "hash": "e3ac58a172",
+          "bytes": 1298578
         }
       }
     },
@@ -287,15 +287,15 @@
       }
     },
     "fr/story": {
-      "source": "c265e79388cc",
+      "source": "d06ec4c88aa6",
       "files": {
         "epub": {
-          "hash": "135632791c",
-          "bytes": 6991712
+          "hash": "72d53f6a0d",
+          "bytes": 6991361
         },
         "pdf": {
-          "hash": "48d34e3cb4",
-          "bytes": 10004361
+          "hash": "dee55b8aa5",
+          "bytes": 9985071
         }
       }
     },
@@ -313,15 +313,15 @@
       }
     },
     "fr/an-engine-on-a-laptop": {
-      "source": "b2d117b82859",
+      "source": "be1340cbf6e6",
       "files": {
         "epub": {
-          "hash": "e1c73a11c7",
-          "bytes": 1237703
+          "hash": "73b2de653f",
+          "bytes": 1237685
         },
         "pdf": {
-          "hash": "d7cf319038",
-          "bytes": 1608458
+          "hash": "aeb4152369",
+          "bytes": 1607803
         }
       }
     },
@@ -352,28 +352,28 @@
       }
     },
     "fr/one-interface-everywhere": {
-      "source": "75e20c8f0e66",
+      "source": "00a801903f0f",
       "files": {
         "epub": {
-          "hash": "d6d5cfaa5b",
-          "bytes": 1743799
+          "hash": "cb78a97a35",
+          "bytes": 1743838
         },
         "pdf": {
-          "hash": "b007d4ad15",
-          "bytes": 2218958
+          "hash": "7a5b682569",
+          "bytes": 2219880
         }
       }
     },
     "fr/the-first-products": {
-      "source": "2e9bd17a0ac7",
+      "source": "75c281133be1",
       "files": {
         "epub": {
-          "hash": "9c8cacd5a6",
-          "bytes": 730830
+          "hash": "94f53f731d",
+          "bytes": 730784
         },
         "pdf": {
-          "hash": "05cbd7b42b",
-          "bytes": 1065419
+          "hash": "9ea817aa13",
+          "bytes": 1063230
         }
       }
     },
@@ -404,15 +404,15 @@
       }
     },
     "fr/what-claude-found-auditing-krizaka": {
-      "source": "2911f95b45cd",
+      "source": "524b91d5bf4f",
       "files": {
         "epub": {
-          "hash": "9f44445430",
-          "bytes": 542737
+          "hash": "d6ec7e6849",
+          "bytes": 542722
         },
         "pdf": {
-          "hash": "1e7c2a6622",
-          "bytes": 852923
+          "hash": "e16c84452e",
+          "bytes": 852279
         }
       }
     },
@@ -430,15 +430,15 @@
       }
     },
     "fr/how-we-built-our-ci": {
-      "source": "bd1f17c70222",
+      "source": "14fa942d4c1b",
       "files": {
         "epub": {
-          "hash": "4c564accbe",
-          "bytes": 672922
+          "hash": "79bfff2a5f",
+          "bytes": 672900
         },
         "pdf": {
-          "hash": "1124c82887",
-          "bytes": 1116783
+          "hash": "194efdfb62",
+          "bytes": 1113265
         }
       }
     },
@@ -456,15 +456,15 @@
       }
     },
     "fr/orazaka-v2-the-architecture-we-build": {
-      "source": "0883fba5231b",
+      "source": "2f34f24924af",
       "files": {
         "epub": {
-          "hash": "5a1170b895",
-          "bytes": 824087
+          "hash": "18292d24e9",
+          "bytes": 823978
         },
         "pdf": {
-          "hash": "6794df83e0",
-          "bytes": 1307584
+          "hash": "97495449ab",
+          "bytes": 1300980
         }
       }
     },
@@ -482,28 +482,28 @@
       }
     },
     "fr/we-bought-sonarcloud-what-do-we-have-now": {
-      "source": "8cb04843118e",
+      "source": "9303559c39dc",
       "files": {
         "epub": {
-          "hash": "b83adf292d",
-          "bytes": 660544
+          "hash": "52fb2de42f",
+          "bytes": 660569
         },
         "pdf": {
-          "hash": "fc7e4d687a",
-          "bytes": 957575
+          "hash": "f7c2b03572",
+          "bytes": 957609
         }
       }
     },
     "fr/the-audit-said-ai-code-we-measured": {
-      "source": "148e0bbb93aa",
+      "source": "991b97b36461",
       "files": {
         "epub": {
-          "hash": "91d9283dc4",
-          "bytes": 628986
+          "hash": "b9ae2ccdda",
+          "bytes": 629011
         },
         "pdf": {
-          "hash": "b438edb170",
-          "bytes": 917915
+          "hash": "6d438d76f3",
+          "bytes": 918126
         }
       }
     },
@@ -521,15 +521,15 @@
       }
     },
     "fr/how-we-test-our-uis": {
-      "source": "88c521222839",
+      "source": "881c720fa3e7",
       "files": {
         "epub": {
-          "hash": "67f956dc00",
-          "bytes": 923748
+          "hash": "0244009423",
+          "bytes": 923738
         },
         "pdf": {
-          "hash": "958d7488d7",
-          "bytes": 1332899
+          "hash": "5ede04473e",
+          "bytes": 1331328
         }
       }
     },

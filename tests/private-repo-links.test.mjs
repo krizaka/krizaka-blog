@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { PRIVATE_REPOS, privateRepoLinkProblems } from "../scripts/content-rules.mjs";
+import { PRIVATE_REPOS, privateRepoLinkProblems, orgIssueLinkProblems } from "../scripts/content-rules.mjs";
 
 const root = new URL("..", import.meta.url).pathname;
 const walk = (d) =>
@@ -27,4 +27,23 @@ test("a link to a private repository is refused, a public one and a plain mentio
 
 test("the private list names each repository once", () => {
   assert.equal(new Set(PRIVATE_REPOS).size, PRIVATE_REPOS.length);
+});
+
+/* The bug of 2026-11-06: orazaka-ai-engine#116 was transferred to the private krizaka-internal, the chapter still linked it
+   and main went red; seven .github issues answered 200 with GitHub's generic page, so no link check saw them. */
+test("no post or chapter links an issue of an org repository", () => {
+  const problems = walk(join(root, "content"))
+    .filter((f) => f.endsWith(".mdx"))
+    .flatMap((f) => orgIssueLinkProblems(readFileSync(f, "utf8"), f.replace(root, "")));
+  assert.deepEqual(problems, []);
+});
+
+test("an issue link of the org is refused, a pull request and another host are not", () => {
+  assert.equal(
+    orgIssueLinkProblems("[#116](https://github.com/krizaka/orazaka-ai-engine/issues/116)", "x.mdx").length,
+    1,
+  );
+  assert.equal(orgIssueLinkProblems("[#1](https://github.com/krizaka/.github/issues/1)", "x.mdx").length, 1);
+  assert.deepEqual(orgIssueLinkProblems("[#117](https://github.com/krizaka/sovkora-engine/pull/117)", "x.mdx"), []);
+  assert.deepEqual(orgIssueLinkProblems("[x](https://github.com/vercel/next.js/issues/1)", "x.mdx"), []);
 });

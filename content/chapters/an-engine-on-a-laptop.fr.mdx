@@ -45,7 +45,7 @@ Même sans IA, une plateforme a besoin de plusieurs choses à la fois : une base
 
 Ma réponse du 12 octobre a été très simple, presque bête : un verrou. Avant une tâche lourde (un build natif, une pile Docker, une génération), une session crée un dossier `.heavy.lock`. Si le dossier existe déjà, elle attend une minute et réessaie. Comme la clé unique des toilettes d'un café : une personne à la fois, les autres patientent. Ça ralentit un peu tout le monde, mais plus rien ne s'effondre.
 
-Les services Java ont aussi leur part. Orazaka compte jusqu'à onze services Spring Boot. Une proposition ouverte ([orazaka#132](https://github.com/krizaka/orazaka/issues/132)) estime 4 à 6 Go au repos pour l'ensemble et propose un profil de développement avec une seule JVM. Ce sont des estimations, pas des mesures, et ce n'est pas encore livré.
+Les services Java ont aussi leur part. Orazaka compte jusqu'à onze services Spring Boot. Une proposition ouverte estime 4 à 6 Go au repos pour l'ensemble et propose un profil de développement avec une seule JVM. Ce sont des estimations, pas des mesures, et ce n'est pas encore livré.
 
 ## Les modèles deviennent des données
 

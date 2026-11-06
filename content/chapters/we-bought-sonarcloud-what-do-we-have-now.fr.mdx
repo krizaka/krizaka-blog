@@ -102,7 +102,7 @@ Et il y a ce que Sonar ne remplace pas : les secrets, qui doivent être arrêté
 
 ## Ce qui est prévu, pas fait
 
-Il y a une fonction de SonarCloud que je voudrais essayer : la vue Architecture. Elle permet de déclarer l'architecture voulue, par exemple « Spring AI seulement dans son adaptateur » ou « pas d'accès à la base dans les services », et de voir les écarts comme des problèmes, à côté du reste. J'en ai posé l'idée dans [l'issue .github#355](https://github.com/krizaka/.github/issues/355), après avoir regardé la capture d'une vue « architecture actuelle ».
+Il y a une fonction de SonarCloud que je voudrais essayer : la vue Architecture. Elle permet de déclarer l'architecture voulue, par exemple « Spring AI seulement dans son adaptateur » ou « pas d'accès à la base dans les services », et de voir les écarts comme des problèmes, à côté du reste. J'en ai posé l'idée dans une issue, après avoir regardé la capture d'une vue « architecture actuelle ».
 
 Depuis, j'ai tranché l'ordre. D'abord un schéma C4 généré depuis le code : la vue d'ensemble, du système jusqu'aux fichiers. Il tournera aussi en local, pour que je voie le code de ma machine et pas seulement ce qui est déployé. Ensuite seulement la vue Architecture de Sonar, avec l'architecture voulue et ses écarts. Rien n'est encore activé. Le principe reste simple : ne pas mettre la même règle à deux endroits. Sonar donnerait la vue d'ensemble et l'historique, le build garderait l'arrêt rapide.
 

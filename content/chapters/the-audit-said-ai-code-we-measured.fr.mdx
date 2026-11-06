@@ -97,7 +97,7 @@ C'est la partie dont je suis le moins fier, et celle qui m'a le plus appris.
 
 Quand on ajoute une règle, on pense l'avoir mise partout. En réalité, elle arrive dans quelques dépôts et on passe à la suivante. Le blog que vous lisez en est la preuve : il avait sa propre CI et son propre Sonar, mais pas d'analyse de sécurité, parce que les nouvelles gardes ne l'avaient jamais atteint.
 
-La décision a été simple. Chaque règle de l'organisation est déclarée une fois, dans un registre, avec la vérification qui prouve qu'un dépôt la respecte. Une matrice dépôts par règles tourne toutes les semaines et dans le checkpoint de trois heures. Un script ouvre la correction dans chaque dépôt rouge. Et une règle n'est finie que lorsque sa colonne est verte partout, sans exception ([.github#393](https://github.com/krizaka/.github/issues/393)).
+La décision a été simple. Chaque règle de l'organisation est déclarée une fois, dans un registre, avec la vérification qui prouve qu'un dépôt la respecte. Une matrice dépôts par règles tourne toutes les semaines et dans le checkpoint de trois heures. Un script ouvre la correction dans chaque dépôt rouge. Et une règle n'est finie que lorsque sa colonne est verte partout, sans exception.
 
 Le premier passage de la matrice, sur 36 dépôts actifs : 155 cases vertes, 150 rouges. Ce soir, en la relançant sur la branche principale du dépôt `.github`, je lis 198 vertes et 112 rouges. Ce n'est pas fini, et je ne vais pas le faire paraître plus beau. La règle du hook d'édition, par exemple, est encore rouge dans les 36 dépôts, parce qu'il n'est pas encore en place.
 

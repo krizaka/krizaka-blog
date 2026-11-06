@@ -553,3 +553,15 @@ export function privateRepoLinkProblems(text, file) {
         `${file}: links the private repository krizaka/${m[1]} (${m[0]}), a 404 for readers: say it without a link`,
     );
 }
+
+/* Issues never live in the repository a page names: the company's tickets are in the private krizaka-internal, and a
+   ticket moved there (or between repositories) leaves a link that answers 404, or GitHub's generic page with a 200 that
+   the external link check cannot tell from a live one (krizaka-blog main red on orazaka-ai-engine#116, 2026-11-06).
+   A page names a pull request, a commit or a file, which stay public, or says the thing without a link. */
+export function orgIssueLinkProblems(text, file) {
+  const link = /https?:\/\/github\.com\/krizaka\/[A-Za-z0-9._-]+\/issues\/\d+/g;
+  return [...text.matchAll(link)].map(
+    (m) =>
+      `${file}: links an issue of the org (${m[0]}), moved to a private tracker or answering 404: link a pull request, or say it without a link`,
+  );
+}
