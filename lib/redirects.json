@@ -234,5 +234,13 @@
   "page:/basics/payments-and-high-risk-industries/": {
     "en": "/basics/",
     "fr": "/fr/basics/"
+  },
+  "page:/tags/sovkora/": {
+    "en": "/",
+    "fr": "/fr/"
+  },
+  "page:/tags/verikora/": {
+    "en": "/story/the-first-products/",
+    "fr": "/fr/story/the-first-products/"
   }
 }

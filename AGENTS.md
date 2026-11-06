@@ -31,7 +31,7 @@
 
 - A post is `content/posts/<slug>.<en|fr>.mdx`: front matter `title`, `description` (≤ 220), `date` (YYYY-MM-DD),
   `tags` (lower-case ids; their names are `tags.names.*` in the messages), `author` (`authors.*`), `draft`, optional
-  `cover` (a media id, below), `featured` (kept in the front matter; the home's Featured is the latest chapter), `series` (an id of `series.names.*`: `building-orazaka`,
+  `cover` (a media id, below), `featured` (kept in the front matter; the home's Featured is the latest chapter), `series` (an id of `series.names.*`: `building-sovkora`,
   `measured`) with its `part` (a post's place; unique per series and language), optional `image`. A post may exist in one language only; in both, they share the slug and name each other (hreflang).
 - **Search**: optional `seoTitle` (≤ 60 characters, the whole title tag) and `seoDescription` (≤ 155) when the title or the
   lead is too long for a search result; the h1 and the lead stay the post's own words. A topic is a word on a card

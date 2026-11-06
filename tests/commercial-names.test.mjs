@@ -12,8 +12,8 @@ for (const lang of ["en", "fr"]) {
       catalogueValues(m).flatMap(([, t]) => findCodeNames(t)),
       [],
     );
-    assert.equal(m.tags.names.orazaka, "Sovkora");
-    assert.equal(m.tags.names.yomizaka, "Verikora");
-    assert.match(m.series.names["building-orazaka"], /Sovkora/);
+    assert.equal(m.tags.names.sovkora, "Sovkora");
+    assert.equal(m.tags.names.verikora, "Verikora");
+    assert.match(m.series.names["building-sovkora"], /Sovkora/);
   });
 }

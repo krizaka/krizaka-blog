@@ -1,14 +1,14 @@
 {
   "books": {
     "en/story": {
-      "source": "94653b1c5cfa",
+      "source": "afbea6494ff8",
       "files": {
         "epub": {
           "hash": "747235438d",
           "bytes": 7135691
         },
         "pdf": {
-          "hash": "711a26b4fa",
+          "hash": "71ee2be7dd",
           "bytes": 9984650
         }
       }
@@ -27,27 +27,27 @@
       }
     },
     "en/an-engine-on-a-laptop": {
-      "source": "98f9d854860e",
+      "source": "5f5874563e41",
       "files": {
         "epub": {
           "hash": "7168cb6f3a",
           "bytes": 1225815
         },
         "pdf": {
-          "hash": "8877df823b",
+          "hash": "e6ecc0870f",
           "bytes": 1580148
         }
       }
     },
     "en/what-a-gpu-costs": {
-      "source": "3895a47590b2",
+      "source": "a770c7321b05",
       "files": {
         "epub": {
           "hash": "b8205e6994",
           "bytes": 1296071
         },
         "pdf": {
-          "hash": "c1ef46b2a3",
+          "hash": "ac95fc72b0",
           "bytes": 1623634
         }
       }
@@ -66,41 +66,41 @@
       }
     },
     "en/one-interface-everywhere": {
-      "source": "ef9a9e434e05",
+      "source": "fbb7b8159927",
       "files": {
         "epub": {
           "hash": "8f97abd3af",
           "bytes": 1744767
         },
         "pdf": {
-          "hash": "20e64fc39c",
+          "hash": "c3624f6585",
           "bytes": 2193221
         }
       }
     },
     "en/the-first-products": {
-      "source": "0b576a80dbee",
+      "source": "60be244adee4",
       "files": {
         "epub": {
           "hash": "1fcca859f4",
           "bytes": 729331
         },
         "pdf": {
-          "hash": "8ab90f46c0",
+          "hash": "f65427e56f",
           "bytes": 1033005
         }
       }
     },
     "en/an-empty-result-is-not-a-success": {
-      "source": "13d74518950a",
+      "source": "5ef4d5eb9cd7",
       "files": {
         "epub": {
-          "hash": "2d772490d1",
-          "bytes": 499600
+          "hash": "bf9c5c6a25",
+          "bytes": 499639
         },
         "pdf": {
-          "hash": "9f5ae66c25",
-          "bytes": 750345
+          "hash": "bcd1184fb8",
+          "bytes": 751213
         }
       }
     },
@@ -170,14 +170,14 @@
       }
     },
     "en/orazaka-v2-the-architecture-we-build": {
-      "source": "11d605bb099b",
+      "source": "c5c8a639c430",
       "files": {
         "epub": {
           "hash": "84867664a5",
           "bytes": 816433
         },
         "pdf": {
-          "hash": "a1c506e89f",
+          "hash": "629f22721a",
           "bytes": 1271825
         }
       }
@@ -287,14 +287,14 @@
       }
     },
     "fr/story": {
-      "source": "5607188a56e6",
+      "source": "c5b28ec673a4",
       "files": {
         "epub": {
           "hash": "8bf55704f7",
           "bytes": 7158305
         },
         "pdf": {
-          "hash": "76afdcbe32",
+          "hash": "d382549d57",
           "bytes": 10151859
         }
       }
@@ -313,27 +313,27 @@
       }
     },
     "fr/an-engine-on-a-laptop": {
-      "source": "be1340cbf6e6",
+      "source": "5561a97ff3b2",
       "files": {
         "epub": {
           "hash": "73b2de653f",
           "bytes": 1237685
         },
         "pdf": {
-          "hash": "aeb4152369",
+          "hash": "1a5d9725f8",
           "bytes": 1607803
         }
       }
     },
     "fr/what-a-gpu-costs": {
-      "source": "c93f435ba377",
+      "source": "f45dc13b0792",
       "files": {
         "epub": {
           "hash": "df565bab4a",
           "bytes": 1308348
         },
         "pdf": {
-          "hash": "d5abaa0d68",
+          "hash": "0e41e5b309",
           "bytes": 1664014
         }
       }
@@ -352,41 +352,41 @@
       }
     },
     "fr/one-interface-everywhere": {
-      "source": "00a801903f0f",
+      "source": "b6330ed46f3f",
       "files": {
         "epub": {
           "hash": "cb78a97a35",
           "bytes": 1743838
         },
         "pdf": {
-          "hash": "7a5b682569",
+          "hash": "7786e72294",
           "bytes": 2219880
         }
       }
     },
     "fr/the-first-products": {
-      "source": "75c281133be1",
+      "source": "7ce9fb11a080",
       "files": {
         "epub": {
           "hash": "94f53f731d",
           "bytes": 730784
         },
         "pdf": {
-          "hash": "9ea817aa13",
+          "hash": "6a4833b4b7",
           "bytes": 1063230
         }
       }
     },
     "fr/an-empty-result-is-not-a-success": {
-      "source": "1b347876c848",
+      "source": "78b2029620e6",
       "files": {
         "epub": {
-          "hash": "55afbebe83",
-          "bytes": 506654
+          "hash": "08e73cc99a",
+          "bytes": 506698
         },
         "pdf": {
-          "hash": "629547400d",
-          "bytes": 777922
+          "hash": "e054405135",
+          "bytes": 778850
         }
       }
     },
@@ -456,14 +456,14 @@
       }
     },
     "fr/orazaka-v2-the-architecture-we-build": {
-      "source": "2f34f24924af",
+      "source": "d2f96c79f548",
       "files": {
         "epub": {
           "hash": "18292d24e9",
           "bytes": 823978
         },
         "pdf": {
-          "hash": "97495449ab",
+          "hash": "3350293de2",
           "bytes": 1300980
         }
       }
@@ -573,27 +573,27 @@
       }
     },
     "en/how-orazaka-made-our-brand-film": {
-      "source": "eb3546c7b7e6",
+      "source": "2247c07d7e54",
       "files": {
         "epub": {
           "hash": "dc3b1b9480",
           "bytes": 1012722
         },
         "pdf": {
-          "hash": "46bf123057",
+          "hash": "8952eda1f3",
           "bytes": 1320539
         }
       }
     },
     "fr/how-orazaka-made-our-brand-film": {
-      "source": "b7ba403cb8d6",
+      "source": "c9a60c2b82c1",
       "files": {
         "epub": {
           "hash": "d492ded657",
           "bytes": 1030789
         },
         "pdf": {
-          "hash": "711120d2bd",
+          "hash": "2e48be59bd",
           "bytes": 1349974
         }
       }
