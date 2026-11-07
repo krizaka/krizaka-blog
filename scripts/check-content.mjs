@@ -10,6 +10,7 @@ import {
   mediaProblems,
   privateRepoLinkProblems,
   orgIssueLinkProblems,
+  branchLineLinkProblems,
   readContext,
 } from "./content-rules.mjs";
 
@@ -39,6 +40,7 @@ for (const dir of ["content/posts", "content/chapters"])
         ...attributeQuoteProblems(text, file),
         ...privateRepoLinkProblems(text, file),
         ...orgIssueLinkProblems(text, file),
+        ...branchLineLinkProblems(text, file),
       );
     }
 if (problems.length) {

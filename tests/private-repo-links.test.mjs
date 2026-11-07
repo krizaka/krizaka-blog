@@ -2,7 +2,12 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { PRIVATE_REPOS, privateRepoLinkProblems, orgIssueLinkProblems } from "../scripts/content-rules.mjs";
+import {
+  PRIVATE_REPOS,
+  privateRepoLinkProblems,
+  orgIssueLinkProblems,
+  branchLineLinkProblems,
+} from "../scripts/content-rules.mjs";
 
 const root = new URL("..", import.meta.url).pathname;
 const walk = (d) =>
@@ -46,4 +51,19 @@ test("an issue link of the org is refused, a pull request and another host are n
   assert.equal(orgIssueLinkProblems("[#1](https://github.com/krizaka/.github/issues/1)", "x.mdx").length, 1);
   assert.deepEqual(orgIssueLinkProblems("[#117](https://github.com/krizaka/sovkora-engine/pull/117)", "x.mdx"), []);
   assert.deepEqual(orgIssueLinkProblems("[x](https://github.com/vercel/next.js/issues/1)", "x.mdx"), []);
+});
+
+/* The bug of 2026-11-06 (krizaka-internal#2798): a line anchor on `main` went 404 with the repository's rename. */
+test("no post or chapter cites lines on a branch", () => {
+  const problems = walk(join(root, "content"))
+    .filter((f) => f.endsWith(".mdx"))
+    .flatMap((f) => branchLineLinkProblems(readFileSync(f, "utf8"), f.replace(root, "")));
+  assert.deepEqual(problems, []);
+});
+
+test("lines cited on a branch are refused, a permalink and a whole-file link are not", () => {
+  const url = "https://github.com/krizaka/sovkora-job-service/blob";
+  assert.equal(branchLineLinkProblems(`[x](${url}/main/src/A.java#L696-L702)`, "x.mdx").length, 1);
+  assert.deepEqual(branchLineLinkProblems(`[x](${url}/a0e727d/src/A.java#L696-L702)`, "x.mdx"), []);
+  assert.deepEqual(branchLineLinkProblems(`[x](${url}/main/src/A.java)`, "x.mdx"), []);
 });
