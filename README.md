@@ -32,6 +32,7 @@ hreflang, an Open Graph image per post, `llms.txt`, JSON-LD. Open to search engi
 Rules for contributors and agents: [AGENTS.md](AGENTS.md).
 
 <!-- krizaka:workflows:start -->
+
 ## Workflows
 
 What runs in the Actions tab of this repository.
@@ -46,4 +47,5 @@ What runs in the Actions tab of this repository.
 - **Post-deploy check** (`post-deploy.yml`): Waits for the live site to serve the new build, then pings IndexNow. Runs on push, on demand.
 - **Scorecard** (`scorecard.yml`): OpenSSF Scorecard of the repository. Runs when branch rules change, on a schedule, on demand.
 - **Security scan** (`security.yml`): Secret scan (gitleaks) and workflow scan (zizmor); both are required checks. Runs on every pull request, in the merge queue, on push.
+
 <!-- krizaka:workflows:end -->
