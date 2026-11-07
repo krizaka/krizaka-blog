@@ -55,7 +55,7 @@ test("the products are the commercial names on their www address, never a code n
   const { footerSettings } = await import("../lib/footer.ts");
   const products = footerSettings.columns.find((c) => c.id === "products");
   assert.deepEqual(products.links.map((l) => l.label).sort(), ["Folioviv", "Sovkora", "Verikora"]);
-  assert.equal(products.status, "development");
+  assert.equal(products.status, undefined, "no one status for the column: each product says its own");
   for (const l of products.links) assert.match(l.href, /^https:\/\/www\.(sovkora|verikora|folioviv)\.com$/);
   assert.doesNotMatch(read("lib/footer.ts"), /orazaka\.com|yomizaka\.com|akinaza\.com|Orazaka|Yomizaka|Akinaza/);
 });
@@ -88,4 +88,32 @@ test("SiteFooter.tsx draws the settings and types no column", () => {
   assert.match(footer, /resolveFooterSettings/);
   assert.match(footer, /config=\{config\}/);
   assert.doesNotMatch(footer, /<FamilyFooter\.Column|<FamilyFooter\.Link|FOOTER_PRODUCT_IDS/);
+});
+
+/* One status per product, the same word as krizaka.com (decision 2026-11-05, reunion 6): Verikora and Sovkora in
+   development, Folioviv paused. krizaka.com's own words for « development » are pinned here (its messages/*.json,
+   site.nav.status.development); « paused » is the decided word, not yet in @krizaka/org. */
+test("each product says its own status, in both languages", async () => {
+  const { PRODUCT_STATUS, productLabel } = await import("../lib/footer.ts");
+  assert.deepEqual(PRODUCT_STATUS, { Verikora: "development", Sovkora: "development", Folioviv: "paused" });
+  const words = {
+    en: { development: "In development", paused: "Paused" },
+    fr: { development: "En développement", paused: "En pause" },
+  };
+  for (const l of ["en", "fr"]) {
+    assert.deepEqual(messages(l).footer.status, words[l]);
+    assert.equal(productLabel("Folioviv", messages(l).footer.status), `Folioviv · ${words[l].paused}`);
+    assert.equal(productLabel("Verikora", messages(l).footer.status), `Verikora · ${words[l].development}`);
+    assert.equal(productLabel("Sovkora", messages(l).footer.status), `Sovkora · ${words[l].development}`);
+  }
+});
+
+test("SiteFooter.tsx writes each product's status on its link", () => {
+  assert.match(read("app/components/SiteFooter.tsx"), /productLabel/);
+});
+
+test("no founder name in the site chrome (footer and bar)", () => {
+  const chrome = [read("lib/footer.ts"), read("app/components/TopBar.tsx"), read("app/components/SiteFooter.tsx")];
+  for (const l of ["en", "fr"]) chrome.push(JSON.stringify(messages(l).footer), JSON.stringify(messages(l).bar));
+  for (const text of chrome) assert.doesNotMatch(text, /Oussama|Abid|oussamaABID/i);
 });

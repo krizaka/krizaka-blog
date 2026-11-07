@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "3d417351275e",
+      "source": "5357885f6f40",
       "files": {
         "epub": {
-          "hash": "2f116e6c91",
-          "bytes": 7615720
+          "hash": "38bfd3664f",
+          "bytes": 7615758
         },
         "pdf": {
-          "hash": "cc466c7567",
-          "bytes": 10628529
+          "hash": "48962b0f7f",
+          "bytes": 10628565
         }
       }
     },
@@ -118,15 +118,15 @@
       }
     },
     "en/what-claude-found-auditing-krizaka": {
-      "source": "20d645f35729",
+      "source": "185b1fe960c4",
       "files": {
         "epub": {
-          "hash": "aef640f0b2",
-          "bytes": 544010
+          "hash": "29f06f55d4",
+          "bytes": 544098
         },
         "pdf": {
-          "hash": "f0d54e41e4",
-          "bytes": 826913
+          "hash": "7e504426cc",
+          "bytes": 827931
         }
       }
     },
@@ -287,15 +287,15 @@
       }
     },
     "fr/story": {
-      "source": "e8ec12b54afa",
+      "source": "232b1dd1c765",
       "files": {
         "epub": {
-          "hash": "ec3559aa02",
-          "bytes": 7639194
+          "hash": "c3cf2e8b35",
+          "bytes": 7639233
         },
         "pdf": {
-          "hash": "a705d02797",
-          "bytes": 10803376
+          "hash": "f8bdb9e011",
+          "bytes": 10803412
         }
       }
     },
@@ -404,15 +404,15 @@
       }
     },
     "fr/what-claude-found-auditing-krizaka": {
-      "source": "524b91d5bf4f",
+      "source": "4def7c62ea55",
       "files": {
         "epub": {
-          "hash": "d6ec7e6849",
-          "bytes": 542722
+          "hash": "7e29972e86",
+          "bytes": 542823
         },
         "pdf": {
-          "hash": "e16c84452e",
-          "bytes": 852279
+          "hash": "8d62b5acb2",
+          "bytes": 853328
         }
       }
     },

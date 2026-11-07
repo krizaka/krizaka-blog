@@ -1,7 +1,7 @@
 # After every push to main DigitalOcean rebuilds and deploys the blog (krizaka/.github#438): wait until blog.krizaka.com serves
 # this commit (out/build.json, scripts/build-info.mjs), then IndexNow (changed URLs only) and the family's SEO guard on the live
 # host. Red opens one issue here.
-name: post-deploy
+name: Post-deploy check
 
 on:
   push:
