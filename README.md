@@ -30,3 +30,20 @@ hreflang, an Open Graph image per post, `llms.txt`, JSON-LD. Open to search engi
 (`APP_INDEXING_ENABLED`). Cost: $0/month (DigitalOcean static site; `.do/app.yaml`).
 
 Rules for contributors and agents: [AGENTS.md](AGENTS.md).
+
+<!-- krizaka:workflows:start -->
+## Workflows
+
+What runs in the Actions tab of this repository.
+
+- **Bump @krizaka packages** (`bump-krizaka.yml`): Opens one auto-merged PR that bumps the @krizaka packages after a release. Runs when another repository triggers it, on demand.
+- **CI** (`ci.yml`): Lint, tests and build of the repository. Runs on push, on every pull request, in the merge queue, on demand.
+- **Dependabot auto-merge** (`dependabot-automerge.yml`): Auto-merges safe Dependabot updates. Runs on every pull request.
+- **Docs map** (`docs-map.yml`): Checks the docs map of the repository. Runs on every pull request.
+- **Merge resolution** (`merge-resolution.yml`): Fails a PR that drops what main added without a deletion-explained line. Runs on every pull request.
+- **Newsletter probe** (`newsletter-probe.yml`): Checks the newsletter database path after a deploy. Runs called by other workflows, on demand.
+- **Newsletter** (`newsletter.yml`): Sends the newsletter. Runs on push, on demand.
+- **Post-deploy check** (`post-deploy.yml`): Waits for the live site to serve the new build, then pings IndexNow. Runs on push, on demand.
+- **Scorecard** (`scorecard.yml`): OpenSSF Scorecard of the repository. Runs when branch rules change, on a schedule, on demand.
+- **Security scan** (`security.yml`): Secret scan (gitleaks) and workflow scan (zizmor); both are required checks. Runs on every pull request, in the merge queue, on push.
+<!-- krizaka:workflows:end -->
