@@ -1,0 +1,317 @@
+---
+title: "Pourquoi on ralentissait, et comment on travaille maintenant"
+description: "Nos features produit sont passées d'une quarantaine par jour à moins de cinq, alors que le tuyau restait rapide. Cinq causes mesurées, nos 87 règles relues, le crack qui remplace le pompier."
+seoTitle: "Pourquoi on ralentissait, et ce qu'on a changé"
+seoDescription: "Nos features produit ont chuté de 88 % en quatre jours. Les cinq causes mesurées, les règles gardées, assouplies ou retirées, et notre façon de travailler."
+date: 2026-11-05
+tags: [ai, integration, measurements]
+author: oussama
+publishedAt: "2026-11-05T21:30:00-05:00"
+draft: false
+sensitive: true
+chapter: 25
+cover: series-25-why-we-slowed-down-and-how-we-work-now
+coverAlt: "Une petite gare de triage enneigée par un matin d'hiver pâle, à l'encre et à l'aquarelle légère : un petit hibou gris-violet perché sur la passerelle en bois au-dessus des voies, un plan roulé à côté de lui, un train de wagons qui part vers la gare et un wagon rouge sur une voie de garage"
+period: "2026-11-02/2026-11-05"
+sources:
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "des portes empilées qui arrêtaient tout, et des sessions qui ne démarraient plus"
+  built: "une voie bloquée seulement par ses PR, des règles qui comptent leurs refus, des sessions qui démarrent seules"
+stats:
+  - value: "−88 %"
+    label: "de features produit fusionnées par jour, du 2 au 5 novembre"
+    section: "Une impression, puis une mesure"
+  - value: "87"
+    label: "règles relues une par une : gardées, assouplies ou retirées"
+    section: "La réunion des 87 règles"
+  - value: "3"
+    label: "indicateurs suivis, et une première mesure le 8 novembre"
+    section: "Trois indicateurs, et une date"
+---
+
+Au [chapitre 23](/fr/story/the-trains-second-version-rails-sidings-and-a-repair-train/), j'ai raconté les rails, le pompier et le chouf. Au [chapitre 24](/fr/story/how-we-stay-in-sync/), comment on reste synchronisés. Le 5 novembre au matin, j'ai écrit au CTO une phrase moins fière : « j'ai le feeling qu'on n'avance pas à la vitesse qu'on veut ». Je lui ai demandé d'étudier notre vitesse et notre façon de travailler avec les agents, et de me faire un plan.
+
+Ce chapitre raconte ce qu'il a trouvé, ce qu'on a décidé le jour même, et pourquoi. Il se termine sans résultat, parce que la première mesure tombe le 8 novembre.
+
+## Une impression, puis une mesure
+
+Le rapport a été fait en lecture seule : aucune issue, aucune PR, aucun réglage touché. Il compte les PR de 41 dépôts depuis le 22 octobre, les issues, le tableau et les journaux de nos outils.
+
+La première ligne m'a confirmé l'impression. Du 22 au 28 octobre, on fusionnait environ 40 features produit par jour. Du 29 octobre au 1er novembre, 39. Du 2 au 5 novembre, 4,8. C'est une baisse de 88 %. Pour Verikora, notre priorité, on est passé de 18 features et correctifs par jour à 4.
+
+La deuxième ligne m'a surpris. Le tuyau, lui, n'avait pas ralenti. Une PR ouverte fusionnait en 20 minutes, en médiane. Le train mettait 7 minutes entre la tête de file et la fusion. Une PR rouge redevenait verte en 26 minutes, en médiane aussi. Ce n'était ni la CI, ni le train, ni la relecture.
+
+<Numbers>
+  <Num
+    value="4,8"
+    label="features produit fusionnées par jour"
+    hint="du 2 au 5 novembre, contre une quarantaine avant"
+  />
+  <Num value="20 min" label="d'une PR ouverte à sa fusion" hint="en médiane : le tuyau restait rapide" />
+  <Num value="7 min" label="de la tête de file à la fusion" hint="le train non plus n'était pas le problème" />
+</Numbers>
+
+Le rapport le dit en une phrase que je garde : le travail n'entrait plus dans la machine.
+
+## Cinq causes, et aucune n'était la CI
+
+### Les sessions ne tournaient plus
+
+Le 1er novembre, 51 sessions ont tourné. Le 4, 13. Le 5, au moment du rapport, 3. Une session ne démarre que si quelqu'un la lance, et la règle « relancer une voie dès qu'elle finit » dépendait de moi ou du CTO. Et celles qui démarraient finissaient souvent sans PR : 37 % depuis le 31 octobre.
+
+Le cas de Verikora, le 4 au soir, résume tout. La session a construit et testé deux tranches. Elle n'a pas pu ouvrir leurs PR : le dépôt avait déjà ses trois PR, et main est restée rouge 886 minutes, à cause d'un test de fumée et d'une mise à jour automatique de dépendances. Rien de tout ça ne venait du code de la feature. Le travail est resté sur une branche, et jusqu'au rapport, aucune session Verikora n'a été relancée.
+
+### Les portes s'étaient empilées
+
+Depuis le 2 novembre, chaque incident avait produit sa règle. En 72 heures, une dizaine de portes nouvelles : le plafond passé de cinq à trois PR, le modèle le plus fort et une leçon écrite après deux rouges, le pompier devenu le crack, la preuve du ticket dans la PR, la recette, le format et l'analyse de qualité à la porte du train, la fraîcheur, la complexité, la liste des identités de commit. Chacune était raisonnable. Ensemble, elles empilaient les arrêts.
+
+<Pipeline label="Avant : le chemin d'une session jusqu'à main. Chaque porte refusait seule, et il suffisait d'une pour que la session s'arrête sans PR.">
+  <Stage title="La session" note="si on la lance">
+    Elle démarre seulement quand quelqu'un pense à la lancer.
+  </Stage>
+  <Stage title="Nouveau travail ?" note="NON" tone="gate">
+    Refusé dès qu'une PR de n'importe quel auteur était coincée dans un dépôt de la voie, robots compris.
+  </Stage>
+  <Stage title="La carte" note="écartée" tone="gate">
+    Une carte sans la liste des fichiers qu'elle touche était écartée : c'était le cas de 73 % des cartes prêtes.
+  </Stage>
+  <Stage title="Le plafond" note="3 par dépôt" tone="gate">
+    Trois PR ouvertes par dépôt, tous auteurs confondus. À la limite, plus d'ouverture.
+  </Stage>
+  <Stage title="La preuve" note="refus" tone="gate">
+    Une PR qui ne recopiait pas chaque ligne « fini quand » de son ticket, avec sa preuve, était refusée.
+  </Stage>
+  <Stage title="Le gel" note="main rouge" tone="gate">
+    Un rouge sur main, quelle que soit sa cause, arrêtait toutes les fusions du dépôt.
+  </Stage>
+  <Stage title="main" note="enfin" tone="ship">
+    Quand tout était passé, le train faisait le reste en quelques minutes.
+  </Stage>
+</Pipeline>
+
+Le gel faisait le plus de dégâts. Sur les rouges de main du 2 au 5 novembre, la plupart ne venaient pas du code produit : 46 mises à jour automatiques de dépendances, 30 analyses de qualité, 19 releases. Chacun gelait le dépôt entier. Le veilleur a levé 96 alertes « gelé » en quatre jours.
+
+<Rails label="Avant, du 2 au 5 novembre : un rouge qui n'était pas du produit gelait le rail de Verikora et de Sovkora, pendant que le rail de la plateforme roulait.">
+  <Rail name="Verikora" state="frozen" wagons="PR 1:wait | PR 2:wait | PR 3:wait" />
+  <Rail name="Sovkora" state="frozen" wagons="PR 4:wait | PR 5:wait" />
+  <Rail name="Plateforme" wagons="règle:go | outil:wait | pins:wait | pins:wait" />
+  <Beat>
+    Verikora : main est rouge à cause d'un test de fumée et d'une mise à jour automatique, rien qui vienne du produit.
+    Le rail est gelé, et les trois PR attendent, même vertes.
+  </Beat>
+  <Beat>
+    Le plafond compte les PR de tout le monde. Avec ses trois places prises, la voie ne peut plus rien ouvrir : deux
+    tranches testées restent sur une branche.
+  </Beat>
+  <Beat>Sovkora : même chose, pour un rouge qui ne venait pas non plus de son code.</Beat>
+  <Beat>
+    Pendant ce temps, le rail de la plateforme roule : des pins, une règle, un outil. C'est là que partait la capacité.
+  </Beat>
+</Rails>
+
+### L'usine mangeait la capacité
+
+J'appelle « l'usine » tout ce qui sert à produire : les outils des agents, les règles, la CI, les robots qui mettent à jour les versions. Du 2 au 5 novembre, 60 % des fusions venaient de robots. En 14 jours, ils avaient ouvert 748 PR de pins, une par version et par dépôt. Et 52 % des PR écrites par les agents allaient à l'usine elle-même : 83 PR en quatre jours dans les deux dépôts des règles et des outils, à peu près une règle ou un outil nouveau par heure.
+
+L'usine était devenue le premier client de nos agents. Une usine ne livre rien à personne.
+
+### Le tableau ne guidait plus
+
+Il y avait 311 cartes dans « Next », la colonne du travail prêt, pour une cible d'une soixantaine. La plateforme en avait 202 à elle seule. En 14 jours, on avait créé 1 749 issues et on en avait fermé 950. 94 % étaient écrites par des agents, souvent à partir d'audits : 179 le seul 2 novembre.
+
+Et les cartes n'étaient pas prêtes. Seulement 27 % avaient la liste des fichiers qu'elles touchent, celle que la session exige au démarrage. Une session dépensait donc son budget à refaire le découpage avant d'écrire une ligne.
+
+### Des rouges qu'on pouvait attraper chez soi
+
+En 14 jours, environ 2 000 passages de CI ont échoué, à peu près deux rouges par branche. Une note du 4 novembre les avait classés : 43 % auraient été attrapés en quelques secondes par un contrôle local, 56 % avec un hook git commun. Ce n'était pas « trop de tests ». C'étaient des tests au mauvais endroit, en CI au lieu d'être sur la machine, et des contrôles hors produit qui bloquaient le produit.
+
+## La réunion des 87 règles
+
+Le même jour, le CTO a réuni la sécurité, le business, l'UI et l'UX et le conseiller stratégique autour d'un inventaire : nos 87 règles de travail, chacune avec sa date, l'endroit où elle vit et ce qu'elle protège. Elles ont été relues une par une.
+
+Le conseiller a proposé un principe, et tout le monde l'a repris. Une règle :
+
+- empêche l'irréversible ;
+- agit à la source, en quelques secondes ;
+- nomme l'indicateur qu'elle doit faire bouger, sinon elle disparaît ;
+- compte ses refus, sinon elle n'a pas le droit de refuser ;
+- protège le client et le fondateur, pas l'usine.
+
+Avec ce principe, le tri a été plus simple que je ne pensais. Tout ce qui touche à la sécurité est resté tel quel, à l'unanimité, et la sécurité a eu le dernier mot. Les trains restent les seuls à fusionner, et le train de release reste la seule porte vers la production. Les pages honnêtes, l'accessibilité, les textes identiques en français et en anglais : gardés aussi.
+
+<Compare
+  label="Les règles qui ont changé le 5 novembre, avant et maintenant"
+  topic="Règle"
+  before="Avant"
+  after="Maintenant"
+>
+  <Case
+    topic="Le plafond de PR"
+    before="Trois par dépôt, tous auteurs confondus."
+    after="Cinq par dépôt, en ne comptant que les PR de la voie."
+  />
+  <Case
+    topic="Le gel"
+    before="Tout rouge sur main gelait le dépôt."
+    after="Seul un rouge des tests du produit ou de sécurité gèle."
+    afterDetail="Et le gel bloque la fusion, jamais l'ouverture d'une PR."
+  />
+  <Case
+    topic="La carte et sa preuve"
+    before="Refusées si incomplètes."
+    after="Un avertissement."
+    afterDetail="La PR cite son ticket par défaut, et ne le ferme que si chaque ligne est prouvée."
+  />
+  <Case
+    topic="Deux rouges"
+    before="Une leçon écrite, sinon pas de fusion."
+    after="Une ligne dans un fichier de leçons."
+    afterDetail="Plus une porte : le train continue."
+  />
+  <Case
+    topic="L'analyse de qualité"
+    before="Elle bloquait une PR sur toutes ses notes."
+    after="Seule la note de sécurité bloque une PR."
+    afterDetail="Les trois meilleures notes restent la cible avant la production."
+  />
+  <Case
+    topic="Les captures d'écran de référence"
+    before="Elles bloquaient chaque PR."
+    after="Elles avertissent sur la PR."
+    afterDetail="Elles ne bloquent que la release vers la production."
+  />
+  <Case
+    topic="Les pins de versions"
+    before="Une PR par version et par dépôt."
+    after="Une seule PR par dépôt et par jour."
+  />
+</Compare>
+
+Quatre règles sont parties, dont une règle locale de complexité qui faisait doublon avec l'analyse de qualité, et le pompier, remplacé par le crack. Trois autres, sur le tableau, n'en font plus qu'une.
+
+Deux conditions sont venues avec. D'abord, chaque porte journalise ses refus : ce n'est pas une règle de plus, c'est la mesure sans laquelle on ne peut juger aucune règle. Ensuite, la liste de ce qui redeviendra strict est écrite dès maintenant : le jour où une vraie pièce pourra entrer dans nos produits, les captures bloqueront de nouveau chaque PR, et le reste suivra.
+
+Et un moratoire. Le rapport proposait quatorze jours sans nouvelle règle ; j'en ai choisi trois, jusqu'au 8 novembre. Pendant ces trois jours, une PR qui ajoute une porte, un hook ou une étape de workflow est refusée par un contrôle, sauf si elle dit pourquoi elle fait exception. Le seul chantier d'usine autorisé était le contrôle local.
+
+Pour savoir si une règle est vraiment en place, la référence ne change pas : c'est la matrice de conformité. Un script croise chaque jour chaque dépôt avec chaque règle et répond vert, rouge ou hors champ. Pas un agent qui dit « c'est fait ». Pendant le moratoire, la liste des règles de la matrice est gelée à 35, et seules les règles de sécurité doivent encore arriver partout le jour même.
+
+## Le pompier s'en va, le crack arrive
+
+Au chapitre 23, le pompier se réveillait quand un dépôt avait ses PR au plafond, avec une rouge parmi elles. Le chouf regardait gratuitement et le réveillait au bon moment. Le pompier n'a tenu qu'un jour.
+
+Ce qui n'allait pas, c'était son point de départ. Il partait de la PR rouge, et il la réparait. Mais le chapitre 23 l'avait déjà mesuré : 92 % des heures bloquées venaient de PR rouges qui ont fini fermées sans être fusionnées. Le pompier pouvait éteindre très bien un feu dans une maison qu'on allait démolir.
+
+<Figure
+  id="chapter-25-handover"
+  alt="Sur le quai enneigé d'une petite gare, un matin d'hiver pâle : le petit canard rouge s'en va vers la gauche avec son seau et son tuyau, pendant qu'un petit hibou gris-violet, arrivé sur le toit du panneau d'affichage à lanterne, regarde les voies, un plan roulé à côté de lui"
+  caption="Le pompier s'en va avec son seau et son tuyau. Le crack est arrivé, avec le plan de toute la gare."
+/>
+
+Le 4 novembre, je l'ai remplacé par le crack, un expert des plateformes et des logiciels vendus en ligne. Son premier réflexe n'est pas la PR rouge. Quand on l'appelle, il comprend d'abord le but et la valeur que chaque PR ouverte apporte au virage en cours. Puis il prend la vue d'ensemble : les PR du dépôt et leurs cousines dans les autres dépôts. Ce qui a encore du sens reste. Un doublon est fermé, avec un lien vers celle qu'on garde. Des petites PR qui vont ensemble sont réunies en une seule. Ce qui sort de la direction est fermé ou mis de côté, avec sa raison, et son issue retourne au tableau. Seulement après, il répare le rouge de ce qui vaut la peine d'arriver. Et il écrit la leçon : pourquoi les PR se sont empilées, à l'endroit le plus tôt où on peut l'attraper.
+
+Le chouf, lui, reste. Toutes les cinq minutes, sans modèle, il regarde chaque dépôt. Si un appel n'est pris par personne au bout d'un quart d'heure, une session du crack démarre seule, avec un plafond de tours et de durée, et au plus quatre par jour.
+
+<Figure
+  id="chapter-25-chouf"
+  alt="Le faucon crécerelle perché sur le dossier d'une chaise pliante en bois au bord des voies, sa lanterne allumée dans la neige, qui regarde un train passer vers la gare au lever du jour ; au loin, un tout petit hibou est assis sur la passerelle"
+  caption="Le chouf regarde toujours. Il ne coûte rien, et maintenant c'est le crack qu'il réveille."
+/>
+
+## Ce qui a changé le 5 novembre
+
+Ce jour-là, 19 PR ont changé nos outils, dans le dépôt de nos agents et dans celui de l'organisation. Les rails se dessinent maintenant comme ça.
+
+<Rails label="Maintenant : chaque voie compte ses propres PR, un rouge qui n'est pas du produit ne gèle plus rien, et les pins partent une fois par jour.">
+  <Rail name="Verikora" wagons="PR 2:go | PR 3:wait | PR 4:wait | PR 1:done" />
+  <Rail name="Sovkora" wagons="PR 6:go | PR 7:wait | PR 5:done" />
+  <Rail name="Plateforme" wagons="pins:go | PR 8:red" />
+  <Beat>
+    Une voie n'est bloquée que par ses propres PR coincées. Le plafond est de cinq par dépôt, et il ne compte que les PR
+    de la voie : celles des robots et des autres voies ne lui prennent plus de place.
+  </Beat>
+  <Beat>
+    Un rouge de mise à jour automatique, d'analyse de qualité, de release ou de pins sur main ne gèle plus rien. Il lève
+    une alerte qui a un responsable, la voie plateforme.
+  </Beat>
+  <Beat>
+    Seul un rouge des tests du produit, ou de sécurité, gèle encore un rail. Même gelé, on peut ouvrir une PR et la
+    mettre en file : seule la fusion attend.
+  </Beat>
+  <Beat>Les pins partent en une seule PR par dépôt et par jour, au lieu d'une par version.</Beat>
+  <Beat>Une PR rouge va sur la voie de garage, comme avant, et la suivante part.</Beat>
+</Rails>
+
+Le chemin d'une session a changé aussi. Il a moins de portes, et elles sont placées plus tôt.
+
+<Pipeline label="Maintenant : le chemin d'une session jusqu'à main. Le contrôle local bloque avant le push, la carte et la preuve avertissent, et le train fait le reste.">
+  <Stage title="Une carte prête" note="validée par le CTO">
+    Toute carte qui entre dans Next est validée par le CTO, et chaque voie a son plafond de cartes.
+  </Stage>
+  <Stage title="La session démarre" note="seule, plafonnée">
+    Une voie produit qui a une carte prête et aucune session en reçoit une, sans attendre qu'on y pense.
+  </Stage>
+  <Stage title="Le contrôle local" note="environ 5 s" tone="gate">
+    Avant le push, sur les fichiers changés : lint, types, tests touchés, générateurs. Un rouge s'arrête ici.
+  </Stage>
+  <Stage title="La PR" note="avertit">
+    La carte incomplète ou la preuve manquante donnent un avertissement, plus un refus.
+  </Stage>
+  <Stage title="Le train" note="la file de la voie">
+    La PR prend sa place dans la file de son dépôt, et le train la porte.
+  </Stage>
+  <Stage title="main" note="un commit" tone="ship">
+    La PR arrive en un seul commit, et la suivante part.
+  </Stage>
+</Pipeline>
+
+Le détail, dans l'ordre où ça compte :
+
+- **Des sessions qui démarrent seules.** Quand la voie Verikora ou Sovkora a une carte prête et aucune session vivante, un script en lance une. Les plafonds sont écrits dans le code : deux à la fois au plus, six par 24 heures, 80 tours et 90 minutes chacune, et un interrupteur pour tout arrêter.
+- **Un tableau qui guide.** Le CTO valide chaque carte qui entre dans Next, avec un plafond par voie : 15 pour Verikora, 15 pour Sovkora, 10 pour la plateforme, 10 pour la sécurité, 0 pour Folioviv, qui est en pause.
+- **Les audits attendent.** Ce qu'un audit trouve va dans une colonne de tri, jamais directement dans Next. Tous les quatre jours, une voie d'incubation relit cette colonne et mes idées : elle regroupe, réévalue, promeut ce qui mérite de l'être, et ne met jamais rien dans Next elle-même.
+- **Une copie locale du tableau.** Avant, chaque outil relisait le tableau sur GitHub à chaque passage, et mon quota d'appels était épuisé. Maintenant, une copie locale est rafraîchie toutes les 20 minutes, et chaque outil qui déplace une carte l'écrit aussi dans la copie. Après le changement, il me restait 4 976 appels sur 5 000.
+- **Le contrôle local.** Une seule commande lance, sur les fichiers changés, ce que le dépôt déclare déjà : lint, types, tests touchés, générateurs. Elle a pris 4,8 secondes sur sa propre branche, et le hook git commun la lance avant chaque push.
+- **Chaque refus est noté.** Une ligne par refus, avec l'outil, la règle, le dépôt et la PR. C'est ce qui permettra de juger chaque règle.
+
+<Split label="Ce qui regarde sans modèle, et à quoi ça sert. Aucun de ces trois ne coûte un jeton.">
+  <Side
+    title="La copie du tableau"
+    tone="own"
+    items="Rafraîchie toutes les 20 minutes | Écrite par chaque outil qui déplace une carte | Le quota d'appels n'est plus épuisé"
+  />
+  <Side
+    title="La matrice"
+    tone="plug"
+    items="Chaque dépôt croisé avec chaque règle | Vert, rouge ou hors champ, chaque jour | La référence pour dire qu'une règle est en place"
+  />
+  <Side
+    title="Le journal des refus"
+    tone="after"
+    items="Une ligne par refus | L'outil, la règle, le dépôt, la PR | La preuve qu'une règle sert, ou pas"
+  />
+</Split>
+
+## Trois indicateurs, et une date
+
+Le rapport le disait aussi : on mesurait beaucoup, mais surtout l'activité de l'usine. Avec les robots, plus de 1 400 fusions en 14 jours donnaient une fausse impression de vitesse. Alors on ne suit plus que trois chiffres :
+
+<Steps>
+  <Step title="Les features produit par jour">
+    Les PR de feature ou de correctif fusionnées dans les dépôts du virage, sans les pins, les robots ni les releases.
+  </Step>
+  <Step title="Les heures où le produit est bloqué">
+    La somme des heures où un dépôt produit est gelé, ou au plafond avec une PR rouge.
+  </Step>
+  <Step title="Les rouges qui ne viennent pas du produit">
+    Combien de rouges de main viennent encore d'une mise à jour, d'une analyse, d'une release ou d'un pin.
+  </Step>
+</Steps>
+
+La première mesure est prévue le 8 novembre, à la fin du moratoire. Ce jour-là, chaque règle passera aussi sa revue, avec ses refus comptés. Au moment où j'écris, je n'ai aucun résultat. Je ne sais pas encore si les features reviennent, ni à quelle vitesse. Je le dirai quand je l'aurai mesuré, même si le chiffre est mauvais.
+
+## Ce que je garde
+
+Aucune de nos règles n'était absurde. Chacune répondait à un vrai incident, et j'en avais demandé beaucoup moi-même. C'est leur somme qui arrêtait tout, et personne ne la regardait, parce qu'aucune règle ne disait ce qu'elle coûtait.
+
+Depuis le 30 octobre, notre devise dit : « Le flux tourne, l'échéance est à nous : elle peut bouger, la qualité jamais. » Le 5 novembre, j'ai compris qu'on avait protégé la qualité en arrêtant le flux. Ce n'est pas ce que dit la devise. Une règle qui refuse doit prouver qu'elle protège quelque chose, et compter ce qu'elle refuse. Sinon, elle n'est qu'un arrêt de plus sur la voie.

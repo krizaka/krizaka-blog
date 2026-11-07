@@ -9,6 +9,8 @@ import {
   checkDir,
   mediaProblems,
   privateRepoLinkProblems,
+  orgIssueLinkProblems,
+  branchLineLinkProblems,
   readContext,
 } from "./content-rules.mjs";
 
@@ -34,7 +36,12 @@ for (const dir of ["content/posts", "content/chapters"])
     if (f.endsWith(".mdx")) {
       const text = readFileSync(f, "utf8");
       const file = f.replace(root + "/", "");
-      problems.push(...attributeQuoteProblems(text, file), ...privateRepoLinkProblems(text, file));
+      problems.push(
+        ...attributeQuoteProblems(text, file),
+        ...privateRepoLinkProblems(text, file),
+        ...orgIssueLinkProblems(text, file),
+        ...branchLineLinkProblems(text, file),
+      );
     }
 if (problems.length) {
   console.error(problems.join("\n"));

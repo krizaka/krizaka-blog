@@ -5,7 +5,7 @@ seoTitle: "Comprendre l'IA : les mots de base, sans le jargon"
 seoDescription: "Token, contexte, quantification, RAG, outils, MCP, agents, fine-tuning, diffusion : chaque mot avec une image simple et un exemple réel."
 date: 2026-10-16
 publishedAt: "2026-10-16T22:22:41-04:00"
-tags: [ai, basics, orazaka]
+tags: [ai, basics, sovkora]
 author: oussama
 draft: false
 cover: series-01-why-krizaka
@@ -36,7 +36,7 @@ Ces réglages internes s'appellent des paramètres. Qwen 2.5 7B en a 7,6 milliar
 
 Stockés en 16 bits, 7,6 milliards de nombres pèsent environ 15 Go. La version que j'utilise est quantifiée (Q4_K_M) : chaque nombre est arrondi pour tenir en un peu plus de 4 bits, et le fichier tombe à 4,7 Go. C'est la différence entre une photo en RAW et la même photo en JPEG. On perd un peu de détail, on gagne beaucoup de place.
 
-Il faut aussi de la mémoire pour le contexte, en plus du modèle. Sur mon Mac de 64 Go, un modèle de 7 milliards de paramètres quantifié passe sans souci. Un modèle vidéo, non, et je l'ai appris à mes dépens dans [le billet sur le Mac](/fr/story/an-engine-on-a-laptop/). Dans [Orazaka](https://dev.orazaka.com/docs/models), le moteur que je construis, chaque modèle est une ligne dans une base de données, avec sa taille et l'endroit où il tourne.
+Il faut aussi de la mémoire pour le contexte, en plus du modèle. Sur mon Mac de 64 Go, un modèle de 7 milliards de paramètres quantifié passe sans souci. Un modèle vidéo, non, et je l'ai appris à mes dépens dans [le billet sur le Mac](/fr/story/an-engine-on-a-laptop/). Dans [Orazaka](https://dev.sovkora.com/docs/models), le moteur que je construis, chaque modèle est une ligne dans une base de données, avec sa taille et l'endroit où il tourne.
 
 ## Embeddings et RAG : la bibliothèque rangée par sens
 
@@ -54,7 +54,7 @@ Un modèle ne sait rien faire d'autre que produire du texte. Il ne peut pas lire
 
 C'est un chef qui ne quitte pas ses fourneaux. Il demande à l'aide de cuisine d'aller chercher le safran à la réserve, et il continue sa sauce.
 
-Dans Orazaka, les outils sont attachés à chaque tour de conversation, et seulement ceux dont le tour a besoin. L'outil de recherche, par exemple, interroge les sources que le service de connaissances garde pour la personne connectée. La liste est [dans la documentation](https://dev.orazaka.com/docs/tools), générée depuis le code.
+Dans Orazaka, les outils sont attachés à chaque tour de conversation, et seulement ceux dont le tour a besoin. L'outil de recherche, par exemple, interroge les sources que le service de connaissances garde pour la personne connectée. La liste est [dans la documentation](https://dev.sovkora.com/docs/tools), générée depuis le code.
 
 ## MCP : une prise standard pour les outils
 

@@ -4,7 +4,7 @@ description: "Ce qu'on possède et ce qu'on branche : l'orchestration, la boucle
 seoDescription: "Orazaka v2 : posséder le cœur, brancher les bords. Étapes typées, boucle de contrôle, bail GPU, contrôle d'accès, loi 25, et où on en est."
 date: 2026-10-26
 publishedAt: "2026-10-26T21:30:00-04:00"
-tags: [orazaka, ai, security]
+tags: [sovkora, ai, security]
 author: oussama
 draft: false
 cover: series-13-orazaka-v2-the-architecture-we-build
@@ -135,7 +135,7 @@ L'ADR-091 pose trois règles :
 - **Le droit est dans la requête.** Chaque passage indexé porte les droits de sa source. Le filtre fait partie de la recherche elle-même, avant le classement. Un passage qu'on n'a pas le droit de lire n'est jamais lu, donc il ne peut fuir ni par un extrait, ni par un compte, ni par un cache.
 - **Chaque outil déclare ses rôles.** Un outil qui ne déclare rien est réservé aux administrateurs. Sans identité, rien ne s'exécute.
 
-C'est en cours de correction ([orazaka-ai-engine#107](https://github.com/krizaka/orazaka-ai-engine/issues/107)), avant qu'on indexe quoi que ce soit de sensible. Je ne détaille pas plus tant que ce n'est pas livré.
+C'est en cours de correction, avant qu'on indexe quoi que ce soit de sensible. Je ne détaille pas plus tant que ce n'est pas livré.
 
 ## Les packs, et la preuve que le cœur reste générique
 
@@ -145,17 +145,17 @@ Comment savoir que c'est vrai, et que ça le reste ? Une règle de l'ADR-092 le 
 
 C'est la même chose pour les médias. Il n'y a pas de module vidéo dans le cœur. Il y a le worker média et des packs qui l'utilisent.
 
-**Les produits passent par l'API, seulement.** Yomizaka ne parle jamais à un modèle. Il appelle les Studios du pack sur l'edge avec une clé de service, et garde l'identifiant du run de chaque analyse : c'est la trace de ce qui a tourné. Akinaza suit la même règle. Le client commun, [`@krizaka/orazaka-client`](https://github.com/krizaka/krizaka-ts/tree/main/packages/orazaka-client), lance un run avec une clé d'idempotence, lit son état et attend sa fin. Le consentement, le budget, l'audit et l'idempotence sont écrits une fois, dans le moteur. Un produit qui le contournerait devrait les réécrire, et un jour il en oublierait un.
+**Les produits passent par l'API, seulement.** Yomizaka ne parle jamais à un modèle. Il appelle les Studios du pack sur l'edge avec une clé de service, et garde l'identifiant du run de chaque analyse : c'est la trace de ce qui a tourné. Akinaza suit la même règle. Le client commun, [`@krizaka/orazaka-client`](https://github.com/krizaka/krizaka-ts/tree/main/packages/sovkora-client), lance un run avec une clé d'idempotence, lit son état et attend sa fin. Le consentement, le budget, l'audit et l'idempotence sont écrits une fois, dans le moteur. Un produit qui le contournerait devrait les réécrire, et un jour il en oublierait un.
 
 ## Où on en est
 
 Voilà la direction. Voici ce que le code dit le 26 octobre. L'audit et la contre-expertise l'ont trouvé, et je préfère l'écrire ici que le laisser découvrir.
 
-- **Le cœur importe encore Spring AI.** 52 fichiers du moteur l'importent : 36 dans le cœur, 14 dans les intercepteurs, 2 dans les outils (mesuré dans l'ADR-092). Un test ArchUnit va compter ces fichiers, et ce compte ne pourra que baisser. Pas de grand soir : on déplace une tranche à la fois vers le module d'adaptation, jusqu'à zéro ([orazaka-ai-engine#112](https://github.com/krizaka/orazaka-ai-engine/issues/112)).
+- **Le cœur importe encore Spring AI.** 52 fichiers du moteur l'importent : 36 dans le cœur, 14 dans les intercepteurs, 2 dans les outils (mesuré dans l'ADR-092). Un test ArchUnit va compter ces fichiers, et ce compte ne pourra que baisser. Pas de grand soir : on déplace une tranche à la fois vers le module d'adaptation, jusqu'à zéro.
 - **Le `DagCompiler` du cœur est une ébauche.** Deux noms de tâches écrits en dur, aucun exécuteur, et personne ne l'appelle. Le vrai graphe, c'est le plan du Studio : il a ses dépendances, son parallélisme, ses contrats de sortie et ses étapes d'approbation. L'ébauche sera supprimée.
-- **La boucle de contrôle a un défaut.** À chaque nouvel essai, l'intercepteur revérifiait le même texte au lieu d'en régénérer un, et après le dernier essai il servait la réponse sans qu'elle soit validée. C'est en cours de correction ([orazaka-ai-engine#116](https://github.com/krizaka/orazaka-ai-engine/issues/116)). Les verdicts typés, le score de dérive et l'escalade viennent ensuite ([orazaka-ai-engine#114](https://github.com/krizaka/orazaka-ai-engine/issues/114)).
-- **Le bail du GPU n'existe pas encore.** Rien n'appelle `/api/ps` aujourd'hui, et rien ne règle `keep_alive`. Le worker gère sa propre mémoire, c'est tout ([orazaka-ai-engine#113](https://github.com/krizaka/orazaka-ai-engine/issues/113)).
-- **Le pilotage en direct est dessiné, pas construit** ([ADR-088](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-088-runs-as-background-tasks.md)). On sait approuver une étape, reprendre à partir d'une étape et annuler un run entier. Pas encore annuler une seule branche ([orazaka-studio#87](https://github.com/krizaka/orazaka-studio/issues/87)).
+- **La boucle de contrôle a un défaut.** À chaque nouvel essai, l'intercepteur revérifiait le même texte au lieu d'en régénérer un, et après le dernier essai il servait la réponse sans qu'elle soit validée. Le correctif est fusionné depuis ([sovkora-engine#117](https://github.com/krizaka/sovkora-engine/pull/117)). Les verdicts typés, le score de dérive et l'escalade viennent ensuite.
+- **Le bail du GPU n'existe pas encore.** Rien n'appelle `/api/ps` aujourd'hui, et rien ne règle `keep_alive`. Le worker gère sa propre mémoire, c'est tout.
+- **Le pilotage en direct est dessiné, pas construit** ([ADR-088](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-088-runs-as-background-tasks.md)). On sait approuver une étape, reprendre à partir d'une étape et annuler un run entier. Pas encore annuler une seule branche.
 - **Le cache marche par run, pas par étape.** Un run identique est servi depuis le cache. Une seule étape changée refait tout le run.
 - **Le contrôle d'accès de la section précédente** n'est pas fini.
 
@@ -167,7 +167,7 @@ Et ce que ça coûte, mesuré :
 
 ## En incubation : les Recettes
 
-Une idée de plus, qui n'est pas construite. Elle est en incubation, en haut de la colonne ([.github#302](https://github.com/krizaka/.github/issues/302)).
+Une idée de plus, qui n'est pas construite. Elle est en incubation, en haut de la colonne.
 
 Quand on tape un bon prompt dans le chat, on le perd. L'idée : le garder comme **recette**. Une recette est privée par défaut. Le moteur repère ce qui change d'une fois à l'autre (un document, une date, un montant, un nom) et en fait des variables typées. On appuie sur ▶ Play, un petit formulaire demande le document ou la date, et le run part.
 
@@ -185,9 +185,9 @@ Son but reste le même : faire le même travail plus vite, pour moins cher, avec
 
 1. **La frontière.** Spring AI dans un seul module d'adaptation, le domaine en Java 21 pur, le compte ArchUnit à zéro, l'ébauche de graphe supprimée.
 2. **Le verdict.** D'abord le test qui reproduit le défaut de la boucle, puis les verdicts typés, le juge, les K corrections avec le diff et l'escalade.
-3. **L'arbitre du GPU.** Le bail par appareil, l'éviction vérifiée, les travaux regroupés par modèle pour ne pas recharger des dizaines de gigaoctets entre deux clips. Le worker dit sa mémoire et ses modèles chargés ([orazaka-worker-media#83](https://github.com/krizaka/orazaka-worker-media/issues/83)).
+3. **L'arbitre du GPU.** Le bail par appareil, l'éviction vérifiée, les travaux regroupés par modèle pour ne pas recharger des dizaines de gigaoctets entre deux clips. Le worker dit sa mémoire et ses modèles chargés.
 4. **Le pilotage.** Les commandes entre deux étapes, les liens typés, l'annulation d'une seule branche.
-5. **Le cache par étape.** Une clé par étape, calculée à partir de ses entrées, pour qu'un changement ne refasse que les branches touchées ([orazaka-studio#88](https://github.com/krizaka/orazaka-studio/issues/88)).
+5. **Le cache par étape.** Une clé par étape, calculée à partir de ses entrées, pour qu'un changement ne refasse que les branches touchées.
 
 Les trois dernières répondent directement aux douleurs mesurées. Le GPU chaud et l'arbitre attaquent le chargement des modèles. Le pilotage et des événements au lieu de relire l'état attaquent l'attente. Le cache par étape attaque le travail refait pour rien.
 

@@ -4,7 +4,7 @@ description: "Ce que Yomizaka lit, pourquoi notre source de vérité est la loi 
 seoDescription: "Yomizaka et Akinaza : comment une règle cite son article, ce qu'un lot de baux change, et la facture refusée par notre propre outil."
 date: 2026-10-23
 publishedAt: "2026-10-23T14:00:00-04:00"
-tags: [yomizaka, documents, law]
+tags: [verikora, documents, law]
 author: oussama
 draft: false
 cover: series-06-the-first-products
@@ -116,7 +116,7 @@ Où on en est, sans arrondir. La reconnaissance du type, les tables de la loi, l
 
 ## Un produit ne parle jamais à un modèle
 
-Dans le code de Yomizaka, il n'y a aucun appel à un modèle d'IA. Pas un seul. Pourtant, Yomizaka lit un bail et vous dit quelles clauses posent problème. Ce n'est pas un oubli, c'est la règle que je me suis donnée dès le début : un produit ne parle jamais à un modèle. Il parle à un moteur, et le moteur, [Orazaka](https://dev.orazaka.com), choisit le modèle.
+Dans le code de Yomizaka, il n'y a aucun appel à un modèle d'IA. Pas un seul. Pourtant, Yomizaka lit un bail et vous dit quelles clauses posent problème. Ce n'est pas un oubli, c'est la règle que je me suis donnée dès le début : un produit ne parle jamais à un modèle. Il parle à un moteur, et le moteur, [Orazaka](https://www.sovkora.com), choisit le modèle.
 
 Les raisons sont simples. Un modèle coûte de l'argent, et quelqu'un doit en tenir le compte. Un modèle change : celui d'aujourd'hui ne sera pas celui de dans six mois, et je ne veux pas rouvrir cinq produits pour ça. Un document de locataire ne doit pas partir n'importe où. Et quand on demande « qu'est-ce qui a vraiment tourné ? », il faut une réponse écrite.
 
@@ -169,13 +169,13 @@ Chaque facture inscrit ses taxes dans les livres dans la même étape, et la bas
 
 La facture : 8 règles sur 8, chacune avec le passage du texte qui la justifie et l'article de loi derrière : la date, les numéros de taxes, le total, les taxes, les conditions de paiement. Le contrat : 4 règles sur 4, sur l'intérêt de retard, le droit d'auteur, les droits moraux et la signature. Le rapport dit lui-même ce qu'il ne couvre pas : le Code civil du Québec, à faire relire par un avocat. Chaque vérification est une exécution tracée d'Orazaka, le moteur qui travaille derrière. Son identifiant est à l'écran, pour qu'on puisse la retrouver.
 
-**Ce que les échecs nous ont appris.** C'est la partie qui m'a le plus servi, et elle n'est pas flatteuse. Le premier essai, fait directement sur le moteur avec le texte brut de la facture, a échoué sur deux règles : le total et les taxes. Pourtant les deux lignes étaient là. Le moteur ne les retrouvait pas quand un montant était séparé de son libellé par une longue suite d'espaces, ou quand un calcul entre crochets s'intercalait. Ce n'était pas une erreur de la facture, c'était une limite du vérificateur. Dans Yomizaka, qui normalise les espaces, le même modèle passe 8 sur 8. Nous avons ouvert [un ticket côté règles](https://github.com/krizaka/orazaka-packs/issues/81), et il est maintenant fermé.
+**Ce que les échecs nous ont appris.** C'est la partie qui m'a le plus servi, et elle n'est pas flatteuse. Le premier essai, fait directement sur le moteur avec le texte brut de la facture, a échoué sur deux règles : le total et les taxes. Pourtant les deux lignes étaient là. Le moteur ne les retrouvait pas quand un montant était séparé de son libellé par une longue suite d'espaces, ou quand un calcul entre crochets s'intercalait. Ce n'était pas une erreur de la facture, c'était une limite du vérificateur. Dans Yomizaka, qui normalise les espaces, le même modèle passe 8 sur 8. Nous avons ouvert un ticket côté règles, et il est maintenant fermé.
 
-Le deuxième, c'est l'inverse. Nous avons passé dans Yomizaka une facture sortie d'Akinaza lui-même. Elle a échoué : il manquait les conditions de paiement. Un produit de facturation dont la propre facture est refusée par un autre de nos produits, c'est humiliant, et c'est exactement pourquoi on boucle la boucle. Le [ticket](https://github.com/krizaka/akinaza/issues/113) est fermé : la facture porte aujourd'hui son échéance et ses conditions.
+Le deuxième, c'est l'inverse. Nous avons passé dans Yomizaka une facture sortie d'Akinaza lui-même. Elle a échoué : il manquait les conditions de paiement. Un produit de facturation dont la propre facture est refusée par un autre de nos produits, c'est humiliant, et c'est exactement pourquoi on boucle la boucle. Le ticket est fermé : la facture porte aujourd'hui son échéance et ses conditions.
 
 Quant au contrat, il passe 4 sur 4 pour une raison qui me gêne un peu : il ne cède aucun droit, donc il n'y a rien à reprocher. Le silence passe. Ce qu'aucune règle ne lit, par exemple un taux d'intérêt de retard énoncé de deux façons différentes entre le contrat et la facture, je l'ai trouvé en relisant, et je l'ai noté pour la personne qui doit trancher. Yomizaka aide, il ne remplace pas un avocat. Il le dit sur chaque écran.
 
-Le passage d'un outil à l'autre est manuel aujourd'hui : c'est le texte vérifié que nous imprimons depuis Akinaza. Une importation par l'API, qui transformerait un modèle vérifié dans Yomizaka en modèle Akinaza, est [proposée](https://github.com/krizaka/akinaza/issues/115), pas construite.
+Le passage d'un outil à l'autre est manuel aujourd'hui : c'est le texte vérifié que nous imprimons depuis Akinaza. Une importation par l'API, qui transformerait un modèle vérifié dans Yomizaka en modèle Akinaza, est proposée, pas construite.
 
 ## Ce que ça coûte, et comment on se place
 
@@ -197,4 +197,4 @@ Il y a aussi des choses que nous n'ouvrirons pas au public tant qu'un avocat ne 
 
 Je ne sais pas dire en combien de semaines tout ça sera prêt. Je sais par contre dans quel ordre le faire : ce qui protège les gens d'abord, ce qui fait gagner du temps ensuite. Les photos et le dossier du candidat d'abord, parce que c'est là que se trouvent les faux et les fuites. Les échéances ensuite. Chaque morceau sort quand il tourne sur de vrais documents, avec sa trace. On commence à préparer une vraie démo pour des gestionnaires d'immeubles : pas une vidéo montée, un vrai lot, de vrais documents de test, et les écrans tels qu'ils sont.
 
-Si vous gérez des immeubles et que vous avez, vous aussi, déjà regardé un PDF ou une photo en vous demandant s'il était vrai, j'aimerais beaucoup savoir comment vous faites aujourd'hui. Yomizaka est sur [yomizaka.com](https://www.yomizaka.com).
+Si vous gérez des immeubles et que vous avez, vous aussi, déjà regardé un PDF ou une photo en vous demandant s'il était vrai, j'aimerais beaucoup savoir comment vous faites aujourd'hui. Yomizaka est sur [yomizaka.com](https://www.verikora.com).

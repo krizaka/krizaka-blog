@@ -4,7 +4,7 @@ description: "A Mac out of breath, a ClassCastException that killed the chat, mo
 seoDescription: "Running an AI platform on a Mac: Spring Boot 4 and Spring AI 2, a ClassCastException that killed the chat, models as database rows."
 date: 2026-10-23
 publishedAt: "2026-10-23T11:55:00-04:00"
-tags: [orazaka, ai]
+tags: [sovkora, ai]
 author: oussama
 draft: false
 cover: series-02-an-engine-on-a-laptop
@@ -35,7 +35,7 @@ stats:
 
 At first, Orazaka was a discovery. A personal project, on my MacBook, to understand what you can do with AI models running at home. Ollama for text, the Mac's GPU (Metal) for images, a database and a few services started by hand. If someone had taken the laptop, there would have been no Orazaka left.
 
-That Mac is the first server of [Orazaka](https://dev.orazaka.com), the AI engine I'm building. The idea behind Orazaka is simple: run AI on a machine you control. For me, that machine is my laptop first. Here's what it taught me.
+That Mac is the first server of [Orazaka](https://www.sovkora.com), the AI engine I'm building. The idea behind Orazaka is simple: run AI on a machine you control. For me, that machine is my laptop first. Here's what it taught me.
 
 ## On 12 October, the Mac hit the wall
 
@@ -45,7 +45,7 @@ Even without AI, a platform needs several things at once: a database, a message 
 
 My answer on 12 October was simple, almost dumb: a lock. Before a heavy task (a native build, a Docker stack, a generation), a session creates a `.heavy.lock` folder. If the folder already exists, it waits a minute and tries again. Like the single bathroom key in a café: one person at a time, the others wait. Everyone slows down a little, but nothing collapses any more.
 
-The Java services take their share too. Orazaka has up to eleven Spring Boot services. An open proposal ([orazaka#132](https://github.com/krizaka/orazaka/issues/132)) estimates 4 to 6 GB at rest for the lot, and suggests a single-JVM development profile. Those are estimates, not measurements, and it hasn't shipped.
+The Java services take their share too. Orazaka has up to eleven Spring Boot services. An open proposal estimates 4 to 6 GB at rest for the lot, and suggests a single-JVM development profile. Those are estimates, not measurements, and it hasn't shipped.
 
 ## Models become data
 

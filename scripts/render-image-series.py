@@ -20,9 +20,6 @@ ROOT = Path(__file__).resolve().parent.parent
 
 def prompt_of(series: dict, index: int) -> str:
     chapter = series["chapters"][index]
-    if chapter.get("look") == "watercolor":
-        # The series' look (krizaka-internal#2455): hand-drawn ink and watercolor, text to image, the beat says what is drawn.
-        return " ".join([series["watercolorStyle"], chapter["beat"]])
     looks = ", ".join(series["birdLooks"][b] for b in chapter["birds"])
     parts = [series["style"], chapter["beat"], f"Birds in the picture: exactly one of each, never two of the same bird, small and round and friendly, and no others: {looks}."]
     if index > 0:
@@ -44,18 +41,6 @@ def sprites(series: dict, anchor: Path, out: Path) -> dict[str, Path]:
 
 def command(series: dict, index: int, sprite: dict[str, Path], previous: Path | None, target: Path, worker: Path) -> list[str]:
     chapter = series["chapters"][index]
-    if chapter.get("look") == "watercolor":
-        return [
-            str(worker / ".venv/bin/python"),
-            str(worker / ".venv/bin/mflux-generate-flux2"),
-            "--model", series["model"],
-            "--prompt", prompt_of(series, index),
-            "--seed", str(chapter["seed"]),
-            "--steps", str(series["steps"]),
-            "--width", "1536",
-            "--height", "864",
-            "--output", str(target),
-        ]
     arrived = [b for b in chapter["birds"] if index == 0 or b not in series["chapters"][index - 1]["birds"]]
     refs = ([str(previous)] if previous else []) + [str(sprite[b]) for b in arrived]
     # 2026-11-03 (krizaka-internal#2324): the entry point's shebang names the venv's old path once the worker folder moved, so the

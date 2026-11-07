@@ -15,3 +15,6 @@ CHANGELOG.md
 # generated: audit data and the bundled functions (npm run functions:bundle)
 public/audits
 functions/packages
+
+# the chapters and posts are prose: their text is hashed into the books, and the lint (format:check) never covered MDX
+*.mdx

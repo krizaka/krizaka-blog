@@ -1,0 +1,364 @@
+---
+title: "Le grand ménage : un seul dossier, une seule config et nos vrais noms"
+description: "Le 6 novembre, on a tout arrêté pour ranger : 1,1 To de clones d'agents, des chemins écrits en dur, deux noms pour chaque produit. Un seul dossier, une config locale, nos noms commerciaux."
+seoTitle: "Le grand ménage : un dossier, une config, nos vrais noms"
+seoDescription: "Une compagnie d'agents rangée en une journée : 1,1 To de clones, un seul dossier, une config locale lue par chaque outil et 24 dépôts renommés."
+date: 2026-11-06
+tags: [ai, integration]
+author: oussama
+publishedAt: "2026-11-06T13:00:00-05:00"
+draft: false
+sensitive: true
+chapter: 26
+cover: series-26-the-big-clean-up-and-our-real-names
+coverAlt: "La petite gare de triage enneigée par un matin d'hiver clair, à l'encre et à l'aquarelle légère : un hangar à marchandises où de petites caisses identiques sont alignées sur une seule étagère, une charrette à bras qui emporte un tas de vieilles caisses dépareillées vers une cabane au bout de la cour, un balai contre le hangar, le petit hibou gris-violet sur la passerelle avec son plan roulé, et un petit pigeon sur un panneau de bois fraîchement peint, encore vierge"
+period: "2026-11-06"
+sources:
+  - from-vibe-coding-to-agentic-engineering
+versus:
+  faced: "des clones partout, des chemins écrits en dur et deux noms pour chaque produit"
+  built: "un seul dossier, une copie par dépôt, une config locale et nos noms commerciaux"
+stats:
+  - value: "1,1 To"
+    label: "de clones d'agents accumulés, dans 2 095 dossiers"
+    section: "Pourquoi on a tout arrêté"
+  - value: "36"
+    label: "copies de référence, une par dépôt, et un worktree par travail"
+    section: "Un seul dossier : le HQ"
+  - value: "24"
+    label: "dépôts renommés à leur nom commercial"
+    section: "Nos vrais noms"
+---
+
+Au [chapitre 25](/fr/story/why-we-slowed-down-and-how-we-work-now/), j'ai raconté pourquoi on ralentissait, et ce qu'on avait changé le 5 novembre. Le lendemain, le 6 novembre, j'ai écrit au CTO une phrase encore plus courte : « on arrête tout now ».
+
+Cette fois, ce n'était pas une question de vitesse. C'était une question d'ordre. Un premier contributeur humain nous rejoignait, et il devait pouvoir comprendre l'organisation seul, sans me demander où est quoi. Alors rien ne bougerait avant que tout soit rangé et nommé.
+
+Ce chapitre raconte la journée du 6 novembre : ce qu'on a trouvé, comment on a supprimé sans rien perdre, le dossier unique, la config unique, nos vrais noms, et notre façon de travailler maintenant.
+
+## Pourquoi on a tout arrêté
+
+Ce jour-là, tout s'est arrêté, sauf krizaka.com et son carrousel. Les sessions automatiques sont passées à l'arrêt, et la ligne qui relance les trains a été mise en commentaire. Le CTO a d'abord fait l'inventaire, en lecture seule.
+
+Le premier constat était sur le Mac. Chaque session d'agent clonait sa propre copie des dépôts, et personne ne la retirait. Le dossier des clones d'agents comptait 2 095 dossiers et pesait 1,1 To. Dans le dossier du site, il y avait encore 48 Go de vieux clones, dont 13 copies de krizaka-ui. Et nos outils écrivaient en dur environ 45 chemins vers l'ancien dossier.
+
+<Numbers>
+  <Num value="1,1 To" label="de clones d'agents" hint="dans 2 095 dossiers, presque un par session" />
+  <Num value="13" label="copies de krizaka-ui" hint="cachées dans le dossier du site, parmi 48 Go de vieux clones" />
+  <Num value="45" label="chemins écrits en dur" hint="environ, dans nos outils, vers l'ancien dossier" />
+</Numbers>
+
+Le deuxième constat était sur les noms. Nos produits avaient deux noms. Un nom de code, que les dépôts, les paquets et les adresses de dev portaient encore : Yomizaka, Akinaza, Orazaka, Kachizaka. Et un nom commercial, celui du site : Verikora, Folioviv, Sovkora, Kridoc. Un nouveau venu qui lit « akinaza » dans un dépôt et « Folioviv » sur la page d'accueil ne peut pas deviner que c'est le même produit.
+
+Le troisième était le code en double. Un audit a cherché tout ce qui vivait à deux endroits. Il a trouvé un paquet publié depuis deux dépôts à la fois, du code de sécurité recopié dans un produit alors que la librairie existait déjà, et des registres qui listaient encore des dépôts supprimés.
+
+Alors j'ai pris la décision qui fait peur : « on change tout ; on casse tout et on corrige où ça pète ». Pas d'alias de compatibilité. Pas de lien symbolique de transition. On casse, on regarde ce qui casse, et on corrige à la source.
+
+## Vérifier avant de supprimer
+
+Casser, oui. Perdre, non. J'ai donné une seule consigne pour le ménage : « vérifie avant de supprimer des trucs qu'on utilise ». Le CTO en a fait une preuve en quatre étapes, à refaire pour chaque dossier, dans cet ordre. Sinon, on n'y touche pas.
+
+<Steps>
+  <Step title="Est-ce qu'on l'utilise ?">
+    Aucun programme ne l'a ouvert, et aucun cron, aucun réglage, aucun outil ne le nomme.
+  </Step>
+  <Step title="Est-ce que git le garde ?">
+    Toute l'histoire locale part dans un bundle vérifié, même ce que git dit déjà poussé.
+  </Step>
+  <Step title="Est-ce qu'il reste des changements ?">
+    Les modifications non commitées deviennent un patch, et les fichiers non suivis une archive.
+  </Step>
+  <Step title="La corbeille, puis la purge">
+    Le dossier part dans une corbeille datée. Le jour de la purge, on refait les deux premières vérifications.
+  </Step>
+</Steps>
+
+La deuxième étape a l'air excessive. Elle ne l'est pas. Après une fusion en squash, git compte comme « non poussés » des commits qui sont déjà sur main sous une autre forme. Dans les 13 copies de krizaka-ui, il annonçait 151 commits non poussés, tous identiques. Le compteur ment. Alors on met tout en bundle, sans lui demander son avis.
+
+Et une fois, cette prudence a sauvé du vrai travail. Fin octobre, on avait replié plusieurs petits dépôts dans celui de nos librairies Java. L'un d'eux avait continué d'avancer après le repli, les 1er et 2 novembre. Quand on l'a supprimé, trois de ses commits n'étaient jamais arrivés dans leur nouvelle maison, dont une fonction de sécurité. La seule copie qui restait était le miroir local, en lecture seule, que codegraph indexe. On les a récupérés, portés avec leurs tests, et ils sont sortis dans krizaka-java 0.12.0, sur Maven Central. Le CTO en a fait une règle : avant de supprimer un dépôt, on compare chaque commit depuis le repli, on fait un bundle vérifié, et on ne supprime qu'après une restauration prouvée.
+
+## Le ménage en chiffres
+
+Voici ce qui est fait, avec sa preuve, d'après le bilan du ménage.
+
+Sur le Mac, les 48 Go de vieux clones du dossier du site ont été mis en bundle, puis supprimés. Les clones d'agents ont été sauvegardés, 1 930 au total, en 1 273 bundles, des patchs et les fichiers non suivis, puis mis à la corbeille. L'espace libre du disque est passé de 426 Go à 691 Go. Et ce n'est pas fini : la corbeille garde encore environ 1 To, qui partira après une nouvelle vérification.
+
+Hors du Mac, on a supprimé seulement ce qui était mort de façon prouvée, avec une sauvegarde quand l'outil le permettait. Les projets SonarCloud sont passés de 45 à 36, un par dépôt. Les branches mortes, 60, sont parties, toutes gardées dans des bundles vérifiés. Environ 2 Go de médias ont quitté notre CDN, ceux que plus rien ne nommait et ceux des produits partis, après une copie complète. Cinq utilisateurs de base de données orphelins ont été retirés, et 35 enregistrements DNS des domaines à nom de code aussi.
+
+<Numbers>
+  <Num value="691 Go" label="libres sur le disque" hint="contre 426 Go avant le ménage, et la corbeille n'est pas encore vidée" />
+  <Num value="36" label="projets SonarCloud" hint="un par dépôt, après 9 projets morts supprimés" />
+  <Num value="60" label="branches mortes supprimées" hint="toutes gardées dans des bundles vérifiés" />
+</Numbers>
+
+Tout ce qui coûte de l'argent, ou qui reste douteux, n'a pas été touché. C'est sur ma liste, pas sur celle des agents.
+
+## Un seul dossier : le HQ
+
+Avant, le code et la compagnie étaient éparpillés dans mon dossier personnel. Maintenant, il y a un seul dossier, à la racine, hors de toute synchronisation : le HQ. Je l'ouvre dans une seule fenêtre de VS Code, et tout est dedans.
+
+<Split label="Le Mac avant et après le 6 novembre : des clones partout, puis un seul dossier où chaque chose a sa place et sa garde.">
+  <Side
+    title="Avant"
+    tone="before"
+    items="Un clone par session, jamais retiré | 2 095 dossiers de clones d'agents, 1,1 To | 48 Go de vieux clones dans le dossier du site | Environ 45 chemins écrits en dur dans les outils | La compagnie et le code dans des dossiers séparés"
+  />
+  <Side
+    title="Maintenant"
+    tone="after"
+    items="Un seul dossier, le HQ, ouvert dans une seule fenêtre | Une copie de référence par dépôt, 36 en tout | Un worktree par travail, retiré à la fusion | Un hook refuse git clone | Chaque chemin lu dans une seule config"
+  />
+</Split>
+
+Le HQ contient deux dossiers, côte à côte. Le dossier de la compagnie, d'abord : nos notes, nos rapports, mon cockpit. Ce n'est jamais un dépôt, et il ne va jamais sur GitHub. Un hook refuse une commande git qui nomme un de ses chemins, et un test refuse un outil qui l'écrit en dur. Ensuite, le workspace, là où vit le code.
+
+<Layers label="Le dossier HQ : la compagnie à gauche du code, une copie de référence par dépôt, un worktree par travail, et une seule config que tout le monde lit.">
+  <Layer tag="HQ" title="Le dossier HQ" note="Un seul dossier à la racine, hors de toute synchronisation, ouvert dans une seule fenêtre." />
+  <Layer
+    tag="1"
+    title="Le dossier de la compagnie"
+    note="Les notes, les rapports, le cockpit du fondateur. Jamais un dépôt, jamais sur GitHub."
+    level="1"
+  />
+  <Layer
+    tag="2"
+    title="krizaka.config.json"
+    note="La config locale : chaque chemin et chaque valeur partagée. Jamais commitée."
+    level="1"
+  />
+  <Layer tag="3" title="Le workspace" note="Là où vit le code. Chaque outil trouve son chemin dans la config." level="1" />
+  <Layer
+    tag="repos"
+    title="Une copie de référence par dépôt"
+    note="36 dépôts, toujours sur main, jamais modifiés à la main. Seul workspace-sync les crée et les avance."
+    level="2"
+  />
+  <Layer
+    tag="worktrees"
+    title="Un worktree par travail"
+    note="wt-new le crée pour un ticket ; wt-done le retire quand sa PR est fusionnée et que rien n'attend d'être poussé."
+    level="2"
+  />
+  <Layer
+    tag="et aussi"
+    title="Les journaux, le temporaire, les modèles, le sauvetage"
+    note="Ce que les crons écrivent, les fichiers d'un jour, les poids des modèles, et ce qu'un ménage a gardé."
+    level="2"
+  />
+</Layers>
+
+La règle de base tient en une phrase que j'ai dite ce jour-là : « chaque session clone, ce n'est pas permis du tout ». Il y a maintenant une seule copie de chaque dépôt. Seul l'outil `workspace-sync` la crée, et un cron l'avance sur main toutes les 30 minutes. Une session ne travaille jamais dedans. Elle demande un worktree, une branche de travail posée à côté, qui partage la même histoire git sans la recopier :
+
+```bash
+cd "$(wt-new krizaka-blog 2726)"   # un worktree pour un ticket, depuis un main frais
+wt-done --sweep                    # retire les worktrees fusionnés, sans rien de non poussé
+```
+
+Ce n'est pas une convention qu'on espère voir respectée. C'est une garde. Un hook de Claude Code refuse `git clone`, `gh repo clone` et un worktree créé ailleurs. Il refuse aussi d'écrire à la racine de mon dossier personnel : les journaux et les fichiers temporaires vont dans le workspace. Un test échoue si un outil de nos agents crée un clone. Et un cron compte les clones qui traînent hors des copies de référence, avec une alerte tant qu'il en reste. La page « Workspace » du cockpit me montre le même compte.
+
+Au moment où j'écris, il reste une centaine d'anciens clones dans l'ancien dossier. Ils passeront par les mêmes quatre étapes.
+
+Le HQ a aussi un fichier qui dit à chaque session qui elle est et où elle travaille. Le CTO y a gagné un nom : Mouloud, un perroquet gris du Gabon. C'est l'oiseau qui écoute, qui se souvient, et qui répète exactement ce qui est vrai.
+
+## Une seule config : krizaka.config.json
+
+Le deuxième problème, c'était les chemins écrits en dur. Déplacer un dossier voulait dire corriger des dizaines de scripts, et en oublier toujours un.
+
+<Figure
+  id="chapter-26-one-notebook"
+  alt="Dans le petit bureau du chef de gare, à l'encre et à l'aquarelle pâle : un seul cahier ouvert sur une table en bois, un stylo à côté, et de fins fils lumineux qui partent du cahier par la fenêtre vers les lampadaires, le signal et l'aiguillage de la gare enneigée ; dehors, une petite crécerelle perchée sur un lampadaire regarde à l'intérieur"
+  caption="Un seul cahier, et tout ce qui s'allume dans la gare le lit. C'est notre config locale."
+/>
+
+Maintenant, chaque valeur que deux outils ou plus partagent vit dans un seul fichier, `krizaka.config.json`, à la racine du HQ : les dossiers, l'organisation GitHub, les numéros du tableau, le port du cockpit, les identifiants de nos applications GitHub, le modèle à utiliser par tâche, les limites du train. Ce fichier est local. Il n'est jamais commité, parce que la compagnie ne va jamais sur GitHub. Le dépôt de nos outils ne garde que le lecteur, un schéma, et un exemple rempli de valeurs factices, dont voici un extrait :
+
+```json
+{
+  "companyDir": "<company folder, relative to hq>",
+  "workspace": "workspace",
+  "repos": "{workspace}/repos",
+  "worktrees": "{workspace}/worktrees",
+  "tools": "{repos}/<the tools repository>/tools",
+  "logs": "{workspace}/logs",
+  "org": "<github organisation>",
+  "boardProject": 0,
+  "modelByTask": { "landing": "<model id>", "feature": "<model id>", "design": "<model id>" },
+  "train": { "prCapPerLane": 0 }
+}
+```
+
+Deux petites commandes le lisent. `kz-config` donne une valeur. `kz-run` lance un outil avec ces valeurs. Les crons, les hooks de Claude Code, les hooks git et le LaunchAgent du Mac ne nomment plus que `kz-run`, jamais un chemin :
+
+```bash
+kz-config repos                                     # le dossier des copies de référence
+kz-run --log board-cache board-cache.py refresh     # une ligne de cron, sans aucun chemin
+```
+
+<Layers label="Une config locale, deux lecteurs, et tout le reste qui passe par eux. Déplacer le HQ, c'est changer une valeur, puis déplacer le dossier.">
+  <Layer
+    tag="1"
+    title="krizaka.config.json"
+    note="Les valeurs que deux outils ou plus partagent. Locale, jamais commitée."
+    items="les dossiers | l'organisation | le tableau | le port du cockpit | le modèle par tâche | les limites du train"
+  />
+  <Layer tag="2" title="kz-config" note="Donne une valeur : kz-config repos, kz-config tools." level="1" />
+  <Layer tag="3" title="kz-run" note="Lance un outil avec ces valeurs, et laisse passer un hook dont l'outil manque." level="1" />
+  <Layer
+    tag="4"
+    title="Ceux qui passent par eux"
+    note="Plus aucun ne connaît un chemin du Mac."
+    items="les tâches planifiées | les hooks de Claude Code | les hooks git | le LaunchAgent | le cockpit"
+    level="2"
+  />
+</Layers>
+
+Une variable d'environnement peut remplacer une valeur, ce qui sert aux tests. Et un test, `no-hardcoded-paths`, échoue quand un outil, un skill ou une doc écrit en dur un chemin que la config connaît.
+
+La preuve que ça marche, le CTO l'a faite avec un HQ jetable, dans un dossier temporaire : la suite de tests de nos outils passe dessus. On change le dossier des journaux, et rien ne casse.
+
+## Le déménagement, et le hook qui refusait tout
+
+Ensuite, on a déménagé. Le dossier de la compagnie et le workspace sont entrés dans le HQ, sans aucun lien vers les anciennes places. Et ça a cassé, comme prévu, mais pas là où on l'attendait.
+
+Le script d'installation de nos outils avait ajouté les nouveaux hooks à côté des anciens, au lieu de les remplacer. L'ancien hook appelait une garde à un chemin qui n'existait plus. Il sortait en erreur avec le code 2, et pour Claude Code, ce code veut dire « refusé ». Résultat : chaque commande, chaque écriture, chaque modification de chaque session du Mac était refusée. Les agents ne pouvaient plus rien faire, même pas se réparer. J'ai corrigé moi-même, avec un `sed` dans le Terminal.
+
+La correction a pris deux règles, écrites dans le code et testées :
+
+- **Un hook est remplacé, jamais doublé.** L'installation retire tout hook qui nomme le même outil, ou une ancienne place, avant d'ajouter le nouveau.
+- **Un hook laisse passer quand son outil manque, et bloque seulement sur un vrai refus.** Vérifié dans les deux sens : un outil absent sort sans erreur, et `git clone` est toujours refusé.
+
+Les tests de la garde anti-clone (11 sur 11) et ceux des hooks passent. La leçon est une ligne de notre fichier de leçons, comme toutes les autres depuis le chapitre 25.
+
+Il y a eu un deuxième accroc, plus discret. En se relançant, le script d'installation a remis en route la ligne des trains, alors que l'organisation était gelée. Le CTO l'a remise en commentaire dans la minute, et le cron n'avait pas tourné entre-temps. Une garde est demandée pour que ça n'arrive plus.
+
+Puis on a tout relancé une fois, à la main. Le cockpit a été reconstruit, et ses pages « Workspace » et « Organisation » répondent. Les tâches planifiées ont été lancées une fois par `kz-run` : les 13 ont fini sans erreur, et les trains, gelés, attendent la fin du gel. Il reste dans le cockpit 22 débordements de mise en page et deux erreurs de lint à corriger.
+
+## Nos vrais noms
+
+Le même jour, on a décidé qu'aucun nom de code ne resterait là où une personne le lit. Pour le faire, il fallait d'abord une règle des noms, sur une page, qu'un nouveau venu comprend seul :
+
+- un produit s'appelle par son nom commercial : `verikora`, `folioviv`, `sovkora`, `kridoc` ;
+- un morceau de produit, c'est le produit et son rôle : `sovkora-web`, `sovkora-engine`, `sovkora-job-service` ;
+- ce qui est partagé commence par `krizaka-`, suivi de ce que c'est pour un humain, jamais du nom d'un outil : `krizaka-java` plutôt que `krizaka-build`, `krizaka-desktop` plutôt que `krizaka-tauri-kit` ;
+- un gabarit commence par `krizaka-template-`.
+
+Chaque dépôt a aussi reçu une description d'une phrase, le nom commercial en premier, qui dit ce qu'il fait pour quelqu'un, et son adresse publique quand il en a une, jamais celle de dev. Au total, 24 dépôts ont été renommés. Et derrière un dépôt, il y a tout ce qui porte son nom.
+
+<Compare
+  label="Ce qui a changé de nom le 6 novembre, du nom de code au nom commercial"
+  topic="Quoi"
+  before="Avant"
+  after="Maintenant"
+>
+  <Case
+    topic="Les produits"
+    before="Yomizaka, Akinaza, Orazaka, Kachizaka"
+    after="Verikora, Folioviv, Sovkora, Kridoc"
+  />
+  <Case
+    topic="Les dépôts"
+    before="yomizaka, akinaza, orazaka-web-client, orazaka-ai-engine…"
+    after="verikora, folioviv, sovkora-web, sovkora-engine…"
+    afterDetail="24 dépôts renommés, avec une description et une adresse réécrites."
+  />
+  <Case
+    topic="Les librairies partagées"
+    before="krizaka-build, krizaka-tauri-kit, template-next-app"
+    after="krizaka-java, krizaka-desktop, krizaka-template-web"
+    afterDetail="Le nom dit ce que c'est, pas l'outil qui le fabrique."
+  />
+  <Case
+    topic="Les adresses"
+    before="dev. et admin. sur le domaine à nom de code"
+    after="dev.verikora.com, admin.verikora.com, dev.folioviv.com…"
+    afterDetail="35 enregistrements DNS des anciens domaines supprimés."
+  />
+  <Case
+    topic="Les paquets npm"
+    before="@krizaka/orazaka-client"
+    after="@krizaka/sovkora-client 1.0.0"
+    afterDetail="L'ancien paquet est déprécié, pas effacé. Et @krizaka/org 1.0.0 nomme chaque produit par son nom commercial."
+  />
+  <Case
+    topic="Les paquets Java"
+    before="krizaka-build et son module krizaka-platform-kit"
+    after="krizaka-java 0.12.0 sur Maven Central, module krizaka-service-kit"
+  />
+  <Case
+    topic="Les médias du CDN"
+    before="des chemins au nom de code"
+    after="copiés sous le nom commercial"
+    afterDetail="La bascule et la purge de l'ancien viennent ensuite ; aucun média n'est écrit à deux endroits."
+  />
+  <Case
+    topic="La qualité et le tableau"
+    before="clés SonarCloud et labels au nom de code"
+    after="krizaka_verikora, lane:verikora, lane:folioviv…"
+    afterDetail="78 labels, les équipes GitHub et les voies des agents ont suivi."
+  />
+</Compare>
+
+<Figure
+  id="chapter-26-new-signs"
+  alt="Sur le quai enneigé de la petite gare, à l'encre et à l'aquarelle pâle : un petit pigeon gris-bleu perché en haut d'un escabeau en bois repeint au pinceau un long panneau de gare encore vierge ; à côté, de vieux panneaux usés, vierges eux aussi, sont appuyés contre le mur près d'un pot de peinture"
+  caption="Le pigeon repeint le panneau de la gare. Les anciens attendent à côté, le temps de vérifier que plus personne ne les lit."
+/>
+
+Certains noms ne peuvent pas changer. Ils sont tous dans une seule table, avec la raison :
+
+- `.github`, parce que GitHub impose ce nom ;
+- l'identifiant d'une app iOS déjà déposée chez Apple ;
+- les paquets déjà publiés : un registre public n'efface rien, alors ils restent lisibles, dépréciés, et ne sont jamais republiés ;
+- l'histoire : les commits, les tickets fermés, les changelogs. Les chapitres publiés de ce blog gardent aussi les noms de leur jour. On ne réécrit pas l'histoire.
+
+Hors de cette table, un outil, `krizaka-code-names`, refuse les quatre noms de code. C'est lui qui nous a dit où ça pétait, et c'est lui qui les empêche de revenir.
+
+Tout n'est pas fini, et je préfère le dire. Les noms internes de Sovkora, ceux de ses bases et de ses clés de configuration, changeront dans une deuxième vague, en une seule fois, parce qu'ils sont lus des deux côtés. Et tant que les nouvelles versions majeures de nos librairies ne sont pas publiées, certains e-mails de Verikora disent encore l'ancien nom. Sovkora dev, lui, est tombé au renommage, et il est reparti.
+
+## Un nouveau tableau
+
+Le tableau de nos tickets avait grandi avec nous, et il portait lui aussi les anciens noms. J'ai demandé au CTO de le détruire et d'en reconstruire un, plus adapté à nos besoins. Il a commencé par une sauvegarde complète : 2 649 cartes, avec toutes leurs valeurs. GitHub en annonçait 2 650 ; une seule n'est pas lisible par l'API.
+
+Il y a maintenant deux tableaux. Le tableau partagé, que notre nouveau contributeur peut lire, a reçu 2 491 cartes. Le tableau restreint, pour le fondateur, le CTO et nos robots, en a reçu 157. Pourquoi deux ? Parce qu'un ticket restreint ne doit rien montrer au contributeur, pas même une ligne masquée.
+
+Les colonnes sont les mêmes sur les deux : Incubation, Backlog, Next, Blocked, In progress, In review, À valider, À valider – fondateur, Done. Les cartes portent une priorité, un produit (avec son nom commercial), une voie, une taille et un horizon. Les outils trouvent les numéros des tableaux dans la config. Une fois les cartes migrées et les outils pointés sur les nouveaux tableaux, l'ancien a été supprimé.
+
+## La vie d'un changement, maintenant
+
+Avec le dossier, la config, les noms et le tableau en place, le chemin d'un changement se lit d'un bout à l'autre. C'est aussi ce que dit le guide du nouvel arrivant qu'on a écrit en français et en anglais.
+
+<Pipeline label="La vie d'un changement : du ticket à la vérification en ligne. Une session ne clone jamais et ne fusionne jamais ; le train et la recette font la fin.">
+  <Stage title="L'issue" note="fini quand">
+    Tout commence par un ticket dans notre dépôt privé de tickets, avec ses lignes « fini quand » et la liste des fichiers qu'il touche.
+  </Stage>
+  <Stage title="Next" note="validé par le CTO">
+    La carte entre dans Next seulement quand le CTO la valide, dans le plafond de sa voie.
+  </Stage>
+  <Stage title="Le worktree" note="wt-new">
+    Une session prend la carte et crée son worktree depuis un main frais. Elle ne clone jamais.
+  </Stage>
+  <Stage title="La PR" note="pr-open">
+    pr-open ouvre la PR : le ticket, ses lignes « fini quand » recopiées avec leur preuve, le code formaté.
+  </Stage>
+  <Stage title="La revue" note="le ticket d'abord" tone="gate">
+    On vérifie d'abord que la PR fait ce que demande le ticket, puis l'architecture, les tests et les gardes.
+  </Stage>
+  <Stage title="Le train" note="un commit" tone="gate">
+    La PR attend son tour dans la file de son dépôt et arrive sur main en un seul commit. Personne ne fusionne à la main.
+  </Stage>
+  <Stage title="À valider" note="la recette" tone="ship">
+    Une fois fusionnée, la recette la vérifie en ligne avant de fermer le ticket. Le worktree est retiré.
+  </Stage>
+</Pipeline>
+
+Et pour savoir si une règle est vraiment en place quelque part, la référence ne change pas : c'est la matrice de conformité. Chaque jour, un script croise chaque dépôt avec chaque règle. On lit la case, pas la mémoire d'un agent.
+
+## Ce que je garde
+
+Au moment où j'écris, le gel tient encore. Il se lèvera quand chaque point aura sa preuve : le workspace et sa garde en place, zéro nom de code signalé, Maven Central à jour, les apps de dev qui répondent, les sites des librairies republiés, la corbeille vidée. Ensuite seulement, les voies repartiront, Verikora en premier.
+
+Ce que je retiens de cette journée, c'est que le désordre d'une compagnie d'agents ne se voit pas. Personne n'ouvrait ces 2 095 dossiers. Aucun agent ne se plaignait d'un chemin écrit en dur. Le désordre ne coûtait rien, jusqu'au jour où quelqu'un de nouveau devait s'y retrouver.
+
+Une règle que je garde en tête ne tient pas une nuit. Une règle qui vit dans un hook, avec un test, tient. Le hook qui a tout refusé après le déménagement me l'a rappelé à sa façon : une garde mal écrite bloque aussi fort qu'une bonne. Alors on écrit les gardes avec le même soin que le code, et on les teste dans les deux sens.
+
+Et un nom, c'est pour les gens qui le lisent. Les noms de code étaient pratiques pour nous. Pour tous les autres, ils étaient une énigme.

@@ -4,7 +4,7 @@ description: "Un Mac à bout de souffle, une ClassCastException qui coupe le cha
 seoDescription: "Une plateforme d'IA sur un Mac : Spring Boot 4 et Spring AI 2, une ClassCastException qui coupe le chat, des modèles en base de données."
 date: 2026-10-23
 publishedAt: "2026-10-23T11:55:00-04:00"
-tags: [orazaka, ai]
+tags: [sovkora, ai]
 author: oussama
 draft: false
 cover: series-02-an-engine-on-a-laptop
@@ -35,7 +35,7 @@ stats:
 
 Au début, Orazaka était une découverte. Un projet personnel, sur mon MacBook, pour comprendre ce qu'on peut faire avec des modèles d'IA qui tournent chez soi. Ollama pour le texte, le GPU du Mac (Metal) pour les images, une base de données et quelques services lancés à la main. Si on m'avait pris le portable, il n'y avait plus d'Orazaka.
 
-Ce Mac est le premier serveur d'[Orazaka](https://dev.orazaka.com), le moteur d'IA que je construis. L'idée d'Orazaka est simple : faire tourner l'IA sur une machine que vous contrôlez. Pour moi, cette machine, c'est d'abord mon portable. Voici ce qu'il m'a appris.
+Ce Mac est le premier serveur d'[Orazaka](https://www.sovkora.com), le moteur d'IA que je construis. L'idée d'Orazaka est simple : faire tourner l'IA sur une machine que vous contrôlez. Pour moi, cette machine, c'est d'abord mon portable. Voici ce qu'il m'a appris.
 
 ## Le 12 octobre, le Mac a saturé
 
@@ -45,7 +45,7 @@ Même sans IA, une plateforme a besoin de plusieurs choses à la fois : une base
 
 Ma réponse du 12 octobre a été très simple, presque bête : un verrou. Avant une tâche lourde (un build natif, une pile Docker, une génération), une session crée un dossier `.heavy.lock`. Si le dossier existe déjà, elle attend une minute et réessaie. Comme la clé unique des toilettes d'un café : une personne à la fois, les autres patientent. Ça ralentit un peu tout le monde, mais plus rien ne s'effondre.
 
-Les services Java ont aussi leur part. Orazaka compte jusqu'à onze services Spring Boot. Une proposition ouverte ([orazaka#132](https://github.com/krizaka/orazaka/issues/132)) estime 4 à 6 Go au repos pour l'ensemble et propose un profil de développement avec une seule JVM. Ce sont des estimations, pas des mesures, et ce n'est pas encore livré.
+Les services Java ont aussi leur part. Orazaka compte jusqu'à onze services Spring Boot. Une proposition ouverte estime 4 à 6 Go au repos pour l'ensemble et propose un profil de développement avec une seule JVM. Ce sont des estimations, pas des mesures, et ce n'est pas encore livré.
 
 ## Les modèles deviennent des données
 

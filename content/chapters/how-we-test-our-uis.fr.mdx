@@ -112,7 +112,7 @@ L'application Mac de Yomizaka, construite de la même façon, en a un. [`desktop
   caption="Mac (Yomizaka). Le parcours ouvre la bibliothèque, entre dans un dossier de démo, vérifie un bail de démo et suit les étapes de lecture, puis relance l'application. Ce que vous voyez : l'application installée qui lit un bail depuis un dossier local, pilotée par le test."
 />
 
-Comment c'est réglé, en quatre courts extraits copiés des dépôts tels qu'ils sont sur `main` ([akinaza à 3b8edca](https://github.com/krizaka/akinaza/tree/3b8edcaf/apps/mobile/.maestro), [yomizaka à 17753f7](https://github.com/krizaka/yomizaka/tree/17753f7b)). L'extrait du Mac est celui de Yomizaka : depuis que j'ai écrit les lignes ci-dessus, son application Mac a son premier parcours ([yomizaka#636](https://github.com/krizaka/yomizaka/issues/636)), piloté par WebDriver. Celle d'Akinaza pas encore.
+Comment c'est réglé, en quatre courts extraits copiés des dépôts tels qu'ils sont sur `main` ([akinaza à 3b8edca](https://github.com/krizaka/akinaza/tree/3b8edcaf/apps/mobile/.maestro), [yomizaka à 17753f7](https://github.com/krizaka/yomizaka/tree/17753f7b)). L'extrait du Mac est celui de Yomizaka : depuis que j'ai écrit les lignes ci-dessus, son application Mac a son premier parcours, piloté par WebDriver. Celle d'Akinaza pas encore.
 
 <Plate label="Comment les tests sont réglés. Maestro : le parcours de la journée, dont la visite est réservée par la CI pour ne jamais dépendre de l'horloge, et le lancement partagé, relancé le temps qu'un émulateur lent se pose. Playwright : la configuration des parcours, qui refuse toute relance d'un test. Mac : la version de débogage avec son WebDriver, puis le parcours.">
 
@@ -201,7 +201,7 @@ export default defineConfig(config);
 
 ## Des vidéos qui sortent des tests
 
-Les pages de téléchargement de nos produits montrent des vidéos des applications, et une vidéo filmée à la main vieillit dès la version suivante. Alors ce sont les tests qui les filment ([krizaka/.github#315](https://github.com/krizaka/.github/issues/315), règle [« app videos »](https://github.com/krizaka/.github/blob/main/docs/standards/app-videos.md)). Un seul parcours sert deux fois : à prouver, et à montrer.
+Les pages de téléchargement de nos produits montrent des vidéos des applications, et une vidéo filmée à la main vieillit dès la version suivante. Alors ce sont les tests qui les filment (règle [« app videos »](https://github.com/krizaka/.github/blob/main/docs/standards/app-videos.md)). Un seul parcours sert deux fois : à prouver, et à montrer.
 
 Côté web, [`showcase-web.mjs`](https://github.com/krizaka/akinaza/blob/main/apps/web/scripts/showcase-web.mjs) enregistre avec Playwright. La connexion se fait hors caméra, pour que rien de tapé ne soit filmé, avec le personnage de démo, et la bannière « version de développement » reste visible. Côté téléphone, ce sont les commandes `startRecording` et `stopRecording` de Maestro dans [`.maestro-showcase`](https://github.com/krizaka/akinaza/tree/main/apps/mobile/.maestro-showcase).
 
@@ -263,7 +263,7 @@ Ce qui vient des dépôts aujourd'hui :
 Et ce qui manque :
 
 - L'ADR fixe 15 minutes pour la CI d'une PR. Akinaza est entre 23 et 28. On n'y est pas.
-- Je n'ai pas de taux d'instabilité avant et après. L'indicateur est prévu ([krizaka/.github#357](https://github.com/krizaka/.github/issues/357)), il n'est pas encore là. Je préfère ne rien chiffrer plutôt que d'inventer.
+- Je n'ai pas de taux d'instabilité avant et après. L'indicateur est prévu, il n'est pas encore là. Je préfère ne rien chiffrer plutôt que d'inventer.
 - Pas d'iOS en CI, pas de parcours sur le Mac, le rejeu à trois essais de Maestro, aucun catalogue de parcours chez Akinaza, et aucune vidéo d'Akinaza publiée par ce chemin.
 
 Ce que j'en retiens : les parcours coûtent plus cher qu'un test unitaire, et ils sont les seuls à répondre à ma question du début. Le reste, c'est de la discipline : zéro rejeu, une horloge qu'on contrôle, et un garde à chaque panne.

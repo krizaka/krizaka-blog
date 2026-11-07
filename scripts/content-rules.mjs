@@ -150,7 +150,7 @@ function frontMatterProblems(file, data) {
   return out;
 }
 
-/** The same picture under another id counts too: the same Orazaka run, or the same file stem on the CDN. */
+/** The same picture under another id counts too: the same Sovkora run, or the same file stem on the CDN. */
 const stemOf = (u) =>
   u
     .split("/")
@@ -296,7 +296,7 @@ export function homeCoverProblems(posts, media) {
     const diagrams = first.filter((p) => media[p.cover]?.style === "diagram");
     if (diagrams.length > HOME_DIAGRAM_COVERS_MAX)
       out.push(
-        `home (${locale}): ${diagrams.length} of the first ${HOME_CARDS} cards have a diagram as cover (${diagrams.map((p) => p.slug).join(", ")}) — at most ${HOME_DIAGRAM_COVERS_MAX}: give a post an evocative picture or clip (an Orazaka run) and keep its diagram in the text`,
+        `home (${locale}): ${diagrams.length} of the first ${HOME_CARDS} cards have a diagram as cover (${diagrams.map((p) => p.slug).join(", ")}) — at most ${HOME_DIAGRAM_COVERS_MAX}: give a post an evocative picture or clip (a Sovkora run) and keep its diagram in the text`,
       );
   }
   return out;
@@ -404,7 +404,7 @@ export function chapterProblems(file, data, body, ctx, postSlugs) {
   if (data.draft === true && !data.cover)
     out.push(
       `${file}: a chapter needs a "cover", even as a draft (the build's meta check renders drafts): render it with ` +
-        `python3 scripts/render-image-series.py --worker <orazaka-worker-media> --anchor <brand picture> --out <name> --only <chapter> ` +
+        `python3 scripts/render-image-series.py --worker <sovkora-worker-media> --anchor <brand picture> --out <name> --only <chapter> ` +
         `(docs/image-series.md), make its renditions with scripts/prepare-series-covers.mjs, then set "cover" and "coverAlt"`,
     );
   else if (data.draft === true && blank(data.coverAlt))
@@ -537,7 +537,7 @@ export function attributeQuoteProblems(text, file) {
    entries of krizaka/.github's repos.json, the org's single source: a repository made private is added here. */
 export const PRIVATE_REPOS = [
   "cla-signatures",
-  "kachizaka",
+  "kridoc",
   "krizaka-agents",
   "krizaka-coming-soon",
   "krizaka-infra",
@@ -552,4 +552,26 @@ export function privateRepoLinkProblems(text, file) {
       (m) =>
         `${file}: links the private repository krizaka/${m[1]} (${m[0]}), a 404 for readers: say it without a link`,
     );
+}
+
+/* Issues never live in the repository a page names: the company's tickets are in the private krizaka-internal, and a
+   ticket moved there (or between repositories) leaves a link that answers 404, or GitHub's generic page with a 200 that
+   the external link check cannot tell from a live one (krizaka-blog main red on orazaka-ai-engine#116, 2026-11-06).
+   A page names a pull request, a commit or a file, which stay public, or says the thing without a link. */
+export function orgIssueLinkProblems(text, file) {
+  const link = /https?:\/\/github\.com\/krizaka\/[A-Za-z0-9._-]+\/issues\/\d+/g;
+  return [...text.matchAll(link)].map(
+    (m) =>
+      `${file}: links an issue of the org (${m[0]}), moved to a private tracker or answering 404: link a pull request, or say it without a link`,
+  );
+}
+
+/* A line anchor on a moving branch (`/blob/main/…#L696-L702`) points at other lines after the next commit and at nothing after a
+   rename or a move: the audit chapter's JobListener link was a 404 on main once the repository and package were renamed
+   (krizaka-internal#2798). A line is cited by a permalink: the commit's SHA in place of the branch. */
+export function branchLineLinkProblems(text, file) {
+  const link = /https?:\/\/github\.com\/[\w.-]+\/[\w.-]+\/blob\/(?:main|master)\/[^\s)"]*#L\d+/g;
+  return [...text.matchAll(link)].map(
+    (m) => `${file}: cites lines on a branch (${m[0]}): use a permalink (the commit SHA instead of main)`,
+  );
 }
