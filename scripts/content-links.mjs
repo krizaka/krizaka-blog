@@ -89,3 +89,13 @@ export function orgIssueLinkProblems(text, file) {
       `${file}: links an issue of the org (${m[0]}), moved to a private tracker or answering 404: link a pull request, or say it without a link`,
   );
 }
+
+/* A line anchor on a moving branch (`/blob/main/…#L696-L702`) points at other lines after the next commit and at nothing after a
+   rename or a move: the audit chapter's JobListener link was a 404 on main once the repository and package were renamed
+   (krizaka-internal#2798). A line is cited by a permalink: the commit's SHA in place of the branch. */
+export function branchLineLinkProblems(text, file) {
+  const link = /https?:\/\/github\.com\/[\w.-]+\/[\w.-]+\/blob\/(?:main|master)\/[^\s)"]*#L\d+/g;
+  return [...text.matchAll(link)].map(
+    (m) => `${file}: cites lines on a branch (${m[0]}): use a permalink (the commit SHA instead of main)`,
+  );
+}
