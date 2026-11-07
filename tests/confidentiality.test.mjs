@@ -2,6 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   CONFIDENTIAL_STRICT,
+  firstAmount,
+  firstCompanyEmail,
   firstSecretVariable,
   firstWord,
   LEDGER_WORDS,
@@ -61,4 +63,25 @@ test('hasIdAttribute: id="x" as an attribute of its own, not data-id', () => {
   assert.equal(hasIdAttribute('<div data-id="cover-a">', "cover-a"), true);
   assert.equal(hasIdAttribute('<div xid="cover-a">', "cover-a"), false);
   assert.equal(hasIdAttribute('<Figure id="cover-ab" />', "cover-a"), false);
+});
+
+// Sonar S8786: the e-mail and amount regexes backtracked; the expectations below were recorded from them, and old and new gave
+// the same answer on 200,000 generated texts.
+test("firstCompanyEmail: the whole name before @krizaka.com, any case, the earliest; a longer domain is not one", () => {
+  assert.equal(firstCompanyEmail("write to first.last+x@Krizaka.com today"), "first.last+x@Krizaka.com");
+  assert.equal(firstCompanyEmail("a@krizaka.com@krizaka.com"), "a@krizaka.com");
+  assert.equal(firstCompanyEmail("@krizaka.com then b@krizaka.com"), "b@krizaka.com");
+  assert.equal(firstCompanyEmail("x@krizaka.company"), null);
+  assert.equal(firstCompanyEmail("no address here"), null);
+});
+
+test("firstAmount: a $ before a figure, or figures (spaces, dots, commas) before a currency that ends a word", () => {
+  assert.equal(firstAmount("it cost $ 40 then"), "$ 4");
+  assert.equal(firstAmount("about $12"), "$1");
+  assert.equal(firstAmount("1 200,50 € a month"), "1 200,50 €");
+  assert.equal(firstAmount("12 USD"), "12 USD");
+  assert.equal(firstAmount("12 US$"), "12 US$");
+  assert.equal(firstAmount("12 CADx and 3 EUR"), "3 EUR");
+  assert.equal(firstAmount("chapter 12, 13 and 14"), null);
+  assert.equal(firstAmount("$ x"), null);
 });

@@ -12,7 +12,7 @@ import { CDN, onBlogCdn } from "./content-names.mjs";
 export const RENDITION_WIDTHS = [480, 768, 1200, 1600];
 export function renditionWidths(width) {
   const w = RENDITION_WIDTHS.filter((x) => x <= width);
-  if (width > w[w.length - 1]) w.push(width);
+  if (width > w.at(-1)) w.push(width);
   return w;
 }
 export const RENDITION_FORMATS = ["avif", "webp"];
@@ -105,32 +105,45 @@ export function coverProblems(file, data, body, media) {
   return out;
 }
 
+/** An entry's shape: a lower-case id, a kind, its size and its blur placeholder. */
+function entryProblems(id, m) {
+  const out = [];
+  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(id)) out.push(`media ${id}: the id must be lower-case words with hyphens`);
+  if (!["image", "video"].includes(m.kind)) out.push(`media ${id}: kind must be image or video`);
+  if (!(m.width > 0 && m.height > 0)) out.push(`media ${id}: width and height are required (they reserve the space)`);
+  if (!String(m.blur ?? "").startsWith("data:image/webp;base64,"))
+    out.push(`media ${id}: a blur placeholder (webp data URL) is required`);
+  return out;
+}
+
+/** An entry's files on the blog's CDN: a picture's srcs (each with its width), a video's poster, mp4 and webm. */
+function fileProblems(id, m) {
+  if (m.kind !== "image")
+    return ["poster", "mp4", "webm"].filter((k) => !onBlogCdn(m[k])).map((k) => `media ${id}: ${k} must be on ${CDN}`);
+  const out = [];
+  if (!Array.isArray(m.srcs) || m.srcs.length === 0) out.push(`media ${id}: srcs is required`);
+  for (const s of m.srcs ?? [])
+    if (!onBlogCdn(s.url) || !(s.w > 0)) out.push(`media ${id}: every src needs a width and a URL on ${CDN}`);
+  return out;
+}
+
+/* A picture is either made (its provenance in `made`) or drawn from code as a diagram (`style: "diagram"`). */
+function provenanceProblems(id, m) {
+  const out = [];
+  if (m.style !== undefined && m.style !== "diagram") out.push(`media ${id}: style is "diagram" or absent`);
+  if (m.kind === "image" && !m.made && m.style !== "diagram")
+    out.push(`media ${id}: a picture without provenance (made) must be a diagram drawn from code (style: "diagram")`);
+  if (m.made && !m.made.model) out.push(`media ${id}: made.model is required`);
+  if (m.made?.runId && !/^[0-9a-f-]{36}$/.test(m.made.runId)) out.push(`media ${id}: made.runId is not a run id`);
+  return out;
+}
+
 /** The problems of the media library itself: every URL on the blog's CDN prefix, every entry carries what it needs. */
 export function mediaProblems(media) {
-  const out = [];
-  const onCdn = onBlogCdn;
-  for (const [id, m] of Object.entries(media)) {
-    if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(id)) out.push(`media ${id}: the id must be lower-case words with hyphens`);
-    if (!["image", "video"].includes(m.kind)) out.push(`media ${id}: kind must be image or video`);
-    if (!(m.width > 0 && m.height > 0)) out.push(`media ${id}: width and height are required (they reserve the space)`);
-    if (!String(m.blur ?? "").startsWith("data:image/webp;base64,"))
-      out.push(`media ${id}: a blur placeholder (webp data URL) is required`);
-    if (m.renditions !== undefined) out.push(...renditionProblems(id, m));
-    if (m.kind === "image") {
-      if (!Array.isArray(m.srcs) || m.srcs.length === 0) out.push(`media ${id}: srcs is required`);
-      for (const s of m.srcs ?? [])
-        if (!onCdn(s.url) || !(s.w > 0)) out.push(`media ${id}: every src needs a width and a URL on ${CDN}`);
-    } else {
-      for (const k of ["poster", "mp4", "webm"]) if (!onCdn(m[k])) out.push(`media ${id}: ${k} must be on ${CDN}`);
-    }
-    /* A picture is either made (its provenance in `made`) or drawn from code as a diagram (`style: "diagram"`). */
-    if (m.style !== undefined && m.style !== "diagram") out.push(`media ${id}: style is "diagram" or absent`);
-    if (m.kind === "image" && !m.made && m.style !== "diagram")
-      out.push(`media ${id}: a picture without provenance (made) must be a diagram drawn from code (style: "diagram")`);
-    if (m.made) {
-      if (!m.made.model) out.push(`media ${id}: made.model is required`);
-      if (m.made.runId && !/^[0-9a-f-]{36}$/.test(m.made.runId)) out.push(`media ${id}: made.runId is not a run id`);
-    }
-  }
-  return out;
+  return Object.entries(media).flatMap(([id, m]) => [
+    ...entryProblems(id, m),
+    ...(m.renditions === undefined ? [] : renditionProblems(id, m)),
+    ...fileProblems(id, m),
+    ...provenanceProblems(id, m),
+  ]);
 }

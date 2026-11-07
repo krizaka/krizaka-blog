@@ -104,8 +104,7 @@ export function postProblems(file, data, body, ctx) {
   if (!m) return [`${file}: the name must be <slug>.<en|fr>.mdx (lower-case, hyphens)`];
   const out = [];
   if (RESERVED_SLUGS.has(m[1])) out.push(`${file}: "${m[1]}" is a reserved slug`);
-  out.push(...frontMatterProblems(file, data));
-  out.push(...bodyProblems(file, body));
+  out.push(...frontMatterProblems(file, data), ...bodyProblems(file, body));
   if (ctx)
     out.push(
       ...coverProblems(file, data, body, ctx.media),
