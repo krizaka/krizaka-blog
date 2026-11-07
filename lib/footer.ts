@@ -13,14 +13,25 @@ import { COMPANY, GITHUB_ORG_URL, JAVA_URL, KRIZAKA_URL, LAB_URL, OPEN_SOURCE_UR
 const PRODUCT_IDS = ["orazaka", "yomizaka", "akinaza"] as const;
 const www = (path: string) => `${KRIZAKA_URL}${path}`;
 
+/** One status per product, the same word as krizaka.com (decision 2026-11-05, reunion 6): Verikora and Sovkora are in
+    development, Folioviv is paused. Keyed by the commercial name (@krizaka/org's), the status words are `footer.status.*`. */
+export const PRODUCT_STATUS = { Verikora: "development", Sovkora: "development", Folioviv: "paused" } as const;
+export type ProductStatus = (typeof PRODUCT_STATUS)[keyof typeof PRODUCT_STATUS];
+
+/** « Folioviv · Paused »: the product's name then its own status, in the reader's language. */
+export function productLabel(name: string, words: Record<ProductStatus, string>): string {
+  const status = PRODUCT_STATUS[name as keyof typeof PRODUCT_STATUS];
+  if (!status) throw new Error(`footer: no status for the product ${name}`);
+  return `${name} · ${words[status]}`;
+}
+
 export const footerSettings = {
   labelKey: "footer.aria",
   columns: [
     {
       id: "products",
       titleKey: "footer.products",
-      // Every product is in development: said once, on the heading, as on krizaka.com.
-      status: "development",
+      // No status on the heading: each product says its own, on its link (`productLabel`).
       links: PRODUCT_IDS.map((id) => ({
         label: displayName(id),
         href: brandOf(id).domains.site.replace(/\/$/, ""),
