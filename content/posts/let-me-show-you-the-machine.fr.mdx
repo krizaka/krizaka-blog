@@ -1,13 +1,16 @@
 ---
 title: "Je vous montre la machine"
-description: "Depuis des mois je fais tourner l'entreprise presque seul, avec une équipe d'agents. Au lieu de la décrire, je vous la montre : un train qui avance, un tableau où rien n'est vrai sans preuve."
+description: "Le cockpit, le budget, le train. Je vous montre comment je fais tourner une entreprise presque seul avec des agents, et ce que ça a coûté d'apprendre à bien le faire."
 seoTitle: "Je vous montre la machine"
-seoDescription: "Comment je fais tourner une entreprise avec une équipe d'agents : un CTO perroquet, un train de fusion, un cockpit où rien n'est vrai sans preuve."
-date: 2026-11-07
+seoDescription: "Un cockpit où rien n'est vrai sans preuve, le budget que ça demande, et Sovkora passé d'un entrepôt à un seul dépôt."
+date: 2026-11-08
 tags: [ai, integration, costs]
 author: oussama
-draft: true
+draft: false
 sensitive: true
+publishedAt: "2026-11-08T12:00:00-05:00"
+cover: agentic-workbench
+coverAlt: "Un établi de menuisier à l'aube : plan de travail accroché au mur, ciseaux rangés en ordre, assemblage en cours dans l'étau, lumière dorée"
 ---
 
 J'ai déjà raconté, morceau par morceau, comment je construis cette entreprise presque seul, avec des agents. Aujourd'hui je ne vais pas le raconter encore. Je vais vous le montrer. Les figures de cette page tournent sur des données inventées, mais elles bougent comme la vraie machine bouge, et vous pouvez les faire avancer vous-même.
@@ -20,33 +23,49 @@ En haut de tout il y a un CTO. Ce n'est pas moi : c'est Mouloud, un perroquet gr
 
 Moi, je garde les questions qui sont à moi : l'argent, le droit, les comptes, tout ce qui ne se défait pas. Le reste, il le mène.
 
+## Pourquoi j'ai construit le cockpit
+
+Pendant des semaines, les agents travaillaient. Des tickets s'ouvraient, des pull requests arrivaient, des branches fusionnaient. Et moi je ne savais plus qui avançait sur quoi.
+
+Le problème n'était pas le travail — c'était la preuve du travail. Un tableau qui s'agite ne dit pas si ce qui bouge est ce qui devait bouger. Je pouvais regarder une liste de tickets fermés et ne pas savoir si le vrai problème du produit avançait. J'avais besoin d'une vue où chaque affirmation soit tirée d'un fait : quelle équipe, quel ticket, un clic pour ouvrir le ticket et voir son épopée.
+
+La règle du cockpit est simple : une affirmation sans fait derrière elle n'est pas vraie. Tant qu'aucune pull request fusionnée ne la soutient, elle porte l'étiquette « non prouvé ». C'est la même discipline que Mouloud applique en haut, écrite dans un écran que je peux regarder depuis mon téléphone.
+
+<TeamBoard />
+
+Faites apparaître les faits : les étiquettes se lèvent une à une. C'est la seule chose que l'écran montre, et c'est la seule chose qu'il fallait.
+
+## Ce que ça coûte, et comment je le tiens
+
+Une entreprise d'un seul qui fait tourner une équipe d'agents, ça a un budget. Ce budget existe parce qu'une session l'a un jour fait exploser.
+
+Cette version de l'article est la seconde : la première a été arrêtée à mi-chemin parce qu'une session avait dépassé son quota. Elle avait lancé trop d'agents à la fois sur un modèle trop lourd, sans interrupteur. Elle s'est arrêtée proprement, elle a écrit où elle en était, et elle a attendu. Le fondateur a posé les règles le lendemain.
+
+Depuis, chaque session part avec quatre règles. Je prends le plus petit modèle qui fait le travail : un léger pour faire atterrir une correction, un moyen pour une fonctionnalité, un lourd seulement pour une décision d'architecture ou un rouge qui résiste — jamais par défaut. Un plafond par modèle et par session, pour toutes les sessions confondues en vingt-quatre heures : quand la limite est atteinte, la session écrit son état et attend — une boucle de relances aggraverait le problème. Et au plus deux sous-agents en parallèle, jamais un lourd pour une tâche légère.
+
+Ces règles ne sont pas théoriques. Elles sont là parce que leur absence a coûté quelque chose. Je reprends une session au lieu de la relancer de zéro, avec des points de reprise courts. Chaque fois qu'un contrôle peut être fait par un script plutôt que par un modèle, c'est le script qui le fait : un script ne coûte rien et ne se trompe pas deux fois. Et le cockpit lui-même ne doit pas brûler ce qu'il est censé surveiller : les vues sont statiques, les requêtes sont comptées.
+
 ## Une session par voie
 
-Le travail est rangé en voies, une équipe par voie : le moteur, le site, la sécurité, la diffusion, l'outillage, et le blog que vous lisez. Chaque équipe est une session nommée, et Mouloud les oriente. Aucune ne part sans limites : un nombre de tours, un budget, une horloge, un interrupteur d'arrêt, et un plafond par jour pour l'ensemble. Quand une limite est atteinte, la session s'arrête proprement et écrit où elle en est.
-
-Le coût, je le tiens par des principes simples. Je prends le plus petit modèle qui fait le travail : un léger pour faire atterrir une correction, un moyen pour une fonctionnalité, un grand seulement pour une décision d'architecture, la sécurité, ou un rouge qui résiste. Je reprends une session au lieu de la relancer de zéro, avec des points de reprise courts. Le travail lourd passe sous un verrou, un à la fois. Et chaque fois qu'un contrôle peut être fait par un script plutôt que par un modèle, c'est le script qui le fait : un script ne coûte rien et ne se trompe pas deux fois. J'avais raconté le début de tout ça dans [construire presque seul, avec des agents](/fr/story/building-with-agents/).
-
-Ces limites ne sont pas théoriques. Cette version de l'article est la seconde : la première a été arrêtée à mi-chemin parce qu'une session avait dépassé son quota. Elle s'est arrêtée proprement, elle a écrit où elle en était, et elle a attendu.
-
-Depuis, chaque session part avec quatre règles. Un plafond par modèle et par session : un léger a une enveloppe légère, un lourd une enveloppe plus serrée. Un plafond par jour pour l'ensemble : toutes les sessions confondues ne peuvent pas dépasser un certain seuil en vingt-quatre heures. Pas de relance après un signal de limite de quota : si l'interface répond par une limite de quota, la session écrit son état et attend — une boucle de retentatives aggraverait le problème. Et au plus deux sous-agents en parallèle : on peut en lancer d'autres pour paralléliser, jamais plus de deux à la fois, et jamais un lourd pour une tâche légère.
-
-Ces règles existent parce qu'une session a un jour lancé trop d'agents à la fois sur un modèle trop lourd, sans interrupteur. Le fondateur les a posées le lendemain.
+Le travail est rangé en voies, une équipe par voie : le moteur, le site, la sécurité, la diffusion, l'outillage, et le blog que vous lisez. Chaque équipe est une session nommée. Mouloud les oriente. Aucune ne part sans limites : un nombre de tours, un budget, une horloge, un interrupteur d'arrêt. Les correctifs urgents entrent dans le train en premier ; le reste attend sa place dans la file. Les équipes publient dans leur domaine. La vidéo reste avec le fondateur.
 
 ## Le train
 
-Une équipe ne fusionne jamais son travail à la main. Chaque pull request monte dans une file, et la file ne laisse passer qu'une voiture à la fois. Les contrôles tournent ; au vert, la voiture fusionne et la file avance ; au rouge, elle est mise de côté sur une voie de garage, avec sa raison, pour ne bloquer personne derrière elle. Quand un dépôt sature, un spécialiste vient débloquer la file.
+Une équipe ne fusionne jamais son travail à la main. Chaque pull request monte dans une file, et la file ne laisse passer qu'une voiture à la fois. Les contrôles tournent ; au vert, la voiture fusionne et la file avance ; au rouge, elle est mise de côté sur une voie de garage, avec sa raison, pour ne bloquer personne derrière elle.
 
 <Train />
 
 C'est tout le train. Faites-le avancer : vous verrez la voiture rouge se ranger seule, et les autres continuer. J'ai raconté sa première version dans [tchou-tchou, comment nos pull requests prennent le train](/fr/story/tchou-tchou-how-our-pull-requests-catch-the-train/).
 
-## Le tableau, où rien n'est vrai sans preuve
+## Sovkora, maintenant un seul dépôt
 
-Pour savoir qui fait quoi, je regarde un cockpit. Il relie une épopée à ses fonctionnalités, chaque fonctionnalité à ses tickets, chaque ticket à sa pull request. Sa seule règle est dure : une affirmation sans fait derrière elle n'est pas vraie. Tant qu'aucune pull request fusionnée ne la soutient, elle porte l'étiquette « non prouvé ».
+Pendant longtemps, Sovkora — le moteur d'IA — vivait dans seize dépôts. Services, bibliothèques, workers, packs : chacun avait son dépôt, ses pipelines, ses réglages. Une décision prise dans le moteur traversait quatre dépôts avant d'être testée ensemble. Changer une interface touchait trois bibliothèques et autant de dépôts de clients.
 
-<TeamBoard />
+Le mois dernier, nous avons tout mis dans un seul. Seize dépôts sont devenus un. Quinze dépôts retirés portaient cent cinquante-trois pipelines ; le seul dépôt actuel en a vingt-neuf. Maintenant, un changement qui touche plusieurs modules est une seule pull request, testée d'un coup.
 
-Faites apparaître les faits : les étiquettes se lèvent une à une. C'est la même discipline que Mouloud applique en haut, écrite dans un écran que je peux regarder depuis mon téléphone.
+Le prix de ce mouvement était prévisible, et il a quand même surpris : le déploiement de développement s'est cassé le premier jour parce que l'image du service web n'avait pas été reconstruite. Il a fallu une journée pour revenir au vert. Ce n'est pas un inconvénient que j'aurais pu éviter ; c'est ce que coûte de déplacer seize dépôts à la fois.
+
+Est-ce que ça livre plus vite ? Je ne sais pas encore. Les premières livraisons après le déménagement étaient faites à la main, ce qui rend les chiffres inutilisables. Je mesurerai une fois que le train tourne normalement.
 
 ## L'échéance peut bouger, la qualité jamais
 
