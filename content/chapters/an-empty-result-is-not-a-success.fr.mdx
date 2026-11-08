@@ -45,7 +45,7 @@ Au départ, le service d'automatisation d'Orazaka était un écouteur de message
 
 Ça marchait bien pour une démo. C'est aussi de l'exécution de code à distance par conception. Il suffisait qu'un jour quelqu'un trouve comment écrire dans ce canal pour qu'il tienne le Mac de l'utilisateur.
 
-Ce trou est écrit noir sur blanc dans [la décision d'architecture 079](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-079-automations-and-local-agents.md), et il a été fermé le 17 octobre : la commande enregistre maintenant ce qu'elle reçoit et le refuse, elle n'exécute plus rien ([orazaka-cli#54](https://github.com/krizaka/orazaka-cli/pull/54)).
+Ce trou est écrit noir sur blanc dans [la décision d'architecture 079](https://github.com/krizaka/sovkora/blob/main/docs/adr/ADR-079-automations-and-local-agents.md), et il a été fermé le 17 octobre : la commande enregistre maintenant ce qu'elle reçoit et le refuse, elle n'exécute plus rien ([orazaka-cli#54](https://github.com/krizaka/orazaka-cli/pull/54)).
 
 La même décision liste ce que nous ne ferons pas, et c'est la partie dont je suis le plus sûr.
 
@@ -75,7 +75,7 @@ Ce que ça donne, mesuré sur un Mac avec le modèle <Model id="qwen25-7b">Qwen2
 
 Tout ça est couvert par des tests : cinquante-deux tests unitaires du moteur et un test de bout en bout avec le vrai serveur de fichiers, de vrais PDF et un modèle local. Un de ces tests essaie de sortir du dossier, un autre vérifie que le journal ne contient jamais le texte d'un document.
 
-L'autre moitié, c'est quand c'est un système extérieur qui veut démarrer le travail : une boutique, un outil de réservation. Là, pas de Mac. Une automatisation du cloud d'Orazaka lance un Studio quand elle reçoit un appel signé ou à une heure donnée. C'est [la décision 084](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-084-automation-triggers.md).
+L'autre moitié, c'est quand c'est un système extérieur qui veut démarrer le travail : une boutique, un outil de réservation. Là, pas de Mac. Une automatisation du cloud d'Orazaka lance un Studio quand elle reçoit un appel signé ou à une heure donnée. C'est [la décision 084](https://github.com/krizaka/sovkora/blob/main/docs/adr/ADR-084-automation-triggers.md).
 
 Cet appel est le premier endroit de la plateforme où un inconnu peut frapper sans session ni clé. Alors il a sa propre règle, et la signature est l'authentification. Chaque déclencheur a son secret, 32 octets tirés au hasard, scellé dans la base, montré une seule fois à la création et jamais relu.
 
@@ -184,7 +184,7 @@ Le contrat existait déjà au niveau du run entier. Plutôt que d'écrire un deu
 
 Voici la scène qui m'a fait écrire la décision. Une tâche d'agent un peu longue : planifier, appeler des outils, écrire du code, vérifier. Je ferme mon portable au milieu. Ou un worker plante. Ou je rejette un brouillon. Aujourd'hui, je recommence, et je repaie ce qui était déjà fait.
 
-[La décision 086](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-086-durable-agent-sessions-on-studio-runs.md) décrit comment éviter ça. Une session est une exécution Studio d'un type particulier. Chaque étape laisse un point de reprise, écrit une fois et jamais modifié. On peut mettre en pause, reprendre, relancer à partir d'une étape, ou en faire une copie. Un verrou empêche deux appareils de reprendre la même session en même temps.
+[La décision 086](https://github.com/krizaka/sovkora/blob/main/docs/adr/ADR-086-durable-agent-sessions-on-studio-runs.md) décrit comment éviter ça. Une session est une exécution Studio d'un type particulier. Chaque étape laisse un point de reprise, écrit une fois et jamais modifié. On peut mettre en pause, reprendre, relancer à partir d'une étape, ou en faire une copie. Un verrou empêche deux appareils de reprendre la même session en même temps.
 
 Soyons clairs sur l'état des lieux : c'est une décision acceptée, pas une fonction livrée. Le premier test à passer sera simple à dire : tuer le worker en pleine exécution, reprendre, et vérifier que les étapes enregistrées ne sont pas refacturées. Tant qu'il n'a pas passé, je ne dis pas que ça marche.
 

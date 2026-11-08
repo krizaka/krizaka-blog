@@ -57,7 +57,7 @@ jobs:
 
 The workflow is pinned by its SHA, not by a tag. A tag can move, a SHA cannot. The `# v1.5.0` comment says which version it is, and Dependabot proposes the update, in a PR that goes through the same CI as everything else.
 
-Orazaka has its own pipeline, `component.yml`, in the [krizaka/orazaka](https://github.com/krizaka/orazaka) repository. An Orazaka component is never built alone: the CI clones the whole workspace, puts the tested repository in its place, and first builds its dependencies from source.
+Orazaka has its own pipeline, `component.yml`, in the [krizaka/orazaka](https://github.com/krizaka/sovkora) repository. An Orazaka component is never built alone: the CI clones the whole workspace, puts the tested repository in its place, and first builds its dependencies from source.
 
 The full build pack, where each repository would have one line, still does not exist. Today it is one call and a few options. That is already much better than copies.
 
@@ -296,9 +296,9 @@ allowBuilds:
   unrs-resolver: true
 ```
 
-**npm on a pnpm project.** The deployment ran `npm install` on the web client's pnpm tree. npm crashed, on every deployment, with a message that said nothing useful. The build command became `pnpm run build` ([orazaka#412](https://github.com/krizaka/orazaka/pull/412)).
+**npm on a pnpm project.** The deployment ran `npm install` on the web client's pnpm tree. npm crashed, on every deployment, with a message that said nothing useful. The build command became `pnpm run build` ([orazaka#412](https://github.com/krizaka/sovkora/pull/412)).
 
-**Two repositories waiting for each other.** To move to Krizaka UI 3.55, Orazaka's workspace had to regenerate its lockfile. Its CI failed against the web client, which still declared the old version. And the web client's PR needed the new lockfile. Each waited for the other. We got out by making the web client self-contained: it is no longer part of the npm workspace, it installs from its own `pnpm-lock.yaml` ([orazaka#415](https://github.com/krizaka/orazaka/pull/415)). The price is that it now takes two shared packages from the registry, no longer from their source.
+**Two repositories waiting for each other.** To move to Krizaka UI 3.55, Orazaka's workspace had to regenerate its lockfile. Its CI failed against the web client, which still declared the old version. And the web client's PR needed the new lockfile. Each waited for the other. We got out by making the web client self-contained: it is no longer part of the npm workspace, it installs from its own `pnpm-lock.yaml` ([orazaka#415](https://github.com/krizaka/sovkora/pull/415)). The price is that it now takes two shared packages from the registry, no longer from their source.
 
 None of these failures was settled by running the CI again. Each one was fixed where it started.
 

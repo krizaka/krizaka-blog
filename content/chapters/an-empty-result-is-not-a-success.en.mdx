@@ -45,7 +45,7 @@ At the start, Orazaka's automation service was a message listener that wrote dow
 
 It worked well for a demo. It was also remote code execution by design. All it would take was for someone to find a way to write into that channel, and the user's Mac was theirs.
 
-The hole is written in black and white in [architecture decision 079](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-079-automations-and-local-agents.md), and it was closed on 17 October: the command now records what it receives and refuses it, and it runs nothing ([orazaka-cli#54](https://github.com/krizaka/orazaka-cli/pull/54)).
+The hole is written in black and white in [architecture decision 079](https://github.com/krizaka/sovkora/blob/main/docs/adr/ADR-079-automations-and-local-agents.md), and it was closed on 17 October: the command now records what it receives and refuses it, and it runs nothing ([orazaka-cli#54](https://github.com/krizaka/orazaka-cli/pull/54)).
 
 The same decision lists what we will not do, and that is the part I am most sure of.
 
@@ -75,7 +75,7 @@ What that gives, measured on a Mac with the model <Model id="qwen25-7b">Qwen2.5 
 
 All of it is covered by tests: fifty-two unit tests on the engine, and one end-to-end test with the real file server, real PDFs and a local model. One of those tests tries to leave the folder; another checks that the journal never contains the text of a document.
 
-The other half is when an outside system wants to start the work: a shop, a booking tool. There is no Mac there. An Orazaka cloud automation starts a Studio when it receives a signed call or at a given time. That is [decision 084](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-084-automation-triggers.md).
+The other half is when an outside system wants to start the work: a shop, a booking tool. There is no Mac there. An Orazaka cloud automation starts a Studio when it receives a signed call or at a given time. That is [decision 084](https://github.com/krizaka/sovkora/blob/main/docs/adr/ADR-084-automation-triggers.md).
 
 This call is the first place on the platform where a stranger can knock without a session or a key. So it has its own rule, and the signature is the authentication. Each trigger has its secret, 32 random bytes, sealed in the database, shown once at creation and never read back.
 
@@ -184,7 +184,7 @@ The contract already existed at the level of the whole run. Rather than write a 
 
 Here is the scene that made me write the decision. A somewhat long agent task: plan, call tools, write code, check. I close my laptop in the middle. Or a worker crashes. Or I reject a draft. Today, I start again, and I pay again for what was already done.
 
-[Decision 086](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-086-durable-agent-sessions-on-studio-runs.md) describes how to avoid that. A session is a Studio run of a particular kind. Each step leaves a resume point, written once and never changed. You can pause, resume, restart from a step, or fork a copy. A lock stops two devices from resuming the same session at the same time.
+[Decision 086](https://github.com/krizaka/sovkora/blob/main/docs/adr/ADR-086-durable-agent-sessions-on-studio-runs.md) describes how to avoid that. A session is a Studio run of a particular kind. Each step leaves a resume point, written once and never changed. You can pause, resume, restart from a step, or fork a copy. A lock stops two devices from resuming the same session at the same time.
 
 Let us be clear about where things stand: this is an accepted decision, not a shipped feature. The first test to pass will be simple to state: kill the worker in the middle of a run, resume, and check that the recorded steps are not billed again. Until it passes, I do not say it works.
 

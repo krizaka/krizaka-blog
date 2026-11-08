@@ -201,7 +201,7 @@ What stands out: the GPU is close to 80% of spending. A GPU you forget is the ki
 
 ## Why I moved 15 November
 
-On 16 October, we delivered 25 video clips on an hourly rented GPU. Five hours in total: 2.8 hours computing, 2.2 hours waiting. A GPU that waits is paid for just like one that works. This figure is in [decision 078](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-078-runpod-serverless-workers-at-zero-idle.md), and it taught me something simple: the computing itself is not the problem. You pay for it once. What you pay for repeatedly is the waiting and the loading.
+On 16 October, we delivered 25 video clips on an hourly rented GPU. Five hours in total: 2.8 hours computing, 2.2 hours waiting. A GPU that waits is paid for just like one that works. This figure is in [decision 078](https://github.com/krizaka/sovkora/blob/main/docs/adr/ADR-078-runpod-serverless-workers-at-zero-idle.md), and it taught me something simple: the computing itself is not the problem. You pay for it once. What you pay for repeatedly is the waiting and the loading.
 
 The loading, precisely. A 57 GB video model takes 129 seconds to load from the network disk. At every cold start, the user watches a screen that does not move.
 
@@ -209,6 +209,6 @@ From this came the order that imposed itself: first the waiting, then the loadin
 
 Infrastructure has two watchwords. The first: portability, first at home. What runs on a Mac or on a Linux machine with an NVIDIA card must run without a cloud account. The second: the cost in the cloud, with the lowest possible latency. Each lever is written as an estimate until it is measured on a real GPU: the serverless GPU that drops to zero at rest, faster loading, the cache, faster computing, with no date.
 
-Everything is grouped into a single milestone, [Infra portability](https://github.com/krizaka/orazaka/milestone/4), which runs across four repositories. No date.
+Everything is grouped into a single milestone, [Infra portability](https://github.com/krizaka/sovkora/milestone/4), which runs across four repositories. No date.
 
 Every figure is valid for this set-up, 15 and 16 October 2026. I measure again when the set-up changes.

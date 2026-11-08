@@ -49,7 +49,7 @@ The Java services take their share too. Orazaka has up to eleven Spring Boot ser
 
 ## Models become data
 
-In June I moved the platform to Spring Boot 4.0 and Spring AI 2.0 ([ADR-030](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-030-spring-ai-2-universal-proxy-dynamic-router.md)). That brings Spring Framework 7 and Jackson 3, which moves `com.fasterxml.jackson` to `tools.jackson`. The version bump interested me less than what it made possible.
+In June I moved the platform to Spring Boot 4.0 and Spring AI 2.0 ([ADR-030](https://github.com/krizaka/sovkora/blob/main/docs/adr/ADR-030-spring-ai-2-universal-proxy-dynamic-router.md)). That brings Spring Framework 7 and Jackson 3, which moves `com.fasterxml.jackson` to `tools.jackson`. The version bump interested me less than what it made possible.
 
 Before, the choice of model lived in configuration: a `spring.ai.*` block in `application.yml`, and starters that wire clients for you. Switching models meant redeploying. I removed all of it. Today an `ai_providers` table holds each provider's address and key, and an `orazaka_models` table links a model name to its provider. A `DynamicModelRouter` reads those rows on every call and caches the client.
 
@@ -95,7 +95,7 @@ Then the project took shape, and I decided to share it as open source. From ther
 
 The first Orazaka was a single Java program that did everything: chat, long tasks, media, identity. It was already tidy inside, and architecture rules checked on every build (ArchUnit) stopped any layer from calling any other. But one application owned all the data and all the ways in.
 
-In July, I split the monolith into services ([ADR-032](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-032-microservices-decomposition-strangler-fig.md)). Not all at once: with the "strangler fig" pattern. You first put a facade in front, then move one piece at a time behind it, and each step has to pass the end-to-end tests before the next. One database per service, each with its own role, and no foreign key between two services.
+In July, I split the monolith into services ([ADR-032](https://github.com/krizaka/sovkora/blob/main/docs/adr/ADR-032-microservices-decomposition-strangler-fig.md)). Not all at once: with the "strangler fig" pattern. You first put a facade in front, then move one piece at a time behind it, and each step has to pass the end-to-end tests before the next. One database per service, each with its own role, and no foreign key between two services.
 
 At that point everything stayed 100% local: no CI, no cloud, it was written in the decision. The Mac still ran everything, but it ran it the way a server would.
 
@@ -114,9 +114,9 @@ orazaka models image list
 
 The services and databases run in containers. The models run as close to the hardware as possible: on a Mac, directly on Metal, because virtualisation doesn't give access to Apple's GPU.
 
-The [delivery documentation](https://github.com/krizaka/orazaka/blob/main/docs/DELIVERY.md) weighs the options for containers on a Mac. Docker Desktop isn't redistributable and becomes paid for large organisations. OrbStack is excellent, but needs a paid licence per user. The default is Colima, free and scriptable, and if the machine already has one of the other two, we use it. For large organisations, Kubernetes and Helm will come later, when a client needs high availability. Not before.
+The [delivery documentation](https://github.com/krizaka/sovkora/blob/main/docs/DELIVERY.md) weighs the options for containers on a Mac. Docker Desktop isn't redistributable and becomes paid for large organisations. OrbStack is excellent, but needs a paid licence per user. The default is Colima, free and scriptable, and if the machine already has one of the other two, we use it. For large organisations, Kubernetes and Helm will come later, when a client needs high availability. Not before.
 
-None of this would hold without tests. Integration tests start real databases and a real broker in containers (Testcontainers), from one shared base class. Architecture rules are checked on every build. An automatic rewriting tool (OpenRewrite) runs in CI and fails if it finds code to modernise. And the most useful criterion I've written is simple: a pack living in a folder outside the repository must install and run without any change to the repository. The first time, it failed four times, on four defects nobody would have seen from inside ([ADR-049](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-049-open-core-split.md)).
+None of this would hold without tests. Integration tests start real databases and a real broker in containers (Testcontainers), from one shared base class. Architecture rules are checked on every build. An automatic rewriting tool (OpenRewrite) runs in CI and fails if it finds code to modernise. And the most useful criterion I've written is simple: a pack living in a folder outside the repository must install and run without any change to the repository. The first time, it failed four times, on four defects nobody would have seen from inside ([ADR-049](https://github.com/krizaka/sovkora/blob/main/docs/adr/ADR-049-open-core-split.md)).
 
 ## What the Mac does well, and where it gives up
 

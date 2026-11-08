@@ -126,7 +126,7 @@ From the engine to the product, the answer comes straight back with a run identi
 
 Yomizaka never calls a model itself: Orazaka, our engine, does the analysis, and each analysis keeps what ran, in which version, on which rules. Every run has an identifier, a state per step with its number of attempts, and the Studio version. Yomizaka's screen shows the identifier. If someone challenges a finding in six months, we can find exactly where it came from.
 
-I learned the hardest lesson at my own expense. The compliance check had a judgement step per model, set to continue if the model fell over, so that a report would stay almost entirely computed by rules. The flaw: a deliberate refusal by the model looked exactly like an outage, and was swallowed into a report the user would believe was complete. Since then, a failure says why ([ADR-053](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-053-typed-failure-cause.md)), and the billing rule fits in one sentence: we bill the work done well, never our own failure. An outage of the engine gives the credits back.
+I learned the hardest lesson at my own expense. The compliance check had a judgement step per model, set to continue if the model fell over, so that a report would stay almost entirely computed by rules. The flaw: a deliberate refusal by the model looked exactly like an outage, and was swallowed into a report the user would believe was complete. Since then, a failure says why ([ADR-053](https://github.com/krizaka/sovkora/blob/main/docs/adr/ADR-053-typed-failure-cause.md)), and the billing rule fits in one sentence: we bill the work done well, never our own failure. An outage of the engine gives the credits back.
 
 ## A whole building in one upload
 
