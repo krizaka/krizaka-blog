@@ -3,7 +3,7 @@
 // HOW  Imported by scripts/content-post.mjs, scripts/content-chapters.mjs and scripts/content-rules.mjs; nothing to run. Tests: tests/content.test.mjs, tests/basics.test.mjs, tests/private-repo-links.test.mjs, tests/attribute-quotes.test.mjs.
 // OWNER krizaka-blog (lane platform), ADR-026 phase D.
 
-import { isUnreachableRepo, privateRepoNames, writtenOwnedAddresses } from "../lib/links.ts";
+import { isUnreachableRepo, privateRepoNames, resolveLinks, writtenOwnedAddresses } from "../lib/links.ts";
 import { FILE } from "./content-names.mjs";
 
 /** Links between posts (`/basics/<slug>` and `/fr/basics/<slug>`, the shelf's addresses): each one leads to a post of that language, and a published
@@ -70,7 +70,9 @@ export function writtenAddressProblems(text, file) {
   );
 }
 
-export function privateRepoLinkProblems(text, file) {
+export function privateRepoLinkProblems(source, file) {
+  /* A reference by name counts as the address it becomes; a typo in a name fails here. */
+  const text = resolveLinks(source);
   const link = /https?:\/\/github\.com\/krizaka\/([A-Za-z0-9._-]+)/g;
   return [...text.matchAll(link)]
     .filter((m) => isUnreachableRepo(m[1].replace(/\.git$/, "")))
@@ -84,7 +86,9 @@ export function privateRepoLinkProblems(text, file) {
    ticket moved there (or between repositories) leaves a link that answers 404, or GitHub's generic page with a 200 that
    the external link check cannot tell from a live one (krizaka-blog main red on orazaka-ai-engine#116, 2026-11-06).
    A page names a pull request, a commit or a file, which stay public, or says the thing without a link. */
-export function orgIssueLinkProblems(text, file) {
+export function orgIssueLinkProblems(source, file) {
+  /* A reference by name counts as the address it becomes; a typo in a name fails here. */
+  const text = resolveLinks(source);
   const link = /https?:\/\/github\.com\/krizaka\/[A-Za-z0-9._-]+\/issues\/\d+/g;
   return [...text.matchAll(link)].map(
     (m) =>
@@ -95,7 +99,9 @@ export function orgIssueLinkProblems(text, file) {
 /* A line anchor on a moving branch (`/blob/main/…#L696-L702`) points at other lines after the next commit and at nothing after a
    rename or a move: the audit chapter's JobListener link was a 404 on main once the repository and package were renamed
    (krizaka-internal#2798). A line is cited by a permalink: the commit's SHA in place of the branch. */
-export function branchLineLinkProblems(text, file) {
+export function branchLineLinkProblems(source, file) {
+  /* A reference by name counts as the address it becomes; a typo in a name fails here. */
+  const text = resolveLinks(source);
   const link = /https?:\/\/github\.com\/[\w.-]+\/[\w.-]+\/blob\/(?:main|master)\/[^\s)"]*#L\d+/g;
   return [...text.matchAll(link)].map(
     (m) => `${file}: cites lines on a branch (${m[0]}): use a permalink (the commit SHA instead of main)`,

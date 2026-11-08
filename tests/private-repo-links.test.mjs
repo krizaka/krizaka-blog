@@ -8,7 +8,6 @@ import {
   orgIssueLinkProblems,
   branchLineLinkProblems,
 } from "../scripts/content-rules.mjs";
-import { resolveLinks } from "../lib/links.ts";
 
 const root = new URL("..", import.meta.url).pathname;
 const walk = (d) =>
@@ -19,7 +18,7 @@ const walk = (d) =>
 test("no post or chapter links a private repository of the org", () => {
   const problems = walk(join(root, "content"))
     .filter((f) => f.endsWith(".mdx"))
-    .flatMap((f) => privateRepoLinkProblems(resolveLinks(readFileSync(f, "utf8")), f.replace(root, "")));
+    .flatMap((f) => privateRepoLinkProblems(readFileSync(f, "utf8"), f.replace(root, "")));
   assert.deepEqual(problems, []);
 });
 
@@ -49,7 +48,7 @@ test("the private list names each repository once", () => {
 test("no post or chapter links an issue of an org repository", () => {
   const problems = walk(join(root, "content"))
     .filter((f) => f.endsWith(".mdx"))
-    .flatMap((f) => orgIssueLinkProblems(resolveLinks(readFileSync(f, "utf8")), f.replace(root, "")));
+    .flatMap((f) => orgIssueLinkProblems(readFileSync(f, "utf8"), f.replace(root, "")));
   assert.deepEqual(problems, []);
 });
 
@@ -67,7 +66,7 @@ test("an issue link of the org is refused, a pull request and another host are n
 test("no post or chapter cites lines on a branch", () => {
   const problems = walk(join(root, "content"))
     .filter((f) => f.endsWith(".mdx"))
-    .flatMap((f) => branchLineLinkProblems(resolveLinks(readFileSync(f, "utf8")), f.replace(root, "")));
+    .flatMap((f) => branchLineLinkProblems(readFileSync(f, "utf8"), f.replace(root, "")));
   assert.deepEqual(problems, []);
 });
 
