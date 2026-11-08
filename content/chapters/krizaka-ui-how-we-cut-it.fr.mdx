@@ -36,7 +36,7 @@ stats:
 
 [Le chapitre 5](/fr/story/one-interface-everywhere/) racontait pourquoi on a un seul kit d'interface, et le jour où on a vu qu'il avait l'air d'avoir été généré. Celui-ci parle de sa charpente : comment le kit est découpé, et surtout pourquoi chaque coupe est là. Une bibliothèque se juge à ce qu'elle refuse d'avoir dans le même paquet.
 
-Tout est dans [krizaka-ui](https://github.com/krizaka/krizaka-ui), et le mode d'emploi est sur [ui.krizaka.com](https://ui.krizaka.com).
+Tout est dans [krizaka-ui](repo:krizaka-ui), et le mode d'emploi est sur [ui.krizaka.com](site:ui).
 
 ## D'abord, j'ai compté
 
@@ -83,7 +83,7 @@ Le mobile n'est pas une entrée parmi les autres : `@krizaka/ui/native` est la v
 
 Chaque composant a, à côté de lui, un fichier `meta.ts` : un résumé, quand l'utiliser et quand ne pas le faire, l'accessibilité, les plateformes (web, mobile, les deux), l'état, les composants voisins. Il a aussi des exemples nommés de 40 lignes au plus, rendus en vrai sur le site. Les tests du registre échouent si l'un manque ou s'il est incomplet.
 
-[ui.krizaka.com](https://ui.krizaka.com) est construit à partir de ce registre, et à chaque fusion sur `main`. Une page par composant, avec ses props lues dans les types, ses exemples vivants avec leur code, ses captures mobiles. La documentation d'un commit est la documentation de son code. On n'écrit la documentation d'un composant nulle part ailleurs.
+[ui.krizaka.com](site:ui) est construit à partir de ce registre, et à chaque fusion sur `main`. Une page par composant, avec ses props lues dans les types, ses exemples vivants avec leur code, ses captures mobiles. La documentation d'un commit est la documentation de son code. On n'écrit la documentation d'un composant nulle part ailleurs.
 
 Il y a une conséquence que j'apprécie : pour chaque composant, il faut dire s'il existe sur le web, sur le téléphone et sur le bureau, et sinon pourquoi (un ticket, ou « n'a pas de sens ici »). Un test vérifie ce tableau de parité. Il y a aussi un Storybook, mais il est interne : il sert à auditer l'accessibilité avec axe et à comparer des captures en thème sombre et clair. Il n'est pas publié, et on ne le lie jamais. La documentation publique est une seule.
 

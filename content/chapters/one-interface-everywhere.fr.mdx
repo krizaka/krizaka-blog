@@ -34,17 +34,17 @@ stats:
 
 Vendredi soir, une barre d'onglets d'une de nos applications affichait un petit ascenseur vertical à droite. Un pixel de trop, à cause de l'anneau de focus. Un détail. Mais le même motif se retrouvait dans la navigation des réglages, dans une rangée de vidéos courtes, dans un sélecteur de dates et dans la table des matières des pages de lecture.
 
-La correction a été faite une fois, dans le kit ([krizaka-ui#295](https://github.com/krizaka/krizaka-ui/pull/295)), avec des tests qui échouaient avant. Ensuite, chaque application l'a reçue en montant de version. C'est ça, l'idée d'un kit partagé.
+La correction a été faite une fois, dans le kit ([krizaka-ui#295](repo:krizaka-ui/pull/295)), avec des tests qui échouaient avant. Ensuite, chaque application l'a reçue en montant de version. C'est ça, l'idée d'un kit partagé.
 
 ## Un kit, trois plateformes
 
-[Krizaka UI](https://ui.krizaka.com) est la bibliothèque de composants de tous nos sites et applications. Elle vise trois plateformes : le web (React), le mobile (React Native avec Expo) et le Mac (une fenêtre Tauri, qui affiche les composants web tels quels, avec quelques formes propres au bureau).
+[Krizaka UI](site:ui) est la bibliothèque de composants de tous nos sites et applications. Elle vise trois plateformes : le web (React), le mobile (React Native avec Expo) et le Mac (une fenêtre Tauri, qui affiche les composants web tels quels, avec quelques formes propres au bureau).
 
 <Figure id="kit-platforms" alt="Schéma : un seul kit, Krizaka UI, alimente trois plateformes ; le web compte 156 composants, le mobile 79 et le Mac 112, au 17 octobre 2026" />
 
 Le 17 octobre, la page des plateformes compte 156 composants sur le web, 79 sur le mobile et 112 sur le Mac. La veille, c'était 151, 76 et 107. Ça bouge vite, et c'est voulu.
 
-La règle qui compte le plus n'est pas un composant, c'est une décision : chaque composant doit dire, pour chaque plateforme, s'il y existe, s'il reste à faire (avec un ticket), ou s'il n'a pas de sens là (et quoi utiliser à la place). Un nouveau composant sans cette décision fait échouer les tests ([krizaka-ui#283](https://github.com/krizaka/krizaka-ui/pull/283)). Côté mobile, il reste 22 trous à combler. Je préfère les voir écrits que les découvrir dans une app.
+La règle qui compte le plus n'est pas un composant, c'est une décision : chaque composant doit dire, pour chaque plateforme, s'il y existe, s'il reste à faire (avec un ticket), ou s'il n'a pas de sens là (et quoi utiliser à la place). Un nouveau composant sans cette décision fait échouer les tests ([krizaka-ui#283](repo:krizaka-ui/pull/283)). Côté mobile, il reste 22 trous à combler. Je préfère les voir écrits que les découvrir dans une app.
 
 Réutiliser un composant, ce n'est pas copier son code d'une plateforme à l'autre. C'est garder la même interface : le même nom, les mêmes variantes, les mêmes couleurs tirées des mêmes jetons de design. Sur le web :
 
@@ -64,7 +64,7 @@ import { Button } from "@krizaka/ui/native";
 
 Vous voyez la petite différence : le texte passe par `label` sur le mobile. Ce n'est pas parfait, et je le dis. Mais une personne qui connaît le bouton du web sait déjà utiliser celui du mobile.
 
-**Ce que ça rapporte.** Une correction faite une fois. Sur la page d'accueil de krizaka.com, les cartes d'une même rangée n'alignaient pas leurs liens quand les phrases avaient des longueurs différentes. On a corrigé la carte dans le kit ([krizaka-ui#187](https://github.com/krizaka/krizaka-ui/pull/187)), avec un test qui mesure la rangée dans un vrai navigateur. Toutes les grilles de cartes de tous les sites en ont profité.
+**Ce que ça rapporte.** Une correction faite une fois. Sur la page d'accueil de krizaka.com, les cartes d'une même rangée n'alignaient pas leurs liens quand les phrases avaient des longueurs différentes. On a corrigé la carte dans le kit ([krizaka-ui#187](repo:krizaka-ui/pull/187)), avec un test qui mesure la rangée dans un vrai navigateur. Toutes les grilles de cartes de tous les sites en ont profité.
 
 **Ce que ça coûte.** Le kit a lui aussi un prix, et je préfère le dire. Il faut publier, puis faire monter chaque application. `@krizaka/ui` a connu 48 versions publiées depuis sa création le 8 octobre. Le 17 octobre, 22 fichiers `package.json` de nos dépôts en dépendaient, et 8 avaient au moins une version mineure de retard. Un correctif dans le kit n'est pas encore un correctif dans l'app.
 
@@ -125,13 +125,13 @@ J'ai choisi Cahier. La raison tient en une phrase : c'est la seule direction où
 
 Le 20 octobre, je me suis rendu compte que le flux du moteur ne bougeait pas, ni sur krizaka.com, ni dans le labo. Les points de lumière étaient là, immobiles.
 
-La cause, une fois trouvée, était minuscule. L'animation faisait glisser un décalage de trait vers une valeur écrite sans unité, un nombre nu, alors que l'autre image clé était une longueur. Le navigateur ne sait pas passer de l'un à l'autre, alors il ne l'animait pas. Chaque point sautait entre deux positions qui le dessinaient au même endroit. Un détail d'une ligne de CSS ([krizaka-ui#394](https://github.com/krizaka/krizaka-ui/pull/394)).
+La cause, une fois trouvée, était minuscule. L'animation faisait glisser un décalage de trait vers une valeur écrite sans unité, un nombre nu, alors que l'autre image clé était une longueur. Le navigateur ne sait pas passer de l'un à l'autre, alors il ne l'animait pas. Chaque point sautait entre deux positions qui le dessinaient au même endroit. Un détail d'une ligne de CSS ([krizaka-ui#394](repo:krizaka-ui/pull/394)).
 
 Ce qui m'a le plus appris, c'est pourquoi personne ne l'avait vu. Toutes nos vérifications dans un vrai navigateur tournaient avec le mouvement réduit demandé. Elles voyaient une page parfaitement calme, comme prévu, et trouvaient que tout allait bien.
 
 Depuis, le mouvement est testé là où il bouge. Chaque élément animé a deux vérifications dans un vrai navigateur : une avec le mouvement réduit éteint, qui lit la propriété animée pendant environ sept dixièmes de seconde et exige des valeurs différentes et finies, et une avec le mouvement réduit allumé, qui exige que tout reste au repos. Et une règle de lint : jamais de longueur animée sans son unité.
 
-Le flux du moteur est devenu [`EngineFlow`](https://ui.krizaka.com/components/engine-flow) dans Krizaka UI, redessiné en SVG et en CSS. Les conduits sont des tracés, les photons des points de longueur nulle dont le décalage glisse. On a ainsi, gratuitement, ce qu'un canevas ne donne pas : la pause hors écran, le texte lisible par un lecteur d'écran, des boutons réels pour les nœuds, la couleur qui vient des jetons dans les deux thèmes, et pas de saut de mise en page. Il pèse 2,2 ko compressé. Sur le téléphone, il se met en colonne.
+Le flux du moteur est devenu [`EngineFlow`](site:ui/components/engine-flow) dans Krizaka UI, redessiné en SVG et en CSS. Les conduits sont des tracés, les photons des points de longueur nulle dont le décalage glisse. On a ainsi, gratuitement, ce qu'un canevas ne donne pas : la pause hors écran, le texte lisible par un lecteur d'écran, des boutons réels pour les nœuds, la couleur qui vient des jetons dans les deux thèmes, et pas de saut de mise en page. Il pèse 2,2 ko compressé. Sur le téléphone, il se met en colonne.
 
 <Clip id="motion-engine-clip" alt="Le flux d'Orazaka dans le labo : des points de lumière vont et viennent entre le moteur au centre et les produits autour, avec le panneau de réglages à droite" caption="Le flux du moteur, joué dans le labo avec ses réglages à droite. Muet." />
 
@@ -145,9 +145,9 @@ Orazaka promet que vos documents ne partent pas de chez vous. Or ces documents s
 
 Un site peut demander un fichier à l'utilisateur, un par un. Pour qu'un outil lise un dossier, le surveille et y écrive à côté des PDF qui arrivent, il faut autre chose : un dossier choisi une fois, une permission qui dure, une limite que le programme fait respecter lui-même.
 
-L'app s'appelle Orazaka Desktop. Son [README](https://github.com/krizaka/sovkora/blob/main/apps/desktop/README.md) la décrit comme une version 0.1, un build de test, pour macOS 14 et plus sur puce Apple. Elle sert à faire tourner Orazaka sur votre Mac ou à vous connecter à un Orazaka hébergé, et à lui donner accès aux dossiers que vous choisissez, et à eux seuls. Le choix des dossiers passe par le sélecteur natif du système, et on peut révoquer un dossier, ou tous.
+L'app s'appelle Orazaka Desktop. Son [README](repo:sovkora/blob/main/apps/desktop/README.md) la décrit comme une version 0.1, un build de test, pour macOS 14 et plus sur puce Apple. Elle sert à faire tourner Orazaka sur votre Mac ou à vous connecter à un Orazaka hébergé, et à lui donner accès aux dossiers que vous choisissez, et à eux seuls. Le choix des dossiers passe par le sélecteur natif du système, et on peut révoquer un dossier, ou tous.
 
-La limite est dans le code Rust ([`scope.rs`](https://github.com/krizaka/sovkora/blob/5d8704b0af6e751cb56aedbc0b07f6c68a379714/apps/desktop/src-tauri/src/scope.rs)). L'app ne lit un chemin que si sa forme canonique est à l'intérieur d'un dossier accordé. Un `..` ou un lien symbolique qui sort du dossier est refusé. Et certains dossiers ne peuvent jamais être accordés : votre dossier personnel lui-même, la racine, les volumes, les dossiers du système, `~/.ssh`, `~/.aws`.
+La limite est dans le code Rust ([`scope.rs`](repo:sovkora/blob/5d8704b0af6e751cb56aedbc0b07f6c68a379714/apps/desktop/src-tauri/src/scope.rs)). L'app ne lit un chemin que si sa forme canonique est à l'intérieur d'un dossier accordé. Un `..` ou un lien symbolique qui sort du dossier est refusé. Et certains dossiers ne peuvent jamais être accordés : votre dossier personnel lui-même, la racine, les volumes, les dossiers du système, `~/.ssh`, `~/.aws`.
 
 La partie web de la fenêtre n'a aucune permission sur le système de fichiers, et l'interface ne peut pas lancer de shell : elle nomme une commande dans une liste courte, et le Rust la transforme en arguments fixes. Je l'ai raconté de l'autre côté dans [le billet sur l'agent sur la machine de l'utilisateur](/fr/story/an-empty-result-is-not-a-success/).
 
@@ -169,7 +169,7 @@ Et quand le kit a pris l'identité « Cahier » (des badges et des boutons aux c
 
 L'app téléphone est un projet Expo, en React Native. Android et iOS sortent du même code. Je ne dis rien de plus : je n'ai pas vérifié de publication dans une boutique.
 
-Même interface ne veut pas dire même écran. Sur le web, la navigation d'une application est un rail d'icônes à gauche. Sur un téléphone, ce rail devient une barre d'onglets en bas ([le journal du kit](https://github.com/krizaka/krizaka-ui/blob/main/packages/ui/CHANGELOG.md) le dit pour `RailNav`). Sur le Mac, c'est la forme web dans la fenêtre, et le kit prévoit pour elle une barre de titre et une densité de bureau.
+Même interface ne veut pas dire même écran. Sur le web, la navigation d'une application est un rail d'icônes à gauche. Sur un téléphone, ce rail devient une barre d'onglets en bas ([le journal du kit](repo:krizaka-ui/blob/main/packages/ui/CHANGELOG.md) le dit pour `RailNav`). Sur le Mac, c'est la forme web dans la fenêtre, et le kit prévoit pour elle une barre de titre et une densité de bureau.
 
 Ce qui est commun, c'est le contrat : les noms, les états, les jetons, les mots. Ce qui change, c'est la forme que prend un même élément selon la machine.
 

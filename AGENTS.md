@@ -94,6 +94,7 @@ caption?/>` (a light native player: muted loop while on screen, poster first, co
   (seed and beat in `content/image-series/series.json`, `docs/image-series.md`), `scripts/prepare-series-covers.mjs`, upload, then
   `cover` and `coverAlt`. The build's meta check renders drafts, so `npm run lint` refuses a chapter without a cover, draft or not
   (krizaka-blog#280 was red in CI for it). The renderer runs mflux through `<worker>/.venv/bin/python`, never the entry point's shebang.
+- **Links to the org are asked for by name** (`lib/links.ts`, krizaka-internal#2961): `[the PR](repo:krizaka-ui/pull/12)`, `[the site](site:ui/docs)`, or `{{site:github}}` inside a code block. A written `github.com/krizaka` or owned-site address fails `npm run lint` and `tests/links-provider.test.mjs`. A repository going private or being renamed is one line in `lib/links.ts`: a private one renders as its words without a link, a typo fails the build. Third-party citations stay written out.
 - **Questions sections answer search engines too**: a post's h2 « Questions fréquentes » / « Frequently asked questions »
   (or « FAQ ») turns its h3s and their text into FAQPage JSON-LD (`faqOf` in `lib/reading.ts`).
 - Every user-facing string of the site is in `messages/{en,fr}.json` (`krizaka-i18n check`). No `locale === "fr" ?`.

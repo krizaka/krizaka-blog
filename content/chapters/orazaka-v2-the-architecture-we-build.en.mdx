@@ -71,7 +71,7 @@ In between sits **Spring AI 2**, the library that talks to model providers. We u
 
 ## One request, end to end
 
-The [orazaka](https://github.com/krizaka/sovkora) workspace brings together 20 repositories: reusable Krizaka building blocks (users, notifications, billing), the foundations (contracts, edge), the AI engine, the clients (web, mobile, command line), the media worker and the packs.
+The [orazaka](repo:sovkora) workspace brings together 20 repositories: reusable Krizaka building blocks (users, notifications, billing), the foundations (contracts, edge), the AI engine, the clients (web, mobile, command line), the media worker and the packs.
 
 A correction first, because I used to say it wrong. The "AI engine" is not a service. It is a library, `orazaka-ai-engine`, that the services embed: the AI client, the interceptor chain, the tools. The graph of steps lives in the Studio service.
 
@@ -145,7 +145,7 @@ How do we know that is true, and that it stays true? A rule of ADR-092 says it: 
 
 The same goes for media. There is no video module in the core. There is the media worker, and packs that use it.
 
-**Products go through the API, and only the API.** Yomizaka never talks to a model. It calls the pack's Studios on the edge with a service key, and keeps the run id of every analysis: that is the trace of what ran. Akinaza follows the same rule. The shared client, [`@krizaka/orazaka-client`](https://github.com/krizaka/krizaka-ts/tree/main/packages/sovkora-client), starts a run with an idempotency key, reads its state and waits for its end. Consent, budget, audit and idempotency are written once, in the engine. A product that went around it would have to write them again, and one day it would forget one.
+**Products go through the API, and only the API.** Yomizaka never talks to a model. It calls the pack's Studios on the edge with a service key, and keeps the run id of every analysis: that is the trace of what ran. Akinaza follows the same rule. The shared client, [`@krizaka/orazaka-client`](repo:krizaka-ts/tree/main/packages/sovkora-client), starts a run with an idempotency key, reads its state and waits for its end. Consent, budget, audit and idempotency are written once, in the engine. A product that went around it would have to write them again, and one day it would forget one.
 
 ## Where we are
 

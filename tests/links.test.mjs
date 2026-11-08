@@ -13,6 +13,7 @@ import {
   checkExternal,
   SOFT_HOSTS,
 } from "../scripts/check-links.mjs";
+import { resolveLinks } from "../lib/links.ts";
 
 const root = new URL("..", import.meta.url).pathname;
 const walk = (d) =>
@@ -34,7 +35,9 @@ test("the Mac-app section of chapter 5 cites the historical scope source, not th
   const source =
     "https://github.com/krizaka/sovkora/blob/5d8704b0af6e751cb56aedbc0b07f6c68a379714/apps/desktop/src-tauri/src/scope.rs";
   for (const locale of ["en", "fr"]) {
-    const post = readFileSync(join(root, `content/chapters/one-interface-everywhere.${locale}.mdx`), "utf8");
+    const post = resolveLinks(
+      readFileSync(join(root, `content/chapters/one-interface-everywhere.${locale}.mdx`), "utf8"),
+    );
     const citations = [
       ...post.matchAll(/\]\((https:\/\/github\.com\/krizaka\/sovkora\/blob\/[^)]+\/scope\.rs)\)/g),
     ].map((m) => m[1]);
@@ -147,7 +150,9 @@ test("no post links to the desktop scope file that moved to krizaka-tauri-kit", 
   const offenders = walk(join(root, "content/posts"))
     .filter((f) => f.endsWith(".mdx"))
     .filter((f) =>
-      /krizaka\/(orazaka|sovkora)\/blob\/main\/apps\/desktop\/src-tauri\/src\/scope\.rs/.test(readFileSync(f, "utf8")),
+      /krizaka\/(orazaka|sovkora)\/blob\/main\/apps\/desktop\/src-tauri\/src\/scope\.rs/.test(
+        resolveLinks(readFileSync(f, "utf8")),
+      ),
     )
     .map((f) => f.replace(root, ""));
   assert.deepEqual(offenders, []);

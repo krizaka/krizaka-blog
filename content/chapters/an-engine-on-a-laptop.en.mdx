@@ -35,7 +35,7 @@ stats:
 
 At first, Orazaka was a discovery. A personal project, on my MacBook, to understand what you can do with AI models running at home. Ollama for text, the Mac's GPU (Metal) for images, a database and a few services started by hand. If someone had taken the laptop, there would have been no Orazaka left.
 
-That Mac is the first server of [Orazaka](https://www.sovkora.com), the AI engine I'm building. The idea behind Orazaka is simple: run AI on a machine you control. For me, that machine is my laptop first. Here's what it taught me.
+That Mac is the first server of [Orazaka](site:sovkora), the AI engine I'm building. The idea behind Orazaka is simple: run AI on a machine you control. For me, that machine is my laptop first. Here's what it taught me.
 
 ## On 12 October, the Mac hit the wall
 
@@ -114,7 +114,7 @@ orazaka models image list
 
 The services and databases run in containers. The models run as close to the hardware as possible: on a Mac, directly on Metal, because virtualisation doesn't give access to Apple's GPU.
 
-The [delivery documentation](https://github.com/krizaka/sovkora/blob/main/docs/DELIVERY.md) weighs the options for containers on a Mac. Docker Desktop isn't redistributable and becomes paid for large organisations. OrbStack is excellent, but needs a paid licence per user. The default is Colima, free and scriptable, and if the machine already has one of the other two, we use it. For large organisations, Kubernetes and Helm will come later, when a client needs high availability. Not before.
+The [delivery documentation](repo:sovkora/blob/main/docs/DELIVERY.md) weighs the options for containers on a Mac. Docker Desktop isn't redistributable and becomes paid for large organisations. OrbStack is excellent, but needs a paid licence per user. The default is Colima, free and scriptable, and if the machine already has one of the other two, we use it. For large organisations, Kubernetes and Helm will come later, when a client needs high availability. Not before.
 
 None of this would hold without tests. Integration tests start real databases and a real broker in containers (Testcontainers), from one shared base class. Architecture rules are checked on every build. An automatic rewriting tool (OpenRewrite) runs in CI and fails if it finds code to modernise. And the most useful criterion I've written is simple: a pack living in a folder outside the repository must install and run without any change to the repository. The first time, it failed four times, on four defects nobody would have seen from inside (ADR-049).
 

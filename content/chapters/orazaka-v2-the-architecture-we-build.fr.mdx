@@ -71,7 +71,7 @@ Entre les deux, il y a **Spring AI 2**, la bibliothèque qui parle aux fournisse
 
 ## Une demande, de bout en bout
 
-Le workspace [orazaka](https://github.com/krizaka/sovkora) assemble 20 dépôts : des briques Krizaka réutilisables (utilisateurs, notifications, facturation), les fondations (contrats, edge), le moteur d'IA, les clients (web, mobile, ligne de commande), le worker média et les packs.
+Le workspace [orazaka](repo:sovkora) assemble 20 dépôts : des briques Krizaka réutilisables (utilisateurs, notifications, facturation), les fondations (contrats, edge), le moteur d'IA, les clients (web, mobile, ligne de commande), le worker média et les packs.
 
 Une correction d'abord, parce que je le disais mal. Le « moteur d'IA » n'est pas un service. C'est une bibliothèque, `orazaka-ai-engine`, que les services embarquent : le client d'IA, la chaîne d'intercepteurs, les outils. Le graphe d'étapes, lui, vit dans le service Studio.
 
@@ -145,7 +145,7 @@ Comment savoir que c'est vrai, et que ça le reste ? Une règle de l'ADR-092 le 
 
 C'est la même chose pour les médias. Il n'y a pas de module vidéo dans le cœur. Il y a le worker média et des packs qui l'utilisent.
 
-**Les produits passent par l'API, seulement.** Yomizaka ne parle jamais à un modèle. Il appelle les Studios du pack sur l'edge avec une clé de service, et garde l'identifiant du run de chaque analyse : c'est la trace de ce qui a tourné. Akinaza suit la même règle. Le client commun, [`@krizaka/orazaka-client`](https://github.com/krizaka/krizaka-ts/tree/main/packages/sovkora-client), lance un run avec une clé d'idempotence, lit son état et attend sa fin. Le consentement, le budget, l'audit et l'idempotence sont écrits une fois, dans le moteur. Un produit qui le contournerait devrait les réécrire, et un jour il en oublierait un.
+**Les produits passent par l'API, seulement.** Yomizaka ne parle jamais à un modèle. Il appelle les Studios du pack sur l'edge avec une clé de service, et garde l'identifiant du run de chaque analyse : c'est la trace de ce qui a tourné. Akinaza suit la même règle. Le client commun, [`@krizaka/orazaka-client`](repo:krizaka-ts/tree/main/packages/sovkora-client), lance un run avec une clé d'idempotence, lit son état et attend sa fin. Le consentement, le budget, l'audit et l'idempotence sont écrits une fois, dans le moteur. Un produit qui le contournerait devrait les réécrire, et un jour il en oublierait un.
 
 ## Où on en est
 

@@ -35,7 +35,7 @@ stats:
 
 [Chapter 5](/story/one-interface-everywhere/) told why we have a single interface kit, and the day we saw it looked generated. This one is about its frame: how the kit is cut, and above all why each cut is there. A library is judged by what it refuses to put in the same package.
 
-Everything is in [krizaka-ui](https://github.com/krizaka/krizaka-ui), and the manual is on [ui.krizaka.com](https://ui.krizaka.com).
+Everything is in [krizaka-ui](repo:krizaka-ui), and the manual is on [ui.krizaka.com](site:ui).
 
 ## First, I counted
 
@@ -82,7 +82,7 @@ Mobile is not just another entry: `@krizaka/ui/native` is the React Native versi
 
 Every component has a `meta.ts` file beside it: a summary, when to use it and when not to, accessibility, platforms (web, mobile, both), status, neighbouring components. It also has named examples of 40 lines at most, rendered for real on the site. The registry tests fail if one is missing or incomplete.
 
-[ui.krizaka.com](https://ui.krizaka.com) is built from that registry, on every merge to `main`. One page per component, with props read from the types, live examples with their code, mobile screenshots. The documentation of a commit is the documentation of its code. We write a component's documentation nowhere else.
+[ui.krizaka.com](site:ui) is built from that registry, on every merge to `main`. One page per component, with props read from the types, live examples with their code, mobile screenshots. The documentation of a commit is the documentation of its code. We write a component's documentation nowhere else.
 
 There is a consequence I like: for each component, we must say whether it exists on the web, on the phone and on the desktop, and if not, why (a ticket, or "makes no sense here"). A test checks that parity table. There is also a Storybook, but it is internal: it audits accessibility with axe and compares screenshots in dark and light. It is not published, and we never link it. The public documentation is one.
 
