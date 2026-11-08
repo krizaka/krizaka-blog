@@ -36,7 +36,7 @@ The word gets used for everything. Here it means one precise thing: a customer c
 
 Think of a notary. You hand over a deed. You know which office keeps it, who signed it, and there is a register. If someone disputes it, you open the register. Sovereign AI is the same thing for a document that a machine has read.
 
-In practice, every analysis is a run of [Orazaka](https://www.sovkora.com), the engine I'm building. The run keeps its id, the version of the processing that ran, and the rules it applied. The model it used is a row in a database, not a name buried in the code. A product built on Orazaka never calls a model on its own: it goes through the engine, which keeps the record.
+In practice, every analysis is a run of [Orazaka](site:sovkora), the engine I'm building. The run keeps its id, the version of the processing that ran, and the rules it applied. The model it used is a row in a database, not a name buried in the code. A product built on Orazaka never calls a model on its own: it goes through the engine, which keeps the record.
 
 None of this makes data private by magic, or the model any smarter. It lets you check. A promise you cannot check is marketing.
 
@@ -61,7 +61,7 @@ A result without a source doesn't show up. When a tool flags a problem in a docu
 
 I keep the infrastructure small. No service I can't explain, no big machine left on for nothing. I rent a GPU when there is work and switch it off when the queue is empty. I learned that rule by paying for it, and the story is in [the post about costs](/story/what-a-gpu-costs/).
 
-I publish the code of the foundations. The interface kit ([Krizaka UI](https://ui.krizaka.com)) and the Spring Boot building blocks ([Krizaka Java](https://java.krizaka.com)) are open source. Anyone can read what our products stand on.
+I publish the code of the foundations. The interface kit ([Krizaka UI](site:ui)) and the Spring Boot building blocks ([Krizaka Java](site:java)) are open source. Anyone can read what our products stand on.
 
 And I say what isn't finished. Several products are marked "in development": sign-up is closed, and their sites say so.
 

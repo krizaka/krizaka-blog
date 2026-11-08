@@ -33,7 +33,7 @@ During our last batch of videos, the last clip came out of the GPU, and the pod 
 
 Those two hours cost between 7 and 8 $, on a GPU bill of 23.23 $. It stings, and it is a good place to start on what an image and a video really cost to generate.
 
-All the figures come from the records of [Orazaka](https://www.sovkora.com), my AI engine, published on the [measured runs](https://dev.sovkora.com/docs/measured-runs) page. When a figure comes from my notes, I say so.
+All the figures come from the records of [Orazaka](site:sovkora), my AI engine, published on the [measured runs](site:sovkora-dev/docs/measured-runs) page. When a figure comes from my notes, I say so.
 
 ## Three ways to cook the same dish
 
@@ -99,7 +99,7 @@ The decision follows that logic: a GPU rented by the hour, which exists only whi
 
 Of the 23.23 $ of rented GPU, the computing of the clips themselves accounts for 11.72 $. The other half went to start-up, downloading the weights, failed attempts and dead time. An hour of GPU is paid from the creation of the machine to its destruction, not only while it works.
 
-The failed attempts have their story. After the first successful clip, ten clips in a row failed in 17 seconds: the worker checked the free memory before each task, and counted the model already loaded (about 22 GB) as memory in use ([orazaka-worker-media#22](https://github.com/krizaka/orazaka-worker-media/pull/22)). Three clips were lost mid-computation, up to 9 minutes of GPU each, because a deployment of the dev site restarted the relay and cut the tunnel ([#24](https://github.com/krizaka/orazaka-worker-media/pull/24)).
+The failed attempts have their story. After the first successful clip, ten clips in a row failed in 17 seconds: the worker checked the free memory before each task, and counted the model already loaded (about 22 GB) as memory in use (orazaka-worker-media#22). Three clips were lost mid-computation, up to 9 minutes of GPU each, because a deployment of the dev site restarted the relay and cut the tunnel (#24).
 
 ### When renting a GPU becomes profitable
 
@@ -201,7 +201,7 @@ What stands out: the GPU is close to 80% of spending. A GPU you forget is the ki
 
 ## Why I moved 15 November
 
-On 16 October, we delivered 25 video clips on an hourly rented GPU. Five hours in total: 2.8 hours computing, 2.2 hours waiting. A GPU that waits is paid for just like one that works. This figure is in [decision 078](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-078-runpod-serverless-workers-at-zero-idle.md), and it taught me something simple: the computing itself is not the problem. You pay for it once. What you pay for repeatedly is the waiting and the loading.
+On 16 October, we delivered 25 video clips on an hourly rented GPU. Five hours in total: 2.8 hours computing, 2.2 hours waiting. A GPU that waits is paid for just like one that works. This figure is in decision 078, and it taught me something simple: the computing itself is not the problem. You pay for it once. What you pay for repeatedly is the waiting and the loading.
 
 The loading, precisely. A 57 GB video model takes 129 seconds to load from the network disk. At every cold start, the user watches a screen that does not move.
 
@@ -209,6 +209,6 @@ From this came the order that imposed itself: first the waiting, then the loadin
 
 Infrastructure has two watchwords. The first: portability, first at home. What runs on a Mac or on a Linux machine with an NVIDIA card must run without a cloud account. The second: the cost in the cloud, with the lowest possible latency. Each lever is written as an estimate until it is measured on a real GPU: the serverless GPU that drops to zero at rest, faster loading, the cache, faster computing, with no date.
 
-Everything is grouped into a single milestone, [Infra portability](https://github.com/krizaka/orazaka/milestone/4), which runs across four repositories. No date.
+Everything is grouped into a single milestone, [Infra portability](repo:sovkora/milestone/4), which runs across four repositories. No date.
 
 Every figure is valid for this set-up, 15 and 16 October 2026. I measure again when the set-up changes.

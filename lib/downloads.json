@@ -1,7 +1,7 @@
 {
   "books": {
     "en/story": {
-      "source": "5357885f6f40",
+      "source": "a8fe7db0447a",
       "files": {
         "epub": {
           "hash": "38bfd3664f",
@@ -14,7 +14,7 @@
       }
     },
     "en/why-krizaka": {
-      "source": "5ef452555c6b",
+      "source": "0f4cd0c1d5a7",
       "files": {
         "epub": {
           "hash": "5b1f6b7d0f",
@@ -27,7 +27,7 @@
       }
     },
     "en/an-engine-on-a-laptop": {
-      "source": "5f5874563e41",
+      "source": "7f1c523d3536",
       "files": {
         "epub": {
           "hash": "7168cb6f3a",
@@ -40,7 +40,7 @@
       }
     },
     "en/what-a-gpu-costs": {
-      "source": "a770c7321b05",
+      "source": "80e41c1b1db4",
       "files": {
         "epub": {
           "hash": "b8205e6994",
@@ -53,7 +53,7 @@
       }
     },
     "en/from-a-clip-to-a-film": {
-      "source": "1081c1b295e0",
+      "source": "cd979c847b87",
       "files": {
         "epub": {
           "hash": "f34ce67e64",
@@ -66,7 +66,7 @@
       }
     },
     "en/one-interface-everywhere": {
-      "source": "fbb7b8159927",
+      "source": "24928002351f",
       "files": {
         "epub": {
           "hash": "8f97abd3af",
@@ -79,7 +79,7 @@
       }
     },
     "en/the-first-products": {
-      "source": "60be244adee4",
+      "source": "9461823c0bc8",
       "files": {
         "epub": {
           "hash": "1fcca859f4",
@@ -92,7 +92,7 @@
       }
     },
     "en/an-empty-result-is-not-a-success": {
-      "source": "5ef4d5eb9cd7",
+      "source": "c0b283ba0197",
       "files": {
         "epub": {
           "hash": "bf9c5c6a25",
@@ -118,7 +118,7 @@
       }
     },
     "en/what-claude-found-auditing-krizaka": {
-      "source": "185b1fe960c4",
+      "source": "aeeafe194db2",
       "files": {
         "epub": {
           "hash": "29f06f55d4",
@@ -131,7 +131,7 @@
       }
     },
     "en/a-curve-that-climbs": {
-      "source": "6b119679a6e2",
+      "source": "85563be29521",
       "files": {
         "epub": {
           "hash": "91533c3fcc",
@@ -144,7 +144,7 @@
       }
     },
     "en/how-we-built-our-ci": {
-      "source": "e3049ede5e3b",
+      "source": "48639896ee93",
       "files": {
         "epub": {
           "hash": "8e4f36a9c2",
@@ -157,7 +157,7 @@
       }
     },
     "en/krizaka-ui-how-we-cut-it": {
-      "source": "07f2a8797639",
+      "source": "c7958c0de051",
       "files": {
         "epub": {
           "hash": "785ab04168",
@@ -170,7 +170,7 @@
       }
     },
     "en/orazaka-v2-the-architecture-we-build": {
-      "source": "c5c8a639c430",
+      "source": "040972fa7da5",
       "files": {
         "epub": {
           "hash": "84867664a5",
@@ -183,7 +183,7 @@
       }
     },
     "en/ci-the-error-never-leaves-the-editor": {
-      "source": "07aff61f743a",
+      "source": "d29680afdc02",
       "files": {
         "epub": {
           "hash": "a9fd7397e9",
@@ -196,7 +196,7 @@
       }
     },
     "en/we-bought-sonarcloud-what-do-we-have-now": {
-      "source": "44d84be8f592",
+      "source": "1fb5261c843e",
       "files": {
         "epub": {
           "hash": "f801aadc70",
@@ -209,7 +209,7 @@
       }
     },
     "en/the-audit-said-ai-code-we-measured": {
-      "source": "1f45e55a8bce",
+      "source": "cf639b2dcecb",
       "files": {
         "epub": {
           "hash": "d79df7ec82",
@@ -235,7 +235,7 @@
       }
     },
     "en/how-we-test-our-uis": {
-      "source": "3f5ea1488ee5",
+      "source": "c54992ebde49",
       "files": {
         "epub": {
           "hash": "c2e1cba466",
@@ -261,7 +261,7 @@
       }
     },
     "en/how-our-automation-grew": {
-      "source": "9ba15d44ec2d",
+      "source": "5e2059d57f72",
       "files": {
         "epub": {
           "hash": "113f7e7bd9",
@@ -287,7 +287,7 @@
       }
     },
     "fr/story": {
-      "source": "232b1dd1c765",
+      "source": "dc4b0b0bbb1a",
       "files": {
         "epub": {
           "hash": "c3cf2e8b35",
@@ -300,7 +300,7 @@
       }
     },
     "fr/why-krizaka": {
-      "source": "1a0582b57614",
+      "source": "bcbb7894c191",
       "files": {
         "epub": {
           "hash": "d88628dbd3",
@@ -313,7 +313,7 @@
       }
     },
     "fr/an-engine-on-a-laptop": {
-      "source": "5561a97ff3b2",
+      "source": "0dde3b2c6102",
       "files": {
         "epub": {
           "hash": "73b2de653f",
@@ -326,7 +326,7 @@
       }
     },
     "fr/what-a-gpu-costs": {
-      "source": "f45dc13b0792",
+      "source": "0990f8b964eb",
       "files": {
         "epub": {
           "hash": "df565bab4a",
@@ -339,7 +339,7 @@
       }
     },
     "fr/from-a-clip-to-a-film": {
-      "source": "35152b6dace7",
+      "source": "936b12472c7d",
       "files": {
         "epub": {
           "hash": "3c391b644f",
@@ -352,7 +352,7 @@
       }
     },
     "fr/one-interface-everywhere": {
-      "source": "b6330ed46f3f",
+      "source": "824f20892178",
       "files": {
         "epub": {
           "hash": "cb78a97a35",
@@ -365,7 +365,7 @@
       }
     },
     "fr/the-first-products": {
-      "source": "7ce9fb11a080",
+      "source": "07cbf4efe394",
       "files": {
         "epub": {
           "hash": "94f53f731d",
@@ -378,7 +378,7 @@
       }
     },
     "fr/an-empty-result-is-not-a-success": {
-      "source": "78b2029620e6",
+      "source": "b5bd3a2ba86c",
       "files": {
         "epub": {
           "hash": "08e73cc99a",
@@ -404,7 +404,7 @@
       }
     },
     "fr/what-claude-found-auditing-krizaka": {
-      "source": "4def7c62ea55",
+      "source": "3e674b092ca6",
       "files": {
         "epub": {
           "hash": "7e29972e86",
@@ -417,7 +417,7 @@
       }
     },
     "fr/a-curve-that-climbs": {
-      "source": "052536e838d1",
+      "source": "0c4715f8e989",
       "files": {
         "epub": {
           "hash": "c8f51c098d",
@@ -430,7 +430,7 @@
       }
     },
     "fr/how-we-built-our-ci": {
-      "source": "14fa942d4c1b",
+      "source": "f64b9b3208d6",
       "files": {
         "epub": {
           "hash": "79bfff2a5f",
@@ -443,7 +443,7 @@
       }
     },
     "fr/krizaka-ui-how-we-cut-it": {
-      "source": "52d48bbcd596",
+      "source": "2c8f7a85950f",
       "files": {
         "epub": {
           "hash": "f0379a7470",
@@ -456,7 +456,7 @@
       }
     },
     "fr/orazaka-v2-the-architecture-we-build": {
-      "source": "d2f96c79f548",
+      "source": "a43f0e538143",
       "files": {
         "epub": {
           "hash": "18292d24e9",
@@ -469,7 +469,7 @@
       }
     },
     "fr/ci-the-error-never-leaves-the-editor": {
-      "source": "fee610c4c36f",
+      "source": "c3eea39444a2",
       "files": {
         "epub": {
           "hash": "2719f94776",
@@ -482,7 +482,7 @@
       }
     },
     "fr/we-bought-sonarcloud-what-do-we-have-now": {
-      "source": "9303559c39dc",
+      "source": "fb8880939712",
       "files": {
         "epub": {
           "hash": "52fb2de42f",
@@ -495,7 +495,7 @@
       }
     },
     "fr/the-audit-said-ai-code-we-measured": {
-      "source": "991b97b36461",
+      "source": "d952d2322633",
       "files": {
         "epub": {
           "hash": "b9ae2ccdda",
@@ -521,7 +521,7 @@
       }
     },
     "fr/how-we-test-our-uis": {
-      "source": "881c720fa3e7",
+      "source": "a7c343c697b1",
       "files": {
         "epub": {
           "hash": "0244009423",
@@ -547,7 +547,7 @@
       }
     },
     "fr/how-our-automation-grew": {
-      "source": "809832dd9b87",
+      "source": "f852c00adb80",
       "files": {
         "epub": {
           "hash": "14fa37af0f",
@@ -573,7 +573,7 @@
       }
     },
     "en/how-orazaka-made-our-brand-film": {
-      "source": "2247c07d7e54",
+      "source": "0c3295ef606c",
       "files": {
         "epub": {
           "hash": "dc3b1b9480",
@@ -586,7 +586,7 @@
       }
     },
     "fr/how-orazaka-made-our-brand-film": {
-      "source": "c9a60c2b82c1",
+      "source": "e5f5fce98a51",
       "files": {
         "epub": {
           "hash": "d492ded657",

@@ -6,11 +6,12 @@ import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
+import { publicRepoUrl, resolveLinks, siteUrl } from "../lib/links.ts";
 import { writeOffline } from "./offline.mjs";
 import { buildInfo } from "./build-info.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-export const SITE = "https://blog.krizaka.com";
+export const SITE = siteUrl("blog");
 
 const dateOf = (d) => String(d instanceof Date ? d.toISOString().slice(0, 10) : d);
 
@@ -18,7 +19,7 @@ const dateOf = (d) => String(d instanceof Date ? d.toISOString().slice(0, 10) : 
 export function readEntries(dir, show = false) {
   return readdirSync(dir)
     .filter((f) => f.endsWith(".mdx"))
-    .map((f) => ({ f, ...matter(readFileSync(join(dir, f), "utf8")) }))
+    .map((f) => ({ f, ...matter(resolveLinks(readFileSync(join(dir, f), "utf8"))) }))
     .filter((p) => show || p.data.draft !== true)
     .map((p) => {
       const [, slug, locale] = p.f.match(/^(.+)\.(en|fr)\.mdx$/);
@@ -53,7 +54,7 @@ export function llmsText({ chapters, posts }) {
       .join("\n") || "- (no post published yet)";
   return `# Krizaka Blog
 
-> The building notes of Krizaka (https://www.krizaka.com), told by its founder in Montréal: one page, the story, in chapters you read in order, and a few basics to understand them. English at ${SITE}/, French at ${SITE}/fr/. Feeds: ${SITE}/feed.xml, ${SITE}/atom.xml.
+> The building notes of Krizaka (${siteUrl("www")}), told by its founder in Montréal: one page, the story, in chapters you read in order, and a few basics to understand them. English at ${SITE}/, French at ${SITE}/fr/. Feeds: ${SITE}/feed.xml, ${SITE}/atom.xml.
 
 ## The story (English), in reading order
 
@@ -73,10 +74,10 @@ ${basics("fr")}
 
 ## Elsewhere
 
-- [Krizaka](https://www.krizaka.com)
-- [Krizaka UI](https://ui.krizaka.com)
-- [Krizaka Java](https://java.krizaka.com)
-- [Source](https://github.com/krizaka/krizaka-blog)
+- [Krizaka](${siteUrl("www")})
+- [Krizaka UI](${siteUrl("ui")})
+- [Krizaka Java](${siteUrl("java")})
+- [Source](${publicRepoUrl("krizaka-blog")})
 `;
 }
 

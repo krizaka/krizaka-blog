@@ -50,7 +50,7 @@ The first step was to bring that rule into the editor. `@krizaka/config` 0.11 ad
 
 The principle is the one from chapter 11. But where the ratchet used to count our own rules, it now counts a rule that also exists at Sonar. What Sonar would say ten minutes later, the lint says right away.
 
-And the rollout broke, of course. Updating the repositories, we saw that a command, `krizaka-ratchet --update`, silently erased the counters it did not measure, such as the page-template one, specific to each repository. Nothing failed. A counter vanished, and the guard it held went with it. That is [krizaka-ts#163](https://github.com/krizaka/krizaka-ts/pull/163): the command now keeps what it does not know and says so in its report. A test holds it.
+And the rollout broke, of course. Updating the repositories, we saw that a command, `krizaka-ratchet --update`, silently erased the counters it did not measure, such as the page-template one, specific to each repository. Nothing failed. A counter vanished, and the guard it held went with it. That is [krizaka-ts#163](repo:krizaka-ts/pull/163): the command now keeps what it does not know and says so in its report. A test holds it.
 
 That is what I kept from this first step. A tool that erases a guard without a word is worse than a missing guard.
 
@@ -60,9 +60,9 @@ One rule was not enough. 0.12 turns on the full `eslint-plugin-sonarjs` set, the
 
 There was debt, of course. In each repository we counted what the rule already found and froze it. The numbers are recorded in the repository and can only go down, like the others. I did not want to fix everything at once, for the same reason as with ratchets: the rule protects new code immediately, and the existing debt goes away little by little.
 
-For Java, the same idea is written differently. In [krizaka-build#107](https://github.com/krizaka/krizaka-build/pull/107), the shared parent runs PMD and SpotBugs with its security plugin in `verify`, with a baseline per module. And [krizaka-build#106](https://github.com/krizaka/krizaka-build/pull/106) adds security rules, written out in an ADR, to our ArchUnit architecture tests.
+For Java, the same idea is written differently. In [krizaka-build#107](repo:krizaka-java/pull/107), the shared parent runs PMD and SpotBugs with its security plugin in `verify`, with a baseline per module. And [krizaka-build#106](repo:krizaka-java/pull/106) adds security rules, written out in an ADR, to our ArchUnit architecture tests.
 
-That last step had its own failure. A repository without SpotBugs's exclusions file broke on its first build. [krizaka-build#108](https://github.com/krizaka/krizaka-build/pull/108) makes the file optional and adds a canary job, which builds an empty project against the parent on every change. We learned not to publish a parent without having a consumer try it.
+That last step had its own failure. A repository without SpotBugs's exclusions file broke on its first build. [krizaka-build#108](repo:krizaka-java/pull/108) makes the file optional and adds a canary job, which builds an empty project against the parent on every change. We learned not to publish a parent without having a consumer try it.
 
 <Split label="All of Sonar at lint: what Sonar said ten minutes after the PR, the editor now says while the agent writes.">
   <Side title="Before" tone="before" items="Sonar answers on the PR, ten minutes later | Gates red on new code, mostly cognitive complexity (S3776) | A pass in krizaka-ui finds 37 bugs, 16 of them sorts without a comparison | The agent has already moved on" />
@@ -73,7 +73,7 @@ That last step had its own failure. A repository without SpotBugs's exclusions f
 
 There are things a CI should never have to catch. A secret pushed to a repository, for example: once it is in the history, it is burnt.
 
-[.github#334](https://github.com/krizaka/.github/pull/334) puts gitleaks and zizmor as early as possible. First a hook on every commit, with one configuration for all repositories. Then a CI job that reads the whole history. After that come GitHub's push protection, then the Sonar rule on secrets, as the last net. zizmor does the same for our workflows, which are code like the rest and can be attacked like it.
+[.github#334](repo:.github/pull/334) puts gitleaks and zizmor as early as possible. First a hook on every commit, with one configuration for all repositories. Then a CI job that reads the whole history. After that come GitHub's push protection, then the Sonar rule on secrets, as the last net. zizmor does the same for our workflows, which are code like the rest and can be attacked like it.
 
 The first pass over the main repositories found no real secret, only test values and one dummy value used by the CI, which I allowed with a reason written beside it.
 
@@ -103,7 +103,7 @@ The guard is a GitHub setting: require the branch to be up to date before mergin
 
 ## A fix without a guard is not finished
 
-I added a rule to our CI, in [.github#336](https://github.com/krizaka/.github/pull/336): a PR that fixes a bug must add a test that would have caught it, or a rule. Without that, the check fails.
+I added a rule to our CI, in [.github#336](repo:.github/pull/336): a PR that fixes a bug must add a test that would have caught it, or a rule. Without that, the check fails.
 
 The rule is not a punishment. It forces the question I had made a habit in chapter 11: why did the guards not see it? Without it, I forget, and so does the agent.
 
@@ -129,7 +129,7 @@ Krizaka UI first. A change goes from the editor to npm.
   <Stage title="Release" note="npm, provenance" tone="ship">`release.yml` publishes the packages. Each one tries npm's OIDC trusted publishing first, with provenance; a token is only a logged fallback for a package that has no trusted publisher yet. Then a job fails if a version on main is not on npm.</Stage>
 </Pipeline>
 
-One thing is not on this path: the "fix needs a guard" job of [.github#336](https://github.com/krizaka/.github/pull/336). It belongs to the shared Node pipeline, and Krizaka UI keeps its own `ci.yml`. I prefer to say it than to draw a box that does not exist.
+One thing is not on this path: the "fix needs a guard" job of [.github#336](repo:.github/pull/336). It belongs to the shared Node pipeline, and Krizaka UI keeps its own `ci.yml`. I prefer to say it than to draw a box that does not exist.
 
 Where the guards live in that repository:
 

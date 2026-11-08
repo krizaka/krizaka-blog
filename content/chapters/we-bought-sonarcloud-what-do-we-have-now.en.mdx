@@ -59,7 +59,7 @@ The second is coverage. The test job drops its report, lcov for JavaScript and T
 
 The third is the merge queue. A CI analysis answers on any branch, `gh-readonly-queue/main/...` included. I saw it on krizaka-ts: SonarCloud's public API lists that repository's queue branches, each with its gate's verdict. The other repositories move over one by one, following a recipe written in our standards. Until a repository has taken the step, it keeps the rule that a branch must be up to date before merging.
 
-And one small extra, because we thought of it late: a PR that only changes documentation gets a light analysis, with no build, instead of a check that never arrives. That is [.github#336](https://github.com/krizaka/.github/pull/336).
+And one small extra, because we thought of it late: a PR that only changes documentation gets a light analysis, with no build, instead of a check that never arrives. That is [.github#336](repo:.github/pull/336).
 
 ## Why the gates first turned red
 
@@ -67,7 +67,7 @@ I expected everything to go green. It did the opposite.
 
 At the first CI analysis, Sonar had no reference version for the project. It showed « not provided », so it counted the whole history as new code. Every old defect became the fault of the latest change, and the gates turned red all at once, in repositories that had done nothing new.
 
-Our new-code period is « previous version »: Sonar judges what changed since the last known version. With no version, there is no previous one. The fix is small. [.github#354](https://github.com/krizaka/.github/pull/354) gives each CI analysis a version, `ci-` followed by the run number, so the period is the change since the analysis before. Old defects stay visible. They no longer turn the gate red on every PR. In krizaka-ui's analysis history you can see the « not provided » analyses, then the version event, a few hours later.
+Our new-code period is « previous version »: Sonar judges what changed since the last known version. With no version, there is no previous one. The fix is small. [.github#354](repo:.github/pull/354) gives each CI analysis a version, `ci-` followed by the run number, so the period is the change since the analysis before. Old defects stay visible. They no longer turn the gate red on every PR. In krizaka-ui's analysis history you can see the « not provided » analyses, then the version event, a few hours later.
 
 <Split label="Why the gates turned red, and the small fix (.github#354): Sonar judges new code since the previous version, so it needs a version.">
   <Side title="No version" tone="before" items="Sonar shows « not provided » | The whole history counts as new code | Every old defect is blamed on the latest change | Gates red everywhere at once" />
@@ -80,7 +80,7 @@ What I keep from it: a tool you buy does not set itself up. We paid for a gate, 
 
 Here is what I read this morning on the public API, project by project, with the key `krizaka_<repository>`. I give the numbers as they are; they move from one analysis to the next.
 
-In krizaka-ui, the PR [krizaka-ui#781](https://github.com/krizaka/krizaka-ui/pull/781) fixed 37 bugs, among them the sorts without a compare function I mentioned in the previous chapter. The API shows 0 bugs today, and 0 vulnerabilities.
+In krizaka-ui, the PR [krizaka-ui#781](repo:krizaka-ui/pull/781) fixed 37 bugs, among them the sorts without a compare function I mentioned in the previous chapter. The API shows 0 bugs today, and 0 vulnerabilities.
 
 Of the 9 repositories I read, the gate is green in 5: krizaka-com, krizaka-ts, akinaza, yomizaka and orazaka-ai-engine. It is red in 4: krizaka-ui, krizaka-blog, the .github repository and krizaka-build. In all four, the gate fails on new code, first on critical issues, not on old ones. I have not worked around them, and I am not hiding them here.
 
