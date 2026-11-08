@@ -40,7 +40,7 @@ Tout est dans [krizaka-ui](https://github.com/krizaka/krizaka-ui), et le mode d'
 
 ## D'abord, j'ai compté
 
-Le 11 octobre au soir, j'ai compté ce que nos applications écrivaient à la main. C'est l'[ADR-001](https://github.com/krizaka/krizaka-ui/blob/main/docs/adr/ADR-001-tanstack-under-krizaka-facades.md), et les chiffres m'ont arrêté.
+Le 11 octobre au soir, j'ai compté ce que nos applications écrivaient à la main. C'est l'ADR-001, et les chiffres m'ont arrêté.
 
 Dans les produits : 36 formulaires écrits à la main, 42 tables, 23 listes mobiles sans virtualisation sérieuse. Un des produits, côté web, portait environ 3 000 lignes de gestion maison de l'état du serveur, avec son propre client temps réel qui se reconnecte tout seul. Orazaka n'utilisait la bibliothèque de requêtes que dans 3 appels, sur 3 456 lignes de hooks. Le kit lui-même réécrivait un tableau de données (449 lignes, tri et sélection seulement), une pagination, un surligneur de code par expressions régulières, et ses graphiques reposaient sur ECharts, 157 ko compressés.
 
@@ -77,7 +77,7 @@ import { Button } from "@krizaka/ui/button";
 
 C'est une décision d'adoption autant que de taille. Un produit qui n'utilise que le bouton et la carte ne doit pas embarquer le calendrier. Et on peut adopter le kit un composant à la fois, sans migration d'un bloc.
 
-Le mobile n'est pas une entrée parmi les autres : `@krizaka/ui/native` est la version React Native, avec les mêmes jetons. Le bureau est plus simple, et c'est volontaire. L'[ADR-002](https://github.com/krizaka/krizaka-ui/blob/main/docs/adr/ADR-002-desktop-is-the-web-in-a-window.md) dit que le bureau, c'est le web dans une fenêtre : l'app Mac d'Orazaka est une fenêtre Tauri, un binaire d'environ 10 Mo qui affiche les composants web tels quels, là où Electron aurait embarqué un Chromium de 150 Mo. Pas de troisième implémentation à tenir en phase avec les deux autres.
+Le mobile n'est pas une entrée parmi les autres : `@krizaka/ui/native` est la version React Native, avec les mêmes jetons. Le bureau est plus simple, et c'est volontaire. L'ADR-002 dit que le bureau, c'est le web dans une fenêtre : l'app Mac d'Orazaka est une fenêtre Tauri, un binaire d'environ 10 Mo qui affiche les composants web tels quels, là où Electron aurait embarqué un Chromium de 150 Mo. Pas de troisième implémentation à tenir en phase avec les deux autres.
 
 ## Le code écrit la documentation
 
@@ -125,14 +125,14 @@ La politique de support est écrite dans `SUPPORT.md` : deux majeures supportée
 
 C'est la partie que je préfère garder, parce que chaque coupe est née d'une erreur.
 
-- **Deux copies d'un même port de paiement.** Akinaza et Yomizaka portaient chacun le leur, avec leur adaptateur Stripe. L'[ADR-005](https://github.com/krizaka/krizaka-ui/blob/main/docs/adr/ADR-005-payments-package.md) en a fait un paquet, `@krizaka/payments`, sans aucune dépendance à l'exécution : les noms de forfaits restent ceux du produit, aucun montant n'est dans le paquet. La règle de l'organisation est « partager avant une deuxième copie ». On l'a appliquée après la deuxième.
+- **Deux copies d'un même port de paiement.** Akinaza et Yomizaka portaient chacun le leur, avec leur adaptateur Stripe. L'ADR-005 en a fait un paquet, `@krizaka/payments`, sans aucune dépendance à l'exécution : les noms de forfaits restent ceux du produit, aucun montant n'est dans le paquet. La règle de l'organisation est « partager avant une deuxième copie ». On l'a appliquée après la deuxième.
 - **Une migration sans filet.** Personne n'utilisait encore nos produits, alors on a migré le tableau de données vers TanStack Table d'un seul coup, sans compatibilité avec l'ancienne API. C'était une version majeure (3.0.0), assumée. Le prix : tous les produits qui s'en servaient ont dû migrer en même temps.
-- **Trop de composants.** Le 25 octobre, j'ai demandé qu'on réduise : « on en a un peu trop ». L'audit de l'[ADR-006](https://github.com/krizaka/krizaka-ui/blob/main/docs/adr/ADR-006-krizaka-ui-2027.md) a compté 187 entrées de `@krizaka/ui`, et regardé qui les importait dans 24 dépôts. Après l'audit, 145 restent, 14 fusionnent dans une autre, 28 sont dépréciées puis retirées. La règle qui en sort : une entrée existe parce qu'un produit ou un site l'importe, ou qu'un ticket de produit la demande, ou qu'une autre entrée gardée s'appuie dessus. Sinon, elle est dépréciée. Les retraits sont prévus pour la 4.0, pas encore faits.
+- **Trop de composants.** Le 25 octobre, j'ai demandé qu'on réduise : « on en a un peu trop ». L'audit de l'ADR-006 a compté 187 entrées de `@krizaka/ui`, et regardé qui les importait dans 24 dépôts. Après l'audit, 145 restent, 14 fusionnent dans une autre, 28 sont dépréciées puis retirées. La règle qui en sort : une entrée existe parce qu'un produit ou un site l'importe, ou qu'un ticket de produit la demande, ou qu'une autre entrée gardée s'appuie dessus. Sinon, elle est dépréciée. Les retraits sont prévus pour la 4.0, pas encore faits.
 - **Un look qui trahissait son origine.** Le chapitre 5 en parle. L'ADR-003 en a tiré un bleu acier, une seule forme de bouton et un survol discret ; l'ADR-004, le Cahier.
 - **Une première publication qui bloque.** Le premier envoi d'un nouveau paquet sur npm demande que quelqu'un déclare une fois, à la main, l'éditeur de confiance. C'est écrit dans le contrat du dépôt.
 
 <Bars label="L'audit de l'ADR-006 : les 187 entrées de @krizaka/ui, confrontées à qui les importe dans 24 dépôts." source="ADR-006, 25 octobre. Les retraits sont prévus pour la 4.0, pas encore faits." format="integer" series="Entrées:accent" data="Gardées=145; Fusionnées dans une autre=14; Dépréciées, puis retirées=28" />
 
-Et une décision en cours, que je ne tranche pas ici. L'[ADR-007](https://github.com/krizaka/krizaka-ui/blob/main/docs/adr/ADR-007-shop-composer.md), du 26 octobre, est encore une proposition : décrire une page de boutique comme des sections, des variantes et des blocs en données, pour que le propriétaire choisisse comment chaque section se dessine. Le point de départ est une mesure sur la page de démonstration d'un salon, sur dev : 7 355 px de haut sur ordinateur, 12,7 écrans sur téléphone, 3 photos différentes pour 9 emplacements. Ce n'est pas un problème de couleur. C'est que la page était un fichier fixe, où chaque section choisissait sa largeur, son rythme et sa photo.
+Et une décision en cours, que je ne tranche pas ici. L'ADR-007, du 26 octobre, est encore une proposition : décrire une page de boutique comme des sections, des variantes et des blocs en données, pour que le propriétaire choisisse comment chaque section se dessine. Le point de départ est une mesure sur la page de démonstration d'un salon, sur dev : 7 355 px de haut sur ordinateur, 12,7 écrans sur téléphone, 3 photos différentes pour 9 emplacements. Ce n'est pas un problème de couleur. C'est que la page était un fichier fixe, où chaque section choisissait sa largeur, son rythme et sa photo.
 
 Ce que je retiens de tout ça : un kit n'est pas un tas de composants. C'est un ensemble de décisions sur ce qu'on ne copiera plus.

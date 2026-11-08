@@ -57,7 +57,7 @@ jobs:
 
 Le workflow est épinglé par son SHA, pas par une étiquette. Une étiquette peut bouger, un SHA non. Le commentaire `# v1.5.0` dit quelle version c'est, et Dependabot propose la mise à jour, dans une PR qui passe par la même CI que le reste.
 
-Orazaka a son propre pipeline, `component.yml`, dans le dépôt [krizaka/orazaka](https://github.com/krizaka/orazaka). Un composant d'Orazaka ne se construit jamais seul : la CI clone tout le workspace, met le dépôt testé à sa place, et construit d'abord ses dépendances depuis leur source.
+Orazaka a son propre pipeline, `component.yml`, dans le dépôt [krizaka/orazaka](https://github.com/krizaka/sovkora). Un composant d'Orazaka ne se construit jamais seul : la CI clone tout le workspace, met le dépôt testé à sa place, et construit d'abord ses dépendances depuis leur source.
 
 Le build pack complet, celui où chaque dépôt n'aurait qu'une ligne, n'existe toujours pas. Aujourd'hui, c'est un appel et quelques options. C'est déjà beaucoup mieux que des copies.
 
@@ -287,7 +287,7 @@ Je ne veux pas donner l'impression que tout ça marche du premier coup. Voici ce
 
 **Le test des polices avant leur build, dans krizaka-ui.** Après une PR de version, la publication a échoué : le test de `packages/fonts` cherchait `dist/index.js`, qui n'existait pas encore. Le test dépendait du build des autres paquets, pas du sien. [krizaka-ui#702](https://github.com/krizaka/krizaka-ui/pull/702) ajoute la dépendance manquante.
 
-**pnpm qui refuse les scripts d'installation.** Les versions récentes de pnpm refusent de lancer les scripts d'installation d'une dépendance qu'on n'a pas autorisée, avec `ERR_PNPM_IGNORED_BUILDS`. Le build de développement d'orazaka-web-client était cassé depuis la veille. Le correctif liste les trois dépendances permises, dans `pnpm-workspace.yaml` ([orazaka-web-client#283](https://github.com/krizaka/orazaka-web-client/pull/283)) :
+**pnpm qui refuse les scripts d'installation.** Les versions récentes de pnpm refusent de lancer les scripts d'installation d'une dépendance qu'on n'a pas autorisée, avec `ERR_PNPM_IGNORED_BUILDS`. Le build de développement d'orazaka-web-client était cassé depuis la veille. Le correctif liste les trois dépendances permises, dans `pnpm-workspace.yaml` (orazaka-web-client#283) :
 
 ```yaml
 allowBuilds:
@@ -296,9 +296,9 @@ allowBuilds:
   unrs-resolver: true
 ```
 
-**npm sur un projet pnpm.** Le déploiement lançait `npm install` sur l'arbre pnpm du client web. npm plantait, à chaque déploiement, avec un message qui ne disait rien d'utile. La commande de build est devenue `pnpm run build` ([orazaka#412](https://github.com/krizaka/orazaka/pull/412)).
+**npm sur un projet pnpm.** Le déploiement lançait `npm install` sur l'arbre pnpm du client web. npm plantait, à chaque déploiement, avec un message qui ne disait rien d'utile. La commande de build est devenue `pnpm run build` ([orazaka#412](https://github.com/krizaka/sovkora/pull/412)).
 
-**Deux dépôts qui s'attendaient.** Pour passer à Krizaka UI 3.55, le workspace d'Orazaka devait régénérer son fichier de verrouillage. Sa CI échouait contre le client web, qui déclarait encore l'ancienne version. Et la PR du client web avait besoin du nouveau fichier de verrouillage. Chacun attendait l'autre. On s'en est sortis en rendant le client web autonome : il ne fait plus partie du workspace npm, il s'installe depuis son propre `pnpm-lock.yaml` ([orazaka#415](https://github.com/krizaka/orazaka/pull/415)). Le prix, c'est qu'il prend maintenant deux paquets partagés depuis le registre, et plus depuis leur source.
+**Deux dépôts qui s'attendaient.** Pour passer à Krizaka UI 3.55, le workspace d'Orazaka devait régénérer son fichier de verrouillage. Sa CI échouait contre le client web, qui déclarait encore l'ancienne version. Et la PR du client web avait besoin du nouveau fichier de verrouillage. Chacun attendait l'autre. On s'en est sortis en rendant le client web autonome : il ne fait plus partie du workspace npm, il s'installe depuis son propre `pnpm-lock.yaml` ([orazaka#415](https://github.com/krizaka/sovkora/pull/415)). Le prix, c'est qu'il prend maintenant deux paquets partagés depuis le registre, et plus depuis leur source.
 
 Aucune de ces pannes n'a été réglée en relançant la CI. Chacune a été corrigée là où elle naissait.
 
