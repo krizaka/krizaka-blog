@@ -1,0 +1,53 @@
+---
+title: "Je vous montre la machine"
+description: "Depuis des mois je fais tourner l'entreprise presque seul, avec une équipe d'agents. Au lieu de la décrire, je vous la montre : un train qui avance, un tableau où rien n'est vrai sans preuve."
+seoTitle: "Je vous montre la machine"
+seoDescription: "Comment je fais tourner une entreprise avec une équipe d'agents : un CTO perroquet, un train de fusion, un cockpit où rien n'est vrai sans preuve."
+date: 2026-11-07
+tags: [ai, integration, costs]
+author: oussama
+draft: true
+sensitive: true
+---
+
+J'ai déjà raconté, morceau par morceau, comment je construis cette entreprise presque seul, avec des agents. Aujourd'hui je ne vais pas le raconter encore. Je vais vous le montrer. Les figures de cette page tournent sur des données inventées, mais elles bougent comme la vraie machine bouge, et vous pouvez les faire avancer vous-même.
+
+## Un oiseau qui ne répète que le vrai
+
+En haut de tout il y a un CTO. Ce n'est pas moi : c'est Mouloud, un perroquet gris du Gabon. Je lui ai donné ce rôle parce qu'un gris du Gabon fait une chose très bien : il écoute, il retient, et il ne répète que ce qu'il a entendu. Mouloud pilote le travail, décide ce qui est délégué, et me pousse à changer d'avis quand je me trompe. Surtout, il ne dit jamais « c'est fait » sans la preuve que c'est fait.
+
+<Mouloud />
+
+Moi, je garde les questions qui sont à moi : l'argent, le droit, les comptes, tout ce qui ne se défait pas. Le reste, il le mène.
+
+## Une session par voie
+
+Le travail est rangé en voies, une équipe par voie : le moteur, le site, la sécurité, la diffusion, l'outillage, et le blog que vous lisez. Chaque équipe est une session nommée, et Mouloud les oriente. Aucune ne part sans limites : un nombre de tours, un budget, une horloge, un interrupteur d'arrêt, et un plafond par jour pour l'ensemble. Quand une limite est atteinte, la session s'arrête proprement et écrit où elle en est.
+
+Le coût, je le tiens par des principes simples. Je prends le plus petit modèle qui fait le travail : un léger pour faire atterrir une correction, un moyen pour une fonctionnalité, un grand seulement pour une décision d'architecture, la sécurité, ou un rouge qui résiste. Je reprends une session au lieu de la relancer de zéro, avec des points de reprise courts. Le travail lourd passe sous un verrou, un à la fois. Et chaque fois qu'un contrôle peut être fait par un script plutôt que par un modèle, c'est le script qui le fait : un script ne coûte rien et ne se trompe pas deux fois. J'avais raconté le début de tout ça dans [construire presque seul, avec des agents](/fr/story/building-with-agents/).
+
+Ces limites ne sont pas théoriques. Cette version de l'article est la seconde : la première a été arrêtée à mi-chemin parce qu'une session avait dépassé son quota. Elle s'est arrêtée proprement, elle a écrit où elle en était, et elle a attendu.
+
+Depuis, chaque session part avec quatre règles. Un plafond par modèle et par session : un léger a une enveloppe légère, un lourd une enveloppe plus serrée. Un plafond par jour pour l'ensemble : toutes les sessions confondues ne peuvent pas dépasser un certain seuil en vingt-quatre heures. Pas de relance après un signal de limite de quota : si l'interface répond par une limite de quota, la session écrit son état et attend — une boucle de retentatives aggraverait le problème. Et au plus deux sous-agents en parallèle : on peut en lancer d'autres pour paralléliser, jamais plus de deux à la fois, et jamais un lourd pour une tâche légère.
+
+Ces règles existent parce qu'une session a un jour lancé trop d'agents à la fois sur un modèle trop lourd, sans interrupteur. Le fondateur les a posées le lendemain.
+
+## Le train
+
+Une équipe ne fusionne jamais son travail à la main. Chaque pull request monte dans une file, et la file ne laisse passer qu'une voiture à la fois. Les contrôles tournent ; au vert, la voiture fusionne et la file avance ; au rouge, elle est mise de côté sur une voie de garage, avec sa raison, pour ne bloquer personne derrière elle. Quand un dépôt sature, un spécialiste vient débloquer la file.
+
+<Train />
+
+C'est tout le train. Faites-le avancer : vous verrez la voiture rouge se ranger seule, et les autres continuer. J'ai raconté sa première version dans [tchou-tchou, comment nos pull requests prennent le train](/fr/story/tchou-tchou-how-our-pull-requests-catch-the-train/).
+
+## Le tableau, où rien n'est vrai sans preuve
+
+Pour savoir qui fait quoi, je regarde un cockpit. Il relie une épopée à ses fonctionnalités, chaque fonctionnalité à ses tickets, chaque ticket à sa pull request. Sa seule règle est dure : une affirmation sans fait derrière elle n'est pas vraie. Tant qu'aucune pull request fusionnée ne la soutient, elle porte l'étiquette « non prouvé ».
+
+<TeamBoard />
+
+Faites apparaître les faits : les étiquettes se lèvent une à une. C'est la même discipline que Mouloud applique en haut, écrite dans un écran que je peux regarder depuis mon téléphone.
+
+## L'échéance peut bouger, la qualité jamais
+
+C'est la devise de la maison, et c'est elle qui tient tout ce qui précède. Une date, on peut la déplacer. Ce qui part aux gens, non : il part prouvé, ou il ne part pas. La machine que je viens de vous montrer n'existe que pour ça.

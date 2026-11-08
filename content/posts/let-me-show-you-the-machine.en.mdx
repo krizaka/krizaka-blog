@@ -1,0 +1,53 @@
+---
+title: "Let me show you the machine"
+description: "For months I have run the company almost alone, with a team of agents. Instead of describing it again, I will show it to you: a train you move yourself, a board where nothing is true without a fact."
+seoTitle: "Let me show you the machine"
+seoDescription: "How a one-person company runs with a team of agents: a parrot CTO, one session per lane, a merge train, a cockpit where nothing is true without a fact."
+date: 2026-11-07
+tags: [ai, integration, costs]
+author: oussama
+draft: true
+sensitive: true
+---
+
+I have already told, piece by piece, how I build this company almost alone, with agents. Today I will not tell it again. I will show it to you. The figures on this page run on invented data, but they move the way the real machine moves, and you can move them yourself.
+
+## A bird that repeats only what is true
+
+At the very top there is a CTO. It is not me: it is Mouloud, a Gabonese grey parrot. I gave him that role because a grey parrot does one thing very well: it listens, it remembers, and it repeats only what it heard. Mouloud pilots the work, decides what is delegated, and pushes me to change my mind when I am wrong. Above all, he never says "it is done" without the fact that proves it.
+
+<Mouloud />
+
+I keep the questions that are mine: money, law, accounts, anything that cannot be undone. The rest, he runs.
+
+## One session per lane
+
+The work is sorted into lanes, one team per lane: the engine, the site, security, reach, tooling, and the blog you are reading. Each team is a named session, and Mouloud steers them. None starts without limits: a number of turns, a budget, a clock, a kill switch, and a daily cap for all of them together. When a limit is reached, the session stops cleanly and writes down where it is.
+
+I hold the cost with simple principles. I pick the smallest model that does the work: a light one to land a fix, a middle one for a feature, a large one only for an architecture decision, security, or a red that resists. I resume a session instead of relaunching it from scratch, with short checkpoints. Heavy work runs under a lock, one at a time. And every time a check can be done by a script instead of a model, the script does it: a script costs nothing and never gets it wrong twice. I told the start of all this in [building almost alone, with agents](/story/building-with-agents/).
+
+These limits are not theoretical. This version of the article is the second: the first was stopped midway because a session had spent its quota. It stopped cleanly, wrote down where it was, and waited.
+
+Since then, every session starts with four rules. A cap per model and per session: a light model gets a light envelope, a heavy one a tighter one. A daily cap for all of them together: all sessions combined cannot exceed a certain ceiling in twenty-four hours. No relaunch after a quota-limit signal: if the interface answers with a quota limit, the session writes its state and waits — retrying in a loop would only make it worse. And at most two sub-agents in parallel: a session may start others to parallelise, never more than two at once, and never a heavy model for a light task.
+
+These rules exist because a session once launched too many agents at once on too heavy a model, with no kill switch. The founder set them the next day.
+
+## The train
+
+A team never merges its work by hand. Every pull request joins a queue, and the queue lets only one car through at a time. The checks run; green, the car merges and the queue advances; red, it is set aside on a siding, with its reason, so it blocks no one behind it. When a repository fills up, a specialist comes to clear the queue.
+
+<Train />
+
+That is the whole train. Move it along: you will see the red car park itself and the others carry on. I told its first version in [tchou-tchou, how our pull requests catch the train](/story/tchou-tchou-how-our-pull-requests-catch-the-train/).
+
+## The board, where nothing is true without a fact
+
+To know who does what, I look at a cockpit. It ties an epic to its features, each feature to its tickets, each ticket to its pull request. Its one rule is hard: a claim with no fact behind it is not true. Until a merged pull request backs it, it wears the "unproven" label.
+
+<TeamBoard />
+
+Make the facts appear: the labels lift one by one. It is the same discipline Mouloud keeps at the top, written into a screen I can watch from my phone.
+
+## The deadline can move, the quality never
+
+That is the motto of the house, and it is what holds everything above together. A date, you can move. What goes out to people, you cannot: it goes out proven, or it does not go out. The machine I have just shown you exists only for that.

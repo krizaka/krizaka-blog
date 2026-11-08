@@ -15,6 +15,11 @@ import { Split } from "./Split";
 import { Layers } from "./Layers";
 import { Bars } from "./Bars";
 import { Utilization } from "./Utilization";
+import { Train } from "./Train";
+import { TeamBoard } from "./TeamBoard";
+import { MouloudPlate } from "./MouloudPlate";
+import { trainFrames } from "@/lib/train-sim";
+import { BOARD } from "@/lib/team-board";
 
 type RailProps = { name: string; state?: string; station?: string; wagons: string };
 
@@ -56,8 +61,15 @@ export function childProps<P>(children: ReactNode): P[] {
    « before / after »), <CodeTabs><Tab label>```fence```</Tab></CodeTabs> (Tabs over CodeBlocks). A whole number in <Num> climbs
    with NumberTicker; blocks arrive with the motion system (`data-reveal`, still under reduced motion). */
 export function mdxComponentsFor(locale: Locale) {
-  const t = getDictionary(locale).post;
+  const d = getDictionary(locale);
+  const t = d.post;
   return {
+    /* The merge train played from the simulation (lib/train-sim.ts): <Train label?/>. Interactive, still under reduced motion. */
+    Train: ({ label }: { label?: string }) => <Train frames={trainFrames()} labels={d.train} label={label} />,
+    /* The « équipe » board of the cockpit on simulated data (lib/team-board.ts): <TeamBoard label?/>. A fact lifts « non prouvé ». */
+    TeamBoard: ({ label }: { label?: string }) => <TeamBoard board={[...BOARD]} labels={d.board} label={label} />,
+    /* Mouloud's specimen portrait, the grey parrot that pilots: <Mouloud label?/>. */
+    Mouloud: ({ label }: { label?: string }) => <MouloudPlate labels={d.mouloud} label={label} />,
     pre: ({ children, ...rest }: ComponentProps<"pre">) => {
       const block = fenced(children);
       return block ? (
