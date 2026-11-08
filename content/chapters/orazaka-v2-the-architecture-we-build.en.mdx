@@ -71,7 +71,7 @@ In between sits **Spring AI 2**, the library that talks to model providers. We u
 
 ## One request, end to end
 
-The [orazaka](https://github.com/krizaka/orazaka) workspace brings together 20 repositories: reusable Krizaka building blocks (users, notifications, billing), the foundations (contracts, edge), the AI engine, the clients (web, mobile, command line), the media worker and the packs.
+The [orazaka](https://github.com/krizaka/sovkora) workspace brings together 20 repositories: reusable Krizaka building blocks (users, notifications, billing), the foundations (contracts, edge), the AI engine, the clients (web, mobile, command line), the media worker and the packs.
 
 A correction first, because I used to say it wrong. The "AI engine" is not a service. It is a library, `orazaka-ai-engine`, that the services embed: the AI client, the interceptor chain, the tools. The graph of steps lives in the Studio service.
 
@@ -141,7 +141,7 @@ The fix is in progress, before we index anything sensitive. I will not go into m
 
 A pack is a folder: a manifest, its translations, its Studios (plans of steps), sometimes its own worker. Installing it writes data: capabilities, a price, a catalogue entry. It changes no code. The engine does not know what a lease is. It knows how to start a plan, hold credits, call a tool, judge an output and keep a trace.
 
-How do we know that is true, and that it stays true? A rule of ADR-092 says it: the proof is a pack. The document verification pack ([orazaka-packs](https://github.com/krizaka/orazaka-packs)), the one with the lease rules, must evolve without a single change in the core. Those rules come from the law: a document is judged only by a promoted ruleset, after its reference cases and a review (ADR-089). If one day the core has to change for a product, the pull request is refused, and the change goes into a port or a pack.
+How do we know that is true, and that it stays true? A rule of ADR-092 says it: the proof is a pack. The document verification pack (orazaka-packs), the one with the lease rules, must evolve without a single change in the core. Those rules come from the law: a document is judged only by a promoted ruleset, after its reference cases and a review (ADR-089). If one day the core has to change for a product, the pull request is refused, and the change goes into a port or a pack.
 
 The same goes for media. There is no video module in the core. There is the media worker, and packs that use it.
 
@@ -153,7 +153,7 @@ That is the direction. Here is what the code says on 26 October. The audit and t
 
 - **The core still imports Spring AI.** 52 engine files import it: 36 in the core, 14 in the interceptors, 2 in the tools (measured in ADR-092). An ArchUnit test will count those files, and the count will only be allowed to go down. No big bang: we move one slice at a time to the adapter module, down to zero.
 - **The core's `DagCompiler` is a stub.** Two task names written by hand, no executor, and nothing calls it. The real graph is the Studio's plan: it has its dependencies, its parallelism, its output contracts and its approval steps. The stub will be deleted.
-- **The control loop has a flaw.** On each new try, the interceptor checked the same text again instead of generating a new one, and after the last try it served the answer without it being validated. The fix has been merged since ([sovkora-engine#117](https://github.com/krizaka/sovkora-engine/pull/117)). Typed verdicts, the drift score and escalation come next.
+- **The control loop has a flaw.** On each new try, the interceptor checked the same text again instead of generating a new one, and after the last try it served the answer without it being validated. The fix has been merged since (sovkora-engine#117). Typed verdicts, the drift score and escalation come next.
 - **The GPU lease does not exist yet.** Nothing calls `/api/ps` today, and nothing sets `keep_alive`. The worker manages its own memory, and that is all.
 - **Live steering is designed, not built** (ADR-088). We can approve a step, resume from a step and cancel a whole run. Not yet cancel a single branch.
 - **The cache works per run, not per step.** An identical run is served from the cache. One changed step redoes the whole run.

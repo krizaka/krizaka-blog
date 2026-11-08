@@ -68,10 +68,17 @@ export const PRIVATE_REPOS = [
   "krizaka-internal",
 ];
 
+/* The fifteen split Sovkora repositories left the org on 2026-11-08 (krizaka-internal#2960): every one of their addresses, under
+   the old orazaka-* name or the sovkora-* one, is a 404 for a reader. The one public repository is krizaka/sovkora. */
+const RETIRED_REPO = /^(orazaka|sovkora)-/;
+
 export function privateRepoLinkProblems(text, file) {
   const link = /https?:\/\/github\.com\/krizaka\/([A-Za-z0-9._-]+)/g;
   return [...text.matchAll(link)]
-    .filter((m) => PRIVATE_REPOS.includes(m[1].replace(/\.git$/, "")))
+    .filter((m) => {
+      const repo = m[1].replace(/\.git$/, "");
+      return PRIVATE_REPOS.includes(repo) || RETIRED_REPO.test(repo);
+    })
     .map(
       (m) =>
         `${file}: links the private repository krizaka/${m[1]} (${m[0]}), a 404 for readers: say it without a link`,

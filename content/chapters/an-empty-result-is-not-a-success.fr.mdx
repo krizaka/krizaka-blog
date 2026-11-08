@@ -45,7 +45,7 @@ Au départ, le service d'automatisation d'Orazaka était un écouteur de message
 
 Ça marchait bien pour une démo. C'est aussi de l'exécution de code à distance par conception. Il suffisait qu'un jour quelqu'un trouve comment écrire dans ce canal pour qu'il tienne le Mac de l'utilisateur.
 
-Ce trou est écrit noir sur blanc dans la décision d'architecture 079, et il a été fermé le 17 octobre : la commande enregistre maintenant ce qu'elle reçoit et le refuse, elle n'exécute plus rien ([orazaka-cli#54](https://github.com/krizaka/orazaka-cli/pull/54)).
+Ce trou est écrit noir sur blanc dans la décision d'architecture 079, et il a été fermé le 17 octobre : la commande enregistre maintenant ce qu'elle reçoit et le refuse, elle n'exécute plus rien (orazaka-cli#54).
 
 La même décision liste ce que nous ne ferons pas, et c'est la partie dont je suis le plus sûr.
 
@@ -135,7 +135,7 @@ Une console d'administration, c'est la porte la plus puissante d'un produit. Qui
 
 Celle d'Orazaka a quatre règles, que j'ai relues dans le code avant d'écrire ce texte.
 
-**Elle ne répond qu'à une liste d'adresses.** Avant tout le reste, le proxy de l'application compare l'adresse de celui qui frappe à une liste lue dans l'environnement. Toute autre adresse reçoit un 403, page de connexion comprise ([`edge.ts`](https://github.com/krizaka/orazaka-web-client/blob/main/src/console/core/edge.ts)). Une page de connexion que personne d'autre ne peut atteindre n'a pas besoin d'être défendue contre tout le monde. Seul `robots.txt` passe, et il dit « Disallow: / » ; chaque réponse porte aussi `noindex`.
+**Elle ne répond qu'à une liste d'adresses.** Avant tout le reste, le proxy de l'application compare l'adresse de celui qui frappe à une liste lue dans l'environnement. Toute autre adresse reçoit un 403, page de connexion comprise (`edge.ts`). Une page de connexion que personne d'autre ne peut atteindre n'a pas besoin d'être défendue contre tout le monde. Seul `robots.txt` passe, et il dit « Disallow: / » ; chaque réponse porte aussi `noindex`.
 
 **Le rôle se vérifie sur le serveur.** Il n'y a pas de connexion sociale. Un compte sans le rôle d'administrateur n'obtient pas de session de console, et chaque point d'accès administratif revérifie ce rôle de son côté, quel que soit le client qui appelle.
 

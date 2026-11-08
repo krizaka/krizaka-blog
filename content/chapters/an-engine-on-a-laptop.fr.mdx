@@ -81,11 +81,11 @@ static Prompt toOpenAiPrompt(Prompt prompt) {
 }
 ```
 
-Il y a eu un deuxième piège, plus discret. Une étape qui demandait `qwen2.5:7b` partait parfois vers l'inférence hébergée, parce que le nom du modèle était ignoré sauf pour deux fournisseurs. Depuis [orazaka-ai-engine#13](https://github.com/krizaka/orazaka-ai-engine/pull/13), le routage suit le lien du catalogue entre le modèle et son fournisseur. Et un modèle dont le fournisseur ne répond pas échoue avec une erreur qui nomme le modèle et le fournisseur, au lieu de partir ailleurs en silence. Pour une IA souveraine, ce silence-là est le pire bug possible.
+Il y a eu un deuxième piège, plus discret. Une étape qui demandait `qwen2.5:7b` partait parfois vers l'inférence hébergée, parce que le nom du modèle était ignoré sauf pour deux fournisseurs. Depuis orazaka-ai-engine#13, le routage suit le lien du catalogue entre le modèle et son fournisseur. Et un modèle dont le fournisseur ne répond pas échoue avec une erreur qui nomme le modèle et le fournisseur, au lieu de partir ailleurs en silence. Pour une IA souveraine, ce silence-là est le pire bug possible.
 
-Deux autres problèmes sont venus du mélange entre le Mac et le cloud. La plateforme de dev tourne sur DigitalOcean, et le Mac la rejoint par un tunnel, à travers un relais. Le premier : les médias générés étaient écrits sur le disque du conteneur, effacé à chaque déploiement. Les lignes en base survivaient, les fichiers disparaissaient. On passe maintenant par un stockage durable, avec un adaptateur Bunny ([orazaka-ai-engine#21](https://github.com/krizaka/orazaka-ai-engine/pull/21)).
+Deux autres problèmes sont venus du mélange entre le Mac et le cloud. La plateforme de dev tourne sur DigitalOcean, et le Mac la rejoint par un tunnel, à travers un relais. Le premier : les médias générés étaient écrits sur le disque du conteneur, effacé à chaque déploiement. Les lignes en base survivaient, les fichiers disparaissaient. On passe maintenant par un stockage durable, avec un adaptateur Bunny (orazaka-ai-engine#21).
 
-Le second : chaque déploiement redémarre le relais et coupe le tunnel. Un clip en cours de calcul était perdu, puis refait de zéro. Le worker se reconnecte désormais et ne traite jamais deux fois la même tâche ([orazaka-worker-media#24](https://github.com/krizaka/orazaka-worker-media/pull/24)).
+Le second : chaque déploiement redémarre le relais et coupe le tunnel. Un clip en cours de calcul était perdu, puis refait de zéro. Le worker se reconnecte désormais et ne traite jamais deux fois la même tâche (orazaka-worker-media#24).
 
 ## Du monolithe aux services
 
@@ -114,7 +114,7 @@ orazaka models image list
 
 Les services et les bases tournent dans des conteneurs. Les modèles, eux, tournent au plus près du matériel : sur un Mac, directement sur Metal, parce que la virtualisation ne donne pas accès au GPU d'Apple.
 
-La [documentation de livraison](https://github.com/krizaka/orazaka/blob/main/docs/DELIVERY.md) pèse les options pour les conteneurs sur un Mac. Docker Desktop n'est pas redistribuable et devient payant pour les grandes organisations. OrbStack est excellent, mais demande une licence payante par utilisateur. Le choix par défaut est Colima, libre et scriptable, et si la machine a déjà l'un des deux autres, on l'utilise. Pour les grandes organisations, Kubernetes et Helm viendront plus tard, quand un client aura besoin de haute disponibilité. Pas avant.
+La [documentation de livraison](https://github.com/krizaka/sovkora/blob/main/docs/DELIVERY.md) pèse les options pour les conteneurs sur un Mac. Docker Desktop n'est pas redistribuable et devient payant pour les grandes organisations. OrbStack est excellent, mais demande une licence payante par utilisateur. Le choix par défaut est Colima, libre et scriptable, et si la machine a déjà l'un des deux autres, on l'utilise. Pour les grandes organisations, Kubernetes et Helm viendront plus tard, quand un client aura besoin de haute disponibilité. Pas avant.
 
 Rien de tout ça ne tiendrait sans tests. Les tests d'intégration lancent de vraies bases et un vrai courtier dans des conteneurs (Testcontainers), à partir d'une seule classe de base partagée. Les règles d'architecture sont vérifiées à chaque build. Un outil de réécriture automatique (OpenRewrite) passe en CI et échoue s'il trouve du code à moderniser. Et le critère le plus utile que j'aie écrit est simple : un pack qui vit dans un dossier hors du dépôt doit s'installer et tourner sans aucune modification du dépôt. La première fois, il a échoué quatre fois, sur quatre défauts que personne n'aurait vus de l'intérieur (ADR-049).
 

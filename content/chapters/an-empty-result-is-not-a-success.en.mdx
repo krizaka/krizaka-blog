@@ -45,7 +45,7 @@ At the start, Orazaka's automation service was a message listener that wrote dow
 
 It worked well for a demo. It was also remote code execution by design. All it would take was for someone to find a way to write into that channel, and the user's Mac was theirs.
 
-The hole is written in black and white in architecture decision 079, and it was closed on 17 October: the command now records what it receives and refuses it, and it runs nothing ([orazaka-cli#54](https://github.com/krizaka/orazaka-cli/pull/54)).
+The hole is written in black and white in architecture decision 079, and it was closed on 17 October: the command now records what it receives and refuses it, and it runs nothing (orazaka-cli#54).
 
 The same decision lists what we will not do, and that is the part I am most sure of.
 
@@ -135,7 +135,7 @@ An admin console is the most powerful door of a product. Whoever goes through it
 
 Orazaka's has four rules, which I reread in the code before writing this.
 
-**It answers only a list of addresses.** Before anything else, the application's proxy compares the caller's address with a list read from the environment. Any other address gets a 403, login page included ([`edge.ts`](https://github.com/krizaka/orazaka-web-client/blob/main/src/console/core/edge.ts)). A login page that nobody else can reach does not need defending against everyone. Only `robots.txt` passes, and it says "Disallow: /"; every response also carries `noindex`.
+**It answers only a list of addresses.** Before anything else, the application's proxy compares the caller's address with a list read from the environment. Any other address gets a 403, login page included (`edge.ts`). A login page that nobody else can reach does not need defending against everyone. Only `robots.txt` passes, and it says "Disallow: /"; every response also carries `noindex`.
 
 **The role is checked on the server.** There is no social sign-in. An account without the administrator role gets no console session, and every administrative endpoint checks that role again on its own side, whatever client is calling.
 

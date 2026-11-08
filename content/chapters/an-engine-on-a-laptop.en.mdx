@@ -81,11 +81,11 @@ static Prompt toOpenAiPrompt(Prompt prompt) {
 }
 ```
 
-There was a second, quieter trap. A step that asked for `qwen2.5:7b` sometimes went to hosted inference instead, because the model name was ignored except for two providers. Since [orazaka-ai-engine#13](https://github.com/krizaka/orazaka-ai-engine/pull/13), routing follows the catalogue's link between a model and its provider. And a model whose provider doesn't answer now fails with an error naming both, instead of quietly going somewhere else. For sovereign AI, that kind of silence is the worst bug there is.
+There was a second, quieter trap. A step that asked for `qwen2.5:7b` sometimes went to hosted inference instead, because the model name was ignored except for two providers. Since orazaka-ai-engine#13, routing follows the catalogue's link between a model and its provider. And a model whose provider doesn't answer now fails with an error naming both, instead of quietly going somewhere else. For sovereign AI, that kind of silence is the worst bug there is.
 
-Two more problems came from mixing the Mac and the cloud. The dev platform runs on DigitalOcean, and the Mac joins it through a tunnel, via a relay. First: generated media were written to the container's disk, which every deploy wipes. The database rows survived; the files didn't. We now go through durable storage, with a Bunny adapter ([orazaka-ai-engine#21](https://github.com/krizaka/orazaka-ai-engine/pull/21)).
+Two more problems came from mixing the Mac and the cloud. The dev platform runs on DigitalOcean, and the Mac joins it through a tunnel, via a relay. First: generated media were written to the container's disk, which every deploy wipes. The database rows survived; the files didn't. We now go through durable storage, with a Bunny adapter (orazaka-ai-engine#21).
 
-Second: every deploy restarts the relay and drops the tunnel. A clip halfway through rendering was lost, then started again from zero. The worker now reconnects and never processes the same job twice ([orazaka-worker-media#24](https://github.com/krizaka/orazaka-worker-media/pull/24)).
+Second: every deploy restarts the relay and drops the tunnel. A clip halfway through rendering was lost, then started again from zero. The worker now reconnects and never processes the same job twice (orazaka-worker-media#24).
 
 ## From a monolith to services
 
@@ -114,7 +114,7 @@ orazaka models image list
 
 The services and databases run in containers. The models run as close to the hardware as possible: on a Mac, directly on Metal, because virtualisation doesn't give access to Apple's GPU.
 
-The [delivery documentation](https://github.com/krizaka/orazaka/blob/main/docs/DELIVERY.md) weighs the options for containers on a Mac. Docker Desktop isn't redistributable and becomes paid for large organisations. OrbStack is excellent, but needs a paid licence per user. The default is Colima, free and scriptable, and if the machine already has one of the other two, we use it. For large organisations, Kubernetes and Helm will come later, when a client needs high availability. Not before.
+The [delivery documentation](https://github.com/krizaka/sovkora/blob/main/docs/DELIVERY.md) weighs the options for containers on a Mac. Docker Desktop isn't redistributable and becomes paid for large organisations. OrbStack is excellent, but needs a paid licence per user. The default is Colima, free and scriptable, and if the machine already has one of the other two, we use it. For large organisations, Kubernetes and Helm will come later, when a client needs high availability. Not before.
 
 None of this would hold without tests. Integration tests start real databases and a real broker in containers (Testcontainers), from one shared base class. Architecture rules are checked on every build. An automatic rewriting tool (OpenRewrite) runs in CI and fails if it finds code to modernise. And the most useful criterion I've written is simple: a pack living in a folder outside the repository must install and run without any change to the repository. The first time, it failed four times, on four defects nobody would have seen from inside (ADR-049).
 
