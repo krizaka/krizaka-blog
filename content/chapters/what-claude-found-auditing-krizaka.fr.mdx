@@ -93,7 +93,7 @@ Son jugement d'ensemble, en une phrase :
 
 « Au-dessus de la moyenne pour une petite organisation. » C'est tout. Le modèle n'a pas écrit qu'il voyait rarement ça, ni que ça dépassait des équipes d'entreprise. Je ne l'écris donc pas non plus.
 
-Les garde-fous dont il parle existent, et on peut les lire. Les règles ast-grep comme [`no-ambient-clock`](https://github.com/krizaka/krizaka-ts/blob/main/packages/config/ast-grep/core/no-ambient-clock.yml) (pas d'horloge implicite dans le code du domaine) et [`no-enum-string-compare`](https://github.com/krizaka/krizaka-ts/blob/main/packages/config/ast-grep/core/no-enum-string-compare.yml) (pas de statut comparé à une chaîne). Les règles ArchUnit de [`CodeRules`](https://github.com/krizaka/krizaka-build/blob/main/krizaka-test-support/src/main/java/com/krizaka/test/architecture/CodeRules.java), dont `assertNoStandardStreams` (pas de `System.out` en production), et leurs équivalents dans [`GovernanceRules`](https://github.com/krizaka/sovkora-build/blob/main/sovkora-test-support/src/main/java/com/krizaka/sovkora/test/architecture/GovernanceRules.java).
+Les garde-fous dont il parle existent, et on peut les lire. Les règles ast-grep comme [`no-ambient-clock`](https://github.com/krizaka/krizaka-ts/blob/main/packages/config/ast-grep/core/no-ambient-clock.yml) (pas d'horloge implicite dans le code du domaine) et [`no-enum-string-compare`](https://github.com/krizaka/krizaka-ts/blob/main/packages/config/ast-grep/core/no-enum-string-compare.yml) (pas de statut comparé à une chaîne). Les règles ArchUnit de [`CodeRules`](https://github.com/krizaka/krizaka-build/blob/main/krizaka-test-support/src/main/java/com/krizaka/test/architecture/CodeRules.java), dont `assertNoStandardStreams` (pas de `System.out` en production), et leurs équivalents dans `GovernanceRules`.
 
 ## Ce que Claude a trouvé faible
 
@@ -115,7 +115,7 @@ Et un vrai défaut, dans ce même fichier : une durée limite de cinq secondes p
 
 > « Any user can shorten their own job's timeout this way. »
 
-Il relève aussi que nos règles écrites et notre code ne disent pas toujours la même chose (du SQL écrit à la main malgré la règle, une version `-SNAPSHOT` malgré l'interdiction), que deux de nos propres audits se contredisent ([l'un](https://github.com/krizaka/orazaka/blob/main/docs/PRODUCTION_READINESS_AUDIT.md) dit de ne pas lancer, [l'autre](https://github.com/krizaka/orazaka/blob/main/docs/ARCHITECTURE_ASSESSMENT.md) ne compte aucun bloquant), que les builds du workspace suivent la branche `main` des dépôts voisins et ne sont donc pas reproductibles, et que `@krizaka/ui` change de version trop vite pour qu'un numéro majeur veuille encore dire quelque chose.
+Il relève aussi que nos règles écrites et notre code ne disent pas toujours la même chose (du SQL écrit à la main malgré la règle, une version `-SNAPSHOT` malgré l'interdiction), que deux de nos propres audits se contredisent ([l'un](https://github.com/krizaka/sovkora/blob/main/docs/PRODUCTION_READINESS_AUDIT.md) dit de ne pas lancer, [l'autre](https://github.com/krizaka/sovkora/blob/main/docs/ARCHITECTURE_ASSESSMENT.md) ne compte aucun bloquant), que les builds du workspace suivent la branche `main` des dépôts voisins et ne sont donc pas reproductibles, et que `@krizaka/ui` change de version trop vite pour qu'un numéro majeur veuille encore dire quelque chose.
 
 Sa conclusion :
 
@@ -172,7 +172,7 @@ Un audit par une IA est une liste de pistes, pas un verdict. J'ai repris les aff
   <Case topic="Le jour UTC (Gemini)" before="8 dépôts" after="Vrai" afterDetail="Corrigé dans Yomizaka (#311), une règle refuse désormais le motif ; les autres dépôts suivent." />
 </Compare>
 
-Les chiffres des deux modèles étaient exacts. Deux affirmations de Gemini sont plus fortes que la réalité, et je l'écris dans le tableau. Le défaut du préfixe [`TIMEOUT`](https://github.com/krizaka/sovkora-job-service/blob/a0e727d1e5b53a910a092e16ba4fde6b8875d706/src/main/java/com/krizaka/orazaka/jobservice/infrastructure/adapter/amqp/JobListener.java#L696-L702) est réel. Un ticket existait déjà pour découper ce fichier, mais il ne parlait que du crochet de simulation, qui lui est bien protégé par un réglage. J'y ai ajouté ce que le modèle a trouvé : une ligne qui avait échappé à notre propre ticket. Je l'ai corrigé le soir même : un prompt ne choisit plus son propre délai, seule la simulation de test le peut, derrière son réglage ([orazaka-job-service#72](https://github.com/krizaka/sovkora-job-service/pull/72)).
+Les chiffres des deux modèles étaient exacts. Deux affirmations de Gemini sont plus fortes que la réalité, et je l'écris dans le tableau. Le défaut du préfixe `TIMEOUT` est réel. Un ticket existait déjà pour découper ce fichier, mais il ne parlait que du crochet de simulation, qui lui est bien protégé par un réglage. J'y ai ajouté ce que le modèle a trouvé : une ligne qui avait échappé à notre propre ticket. Je l'ai corrigé le soir même : un prompt ne choisit plus son propre délai, seule la simulation de test le peut, derrière son réglage (orazaka-job-service#72).
 
 Je n'ai pas vérifié le reste. L'affirmation sur les tâches qui continuent après leur délai, par exemple, le modèle lui-même dit ne pas l'avoir vérifiée jusqu'au bout. Elle reste une piste.
 

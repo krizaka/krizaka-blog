@@ -52,7 +52,7 @@ What was overstated:
   <Case topic="Java 21 under-used" before="Little modern Java." after="Half true." afterDetail="402 records, but only 7 sealed types and 8 pattern switches." />
 </Compare>
 
-The provider ladder did exist, but not where the audit looked. It was in one web client, `orazaka-web-client`, in the file that configures sign-in. Reading it, I found something better than a style: a bug. The call that creates an account after a GitHub or Google sign-in sent an e-mail and a name, while the service asked for the provider and an identity token. In other words, that path could not work as written, and no test said so, because the ladder hid the contract. The fix, with a contract test written first, is in [PR 335](https://github.com/krizaka/orazaka-web-client/pull/335): a typed table of providers, and the right request.
+The provider ladder did exist, but not where the audit looked. It was in one web client, `orazaka-web-client`, in the file that configures sign-in. Reading it, I found something better than a style: a bug. The call that creates an account after a GitHub or Google sign-in sent an e-mail and a name, while the service asked for the provider and an identity token. In other words, that path could not work as written, and no test said so, because the ladder hid the contract. The fix, with a contract test written first, is in PR 335: a typed table of providers, and the right request.
 
 What I keep from this: we had a style problem, and above all a contract problem, and it was the measurement that showed it, not the discussion.
 

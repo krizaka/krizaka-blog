@@ -1,7 +1,7 @@
 {
   "books": {
     "en/story": {
-      "source": "5357885f6f40",
+      "source": "8d00a3e5685b",
       "files": {
         "epub": {
           "hash": "38bfd3664f",
@@ -27,7 +27,7 @@
       }
     },
     "en/an-engine-on-a-laptop": {
-      "source": "5f5874563e41",
+      "source": "aafa24d83b2d",
       "files": {
         "epub": {
           "hash": "7168cb6f3a",
@@ -40,7 +40,7 @@
       }
     },
     "en/what-a-gpu-costs": {
-      "source": "a770c7321b05",
+      "source": "c7037f265d92",
       "files": {
         "epub": {
           "hash": "b8205e6994",
@@ -53,7 +53,7 @@
       }
     },
     "en/from-a-clip-to-a-film": {
-      "source": "1081c1b295e0",
+      "source": "c933c8e3033d",
       "files": {
         "epub": {
           "hash": "f34ce67e64",
@@ -66,7 +66,7 @@
       }
     },
     "en/one-interface-everywhere": {
-      "source": "fbb7b8159927",
+      "source": "20f14685867a",
       "files": {
         "epub": {
           "hash": "8f97abd3af",
@@ -79,7 +79,7 @@
       }
     },
     "en/the-first-products": {
-      "source": "60be244adee4",
+      "source": "1ac92bb33454",
       "files": {
         "epub": {
           "hash": "1fcca859f4",
@@ -92,7 +92,7 @@
       }
     },
     "en/an-empty-result-is-not-a-success": {
-      "source": "5ef4d5eb9cd7",
+      "source": "c0b283ba0197",
       "files": {
         "epub": {
           "hash": "bf9c5c6a25",
@@ -118,7 +118,7 @@
       }
     },
     "en/what-claude-found-auditing-krizaka": {
-      "source": "185b1fe960c4",
+      "source": "3a4f9b99ddff",
       "files": {
         "epub": {
           "hash": "29f06f55d4",
@@ -144,7 +144,7 @@
       }
     },
     "en/how-we-built-our-ci": {
-      "source": "e3049ede5e3b",
+      "source": "e5462ea39f7f",
       "files": {
         "epub": {
           "hash": "8e4f36a9c2",
@@ -157,7 +157,7 @@
       }
     },
     "en/krizaka-ui-how-we-cut-it": {
-      "source": "07f2a8797639",
+      "source": "71f144713342",
       "files": {
         "epub": {
           "hash": "785ab04168",
@@ -170,7 +170,7 @@
       }
     },
     "en/orazaka-v2-the-architecture-we-build": {
-      "source": "c5c8a639c430",
+      "source": "a22162fc5212",
       "files": {
         "epub": {
           "hash": "84867664a5",
@@ -209,7 +209,7 @@
       }
     },
     "en/the-audit-said-ai-code-we-measured": {
-      "source": "1f45e55a8bce",
+      "source": "21aec8996c84",
       "files": {
         "epub": {
           "hash": "d79df7ec82",
@@ -287,7 +287,7 @@
       }
     },
     "fr/story": {
-      "source": "232b1dd1c765",
+      "source": "f89cd2094336",
       "files": {
         "epub": {
           "hash": "c3cf2e8b35",
@@ -313,7 +313,7 @@
       }
     },
     "fr/an-engine-on-a-laptop": {
-      "source": "5561a97ff3b2",
+      "source": "adda0cc0bb67",
       "files": {
         "epub": {
           "hash": "73b2de653f",
@@ -326,7 +326,7 @@
       }
     },
     "fr/what-a-gpu-costs": {
-      "source": "f45dc13b0792",
+      "source": "34e301336b25",
       "files": {
         "epub": {
           "hash": "df565bab4a",
@@ -339,7 +339,7 @@
       }
     },
     "fr/from-a-clip-to-a-film": {
-      "source": "35152b6dace7",
+      "source": "938801a7248c",
       "files": {
         "epub": {
           "hash": "3c391b644f",
@@ -352,7 +352,7 @@
       }
     },
     "fr/one-interface-everywhere": {
-      "source": "b6330ed46f3f",
+      "source": "f03fcd97de76",
       "files": {
         "epub": {
           "hash": "cb78a97a35",
@@ -365,7 +365,7 @@
       }
     },
     "fr/the-first-products": {
-      "source": "7ce9fb11a080",
+      "source": "ac9c0891f109",
       "files": {
         "epub": {
           "hash": "94f53f731d",
@@ -378,7 +378,7 @@
       }
     },
     "fr/an-empty-result-is-not-a-success": {
-      "source": "78b2029620e6",
+      "source": "b5bd3a2ba86c",
       "files": {
         "epub": {
           "hash": "08e73cc99a",
@@ -404,7 +404,7 @@
       }
     },
     "fr/what-claude-found-auditing-krizaka": {
-      "source": "4def7c62ea55",
+      "source": "0f4466814459",
       "files": {
         "epub": {
           "hash": "7e29972e86",
@@ -430,7 +430,7 @@
       }
     },
     "fr/how-we-built-our-ci": {
-      "source": "14fa942d4c1b",
+      "source": "5c61108239be",
       "files": {
         "epub": {
           "hash": "79bfff2a5f",
@@ -443,7 +443,7 @@
       }
     },
     "fr/krizaka-ui-how-we-cut-it": {
-      "source": "52d48bbcd596",
+      "source": "1bfe52733f7a",
       "files": {
         "epub": {
           "hash": "f0379a7470",
@@ -456,7 +456,7 @@
       }
     },
     "fr/orazaka-v2-the-architecture-we-build": {
-      "source": "d2f96c79f548",
+      "source": "2623b847e1bc",
       "files": {
         "epub": {
           "hash": "18292d24e9",
@@ -495,7 +495,7 @@
       }
     },
     "fr/the-audit-said-ai-code-we-measured": {
-      "source": "991b97b36461",
+      "source": "17c8159378fd",
       "files": {
         "epub": {
           "hash": "b9ae2ccdda",

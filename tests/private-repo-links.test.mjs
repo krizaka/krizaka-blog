@@ -30,6 +30,15 @@ test("a link to a private repository is refused, a public one and a plain mentio
   assert.deepEqual(privateRepoLinkProblems("our DNS lives in a private repository", "x.mdx"), []);
 });
 
+/* The bug of 2026-11-08 (krizaka-internal#2960): fifteen split Sovkora repositories went private, a dozen chapters still linked
+   them, and the external link check failed every pull request of the blog. */
+test("a link to a split Sovkora repository is refused, under either name; the one public krizaka/sovkora is not", () => {
+  const url = "https://github.com/krizaka";
+  assert.equal(privateRepoLinkProblems(`[x](${url}/sovkora-job-service/pull/72)`, "x.mdx").length, 1);
+  assert.equal(privateRepoLinkProblems(`[x](${url}/orazaka-cli/pull/54)`, "x.mdx").length, 1);
+  assert.deepEqual(privateRepoLinkProblems(`[x](${url}/sovkora/pull/412)`, "x.mdx"), []);
+});
+
 test("the private list names each repository once", () => {
   assert.equal(new Set(PRIVATE_REPOS).size, PRIVATE_REPOS.length);
 });
