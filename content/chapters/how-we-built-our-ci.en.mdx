@@ -32,13 +32,13 @@ stats:
 
 For a few weeks, people who build software have been asking me the same question. How do you run your CI, with so many repositories and agents opening pull requests all day?
 
-I answer it here, once, with the real files. Everything I show is in public repositories of the [krizaka](https://github.com/krizaka) organisation. You can go and check every line.
+I answer it here, once, with the real files. Everything I show is in public repositories of the [krizaka](site:github) organisation. You can go and check every line.
 
 ## Why one shared CI
 
 At first, each repository had its own CI file. We copied the neighbour's and adapted it a little. A fix in one repository never reached the others.
 
-In [the chapter on agents](/story/building-with-agents/), I talked about a « build pack » for the CI, not shipped yet. Part of it has shipped. The [krizaka/.github](https://github.com/krizaka/.github) repository holds reusable workflows, one per kind of project: `node-ci.yml`, `java-ci.yml`, `python-ci.yml`, `expo-ci.yml`, `maven.yml`, `mobile-e2e.yml`. Each repository calls one, and says only what is its own.
+In [the chapter on agents](/story/building-with-agents/), I talked about a « build pack » for the CI, not shipped yet. Part of it has shipped. The [krizaka/.github](repo:.github) repository holds reusable workflows, one per kind of project: `node-ci.yml`, `java-ci.yml`, `python-ci.yml`, `expo-ci.yml`, `maven.yml`, `mobile-e2e.yml`. Each repository calls one, and says only what is its own.
 
 Here is krizaka.com's, in `krizaka-com/.github/workflows/ci.yml` (shortened):
 
@@ -57,7 +57,7 @@ jobs:
 
 The workflow is pinned by its SHA, not by a tag. A tag can move, a SHA cannot. The `# v1.5.0` comment says which version it is, and Dependabot proposes the update, in a PR that goes through the same CI as everything else.
 
-Orazaka has its own pipeline, `component.yml`, in the [krizaka/orazaka](https://github.com/krizaka/sovkora) repository. An Orazaka component is never built alone: the CI clones the whole workspace, puts the tested repository in its place, and first builds its dependencies from source.
+Orazaka has its own pipeline, `component.yml`, in the [krizaka/orazaka](repo:sovkora) repository. An Orazaka component is never built alone: the CI clones the whole workspace, puts the tested repository in its place, and first builds its dependencies from source.
 
 The full build pack, where each repository would have one line, still does not exist. Today it is one call and a few options. That is already much better than copies.
 
@@ -254,7 +254,7 @@ Our libraries, Krizaka UI and Krizaka TypeScript, use [changesets](https://githu
 
 I have to be precise on one point. Provenance is there, but npm's trusted publishing, the kind that needs no token, is not yet. npm refused our first attempt, because the packages had no trusted publisher declared yet. For now, an automation token does the publishing.
 
-For krizaka.com, we set up a release train on 25 October, in [krizaka-com#390](https://github.com/krizaka/krizaka-com/pull/390). It is the end of the first drawing. release-please keeps a release PR. When I merge it, the tag is created, and a workflow moves the `production` branch forward to it. In `krizaka-com/scripts/promote-production.mjs`:
+For krizaka.com, we set up a release train on 25 October, in [krizaka-com#390](repo:krizaka-com/pull/390). It is the end of the first drawing. release-please keeps a release PR. When I merge it, the tag is created, and a workflow moves the `production` branch forward to it. In `krizaka-com/scripts/promote-production.mjs`:
 
 ```js
   if (tagIsAncestor) return { action: "noop", reason: `${BRANCH} already contains ${tag}: never moved backwards` };
@@ -279,13 +279,13 @@ So merging on main puts nothing live. The release does, and I always know which 
 
 I do not want to give the impression that all this works the first time. Here is what broke, this week alone.
 
-**A race in turbo, in krizaka-ts.** The release failed with `Failed to resolve entry for package "@krizaka/db"`. Each package's check ended with a build, which deleted `dist/` while another package's tests imported it. We first built everything before checking ([krizaka-ts#79](https://github.com/krizaka/krizaka-ts/pull/79)), then fixed the cause in `turbo.json` ([krizaka-ts#75](https://github.com/krizaka/krizaka-ts/pull/75)), with a test that guards the configuration:
+**A race in turbo, in krizaka-ts.** The release failed with `Failed to resolve entry for package "@krizaka/db"`. Each package's check ended with a build, which deleted `dist/` while another package's tests imported it. We first built everything before checking ([krizaka-ts#79](repo:krizaka-ts/pull/79)), then fixed the cause in `turbo.json` ([krizaka-ts#75](repo:krizaka-ts/pull/75)), with a test that guards the configuration:
 
 ```json
 "check": { "dependsOn": ["^build", "^check"], "outputs": ["dist/**"] }
 ```
 
-**The fonts test before its build, in krizaka-ui.** After a version PR, the release failed: the test of `packages/fonts` looked for `dist/index.js`, which did not exist yet. The test depended on the other packages' build, not on its own. [krizaka-ui#702](https://github.com/krizaka/krizaka-ui/pull/702) adds the missing dependency.
+**The fonts test before its build, in krizaka-ui.** After a version PR, the release failed: the test of `packages/fonts` looked for `dist/index.js`, which did not exist yet. The test depended on the other packages' build, not on its own. [krizaka-ui#702](repo:krizaka-ui/pull/702) adds the missing dependency.
 
 **pnpm refusing install scripts.** Recent versions of pnpm refuse to run the install scripts of a dependency that was not allowed, with `ERR_PNPM_IGNORED_BUILDS`. The development build of orazaka-web-client had been broken since the day before. The fix lists the three allowed dependencies, in `pnpm-workspace.yaml` (orazaka-web-client#283):
 
@@ -296,9 +296,9 @@ allowBuilds:
   unrs-resolver: true
 ```
 
-**npm on a pnpm project.** The deployment ran `npm install` on the web client's pnpm tree. npm crashed, on every deployment, with a message that said nothing useful. The build command became `pnpm run build` ([orazaka#412](https://github.com/krizaka/sovkora/pull/412)).
+**npm on a pnpm project.** The deployment ran `npm install` on the web client's pnpm tree. npm crashed, on every deployment, with a message that said nothing useful. The build command became `pnpm run build` ([orazaka#412](repo:sovkora/pull/412)).
 
-**Two repositories waiting for each other.** To move to Krizaka UI 3.55, Orazaka's workspace had to regenerate its lockfile. Its CI failed against the web client, which still declared the old version. And the web client's PR needed the new lockfile. Each waited for the other. We got out by making the web client self-contained: it is no longer part of the npm workspace, it installs from its own `pnpm-lock.yaml` ([orazaka#415](https://github.com/krizaka/sovkora/pull/415)). The price is that it now takes two shared packages from the registry, no longer from their source.
+**Two repositories waiting for each other.** To move to Krizaka UI 3.55, Orazaka's workspace had to regenerate its lockfile. Its CI failed against the web client, which still declared the old version. And the web client's PR needed the new lockfile. Each waited for the other. We got out by making the web client self-contained: it is no longer part of the npm workspace, it installs from its own `pnpm-lock.yaml` ([orazaka#415](repo:sovkora/pull/415)). The price is that it now takes two shared packages from the registry, no longer from their source.
 
 None of these failures was settled by running the CI again. Each one was fixed where it started.
 
@@ -333,7 +333,7 @@ I got this wrong in the first version of this chapter: I drew a queue, verify, c
 
 On the first day, the image scan found real things. A critical flaw in the Next.js version of krizaka.com's image, fixed and released since. And high-severity flaws in npm itself, which ships with the Node image although the application never uses it in production: we removed it from the runtime images of Akinaza, Yomizaka and krizaka.com.
 
-The [krizaka/.github](https://github.com/krizaka/.github) repository also has its own `CI gate` since this change. Its test suites only ran when their files changed, so none could be required, and two PRs had been merged with a red test. A job that always runs now decides which ones apply, and that is the one required.
+The [krizaka/.github](repo:.github) repository also has its own `CI gate` since this change. Its test suites only ran when their files changed, so none could be required, and two PRs had been merged with a red test. A job that always runs now decides which ones apply, and that is the one required.
 
 ## What is not solved
 

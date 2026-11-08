@@ -93,7 +93,7 @@ Son jugement d'ensemble, en une phrase :
 
 « Au-dessus de la moyenne pour une petite organisation. » C'est tout. Le modèle n'a pas écrit qu'il voyait rarement ça, ni que ça dépassait des équipes d'entreprise. Je ne l'écris donc pas non plus.
 
-Les garde-fous dont il parle existent, et on peut les lire. Les règles ast-grep comme [`no-ambient-clock`](https://github.com/krizaka/krizaka-ts/blob/main/packages/config/ast-grep/core/no-ambient-clock.yml) (pas d'horloge implicite dans le code du domaine) et [`no-enum-string-compare`](https://github.com/krizaka/krizaka-ts/blob/main/packages/config/ast-grep/core/no-enum-string-compare.yml) (pas de statut comparé à une chaîne). Les règles ArchUnit de [`CodeRules`](https://github.com/krizaka/krizaka-build/blob/main/krizaka-test-support/src/main/java/com/krizaka/test/architecture/CodeRules.java), dont `assertNoStandardStreams` (pas de `System.out` en production), et leurs équivalents dans `GovernanceRules`.
+Les garde-fous dont il parle existent, et on peut les lire. Les règles ast-grep comme [`no-ambient-clock`](repo:krizaka-ts/blob/main/packages/config/ast-grep/core/no-ambient-clock.yml) (pas d'horloge implicite dans le code du domaine) et [`no-enum-string-compare`](repo:krizaka-ts/blob/main/packages/config/ast-grep/core/no-enum-string-compare.yml) (pas de statut comparé à une chaîne). Les règles ArchUnit de [`CodeRules`](repo:krizaka-java/blob/main/krizaka-test-support/src/main/java/com/krizaka/test/architecture/CodeRules.java), dont `assertNoStandardStreams` (pas de `System.out` en production), et leurs équivalents dans `GovernanceRules`.
 
 ## Ce que Claude a trouvé faible
 
@@ -115,7 +115,7 @@ Et un vrai défaut, dans ce même fichier : une durée limite de cinq secondes p
 
 > « Any user can shorten their own job's timeout this way. »
 
-Il relève aussi que nos règles écrites et notre code ne disent pas toujours la même chose (du SQL écrit à la main malgré la règle, une version `-SNAPSHOT` malgré l'interdiction), que deux de nos propres audits se contredisent ([l'un](https://github.com/krizaka/sovkora/blob/main/docs/PRODUCTION_READINESS_AUDIT.md) dit de ne pas lancer, [l'autre](https://github.com/krizaka/sovkora/blob/main/docs/ARCHITECTURE_ASSESSMENT.md) ne compte aucun bloquant), que les builds du workspace suivent la branche `main` des dépôts voisins et ne sont donc pas reproductibles, et que `@krizaka/ui` change de version trop vite pour qu'un numéro majeur veuille encore dire quelque chose.
+Il relève aussi que nos règles écrites et notre code ne disent pas toujours la même chose (du SQL écrit à la main malgré la règle, une version `-SNAPSHOT` malgré l'interdiction), que deux de nos propres audits se contredisent ([l'un](repo:sovkora/blob/main/docs/PRODUCTION_READINESS_AUDIT.md) dit de ne pas lancer, [l'autre](repo:sovkora/blob/main/docs/ARCHITECTURE_ASSESSMENT.md) ne compte aucun bloquant), que les builds du workspace suivent la branche `main` des dépôts voisins et ne sont donc pas reproductibles, et que `@krizaka/ui` change de version trop vite pour qu'un numéro majeur veuille encore dire quelque chose.
 
 Sa conclusion :
 
@@ -204,7 +204,7 @@ D'abord, la façon de travailler. Une bonne partie du code est écrite par des a
 
 > « Pour construire efficacement avec l'IA, il faut structurer ses automatisations pour détecter les erreurs le plus tôt et le plus vite possible. »
 
-Ensuite, la limite de cette idée. Nos garde-fous attrapent ce pour quoi on a écrit une règle, pas le reste. La ligne `TIMEOUT` n'enfreignait aucune règle. Et une règle ne regarde que là où on lui dit de regarder : dans Yomizaka, une date calculée en UTC plutôt que le jour du Québec est passée sous `no-ambient-clock`, parce que la règle ne lisait pas ce dossier. Il a fallu écrire [`no-utc-day-slice`](https://github.com/krizaka/yomizaka/blob/main/rules/no-utc-day-slice.yml) après le bug ([yomizaka#311](https://github.com/krizaka/yomizaka/pull/311)). Notre propre inventaire, [`docs/quality-controls.md`](https://github.com/krizaka/.github/blob/main/docs/quality-controls.md) ([.github#232](https://github.com/krizaka/.github/pull/232)), le dit en une phrase : « The rules do not look where the bug was. »
+Ensuite, la limite de cette idée. Nos garde-fous attrapent ce pour quoi on a écrit une règle, pas le reste. La ligne `TIMEOUT` n'enfreignait aucune règle. Et une règle ne regarde que là où on lui dit de regarder : dans Yomizaka, une date calculée en UTC plutôt que le jour du Québec est passée sous `no-ambient-clock`, parce que la règle ne lisait pas ce dossier. Il a fallu écrire [`no-utc-day-slice`](repo:verikora/blob/main/rules/no-utc-day-slice.yml) après le bug ([yomizaka#311](repo:verikora/pull/311)). Notre propre inventaire, [`docs/quality-controls.md`](repo:.github/blob/main/docs/quality-controls.md) ([.github#232](repo:.github/pull/232)), le dit en une phrase : « The rules do not look where the bug was. »
 
 Enfin, la relecture. Le modèle a raison : il n'y a qu'une personne pour relire, et une partie des approbations passe par un agent à qui j'ai délégué des décisions. Les vérifications automatiques sont réelles. Une deuxième paire d'yeux humaine manque encore. C'est le point que je garde en tête, et il ne se règle pas avec un outil de plus.
 
@@ -212,18 +212,18 @@ Enfin, la relecture. Le modèle a raison : il n'y a qu'une personne pour relire,
 
 L'audit a tourné le 24 octobre 2026, de 23 h 53 à 23 h 58 UTC, avec Claude Code 2.1.308 en mode non interactif, le modèle `claude-opus-5-5`, et les seuls outils WebSearch et WebFetch. Les fichiers publiés ne sont pas retouchés :
 
-- [le prompt](https://blog.krizaka.com/audits/2026-10-24-ai-audit/prompt.txt) ;
-- [la réponse complète de Claude](https://blog.krizaka.com/audits/2026-10-24-ai-audit/claude-opus-5-5-answer.md), sans coupure ;
-- [les détails de l'exécution](https://blog.krizaka.com/audits/2026-10-24-ai-audit/run.json) : la commande, les modèles, les jetons, le coût, et ce qui n'a pas pu tourner ;
-- [la réponse complète de Gemini](https://blog.krizaka.com/audits/2026-10-24-ai-audit/gemini-3-8-flash-answer.md), avec une seule retouche, le mot de passe d'une adresse locale masqué ;
-- [les métadonnées de l'exécution de Gemini](https://blog.krizaka.com/audits/2026-10-24-ai-audit/antigravity-run.json), lues dans Antigravity : le modèle, le nombre d'étapes et chaque commande lancée.
+- [le prompt](site:blog/audits/2026-10-24-ai-audit/prompt.txt) ;
+- [la réponse complète de Claude](site:blog/audits/2026-10-24-ai-audit/claude-opus-5-5-answer.md), sans coupure ;
+- [les détails de l'exécution](site:blog/audits/2026-10-24-ai-audit/run.json) : la commande, les modèles, les jetons, le coût, et ce qui n'a pas pu tourner ;
+- [la réponse complète de Gemini](site:blog/audits/2026-10-24-ai-audit/gemini-3-8-flash-answer.md), avec une seule retouche, le mot de passe d'une adresse locale masqué ;
+- [les métadonnées de l'exécution de Gemini](site:blog/audits/2026-10-24-ai-audit/antigravity-run.json), lues dans Antigravity : le modèle, le nombre d'étapes et chaque commande lancée.
 
 Le prompt, tel qu'il a été envoyé :
 
 ```text
 You are reviewing a software organisation you have never seen before. Use your web tools to read it yourself; do not rely on prior knowledge of it.
 
-Target: the public GitHub organisation https://github.com/krizaka
+Target: the public GitHub organisation {{site:github}}
 
 Please:
 1. Look at the organisation page and the list of its public repositories. Open the repositories you judge most important (for example their README, a few source files, the CI workflows, any architecture or decision documents, and recent pull requests or commits).

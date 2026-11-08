@@ -36,7 +36,7 @@ Le mot est souvent utilisé pour tout et pour rien. Chez nous, il veut dire une 
 
 Pensez à un notaire. Vous lui confiez un acte. Vous savez dans quel bureau il est rangé, qui l'a signé, et il existe un registre. Si quelqu'un conteste, on ouvre le registre. Une IA souveraine, c'est la même chose pour un document qu'une machine a lu.
 
-Concrètement, chaque analyse est une exécution d'[Orazaka](https://www.sovkora.com), le moteur que je construis. L'exécution garde son identifiant, la version du traitement qui a tourné et les règles appliquées. Le modèle utilisé est une ligne dans une base de données, pas un nom caché dans le code. Un produit construit sur Orazaka n'appelle jamais un modèle tout seul : il passe par le moteur, qui garde la trace.
+Concrètement, chaque analyse est une exécution d'[Orazaka](site:sovkora), le moteur que je construis. L'exécution garde son identifiant, la version du traitement qui a tourné et les règles appliquées. Le modèle utilisé est une ligne dans une base de données, pas un nom caché dans le code. Un produit construit sur Orazaka n'appelle jamais un modèle tout seul : il passe par le moteur, qui garde la trace.
 
 Ça ne rend pas les données privées par magie, ni le modèle plus intelligent. Ça permet de vérifier. Une promesse qu'on ne peut pas vérifier reste du marketing.
 
@@ -61,7 +61,7 @@ Un résultat sans source n'apparaît pas. Quand un outil signale un problème da
 
 Je garde l'infrastructure petite. Pas de service que je ne sais pas expliquer, pas de grosse machine allumée pour rien. Je loue un GPU quand il y a du travail, et je l'éteins quand la file est vide. J'ai appris cette règle en payant, et je le raconte dans [le billet sur les coûts](/fr/story/what-a-gpu-costs/).
 
-Je publie le code des fondations. Le kit d'interface ([Krizaka UI](https://ui.krizaka.com)) et les briques Spring Boot ([Krizaka Java](https://java.krizaka.com)) sont open source. N'importe qui peut lire ce sur quoi nos produits sont posés.
+Je publie le code des fondations. Le kit d'interface ([Krizaka UI](site:ui)) et les briques Spring Boot ([Krizaka Java](site:java)) sont open source. N'importe qui peut lire ce sur quoi nos produits sont posés.
 
 Et je dis ce qui n'est pas fini. Plusieurs produits sont marqués « en développement » : l'inscription est fermée, et leur site l'affiche.
 

@@ -35,7 +35,7 @@ stats:
 
 Au début, Orazaka était une découverte. Un projet personnel, sur mon MacBook, pour comprendre ce qu'on peut faire avec des modèles d'IA qui tournent chez soi. Ollama pour le texte, le GPU du Mac (Metal) pour les images, une base de données et quelques services lancés à la main. Si on m'avait pris le portable, il n'y avait plus d'Orazaka.
 
-Ce Mac est le premier serveur d'[Orazaka](https://www.sovkora.com), le moteur d'IA que je construis. L'idée d'Orazaka est simple : faire tourner l'IA sur une machine que vous contrôlez. Pour moi, cette machine, c'est d'abord mon portable. Voici ce qu'il m'a appris.
+Ce Mac est le premier serveur d'[Orazaka](site:sovkora), le moteur d'IA que je construis. L'idée d'Orazaka est simple : faire tourner l'IA sur une machine que vous contrôlez. Pour moi, cette machine, c'est d'abord mon portable. Voici ce qu'il m'a appris.
 
 ## Le 12 octobre, le Mac a saturé
 
@@ -114,7 +114,7 @@ orazaka models image list
 
 Les services et les bases tournent dans des conteneurs. Les modèles, eux, tournent au plus près du matériel : sur un Mac, directement sur Metal, parce que la virtualisation ne donne pas accès au GPU d'Apple.
 
-La [documentation de livraison](https://github.com/krizaka/sovkora/blob/main/docs/DELIVERY.md) pèse les options pour les conteneurs sur un Mac. Docker Desktop n'est pas redistribuable et devient payant pour les grandes organisations. OrbStack est excellent, mais demande une licence payante par utilisateur. Le choix par défaut est Colima, libre et scriptable, et si la machine a déjà l'un des deux autres, on l'utilise. Pour les grandes organisations, Kubernetes et Helm viendront plus tard, quand un client aura besoin de haute disponibilité. Pas avant.
+La [documentation de livraison](repo:sovkora/blob/main/docs/DELIVERY.md) pèse les options pour les conteneurs sur un Mac. Docker Desktop n'est pas redistribuable et devient payant pour les grandes organisations. OrbStack est excellent, mais demande une licence payante par utilisateur. Le choix par défaut est Colima, libre et scriptable, et si la machine a déjà l'un des deux autres, on l'utilise. Pour les grandes organisations, Kubernetes et Helm viendront plus tard, quand un client aura besoin de haute disponibilité. Pas avant.
 
 Rien de tout ça ne tiendrait sans tests. Les tests d'intégration lancent de vraies bases et un vrai courtier dans des conteneurs (Testcontainers), à partir d'une seule classe de base partagée. Les règles d'architecture sont vérifiées à chaque build. Un outil de réécriture automatique (OpenRewrite) passe en CI et échoue s'il trouve du code à moderniser. Et le critère le plus utile que j'aie écrit est simple : un pack qui vit dans un dossier hors du dépôt doit s'installer et tourner sans aucune modification du dépôt. La première fois, il a échoué quatre fois, sur quatre défauts que personne n'aurait vus de l'intérieur (ADR-049).
 

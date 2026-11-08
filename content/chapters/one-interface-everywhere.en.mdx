@@ -34,17 +34,17 @@ stats:
 
 On Friday evening, a tab bar in one of our apps showed a small vertical scrollbar on the right. One pixel too many, caused by the focus ring. A detail. But the same pattern showed up in the settings navigation, in a row of short videos, in a date picker and in the table of contents of the reading pages.
 
-The fix was made once, in the kit ([krizaka-ui#295](https://github.com/krizaka/krizaka-ui/pull/295)), with tests that failed before. Then every application received it by upgrading. That is the idea of a shared kit.
+The fix was made once, in the kit ([krizaka-ui#295](repo:krizaka-ui/pull/295)), with tests that failed before. Then every application received it by upgrading. That is the idea of a shared kit.
 
 ## One kit, three platforms
 
-[Krizaka UI](https://ui.krizaka.com) is the component library of all our sites and applications. It targets three platforms: the web (React), mobile (React Native with Expo) and the Mac (a Tauri window that shows the web components as they are, with a few desktop shapes).
+[Krizaka UI](site:ui) is the component library of all our sites and applications. It targets three platforms: the web (React), mobile (React Native with Expo) and the Mac (a Tauri window that shows the web components as they are, with a few desktop shapes).
 
 <Figure id="kit-platforms" alt="Diagram: one kit, Krizaka UI, feeds three platforms; the web has 156 components, mobile 79 and the Mac 112, on 17 October 2026" />
 
 On 17 October, the platforms page counts 156 components on the web, 79 on mobile and 112 on the Mac. The day before, it was 151, 76 and 107. Things move fast, and that is intended.
 
-The rule that matters most is not a component, it is a decision: for each platform, every component must say whether it exists there, whether it is still to do (with a ticket), or whether it makes no sense there (and what to use instead). A new component without that decision fails the tests ([krizaka-ui#283](https://github.com/krizaka/krizaka-ui/pull/283)). On mobile, 22 gaps remain. I would rather see them written down than discover them in an app.
+The rule that matters most is not a component, it is a decision: for each platform, every component must say whether it exists there, whether it is still to do (with a ticket), or whether it makes no sense there (and what to use instead). A new component without that decision fails the tests ([krizaka-ui#283](repo:krizaka-ui/pull/283)). On mobile, 22 gaps remain. I would rather see them written down than discover them in an app.
 
 Reusing a component does not mean copying its code from one platform to another. It means keeping the same interface: the same name, the same variants, the same colours taken from the same design tokens. On the web:
 
@@ -64,7 +64,7 @@ import { Button } from "@krizaka/ui/native";
 
 You can see the small difference: on mobile, the text goes through `label`. It is not perfect, and I say so. But someone who knows the web button already knows how to use the mobile one.
 
-**What it returns.** One fix, made once. On the krizaka.com home page, the cards in a row did not line up their links when the sentences had different lengths. We fixed the card in the kit ([krizaka-ui#187](https://github.com/krizaka/krizaka-ui/pull/187)), with a test that measures the row in a real browser. Every card grid on every site benefited.
+**What it returns.** One fix, made once. On the krizaka.com home page, the cards in a row did not line up their links when the sentences had different lengths. We fixed the card in the kit ([krizaka-ui#187](repo:krizaka-ui/pull/187)), with a test that measures the row in a real browser. Every card grid on every site benefited.
 
 **What it costs.** The kit has a price too, and I prefer to say so. It has to be published, then every application has to upgrade. `@krizaka/ui` has had 48 published versions since it was created on 8 October. On 17 October, 22 `package.json` files in our repositories depended on it, and 8 were at least one minor version behind. A fix in the kit is not yet a fix in the app.
 
@@ -125,13 +125,13 @@ I chose Cahier. The reason fits in one sentence: it is the only direction where 
 
 On 20 October, I realised that the engine flow was not moving, neither on krizaka.com nor in the lab. The points of light were there, motionless.
 
-The cause, once found, was tiny. The animation was sliding a stroke offset toward a value written without a unit, a bare number, while the other keyframe was a length. The browser cannot go from one to the other, so it did not animate. Each point jumped between two positions that drew it in the same place. A detail of one line of CSS ([krizaka-ui#394](https://github.com/krizaka/krizaka-ui/pull/394)).
+The cause, once found, was tiny. The animation was sliding a stroke offset toward a value written without a unit, a bare number, while the other keyframe was a length. The browser cannot go from one to the other, so it did not animate. Each point jumped between two positions that drew it in the same place. A detail of one line of CSS ([krizaka-ui#394](repo:krizaka-ui/pull/394)).
 
 What taught me the most is why nobody had seen it. All our checks in a real browser ran with reduced motion requested. They saw a perfectly calm page, as planned, and concluded that everything was fine.
 
 Since then, motion is tested where it moves. Each animated element has two checks in a real browser: one with reduced motion off, which reads the animated property for about seven tenths of a second and requires different, finite values, and one with reduced motion on, which requires everything to stay at rest. And a lint rule: never an animated length without its unit.
 
-The engine flow became [`EngineFlow`](https://ui.krizaka.com/components/engine-flow) in Krizaka UI, redrawn in SVG and CSS. The conduits are paths, the photons are zero-length points whose offset slides. We get, for free, what a canvas does not give: pausing off screen, text a screen reader can read, real buttons for the nodes, colour that comes from the tokens in both themes, and no layout shift. It weighs 2.2 KB compressed. On a phone, it stacks into a column.
+The engine flow became [`EngineFlow`](site:ui/components/engine-flow) in Krizaka UI, redrawn in SVG and CSS. The conduits are paths, the photons are zero-length points whose offset slides. We get, for free, what a canvas does not give: pausing off screen, text a screen reader can read, real buttons for the nodes, colour that comes from the tokens in both themes, and no layout shift. It weighs 2.2 KB compressed. On a phone, it stacks into a column.
 
 <Clip id="motion-engine-clip" alt="Orazaka's flow in the lab: points of light go back and forth between the engine in the centre and the products around it, with the settings panel on the right" caption="The engine flow, played in the lab with its settings on the right. Muted." />
 
@@ -145,9 +145,9 @@ Orazaka promises that your documents do not leave your place. Yet those document
 
 A site can ask the user for a file, one at a time. For a tool to read a folder, watch it and write next to the PDFs that arrive, something else is needed: a folder chosen once, a permission that lasts, a limit the program enforces itself.
 
-The app is called Orazaka Desktop. Its [README](https://github.com/krizaka/sovkora/blob/main/apps/desktop/README.md) describes it as version 0.1, a test build, for macOS 14 and later on Apple silicon. It runs Orazaka on your Mac or connects you to a hosted Orazaka, and it gives access to the folders you choose, and only those. The folder choice goes through the system's native picker, and you can revoke one folder, or all.
+The app is called Orazaka Desktop. Its [README](repo:sovkora/blob/main/apps/desktop/README.md) describes it as version 0.1, a test build, for macOS 14 and later on Apple silicon. It runs Orazaka on your Mac or connects you to a hosted Orazaka, and it gives access to the folders you choose, and only those. The folder choice goes through the system's native picker, and you can revoke one folder, or all.
 
-The limit lives in the Rust code ([`scope.rs`](https://github.com/krizaka/sovkora/blob/5d8704b0af6e751cb56aedbc0b07f6c68a379714/apps/desktop/src-tauri/src/scope.rs)). The app reads a path only if its canonical form is inside a granted folder. A `..` or a symbolic link that leaves the folder is refused. And some folders can never be granted: your home folder itself, the root, the volumes, the system folders, `~/.ssh`, `~/.aws`.
+The limit lives in the Rust code ([`scope.rs`](repo:sovkora/blob/5d8704b0af6e751cb56aedbc0b07f6c68a379714/apps/desktop/src-tauri/src/scope.rs)). The app reads a path only if its canonical form is inside a granted folder. A `..` or a symbolic link that leaves the folder is refused. And some folders can never be granted: your home folder itself, the root, the volumes, the system folders, `~/.ssh`, `~/.aws`.
 
 The web part of the window has no file system permission, and the interface cannot launch a shell: it names a command from a short list, and the Rust side turns it into fixed arguments. I told the other side of this in [the post on the agent on the user's machine](/story/an-empty-result-is-not-a-success/).
 
@@ -167,7 +167,7 @@ Orazaka has a web client, a phone app and a Mac app. If we had to draw every scr
 
 The mobile app is an Expo project, in React Native. Android and iOS come from the same code. I am not claiming more than that: I have not checked any store publication.
 
-Same interface does not mean same screen. On the web, an application's navigation is an icon rail on the left. On a phone, that rail becomes a tab bar at the bottom ([the kit's changelog](https://github.com/krizaka/krizaka-ui/blob/main/packages/ui/CHANGELOG.md) says so for `RailNav`). On the Mac, it is the web form inside the window, and the kit provides a title bar and a desktop density for it.
+Same interface does not mean same screen. On the web, an application's navigation is an icon rail on the left. On a phone, that rail becomes a tab bar at the bottom ([the kit's changelog](repo:krizaka-ui/blob/main/packages/ui/CHANGELOG.md) says so for `RailNav`). On the Mac, it is the web form inside the window, and the kit provides a title bar and a desktop density for it.
 
 What is shared is the contract: names, states, tokens, words. What changes is the shape one same element takes on each machine.
 

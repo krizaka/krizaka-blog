@@ -11,8 +11,10 @@ import {
   privateRepoLinkProblems,
   orgIssueLinkProblems,
   branchLineLinkProblems,
+  writtenAddressProblems,
   readContext,
 } from "./content-rules.mjs";
+import { resolveLinks } from "../lib/links.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ctx = readContext(root);
@@ -36,11 +38,14 @@ for (const dir of ["content/posts", "content/chapters"])
     if (f.endsWith(".mdx")) {
       const text = readFileSync(f, "utf8");
       const file = f.replace(root + "/", "");
+      /* The link rules read what a reader gets: references by name resolved. A typo in a name fails here too. */
+      const resolved = resolveLinks(text);
       problems.push(
         ...attributeQuoteProblems(text, file),
-        ...privateRepoLinkProblems(text, file),
-        ...orgIssueLinkProblems(text, file),
-        ...branchLineLinkProblems(text, file),
+        ...writtenAddressProblems(text, file),
+        ...privateRepoLinkProblems(resolved, file),
+        ...orgIssueLinkProblems(resolved, file),
+        ...branchLineLinkProblems(resolved, file),
       );
     }
 if (problems.length) {
