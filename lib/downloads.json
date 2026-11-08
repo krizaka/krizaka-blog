@@ -1,7 +1,7 @@
 {
   "books": {
     "en/story": {
-      "source": "5357885f6f40",
+      "source": "374682edc279",
       "files": {
         "epub": {
           "hash": "38bfd3664f",
@@ -27,7 +27,7 @@
       }
     },
     "en/an-engine-on-a-laptop": {
-      "source": "5f5874563e41",
+      "source": "3f1645c6750d",
       "files": {
         "epub": {
           "hash": "7168cb6f3a",
@@ -40,7 +40,7 @@
       }
     },
     "en/what-a-gpu-costs": {
-      "source": "a770c7321b05",
+      "source": "05d6475d6c91",
       "files": {
         "epub": {
           "hash": "b8205e6994",
@@ -66,7 +66,7 @@
       }
     },
     "en/one-interface-everywhere": {
-      "source": "fbb7b8159927",
+      "source": "50bba82ab8c9",
       "files": {
         "epub": {
           "hash": "8f97abd3af",
@@ -79,7 +79,7 @@
       }
     },
     "en/the-first-products": {
-      "source": "60be244adee4",
+      "source": "1ac92bb33454",
       "files": {
         "epub": {
           "hash": "1fcca859f4",
@@ -92,7 +92,7 @@
       }
     },
     "en/an-empty-result-is-not-a-success": {
-      "source": "5ef4d5eb9cd7",
+      "source": "f889a334f6a5",
       "files": {
         "epub": {
           "hash": "bf9c5c6a25",
@@ -157,7 +157,7 @@
       }
     },
     "en/krizaka-ui-how-we-cut-it": {
-      "source": "07f2a8797639",
+      "source": "71f144713342",
       "files": {
         "epub": {
           "hash": "785ab04168",
@@ -170,7 +170,7 @@
       }
     },
     "en/orazaka-v2-the-architecture-we-build": {
-      "source": "c5c8a639c430",
+      "source": "0a9e1849a308",
       "files": {
         "epub": {
           "hash": "84867664a5",
@@ -287,7 +287,7 @@
       }
     },
     "fr/story": {
-      "source": "232b1dd1c765",
+      "source": "464a5191484c",
       "files": {
         "epub": {
           "hash": "c3cf2e8b35",
@@ -313,7 +313,7 @@
       }
     },
     "fr/an-engine-on-a-laptop": {
-      "source": "5561a97ff3b2",
+      "source": "b882c82d54d6",
       "files": {
         "epub": {
           "hash": "73b2de653f",
@@ -326,7 +326,7 @@
       }
     },
     "fr/what-a-gpu-costs": {
-      "source": "f45dc13b0792",
+      "source": "f51d7e1a8663",
       "files": {
         "epub": {
           "hash": "df565bab4a",
@@ -352,7 +352,7 @@
       }
     },
     "fr/one-interface-everywhere": {
-      "source": "b6330ed46f3f",
+      "source": "c9fb75d39f91",
       "files": {
         "epub": {
           "hash": "cb78a97a35",
@@ -365,7 +365,7 @@
       }
     },
     "fr/the-first-products": {
-      "source": "7ce9fb11a080",
+      "source": "ac9c0891f109",
       "files": {
         "epub": {
           "hash": "94f53f731d",
@@ -378,7 +378,7 @@
       }
     },
     "fr/an-empty-result-is-not-a-success": {
-      "source": "78b2029620e6",
+      "source": "6ec96b81ec99",
       "files": {
         "epub": {
           "hash": "08e73cc99a",
@@ -443,7 +443,7 @@
       }
     },
     "fr/krizaka-ui-how-we-cut-it": {
-      "source": "52d48bbcd596",
+      "source": "1bfe52733f7a",
       "files": {
         "epub": {
           "hash": "f0379a7470",
@@ -456,7 +456,7 @@
       }
     },
     "fr/orazaka-v2-the-architecture-we-build": {
-      "source": "d2f96c79f548",
+      "source": "639aa6989373",
       "files": {
         "epub": {
           "hash": "18292d24e9",
