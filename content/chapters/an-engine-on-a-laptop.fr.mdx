@@ -49,7 +49,7 @@ Les services Java ont aussi leur part. Orazaka compte jusqu'à onze services Spr
 
 ## Les modèles deviennent des données
 
-En juin, j'ai migré la plateforme vers Spring Boot 4.0 et Spring AI 2.0 ([ADR-030](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-030-spring-ai-2-universal-proxy-dynamic-router.md)). Ça impose Spring Framework 7 et Jackson 3, qui déplace `com.fasterxml.jackson` vers `tools.jackson`. Le changement de version m'intéressait moins que ce qu'il permettait.
+En juin, j'ai migré la plateforme vers Spring Boot 4.0 et Spring AI 2.0 (ADR-030). Ça impose Spring Framework 7 et Jackson 3, qui déplace `com.fasterxml.jackson` vers `tools.jackson`. Le changement de version m'intéressait moins que ce qu'il permettait.
 
 Avant, le choix du modèle vivait dans la configuration : un bloc `spring.ai.*` dans `application.yml`, et des starters qui configurent les clients à votre place. Changer de modèle voulait dire redéployer. J'ai retiré tout ça. Aujourd'hui, une table `ai_providers` contient l'adresse et la clé de chaque fournisseur, et une table `orazaka_models` relie un nom de modèle à son fournisseur. Un `DynamicModelRouter` lit ces lignes à chaque appel et garde le client en cache.
 
@@ -95,7 +95,7 @@ Puis le projet s'est structuré, et j'ai décidé de le partager en open source.
 
 Le premier Orazaka était un seul programme Java qui faisait tout : le chat, les tâches longues, les médias, l'identité. Il était déjà bien rangé à l'intérieur, et des règles d'architecture vérifiées à chaque build (ArchUnit) empêchaient une couche d'appeler n'importe quelle autre. Mais une seule application possédait toutes les données et toutes les portes d'entrée.
 
-En juillet, j'ai découpé le monolithe en services ([ADR-032](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-032-microservices-decomposition-strangler-fig.md)). Pas d'un coup : avec le motif du « figuier étrangleur ». On place d'abord une façade devant, puis on sort un morceau à la fois derrière elle, et chaque étape doit passer les tests de bout en bout avant la suivante. Une base de données par service, chacune avec son rôle, et aucune clé étrangère entre deux services.
+En juillet, j'ai découpé le monolithe en services (ADR-032). Pas d'un coup : avec le motif du « figuier étrangleur ». On place d'abord une façade devant, puis on sort un morceau à la fois derrière elle, et chaque étape doit passer les tests de bout en bout avant la suivante. Une base de données par service, chacune avec son rôle, et aucune clé étrangère entre deux services.
 
 À ce moment-là, tout restait 100 % local : pas de CI, pas de cloud, c'était écrit dans la décision. Le Mac faisait encore tout tourner, mais il le faisait comme le ferait un serveur.
 
@@ -116,7 +116,7 @@ Les services et les bases tournent dans des conteneurs. Les modèles, eux, tourn
 
 La [documentation de livraison](https://github.com/krizaka/orazaka/blob/main/docs/DELIVERY.md) pèse les options pour les conteneurs sur un Mac. Docker Desktop n'est pas redistribuable et devient payant pour les grandes organisations. OrbStack est excellent, mais demande une licence payante par utilisateur. Le choix par défaut est Colima, libre et scriptable, et si la machine a déjà l'un des deux autres, on l'utilise. Pour les grandes organisations, Kubernetes et Helm viendront plus tard, quand un client aura besoin de haute disponibilité. Pas avant.
 
-Rien de tout ça ne tiendrait sans tests. Les tests d'intégration lancent de vraies bases et un vrai courtier dans des conteneurs (Testcontainers), à partir d'une seule classe de base partagée. Les règles d'architecture sont vérifiées à chaque build. Un outil de réécriture automatique (OpenRewrite) passe en CI et échoue s'il trouve du code à moderniser. Et le critère le plus utile que j'aie écrit est simple : un pack qui vit dans un dossier hors du dépôt doit s'installer et tourner sans aucune modification du dépôt. La première fois, il a échoué quatre fois, sur quatre défauts que personne n'aurait vus de l'intérieur ([ADR-049](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-049-open-core-split.md)).
+Rien de tout ça ne tiendrait sans tests. Les tests d'intégration lancent de vraies bases et un vrai courtier dans des conteneurs (Testcontainers), à partir d'une seule classe de base partagée. Les règles d'architecture sont vérifiées à chaque build. Un outil de réécriture automatique (OpenRewrite) passe en CI et échoue s'il trouve du code à moderniser. Et le critère le plus utile que j'aie écrit est simple : un pack qui vit dans un dossier hors du dépôt doit s'installer et tourner sans aucune modification du dépôt. La première fois, il a échoué quatre fois, sur quatre défauts que personne n'aurait vus de l'intérieur (ADR-049).
 
 ## Ce que le Mac fait bien, et où il abandonne
 

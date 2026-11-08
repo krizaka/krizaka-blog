@@ -202,7 +202,7 @@ Ce qui me saute aux yeux : le GPU, c'est près de 80 % de la dépense. Un GPU qu
 
 ## Pourquoi j'ai déplacé le 15 novembre
 
-Le 16 octobre, nous avons rendu 25 clips vidéo sur un GPU loué à l'heure. Cinq heures au total : 2,8 heures à calculer, 2,2 heures à attendre. Un GPU qui attend se paie comme un GPU qui travaille. Ce chiffre est dans [la décision 078](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-078-runpod-serverless-workers-at-zero-idle.md), et il m'a fait comprendre quelque chose de simple : le calcul lui-même n'est pas le problème. On le paie une fois. Ce qu'on paie plusieurs fois, c'est l'attente et le chargement.
+Le 16 octobre, nous avons rendu 25 clips vidéo sur un GPU loué à l'heure. Cinq heures au total : 2,8 heures à calculer, 2,2 heures à attendre. Un GPU qui attend se paie comme un GPU qui travaille. Ce chiffre est dans la décision 078, et il m'a fait comprendre quelque chose de simple : le calcul lui-même n'est pas le problème. On le paie une fois. Ce qu'on paie plusieurs fois, c'est l'attente et le chargement.
 
 Le chargement, justement. Un modèle vidéo de 57 Go met 129 secondes à se charger depuis le disque réseau. À chaque démarrage à froid, l'utilisateur regarde un écran qui ne bouge pas.
 

@@ -35,7 +35,7 @@ stats:
 
 Quand on me demande ce qu'est Orazaka techniquement, je réponds souvent par une liste de dépôts. C'est une mauvaise réponse. Une liste ne dit pas ce qu'on construit, ni pourquoi.
 
-Le 26 octobre, j'ai fait relire l'architecture par un audit externe, un modèle de langage à qui on a donné le contexte. Il proposait une architecture hybride : garder certaines pièces, en remplacer d'autres par des cadres connus. Une partie était juste. Une autre décrivait comme existantes des choses qu'on n'a pas construites. On l'a vérifié dans le code, ligne par ligne, puis une contre-expertise a resserré ce qui restait. Il en est sorti une décision, l'[ADR-092](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-092-own-the-core-integrate-the-edges.md), et une phrase :
+Le 26 octobre, j'ai fait relire l'architecture par un audit externe, un modèle de langage à qui on a donné le contexte. Il proposait une architecture hybride : garder certaines pièces, en remplacer d'autres par des cadres connus. Une partie était juste. Une autre décrivait comme existantes des choses qu'on n'a pas construites. On l'a vérifié dans le code, ligne par ligne, puis une contre-expertise a resserré ce qui restait. Il en est sorti une décision, l'ADR-092, et une phrase :
 
 > On possède le cœur, on branche les bords.
 
@@ -51,7 +51,7 @@ Un moteur d'IA, c'est beaucoup de pièces. La plupart existent déjà ailleurs, 
 - **La boucle de contrôle.** Ce qui décide si une sortie est bonne, et quoi faire si elle ne l'est pas.
 - **Le bail du GPU.** Qui a le droit d'utiliser la carte graphique d'une machine, et pendant combien de temps.
 - **Le pilotage en direct.** Changer une étape pendant qu'un run avance, sans tout refaire.
-- **L'accès.** Qui a le droit de lire quoi, vérifié au moment où l'assistant cherche et au moment où il appelle un outil ([ADR-091](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-091-access-at-retrieval-and-at-the-tool.md)).
+- **L'accès.** Qui a le droit de lire quoi, vérifié au moment où l'assistant cherche et au moment où il appelle un outil (ADR-091).
 
 **Ce qu'on branche tel quel :**
 
@@ -141,7 +141,7 @@ C'est en cours de correction, avant qu'on indexe quoi que ce soit de sensible. J
 
 Un pack est un dossier : un manifeste, ses traductions, ses Studios (des plans d'étapes), parfois son worker. L'installer écrit des données : des capacités, un prix, une entrée de catalogue. Il ne change aucun code. Le moteur ne sait pas ce qu'est un bail. Il sait lancer un plan, réserver des crédits, appeler un outil, juger une sortie et garder une trace.
 
-Comment savoir que c'est vrai, et que ça le reste ? Une règle de l'ADR-092 le dit : la preuve est un pack. Le pack de vérification de documents ([orazaka-packs](https://github.com/krizaka/orazaka-packs)), celui des règles du bail, doit évoluer sans un seul changement dans le cœur. Ces règles viennent de la loi : un document n'est jugé que par un jeu de règles promu, après ses cas de référence et une relecture ([ADR-089](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-089-rules-from-the-law.md)). Si un jour il faut toucher au cœur pour un produit, la pull request est refusée, et le changement va dans un port ou dans un pack.
+Comment savoir que c'est vrai, et que ça le reste ? Une règle de l'ADR-092 le dit : la preuve est un pack. Le pack de vérification de documents ([orazaka-packs](https://github.com/krizaka/orazaka-packs)), celui des règles du bail, doit évoluer sans un seul changement dans le cœur. Ces règles viennent de la loi : un document n'est jugé que par un jeu de règles promu, après ses cas de référence et une relecture (ADR-089). Si un jour il faut toucher au cœur pour un produit, la pull request est refusée, et le changement va dans un port ou dans un pack.
 
 C'est la même chose pour les médias. Il n'y a pas de module vidéo dans le cœur. Il y a le worker média et des packs qui l'utilisent.
 
@@ -155,14 +155,14 @@ Voilà la direction. Voici ce que le code dit le 26 octobre. L'audit et la contr
 - **Le `DagCompiler` du cœur est une ébauche.** Deux noms de tâches écrits en dur, aucun exécuteur, et personne ne l'appelle. Le vrai graphe, c'est le plan du Studio : il a ses dépendances, son parallélisme, ses contrats de sortie et ses étapes d'approbation. L'ébauche sera supprimée.
 - **La boucle de contrôle a un défaut.** À chaque nouvel essai, l'intercepteur revérifiait le même texte au lieu d'en régénérer un, et après le dernier essai il servait la réponse sans qu'elle soit validée. Le correctif est fusionné depuis ([sovkora-engine#117](https://github.com/krizaka/sovkora-engine/pull/117)). Les verdicts typés, le score de dérive et l'escalade viennent ensuite.
 - **Le bail du GPU n'existe pas encore.** Rien n'appelle `/api/ps` aujourd'hui, et rien ne règle `keep_alive`. Le worker gère sa propre mémoire, c'est tout.
-- **Le pilotage en direct est dessiné, pas construit** ([ADR-088](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-088-runs-as-background-tasks.md)). On sait approuver une étape, reprendre à partir d'une étape et annuler un run entier. Pas encore annuler une seule branche.
+- **Le pilotage en direct est dessiné, pas construit** (ADR-088). On sait approuver une étape, reprendre à partir d'une étape et annuler un run entier. Pas encore annuler une seule branche.
 - **Le cache marche par run, pas par étape.** Un run identique est servi depuis le cache. Une seule étape changée refait tout le run.
 - **Le contrôle d'accès de la section précédente** n'est pas fini.
 
 Et ce que ça coûte, mesuré :
 
-- **Un run coûte cher en requêtes, pas en temps.** Un run d'une seule étape fait 37 requêtes SQL, dont environ 9 en trop. Le surcoût de la saga reste petit : un p95 de 19,2 ms après le passage par l'outbox, loin du seuil de 250 ms fixé avant de mesurer ([ADR-067](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-067-the-run-path-becomes-load-bearing.md)). Ce que l'envoi attend vraiment, c'est le relais de l'outbox : au plus 500 ms, 250 en moyenne.
-- **Le GPU loué coûte même quand il dort.** Le 16 octobre, un pod a tourné cinq heures avec le GPU à 0 %, pour environ 20 $. Une garde l'arrête maintenant ([ADR-078](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-078-runpod-serverless-workers-at-zero-idle.md)).
+- **Un run coûte cher en requêtes, pas en temps.** Un run d'une seule étape fait 37 requêtes SQL, dont environ 9 en trop. Le surcoût de la saga reste petit : un p95 de 19,2 ms après le passage par l'outbox, loin du seuil de 250 ms fixé avant de mesurer (ADR-067). Ce que l'envoi attend vraiment, c'est le relais de l'outbox : au plus 500 ms, 250 en moyenne.
+- **Le GPU loué coûte même quand il dort.** Le 16 octobre, un pod a tourné cinq heures avec le GPU à 0 %, pour environ 20 $. Une garde l'arrête maintenant (ADR-078).
 - **Un composant ne se construit jamais seul.** Avec 20 dépôts, la CI clone le workspace et construit d'abord les dépendances. C'est la bonne façon d'attraper une rupture, et c'est lent.
 
 ## En incubation : les Recettes
@@ -210,7 +210,7 @@ Chaque budget est un cliquet : il part du chiffre d'aujourd'hui, et il ne peut q
 
 ### Ce qu'on refuse
 
-- **Une réécriture.** Je connais la tentation. On voit 52 fichiers mal placés, une ébauche inutile, une boucle qui ne régénère pas, et on a envie de tout reprendre au propre. En juillet, on a découpé le monolithe d'Orazaka par étapes, chacune verte avant la suivante ([ADR-032](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-032-microservices-decomposition-strangler-fig.md)). La v3 suit le même chemin.
+- **Une réécriture.** Je connais la tentation. On voit 52 fichiers mal placés, une ébauche inutile, une boucle qui ne régénère pas, et on a envie de tout reprendre au propre. En juillet, on a découpé le monolithe d'Orazaka par étapes, chacune verte avant la suivante (ADR-032). La v3 suit le même chemin.
 - **Optimiser sans mesurer.** Les 9 requêtes en trop sont connues depuis la première mesure. On les a laissées, parce que le chiffre tenait son seuil. Elles partiront avec le budget qui les compte.
 - **Appeler propriété intellectuelle ce qui n'est pas construit.** L'arbitre du GPU est prévu. Tant qu'il n'est pas là, je ne le vends pas.
 

@@ -35,7 +35,7 @@ stats:
 
 When someone asks me what Orazaka is, technically, I often answer with a list of repositories. It is a bad answer. A list does not say what we are building, or why.
 
-On 26 October, I had the architecture reviewed by an outside audit: a language model, given the context. It suggested a hybrid architecture, keeping some parts and replacing others with well-known frameworks. Some of it was right. Some of it described as existing things we have not built. We checked it against the code, line by line, then a counter-review tightened what was left. The outcome is one decision, [ADR-092](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-092-own-the-core-integrate-the-edges.md), and one sentence:
+On 26 October, I had the architecture reviewed by an outside audit: a language model, given the context. It suggested a hybrid architecture, keeping some parts and replacing others with well-known frameworks. Some of it was right. Some of it described as existing things we have not built. We checked it against the code, line by line, then a counter-review tightened what was left. The outcome is one decision, ADR-092, and one sentence:
 
 > We own the core, we integrate the edges.
 
@@ -51,7 +51,7 @@ An AI engine is a lot of parts. Most of them already exist elsewhere, and are we
 - **The control loop.** What decides whether an output is good, and what to do when it is not.
 - **The GPU lease.** Who may use a machine's graphics card, and for how long.
 - **Live steering.** Changing a step while a run moves on, without redoing everything.
-- **Access.** Who may read what, checked when the assistant searches and when it calls a tool ([ADR-091](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-091-access-at-retrieval-and-at-the-tool.md)).
+- **Access.** Who may read what, checked when the assistant searches and when it calls a tool (ADR-091).
 
 **What we plug in as it is:**
 
@@ -141,7 +141,7 @@ The fix is in progress, before we index anything sensitive. I will not go into m
 
 A pack is a folder: a manifest, its translations, its Studios (plans of steps), sometimes its own worker. Installing it writes data: capabilities, a price, a catalogue entry. It changes no code. The engine does not know what a lease is. It knows how to start a plan, hold credits, call a tool, judge an output and keep a trace.
 
-How do we know that is true, and that it stays true? A rule of ADR-092 says it: the proof is a pack. The document verification pack ([orazaka-packs](https://github.com/krizaka/orazaka-packs)), the one with the lease rules, must evolve without a single change in the core. Those rules come from the law: a document is judged only by a promoted ruleset, after its reference cases and a review ([ADR-089](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-089-rules-from-the-law.md)). If one day the core has to change for a product, the pull request is refused, and the change goes into a port or a pack.
+How do we know that is true, and that it stays true? A rule of ADR-092 says it: the proof is a pack. The document verification pack ([orazaka-packs](https://github.com/krizaka/orazaka-packs)), the one with the lease rules, must evolve without a single change in the core. Those rules come from the law: a document is judged only by a promoted ruleset, after its reference cases and a review (ADR-089). If one day the core has to change for a product, the pull request is refused, and the change goes into a port or a pack.
 
 The same goes for media. There is no video module in the core. There is the media worker, and packs that use it.
 
@@ -155,14 +155,14 @@ That is the direction. Here is what the code says on 26 October. The audit and t
 - **The core's `DagCompiler` is a stub.** Two task names written by hand, no executor, and nothing calls it. The real graph is the Studio's plan: it has its dependencies, its parallelism, its output contracts and its approval steps. The stub will be deleted.
 - **The control loop has a flaw.** On each new try, the interceptor checked the same text again instead of generating a new one, and after the last try it served the answer without it being validated. The fix has been merged since ([sovkora-engine#117](https://github.com/krizaka/sovkora-engine/pull/117)). Typed verdicts, the drift score and escalation come next.
 - **The GPU lease does not exist yet.** Nothing calls `/api/ps` today, and nothing sets `keep_alive`. The worker manages its own memory, and that is all.
-- **Live steering is designed, not built** ([ADR-088](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-088-runs-as-background-tasks.md)). We can approve a step, resume from a step and cancel a whole run. Not yet cancel a single branch.
+- **Live steering is designed, not built** (ADR-088). We can approve a step, resume from a step and cancel a whole run. Not yet cancel a single branch.
 - **The cache works per run, not per step.** An identical run is served from the cache. One changed step redoes the whole run.
 - **The access control of the previous section** is not finished.
 
 And what it costs, measured:
 
-- **A run is expensive in statements, not in time.** A single-step run takes 37 SQL statements, about 9 of them redundant. The saga's overhead stays small: a p95 of 19.2 ms after dispatch moved through the outbox, far from the 250 ms threshold set before measuring ([ADR-067](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-067-the-run-path-becomes-load-bearing.md)). What dispatch really waits for is the outbox relay: at most 500 ms, 250 on average.
-- **A rented GPU costs money even asleep.** On 16 October, a pod ran for five hours with the GPU at 0 %, for about $20. A guard stops it now ([ADR-078](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-078-runpod-serverless-workers-at-zero-idle.md)).
+- **A run is expensive in statements, not in time.** A single-step run takes 37 SQL statements, about 9 of them redundant. The saga's overhead stays small: a p95 of 19.2 ms after dispatch moved through the outbox, far from the 250 ms threshold set before measuring (ADR-067). What dispatch really waits for is the outbox relay: at most 500 ms, 250 on average.
+- **A rented GPU costs money even asleep.** On 16 October, a pod ran for five hours with the GPU at 0 %, for about $20. A guard stops it now (ADR-078).
 - **A component never builds alone.** With 20 repositories, CI clones the workspace and builds the dependencies first. It is the right way to catch a break, and it is slow.
 
 ## In incubation: Recipes
@@ -210,7 +210,7 @@ Every budget is a ratchet: it starts from today's figure, and it can only go dow
 
 ### What we refuse
 
-- **A rewrite.** I know the temptation. You see 52 misplaced files, a useless stub, a loop that does not regenerate, and you want to start over clean. In July, we split Orazaka's monolith in stages, each one green before the next ([ADR-032](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-032-microservices-decomposition-strangler-fig.md)). v3 follows the same path.
+- **A rewrite.** I know the temptation. You see 52 misplaced files, a useless stub, a loop that does not regenerate, and you want to start over clean. In July, we split Orazaka's monolith in stages, each one green before the next (ADR-032). v3 follows the same path.
 - **Optimising without measuring.** The 9 redundant statements have been known since the first measurement. We left them, because the figure held its threshold. They will go with the budget that counts them.
 - **Calling something intellectual property before it is built.** The GPU arbiter is planned. Until it is there, I do not sell it.
 
