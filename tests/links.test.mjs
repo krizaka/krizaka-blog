@@ -32,11 +32,11 @@ test("next/link never points at a file that is not a page (feeds, images, text)"
 
 test("the Mac-app section of chapter 5 cites the historical scope source, not the removed main-branch file", () => {
   const source =
-    "https://github.com/krizaka/orazaka/blob/5d8704b0af6e751cb56aedbc0b07f6c68a379714/apps/desktop/src-tauri/src/scope.rs";
+    "https://github.com/krizaka/sovkora/blob/5d8704b0af6e751cb56aedbc0b07f6c68a379714/apps/desktop/src-tauri/src/scope.rs";
   for (const locale of ["en", "fr"]) {
     const post = readFileSync(join(root, `content/chapters/one-interface-everywhere.${locale}.mdx`), "utf8");
     const citations = [
-      ...post.matchAll(/\]\((https:\/\/github\.com\/krizaka\/orazaka\/blob\/[^)]+\/scope\.rs)\)/g),
+      ...post.matchAll(/\]\((https:\/\/github\.com\/krizaka\/sovkora\/blob\/[^)]+\/scope\.rs)\)/g),
     ].map((m) => m[1]);
     assert.deepEqual(citations, [source], locale);
   }
@@ -146,7 +146,9 @@ test("an XSLT stylesheet is checked but not crawled: its {link} are templates, n
 test("no post links to the desktop scope file that moved to krizaka-tauri-kit", () => {
   const offenders = walk(join(root, "content/posts"))
     .filter((f) => f.endsWith(".mdx"))
-    .filter((f) => readFileSync(f, "utf8").includes("krizaka/orazaka/blob/main/apps/desktop/src-tauri/src/scope.rs"))
+    .filter((f) =>
+      /krizaka\/(orazaka|sovkora)\/blob\/main\/apps\/desktop\/src-tauri\/src\/scope\.rs/.test(readFileSync(f, "utf8")),
+    )
     .map((f) => f.replace(root, ""));
   assert.deepEqual(offenders, []);
 });

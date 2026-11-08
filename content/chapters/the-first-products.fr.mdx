@@ -126,7 +126,7 @@ Du moteur vers le produit, la réponse arrive tout de suite avec un identifiant 
 
 Yomizaka n'appelle jamais un modèle lui-même : c'est Orazaka, notre moteur, qui fait l'analyse, et chaque analyse garde ce qui a tourné, avec quelle version, sur quelles règles. Chaque exécution a un identifiant, un état par étape avec son nombre de tentatives, et la version du Studio. L'écran de Yomizaka montre l'identifiant. Si quelqu'un conteste un constat dans six mois, on retrouve exactement d'où il vient.
 
-J'ai appris la leçon la plus dure à mes dépens. Le contrôle de conformité avait une étape de jugement par modèle, réglée pour continuer si le modèle tombait, afin de garder un rapport presque entièrement calculé par des règles. Le défaut : un refus volontaire du modèle ressemblait exactement à une panne, et était avalé dans un rapport que l'utilisateur croirait complet. Depuis, un échec dit pourquoi ([ADR-053](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-053-typed-failure-cause.md)), et la règle de facturation tient en une phrase : on facture le travail bien fait, jamais notre propre échec. Une panne du moteur rend les crédits.
+J'ai appris la leçon la plus dure à mes dépens. Le contrôle de conformité avait une étape de jugement par modèle, réglée pour continuer si le modèle tombait, afin de garder un rapport presque entièrement calculé par des règles. Le défaut : un refus volontaire du modèle ressemblait exactement à une panne, et était avalé dans un rapport que l'utilisateur croirait complet. Depuis, un échec dit pourquoi (ADR-053), et la règle de facturation tient en une phrase : on facture le travail bien fait, jamais notre propre échec. Une panne du moteur rend les crédits.
 
 ## Tout un immeuble en un seul dépôt
 
