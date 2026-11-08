@@ -39,7 +39,7 @@ Make the facts appear: the labels lift one by one. That is the only thing the sc
 
 A one-person company running a team of agents has a budget. That budget exists because a session once blew past it.
 
-This version of the article is the second: the first was stopped midway because a session had spent its quota. It had launched too many agents at once on too heavy a model, with no kill switch. It stopped cleanly, wrote down where it was, and waited. The founder set the rules the next day.
+A session launched too many agents at once on too heavy a model, with no kill switch, and went past its cap. I set the rules right after.
 
 Since then, every session starts with four rules. I pick the smallest model that does the work: a light one to land a fix, a middle one for a feature, a heavy one only for an architecture decision or a red that resists — never by default. A cap per model and per session, for all sessions combined in twenty-four hours: when the limit is reached, the session writes its state and waits — retrying in a loop would only make it worse. And at most two sub-agents in parallel, never a heavy model for a light task.
 
@@ -61,9 +61,9 @@ That is the whole train. Move it along: you will see the red car park itself and
 
 For a long time, Sovkora — the AI engine — lived in sixteen repositories. Services, libraries, workers, packs: each had its own repository, its own pipelines, its own settings. A decision made in the engine crossed four repositories before it could be tested together. Changing an interface touched three libraries and as many client repositories.
 
-Last month, we moved everything into one. Sixteen repositories became one. The fifteen retired repositories held a hundred and fifty-three pipelines; the single active one holds twenty-nine. Now a change that touches several modules is one pull request, tested in one go.
+This week, we moved everything into one. Sixteen repositories became one. The fifteen retired repositories held a hundred and fifty-three pipelines; the single active one holds twenty-nine. Now a change that touches several modules is one pull request, tested in one go.
 
-The price of this move was predictable, and it still surprised: the development deployment broke on the first day because the web service image had not been rebuilt. It took a day to get back to green. That is not an inconvenience I could have avoided; it is what moving sixteen repositories at once costs.
+The price of this move was predictable, and it still surprised: the development deployment broke on the first day because the web service image had not been rebuilt. It took a day to get back to green. I could have avoided it by checking what still pointed at those repositories before moving them. That is now a rule.
 
 Does it deliver faster? I do not know yet. The first deliveries after the move were done by hand, which makes the numbers unusable. I will measure once the train is running normally.
 

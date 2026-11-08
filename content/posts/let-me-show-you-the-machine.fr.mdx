@@ -39,7 +39,7 @@ Faites apparaître les faits : les étiquettes se lèvent une à une. C'est la s
 
 Une entreprise d'un seul qui fait tourner une équipe d'agents, ça a un budget. Ce budget existe parce qu'une session l'a un jour fait exploser.
 
-Cette version de l'article est la seconde : la première a été arrêtée à mi-chemin parce qu'une session avait dépassé son quota. Elle avait lancé trop d'agents à la fois sur un modèle trop lourd, sans interrupteur. Elle s'est arrêtée proprement, elle a écrit où elle en était, et elle a attendu. Le fondateur a posé les règles le lendemain.
+Une session a lancé trop d'agents à la fois sur un modèle trop lourd, sans interrupteur, et elle a dépassé son plafond. J'ai posé les règles juste après.
 
 Depuis, chaque session part avec quatre règles. Je prends le plus petit modèle qui fait le travail : un léger pour faire atterrir une correction, un moyen pour une fonctionnalité, un lourd seulement pour une décision d'architecture ou un rouge qui résiste — jamais par défaut. Un plafond par modèle et par session, pour toutes les sessions confondues en vingt-quatre heures : quand la limite est atteinte, la session écrit son état et attend — une boucle de relances aggraverait le problème. Et au plus deux sous-agents en parallèle, jamais un lourd pour une tâche légère.
 
@@ -61,9 +61,9 @@ C'est tout le train. Faites-le avancer : vous verrez la voiture rouge se ranger 
 
 Pendant longtemps, Sovkora — le moteur d'IA — vivait dans seize dépôts. Services, bibliothèques, workers, packs : chacun avait son dépôt, ses pipelines, ses réglages. Une décision prise dans le moteur traversait quatre dépôts avant d'être testée ensemble. Changer une interface touchait trois bibliothèques et autant de dépôts de clients.
 
-Le mois dernier, nous avons tout mis dans un seul. Seize dépôts sont devenus un. Quinze dépôts retirés portaient cent cinquante-trois pipelines ; le seul dépôt actuel en a vingt-neuf. Maintenant, un changement qui touche plusieurs modules est une seule pull request, testée d'un coup.
+Cette semaine, nous avons tout mis dans un seul. Seize dépôts sont devenus un. Quinze dépôts retirés portaient cent cinquante-trois pipelines ; le seul dépôt actuel en a vingt-neuf. Maintenant, un changement qui touche plusieurs modules est une seule pull request, testée d'un coup.
 
-Le prix de ce mouvement était prévisible, et il a quand même surpris : le déploiement de développement s'est cassé le premier jour parce que l'image du service web n'avait pas été reconstruite. Il a fallu une journée pour revenir au vert. Ce n'est pas un inconvénient que j'aurais pu éviter ; c'est ce que coûte de déplacer seize dépôts à la fois.
+Le prix de ce mouvement était prévisible, et il a quand même surpris : le déploiement de développement s'est cassé le premier jour parce que l'image du service web n'avait pas été reconstruite. Il a fallu une journée pour revenir au vert. J'aurais pu l'éviter en vérifiant ce qui pointait encore vers ces dépôts avant de les déplacer. C'est devenu une règle.
 
 Est-ce que ça livre plus vite ? Je ne sais pas encore. Les premières livraisons après le déménagement étaient faites à la main, ce qui rend les chiffres inutilisables. Je mesurerai une fois que le train tourne normalement.
 
