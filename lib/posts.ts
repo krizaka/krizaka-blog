@@ -7,6 +7,7 @@ import matter from "gray-matter";
 import { LOCALES, type Locale } from "./i18n";
 import { SHOW_DRAFTS } from "./site";
 import { featuredOrder, publishedTime } from "./reading.ts";
+import { resolveLinks } from "./links.ts";
 
 export type Post = {
   slug: string;
@@ -49,7 +50,7 @@ export const readingMinutes = (body: string): number =>
 export function parsePost(file: string, source: string): Post {
   const m = file.match(FILE);
   if (!m) throw new Error(`content/posts/${file}: the name must be <slug>.<en|fr>.mdx`);
-  const { data, content } = matter(source);
+  const { data, content } = matter(resolveLinks(source));
   const need = (k: string) => {
     const v = data[k];
     if (typeof v !== "string" || !v.trim()) throw new Error(`content/posts/${file}: "${k}" is required`);

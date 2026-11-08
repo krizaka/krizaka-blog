@@ -4,8 +4,9 @@
    reader's own (the unsubscribe token) and the sender's (the postal address, a function secret) — see
    functions/packages/newsletter/send/newsletter.js (fillRendered). */
 import { renderEmail } from "@krizaka/email";
+import { siteUrl } from "../lib/links.ts";
 
-const SITE = "https://blog.krizaka.com";
+const SITE = siteUrl("blog");
 /** The placeholders the function replaces, identical to its UNSUBSCRIBE_TOKEN and SENDER_ADDRESS (tests/newsletter.test.mjs). */
 export const UNSUBSCRIBE_TOKEN = "__UNSUBSCRIBE_TOKEN__";
 export const SENDER_ADDRESS = "__SENDER_ADDRESS__";

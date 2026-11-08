@@ -15,6 +15,7 @@ npm run lint && npm test && npm run build
 
 ## Writing
 
+- **Links to our repositories and sites** are references by name, resolved by `lib/links.ts`: `[the PR](repo:krizaka-ui/pull/12)`, `[the site](site:ui/docs)`. Never write a `github.com/krizaka` or owned-site address.
 - **In the editor**: `/admin/` (Decap CMS). Sign in with GitHub; your role is your permission on this repository. A draft is
   a pull request; publishing merges it.
 - **In Git**: add `content/posts/<slug>.en.mdx` (and `<slug>.fr.mdx`) with the front matter described in
