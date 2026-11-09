@@ -93,7 +93,7 @@ Its overall judgement, in one sentence:
 
 "Above average for a small organisation." That's it. The model didn't write that it rarely sees this, or that it beats enterprise teams. So I don't write it either.
 
-The guardrails it mentions exist, and you can read them. The ast-grep rules such as [`no-ambient-clock`](https://github.com/krizaka/krizaka-ts/blob/main/packages/config/ast-grep/core/no-ambient-clock.yml) (no implicit clock in domain code) and [`no-enum-string-compare`](https://github.com/krizaka/krizaka-ts/blob/main/packages/config/ast-grep/core/no-enum-string-compare.yml) (no status compared to a string). The ArchUnit rules in [`CodeRules`](https://github.com/krizaka/krizaka-build/blob/main/krizaka-test-support/src/main/java/com/krizaka/test/architecture/CodeRules.java), including `assertNoStandardStreams` (no `System.out` in production), and their counterparts in [`GovernanceRules`](https://github.com/krizaka/sovkora-build/blob/main/sovkora-test-support/src/main/java/com/krizaka/sovkora/test/architecture/GovernanceRules.java).
+The guardrails it mentions exist, and you can read them. The ast-grep rules such as [`no-ambient-clock`](repo:krizaka-ts/blob/main/packages/config/ast-grep/core/no-ambient-clock.yml) (no implicit clock in domain code) and [`no-enum-string-compare`](repo:krizaka-ts/blob/main/packages/config/ast-grep/core/no-enum-string-compare.yml) (no status compared to a string). The ArchUnit rules in [`CodeRules`](repo:krizaka-java/blob/main/krizaka-test-support/src/main/java/com/krizaka/test/architecture/CodeRules.java), including `assertNoStandardStreams` (no `System.out` in production), and their counterparts in `GovernanceRules`.
 
 ## What Claude found weak
 
@@ -115,7 +115,7 @@ And a real defect, in that same file: a five-second timeout for any prompt that 
 
 > "Any user can shorten their own job's timeout this way."
 
-It also points out that our written rules and our code don't always agree (hand-written SQL despite the rule, a `-SNAPSHOT` version despite the ban), that two of our own audits contradict each other ([one](https://github.com/krizaka/orazaka/blob/main/docs/PRODUCTION_READINESS_AUDIT.md) says don't launch, [the other](https://github.com/krizaka/orazaka/blob/main/docs/ARCHITECTURE_ASSESSMENT.md) counts no blocker), that workspace builds follow the `main` branch of sibling repositories and so can't be reproduced, and that `@krizaka/ui` changes version too fast for a major number to still mean much.
+It also points out that our written rules and our code don't always agree (hand-written SQL despite the rule, a `-SNAPSHOT` version despite the ban), that two of our own audits contradict each other ([one](repo:sovkora/blob/main/docs/PRODUCTION_READINESS_AUDIT.md) says don't launch, [the other](repo:sovkora/blob/main/docs/ARCHITECTURE_ASSESSMENT.md) counts no blocker), that workspace builds follow the `main` branch of sibling repositories and so can't be reproduced, and that `@krizaka/ui` changes version too fast for a major number to still mean much.
 
 Its conclusion:
 
@@ -172,7 +172,7 @@ An AI audit is a list of leads, not a verdict. I took the claims that can be che
   <Case topic="The UTC day (Gemini)" before="8 repositories" after="True" afterDetail="Fixed in Yomizaka (#311), a rule now refuses the pattern; the other repositories follow." />
 </Compare>
 
-Both models' figures were right. Two of Gemini's claims are stronger than the facts, and the table says so. The [`TIMEOUT`](https://github.com/krizaka/sovkora-job-service/blob/a0e727d1e5b53a910a092e16ba4fde6b8875d706/src/main/java/com/krizaka/orazaka/jobservice/infrastructure/adapter/amqp/JobListener.java#L696-L702) prefix defect is real. There was already an issue to split that file, but it only covered the simulation hook, which is properly behind a setting. I added what the model found: a line our own issue had missed. I fixed it the same evening: a prompt no longer chooses its own timeout; only the test simulation can, behind its setting ([orazaka-job-service#72](https://github.com/krizaka/sovkora-job-service/pull/72)).
+Both models' figures were right. Two of Gemini's claims are stronger than the facts, and the table says so. The `TIMEOUT` prefix defect is real. There was already an issue to split that file, but it only covered the simulation hook, which is properly behind a setting. I added what the model found: a line our own issue had missed. I fixed it the same evening: a prompt no longer chooses its own timeout; only the test simulation can, behind its setting (orazaka-job-service#72).
 
 I didn't check the rest. The claim about jobs that keep running after their timeout, for instance, the model itself says it didn't follow all the way. It stays a lead.
 
@@ -204,7 +204,7 @@ First, the way of working. A good part of the code is written by agents. What ho
 
 > « To build effectively with AI, you have to structure your automations to detect errors as early and as fast as possible. »
 
-Then, where that idea stops. Our guardrails catch what we wrote a rule for, not the rest. The `TIMEOUT` line broke no rule. And a rule only looks where it is told to: in Yomizaka, a date computed in UTC instead of the Québec day slipped past `no-ambient-clock`, because the rule did not read that folder. We had to write [`no-utc-day-slice`](https://github.com/krizaka/yomizaka/blob/main/rules/no-utc-day-slice.yml) after the bug ([yomizaka#311](https://github.com/krizaka/yomizaka/pull/311)). Our own inventory, [`docs/quality-controls.md`](https://github.com/krizaka/.github/blob/main/docs/quality-controls.md) ([.github#232](https://github.com/krizaka/.github/pull/232)), says it in one sentence: « The rules do not look where the bug was. »
+Then, where that idea stops. Our guardrails catch what we wrote a rule for, not the rest. The `TIMEOUT` line broke no rule. And a rule only looks where it is told to: in Yomizaka, a date computed in UTC instead of the Québec day slipped past `no-ambient-clock`, because the rule did not read that folder. We had to write [`no-utc-day-slice`](repo:verikora/blob/main/rules/no-utc-day-slice.yml) after the bug ([yomizaka#311](repo:verikora/pull/311)). Our own inventory, [`docs/quality-controls.md`](repo:.github/blob/main/docs/quality-controls.md) ([.github#232](repo:.github/pull/232)), says it in one sentence: « The rules do not look where the bug was. »
 
 Last, review. The model is right: there is one person to review, and part of the approvals goes through an agent I delegated decisions to. The automated checks are real. A second pair of human eyes is still missing. That is the point I keep in mind, and another tool will not settle it.
 
@@ -212,18 +212,18 @@ Last, review. The model is right: there is one person to review, and part of the
 
 The audit ran on 24 October 2026, from 23:53 to 23:58 UTC, with Claude Code 2.1.308 in headless mode, the model `claude-opus-5-5`, and only the WebSearch and WebFetch tools. The published files are untouched:
 
-- [the prompt](https://blog.krizaka.com/audits/2026-10-24-ai-audit/prompt.txt);
-- [Claude's full answer](https://blog.krizaka.com/audits/2026-10-24-ai-audit/claude-opus-5-5-answer.md), uncut;
-- [the run details](https://blog.krizaka.com/audits/2026-10-24-ai-audit/run.json): the command, the models, the tokens, the cost, and what couldn't run;
-- [Gemini's full answer](https://blog.krizaka.com/audits/2026-10-24-ai-audit/gemini-3-8-flash-answer.md), with one redaction, the password of a local address masked;
-- [the metadata of Gemini's run](https://blog.krizaka.com/audits/2026-10-24-ai-audit/antigravity-run.json), read from Antigravity: the model, the number of steps and every command it ran.
+- [the prompt](site:blog/audits/2026-10-24-ai-audit/prompt.txt);
+- [Claude's full answer](site:blog/audits/2026-10-24-ai-audit/claude-opus-5-5-answer.md), uncut;
+- [the run details](site:blog/audits/2026-10-24-ai-audit/run.json): the command, the models, the tokens, the cost, and what couldn't run;
+- [Gemini's full answer](site:blog/audits/2026-10-24-ai-audit/gemini-3-8-flash-answer.md), with one redaction, the password of a local address masked;
+- [the metadata of Gemini's run](site:blog/audits/2026-10-24-ai-audit/antigravity-run.json), read from Antigravity: the model, the number of steps and every command it ran.
 
 The prompt, as sent:
 
 ```text
 You are reviewing a software organisation you have never seen before. Use your web tools to read it yourself; do not rely on prior knowledge of it.
 
-Target: the public GitHub organisation https://github.com/krizaka
+Target: the public GitHub organisation {{site:github}}
 
 Please:
 1. Look at the organisation page and the list of its public repositories. Open the repositories you judge most important (for example their README, a few source files, the CI workflows, any architecture or decision documents, and recent pull requests or commits).

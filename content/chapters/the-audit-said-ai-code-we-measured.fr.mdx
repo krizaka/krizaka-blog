@@ -35,7 +35,7 @@ Ma première réaction a été de me défendre. La deuxième a été plus utile 
 
 ## Ce qui était juste, ce qui était exagéré
 
-On a écrit un petit outil, `tools/code-health`, qui lit les dépôts sans rien modifier et compte. Le détail, avec les commits mesurés, est dans l'[ADR-015](https://github.com/krizaka/.github/blob/main/docs/adr/ADR-015-ai-code-audit-measured-and-enforced.md). Voici ce qu'il dit.
+On a écrit un petit outil, `tools/code-health`, qui lit les dépôts sans rien modifier et compte. Le détail, avec les commits mesurés, est dans l'[ADR-015](repo:.github/blob/main/docs/adr/ADR-015-ai-code-audit-measured-and-enforced.md). Voici ce qu'il dit.
 
 Ce que l'audit avait vu juste :
 
@@ -52,7 +52,7 @@ Ce qui était exagéré :
   <Case topic="Java 21 sous-utilisé" before="Peu de Java moderne." after="À moitié vrai." afterDetail="402 records, mais seulement 7 types scellés et 8 switch à motifs." />
 </Compare>
 
-L'échelle de fournisseurs existait bel et bien, mais pas où l'audit la cherchait. Elle était dans un seul client web, `orazaka-web-client`, dans le fichier qui configure la connexion. En le relisant, j'ai trouvé mieux qu'un style : un bug. L'appel qui crée un compte après une connexion GitHub ou Google envoyait un courriel et un nom, alors que le service demandait le fournisseur et un jeton d'identité. Autrement dit, ce chemin ne pouvait pas marcher tel qu'il était écrit, et aucun test ne le disait, parce que le style en échelle cachait le contrat. Le correctif, avec un test de contrat écrit d'abord, est dans la [PR 335](https://github.com/krizaka/orazaka-web-client/pull/335) : une table typée des fournisseurs, et la bonne requête.
+L'échelle de fournisseurs existait bel et bien, mais pas où l'audit la cherchait. Elle était dans un seul client web, `orazaka-web-client`, dans le fichier qui configure la connexion. En le relisant, j'ai trouvé mieux qu'un style : un bug. L'appel qui crée un compte après une connexion GitHub ou Google envoyait un courriel et un nom, alors que le service demandait le fournisseur et un jeton d'identité. Autrement dit, ce chemin ne pouvait pas marcher tel qu'il était écrit, et aucun test ne le disait, parce que le style en échelle cachait le contrat. Le correctif, avec un test de contrat écrit d'abord, est dans la PR 335 : une table typée des fournisseurs, et la bonne requête.
 
 Je retiens cette phrase : on avait un problème de style, et surtout un problème de contrat, et c'est la mesure qui nous l'a montré, pas la discussion.
 
@@ -78,7 +78,7 @@ Un hook de dix secondes pour les agents. Après chaque modification, `krizaka-ed
 
 La tendance dans le checkpoint. `tools/code-health` n'est pas une porte, c'est un thermomètre : toutes les trois heures, on voit si les chiffres descendent.
 
-Côté Java, les règles sont fusionnées dans le parent ([krizaka-build#121](https://github.com/krizaka/krizaka-build/pull/121)) et seront publiées sur Maven Central le 1er novembre, quand la publication reprend. Côté corrections déjà faites, le cœur et le métier d'Orazaka sont redevenus du Java pur : le nombre de dépendances à Spring dans le cœur est passé de 33 à 0, et dans le métier de 2 à 0, avec des règles ArchUnit qui l'imposent.
+Côté Java, les règles sont fusionnées dans le parent ([krizaka-build#121](repo:krizaka-java/pull/121)) et seront publiées sur Maven Central le 1er novembre, quand la publication reprend. Côté corrections déjà faites, le cœur et le métier d'Orazaka sont redevenus du Java pur : le nombre de dépendances à Spring dans le cœur est passé de 33 à 0, et dans le métier de 2 à 0, avec des règles ArchUnit qui l'imposent.
 
 ## Ce qu'on a refusé, et pourquoi
 

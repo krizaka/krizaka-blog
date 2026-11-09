@@ -7,6 +7,7 @@
      (they refuse robots: 401/403/429/999) is reported but never fails. Anything else that is not 2xx/3xx fails.
    Usage: node scripts/check-links.mjs --base http://localhost:3000 [--external] [--host https://blog.krizaka.com]
    The pure helpers are exported for tests/links.test.mjs. */
+import { publicRepoUrl, siteUrl } from "../lib/links.ts";
 import { pathToFileURL } from "node:url";
 
 /** Hosts that answer robots with 401/403/429/999 whatever the link: reported, never fatal. Keep this list short. */
@@ -117,7 +118,7 @@ export async function follow(url, { method = "GET", fetchImpl = fetch, timeout =
       redirect: "manual",
       signal: AbortSignal.timeout(timeout),
       headers: {
-        "User-Agent": "krizaka-blog-link-check (+https://github.com/krizaka/krizaka-blog)",
+        "User-Agent": `krizaka-blog-link-check (+${publicRepoUrl("krizaka-blog")})`,
         Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
       },
     });
@@ -244,7 +245,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     return i > 0 ? process.argv[i + 1] : fallback;
   };
   const base = arg("--base", "http://localhost:3000");
-  const host = arg("--host", "https://blog.krizaka.com");
+  const host = arg("--host", siteUrl("blog"));
   const external = process.argv.includes("--external");
   const broken = await crawl({ base, host, external });
   process.exit(broken ? 1 : 0);

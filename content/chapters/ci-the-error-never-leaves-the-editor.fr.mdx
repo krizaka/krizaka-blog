@@ -50,7 +50,7 @@ Le premier pas a été de faire entrer cette règle dans l'éditeur. `@krizaka/c
 
 Le principe est celui du chapitre 11. Mais là où le cliquet comptait nos règles maison, il compte maintenant une règle qui existe aussi chez Sonar. Ce que Sonar dira dans dix minutes, le lint le dit tout de suite.
 
-Et le déploiement a cassé, bien sûr. En mettant à jour les dépôts, on a vu qu'une commande, `krizaka-ratchet --update`, effaçait en silence les compteurs qu'elle ne mesurait pas, par exemple celui des gabarits de page, propre à chaque dépôt. Rien n'échouait. Un compteur disparaissait, et avec lui la garde qu'il tenait. C'est [krizaka-ts#163](https://github.com/krizaka/krizaka-ts/pull/163) : la commande garde maintenant ce qu'elle ne connaît pas, et le dit dans son rapport. Un test s'en charge.
+Et le déploiement a cassé, bien sûr. En mettant à jour les dépôts, on a vu qu'une commande, `krizaka-ratchet --update`, effaçait en silence les compteurs qu'elle ne mesurait pas, par exemple celui des gabarits de page, propre à chaque dépôt. Rien n'échouait. Un compteur disparaissait, et avec lui la garde qu'il tenait. C'est [krizaka-ts#163](repo:krizaka-ts/pull/163) : la commande garde maintenant ce qu'elle ne connaît pas, et le dit dans son rapport. Un test s'en charge.
 
 C'est ce que j'ai retenu de cette première étape. Un outil qui efface une garde sans rien dire est pire qu'une garde qui manque.
 
@@ -60,9 +60,9 @@ Une seule règle, ce n'était pas assez. 0.12 active le jeu complet de `eslint-p
 
 Il y avait une dette, évidemment. Dans chaque dépôt, on a compté ce que la règle trouvait déjà et on l'a figé. Les nombres sont enregistrés dans le dépôt et ne peuvent que descendre, comme les autres. Je n'ai pas voulu tout corriger d'un coup, pour la même raison que pour les cliquets : la règle protège le nouveau code tout de suite, et la dette existante part petit à petit.
 
-Pour Java, la même idée s'écrit autrement. Dans [krizaka-build#107](https://github.com/krizaka/krizaka-build/pull/107), le parent commun lance PMD et SpotBugs avec le greffon de sécurité dans `verify`, avec une base de départ par module. Et [krizaka-build#106](https://github.com/krizaka/krizaka-build/pull/106) ajoute à nos tests d'architecture ArchUnit des règles de sécurité écrites noir sur blanc dans un ADR.
+Pour Java, la même idée s'écrit autrement. Dans [krizaka-build#107](repo:krizaka-java/pull/107), le parent commun lance PMD et SpotBugs avec le greffon de sécurité dans `verify`, avec une base de départ par module. Et [krizaka-build#106](repo:krizaka-java/pull/106) ajoute à nos tests d'architecture ArchUnit des règles de sécurité écrites noir sur blanc dans un ADR.
 
-Cette dernière étape a eu sa panne à elle. Un dépôt qui n'avait pas le fichier d'exclusions de SpotBugs cassait au premier build. [krizaka-build#108](https://github.com/krizaka/krizaka-build/pull/108) rend le fichier facultatif et ajoute un job canari, qui construit un projet vide avec le parent à chaque changement. On a appris à ne pas publier un parent sans le faire essayer par un consommateur.
+Cette dernière étape a eu sa panne à elle. Un dépôt qui n'avait pas le fichier d'exclusions de SpotBugs cassait au premier build. [krizaka-build#108](repo:krizaka-java/pull/108) rend le fichier facultatif et ajoute un job canari, qui construit un projet vide avec le parent à chaque changement. On a appris à ne pas publier un parent sans le faire essayer par un consommateur.
 
 <Split label="Tout Sonar au lint : ce que Sonar disait dix minutes après la PR, l'éditeur le dit pendant que l'agent écrit.">
   <Side title="Avant" tone="before" items="Sonar répond sur la PR, dix minutes plus tard | Des barrières rouges sur le code neuf, presque toujours la complexité cognitive (S3776) | Un passage sur krizaka-ui trouve 37 bugs, dont 16 tris sans fonction de comparaison | L'agent est déjà passé à autre chose" />
@@ -73,7 +73,7 @@ Cette dernière étape a eu sa panne à elle. Un dépôt qui n'avait pas le fich
 
 Il y a des choses qu'une CI ne devrait jamais avoir à attraper. Un secret poussé dans un dépôt, par exemple : une fois dans l'historique, il est brûlé.
 
-[.github#334](https://github.com/krizaka/.github/pull/334) place gitleaks et zizmor au plus tôt. D'abord un hook à chaque commit, avec une seule configuration pour tous les dépôts. Ensuite un job de CI qui lit tout l'historique. Après viennent la protection de GitHub à l'envoi, puis la règle Sonar sur les secrets, en dernier filet. zizmor fait la même chose pour nos workflows, qui sont du code comme le reste et qui peuvent être attaqués comme lui.
+[.github#334](repo:.github/pull/334) place gitleaks et zizmor au plus tôt. D'abord un hook à chaque commit, avec une seule configuration pour tous les dépôts. Ensuite un job de CI qui lit tout l'historique. Après viennent la protection de GitHub à l'envoi, puis la règle Sonar sur les secrets, en dernier filet. zizmor fait la même chose pour nos workflows, qui sont du code comme le reste et qui peuvent être attaqués comme lui.
 
 Le premier passage sur les dépôts principaux n'a trouvé aucun vrai secret, seulement des valeurs de test et une valeur factice utilisée par la CI, que j'ai autorisées avec une raison écrite à côté.
 
@@ -103,7 +103,7 @@ La garde, c'est un réglage de GitHub : exiger que la branche soit à jour avant
 
 ## Un correctif sans garde n'est pas fini
 
-J'ai rajouté une règle à notre CI, dans [.github#336](https://github.com/krizaka/.github/pull/336) : une PR qui corrige un bug doit ajouter un test qui l'aurait attrapé, ou une règle. Sans ça, le contrôle échoue.
+J'ai rajouté une règle à notre CI, dans [.github#336](repo:.github/pull/336) : une PR qui corrige un bug doit ajouter un test qui l'aurait attrapé, ou une règle. Sans ça, le contrôle échoue.
 
 La règle n'est pas une punition. Elle force la question que j'avais prise comme habitude au chapitre 11 : pourquoi les gardes ne l'ont pas vu ? Sans elle, je l'oublie, l'agent aussi.
 
@@ -129,7 +129,7 @@ D'abord Krizaka UI. Un changement va de l'éditeur jusqu'à npm.
   <Stage title="Publication" note="npm, provenance" tone="ship">`release.yml` publie les paquets. Chacun essaie d'abord la publication de confiance OIDC de npm, avec provenance ; un jeton n'est qu'un secours journalisé pour un paquet qui n'a pas encore d'éditeur de confiance. Puis un job échoue si une version de main n'est pas sur npm.</Stage>
 </Pipeline>
 
-Une chose n'est pas sur ce chemin : le job « un correctif a besoin d'une garde » de [.github#336](https://github.com/krizaka/.github/pull/336). Il appartient au pipeline Node partagé, et Krizaka UI garde son propre `ci.yml`. Je préfère le dire plutôt que dessiner une boîte qui n'existe pas.
+Une chose n'est pas sur ce chemin : le job « un correctif a besoin d'une garde » de [.github#336](repo:.github/pull/336). Il appartient au pipeline Node partagé, et Krizaka UI garde son propre `ci.yml`. Je préfère le dire plutôt que dessiner une boîte qui n'existe pas.
 
 Où vivent les gardes dans ce dépôt :
 

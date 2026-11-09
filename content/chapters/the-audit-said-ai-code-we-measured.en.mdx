@@ -35,7 +35,7 @@ My first reaction was to defend us. The second one was more useful: what if we l
 
 ## What was right, what was overstated
 
-We wrote a small tool, `tools/code-health`, that reads the repositories without changing anything and counts. The detail, with the measured commits, is in [ADR-015](https://github.com/krizaka/.github/blob/main/docs/adr/ADR-015-ai-code-audit-measured-and-enforced.md). Here is what it says.
+We wrote a small tool, `tools/code-health`, that reads the repositories without changing anything and counts. The detail, with the measured commits, is in [ADR-015](repo:.github/blob/main/docs/adr/ADR-015-ai-code-audit-measured-and-enforced.md). Here is what it says.
 
 What the audit got right:
 
@@ -52,7 +52,7 @@ What was overstated:
   <Case topic="Java 21 under-used" before="Little modern Java." after="Half true." afterDetail="402 records, but only 7 sealed types and 8 pattern switches." />
 </Compare>
 
-The provider ladder did exist, but not where the audit looked. It was in one web client, `orazaka-web-client`, in the file that configures sign-in. Reading it, I found something better than a style: a bug. The call that creates an account after a GitHub or Google sign-in sent an e-mail and a name, while the service asked for the provider and an identity token. In other words, that path could not work as written, and no test said so, because the ladder hid the contract. The fix, with a contract test written first, is in [PR 335](https://github.com/krizaka/orazaka-web-client/pull/335): a typed table of providers, and the right request.
+The provider ladder did exist, but not where the audit looked. It was in one web client, `orazaka-web-client`, in the file that configures sign-in. Reading it, I found something better than a style: a bug. The call that creates an account after a GitHub or Google sign-in sent an e-mail and a name, while the service asked for the provider and an identity token. In other words, that path could not work as written, and no test said so, because the ladder hid the contract. The fix, with a contract test written first, is in PR 335: a typed table of providers, and the right request.
 
 What I keep from this: we had a style problem, and above all a contract problem, and it was the measurement that showed it, not the discussion.
 
@@ -78,7 +78,7 @@ A ten-second hook for the agents. After each edit, `krizaka-edit-check` checks t
 
 The trend in the checkpoint. `tools/code-health` is not a gate, it is a thermometer: every three hours we see whether the numbers go down.
 
-On the Java side, the rules are merged in the parent ([krizaka-build#121](https://github.com/krizaka/krizaka-build/pull/121)) and will be published to Maven Central on 1 November, when publishing resumes. As for corrections already made, the core and the business layer of Orazaka are plain Java again: the Spring dependencies in the core went from 33 to 0, and in the business layer from 2 to 0, with ArchUnit rules that enforce it.
+On the Java side, the rules are merged in the parent ([krizaka-build#121](repo:krizaka-java/pull/121)) and will be published to Maven Central on 1 November, when publishing resumes. As for corrections already made, the core and the business layer of Orazaka are plain Java again: the Spring dependencies in the core went from 33 to 0, and in the business layer from 2 to 0, with ArchUnit rules that enforce it.
 
 ## What we rejected, and why
 

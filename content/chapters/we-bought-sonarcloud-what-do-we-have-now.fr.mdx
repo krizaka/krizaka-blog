@@ -59,7 +59,7 @@ La deuxième est la couverture. Le job de tests dépose son rapport, en lcov pou
 
 La troisième est la file de fusion. Une analyse de la CI répond sur n'importe quelle branche, y compris `gh-readonly-queue/main/...`. Je l'ai vu sur krizaka-ts : l'API publique de SonarCloud liste les branches de la file de ce dépôt, chacune avec le verdict de sa porte. Les autres dépôts y passent un par un, selon une recette écrite dans nos standards. Tant qu'un dépôt n'a pas fait le pas, il garde l'obligation d'être à jour avant la fusion.
 
-Et une petite chose en plus, parce qu'on y a pensé tard : une PR qui ne change que de la documentation a droit à une analyse légère, sans build, plutôt qu'à une vérification qui n'arrive jamais. C'est [.github#336](https://github.com/krizaka/.github/pull/336).
+Et une petite chose en plus, parce qu'on y a pensé tard : une PR qui ne change que de la documentation a droit à une analyse légère, sans build, plutôt qu'à une vérification qui n'arrive jamais. C'est [.github#336](repo:.github/pull/336).
 
 ## Pourquoi les portes sont d'abord devenues rouges
 
@@ -67,7 +67,7 @@ Je m'attendais à ce que tout passe au vert. Ça a fait l'inverse.
 
 Au premier passage de l'analyse en CI, Sonar n'avait aucune version de référence pour le projet. Il affichait « not provided », et il comptait donc tout l'historique comme du code nouveau. Chaque vieux défaut devenait une faute du dernier changement, et les portes sont devenues rouges d'un coup, dans des dépôts qui n'avaient rien fait de nouveau.
 
-Notre période de nouveau code est « version précédente » : Sonar juge ce qui a changé depuis la dernière version connue. Sans version, il n'y a pas de précédente. La correction est petite. [.github#354](https://github.com/krizaka/.github/pull/354) donne à chaque analyse de la CI une version, `ci-` suivi du numéro d'exécution, pour que la période soit le changement depuis l'analyse d'avant. Les défauts anciens restent visibles. Ils ne rendent plus la porte rouge à chaque PR. Dans l'historique des analyses de krizaka-ui, on voit les analyses « not provided », puis l'événement de version, quelques heures plus tard.
+Notre période de nouveau code est « version précédente » : Sonar juge ce qui a changé depuis la dernière version connue. Sans version, il n'y a pas de précédente. La correction est petite. [.github#354](repo:.github/pull/354) donne à chaque analyse de la CI une version, `ci-` suivi du numéro d'exécution, pour que la période soit le changement depuis l'analyse d'avant. Les défauts anciens restent visibles. Ils ne rendent plus la porte rouge à chaque PR. Dans l'historique des analyses de krizaka-ui, on voit les analyses « not provided », puis l'événement de version, quelques heures plus tard.
 
 <Split label="Pourquoi les portes sont passées au rouge, et la petite correction (.github#354) : Sonar juge le nouveau code depuis la version précédente, il lui faut donc une version.">
   <Side title="Pas de version" tone="before" items="Sonar affiche « not provided » | Tout l'historique compte comme du nouveau code | Chaque vieux défaut est imputé au dernier changement | Des portes rouges partout d'un coup" />
@@ -80,7 +80,7 @@ Ce que j'en retiens : un outil acheté ne règle pas sa propre configuration. On
 
 Voici ce que j'ai lu ce matin sur l'API publique, projet par projet, avec la clé `krizaka_<dépôt>`. Je donne les nombres tels quels, ils bougent d'une analyse à l'autre.
 
-Dans krizaka-ui, la PR [krizaka-ui#781](https://github.com/krizaka/krizaka-ui/pull/781) corrigeait 37 bugs, dont ces tris sans fonction de comparaison dont je parlais au chapitre précédent. L'API affiche 0 bug aujourd'hui, et 0 vulnérabilité.
+Dans krizaka-ui, la PR [krizaka-ui#781](repo:krizaka-ui/pull/781) corrigeait 37 bugs, dont ces tris sans fonction de comparaison dont je parlais au chapitre précédent. L'API affiche 0 bug aujourd'hui, et 0 vulnérabilité.
 
 Sur les 9 dépôts que j'ai relus, la porte est verte dans 5 : krizaka-com, krizaka-ts, akinaza, yomizaka et orazaka-ai-engine. Elle est rouge dans 4 : krizaka-ui, krizaka-blog, le dépôt .github et krizaka-build. Dans les quatre cas, la porte échoue sur le nouveau code, d'abord sur des problèmes critiques, pas sur l'ancien. Je ne les ai pas contournés, et je ne les cache pas ici.
 

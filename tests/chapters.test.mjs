@@ -3,7 +3,13 @@ import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import matter from "gray-matter";
-import { checkChapters, chapterProblems, internalLinkProblems, readContext } from "../scripts/content-rules.mjs";
+import {
+  checkChapters,
+  chapterProblems,
+  h2Text,
+  internalLinkProblems,
+  readContext,
+} from "../scripts/content-rules.mjs";
 import { headingsOf, rehypeRounds } from "../lib/reading.ts";
 
 const root = new URL("..", import.meta.url).pathname;
@@ -309,4 +315,15 @@ test("chapter 3 tells the GPU left on once, with the figure of the post it came 
   for (const f of ["what-a-gpu-costs.en.mdx", "what-a-gpu-costs.fr.mdx"]) {
     assert.doesNotMatch(read(f).content, /five billed hours|cinq heures facturées/, f);
   }
+});
+
+// Sonar S8786: /^##\s+(.+?)\s*$/ backtracked; the expectations below were recorded from it (same answer on 200,000 generated lines).
+test("h2Text: the words of a `## ` line, trimmed; not an h3, not `##` glued to its text", () => {
+  assert.equal(h2Text("## The first products  "), "The first products");
+  assert.equal(h2Text("##\tTabbed"), "Tabbed");
+  assert.equal(h2Text("### An h3"), null);
+  assert.equal(h2Text("##Glued"), null);
+  assert.equal(h2Text("## a\rb"), null);
+  assert.equal(h2Text("##   "), " ");
+  assert.equal(h2Text("## "), null);
 });
