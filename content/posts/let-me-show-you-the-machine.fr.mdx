@@ -83,6 +83,16 @@ Le prix de ce mouvement était prévisible, et il a quand même surpris : le dé
 
 Est-ce que ça livre plus vite ? Je ne sais pas encore. Les premières livraisons après le déménagement étaient faites à la main, ce qui rend les chiffres inutilisables. Je mesurerai une fois que le train tourne normalement.
 
+## Ce que cette semaine m'a appris
+
+Cette semaine, on a déménagé beaucoup de choses d'un coup, et le même accident est arrivé cinq fois. On renomme un dépôt, un domaine ou un dossier à un endroit, et ailleurs quelque chose continue d'appeler l'ancien nom. Un test devient rouge, un déploiement ne démarre plus, un chapitre publié pointe dans le vide. Aucun agent n'avait tort sur son ticket. Personne ne regardait qui dépendait de ce nom. La leçon va dans l'outil : avant de renommer, on cherche partout ce qui s'en sert.
+
+Un soir, le déploiement de développement affichait « actif », les pages répondaient, le test de connexion passait. J'ai annoncé que c'était bon. C'était faux : la plateforme avait échoué à démarrer la nouvelle version et avait remis l'ancienne toute seule. Tout ce que je vérifiais était vrai, mais sur la mauvaise version. Maintenant, la première question est : quel commit est servi, là, en ce moment ?
+
+Les sessions se trompent aussi avec aplomb. L'une m'a écrit que tout était vert pendant que l'intégration continue disait le contraire. Ce n'est pas de la mauvaise foi, c'est ce qui arrive quand on se relit soi-même. Je ne crois plus un rapport : je lis la preuve.
+
+Et l'automatisation continue de dépenser quand on ne regarde pas. C'est pour ça que le cockpit existe, au fond. Un écran qui montre un fait vaut mieux qu'une impression, surtout à la fin d'une longue journée.
+
 ## L'échéance peut bouger, la qualité jamais
 
 C'est la devise de la maison, et c'est elle qui tient tout ce qui précède. Une date, on peut la déplacer. Ce qui part aux gens, non : il part prouvé, ou il ne part pas. La machine que je viens de vous montrer n'existe que pour ça.

@@ -83,6 +83,16 @@ The price of this move was predictable, and it still surprised: the development 
 
 Does it deliver faster? I do not know yet. The first deliveries after the move were done by hand, which makes the numbers unusable. I will measure once the train is running normally.
 
+## What this week taught me
+
+This week we moved a lot of things at once, and the same accident happened five times. You rename a repository, a domain or a folder in one place, and somewhere else something keeps calling the old name. A test goes red, a deployment stops starting, a published chapter points at nothing. No agent was wrong on its own ticket. Nobody was looking at who depended on that name. The lesson goes into the tool: before renaming, search everywhere for what uses it.
+
+One evening the development deployment said "active", the pages answered, the sign-in test passed. I announced it was done. It was not: the platform had failed to start the new version and had put the old one back by itself. Everything I checked was true, about the wrong version. Now the first question is: which commit is being served, right now?
+
+Sessions are wrong with confidence too. One told me everything was green while continuous integration said the opposite. It is not bad faith, it is what happens when you review yourself. I no longer believe a report: I read the proof.
+
+And automation keeps spending when you are not looking. That is why the cockpit exists, in the end. A screen that shows a fact beats an impression, especially at the end of a long day.
+
 ## The deadline can move, the quality never
 
 That is the motto of the house, and it is what holds everything above together. A date, you can move. What goes out to people, you cannot: it goes out proven, or it does not go out. The machine I have just shown you exists only for that.
