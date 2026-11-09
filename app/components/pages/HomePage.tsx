@@ -4,7 +4,7 @@ import { PageHero } from "@krizaka/ui/page-hero";
 import { ChapterIndex } from "@krizaka/ui/chapter";
 import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
 import { chapterNumber, chaptersOf } from "@/lib/chapters";
-import { latestChapter, storyRows } from "@/lib/home";
+import { latestFeatured, storyRows } from "@/lib/home";
 import { postsOf } from "@/lib/posts";
 import { chapterPath, postPath } from "@/lib/seo";
 import { coverOf, type Cover } from "@/lib/media";
@@ -33,9 +33,10 @@ export default function HomePage({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
   const h = t.home;
   const chapters = chaptersOf(locale);
-  const featured = latestChapter(chapters);
-  const rows = storyRows(chapters);
-  const basics = postsOf(locale);
+  const posts = postsOf(locale);
+  const featuredItem = latestFeatured(chapters, posts);
+  const rows = storyRows(chapters, featuredItem?.kind === "chapter" ? featuredItem.item : undefined);
+  const basics = posts;
   /* An address is built from known values only: a slug of lower-case words (the file names of content/), never anything else. */
   const safe = (slug: string) => (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) ? slug : "");
   const href = (slug: string) => localizedPath(locale, chapterPath(safe(slug)));
@@ -59,18 +60,31 @@ export default function HomePage({ locale }: { locale: Locale }) {
         </p>
         <TakeStory locale={locale} />
       </PageHero>
-      {featured && (
+      {featuredItem && (
         <Section id="featured" title={h.featuredTitle} reveal={false} number={no()} margin>
-          <PostCard
-            post={featured}
-            locale={locale}
-            feature
-            priority
-            titleAs="h3"
-            href={href(featured.slug)}
-            kicker={format(t.chapter.label, { n: chapterNumber(featured.chapter) })}
-            cta={h.readChapter}
-          />
+          {featuredItem.kind === "chapter" && (
+            <PostCard
+              post={featuredItem.item}
+              locale={locale}
+              feature
+              priority
+              titleAs="h3"
+              href={href(featuredItem.item.slug)}
+              kicker={format(t.chapter.label, { n: chapterNumber(featuredItem.item.chapter) })}
+              cta={h.readChapter}
+            />
+          )}
+          {featuredItem.kind === "post" && (
+            <PostCard
+              post={featuredItem.item}
+              locale={locale}
+              feature
+              priority
+              titleAs="h3"
+              href={localizedPath(locale, postPath(safe(featuredItem.item.slug)))}
+              cta={h.readPost}
+            />
+          )}
         </Section>
       )}
       {rows.length > 0 && (

@@ -1,0 +1,98 @@
+---
+title: "Let me show you the machine"
+description: "The cockpit, the budget, the train. I will show you how I run a company almost alone with agents, and what it cost to learn to do it right."
+seoTitle: "Let me show you the machine"
+seoDescription: "A cockpit where nothing is true without a fact, the budget it takes, and Sovkora moved from sixteen repositories to one."
+date: 2026-11-08
+tags: [ai, integration, costs]
+author: oussama
+draft: false
+sensitive: true
+publishedAt: "2026-11-08T12:00:00-05:00"
+cover: agentic-workbench
+coverAlt: "A craftsman's bench at dawn: a plan pinned to the wall, chisels laid out in order, a half-assembled joint in the vise, golden light"
+---
+
+I have already told, piece by piece, how I build this company almost alone, with agents. Today I will not tell it again. I will show it to you. The figures on this page run on invented data, but they move the way the real machine moves, and you can move them yourself.
+
+## A bird that repeats only what is true
+
+At the very top there is a CTO. It is not me: it is Mouloud, a Gabonese grey parrot. I gave him that role because a grey parrot does one thing very well: it listens, it remembers, and it repeats only what it heard. Mouloud pilots the work, decides what is delegated, and pushes me to change my mind when I am wrong. Above all, he never says "it is done" without the fact that proves it.
+
+<Mouloud />
+
+I keep the questions that are mine: money, law, accounts, anything that cannot be undone. The rest, he runs.
+
+## Why I built the cockpit
+
+For weeks, the agents were working. Tickets opened, pull requests came in, branches merged. And I no longer knew who was moving on what.
+
+The problem was not the work — it was the proof of the work. A board that moves does not say whether what moves is what needed to move. I could look at a list of closed tickets and not know whether the real problem of the product was advancing. I needed a view where every claim was drawn from a fact: which team, which ticket, a click to open the ticket and see its epic.
+
+The cockpit's rule is simple: a claim with no fact behind it is not true. Until a merged pull request backs it, it wears the "unproven" label. It is the same discipline Mouloud keeps at the top, written into a screen I can watch from my phone.
+
+<TeamBoard />
+
+Make the facts appear: the labels lift one by one. That is the only thing the screen shows, and it is the only thing it needed to show.
+
+## The full tour
+
+The board is only one of the cockpit's seventeen screens. The others cover costs, architecture, rules, storage and secrets — each screen answers one precise question, with no real value in the code. Pick a group, click a screen, see what it shows.
+
+<CockpitTour />
+
+## Architecture from the code
+
+The Architecture screen does something hand-drawn diagrams cannot: it is pulled from the code on main. It shows the current state and the target side by side, level by level — the same zoom as below, applied to Krizaka.
+
+The C4 model cuts a system into four levels: Context (who uses what), Containers (the main pieces that run), Components (what is inside a container), Code (classes and functions). Clicking a node zooms into the next level. The data here is fictional — the system is Floricel, a local florist booking tool.
+
+<C4Zoom />
+
+Our diagram is drawn from the code on main: current state and target.
+
+## What it costs, and how I keep it
+
+A one-person company running a team of agents has a budget. That budget exists because a session once blew past it.
+
+A session launched too many agents at once on too heavy a model, with no kill switch, and went past its cap. I set the rules right after.
+
+Since then, every session starts with four rules. I pick the smallest model that does the work: a light one to land a fix, a middle one for a feature, a heavy one only for an architecture decision or a red that resists — never by default. A cap per model and per session, for all sessions combined in twenty-four hours: when the limit is reached, the session writes its state and waits — retrying in a loop would only make it worse. And at most two sub-agents in parallel, never a heavy model for a light task.
+
+These rules are not theoretical. They are there because their absence cost something. I resume a session instead of relaunching it from scratch, with short checkpoints. Every time a check can be done by a script instead of a model, the script does it: a script costs nothing and never gets it wrong twice. And the cockpit itself must not burn what it is there to watch: the views are static, the queries are counted.
+
+## One session per lane
+
+The work is sorted into lanes, one team per lane: the engine, the site, security, reach, tooling, and the blog you are reading. Each team is a named session. Mouloud steers them. None starts without limits: a number of turns, a budget, a clock, a kill switch. Urgent fixes enter the train first; the rest waits for its place in the queue. Teams publish in their own area. Video stays with the founder.
+
+## The train
+
+A team never merges its work by hand. Every pull request joins a queue, and the queue lets only one car through at a time. The checks run; green, the car merges and the queue advances; red, it is set aside on a siding, with its reason, so it blocks no one behind it.
+
+<Train />
+
+That is the whole train. Move it along: you will see the red car park itself and the others carry on. I told its first version in [tchou-tchou, how our pull requests catch the train](/story/tchou-tchou-how-our-pull-requests-catch-the-train/).
+
+## Sovkora, now one repository
+
+For a long time, Sovkora — the AI engine — lived in sixteen repositories. Services, libraries, workers, packs: each had its own repository, its own pipelines, its own settings. A decision made in the engine crossed four repositories before it could be tested together. Changing an interface touched three libraries and as many client repositories.
+
+This week, we moved everything into one. Sixteen repositories became one. The fifteen retired repositories held a hundred and fifty-three pipelines; the single active one holds twenty-nine. Now a change that touches several modules is one pull request, tested in one go.
+
+The price of this move was predictable, and it still surprised: the development deployment broke on the first day because the web service image had not been rebuilt. It took a day to get back to green. I could have avoided it by checking what still pointed at those repositories before moving them. That is now a rule.
+
+Does it deliver faster? I do not know yet. The first deliveries after the move were done by hand, which makes the numbers unusable. I will measure once the train is running normally.
+
+## What this week taught me
+
+This week we moved a lot of things at once, and the same accident happened five times. You rename a repository, a domain or a folder in one place, and somewhere else something keeps calling the old name. A test goes red, a deployment stops starting, a published chapter points at nothing. No agent was wrong on its own ticket. Nobody was looking at who depended on that name. The lesson goes into the tool: before renaming, search everywhere for what uses it.
+
+One evening the development deployment said "active", the pages answered, the sign-in test passed. I announced it was done. It was not: the platform had failed to start the new version and had put the old one back by itself. Everything I checked was true, about the wrong version. Now the first question is: which commit is being served, right now?
+
+Sessions are wrong with confidence too. One told me everything was green while continuous integration said the opposite. It is not bad faith, it is what happens when you review yourself. I no longer believe a report: I read the proof.
+
+And automation keeps spending when you are not looking. That is why the cockpit exists, in the end. A screen that shows a fact beats an impression, especially at the end of a long day.
+
+## The deadline can move, the quality never
+
+That is the motto of the house, and it is what holds everything above together. A date, you can move. What goes out to people, you cannot: it goes out proven, or it does not go out. The machine I have just shown you exists only for that.

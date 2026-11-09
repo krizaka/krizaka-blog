@@ -112,6 +112,13 @@
       "post": "understanding-ai-before-you-start",
       "why": "photographic render (a street in the fog): an illustration that could be drawn (kept as it is: founder, 2026-11-05)",
       "decision": "demonstration"
+    },
+    {
+      "id": "agentic-workbench",
+      "chapter": 100,
+      "post": "let-me-show-you-the-machine",
+      "why": "photorealistic craftsman's bench (sd-cli, Metal): an illustrative cover for a standalone post about running the company, not in the watercolor series (approved by the founder, 2026-11-08)",
+      "decision": "demonstration"
     }
   ]
 }

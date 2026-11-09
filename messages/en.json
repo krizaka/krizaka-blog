@@ -14,7 +14,10 @@
   },
   "footer": {
     "aria": "Footer",
-    "status": { "development": "In development", "paused": "Paused" },
+    "status": {
+      "development": "In development",
+      "paused": "Paused"
+    },
     "products": "Products",
     "openSourceColumn": "Open source",
     "allOpenSource": "All of open source",
@@ -47,7 +50,8 @@
     "new": "New",
     "basicsTitle": "The basics, to understand the rest",
     "basicsLead": "Four short reads, in this order, that explain the words and the rules the chapters rely on. If a chapter loses you, come here, then go back.",
-    "bylineStory": "His story"
+    "bylineStory": "His story",
+    "readPost": "Read the post"
   },
   "post": {
     "back": "The Krizaka story",
@@ -399,5 +403,186 @@
     "category": "Item",
     "value": "Value",
     "total": "Total"
+  },
+  "train": {
+    "caption": "Fig. — the merge train: one pull request lands at a time",
+    "gate": "the queue",
+    "legend": {
+      "queue": "waiting",
+      "merged": "merged on main",
+      "siding": "set aside",
+      "green": "check green",
+      "red": "check red",
+      "running": "check running"
+    },
+    "beats": {
+      "start": "The queue is empty.",
+      "enter": "{pr} joins the queue.",
+      "running": "{pr} runs its checks.",
+      "green": "{pr} is green.",
+      "red": "{pr}'s check is red.",
+      "sideline": "{pr} is set aside: {reason}.",
+      "merge": "{pr} merges and the line advances.",
+      "done": "Two merged, one set aside — no red ever blocked the others."
+    },
+    "reasons": {
+      "flaky": "a flaky test",
+      "types": "a type error",
+      "rebase": "needs a rebase",
+      "review": "a review thread still open"
+    },
+    "controls": {
+      "play": "Play",
+      "pause": "Pause",
+      "prev": "Previous beat",
+      "next": "Next beat",
+      "restart": "Restart",
+      "progress": "{k} / {n}"
+    },
+    "textTitle": "What happens, in order"
+  },
+  "board": {
+    "caption": "Fig. — the team board: a claim with no fact behind it shows “unproven”",
+    "columns": {
+      "team": "team",
+      "lane": "lane",
+      "ticket": "ticket",
+      "claim": "claim"
+    },
+    "teams": {
+      "sovkora": {
+        "name": "Sovkora",
+        "lane": "the engine"
+      },
+      "site": {
+        "name": "krizaka.com",
+        "lane": "the site"
+      },
+      "security": {
+        "name": "Security",
+        "lane": "watch"
+      },
+      "marketing": {
+        "name": "Marketing",
+        "lane": "reach"
+      },
+      "tooling": {
+        "name": "Tooling",
+        "lane": "the machine"
+      },
+      "blog": {
+        "name": "Blog",
+        "lane": "the story"
+      }
+    },
+    "proven": "proven",
+    "unproven": "unproven",
+    "reveal": "Land the waiting facts",
+    "revealed": "Every claim now has its fact"
+  },
+  "mouloud": {
+    "caption": "Fig. — Mouloud, the Gabonese grey parrot that pilots the work",
+    "code": "KZ-27",
+    "species": "Psittacus erithacus",
+    "speciesLabel": "species",
+    "roleLabel": "role",
+    "role": "chief technical officer",
+    "habitLabel": "plumage",
+    "habit": "grey, red tail",
+    "status": "the CTO",
+    "promise": "Listens, remembers, and repeats only what is true."
+  },
+  "cockpitTour": {
+    "caption": "The cockpit: seventeen screens, four groups",
+    "groups": {
+      "pilotage": "Steering",
+      "entreprise": "Company",
+      "produits": "Products",
+      "machine": "Engine room"
+    },
+    "mockLabel": "Metric",
+    "mockValueLabel": "Value",
+    "screens": {
+      "today": {
+        "name": "Today",
+        "hint": "What needs the founder right now: actions, blockers, decisions waiting."
+      },
+      "board": {
+        "name": "Board",
+        "hint": "Which team is moving on which ticket, with a click to the epic."
+      },
+      "costs": {
+        "name": "Costs",
+        "hint": "What sessions consumed today and this week, with no real value in the code."
+      },
+      "automation": {
+        "name": "Automation",
+        "hint": "Scheduled tasks, their last run and the next one."
+      },
+      "company": {
+        "name": "Company",
+        "hint": "Legal facts and the state of the company file."
+      },
+      "business": {
+        "name": "Business & quotes",
+        "hint": "Open quotes and their progress."
+      },
+      "organisation": {
+        "name": "Organisation",
+        "hint": "Members, teams and their access."
+      },
+      "architecture": {
+        "name": "Architecture",
+        "hint": "The C4 diagram drawn from the code on main: current state and target, click to zoom."
+      },
+      "conformance": {
+        "name": "Rules",
+        "hint": "Active conformance rules and what answers to them."
+      },
+      "quality": {
+        "name": "Quality",
+        "hint": "Score, issues and technical debt from SonarCloud."
+      },
+      "workspace": {
+        "name": "Workspace",
+        "hint": "Active worktrees and open pull requests."
+      },
+      "documents": {
+        "name": "Documents",
+        "hint": "The company folder index, searchable by name, date and area."
+      },
+      "storage": {
+        "name": "Storage",
+        "hint": "The Bunny tree on five levels, no download."
+      },
+      "commands": {
+        "name": "Commands",
+        "hint": "Allowed commands with streaming output — never free text."
+      },
+      "secrets": {
+        "name": "Secrets",
+        "hint": "Key names only; values never transit through the page."
+      },
+      "kpi": {
+        "name": "KPI",
+        "hint": "Indicators collected from GitHub, npm and SonarCloud."
+      },
+      "community": {
+        "name": "Community",
+        "hint": "Newsletter subscribers and their growth."
+      }
+    }
+  },
+  "c4Zoom": {
+    "caption": "A C4 diagram: click to zoom, C1 → C4",
+    "levels": {
+      "c1": "Context",
+      "c2": "Containers",
+      "c3": "Components",
+      "c4": "Code"
+    },
+    "back": "Back",
+    "zoomIn": "Zoom in",
+    "note": "Our diagram is drawn from the code on main: current state and target."
   }
 }

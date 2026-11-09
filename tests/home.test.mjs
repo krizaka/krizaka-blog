@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import matter from "gray-matter";
-import { latestChapter, storyRows } from "../lib/home.ts";
+import { latestChapter, latestFeatured, storyRows } from "../lib/home.ts";
 
 /* The home is the story (krizaka-blog#123): the title and one sentence (the notes from building Krizaka, in Oussama's voice),
    Featured (one card: the latest chapter), every chapter in reading order 1 → N with the latest marked « New », then « The basics »
@@ -28,8 +28,9 @@ test("the newest chapter is Featured; the others follow newest first (by number)
     ch(1, "2026-10-23T09:00:00-04:00"),
     ch(2, "2026-10-21T09:00:00-04:00"),
   ];
-  const rows = storyRows(list);
-  assert.equal(latestChapter(list).chapter, 1, "the one that went out last is Featured, whatever its number");
+  const featured = latestChapter(list);
+  const rows = storyRows(list, featured);
+  assert.equal(featured.chapter, 1, "the one that went out last is Featured, whatever its number");
   assert.deepEqual(
     rows.map((r) => r.chapter.chapter),
     [3, 2],
@@ -40,9 +41,10 @@ test("the newest chapter is Featured; the others follow newest first (by number)
 
 test("of two chapters out at the same minute, the later in the story is the latest; no chapter, no Featured", () => {
   const list = [ch(7, "2026-10-24T09:00:00-04:00"), ch(8, "2026-10-24T09:00:00-04:00")];
-  assert.equal(latestChapter(list).chapter, 8);
+  const featured = latestChapter(list);
+  assert.equal(featured.chapter, 8);
   assert.deepEqual(
-    storyRows(list).map((r) => r.chapter.chapter),
+    storyRows(list, featured).map((r) => r.chapter.chapter),
     [7],
   );
   assert.equal(latestChapter([]), undefined);
@@ -56,18 +58,15 @@ test("today's chapters: chapter 26 Featured, then 25 → 1 in both languages", (
       .map((f) => ({ slug: f.split(".")[0], ...matter(read(`content/chapters/${f}`)).data }))
       .filter((c) => c.draft !== true)
       .map((c) => ({ ...c, date: String(c.date instanceof Date ? c.date.toISOString().slice(0, 10) : c.date) }));
-    const rows = storyRows(list);
+    const featured = latestChapter(list);
+    const rows = storyRows(list, featured);
     assert.deepEqual(
       rows.map((r) => r.chapter.chapter),
       [25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
       locale,
     );
     assert.equal(rows.length + 1, 26, `${locale}: twenty-six chapters, one of them Featured`);
-    assert.equal(
-      latestChapter(list).slug,
-      "the-big-clean-up-and-our-real-names",
-      `${locale}: the latest chapter is Featured`,
-    );
+    assert.equal(featured.slug, "the-big-clean-up-and-our-real-names", `${locale}: the latest chapter is Featured`);
   }
 });
 
@@ -78,8 +77,13 @@ test("the home renders the sentence, its byline, Featured, the chapters, the bas
   for (const [i, at] of order.entries()) assert.ok(at > 0 && (i === 0 || at > order[i - 1]), `piece ${i} in order`);
   assert.match(
     home,
-    /<PostCard[\s\S]*?feature[\s\S]*?href=\{href\(featured\.slug\)\}[\s\S]*?cta=\{h\.readChapter\}/,
-    "Featured is the latest chapter's card, with « Read the chapter »",
+    /featuredItem\.kind === "chapter"[\s\S]*?href=\{href\(featuredItem\.item\.slug\)\}[\s\S]*?cta=\{h\.readChapter\}/,
+    "Featured chapter: chapter path, « Read the chapter »",
+  );
+  assert.match(
+    home,
+    /featuredItem\.kind === "post"[\s\S]*?postPath[\s\S]*?cta=\{h\.readPost\}/,
+    "Featured post: post path, read post link",
   );
   assert.match(
     home,
@@ -167,5 +171,45 @@ for (const locale of ["en", "fr"]) {
     assert.ok([...h.seoDescription].length <= 155 && [...h.seoTitle].length <= 60);
     for (const k of ["latest", "seriesTitle", "elsewhereTitle", "readStory", "allTopics", "versus"])
       assert.equal(h[k], undefined, `${locale}: home.${k} is gone`);
+    assert.ok(h.readPost?.trim(), `${locale}: home.readPost`);
   });
 }
+
+const post = (slug, publishedAt) => ({ slug, publishedAt, date: publishedAt.slice(0, 10) });
+
+test("latestFeatured: a post newer than all chapters is Featured", () => {
+  const chapters = [ch(26, "2026-10-30T09:00:00-04:00"), ch(25, "2026-10-15T09:00:00-04:00")];
+  const posts = [post("the-machine", "2026-11-08T12:00:00-05:00")];
+  const f = latestFeatured(chapters, posts);
+  assert.equal(f?.kind, "post");
+  assert.equal(f?.item.slug, "the-machine");
+});
+
+test("latestFeatured: a chapter newer than all posts is Featured", () => {
+  const chapters = [ch(26, "2026-11-09T10:00:00-05:00"), ch(25, "2026-10-15T09:00:00-04:00")];
+  const posts = [post("the-machine", "2026-11-08T12:00:00-05:00")];
+  const f = latestFeatured(chapters, posts);
+  assert.equal(f?.kind, "chapter");
+  assert.equal(f?.item.chapter, 26);
+});
+
+test("latestFeatured: when a post is Featured, every chapter stays in storyRows (chapter 26 must not disappear)", () => {
+  const chapters = [ch(26, "2026-10-30T09:00:00-04:00"), ch(25, "2026-10-15T09:00:00-04:00")];
+  const posts = [post("the-machine", "2026-11-08T12:00:00-05:00")];
+  const f = latestFeatured(chapters, posts);
+  assert.equal(f?.kind, "post");
+  const rows = storyRows(chapters, f?.kind === "chapter" ? f.item : undefined);
+  assert.deepEqual(
+    rows.map((r) => r.chapter.chapter),
+    [26, 25],
+    "every chapter in the list when a post is Featured",
+  );
+});
+
+test("latestFeatured: no chapters and no posts → undefined; no posts → chapter wins", () => {
+  assert.equal(latestFeatured([], []), undefined);
+  const chapters = [ch(3, "2026-10-20T09:00:00-04:00")];
+  const f = latestFeatured(chapters, []);
+  assert.equal(f?.kind, "chapter");
+  assert.equal(f?.item.chapter, 3);
+});

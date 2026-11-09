@@ -1,0 +1,98 @@
+---
+title: "Je vous montre la machine"
+description: "Le cockpit, le budget, le train. Je vous montre comment je fais tourner une entreprise presque seul avec des agents, et ce que ça a coûté d'apprendre à bien le faire."
+seoTitle: "Je vous montre la machine"
+seoDescription: "Un cockpit où rien n'est vrai sans preuve, le budget que ça demande, et Sovkora passé d'un entrepôt à un seul dépôt."
+date: 2026-11-08
+tags: [ai, integration, costs]
+author: oussama
+draft: false
+sensitive: true
+publishedAt: "2026-11-08T12:00:00-05:00"
+cover: agentic-workbench
+coverAlt: "Un établi de menuisier à l'aube : plan de travail accroché au mur, ciseaux rangés en ordre, assemblage en cours dans l'étau, lumière dorée"
+---
+
+J'ai déjà raconté, morceau par morceau, comment je construis cette entreprise presque seul, avec des agents. Aujourd'hui je ne vais pas le raconter encore. Je vais vous le montrer. Les figures de cette page tournent sur des données inventées, mais elles bougent comme la vraie machine bouge, et vous pouvez les faire avancer vous-même.
+
+## Un oiseau qui ne répète que le vrai
+
+En haut de tout il y a un CTO. Ce n'est pas moi : c'est Mouloud, un perroquet gris du Gabon. Je lui ai donné ce rôle parce qu'un gris du Gabon fait une chose très bien : il écoute, il retient, et il ne répète que ce qu'il a entendu. Mouloud pilote le travail, décide ce qui est délégué, et me pousse à changer d'avis quand je me trompe. Surtout, il ne dit jamais « c'est fait » sans la preuve que c'est fait.
+
+<Mouloud />
+
+Moi, je garde les questions qui sont à moi : l'argent, le droit, les comptes, tout ce qui ne se défait pas. Le reste, il le mène.
+
+## Pourquoi j'ai construit le cockpit
+
+Pendant des semaines, les agents travaillaient. Des tickets s'ouvraient, des pull requests arrivaient, des branches fusionnaient. Et moi je ne savais plus qui avançait sur quoi.
+
+Le problème n'était pas le travail — c'était la preuve du travail. Un tableau qui s'agite ne dit pas si ce qui bouge est ce qui devait bouger. Je pouvais regarder une liste de tickets fermés et ne pas savoir si le vrai problème du produit avançait. J'avais besoin d'une vue où chaque affirmation soit tirée d'un fait : quelle équipe, quel ticket, un clic pour ouvrir le ticket et voir son épopée.
+
+La règle du cockpit est simple : une affirmation sans fait derrière elle n'est pas vraie. Tant qu'aucune pull request fusionnée ne la soutient, elle porte l'étiquette « non prouvé ». C'est la même discipline que Mouloud applique en haut, écrite dans un écran que je peux regarder depuis mon téléphone.
+
+<TeamBoard />
+
+Faites apparaître les faits : les étiquettes se lèvent une à une. C'est la seule chose que l'écran montre, et c'est la seule chose qu'il fallait.
+
+## Le tour complet
+
+Le tableau de bord n'est qu'un des dix-sept écrans du cockpit. Les autres s'occupent des coûts, de l'architecture, des règles, du stockage et des secrets — chaque écran répond à une question précise, sans valeur réelle dans le code. Choisissez un groupe, cliquez sur un écran, voyez ce qu'il affiche.
+
+<CockpitTour />
+
+## L'architecture vue du code
+
+L'écran Architecture fait une chose que les diagrammes dessinés à la main ne font pas : il est tiré du code sur main. Il montre l'état actuel et la cible côte à côte, niveau par niveau — le même zoom que ci-dessous, appliqué à Krizaka.
+
+Le modèle C4 découpe un système en quatre niveaux : le Contexte (qui utilise quoi), les Conteneurs (les grandes pièces qui tournent), les Composants (ce qu'il y a à l'intérieur d'un conteneur), le Code (les classes et les fonctions). Cliquer sur un nœud zoome vers le niveau suivant. Les données ici sont fictives — le système s'appelle Floricel, un outil de réservation pour fleuriste.
+
+<C4Zoom />
+
+Notre diagramme est tiré du code sur main : état actuel et cible.
+
+## Ce que ça coûte, et comment je le tiens
+
+Une entreprise d'un seul qui fait tourner une équipe d'agents, ça a un budget. Ce budget existe parce qu'une session l'a un jour fait exploser.
+
+Une session a lancé trop d'agents à la fois sur un modèle trop lourd, sans interrupteur, et elle a dépassé son plafond. J'ai posé les règles juste après.
+
+Depuis, chaque session part avec quatre règles. Je prends le plus petit modèle qui fait le travail : un léger pour faire atterrir une correction, un moyen pour une fonctionnalité, un lourd seulement pour une décision d'architecture ou un rouge qui résiste — jamais par défaut. Un plafond par modèle et par session, pour toutes les sessions confondues en vingt-quatre heures : quand la limite est atteinte, la session écrit son état et attend — une boucle de relances aggraverait le problème. Et au plus deux sous-agents en parallèle, jamais un lourd pour une tâche légère.
+
+Ces règles ne sont pas théoriques. Elles sont là parce que leur absence a coûté quelque chose. Je reprends une session au lieu de la relancer de zéro, avec des points de reprise courts. Chaque fois qu'un contrôle peut être fait par un script plutôt que par un modèle, c'est le script qui le fait : un script ne coûte rien et ne se trompe pas deux fois. Et le cockpit lui-même ne doit pas brûler ce qu'il est censé surveiller : les vues sont statiques, les requêtes sont comptées.
+
+## Une session par voie
+
+Le travail est rangé en voies, une équipe par voie : le moteur, le site, la sécurité, la diffusion, l'outillage, et le blog que vous lisez. Chaque équipe est une session nommée. Mouloud les oriente. Aucune ne part sans limites : un nombre de tours, un budget, une horloge, un interrupteur d'arrêt. Les correctifs urgents entrent dans le train en premier ; le reste attend sa place dans la file. Les équipes publient dans leur domaine. La vidéo reste avec le fondateur.
+
+## Le train
+
+Une équipe ne fusionne jamais son travail à la main. Chaque pull request monte dans une file, et la file ne laisse passer qu'une voiture à la fois. Les contrôles tournent ; au vert, la voiture fusionne et la file avance ; au rouge, elle est mise de côté sur une voie de garage, avec sa raison, pour ne bloquer personne derrière elle.
+
+<Train />
+
+C'est tout le train. Faites-le avancer : vous verrez la voiture rouge se ranger seule, et les autres continuer. J'ai raconté sa première version dans [tchou-tchou, comment nos pull requests prennent le train](/fr/story/tchou-tchou-how-our-pull-requests-catch-the-train/).
+
+## Sovkora, maintenant un seul dépôt
+
+Pendant longtemps, Sovkora — le moteur d'IA — vivait dans seize dépôts. Services, bibliothèques, workers, packs : chacun avait son dépôt, ses pipelines, ses réglages. Une décision prise dans le moteur traversait quatre dépôts avant d'être testée ensemble. Changer une interface touchait trois bibliothèques et autant de dépôts de clients.
+
+Cette semaine, nous avons tout mis dans un seul. Seize dépôts sont devenus un. Quinze dépôts retirés portaient cent cinquante-trois pipelines ; le seul dépôt actuel en a vingt-neuf. Maintenant, un changement qui touche plusieurs modules est une seule pull request, testée d'un coup.
+
+Le prix de ce mouvement était prévisible, et il a quand même surpris : le déploiement de développement s'est cassé le premier jour parce que l'image du service web n'avait pas été reconstruite. Il a fallu une journée pour revenir au vert. J'aurais pu l'éviter en vérifiant ce qui pointait encore vers ces dépôts avant de les déplacer. C'est devenu une règle.
+
+Est-ce que ça livre plus vite ? Je ne sais pas encore. Les premières livraisons après le déménagement étaient faites à la main, ce qui rend les chiffres inutilisables. Je mesurerai une fois que le train tourne normalement.
+
+## Ce que cette semaine m'a appris
+
+Cette semaine, on a déménagé beaucoup de choses d'un coup, et le même accident est arrivé cinq fois. On renomme un dépôt, un domaine ou un dossier à un endroit, et ailleurs quelque chose continue d'appeler l'ancien nom. Un test devient rouge, un déploiement ne démarre plus, un chapitre publié pointe dans le vide. Aucun agent n'avait tort sur son ticket. Personne ne regardait qui dépendait de ce nom. La leçon va dans l'outil : avant de renommer, on cherche partout ce qui s'en sert.
+
+Un soir, le déploiement de développement affichait « actif », les pages répondaient, le test de connexion passait. J'ai annoncé que c'était bon. C'était faux : la plateforme avait échoué à démarrer la nouvelle version et avait remis l'ancienne toute seule. Tout ce que je vérifiais était vrai, mais sur la mauvaise version. Maintenant, la première question est : quel commit est servi, là, en ce moment ?
+
+Les sessions se trompent aussi avec aplomb. L'une m'a écrit que tout était vert pendant que l'intégration continue disait le contraire. Ce n'est pas de la mauvaise foi, c'est ce qui arrive quand on se relit soi-même. Je ne crois plus un rapport : je lis la preuve.
+
+Et l'automatisation continue de dépenser quand on ne regarde pas. C'est pour ça que le cockpit existe, au fond. Un écran qui montre un fait vaut mieux qu'une impression, surtout à la fin d'une longue journée.
+
+## L'échéance peut bouger, la qualité jamais
+
+C'est la devise de la maison, et c'est elle qui tient tout ce qui précède. Une date, on peut la déplacer. Ce qui part aux gens, non : il part prouvé, ou il ne part pas. La machine que je viens de vous montrer n'existe que pour ça.

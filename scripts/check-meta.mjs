@@ -189,16 +189,19 @@ export function removedLinkProblems(html) {
 }
 
 /** The problems of one built page: a stub is checked as a stub, a live page as an article (its meta, its links, the home's story,
-    and its cover on a shelf post or a chapter). */
+    and its cover on a chapter or a published shelf post). */
 export function pageProblems(html, rel) {
   if (/http-equiv="refresh"/i.test(html)) return stubProblems(html);
   const out = [...metaProblems(html), ...removedLinkProblems(html)];
   if (rel === "" || rel === "fr/") out.push(...homeProblems(html));
-  if (rel && SHELF_OR_CHAPTER.test(rel)) out.push(...coverProblems(html));
+  if (rel && CHAPTER.test(rel)) out.push(...coverProblems(html));
+  if (rel && BASICS.test(rel) && !html.includes('class="bl-draft"')) out.push(...coverProblems(html));
   return out;
 }
-/** `basics/x/`, `fr/story/x/`: a shelf post or a chapter, which carries a cover. */
-const SHELF_OR_CHAPTER = /^(fr\/)?(basics|story)\/[^/]+\/$/;
+/** `story/x/` or `fr/story/x/`: a chapter, which carries a cover always, draft or not (krizaka-blog#280). */
+const CHAPTER = /^(fr\/)?story\/[^/]+\/$/;
+/** `basics/x/` or `fr/basics/x/`: a shelf post, which carries a cover only when published (not a draft). */
+const BASICS = /^(fr\/)?basics\/[^/]+\/$/;
 
 /** The folders of the build that are not pages to check: the editor, the private preview, assets, the 404. */
 export const SKIPPED = ["admin", "preview", "_next", "og", "fr/og", "404", "_not-found"];
