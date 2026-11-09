@@ -50,7 +50,8 @@
     "new": "Nouveau",
     "basicsTitle": "Les bases, pour comprendre",
     "basicsLead": "Quatre lectures courtes, dans cet ordre, qui expliquent les mots et les règles sur lesquels les chapitres s’appuient. Si un chapitre vous perd, passez par ici, puis revenez.",
-    "bylineStory": "Son histoire"
+    "bylineStory": "Son histoire",
+    "readPost": "Lire l’article"
   },
   "post": {
     "back": "L’histoire de Krizaka",
@@ -490,5 +491,98 @@
     "habit": "gris, queue rouge",
     "status": "le CTO",
     "promise": "Écoute, retient, et ne répète que ce qui est vrai."
+  },
+  "cockpitTour": {
+    "caption": "Fig. — le cockpit : dix-sept écrans, quatre groupes",
+    "groups": {
+      "pilotage": "Pilotage",
+      "entreprise": "Entreprise",
+      "produits": "Produits",
+      "machine": "Salle des machines"
+    },
+    "mockLabel": "Indicateur",
+    "mockValueLabel": "Valeur",
+    "screens": {
+      "today": {
+        "name": "Aujourd'hui",
+        "hint": "Ce qui a besoin du fondateur maintenant : actions, bloqueurs, décisions en attente."
+      },
+      "board": {
+        "name": "Tableau",
+        "hint": "Quelle équipe avance sur quel ticket, avec un clic vers l'épopée."
+      },
+      "costs": {
+        "name": "Coûts",
+        "hint": "Ce que les sessions ont consommé aujourd'hui et cette semaine, sans valeur réelle dans le code."
+      },
+      "automation": {
+        "name": "Automatismes",
+        "hint": "Les tâches planifiées, leur dernière exécution et la prochaine."
+      },
+      "company": {
+        "name": "Entreprise",
+        "hint": "Les faits légaux et l'état du dossier entreprise."
+      },
+      "business": {
+        "name": "Affaires & devis",
+        "hint": "Les devis ouverts et leur avancement."
+      },
+      "organisation": {
+        "name": "Organisation",
+        "hint": "Les membres, les équipes et leurs accès."
+      },
+      "architecture": {
+        "name": "Architecture",
+        "hint": "Le diagramme C4 tiré du code sur main : état actuel et cible, cliquer pour zoomer."
+      },
+      "conformance": {
+        "name": "Règles",
+        "hint": "Les règles de conformité actives et ce qui y répond."
+      },
+      "quality": {
+        "name": "Qualité",
+        "hint": "Le score, les issues et la dette technique, depuis SonarCloud."
+      },
+      "workspace": {
+        "name": "Workspace",
+        "hint": "Les worktrees actifs et les pull requests ouvertes."
+      },
+      "documents": {
+        "name": "Documents",
+        "hint": "L'index du dossier entreprise, cherchable par nom, date et domaine."
+      },
+      "storage": {
+        "name": "Stockage",
+        "hint": "L'arborescence Bunny sur cinq niveaux, sans téléchargement."
+      },
+      "commands": {
+        "name": "Commandes",
+        "hint": "Les commandes autorisées, avec streaming de la sortie — jamais de texte libre."
+      },
+      "secrets": {
+        "name": "Secrets",
+        "hint": "Les noms des clés seulement ; les valeurs ne transitent jamais par la page."
+      },
+      "kpi": {
+        "name": "KPI",
+        "hint": "Les indicateurs collectés depuis GitHub, npm et SonarCloud."
+      },
+      "community": {
+        "name": "Communauté",
+        "hint": "Les abonnés à la lettre et leur croissance."
+      }
+    }
+  },
+  "c4Zoom": {
+    "caption": "Fig. — un diagramme C4 : cliquer pour zoomer, C1 → C4",
+    "levels": {
+      "c1": "Contexte",
+      "c2": "Conteneurs",
+      "c3": "Composants",
+      "c4": "Code"
+    },
+    "back": "Retour",
+    "zoomIn": "Zoomer",
+    "note": "Notre diagramme est tiré du code sur main : état actuel et cible, remis à jour à chaque push."
   }
 }
