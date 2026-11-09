@@ -34,7 +34,7 @@ Pendant notre dernier lot de vidéos, le dernier clip est sorti du GPU, et le po
 
 Ces deux heures ont coûté entre 7 et 8 $, sur une facture GPU de 23,23 $. Ça pique, et c'est un bon point de départ pour parler de ce que coûtent vraiment la génération d'images et de vidéo.
 
-Tous les chiffres viennent des enregistrements d'[Orazaka](https://www.sovkora.com), mon moteur d'IA, publiés sur la page [Exécutions mesurées](https://dev.sovkora.com/docs/measured-runs). Quand un chiffre vient de mes notes, je le dis.
+Tous les chiffres viennent des enregistrements d'[Orazaka](site:sovkora), mon moteur d'IA, publiés sur la page [Exécutions mesurées](site:sovkora-dev/docs/measured-runs). Quand un chiffre vient de mes notes, je le dis.
 
 ## Trois façons de faire cuire le même plat
 
@@ -110,7 +110,7 @@ Deux précautions. Les deux clips comparés ne sont pas les mêmes : l'hébergé
 
 Depuis, la règle est simple. Une boucle de garde tourne pendant tout le lot, et on arrête le pod dès que la file est vide.
 
-Les essais ratés ont leur histoire. Après le premier clip réussi, dix clips de suite ont échoué en 17 secondes : le worker vérifiait la mémoire libre avant chaque tâche, et comptait le modèle déjà chargé (environ 22 Go) comme de la mémoire prise ([orazaka-worker-media#22](https://github.com/krizaka/orazaka-worker-media/pull/22)). Trois clips ont été perdus en plein calcul, jusqu'à 9 minutes de GPU chacun, parce qu'un déploiement du site de dev redémarrait le relais et coupait le tunnel ([#24](https://github.com/krizaka/orazaka-worker-media/pull/24)).
+Les essais ratés ont leur histoire. Après le premier clip réussi, dix clips de suite ont échoué en 17 secondes : le worker vérifiait la mémoire libre avant chaque tâche, et comptait le modèle déjà chargé (environ 22 Go) comme de la mémoire prise (orazaka-worker-media#22). Trois clips ont été perdus en plein calcul, jusqu'à 9 minutes de GPU chacun, parce qu'un déploiement du site de dev redémarrait le relais et coupait le tunnel (#24).
 
 ## Le prix d'un résultat qu'on garde
 
@@ -202,7 +202,7 @@ Ce qui me saute aux yeux : le GPU, c'est près de 80 % de la dépense. Un GPU qu
 
 ## Pourquoi j'ai déplacé le 15 novembre
 
-Le 16 octobre, nous avons rendu 25 clips vidéo sur un GPU loué à l'heure. Cinq heures au total : 2,8 heures à calculer, 2,2 heures à attendre. Un GPU qui attend se paie comme un GPU qui travaille. Ce chiffre est dans [la décision 078](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-078-runpod-serverless-workers-at-zero-idle.md), et il m'a fait comprendre quelque chose de simple : le calcul lui-même n'est pas le problème. On le paie une fois. Ce qu'on paie plusieurs fois, c'est l'attente et le chargement.
+Le 16 octobre, nous avons rendu 25 clips vidéo sur un GPU loué à l'heure. Cinq heures au total : 2,8 heures à calculer, 2,2 heures à attendre. Un GPU qui attend se paie comme un GPU qui travaille. Ce chiffre est dans la décision 078, et il m'a fait comprendre quelque chose de simple : le calcul lui-même n'est pas le problème. On le paie une fois. Ce qu'on paie plusieurs fois, c'est l'attente et le chargement.
 
 Le chargement, justement. Un modèle vidéo de 57 Go met 129 secondes à se charger depuis le disque réseau. À chaque démarrage à froid, l'utilisateur regarde un écran qui ne bouge pas.
 
@@ -210,6 +210,6 @@ D'où l'ordre qui s'est imposé : d'abord l'attente, ensuite le chargement, ensu
 
 L'infrastructure a deux mots d'ordre. Le premier : la portabilité, d'abord pour chez soi. Ce qui tourne sur un Mac ou sur une machine Linux avec une carte NVIDIA doit tourner sans compte cloud. Le second : le coût dans le cloud, avec la plus faible latence possible. Chaque levier est écrit comme une estimation tant qu'il n'est pas mesuré sur un vrai GPU : le GPU serverless qui descend à zéro au repos, le chargement plus rapide, le cache, le calcul plus rapide, sans date.
 
-Tout est regroupé dans un seul jalon, [Infra portability](https://github.com/krizaka/orazaka/milestone/4), qui court sur quatre dépôts. Aucune date.
+Tout est regroupé dans un seul jalon, [Infra portability](repo:sovkora/milestone/4), qui court sur quatre dépôts. Aucune date.
 
 Chaque chiffre vaut pour ce montage, les 15 et 16 octobre 2026. Je remesure quand le montage change.

@@ -5,7 +5,7 @@ import { getDictionary, localizedPath, type Locale } from "./i18n";
 import type { Post } from "./posts";
 import { seriesNode } from "./series.ts";
 import { faqOf, metaDescription, titleTag } from "./reading.ts";
-import { INDEXING_ENABLED, ORGANIZATION_ID, SITE_URL } from "./site";
+import { INDEXING_ENABLED, KRIZAKA_URL, ORGANIZATION_ID, SITE_URL } from "./site";
 
 export const absoluteUrl = (locale: Locale, path: string) => `${SITE_URL}${localizedPath(locale, path)}`;
 export const postPath = (slug: string) => `/basics/${slug}`;
@@ -82,7 +82,7 @@ export function pageMetadata(opts: {
 }
 
 const org = { "@id": ORGANIZATION_ID };
-const publisher = { "@type": "Organization", "@id": ORGANIZATION_ID, name: "Krizaka", url: "https://www.krizaka.com" };
+const publisher = { "@type": "Organization", "@id": ORGANIZATION_ID, name: "Krizaka", url: KRIZAKA_URL };
 export const blogId = (locale: Locale) => `${absoluteUrl(locale, "/")}#blog`;
 export const authorId = (author: string) => `${SITE_URL}/#author-${author}`;
 

@@ -19,9 +19,10 @@ import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import matter from "gray-matter";
+import { siteUrl } from "../lib/links.ts";
 import { coverOf, withRenderedEmails } from "./newsletter-email.mjs";
 
-const SITE = "https://blog.krizaka.com";
+const SITE = siteUrl("blog");
 const LOCALES = ["en", "fr"];
 const pageUrl = (locale, path) => `${SITE}${locale === "fr" ? "/fr" : ""}${path}`;
 /* A post lives at /basics/<slug>/, a story chapter (content/chapters) at /story/<slug>/; both are e-mailed once, keyed by slug
