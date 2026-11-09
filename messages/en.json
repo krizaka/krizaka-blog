@@ -14,7 +14,10 @@
   },
   "footer": {
     "aria": "Footer",
-    "status": { "development": "In development", "paused": "Paused" },
+    "status": {
+      "development": "In development",
+      "paused": "Paused"
+    },
     "products": "Products",
     "openSourceColumn": "Open source",
     "allOpenSource": "All of open source",
@@ -399,5 +402,93 @@
     "category": "Item",
     "value": "Value",
     "total": "Total"
+  },
+  "train": {
+    "caption": "Fig. — the merge train: one pull request lands at a time",
+    "gate": "the queue",
+    "legend": {
+      "queue": "waiting",
+      "merged": "merged on main",
+      "siding": "set aside",
+      "green": "check green",
+      "red": "check red",
+      "running": "check running"
+    },
+    "beats": {
+      "start": "The queue is empty.",
+      "enter": "{pr} joins the queue.",
+      "running": "{pr} runs its checks.",
+      "green": "{pr} is green.",
+      "red": "{pr}'s check is red.",
+      "sideline": "{pr} is set aside: {reason}.",
+      "merge": "{pr} merges and the line advances.",
+      "done": "Two merged, one set aside — no red ever blocked the others."
+    },
+    "reasons": {
+      "flaky": "a flaky test",
+      "types": "a type error",
+      "rebase": "needs a rebase",
+      "review": "a review thread still open"
+    },
+    "controls": {
+      "play": "Play",
+      "pause": "Pause",
+      "prev": "Previous beat",
+      "next": "Next beat",
+      "restart": "Restart",
+      "progress": "{k} / {n}"
+    },
+    "textTitle": "What happens, in order"
+  },
+  "board": {
+    "caption": "Fig. — the team board: a claim with no fact behind it shows “unproven”",
+    "columns": {
+      "team": "team",
+      "lane": "lane",
+      "ticket": "ticket",
+      "claim": "claim"
+    },
+    "teams": {
+      "sovkora": {
+        "name": "Sovkora",
+        "lane": "the engine"
+      },
+      "site": {
+        "name": "krizaka.com",
+        "lane": "the site"
+      },
+      "security": {
+        "name": "Security",
+        "lane": "watch"
+      },
+      "marketing": {
+        "name": "Marketing",
+        "lane": "reach"
+      },
+      "tooling": {
+        "name": "Tooling",
+        "lane": "the machine"
+      },
+      "blog": {
+        "name": "Blog",
+        "lane": "the story"
+      }
+    },
+    "proven": "proven",
+    "unproven": "unproven",
+    "reveal": "Land the waiting facts",
+    "revealed": "Every claim now has its fact"
+  },
+  "mouloud": {
+    "caption": "Fig. — Mouloud, the Gabonese grey parrot that pilots the work",
+    "code": "KZ-27",
+    "species": "Psittacus erithacus",
+    "speciesLabel": "species",
+    "roleLabel": "role",
+    "role": "chief technical officer",
+    "habitLabel": "plumage",
+    "habit": "grey, red tail",
+    "status": "the CTO",
+    "promise": "Listens, remembers, and repeats only what is true."
   }
 }

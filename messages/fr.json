@@ -14,7 +14,10 @@
   },
   "footer": {
     "aria": "Pied de page",
-    "status": { "development": "En développement", "paused": "En pause" },
+    "status": {
+      "development": "En développement",
+      "paused": "En pause"
+    },
     "products": "Produits",
     "openSourceColumn": "Open source",
     "allOpenSource": "Tout l’open source",
@@ -399,5 +402,93 @@
     "category": "Élément",
     "value": "Valeur",
     "total": "Total"
+  },
+  "train": {
+    "caption": "Fig. — le train de fusion : une pull request passe à la fois",
+    "gate": "la file",
+    "legend": {
+      "queue": "en attente",
+      "merged": "fusionnée sur main",
+      "siding": "mise de côté",
+      "green": "contrôle au vert",
+      "red": "contrôle au rouge",
+      "running": "contrôle en cours"
+    },
+    "beats": {
+      "start": "La file est vide.",
+      "enter": "{pr} entre dans la file.",
+      "running": "{pr} passe ses contrôles.",
+      "green": "{pr} est au vert.",
+      "red": "Le contrôle de {pr} est au rouge.",
+      "sideline": "{pr} est mise de côté : {reason}.",
+      "merge": "{pr} fusionne et la file avance.",
+      "done": "Deux fusionnées, une mise de côté — aucun rouge n’a jamais bloqué les autres."
+    },
+    "reasons": {
+      "flaky": "un test instable",
+      "types": "une erreur de type",
+      "rebase": "un rebase à faire",
+      "review": "un fil de revue encore ouvert"
+    },
+    "controls": {
+      "play": "Lire",
+      "pause": "Pause",
+      "prev": "Temps précédent",
+      "next": "Temps suivant",
+      "restart": "Recommencer",
+      "progress": "{k} / {n}"
+    },
+    "textTitle": "Ce qui se passe, dans l’ordre"
+  },
+  "board": {
+    "caption": "Fig. — le tableau de l’équipe : une affirmation sans fait affiche « non prouvé »",
+    "columns": {
+      "team": "équipe",
+      "lane": "voie",
+      "ticket": "ticket",
+      "claim": "affirmation"
+    },
+    "teams": {
+      "sovkora": {
+        "name": "Sovkora",
+        "lane": "le moteur"
+      },
+      "site": {
+        "name": "krizaka.com",
+        "lane": "le site"
+      },
+      "security": {
+        "name": "Sécurité",
+        "lane": "la veille"
+      },
+      "marketing": {
+        "name": "Marketing",
+        "lane": "la portée"
+      },
+      "tooling": {
+        "name": "Outillage",
+        "lane": "la machine"
+      },
+      "blog": {
+        "name": "Blog",
+        "lane": "l’histoire"
+      }
+    },
+    "proven": "prouvé",
+    "unproven": "non prouvé",
+    "reveal": "Faire apparaître les faits en attente",
+    "revealed": "Chaque affirmation a maintenant son fait"
+  },
+  "mouloud": {
+    "caption": "Fig. — Mouloud, le perroquet gris du Gabon qui pilote le travail",
+    "code": "KZ-27",
+    "species": "Psittacus erithacus",
+    "speciesLabel": "espèce",
+    "roleLabel": "rôle",
+    "role": "directeur technique",
+    "habitLabel": "plumage",
+    "habit": "gris, queue rouge",
+    "status": "le CTO",
+    "promise": "Écoute, retient, et ne répète que ce qui est vrai."
   }
 }

@@ -58,6 +58,14 @@ test("a cover without a srcset, an AVIF source, a high priority or a preload is 
   assert.equal(coverProblems("<html><body><h1>x</h1></body></html>").length, 1, "a post page has a cover");
 });
 
+test("a draft basics page does not need a cover; a published one does (krizaka-blog#2912)", () => {
+  const draftBasics = page({ body: '<h1>Title</h1><p class="bl-draft">Draft notice</p>' });
+  assert.deepEqual(pageProblems(draftBasics, "basics/my-post/"), [], "draft basics: no cover required");
+  assert.deepEqual(pageProblems(draftBasics, "fr/basics/my-post/"), [], "FR draft basics: no cover required");
+  assert.match(pageProblems(page(), "basics/my-post/").join(), /cover/, "published basics: cover required");
+  assert.match(pageProblems(page(), "fr/basics/my-post/").join(), /cover/, "FR published basics: cover required");
+});
+
 /* A retired post's stub (app/components/pages/RetiredPost.tsx, exported as the static page at the old address): it has no title,
    no description and no h1, so it is checked as a stub: a 0-second refresh, a canonical to the same address, noindex, and a
    visible link. The article checks stay on every live post. */
