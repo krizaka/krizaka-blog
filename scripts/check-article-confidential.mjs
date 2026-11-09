@@ -33,7 +33,17 @@ const privateRepoLink = new RegExp(`github\\.com/krizaka/(${PRIVATE_REPOS.join("
 
 /** A real pull-request or issue reference: `#1234`, `PR 1234`, `issue 1234`, or a `/pull/1234` URL. The simulation uses one
     or two digits (« PR 1 »), so three digits or more in this shape is a real number that must not reach a public figure. */
-const REAL_TICKET = /(?:#|\bPR\s*#?|\bpull request\s*#?|\bissues?\s*#?)\s?\d{3,}\b|\/(?:pull|issues)\/\d+/i;
+const REAL_TICKETS = [/#\s?\d{3,}\b/, /\b(?:PR|pull request|issues?)\s*#?\s?\d{3,}\b/i, /\/(?:pull|issues)\/\d+/];
+const realTicket = (text) => REAL_TICKETS.map((re) => text.match(re)?.[0]).find(Boolean) ?? null;
+
+/** The first e-mail address in `text`, found word by word so that no pattern can backtrack over a long run of characters. */
+function firstEmail(text) {
+  for (const word of text.split(/[\s<>()"'`,;:]+/)) {
+    const at = word.indexOf("@");
+    if (at > 0 && /[\w.+-]$/.test(word.slice(0, at)) && /^[\w-]+\.[a-z]{2,}/i.test(word.slice(at + 1))) return word;
+  }
+  return null;
+}
 
 /** Each rule is `[matcher, what]`; a matcher is a RegExp or `(text) => first match | null`. */
 const RULES = [
@@ -42,9 +52,9 @@ const RULES = [
   [/\bkrizaka-internal\b/, "the internal repository name"],
   [/\bkrizaka-restricted\b/, "the restricted repository name"],
   [/(^|[^\w-])(env|vault|inbox|prompts)\/[\w.-]/, "a folder name of the private workspace (env/, vault/, inbox/…)"],
-  [/[\w.+-]+@[\w-]+\.[a-z]{2,}\b/i, "an e-mail address"],
+  [firstEmail, "an e-mail address"],
   [/\b(sk|pk|rk)[-_](live|test|ant|proj)?[-_]?[A-Za-z0-9]{20,}/, "a key-looking value"],
-  [REAL_TICKET, "a number that looks like a real pull request or issue (use a fictional « PR 1 »)"],
+  [realTicket, "a number that looks like a real pull request or issue (use a fictional « PR 1 »)"],
   [privateRepoLink, "a link to a private repository of the org"],
 ];
 
