@@ -18,6 +18,8 @@ import { Utilization } from "./Utilization";
 import { Train } from "./Train";
 import { TeamBoard } from "./TeamBoard";
 import { MouloudPlate } from "./MouloudPlate";
+import { CockpitTour } from "./CockpitTour";
+import { C4Zoom } from "./C4Zoom";
 import { trainFrames } from "@/lib/train-sim";
 import { BOARD } from "@/lib/team-board";
 
@@ -70,6 +72,10 @@ export function mdxComponentsFor(locale: Locale) {
     TeamBoard: ({ label }: { label?: string }) => <TeamBoard board={[...BOARD]} labels={d.board} label={label} />,
     /* Mouloud's specimen portrait, the grey parrot that pilots: <Mouloud label?/>. */
     Mouloud: ({ label }: { label?: string }) => <MouloudPlate labels={d.mouloud} label={label} />,
+    /* The cockpit's screens grouped and clickable (lib/cockpit-tour.ts): <CockpitTour label?/>. Click a screen to see its mock. */
+    CockpitTour: ({ label }: { label?: string }) => <CockpitTour labels={d.cockpitTour} label={label} />,
+    /* C4 architecture zoom on a fictional system (lib/c4-zoom.ts): <C4Zoom label?/>. Click to drill from C1 to C4. */
+    C4Zoom: ({ label }: { label?: string }) => <C4Zoom labels={d.c4Zoom} label={label} />,
     pre: ({ children, ...rest }: ComponentProps<"pre">) => {
       const block = fenced(children);
       return block ? (
