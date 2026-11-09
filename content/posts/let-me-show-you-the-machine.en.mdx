@@ -35,6 +35,22 @@ The cockpit's rule is simple: a claim with no fact behind it is not true. Until 
 
 Make the facts appear: the labels lift one by one. That is the only thing the screen shows, and it is the only thing it needed to show.
 
+## The full tour
+
+The board is only one of the cockpit's seventeen screens. The others cover costs, architecture, rules, storage and secrets — each screen answers one precise question, with no real value in the code. Pick a group, click a screen, see what it shows.
+
+<CockpitTour />
+
+## Architecture from the code
+
+The Architecture screen does something hand-drawn diagrams cannot: it is pulled from the code on main. It shows the current state and the target side by side, level by level — the same zoom as below, applied to Krizaka.
+
+The C4 model cuts a system into four levels: Context (who uses what), Containers (the main pieces that run), Components (what is inside a container), Code (classes and functions). Clicking a node zooms into the next level. The data here is fictional — the system is Floricel, a local florist booking tool.
+
+<C4Zoom />
+
+Our diagram is drawn from the code on main: current state and target.
+
 ## What it costs, and how I keep it
 
 A one-person company running a team of agents has a budget. That budget exists because a session once blew past it.
@@ -66,6 +82,16 @@ This week, we moved everything into one. Sixteen repositories became one. The fi
 The price of this move was predictable, and it still surprised: the development deployment broke on the first day because the web service image had not been rebuilt. It took a day to get back to green. I could have avoided it by checking what still pointed at those repositories before moving them. That is now a rule.
 
 Does it deliver faster? I do not know yet. The first deliveries after the move were done by hand, which makes the numbers unusable. I will measure once the train is running normally.
+
+## What this week taught me
+
+This week we moved a lot of things at once, and the same accident happened five times. You rename a repository, a domain or a folder in one place, and somewhere else something keeps calling the old name. A test goes red, a deployment stops starting, a published chapter points at nothing. No agent was wrong on its own ticket. Nobody was looking at who depended on that name. The lesson goes into the tool: before renaming, search everywhere for what uses it.
+
+One evening the development deployment said "active", the pages answered, the sign-in test passed. I announced it was done. It was not: the platform had failed to start the new version and had put the old one back by itself. Everything I checked was true, about the wrong version. Now the first question is: which commit is being served, right now?
+
+Sessions are wrong with confidence too. One told me everything was green while continuous integration said the opposite. It is not bad faith, it is what happens when you review yourself. I no longer believe a report: I read the proof.
+
+And automation keeps spending when you are not looking. That is why the cockpit exists, in the end. A screen that shows a fact beats an impression, especially at the end of a long day.
 
 ## The deadline can move, the quality never
 

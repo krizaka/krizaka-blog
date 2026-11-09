@@ -22,12 +22,16 @@ export const ARTICLE_FILES = [
   "app/components/pages/Train.tsx",
   "app/components/pages/TeamBoard.tsx",
   "app/components/pages/MouloudPlate.tsx",
+  "app/components/pages/CockpitTour.tsx",
+  "app/components/pages/C4Zoom.tsx",
   "lib/train-sim.ts",
   "lib/team-board.ts",
+  "lib/cockpit-tour.ts",
+  "lib/c4-zoom.ts",
 ];
 
 /** The message subtrees the figures draw their words from (scanned as text). */
-export const FIGURE_MESSAGE_KEYS = ["train", "board", "mouloud"];
+export const FIGURE_MESSAGE_KEYS = ["train", "board", "mouloud", "cockpitTour", "c4Zoom"];
 
 const privateRepoLink = new RegExp(`github\\.com/krizaka/(${PRIVATE_REPOS.join("|")})\\b`);
 

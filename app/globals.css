@@ -2271,3 +2271,137 @@ picture {
     animation: none;
   }
 }
+
+/* The cockpit tour and the C1 to C4 zoom (app/components/pages/CockpitTour.tsx, C4Zoom.tsx): the same plate as the train. */
+.bl-cockpit-tour,
+.bl-c4zoom {
+  margin: 2.25rem 0;
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+.bl-ctour-groups,
+.bl-c4zoom-levels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin: 0 0 0.875rem;
+  padding: 0 0 0.5rem;
+  list-style: none;
+  border-bottom: 1px solid var(--kz-border-default);
+}
+.bl-ctour-group-tab {
+  padding: 0.25rem 0;
+  border: 0;
+  background: none;
+  color: var(--kz-text-muted);
+  font-family: var(--kz-font-mono);
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+.bl-ctour-group-tab[aria-selected="true"] {
+  color: var(--kz-accent-text);
+  box-shadow: 0 2px 0 var(--kz-accent);
+}
+.bl-c4zoom-level {
+  color: var(--kz-text-muted);
+  font-family: var(--kz-font-mono);
+  font-size: 0.8125rem;
+}
+.bl-c4zoom-level[aria-current],
+.bl-c4zoom-level[data-active="true"] {
+  color: var(--kz-accent-text);
+}
+.bl-c4zoom-path,
+.bl-c4zoom-note,
+.bl-c4zoom-text {
+  margin: 0 0 0.75rem;
+  color: var(--kz-text-secondary, var(--kz-text-muted));
+  font-size: 0.875rem;
+}
+.bl-c4zoom ul.bl-c4zoom-grid {
+  margin: 0;
+  padding: 0;
+}
+.bl-c4zoom-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+  gap: 0.625rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bl-c4zoom-node {
+  display: grid;
+  align-content: start;
+  gap: 0.375rem;
+  padding: 0.75rem;
+  border: 1px solid var(--kz-border-strong, var(--kz-border-default));
+  background: var(--kz-surface-0, var(--kz-surface-1));
+}
+.bl-c4zoom-node-label {
+  color: var(--kz-text-primary);
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+.bl-c4zoom-node-tech {
+  color: var(--kz-text-muted);
+  font-family: var(--kz-font-mono);
+  font-size: 0.75rem;
+}
+.bl-c4zoom-btn,
+.bl-c4zoom-back {
+  justify-self: start;
+  padding: 0.125rem 0;
+  border: 0;
+  background: none;
+  color: var(--kz-accent-text);
+  font-family: var(--kz-font-mono);
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+.bl-ctour-screens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin: 0 0 0.875rem;
+}
+.bl-ctour-screen-btn {
+  padding: 0.3125rem 0.625rem;
+  border: 1px solid var(--kz-border-default);
+  background: none;
+  color: var(--kz-text-primary);
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+.bl-ctour-screen-btn[aria-pressed="true"] {
+  border-color: var(--kz-accent);
+  background: var(--kz-accent);
+  color: var(--kz-surface-0, var(--kz-surface-1));
+}
+.bl-ctour-mock {
+  padding: 0.875rem;
+  border: 1px solid var(--kz-border-strong, var(--kz-border-default));
+  background: var(--kz-surface-0, var(--kz-surface-1));
+}
+.bl-ctour-hint {
+  margin: 0 0 0.625rem;
+  color: var(--kz-text-secondary, var(--kz-text-muted));
+  font-size: 0.875rem;
+}
+.bl-ctour-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.bl-ctour-table td {
+  padding: 0.3125rem 0;
+  border-top: 1px solid var(--kz-border-default);
+  color: var(--kz-text-primary);
+  overflow-wrap: anywhere;
+}
+.bl-ctour-val {
+  color: var(--kz-text-muted);
+  font-family: var(--kz-font-mono);
+  text-align: end;
+}

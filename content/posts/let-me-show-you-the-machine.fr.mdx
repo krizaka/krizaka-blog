@@ -35,6 +35,22 @@ La règle du cockpit est simple : une affirmation sans fait derrière elle n'est
 
 Faites apparaître les faits : les étiquettes se lèvent une à une. C'est la seule chose que l'écran montre, et c'est la seule chose qu'il fallait.
 
+## Le tour complet
+
+Le tableau de bord n'est qu'un des dix-sept écrans du cockpit. Les autres s'occupent des coûts, de l'architecture, des règles, du stockage et des secrets — chaque écran répond à une question précise, sans valeur réelle dans le code. Choisissez un groupe, cliquez sur un écran, voyez ce qu'il affiche.
+
+<CockpitTour />
+
+## L'architecture vue du code
+
+L'écran Architecture fait une chose que les diagrammes dessinés à la main ne font pas : il est tiré du code sur main. Il montre l'état actuel et la cible côte à côte, niveau par niveau — le même zoom que ci-dessous, appliqué à Krizaka.
+
+Le modèle C4 découpe un système en quatre niveaux : le Contexte (qui utilise quoi), les Conteneurs (les grandes pièces qui tournent), les Composants (ce qu'il y a à l'intérieur d'un conteneur), le Code (les classes et les fonctions). Cliquer sur un nœud zoome vers le niveau suivant. Les données ici sont fictives — le système s'appelle Floricel, un outil de réservation pour fleuriste.
+
+<C4Zoom />
+
+Notre diagramme est tiré du code sur main : état actuel et cible.
+
 ## Ce que ça coûte, et comment je le tiens
 
 Une entreprise d'un seul qui fait tourner une équipe d'agents, ça a un budget. Ce budget existe parce qu'une session l'a un jour fait exploser.
@@ -66,6 +82,16 @@ Cette semaine, nous avons tout mis dans un seul. Seize dépôts sont devenus un.
 Le prix de ce mouvement était prévisible, et il a quand même surpris : le déploiement de développement s'est cassé le premier jour parce que l'image du service web n'avait pas été reconstruite. Il a fallu une journée pour revenir au vert. J'aurais pu l'éviter en vérifiant ce qui pointait encore vers ces dépôts avant de les déplacer. C'est devenu une règle.
 
 Est-ce que ça livre plus vite ? Je ne sais pas encore. Les premières livraisons après le déménagement étaient faites à la main, ce qui rend les chiffres inutilisables. Je mesurerai une fois que le train tourne normalement.
+
+## Ce que cette semaine m'a appris
+
+Cette semaine, on a déménagé beaucoup de choses d'un coup, et le même accident est arrivé cinq fois. On renomme un dépôt, un domaine ou un dossier à un endroit, et ailleurs quelque chose continue d'appeler l'ancien nom. Un test devient rouge, un déploiement ne démarre plus, un chapitre publié pointe dans le vide. Aucun agent n'avait tort sur son ticket. Personne ne regardait qui dépendait de ce nom. La leçon va dans l'outil : avant de renommer, on cherche partout ce qui s'en sert.
+
+Un soir, le déploiement de développement affichait « actif », les pages répondaient, le test de connexion passait. J'ai annoncé que c'était bon. C'était faux : la plateforme avait échoué à démarrer la nouvelle version et avait remis l'ancienne toute seule. Tout ce que je vérifiais était vrai, mais sur la mauvaise version. Maintenant, la première question est : quel commit est servi, là, en ce moment ?
+
+Les sessions se trompent aussi avec aplomb. L'une m'a écrit que tout était vert pendant que l'intégration continue disait le contraire. Ce n'est pas de la mauvaise foi, c'est ce qui arrive quand on se relit soi-même. Je ne crois plus un rapport : je lis la preuve.
+
+Et l'automatisation continue de dépenser quand on ne regarde pas. C'est pour ça que le cockpit existe, au fond. Un écran qui montre un fait vaut mieux qu'une impression, surtout à la fin d'une longue journée.
 
 ## L'échéance peut bouger, la qualité jamais
 
