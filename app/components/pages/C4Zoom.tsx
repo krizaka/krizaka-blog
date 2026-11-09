@@ -48,9 +48,9 @@ export function C4Zoom({ labels, label }: Readonly<{ labels: Labels; label?: str
         )}
 
         {/* Nodes */}
-        <div className="bl-c4zoom-grid" role="list">
+        <ul className="bl-c4zoom-grid">
           {nodes.map((node) => (
-            <div key={node.id} className="bl-c4zoom-node" role="listitem">
+            <li key={node.id} className="bl-c4zoom-node">
               <div className="bl-c4zoom-node-label">{node.label}</div>
               {node.tech && <div className="bl-c4zoom-node-tech">{node.tech}</div>}
               {node.zoomable && (
@@ -63,9 +63,9 @@ export function C4Zoom({ labels, label }: Readonly<{ labels: Labels; label?: str
                   {labels.zoomIn} ›
                 </button>
               )}
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
 
         {/* Back button */}
         {canBack && (

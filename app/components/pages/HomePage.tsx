@@ -4,7 +4,7 @@ import { PageHero } from "@krizaka/ui/page-hero";
 import { ChapterIndex } from "@krizaka/ui/chapter";
 import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
 import { chapterNumber, chaptersOf } from "@/lib/chapters";
-import { latestChapter, latestFeatured, storyRows } from "@/lib/home";
+import { latestFeatured, storyRows } from "@/lib/home";
 import { postsOf } from "@/lib/posts";
 import { chapterPath, postPath } from "@/lib/seo";
 import { coverOf, type Cover } from "@/lib/media";

@@ -151,7 +151,7 @@ export const GROUPS: readonly ScreenGroup[] = GROUP_IDS.map((id) => ({
 export function tourProblems(): string[] {
   const out: string[] = [];
   for (const id of SCREEN_IDS) {
-    if (!SCREENS.find((s) => s.id === id)) out.push(`screen "${id}" missing from SCREENS`);
+    if (!SCREENS.some((s) => s.id === id)) out.push(`screen "${id}" missing from SCREENS`);
     if (!MOCK_DATA[id]) out.push(`screen "${id}" missing from MOCK_DATA`);
   }
   for (const g of GROUPS) {

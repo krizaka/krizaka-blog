@@ -96,12 +96,12 @@ export function c4Problems(): string[] {
   if (C1_NODES.length === 0) out.push("C1 has no nodes");
   if (C2_NODES.length === 0) out.push("C2 has no nodes");
   for (const [id, nodes] of Object.entries(C3_BY_CONTAINER)) {
-    if (!C2_NODES.find((n) => n.id === id)) out.push(`C3 parent "${id}" not in C2`);
+    if (!C2_NODES.some((n) => n.id === id)) out.push(`C3 parent "${id}" not in C2`);
     if (nodes.length === 0) out.push(`C3 container "${id}" has no components`);
   }
   for (const [id, nodes] of Object.entries(C4_BY_COMPONENT)) {
     const allC3 = Object.values(C3_BY_CONTAINER).flat();
-    if (!allC3.find((n) => n.id === id)) out.push(`C4 parent "${id}" not in any C3`);
+    if (!allC3.some((n) => n.id === id)) out.push(`C4 parent "${id}" not in any C3`);
     if (nodes.length === 0) out.push(`C4 component "${id}" has no code elements`);
   }
   const zoomableC2 = C2_NODES.filter((n) => n.zoomable).map((n) => n.id);

@@ -31,12 +31,13 @@ export function latestFeatured<C extends StoryChapter, P extends Dated>(
     ...chapters.map((item) => ({ kind: "chapter" as const, item })),
     ...posts.map((item) => ({ kind: "post" as const, item })),
   ];
-  return all.sort((a, b) => {
+  all.sort((a, b) => {
     const dt = publishedTime(b.item) - publishedTime(a.item);
     if (dt !== 0) return dt;
     if (a.kind === "chapter" && b.kind === "chapter") return b.item.chapter - a.item.chapter;
     return a.kind === "chapter" ? -1 : 1;
-  })[0];
+  });
+  return all[0];
 }
 
 /** Every chapter in reading order (newest first by number), excluding the Featured chapter when one is explicitly given.
