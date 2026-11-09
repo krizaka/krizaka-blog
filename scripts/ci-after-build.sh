@@ -4,6 +4,14 @@
 # contract, the links, the layout in a real browser, the feeds, the Open Graph images and the stubs of removed addresses.
 set -euo pipefail
 
+# A pinned download: a hiccup of the host is retried (GitHub answered 504 on epubcheck and froze the repository, krizaka-internal#2962),
+# a wrong file never passes, the checksum still decides.
+fetch_pinned() {
+  local url="$1" dest="$2" sum="$3"
+  curl --proto "=https" --tlsv1.2 -fsSL --retry 5 --retry-delay 10 --retry-all-errors --connect-timeout 20 -o "$dest" "$url"
+  echo "$sum  $dest" | sha256sum -c -
+}
+
 echo "::group::Closed means closed"
 grep -q "Disallow: /$" out/robots.txt
 grep -q 'name="robots" content="noindex' out/index.html
@@ -43,13 +51,11 @@ echo "::endgroup::"
 echo "::group::Downloads: the EPUB and the PDF of every chapter and of the series, in each language, each checked"
 # pandoc 3.13 (the EPUB), pinned by its checksum; Chromium (the PDF) is the one Playwright installed above.
 if ! command -v pandoc >/dev/null || [[ "$(pandoc --version | head -1)" != "pandoc 3.13" ]]; then
-  curl --proto "=https" --tlsv1.2 -fsSL -o /tmp/pandoc.deb https://github.com/jgm/pandoc/releases/download/3.13/pandoc-3.13-1-amd64.deb
-  echo "7e3736f255090296ca5d1a14291a76b9b3c43cd385011b1621a4d0c16091a70f  /tmp/pandoc.deb" | sha256sum -c -
+  fetch_pinned https://github.com/jgm/pandoc/releases/download/3.13/pandoc-3.13-1-amd64.deb /tmp/pandoc.deb 7e3736f255090296ca5d1a14291a76b9b3c43cd385011b1621a4d0c16091a70f
   sudo dpkg -i /tmp/pandoc.deb
 fi
 # epubcheck 5.2.1 (W3C, Java is on the runner): every EPUB must validate with no error and no warning (gen-downloads runs it).
-curl --proto "=https" --tlsv1.2 -fsSL -o /tmp/epubcheck.zip https://github.com/w3c/epubcheck/releases/download/v5.2.1/epubcheck-5.2.1.zip
-echo "0532f6291faa2bb729dd253f958868a2a57dbd2c32f881a97c7c980c5940309e  /tmp/epubcheck.zip" | sha256sum -c -
+fetch_pinned https://github.com/w3c/epubcheck/releases/download/v5.2.1/epubcheck-5.2.1.zip /tmp/epubcheck.zip 0532f6291faa2bb729dd253f958868a2a57dbd2c32f881a97c7c980c5940309e
 unzip -q -o /tmp/epubcheck.zip -d /tmp
 EPUBCHECK_JAR=/tmp/epubcheck-5.2.1/epubcheck.jar node scripts/gen-downloads.mjs --out downloads-out
 node scripts/gen-downloads.mjs check
