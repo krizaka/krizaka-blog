@@ -19,7 +19,7 @@ jobs:
   post-deploy:
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/post-deploy.yml@79f6ff6292edefebc59fc968dbc2c203da81c3ea
+    uses: krizaka/.github/.github/workflows/post-deploy.yml@d58e10b1c64ceda9ed2e7a2e1fe868d8b163ae73
     secrets:
       RELEASE_APP_PRIVATE_KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }} # the org app that files a red check in krizaka-internal
     with:
