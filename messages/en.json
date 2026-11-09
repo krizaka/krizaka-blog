@@ -493,7 +493,7 @@
     "promise": "Listens, remembers, and repeats only what is true."
   },
   "cockpitTour": {
-    "caption": "Fig. — the cockpit: seventeen screens, four groups",
+    "caption": "The cockpit: seventeen screens, four groups",
     "groups": {
       "pilotage": "Steering",
       "entreprise": "Company",
@@ -574,7 +574,7 @@
     }
   },
   "c4Zoom": {
-    "caption": "Fig. — a C4 diagram: click to zoom, C1 → C4",
+    "caption": "A C4 diagram: click to zoom, C1 → C4",
     "levels": {
       "c1": "Context",
       "c2": "Containers",
@@ -583,6 +583,6 @@
     },
     "back": "Back",
     "zoomIn": "Zoom in",
-    "note": "Our diagram is drawn from the code on main: current state and target, updated on every push."
+    "note": "Our diagram is drawn from the code on main: current state and target."
   }
 }

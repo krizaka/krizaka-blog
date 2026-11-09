@@ -2319,6 +2319,10 @@ picture {
   color: var(--kz-text-secondary, var(--kz-text-muted));
   font-size: 0.875rem;
 }
+.bl-c4zoom ul.bl-c4zoom-grid {
+  margin: 0;
+  padding: 0;
+}
 .bl-c4zoom-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));

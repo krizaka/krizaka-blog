@@ -493,7 +493,7 @@
     "promise": "Écoute, retient, et ne répète que ce qui est vrai."
   },
   "cockpitTour": {
-    "caption": "Fig. — le cockpit : dix-sept écrans, quatre groupes",
+    "caption": "Le cockpit : dix-sept écrans, quatre groupes",
     "groups": {
       "pilotage": "Pilotage",
       "entreprise": "Entreprise",
@@ -574,7 +574,7 @@
     }
   },
   "c4Zoom": {
-    "caption": "Fig. — un diagramme C4 : cliquer pour zoomer, C1 → C4",
+    "caption": "Un diagramme C4 : cliquer pour zoomer, C1 → C4",
     "levels": {
       "c1": "Contexte",
       "c2": "Conteneurs",
@@ -583,6 +583,6 @@
     },
     "back": "Retour",
     "zoomIn": "Zoomer",
-    "note": "Notre diagramme est tiré du code sur main : état actuel et cible, remis à jour à chaque push."
+    "note": "Notre diagramme est tiré du code sur main : état actuel et cible."
   }
 }

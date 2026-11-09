@@ -30,22 +30,22 @@ export type Screen = { id: ScreenId; group: GroupId };
 
 export const SCREENS: readonly Screen[] = [
   { id: "today", group: "pilotage" },
-  { id: "board", group: "pilotage" },
-  { id: "costs", group: "pilotage" },
-  { id: "automation", group: "pilotage" },
+  { id: "board", group: "produits" },
+  { id: "costs", group: "entreprise" },
+  { id: "automation", group: "produits" },
   { id: "company", group: "entreprise" },
   { id: "business", group: "entreprise" },
-  { id: "organisation", group: "entreprise" },
+  { id: "organisation", group: "produits" },
   { id: "architecture", group: "produits" },
   { id: "conformance", group: "produits" },
   { id: "quality", group: "produits" },
-  { id: "workspace", group: "produits" },
-  { id: "documents", group: "machine" },
+  { id: "workspace", group: "machine" },
+  { id: "documents", group: "pilotage" },
   { id: "storage", group: "machine" },
   { id: "commands", group: "machine" },
   { id: "secrets", group: "machine" },
-  { id: "kpi", group: "machine" },
-  { id: "community", group: "machine" },
+  { id: "kpi", group: "produits" },
+  { id: "community", group: "entreprise" },
 ];
 
 export type MockRow = { label: string; value: string };
