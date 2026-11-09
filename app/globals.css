@@ -2377,7 +2377,7 @@ picture {
 .bl-ctour-screen-btn[aria-pressed="true"] {
   border-color: var(--kz-accent);
   background: var(--kz-accent);
-  color: var(--kz-on-accent, var(--kz-surface-0, #fff));
+  color: var(--kz-surface-0, var(--kz-surface-1));
 }
 .bl-ctour-mock {
   padding: 0.875rem;
