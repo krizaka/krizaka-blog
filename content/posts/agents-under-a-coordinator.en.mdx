@@ -1,0 +1,250 @@
+---
+title: "Agents under a coordinator: what broke, and how we caught it"
+description: "A coordinator with no model in it, leases that expire, a scope held at four places, crons that wait for an event, alerts in a database. Three failed tests, then a wave that lands."
+seoTitle: "Agents under a coordinator, with the measures"
+seoDescription: "Leases, tokens, a scope held at four places, crons on events, alerts in a database: what broke during our tests, and what holds it now."
+date: 2026-11-10
+tags: [ai, integration, measurements]
+author: oussama
+draft: false
+sensitive: true
+publishedAt: "2026-11-10T03:38:55-05:00"
+cover: agents-under-a-coordinator
+coverAlt: "Ink and watercolor on paper: three birds each working at a small wooden desk of its own, apart, under one hanging lamp; an owl reads an open folder, a mallard taps a keyboard, a grey pigeon sorts cards next to a small orange parcel"
+---
+
+On the night of 9 to 10 November, around 11:30 pm, three teams of agents were working on the same page of my cockpit. Each had a small task: fix the display defects of one screen. They stopped with nothing landed. They had spent their time looking for the code, not changing it.
+
+This post is about what we built this week so that agents can work together without stepping on each other, and above all about what broke along the way. I show the failures with their numbers, because that is where I learned something. All times are Montréal time.
+
+## The problem: the check came after the code
+
+Before, an agent session took a ticket, wrote the code, then found out, when it opened its pull request, that another session had touched the same files. Each one was right on its own. Together they turned red.
+
+We measured it from 26 October to 9 November, on 10 active repositories and 1,782 pull requests. 826 of them (46 %) shared a file with another PR open at the same time. 312 PR opens were refused for overlap, with the code already written. 109 PRs (6 %) were closed without merging.
+
+The most useful detail was elsewhere: among the pairs that overlapped, 65 % shared only « collector files ». Those are the files where everyone adds a line: translations, a package's exports, generated docs, workflows. Reserve them, and all the work queues. More on that below.
+
+## Three roles, and only one decides
+
+The decision is an ADR, accepted on 9 November. Three roles:
+
+- **the planner** is Mouloud, our CTO (an agent): he validates tasks, splits them, settles what code cannot settle;
+- **the coordinator** is code with no model in it, and there is exactly one. It assigns tasks, keeps the reservations and refuses what breaks the rules. It takes no architecture decision;
+- **a session**, any agent: it gets a lease on a task, makes one bounded change and delivers a diff that can be checked.
+
+Why not a model as the coordinator? Because at that point we need a transaction, and a model is not deterministic. Why not a free chat between sessions? It is not durable, not checkable, and it costs a lot of tokens. Messages between sessions are a closed list of six kinds (« already exists », « scope extension », « blocked »…), always attached to a task, and a message is never a decision.
+
+The registry is a local SQLite database, on the Mac. It never holds code, only pointers to Git. When it and GitHub disagree on a fact, GitHub wins.
+
+<Pipeline label="A task's life: the CTO validates and sizes it, a session takes a lease, works in its worktree, every commit is checked against the scope, then tasks land one at a time on the local main.">
+  <Stage title="The CTO validates" note="size S or M, turns" tone="gate">
+    A task is born « proposed ». It needs a size (S or M), a turn cap (at most 60 for S, 120 for M) and at least one
+    « done when » line. A task of size L is refused with this message: split it, one task per screen, component or
+    concern. Nobody can take it before the CTO validates it.
+  </Stage>
+  <Stage title="A lease" note="only one wins">
+    The session claims the task. The claim is atomic: out of several claims at the same moment, exactly one wins. It gets
+    a lease, with an expiry and a token.
+  </Stage>
+  <Stage title="A worktree" note="refused without a lease" tone="gate">
+    The tool that creates the workspace refuses when there is no active lease on the task.
+  </Stage>
+  <Stage title="Commits" note="checked against the scope" tone="gate">
+    Every commit is compared with the granted scope. A file outside it is refused at the commit, not after the PR.
+  </Stage>
+  <Stage title="Landing" note="one at a time" tone="gate">
+    It refuses an expired lease, a stale token, a diff outside the scope, a failed rebase, red checks. It runs only the
+    fast checks: types, lint, tests.
+  </Stage>
+  <Stage title="Done" note="visual proof once a wave" tone="ship">
+    The task is on the local main. The visual proof (dev server and page audit) runs once, when the whole wave has
+    landed.
+  </Stage>
+</Pipeline>
+
+A task is not a ticket. The ticket follows the need; the task is what runs. One ticket can give several tasks, and one task can serve several tickets.
+
+## The lock: a lease, a heartbeat, a token
+
+A reservation that nothing enforces is only a wish. The coordinator's lock rests on three simple pieces.
+
+The **lease** has an expiry. During our last wave it ran for thirty minutes. The **heartbeat** extends it: every two minutes, the session's runner renews the lease. The **token** (a « fencing token ») is a number that goes up with every new lease. If a session falls asleep and its lease expires, the task is free again, another session can take it with a bigger token, and the old token can no longer deliver anything.
+
+<Pipeline label="The lease, the heartbeat and the token: a session whose lease expired can no longer deliver, even if it wakes up with finished work.">
+  <Stage title="Claim" note="only one wins">
+    Several sessions ask for the same task at the same moment. The database gives it to one of them, in one transaction.
+  </Stage>
+  <Stage title="Lease and token n" note="expires in 30 min">
+    The session gets the lease and token n. It works in its worktree.
+  </Stage>
+  <Stage title="Heartbeat" note="the runner, not the model">
+    Every two minutes, the program that runs the session renews the lease. The agent does not have to remember it: the
+    runner does, as long as the process lives.
+  </Stage>
+  <Stage title="The lease expires" note="the task is free again" tone="gate">
+    No more heartbeat: at expiry, the service marks the lease expired and puts the task back up for grabs. It checks every
+    30 seconds and on every request.
+  </Stage>
+  <Stage title="Lease and token n+1" note="another session">
+    A new session takes the task, with a bigger token.
+  </Stage>
+  <Stage title="Deliver with n" note="refused" tone="gate">
+    The old session wakes up and tries to deliver with token n. Refused: that token is no longer the right one.
+  </Stage>
+</Pipeline>
+
+This picture was not true the first time. On 9 November around 10:45 pm, the first wave (we call it `cockpit-1`) showed two defects. A task whose lease had expired stayed marked « in progress ». And the teams did not beat their lease: the instructions told them to, they did not. One session beat its lease once in 150 turns. The fix was to take the heartbeat out of the model and give it to the runner. A rule an agent has to remember is not a rule.
+
+## The scope, held at four places
+
+The lease says who works. The scope says on what. Every task gets a list of paths, and four places refuse what goes outside it. None of these places is inside an agent.
+
+<Layers label="A task's scope, checked at four places, from the earliest to the latest; collector files are never reserved, several tasks share them.">
+  <Layer tag="1" title="The worktree" note="The tool that creates it refuses when there is no active lease." items="no lease, no workspace" />
+  <Layer tag="2" title="The commit" note="The commit hook refuses a staged file outside the scope." items="refused before the commit exists" />
+  <Layer tag="3" title="The push" note="The push hook refuses commits outside the scope, or from an expired lease." items="nothing leaves the machine" />
+  <Layer tag="4" title="The merge" note="Locally, landing refuses a diff outside the scope; on GitHub, a required status set by the coordinator." items="the last gate" />
+  <Layer tag="—" title="Collector files" note="Never reserved: translations, a package's exports, generated docs, workflows." items="granted to several tasks at once | never block a wider path" />
+</Layers>
+
+An honest detail: today only one repository is under coordination, the cockpit's local tools. For it, the commit and the local landing do the work. The push hook and the required status on GitHub exist, but no GitHub repository is under coordination yet: we will switch them on one at a time.
+
+The collector-file rule is written in the ADR. It still broke on the first try: the coordinator refused two tasks because both touched the cockpit's translations folder. It answered « scope already held ». We saw it for real, during the wave, and fixed it the same day: the folder of a collector pattern is now granted to several live tasks.
+
+The same day, a team needed a file outside its scope. It did not touch it. It published a scope extension request, Mouloud settled it, and the need became a task of its own (task 5 of the wave). That is the intended behaviour: out-of-scope work is suspended, it does not spread.
+
+## Three tests on the same page
+
+The cockpit has an audit that opens every screen, dark and light, French and English, at several widths, and notes what overflows. On the evening of 9 November, after an upgrade of our interface library, it found 36 defects on three screens. I do not know whether they were older than the upgrade. It was a good test ground for the teams.
+
+**Test 1, one big task.** One team got the whole audit. It used up its 150 turns: 125 shell commands, 35 file reads, 3 edits. Nothing landed. What is left is a partial patch of 34 lines.
+
+**Test 2, three small tasks without analysis.** We split the audit into three S tasks, one per screen. Nothing landed either. Each team spent 25 to 39 of its roughly 55 calls reading files. Zero calls to codegraph, our code index, although it was there.
+
+**Test 3, three tasks with the analysis.** Before the launch, a read-only agent wrote a map: each defect, its file and line, and the likely fix. The teams made their first code edit between the 13th and the 17th call. Then they used up their 50 turns in the proof loop: restart the dev server, run the whole audit again, over and over. Mouloud landed the three tasks, checks green, no conflict. The audit went from 36 defects to 20.
+
+The 20 left came from two tab bars, found by measuring the rendered page with a script. Two more tasks, and the audit was green: 42 routes, 19 clean screens, dark and light, French and English.
+
+**The next wave, `cockpit-2`.** We applied the lessons: the analysis in the brief, the CTO validating and sizing, and no more visual proof inside the sessions. Four tasks in parallel (S, M, M, S), from 2:48 to 3:30 in the morning. Three landed on their own. The fourth, the Alerts screen, used up its turns, then landed after a resume of 30 turns.
+
+<Bars label="The tasks launched in each test, and what became of them: nothing lands while the task is too big or has no analysis; with the analysis and no visual proof per session, the tasks land on their own." source="Resume checkpoint of 10 November and the teams' status files. In test 3, the CTO landed the three tasks." format="integer" stacked="true" series="Landed on their own:success | Landed by the CTO or after a resume:warning | Not landed:danger" data="Test 1 · one big task=0,0,1; Test 2 · 3 tasks, no analysis=0,0,3; Test 3 · 3 tasks with analysis=0,3,0; Wave cockpit-2 · 4 tasks=3,1,0" />
+
+Test 1 shows where the time goes when a task is too big:
+
+<Bars label="The tool calls of the task that was too big (test 1), up to its 150 turns: nearly all of it spent searching and running commands, 3 code edits." source="Resume checkpoint of 10 November, review of the cockpit-1 wave; a shell command can search, run a test or start a server." format="integer" series="Calls:accent" data="Shell commands=125; File reads=35; Edits=3" />
+
+And even in the wave that worked, the teams barely used the code index:
+
+<Bars label="Calls to codegraph against searches and file reads, in the four sessions of the cockpit-2 wave: the index was given and required, one session used it." source="Each session's last line from the runner (it counts the calls itself), 10 November." format="integer" series="Calls to codegraph:accent | Searches and reads:warning" data="Trigger column=0,22; Board on demand=4,19; Media library=0,47; Alerts screen, first run=0,41" />
+
+That leaves the cost. I give no amounts here; I bring them back to the first test, which counts as 100.
+
+<Bars label="The cost of each test, brought back to test 1 (100): the cockpit-2 wave cost a quarter more than test 1, for four tasks landed instead of zero." source="Costs measured per session in the resume checkpoint of 10 November, divided by the cost of test 1. In test 3, the CTO's work to land the tasks is not counted." format="integer" series="Cost index:accent" data="Test 1 · 0 landed=100; Test 2 · 0 landed=70; Test 3 · 3 landed by the CTO=61; Wave cockpit-2 · 4 landed=127" />
+
+The single visual proof of `cockpit-2` paid off at once. The tool meant to run it failed for environment reasons, so Mouloud ran it by hand, on a copy of the tools. It found a real defect: the Alerts screen answered with an error 500, because the rows read by Node's SQLite module have no prototype. Fixed, with a test. Final audit green: 46 routes, 19 screens.
+
+## What these tests taught us
+
+<Steps>
+  <Step title="The CTO validates and splits every task">A task that is too big cannot be rescued halfway. The coordinator refuses size L.</Step>
+  <Step title="The analysis comes before the session">The file and the line, written before the launch. Without it, agents search; with it, they fix.</Step>
+  <Step title="The visual proof, once a wave">A dev server and a full audit inside every session is too heavy. We do it once, after integration.</Step>
+  <Step title="Finish locally, push once">The checks run on the machine; one push, when everything is green.</Step>
+  <Step title="Read why a check is red before sending a bigger model">A PR green on the Mac and red in CI was missing a Git identity, not intelligence.</Step>
+  <Step title="A rule an agent has to remember is not a rule">The lease's heartbeat, stopping a team, counting the calls: the runner does them.</Step>
+</Steps>
+
+Three defects of our own tooling came out during these tests too. Stopping a team stopped its service, but not the agent's process: we had to kill it by hand. It now stops the whole process group. The teams' switch was shared with another automation: to launch the teams, we had to turn the other one back on for ten seconds. The teams now have their own. And an addition to the briefs failed silently, because of a bash syntax zsh does not know; the first try of test 3 left without the map, so we stopped it and started again.
+
+## Crons: the clock against the event
+
+The Mac runs scheduled jobs: sync the ticket board, clean up worktrees, reindex the code, watch the rest. On 10 November we reread the last 20 runs of each. Most of them answered « nothing to do ».
+
+<Split label="The crons before and after the review of 10 November: on the left, what the clock started and what it found; on the right, what triggers each job now.">
+  <Side title="On the clock, before" tone="before" items="Worktree clean-up: every hour, 391 s, nearly always « kept » | Board sync: every hour, 270 s | Board cache: every 20 min, 120 s, 15 errors | Tools update: every 15 min, nearly always « already up to date » | Plugins update: every 30 min, « up to date » 99 % of the time | Architecture export: twice an hour, « tool not on main yet » | Trains export: every minute, nothing when no train runs | Code index: every 30 min, 21 repositories read again" />
+  <Side title="On an event, after" tone="after" items="Worktree clean-up: once a night | Board sync: after each merge, at the end of a session, and once a night | Board cache: on demand, only what changed | Tools and plugins: after a merge of the tooling, and when a session starts | Trains export: when a train's state changes | Architecture export: out of the crons | Code index: every 2 hours | Watchdog: local checks every 15 min, GitHub at most once an hour" />
+</Split>
+
+<Bars label="Scheduled runs per day, before and after: what ran out of habit now runs when something changed. The trains export, 1,440 runs a day before, is not drawn." source="Cron frequencies before and after the review of 10 November; runs triggered by an event are not counted." format="integer" series="Before:warning | After:success" data="Tools update=96,0; Board cache=72,0; Plugins update=48,0; Architecture export=48,0; Code index=48,12; Worktree clean-up=24,1; Board sync=24,1" />
+
+The principle is simple: the local database first. We read GitHub only for what changed, when we need it. The board cache, for example, no longer reads everything again: it asks for what moved since its last read.
+
+## An alert at 6:30 pm, handled at 12:45 am
+
+On 9 November at 6:20 pm, Mouloud put the `sync-db` cron line (it syncs our local databases, and the backup copies are made during its run) back into the managed block of the crontab. But the script had no execute permission in Git. Every run failed with exit code 126, for about six and a half hours.
+
+The watchdog saw it. At 6:30 pm it raised a CRITICAL alert, as a notification on the Mac's desktop. Nobody read it. At 12:45 am, Mouloud restored the cron with the old line, ran a sync by hand (exit 0), then added the execute bit and a guard: every tool a cron starts must be executable.
+
+It was our mistake, and the tool had caught it. What was missing was a place where the alert stays until someone deals with it. A notification shows up and goes away.
+
+Since 10 November every alert goes into one table of our operations database, and no notification is sent any more, whatever the severity. A test refuses a notification coming back. Sessions read the open alerts first when they start, Mouloud at every checkpoint, and the cockpit shows them with what was done about each.
+
+<Pipeline label="An alert's life: raised, open, acknowledged with a note, resolved with a proof, then purged seven days after it was acknowledged, never while it is open.">
+  <Stage title="Raised" note="watchdog, trains">
+    The watchdog, the train controller and the automation that unblocks PRs write a row into the table.
+  </Stage>
+  <Stage title="Open" note="read at session start">
+    The same alert coming back does not make a new row: its count goes up, with the time it was last seen. It is shown at
+    the top of every session and in the cockpit.
+  </Stage>
+  <Stage title="Acknowledged" note="who, and a note" tone="gate">
+    Someone takes it and writes what they understood. For `sync-db`, the note would have been: the script is not
+    executable.
+  </Stage>
+  <Stage title="Resolved" note="with a proof" tone="gate">
+    It is closed with a proof. For `sync-db`: a sync by hand, exit 0, and the guard added.
+  </Stage>
+  <Stage title="Purged" note="7 days later" tone="ship">
+    Seven days after it was acknowledged, the row is purged. An open alert never is.
+  </Stage>
+</Pipeline>
+
+The `sync-db` incident happened before this table existed. The picture shows what it would be today, not what happened that evening.
+
+Two more gaps came out the same week. A PR of our tooling was green on the Mac and red in CI: a test rebased in a temporary repository, and Git refused for lack of an identity. The Mac has one, the CI machine does not. The planned fix is to run the pre-push tests in an emptied environment, like CI, without Docker. And that tooling's test suite takes 263.6 seconds for 58 files, 75 of them for a single one: we will run it in parallel, and only the touched tests in the local loop.
+
+## CI: private repositories on the Mac, public ones on GitHub
+
+Public repositories get GitHub's CI at no cost. Private repositories use up minutes. The Mac already runs the agents (no Mac, no agents), so we put a runner on it for the private repositories, and only for them.
+
+<Split label="Where CI runs since 10 November: private repositories on the Mac's runner, public repositories on GitHub's machines, and what is not proven yet.">
+  <Side title="Private, on the Mac" tone="own" items="Our tooling: lint, tests and security scan on the Mac, proof done | Before: about 200 minutes a day for this repository, since 9 November | The duplicate scan on every push is gone | The tickets repository went down to 5 minutes a day | The runner updates itself" />
+  <Side title="Public, on GitHub" tone="plug" items="GitHub's machines cost a public repository nothing | Never on the Mac: a PR from a fork would run its code there | Nothing changes for them: ubuntu by default" />
+  <Side title="Not proven yet" tone="plain" items="That the billed minutes stop: to be shown before and after | An alert when the runner's version falls behind: in review | Three more private repositories, ready, wait for an organisation setting | An infrastructure workflow that carries secrets stays on GitHub, by decision" />
+</Split>
+
+The runner group allows repositories by name, never « all ». That rule is what protects the Mac.
+
+## The tool we give, and nobody uses
+
+The number that bothers me most this week is zero. In the first three tests, the teams made zero calls to codegraph, our code index, although it was given and the rules required it. In the `cockpit-2` wave, one session used it, four times. A subagent watched on its own made 2 calls for about fifteen searches by hand.
+
+We found one possible reason. RTK, the tool that summarises command output to save tokens, had cut 77 % of the search output, over 11,307 calls. An agent that gets a truncated search ends up rereading whole files. Since 10 November, search and read commands go through unfiltered. This is not a proven explanation: the runner now counts the calls to codegraph and the searches in every session, and we will see.
+
+## What others have built
+
+While doing this, I looked at what exists. The field converged this year on the same ideas as ours: leases that expire, scope reservations, access through MCP. I checked the state of each project again on 10 November.
+
+- [dibs](https://github.com/polymatx/dibs) (MIT, 2 stars, last push on 14 October): file claims with a time to live, and hooks. Its hooks let work through when the tool does not answer, on purpose: it prefers never to block legitimate work. We made the opposite choice: with the coordinator down, no new lease is given.
+- [Coordinaut](https://github.com/LevDomasnih/coordinaut) (MIT, 0 stars, last push on 28 June): task ownership, file locks, leases. An idea worth reading, no longer an active project.
+- [synapse-channel](https://github.com/anulum/synapse-channel) (AGPL-3.0, 1 star, active).
+- [Foremerge](https://github.com/naw103/foremerge) (Apache-2.0, 434 stars, active): the serious candidate. Agents announce their intent before they write, with semantic scopes: symbols, APIs, schemas, not only paths. It describes itself as an early, local-first version, with no published benchmark results.
+- [Claude Code's agent teams](https://code.claude.com/docs/en/agent-teams): built into the tool, with a shared task list, claims protected by a lock and messages between teammates.
+- Orchestrators that run agents in parallel, such as [Agent Orchestrator](https://github.com/OrchestratorInc/agent-orchestrator) (Apache-2.0, 14,373 stars).
+
+Research says the same thing from another angle. [AgenticFlict](https://arxiv.org/abs/2604.03551) gathers the merge conflicts of pull requests written by agents. [Passes Alone, Fails Together](https://arxiv.org/abs/2609.25396) measures semantic conflicts: two changes, each correct, wrong together. [AgentRoom](https://arxiv.org/abs/2608.23740) has agents work in one shared workspace, without branches.
+
+<Split label="Our coordinator next to the others: what is ours, what others do better, and what we have not proven.">
+  <Side title="What is ours" tone="own" items="The scope held at four places, not only advised | Collector files never reserved | The CTO validates and sizes before any session | Everything local, no remote service | Measured waves" />
+  <Side title="What others do better" tone="plug" items="Foremerge sees conflicts of intent, we only see paths | Claude Code's teams are built in, no service to run | The orchestrators have a real interface to follow the agents" />
+  <Side title="Not proven on our side" tone="plain" items="The link between overlap and rework, in time or money | The quality of our analyses and what they cost | Any of it with an agent other than Claude Code" />
+</Split>
+
+What we decided: we build nothing new on our coordinator, apart from fixes, until the comparison is done for real, piece by piece: keep, replace, or wrap an existing tool. And in the next wave, one task will run with codegraph and a language server, another with codegraph alone, and we will keep what wins.
+
+## What I take from it
+
+I invented nothing very new. Others do leases, reservations, task queues, and some see conflicts we do not. What mattered for us was to measure every wave and look at the failures squarely. Three failed tests taught us more than the wave that worked.
+
+An alert that goes away never existed. Neither does a rule an agent has to remember. What holds is what a program checks, in a place where we can see it.

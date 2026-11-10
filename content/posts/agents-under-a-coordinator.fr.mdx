@@ -1,0 +1,249 @@
+---
+title: "Des agents sous un coordinateur : ce qui a cassé, et comment on l'a vu"
+description: "Un coordinateur sans modèle, des baux qui expirent, un périmètre tenu à quatre endroits, des crons qui attendent un événement, des alertes dans une base. Trois tests ratés, puis une vague qui atterrit."
+seoTitle: "Des agents sous un coordinateur, avec les mesures"
+seoDescription: "Baux, jetons, périmètre tenu à quatre endroits, crons sur événement, alertes en base : ce qui a cassé pendant nos tests, et ce qui le tient maintenant."
+date: 2026-11-10
+tags: [ai, integration, measurements]
+author: oussama
+draft: false
+sensitive: true
+publishedAt: "2026-11-10T03:38:55-05:00"
+cover: agents-under-a-coordinator
+coverAlt: "Aquarelle et encre sur papier : trois oiseaux travaillent chacun à son petit bureau en bois, séparés, sous une seule lampe suspendue ; un hibou lit un dossier ouvert, un canard colvert tape sur un clavier, un pigeon gris trie des fiches à côté d'un petit colis orange"
+---
+
+Dans la nuit du 9 au 10 novembre, vers 23 h 30, trois équipes d'agents travaillaient sur la même page de mon cockpit. Chacune avait une petite tâche : corriger les défauts d'affichage d'un écran. Elles se sont arrêtées sans que rien n'ait atterri. Elles avaient passé leur temps à chercher le code, pas à le changer.
+
+Ce billet raconte ce qu'on a construit cette semaine pour que des agents travaillent ensemble sans se marcher dessus, et surtout ce qui a cassé en route. Je montre les échecs avec leurs chiffres, parce que c'est là que j'ai appris quelque chose. Toutes les heures sont celles de Montréal.
+
+## Le problème : la vérification arrivait après le code
+
+Avant, une session d'agent prenait un ticket, écrivait le code, puis découvrait au moment d'ouvrir sa pull request qu'une autre session avait touché les mêmes fichiers. Chacune avait raison seule. Ensemble, elles passaient au rouge.
+
+On a mesuré, du 26 octobre au 9 novembre, sur 10 dépôts actifs et 1 782 pull requests. 826 d'entre elles (46 %) partageaient un fichier avec une autre PR ouverte en même temps. 312 ouvertures de PR ont été refusées pour chevauchement, alors que le code était déjà écrit. 109 PR (6 %) ont été fermées sans fusionner.
+
+Le détail le plus utile était ailleurs : parmi les paires qui se chevauchaient, 65 % ne partageaient que des « fichiers collecteurs ». Ce sont les fichiers où tout le monde ajoute une ligne : les traductions, les exports d'un paquet, la doc générée, les workflows. Si on les réserve, tout le travail fait la queue. On y revient plus bas.
+
+## Trois rôles, et un seul qui décide
+
+La décision tient dans un ADR, accepté le 9 novembre. Trois rôles :
+
+- **le planificateur**, c'est Mouloud, notre CTO (un agent) : il valide les tâches, les découpe, tranche ce que le code ne sait pas trancher ;
+- **le coordinateur** est du code sans aucun modèle dedans, et il n'y en a qu'un. Il attribue les tâches, tient les réservations et refuse ce qui casse les règles. Il ne prend aucune décision d'architecture ;
+- **une session**, n'importe quel agent : elle reçoit un bail sur une tâche, fait un changement borné et livre un diff vérifiable.
+
+Pourquoi pas un modèle comme coordinateur ? Parce qu'à cet endroit on a besoin d'une transaction, et un modèle n'est pas déterministe. Pourquoi pas une discussion libre entre sessions ? Ce n'est ni durable, ni vérifiable, et ça coûte cher en tokens. Les messages entre sessions sont une liste fermée de six types (« existe déjà », « extension de périmètre », « bloqué »…), toujours rattachés à une tâche, et un message n'est jamais une décision.
+
+Le registre est une base SQLite locale, sur le Mac. Elle ne contient jamais de code, seulement des pointeurs vers Git. Quand elle et GitHub ne sont pas d'accord sur un fait, GitHub gagne.
+
+<Pipeline label="La vie d'une tâche : le CTO la valide et la dimensionne, une session prend un bail, travaille dans son worktree, chaque commit est vérifié contre le périmètre, puis l'atterrissage se fait un à la fois sur le main local.">
+  <Stage title="Le CTO valide" note="taille S ou M, tours" tone="gate">
+    Une tâche naît « proposée ». Elle doit avoir une taille (S ou M), un plafond de tours (60 au plus pour S, 120 pour M)
+    et au moins une ligne « fini quand ». Une tâche L est refusée avec ce message : découpe-la, une tâche par écran,
+    composant ou sujet. Personne ne peut la prendre avant la validation du CTO.
+  </Stage>
+  <Stage title="Un bail" note="un seul gagne">
+    La session réclame la tâche. La réclamation est atomique : sur plusieurs demandes simultanées, une seule gagne. Elle
+    reçoit un bail, avec une échéance et un jeton.
+  </Stage>
+  <Stage title="Un worktree" note="refusé sans bail" tone="gate">
+    L'outil qui crée l'espace de travail refuse s'il n'y a pas de bail actif sur la tâche.
+  </Stage>
+  <Stage title="Des commits" note="vérifiés au périmètre" tone="gate">
+    Chaque commit est comparé au périmètre accordé. Un fichier hors périmètre est refusé au commit, pas après la PR.
+  </Stage>
+  <Stage title="L'atterrissage" note="un à la fois" tone="gate">
+    Il refuse un bail expiré, un jeton périmé, un diff hors périmètre, un rebase raté, des contrôles rouges. Il ne lance
+    que les contrôles rapides : typage, lint, tests.
+  </Stage>
+  <Stage title="Fait" note="preuve visuelle par vague" tone="ship">
+    La tâche est sur le main local. La preuve visuelle (serveur de dev et audit des pages) se fait une seule fois, quand
+    toute la vague a atterri.
+  </Stage>
+</Pipeline>
+
+Une tâche n'est pas un ticket. Le ticket suit le besoin ; la tâche, c'est ce qui tourne. Un ticket peut donner plusieurs tâches, et une tâche peut servir plusieurs tickets.
+
+## Le verrou : un bail, un battement, un jeton
+
+Une réservation que rien ne fait respecter n'est qu'un souhait. Le verrou du coordinateur repose sur trois pièces simples.
+
+Le **bail** a une échéance. Pendant notre dernière vague, il courait trente minutes. Le **battement** le prolonge : toutes les deux minutes, le lanceur de la session renouvelle le bail. Le **jeton** (on dit « fencing token ») est un numéro qui augmente à chaque nouveau bail. Si une session s'endort et que son bail expire, la tâche revient libre, une autre session peut la prendre avec un jeton plus grand, et l'ancien jeton ne peut plus rien livrer.
+
+<Pipeline label="Le bail, le battement et le jeton : une session dont le bail a expiré ne peut plus livrer, même si elle se réveille avec un travail fini.">
+  <Stage title="Réclamer" note="une seule gagne">
+    Plusieurs sessions demandent la même tâche au même moment. La base la donne à une seule, dans une transaction.
+  </Stage>
+  <Stage title="Bail et jeton n" note="échéance à 30 min">
+    La session reçoit le bail et le jeton n. Elle travaille dans son worktree.
+  </Stage>
+  <Stage title="Battement" note="le lanceur, hors du modèle">
+    Toutes les deux minutes, le programme qui fait tourner la session renouvelle le bail. Ce n'est pas l'agent qui s'en
+    souvient : c'est le lanceur, tant que le processus vit.
+  </Stage>
+  <Stage title="Le bail expire" note="la tâche redevient libre" tone="gate">
+    Plus de battement : à l'échéance, le service marque le bail expiré et remet la tâche à prendre. Il vérifie toutes les
+    30 secondes et à chaque requête.
+  </Stage>
+  <Stage title="Bail et jeton n+1" note="une autre session">
+    Une nouvelle session reprend la tâche, avec un jeton plus grand.
+  </Stage>
+  <Stage title="Livrer avec n" note="refusé" tone="gate">
+    L'ancienne session se réveille et veut livrer avec le jeton n. Refusé : ce jeton n'est plus le bon.
+  </Stage>
+</Pipeline>
+
+Ce schéma n'était pas vrai du premier coup. Le 9 novembre vers 22 h 45, la première vague (on l'appelle `cockpit-1`) a montré deux défauts. Une tâche dont le bail avait expiré restait marquée « en cours ». Et les équipes ne battaient pas leur bail : la consigne leur disait de le faire, elles ne le faisaient pas. Une session a battu son bail une seule fois en 150 tours. La correction a été de sortir le battement du modèle et de le confier au lanceur. Une règle qu'un agent doit se rappeler n'est pas une règle.
+
+## Le périmètre, tenu à quatre endroits
+
+Le bail dit qui travaille. Le périmètre dit sur quoi. Chaque tâche reçoit une liste de chemins, et quatre endroits refusent ce qui en sort. Aucun de ces endroits n'est à l'intérieur d'un agent.
+
+<Layers label="Le périmètre d'une tâche, vérifié à quatre endroits, du plus tôt au plus tard ; les fichiers collecteurs ne sont jamais réservés, plusieurs tâches les partagent.">
+  <Layer tag="1" title="Le worktree" note="L'outil qui le crée refuse s'il n'y a pas de bail actif." items="pas de bail, pas d'espace de travail" />
+  <Layer tag="2" title="Le commit" note="Le hook de commit refuse un fichier indexé hors du périmètre." items="refus avant même le commit" />
+  <Layer tag="3" title="Le push" note="Le hook de push refuse des commits hors périmètre, ou venus d'un bail expiré." items="rien ne sort de la machine" />
+  <Layer tag="4" title="La fusion" note="En local, l'atterrissage refuse un diff hors périmètre ; sur GitHub, un statut exigé posé par le coordinateur." items="la dernière porte" />
+  <Layer tag="—" title="Les fichiers collecteurs" note="Jamais réservés : traductions, exports d'un paquet, doc générée, workflows." items="accordés à plusieurs tâches à la fois | ne bloquent jamais un chemin plus large" />
+</Layers>
+
+Une précision honnête : aujourd'hui, un seul dépôt est sous coordination, les outils locaux du cockpit. Pour lui, le commit et l'atterrissage local font le travail. Le hook de push et le statut exigé sur GitHub existent, mais aucun dépôt GitHub n'est encore sous coordination : on les branchera un par un.
+
+La règle des fichiers collecteurs est écrite dans l'ADR. Elle a quand même cassé au premier essai : le coordinateur a refusé deux tâches parce qu'elles touchaient toutes les deux le dossier des traductions du cockpit. Il répondait « périmètre déjà pris ». On l'a vu en vrai, pendant la vague, et corrigé le jour même : le dossier d'un motif collecteur est maintenant accordé à plusieurs tâches vivantes.
+
+Le même jour, une équipe a eu besoin d'un fichier hors de son périmètre. Elle ne l'a pas touché. Elle a publié une demande d'extension de périmètre, Mouloud l'a tranché, et le besoin est devenu une tâche à part (la tâche 5 de la vague). C'est le comportement voulu : un travail hors périmètre se suspend, il ne s'étale pas.
+
+## Trois tests sur la même page
+
+Le cockpit a un audit qui ouvre chaque écran, en sombre et en clair, en français et en anglais, à plusieurs largeurs, et note ce qui déborde. Le 9 novembre au soir, après une montée de version de notre bibliothèque d'interface, il relevait 36 défauts sur trois écrans. Je ne sais pas s'ils dataient d'avant la montée. C'était un bon terrain d'essai pour les équipes.
+
+**Test 1, une seule grosse tâche.** Une équipe a reçu tout l'audit. Elle a épuisé ses 150 tours : 125 commandes shell, 35 lectures de fichiers, 3 modifications. Rien n'a atterri. Il reste un patch partiel de 34 lignes.
+
+**Test 2, trois petites tâches sans analyse.** On a découpé l'audit en trois tâches S, une par écran. Rien n'a atterri non plus. Chaque équipe a passé de 25 à 39 de ses quelque 55 appels à lire des fichiers. Zéro appel à codegraph, notre index du code, pourtant fourni.
+
+**Test 3, trois tâches avec l'analyse.** Avant de lancer, un agent en lecture seule a écrit une carte : chaque défaut, son fichier et sa ligne, et le correctif probable. Les équipes ont fait leur première modification de code entre le 13ᵉ et le 17ᵉ appel. Puis elles ont épuisé leurs 50 tours dans la boucle de preuve : relancer le serveur de dev, refaire l'audit complet, encore et encore. Mouloud a fait atterrir les trois tâches, contrôles verts, aucun conflit. L'audit est passé de 36 à 20 défauts.
+
+Les 20 restants venaient de deux barres d'onglets, trouvées en mesurant la page rendue avec un script. Deux tâches de plus, et l'audit est passé au vert : 42 routes, 19 écrans propres, sombre et clair, français et anglais.
+
+**La vague suivante, `cockpit-2`.** On a appliqué les leçons : l'analyse dans le brief, le CTO qui valide et dimensionne, et plus de preuve visuelle dans les sessions. Quatre tâches en parallèle (S, M, M, S), de 2 h 48 à 3 h 30 du matin. Trois ont atterri seules. La quatrième, l'écran Alertes, a épuisé ses tours, puis a atterri après une reprise de 30 tours.
+
+<Bars label="Les tâches lancées dans chaque test, et ce qu'elles sont devenues : rien n'atterrit tant que la tâche est trop grosse ou sans analyse ; avec l'analyse et sans preuve visuelle par session, les tâches atterrissent seules." source="Point de reprise du 10 novembre et fichiers de statut des équipes. Au test 3, c'est le CTO qui a fait atterrir les trois tâches." format="integer" stacked="true" series="Atterries seules:success | Atterries par le CTO ou après reprise:warning | Pas atterries:danger" data="Test 1 · une grosse tâche=0,0,1; Test 2 · 3 tâches sans analyse=0,0,3; Test 3 · 3 tâches avec analyse=0,3,0; Vague cockpit-2 · 4 tâches=3,1,0" />
+
+Le test 1 montre où passe le temps quand une tâche est trop grosse :
+
+<Bars label="Les appels d'outils de la tâche trop grosse (test 1), jusqu'à ses 150 tours : presque tout pour chercher et lancer des commandes, 3 modifications de code." source="Point de reprise du 10 novembre, bilan de la vague cockpit-1 ; une commande shell peut chercher, lancer un test ou un serveur." format="integer" series="Appels:accent" data="Commandes shell=125; Lectures de fichiers=35; Modifications=3" />
+
+Et même dans la vague qui a marché, les équipes n'utilisaient presque pas l'index du code :
+
+<Bars label="Appels à codegraph contre recherches et lectures de fichiers, dans les quatre sessions de la vague cockpit-2 : l'index était fourni et exigé, une seule session s'en est servie." source="Ligne de fin du lanceur de chaque session (il compte les appels lui-même), 10 novembre." format="integer" series="Appels à codegraph:accent | Recherches et lectures:warning" data="Colonne Déclencheur=0,22; Tableau à la demande=4,19; Médiathèque=0,47; Écran Alertes, 1er passage=0,41" />
+
+Reste le coût. Je ne donne pas de montants ici ; je les ramène au premier test, qui vaut 100.
+
+<Bars label="Le coût de chaque test, ramené au test 1 (100) : la vague cockpit-2 a coûté un quart de plus que le test 1, pour quatre tâches atterries au lieu de zéro." source="Coûts mesurés par session dans le point de reprise du 10 novembre, divisés par le coût du test 1. Au test 3, le travail du CTO pour faire atterrir n'est pas compté." format="integer" series="Indice de coût:accent" data="Test 1 · 0 atterrie=100; Test 2 · 0 atterrie=70; Test 3 · 3 atterries par le CTO=61; Vague cockpit-2 · 4 atterries=127" />
+
+La preuve visuelle unique de `cockpit-2` a servi tout de suite. L'outil qui devait la faire a échoué pour des raisons d'environnement, alors Mouloud l'a faite à la main, sur une copie des outils. Elle a trouvé un vrai défaut : l'écran Alertes répondait une erreur 500, parce que les lignes lues par le module SQLite de Node n'ont pas de prototype. Corrigé, avec un test. Audit final vert : 46 routes, 19 écrans.
+
+## Ce que ces tests nous ont appris
+
+<Steps>
+  <Step title="Le CTO valide et découpe chaque tâche">Une tâche trop grosse ne se rattrape pas en cours de route. La taille L est refusée par le coordinateur.</Step>
+  <Step title="L'analyse vient avant la session">Le fichier et la ligne, écrits avant le lancement. Sans elle, les agents cherchent ; avec elle, ils corrigent.</Step>
+  <Step title="La preuve visuelle, une fois par vague">Un serveur de dev et un audit complet dans chaque session, c'est trop lourd. On le fait une fois, après l'intégration.</Step>
+  <Step title="Finir en local, pousser une fois">Les contrôles tournent sur la machine ; un seul push, quand tout est vert.</Step>
+  <Step title="Lire la raison d'un rouge avant d'envoyer un gros modèle">Une PR verte sur le Mac et rouge dans la CI manquait d'une identité Git, pas d'intelligence.</Step>
+  <Step title="Une règle qu'un agent doit se rappeler n'est pas une règle">Le battement du bail, l'arrêt d'une équipe, le compte des appels : c'est le lanceur qui les fait.</Step>
+</Steps>
+
+Trois défauts de notre propre outillage sont aussi sortis pendant ces tests. L'arrêt d'une équipe arrêtait son service, mais pas le processus de l'agent : il a fallu le tuer à la main. Il arrête maintenant tout le groupe de processus. L'interrupteur des équipes était partagé avec un autre automate : pour lancer les équipes, il fallait rallumer l'autre dix secondes. Les équipes ont maintenant le leur. Et un ajout aux briefs a échoué sans bruit, à cause d'une syntaxe de bash que zsh ne connaît pas ; le premier essai du test 3 est parti sans la carte, on l'a arrêté et relancé.
+
+## Les crons : l'horloge contre l'événement
+
+Le Mac fait tourner des tâches planifiées : synchroniser le tableau des tickets, nettoyer les worktrees, réindexer le code, surveiller le reste. Le 10 novembre, on a relu les 20 derniers passages de chacune. La plupart répondaient « rien à faire ».
+
+<Split label="Les crons avant et après la revue du 10 novembre : à gauche, ce que l'horloge lançait et ce que ça trouvait ; à droite, ce qui déclenche chaque tâche maintenant.">
+  <Side title="Sur l'horloge, avant" tone="before" items="Nettoyage des worktrees : toutes les heures, 391 s, presque toujours « gardé » | Synchro du tableau : toutes les heures, 270 s | Cache du tableau : toutes les 20 min, 120 s, 15 erreurs | Mise à jour des outils : toutes les 15 min, presque toujours « déjà à jour » | Mise à jour des plugins : toutes les 30 min, « à jour » 99 % du temps | Export de l'architecture : deux fois par heure, « outil pas encore sur main » | Export des trains : chaque minute, rien quand aucun train ne roule | Index du code : toutes les 30 min, 21 dépôts relus" />
+  <Side title="Sur un événement, après" tone="after" items="Nettoyage des worktrees : une fois par nuit | Synchro du tableau : après chaque fusion, à la fin d'une session, et une fois par nuit | Cache du tableau : à la demande, seulement ce qui a changé | Outils et plugins : après une fusion de l'outillage, et au démarrage d'une session | Export des trains : quand l'état d'un train change | Export de l'architecture : retiré des crons | Index du code : toutes les 2 heures | Surveillance : locale toutes les 15 min, GitHub au plus une fois par heure" />
+</Split>
+
+<Bars label="Les passages planifiés par jour, avant et après : ce qui tournait par habitude tourne maintenant quand quelque chose a changé. L'export des trains, 1 440 passages par jour avant, n'est pas dessiné." source="Fréquences des crons avant et après la revue du 10 novembre ; les passages déclenchés par un événement ne sont pas comptés." format="integer" series="Avant:warning | Après:success" data="Mise à jour des outils=96,0; Cache du tableau=72,0; Mise à jour des plugins=48,0; Export de l'architecture=48,0; Index du code=48,12; Nettoyage des worktrees=24,1; Synchro du tableau=24,1" />
+
+Le principe est simple : la base locale d'abord. On lit GitHub seulement pour ce qui a changé, au moment où on en a besoin. Le cache du tableau, par exemple, ne relit plus tout : il demande ce qui a bougé depuis sa dernière lecture.
+
+## Une alerte de 18 h 30, traitée à 0 h 45
+
+Le 9 novembre à 18 h 20, Mouloud a remis la ligne du cron `sync-db` (il synchronise nos bases locales, et les copies de sauvegarde se font pendant son passage) dans le bloc géré de la crontab. Mais le script n'avait pas le droit d'exécution dans Git. Tous les passages ont échoué avec le code de sortie 126, pendant environ six heures et demie.
+
+Le chien de garde l'a vu. À 18 h 30, il a levé une alerte CRITIQUE, sous la forme d'une notification sur le bureau du Mac. Personne ne l'a lue. À 0 h 45, Mouloud a rétabli le cron avec l'ancienne ligne, a lancé une synchro à la main (sortie 0), puis a ajouté le bit d'exécution et une garde : tout outil lancé par un cron doit être exécutable.
+
+C'était notre erreur, et l'outil l'avait attrapée. Ce qui a manqué, c'est un endroit où l'alerte reste jusqu'à ce que quelqu'un s'en occupe. Une notification, ça passe et ça disparaît.
+
+Depuis le 10 novembre, toutes les alertes vont dans une seule table de notre base d'opérations, et plus aucune notification n'est envoyée, quelle que soit la gravité. Un test refuse le retour d'une notification. Les sessions lisent les alertes ouvertes en premier au démarrage, Mouloud à chaque point d'étape, et le cockpit les montre avec ce qui a été fait pour chacune.
+
+<Pipeline label="La vie d'une alerte : levée, ouverte, prise en charge avec une note, résolue avec une preuve, puis purgée sept jours après la prise en charge, jamais tant qu'elle est ouverte.">
+  <Stage title="Levée" note="chien de garde, trains">
+    Le chien de garde, le contrôleur des trains et l'automate qui débloque les PR écrivent une ligne dans la table.
+  </Stage>
+  <Stage title="Ouverte" note="lue au démarrage">
+    La même alerte qui revient ne fait pas une nouvelle ligne : son compte monte, avec l'heure du dernier passage. Elle
+    s'affiche en tête de chaque session et dans le cockpit.
+  </Stage>
+  <Stage title="Prise en charge" note="qui, et une note" tone="gate">
+    Quelqu'un la prend, et écrit ce qu'il a compris. Pour `sync-db`, la note aurait été : le script n'est pas exécutable.
+  </Stage>
+  <Stage title="Résolue" note="avec une preuve" tone="gate">
+    On la ferme avec une preuve. Pour `sync-db` : une synchro à la main, sortie 0, et la garde ajoutée.
+  </Stage>
+  <Stage title="Purgée" note="7 jours après" tone="ship">
+    Sept jours après la prise en charge, la ligne est purgée. Une alerte ouverte ne l'est jamais.
+  </Stage>
+</Pipeline>
+
+L'incident de `sync-db` est arrivé avant cette table. Le schéma montre ce qu'il serait devenu aujourd'hui, pas ce qui s'est passé ce soir-là.
+
+Deux autres trous sont sortis la même semaine. Une PR de notre outillage était verte sur le Mac et rouge dans la CI : un test faisait un rebase dans un dépôt temporaire, et Git refusait faute d'identité. Le Mac en a une, la machine de la CI non. Le correctif prévu est de faire tourner les tests du pre-push dans un environnement vidé, comme la CI, sans Docker. Et la suite de tests de cet outillage prend 263,6 secondes pour 58 fichiers, dont 75 pour un seul : on la fera tourner en parallèle, et seulement les tests touchés dans la boucle locale.
+
+## La CI : les dépôts privés sur le Mac, les publics sur GitHub
+
+Les dépôts publics ont la CI de GitHub sans frais. Les dépôts privés consomment des minutes. Le Mac fait déjà tourner les agents (pas de Mac, pas d'agents), donc on y a mis un runner pour les dépôts privés, et seulement pour eux.
+
+<Split label="Où tourne la CI depuis le 10 novembre : les dépôts privés sur le runner du Mac, les dépôts publics sur les machines de GitHub, et ce qui n'est pas encore prouvé.">
+  <Side title="Privés, sur le Mac" tone="own" items="Notre outillage : lint, tests et scan de sécurité sur le Mac, preuve faite | Avant : environ 200 minutes par jour pour ce dépôt, depuis le 9 novembre | Le scan en double à chaque push est retiré | Le dépôt des tickets est descendu à 5 minutes par jour | Le runner se met à jour seul" />
+  <Side title="Publics, sur GitHub" tone="plug" items="Les machines de GitHub ne coûtent rien à un dépôt public | Jamais sur le Mac : une PR venue d'une copie y ferait tourner son code | Rien ne change pour eux : ubuntu par défaut" />
+  <Side title="Pas encore prouvé" tone="plain" items="Que les minutes facturées s'arrêtent : à montrer avant et après | Une alerte quand la version du runner prend du retard : en revue | Trois autres dépôts privés, prêts, attendent un réglage de l'organisation | Un workflow d'infrastructure qui porte des secrets reste sur GitHub, par décision" />
+</Split>
+
+Le groupe de runners autorise les dépôts par leur nom, jamais « tous ». C'est la règle qui protège le Mac.
+
+## L'outil qu'on fournit, et que personne n'utilise
+
+Le chiffre qui me gêne le plus de cette semaine, c'est zéro. Dans les trois premiers tests, les équipes ont fait zéro appel à codegraph, l'index de notre code, alors qu'il était fourni et que les règles l'exigeaient. Dans la vague `cockpit-2`, une seule session s'en est servie, quatre fois. Un sous-agent observé à part a fait 2 appels pour une quinzaine de recherches à la main.
+
+On a trouvé une raison possible. RTK, l'outil qui résume les sorties des commandes pour économiser des tokens, avait coupé 77 % de la sortie des recherches, sur 11 307 appels. Un agent qui reçoit une recherche tronquée finit par relire des fichiers entiers. Depuis le 10 novembre, les commandes de recherche et de lecture passent sans filtre. Ce n'est pas une explication prouvée : le lanceur compte maintenant les appels à codegraph et aux recherches à chaque session, et on verra.
+
+## Ce que d'autres ont construit
+
+En faisant ce travail, j'ai cherché ce qui existe. Le domaine a convergé cette année sur les mêmes idées que nous : des baux qui expirent, des réservations de périmètre, un accès par MCP. J'ai revérifié l'état de chaque projet le 10 novembre.
+
+- [dibs](https://github.com/polymatx/dibs) (MIT, 2 étoiles, dernier push le 14 octobre) : des réservations de fichiers avec une durée de vie, et des hooks. Ses hooks laissent passer quand l'outil ne répond pas, et c'est voulu : il préfère ne jamais bloquer un travail légitime. Nous avons fait le choix inverse : sans coordinateur, aucun nouveau bail n'est donné.
+- [Coordinaut](https://github.com/LevDomasnih/coordinaut) (MIT, 0 étoile, dernier push le 28 juin) : propriété des tâches, verrous de fichiers, baux. Une idée à lire, plus un projet actif.
+- [synapse-channel](https://github.com/anulum/synapse-channel) (AGPL-3.0, 1 étoile, actif).
+- [Foremerge](https://github.com/naw103/foremerge) (Apache-2.0, 434 étoiles, actif) : le candidat sérieux. Les agents annoncent leur intention avant d'écrire, avec des périmètres sémantiques : des symboles, des API, des schémas, pas seulement des chemins. Il se présente lui-même comme une première version, locale, sans résultats de mesure publiés.
+- [Les équipes d'agents de Claude Code](https://code.claude.com/docs/en/agent-teams) : intégrées à l'outil, avec une liste de tâches partagée, des réclamations protégées par un verrou et des messages entre coéquipiers.
+- Des orchestrateurs pour lancer des agents en parallèle, comme [Agent Orchestrator](https://github.com/OrchestratorInc/agent-orchestrator) (Apache-2.0, 14 373 étoiles).
+
+La recherche dit la même chose sous un autre angle. [AgenticFlict](https://arxiv.org/abs/2604.03551) rassemble les conflits de fusion des pull requests écrites par des agents. [Passes Alone, Fails Together](https://arxiv.org/abs/2609.25396) mesure les conflits sémantiques : deux changements corrects chacun, faux ensemble. [AgentRoom](https://arxiv.org/abs/2608.23740) fait travailler les agents dans un espace partagé, sans branches.
+
+<Split label="Notre coordinateur à côté des autres : ce qui est à nous, ce que d'autres font mieux, et ce que nous n'avons pas prouvé.">
+  <Side title="Ce qui est à nous" tone="own" items="Le périmètre tenu à quatre endroits, pas seulement conseillé | Les fichiers collecteurs jamais réservés | Le CTO valide et dimensionne avant toute session | Tout en local, sans service distant | Des vagues mesurées" />
+  <Side title="Ce que d'autres font mieux" tone="plug" items="Foremerge voit les conflits d'intention, nous ne voyons que des chemins | Les équipes de Claude Code sont intégrées, sans service à faire tourner | Les orchestrateurs ont une vraie interface pour suivre les agents" />
+  <Side title="Pas prouvé chez nous" tone="plain" items="Le lien entre chevauchement et travail refait, en temps ou en argent | La qualité de nos analyses et leur coût | Le tout avec un autre agent que Claude Code" />
+</Split>
+
+Ce que nous avons décidé : on ne construit plus rien de neuf sur notre coordinateur, à part des correctifs, tant que la comparaison n'est pas faite pour de vrai, pièce par pièce : garder, remplacer, ou envelopper un outil existant. Et à la prochaine vague, une tâche tournera avec codegraph et un serveur de langage, une autre avec codegraph seul, et on gardera ce qui gagne.
+
+## Ce que je garde
+
+Je n'ai rien inventé de très neuf. D'autres font des baux, des réservations, des files de tâches, et certains voient des conflits que nous ne voyons pas. Ce qui a compté pour nous, c'est de mesurer chaque vague et de regarder les échecs en face. Trois tests ratés nous ont appris plus que la vague qui a marché.
+
+Une alerte qui disparaît n'a jamais existé. Une règle qu'un agent doit se rappeler non plus. Ce qui tient, c'est ce qu'un programme vérifie, à un endroit où on le voit.
