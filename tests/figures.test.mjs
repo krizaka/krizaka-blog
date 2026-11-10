@@ -1,13 +1,21 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { itemsOf, rowsOf, seriesOf, sideTone } from "../lib/figures.ts";
 import media from "../lib/media.json" with { type: "json" };
 
 // The chapters' figures (krizaka-internal#716, founder 2026-10-30: « 2–3 figures in every chapter, framed with a caption »).
+// The posts (« the basics ») draw the same figures and owe the same pairing and captions (krizaka-internal#3024).
 const dir = "content/chapters";
-const body = (f) => readFileSync(`${dir}/${f}`, "utf8").split(/^---$/m).slice(2).join("---");
-const files = readdirSync(dir).filter((f) => f.endsWith(".mdx"));
+const POSTS = "content/posts";
+const pathOf = (f) => (f.startsWith(`${POSTS}/`) ? f : `${dir}/${f}`);
+const body = (f) => readFileSync(pathOf(f), "utf8").split(/^---$/m).slice(2).join("---");
+const files = [
+  ...readdirSync(dir).filter((f) => f.endsWith(".mdx")),
+  ...readdirSync(POSTS)
+    .filter((f) => f.endsWith(".mdx"))
+    .map((f) => `${POSTS}/${f}`),
+];
 const FIGURE = /<(Figure|Clip|Pipeline|Split|Layers|Bars|IssueCurve|Plate|Rails)\b/g;
 const figuresOf = (f) => [...body(f).matchAll(FIGURE)].map((m) => m[1]);
 const tagsOf = (f, name) => [...body(f).matchAll(new RegExp(`<${name}\\b([^>]*?)/?>`, "g"))].map((m) => m[1]);
@@ -58,9 +66,17 @@ for (const slug of DONE)
       assert.ok(figuresOf(`${slug}.${lang}.mdx`).length >= 2, figuresOf(`${slug}.${lang}.mdx`).join(", "));
     });
 
-for (const f of files.filter((f) => f.endsWith(".en.mdx"))) {
+// The posts whose figures carry the text (founder, 2026-11-10: « surtout des schémas très clairs, en grand nombre »).
+const FIGURE_POSTS = ["agents-under-a-coordinator"];
+for (const slug of FIGURE_POSTS)
+  for (const lang of ["en", "fr"])
+    test(`${slug} (${lang}) carries at least two figures`, () => {
+      assert.ok(figuresOf(`${POSTS}/${slug}.${lang}.mdx`).length >= 2);
+    });
+
+for (const f of files.filter((f) => f.endsWith(".en.mdx") && existsSync(pathOf(f.replace(".en.mdx", ".fr.mdx"))))) {
   const fr = f.replace(".en.mdx", ".fr.mdx");
-  test(`${f}: the French chapter draws the same figures, in the same order`, () => {
+  test(`${f}: the French version draws the same figures, in the same order`, () => {
     assert.deepEqual(figuresOf(fr), figuresOf(f));
   });
 }
