@@ -115,6 +115,19 @@ test("a post without a cover still renders (no image of the post, the mark only)
   assert.ok(html.includes(VERSIONS.en.url));
 });
 
+/** A connection that fails or a 5xx is the network's hiccup (krizaka-internal#2962), so it is tried again; any other answer is the verdict. */
+async function headWithRetries(src, attempts = 3) {
+  for (let left = attempts; ; left--) {
+    try {
+      const res = await fetch(src, { method: "HEAD", signal: AbortSignal.timeout(15000) });
+      if (res.status < 500 || left <= 1) return res;
+    } catch (error) {
+      if (left <= 1) throw error;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
+}
+
 test("no broken image: every image of the e-mail answers 200 with an image type", async () => {
   const { html } = await renderPostEmail("fr", VERSIONS.fr);
   const images = [...new Set(imagesOf(html))];
@@ -122,7 +135,7 @@ test("no broken image: every image of the e-mail answers 200 with an image type"
   assert.ok(images.includes(cover));
   for (const src of images) {
     assert.match(src, /^https:\/\//, src);
-    const res = await fetch(src, { method: "HEAD", signal: AbortSignal.timeout(15000) });
+    const res = await headWithRetries(src);
     assert.equal(res.status, 200, `${src} answered ${res.status}`);
     assert.match(res.headers.get("content-type") ?? "", /^image\//, src);
   }
