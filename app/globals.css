@@ -1599,6 +1599,39 @@ picture {
 .bl-path-step:is(:hover, :has(.bl-path-link:focus-visible)) .bl-path-link {
   color: var(--kz-accent-text);
 }
+/* The other posts under the path (krizaka-internal#3219): quiet links, newest first, the date muted under each title. */
+.bl-path-more {
+  max-width: 56rem;
+  margin-top: 2rem;
+}
+.bl-path-more ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--kz-border-subtle);
+}
+.bl-path-more li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--kz-border-subtle);
+}
+.bl-path-more a {
+  color: var(--kz-text-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--kz-border-subtle);
+  text-underline-offset: 0.2em;
+}
+.bl-path-more a:is(:hover, :focus-visible) {
+  color: var(--kz-accent-text);
+  text-decoration-color: currentColor;
+}
+.bl-path-more time {
+  font-family: var(--kz-font-mono);
+  font-size: 0.75rem;
+  color: var(--kz-text-secondary);
+}
 .bl-path-hook {
   margin: 0.125rem 0 0;
   font-size: 0.875rem;
