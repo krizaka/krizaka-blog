@@ -38,7 +38,7 @@ Ce chapitre raconte ce qu'on a mis en place depuis, avec Akinaza comme exemple, 
 
 Ma phrase de départ, que j'ai fini par écrire dans une décision d'architecture, c'est : « on ne teste pas les composants ». Les composants vivent dans Krizaka UI, qui a ses propres tests. Un produit qui les utilise ne les teste pas une deuxième fois. Si un bogue est dans un composant, son test va dans la bibliothèque, pas en copie dans le produit.
 
-La décision s'appelle [ADR-017](repo:.github/blob/main/docs/adr/ADR-017-e2e-journeys-test-shape.md). Un test de produit a trois sujets possibles : ses règles (des tests unitaires, rapides), ses frontières (serveur, API, vraie base de données), et ses **parcours**, c'est-à-dire une promesse faite à un client, vue de son côté. C'est ce dernier qui prouve que le produit marche, et c'est celui qui a longtemps été partiel chez nous.
+La décision s'appelle ADR-017. Un test de produit a trois sujets possibles : ses règles (des tests unitaires, rapides), ses frontières (serveur, API, vraie base de données), et ses **parcours**, c'est-à-dire une promesse faite à un client, vue de son côté. C'est ce dernier qui prouve que le produit marche, et c'est celui qui a longtemps été partiel chez nous.
 
 Un parcours a une personne, une promesse et un résultat visible. « Eric ouvre un bail sans avis du TAL et voit la section G, avec sa citation » est un parcours. « La page s'affiche » n'en est pas un, et la revue le refuse.
 

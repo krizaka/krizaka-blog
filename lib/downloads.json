@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "a8fe7db0447a",
+      "source": "ba91e6d6c5e3",
       "files": {
         "epub": {
-          "hash": "38bfd3664f",
-          "bytes": 7615758
+          "hash": "6aed915b2f",
+          "bytes": 7614793
         },
         "pdf": {
-          "hash": "48962b0f7f",
-          "bytes": 10628565
+          "hash": "44ebdff3e3",
+          "bytes": 10600886
         }
       }
     },
@@ -209,15 +209,15 @@
       }
     },
     "en/the-audit-said-ai-code-we-measured": {
-      "source": "cf639b2dcecb",
+      "source": "2345884808c3",
       "files": {
         "epub": {
-          "hash": "d79df7ec82",
-          "bytes": 620842
+          "hash": "0c89065d4a",
+          "bytes": 620841
         },
         "pdf": {
-          "hash": "d7ea32186d",
-          "bytes": 885943
+          "hash": "4c0a4ed6df",
+          "bytes": 885266
         }
       }
     },
@@ -235,15 +235,15 @@
       }
     },
     "en/how-we-test-our-uis": {
-      "source": "c54992ebde49",
+      "source": "1c410d0c0aa9",
       "files": {
         "epub": {
-          "hash": "c2e1cba466",
-          "bytes": 910675
+          "hash": "fec30f8a88",
+          "bytes": 910707
         },
         "pdf": {
-          "hash": "e3ac58a172",
-          "bytes": 1298578
+          "hash": "7185ca4391",
+          "bytes": 1298866
         }
       }
     },
@@ -261,15 +261,15 @@
       }
     },
     "en/how-our-automation-grew": {
-      "source": "5e2059d57f72",
+      "source": "5cbd26bb954b",
       "files": {
         "epub": {
-          "hash": "113f7e7bd9",
-          "bytes": 805598
+          "hash": "d61b47a96e",
+          "bytes": 805639
         },
         "pdf": {
-          "hash": "4e5e23510c",
-          "bytes": 1129727
+          "hash": "af0a2d0c89",
+          "bytes": 1130884
         }
       }
     },
@@ -287,15 +287,15 @@
       }
     },
     "fr/story": {
-      "source": "dc4b0b0bbb1a",
+      "source": "b6689f9c2e9f",
       "files": {
         "epub": {
-          "hash": "c3cf2e8b35",
-          "bytes": 7639233
+          "hash": "ab5111eba2",
+          "bytes": 7638181
         },
         "pdf": {
-          "hash": "f8bdb9e011",
-          "bytes": 10803412
+          "hash": "21970276b3",
+          "bytes": 10774949
         }
       }
     },
@@ -495,15 +495,15 @@
       }
     },
     "fr/the-audit-said-ai-code-we-measured": {
-      "source": "d952d2322633",
+      "source": "a424b726b82f",
       "files": {
         "epub": {
-          "hash": "b9ae2ccdda",
-          "bytes": 629011
+          "hash": "4a02509de3",
+          "bytes": 629010
         },
         "pdf": {
-          "hash": "6d438d76f3",
-          "bytes": 918126
+          "hash": "122af97ae8",
+          "bytes": 917773
         }
       }
     },
@@ -521,15 +521,15 @@
       }
     },
     "fr/how-we-test-our-uis": {
-      "source": "a7c343c697b1",
+      "source": "6ab44886c73a",
       "files": {
         "epub": {
-          "hash": "0244009423",
-          "bytes": 923738
+          "hash": "46ba1e25cb",
+          "bytes": 923781
         },
         "pdf": {
-          "hash": "5ede04473e",
-          "bytes": 1331328
+          "hash": "1c156a634d",
+          "bytes": 1331657
         }
       }
     },
@@ -547,15 +547,15 @@
       }
     },
     "fr/how-our-automation-grew": {
-      "source": "f852c00adb80",
+      "source": "2562011f4689",
       "files": {
         "epub": {
-          "hash": "14fa37af0f",
-          "bytes": 826302
+          "hash": "f6f8f4b3ae",
+          "bytes": 826354
         },
         "pdf": {
-          "hash": "d9ed73ad68",
-          "bytes": 1165207
+          "hash": "d7d4b5d53b",
+          "bytes": 1166488
         }
       }
     },

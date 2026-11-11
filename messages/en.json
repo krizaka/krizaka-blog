@@ -396,7 +396,8 @@
     "next": "Next",
     "read": "Read",
     "step": "Read {n} of {total}",
-    "story": "Back to the story"
+    "story": "Back to the story",
+    "others": "More posts"
   },
   "bars": {
     "bar": "Bar chart",
