@@ -6,6 +6,7 @@ import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
 import { chapterNumber, chaptersOf } from "@/lib/chapters";
 import { latestFeatured, storyRows } from "@/lib/home";
 import { postsOf } from "@/lib/posts";
+import { formatDate } from "./PostList";
 import { splitBasics } from "@/lib/basics";
 import { chapterPath, postPath } from "@/lib/seo";
 import { coverOf, type Cover } from "@/lib/media";
@@ -37,7 +38,10 @@ export default function HomePage({ locale }: { locale: Locale }) {
   const posts = postsOf(locale);
   const featuredItem = latestFeatured(chapters, posts);
   const rows = storyRows(chapters, featuredItem?.kind === "chapter" ? featuredItem.item : undefined);
-  const { basics } = splitBasics(posts);
+  const { basics, others } = splitBasics(posts);
+  /* The posts that are not a way in (the weekly, the integration notes) stay on the home as quiet links under the path, newest
+     first: the home is the story, never a feed of cards (krizaka-blog#123, krizaka-internal#3219). */
+  const newestFirst = [...others].sort((a, b) => b.date.localeCompare(a.date));
   /* An address is built from known values only: a slug of lower-case words (the file names of content/), never anything else. */
   const safe = (slug: string) => (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) ? slug : "");
   const href = (slug: string) => localizedPath(locale, chapterPath(safe(slug)));
@@ -130,6 +134,19 @@ export default function HomePage({ locale }: { locale: Locale }) {
         <Section id="basics" title={h.basicsTitle} lead={h.basicsLead} divider number={no()} margin>
           <p className="bl-path-for">{t.basics.for}</p>
           <BasicsPath posts={basics} locale={locale} label={h.basicsTitle} />
+          {newestFirst.length > 0 && (
+            <nav className="bl-path-more" aria-label={h.postsTitle}>
+              <p className="bl-path-for">{h.postsTitle}</p>
+              <ul>
+                {newestFirst.map((p) => (
+                  <li key={p.slug}>
+                    <Link href={localizedPath(locale, postPath(safe(p.slug)))}>{p.title}</Link>{" "}
+                    <time dateTime={p.date}>{formatDate(p.date, locale)}</time>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
         </Section>
       )}
       <NewsletterSection locale={locale} where="home" />

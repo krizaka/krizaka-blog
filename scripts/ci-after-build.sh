@@ -26,6 +26,10 @@ echo "::group::What search engines read on every page (title <= 60, description 
 node scripts/check-meta.mjs out
 echo "::endgroup::"
 
+echo "::group::Every published post is linked from the home page, in each language (krizaka-internal#3219)"
+node scripts/check-home-posts.mjs --out out
+echo "::endgroup::"
+
 echo "::group::Commercial names (krizaka-internal#2103): the old chapters keep their historical names, so the built site is a report"
 node_modules/.bin/krizaka-code-names --report out | tail -1
 echo "::endgroup::"
