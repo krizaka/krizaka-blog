@@ -4,6 +4,8 @@ import { PageHero } from "@krizaka/ui/page-hero";
 import { Section } from "@krizaka/ui/page";
 import { getDictionary, localizedPath, type Locale } from "@/lib/i18n";
 import { postsOf } from "@/lib/posts";
+import { splitBasics } from "@/lib/basics";
+import { PostList } from "./PostList";
 import { collectionJsonLd } from "@/lib/seo";
 import { BasicsPath } from "./BasicsPath";
 import { seriesLead, seriesName } from "./series-label";
@@ -12,6 +14,7 @@ import { seriesLead, seriesName } from "./series-label";
 export function BasicsPage({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
   const posts = postsOf(locale);
+  const { basics, others } = splitBasics(posts);
   const name = seriesName(locale, "basics");
   const lead = seriesLead(locale, "basics");
   return (
@@ -25,7 +28,14 @@ export function BasicsPage({ locale }: { locale: Locale }) {
         {posts.length ? (
           <>
             <p className="bl-path-for">{t.basics.for}</p>
-            <BasicsPath posts={posts} locale={locale} label={name} />
+            <BasicsPath posts={basics} locale={locale} label={name} />
+            {/* The posts that are not a way in (weekly, integration) stay on this index, under the path. */}
+            {others.length > 0 && (
+              <>
+                <h2 className="bl-basics-others">{t.basics.others}</h2>
+                <PostList posts={others} locale={locale} label={t.basics.others} reveal={false} />
+              </>
+            )}
           </>
         ) : (
           <p className="bl-status">{t.tags.none}</p>

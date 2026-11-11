@@ -38,7 +38,7 @@ This chapter tells what we put in place since, with Akinaza as the example, beca
 
 My starting sentence, which I ended up writing into an architecture decision, is: "we don't test components". The components live in Krizaka UI, which has its own tests. A product that uses them does not test them a second time. If a bug is in a component, its test goes in the library, not as a copy in the product.
 
-The decision is called [ADR-017](repo:.github/blob/main/docs/adr/ADR-017-e2e-journeys-test-shape.md). A product test has three possible subjects: its rules (unit tests, fast), its boundaries (server, API, a real database), and its **journeys**, meaning a promise made to a customer, seen from their side. The last one is what proves the product works, and it is the one that was partial for us for a long time.
+The decision is called ADR-017. A product test has three possible subjects: its rules (unit tests, fast), its boundaries (server, API, a real database), and its **journeys**, meaning a promise made to a customer, seen from their side. The last one is what proves the product works, and it is the one that was partial for us for a long time.
 
 A journey has a person, a promise and a visible result. "Eric opens a lease with no TAL notice and sees Section G, with its citation" is a journey. "The page renders" is not one, and review rejects it.
 

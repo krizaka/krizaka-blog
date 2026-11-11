@@ -396,7 +396,8 @@
     "next": "Ensuite",
     "read": "Lu",
     "step": "Lecture {n} sur {total}",
-    "story": "Retour à l’histoire"
+    "story": "Retour à l’histoire",
+    "others": "Autres articles"
   },
   "bars": {
     "bar": "Graphique en barres",

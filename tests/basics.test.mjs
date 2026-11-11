@@ -172,3 +172,21 @@ test("the path wears the series' art: a basic's cover is one of the chapters' co
     for (const l of ["en", "fr"])
       assert.match(read(`content/posts/${slug}.${l}.mdx`), /^cover: series-\d\d-/m, `${slug}.${l}`);
 });
+
+/* The reading path holds the basics only (krizaka-blog#320, 2026-11-11): the four of BASICS_PATH and a new post tagged `basics`.
+   Every post lives under /basics/, so with the weekly post the path had grown to seven rows (602 px, over the one-screen 560). */
+test("the path holds the basics only: the listed four and a new post tagged basics, never a weekly or an integration post", async () => {
+  const { splitBasics } = await import("../lib/basics.ts");
+  const post = (slug, tags = []) => ({ slug, tags, date: "2026-11-11" });
+  const { basics, others } = splitBasics([
+    ...SHELF.map((s) => post(s)),
+    post("cette-semaine-2026-w46", ["verikora", "documents", "security"]),
+    post("agents-under-a-coordinator", ["ai", "integration"]),
+    post("a-new-basic", ["ai", "basics"]),
+  ]);
+  assert.deepEqual(basics.map((p) => p.slug).sort(), [...SHELF, "a-new-basic"].sort());
+  assert.deepEqual(
+    others.map((p) => p.slug),
+    ["cette-semaine-2026-w46", "agents-under-a-coordinator"],
+  );
+});

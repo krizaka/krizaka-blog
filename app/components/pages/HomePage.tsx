@@ -6,6 +6,7 @@ import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
 import { chapterNumber, chaptersOf } from "@/lib/chapters";
 import { latestFeatured, storyRows } from "@/lib/home";
 import { postsOf } from "@/lib/posts";
+import { splitBasics } from "@/lib/basics";
 import { chapterPath, postPath } from "@/lib/seo";
 import { coverOf, type Cover } from "@/lib/media";
 import { formatPeriod } from "./PostList";
@@ -36,7 +37,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
   const posts = postsOf(locale);
   const featuredItem = latestFeatured(chapters, posts);
   const rows = storyRows(chapters, featuredItem?.kind === "chapter" ? featuredItem.item : undefined);
-  const basics = posts;
+  const { basics } = splitBasics(posts);
   /* An address is built from known values only: a slug of lower-case words (the file names of content/), never anything else. */
   const safe = (slug: string) => (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) ? slug : "");
   const href = (slug: string) => localizedPath(locale, chapterPath(safe(slug)));
