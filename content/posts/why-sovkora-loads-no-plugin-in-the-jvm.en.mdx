@@ -1,0 +1,367 @@
+---
+title: "Why Sovkora loads no plugin into its JVM"
+description: "An AI engine on Spring Boot 4 must accept extensions. PF4J, child contexts, Spring Modulith, loader.path: what each option costs, what we chose, and what it changed in our plan."
+seoTitle: "Spring Boot 4 plugins: why we load none"
+seoDescription: "PF4J, child Spring contexts, Modulith, loader.path, the Security Manager: why our engine extends through packs and workers behind a broker."
+date: 2026-11-12
+tags: [sovkora, integration, security]
+author: oussama
+draft: true
+series: building-sovkora
+part: 1
+cover: why-sovkora-loads-no-plugin-in-the-jvm
+coverAlt: "Watercolour and ink on paper: a stone engine room with brass pipes on the left, a long wooden counter with pigeonholes in the middle where small tied parcels pass, a grey pigeon standing on it, and on the right three small separate wooden workshops, each with its own door and lamp"
+---
+
+Sovkora, our AI engine, will have to accept extensions. Our own first: expert packs, sold separately. Later, perhaps, a partner's. When the question came up, the written proposal was the one you read everywhere in the Java world: a system of plugins loaded dynamically into the JVM, with PF4J or child Spring contexts, in our shared Java library.
+
+This post tells why we did not do it. It is mostly for Java and Spring developers: there is code, exact versions and sources. The decision was approved today, after a study, a second independent pass and a counter-review of 78 claims, one by one. I keep here only what held.
+
+<Note>
+Our stack: Java 21 and Spring Boot 4.0.9. The code excerpts come from the public [Sovkora](repo:sovkora) repository, read on 12 November 2026. The engine was called Orazaka before it became Sovkora: some names in the code still carry the old one, and we will see below why that matters for the plan.
+</Note>
+
+## What we found by reading the code before writing the plan
+
+The proposal started from a simple idea: the engine is a monolith, everything is built in, adding a business pack means recompiling. Before choosing a plugin framework, I asked that this sentence be checked against the code. It was wrong.
+
+Sovkora is not a monolith: it is six Spring Boot services, one per business context. And it already had its extension mechanism. It is called the **pack**, and it is not Java:
+
+<Numbers>
+<Num value="17" label="packs in the repository" hint="one pack.yaml file each" />
+<Num value="0" label="Java files under packs/" hint="the logic is Python, JSON and YAML" />
+<Num value="63" label="Python files under packs/" hint="the packs' workers" />
+<Num value="0" label="CAPABILITY-tier packs" hint="10 DATA, 7 WORKER" />
+</Numbers>
+
+A pack declares what it brings in a manifest validated by a schema ([`packs/pack.schema.json`](repo:sovkora/blob/main/packs/pack.schema.json)). It comes in three tiers:
+
+| Tier | What the pack brings | How it arrives |
+|---|---|---|
+| DATA | blueprints, translations, rule sets | installed live through an admin API, without recompiling the engine |
+| WORKER | its own process, in any language | it speaks a versioned AMQP message contract |
+| CAPABILITY | a Java executor inside the job service | compiled into our image, discovered through `AutoConfiguration.imports` |
+
+So the real question was not "which plugin framework?". It was: **should extension code be loaded into our JVM at all?** To answer it honestly, I went through each option as if we were starting from zero.
+
+## Option 1: PF4J and pf4j-spring
+
+[PF4J](https://pf4j.org/) is the best-known Java plugin framework. It is maintained: version 3.16.1 is from 3 November 2026. With its Spring bridge, an extension would look like this:
+
+```java
+// What we would have written with PF4J (illustration, not our code)
+public interface DocumentCheck extends ExtensionPoint {
+  CheckResult check(Document document);
+}
+
+@Extension
+public class LeaseCheck implements DocumentCheck {
+  @Override
+  public CheckResult check(Document document) { /* … */ }
+}
+
+@Configuration
+class PluginConfiguration {
+  @Bean
+  SpringPluginManager pluginManager() {
+    return new SpringPluginManager(Path.of("plugins"));   // one class loader per plugin
+  }
+}
+```
+
+It is clean. The problem is the bridge. The latest `pf4j-spring` is 0.10.0, released on 24 May 2025, and it is built on Spring Framework 6.2.2. Spring Framework 7 came out on 13 November 2025, and Spring Boot 4.0, built on it, on 20 November 2025. The last commit of the `pf4j-spring` repository is from 24 May 2025; a "Support Spring Framework 7" issue has been open since 4 June 2026, and a pull request with the same title since 27 August 2026.
+
+The bridge depends only on `spring-core` and `spring-context`. It might run as is on Spring 7. But nobody has proven it, and that is not the real flaw. The real flaw is lower down: one class loader per plugin isolates **dependencies**, not **permissions**.
+
+## Option 2: a child Spring context and a URLClassLoader
+
+Without any library, Spring already does context hierarchies. You can load a folder of JARs into a separate loader and give it a child context:
+
+```java
+// One child context per extension (illustration, not our code)
+URL[] jars = { Path.of("extensions/lease-check.jar").toUri().toURL() };
+URLClassLoader loader = new URLClassLoader(jars, getClass().getClassLoader());
+
+AnnotationConfigApplicationContext child = new AnnotationConfigApplicationContext();
+child.setParent(parentContext);      // the extension sees the host's beans
+child.setClassLoader(loader);
+child.register(loader.loadClass("com.example.LeaseCheckConfiguration"));
+child.refresh();
+```
+
+It works, and it is plain Spring. But look at what this code **does not hold back**. Inside `LeaseCheck`, nothing prevents calling `System.exit(0)`, reading a file from disk, opening a socket, starting threads, or walking up through reflection to the parent's beans and their database connections. The class loader decides **which version of a class** you see. It does not decide **what the code is allowed to do**.
+
+So you get the whole cost of dynamic loading (hot unloading, class conflicts between parent and child, home-grown code to maintain) without a security boundary.
+
+## What a class loader does not protect, version by version
+
+Java long had an answer to this: the Security Manager, a sandbox inside the JVM. The versions need to be exact, because that is where the argument is decided.
+
+- **Java 17**: [JEP 411](https://openjdk.org/jeps/411) deprecates it for removal.
+- **Java 21**, our version: it still exists, deprecated, and enabling it prints a warning.
+- **Java 24**: [JEP 486](https://openjdk.org/jeps/486) permanently disables it. The API stays for compatibility, but it can no longer be enabled.
+
+Building a plugin sandbox on the Security Manager would therefore mean building on a feature that is gone in the next LTS. And JEP 411 itself says where OpenJDK now puts security: in isolating the entire Java runtime from sensitive resources "via out-of-process mechanisms such as containers and hypervisors".
+
+Mature products say the same in their own documentation. Keycloak loads its providers from a folder of JARs, and its configuration page says it plainly: "Do not install untrusted provider JARs! There is a single class loader for the entire application." In Keycloak, a provider is dropped into `providers/` and then built in with the `kc.sh build` command: composition at build time, not hot loading.
+
+Others moved extension code out of the process. Terraform makes each plugin a separate executable that its core calls over RPC.
+
+A separate process is not enough either, if it keeps every permission. VS Code runs its extensions in a separate process, the Extension Host, to protect the editor's stability; its documentation states that this process "has the same permissions as VS Code itself". The lesson I take from it: **a process is a security boundary only if it has its own identity and its own permissions.** We come back to this in the plan.
+
+## AOT and native images: the closed world
+
+There is a second, less visible argument. Spring Boot's documentation on GraalVM native images says it bluntly: "The application classpath is fixed at build time and cannot change." Spring assumes a closed world.
+
+Sovkora uses neither AOT nor native images today. But a JAR loader at run time would close that door for good. Build-time composition keeps it open.
+
+## The two options that load nothing at run time
+
+**Spring Modulith.** The 2.0 line is built on Spring Framework 7 (the 2.0.0 `pom` depends on `spring-core` 7.0.1), so it fits Boot 4. But Modulith does not load plugins: it structures one application into modules, and by default each direct sub-package of the main package is a module. It checks the dependencies between those modules, tests them and documents them. It is a very good tool to keep a service clean; it is not an extension mechanism for code that is not ours.
+
+**`loader.path`.** Spring Boot can still add JARs to the classpath at startup, but only with `PropertiesLauncher`. The Boot 4.0 documentation is precise: with `JarLauncher` (the default launcher, the one our JARs use), the nested paths are fixed, and it is `PropertiesLauncher` that reads `LOADER_PATH` or `loader.path`. Our JARs start with `JarLauncher`, and our build publishes no Java artifact: a Java executor only arrives through our own build.
+
+## What we chose: the broker is the boundary
+
+The decision fits in three lines:
+
+1. **No plugin is loaded dynamically into a Krizaka JVM.** No plugin framework, no hot reload.
+2. **The extension boundary is the pack and the broker.** Code that is not ours arrives as a DATA pack (data) or as a WORKER pack (a separate process that speaks the message contract).
+3. **The CAPABILITY tier, Java inside our process, is reserved for our own code**, composed at build time through `AutoConfiguration.imports`.
+
+The first two lines were not new: the engine's architecture already said so, and the reference code says it in one sentence, "the broker is the plugin boundary". The third is the only restriction we added.
+
+Here is the path of a pack, from the manifest to the worker:
+
+```text
+pack.yaml + blueprints + rules
+   |  bundle, through the admin API
+   v
++--------------------------------------+
+| studio-service                       |
+|  PackInstallerService                |
+|  validates the schema, resolves      |
+|  requires, registers the pack's      |
+|  capabilities                        |
++--------------------------------------+
+   |
+   v
++--------------------------------------+
+| capability registry (data)           |
+|  routing_key: which process receives |
+|  handler_key: which code runs        |
++--------------------------------------+
+   |
+   v
++--------------------------------------+
+| job-service                          |
+|  publishes job.{capability}.{action} |
+|  JobExecutor (CAPABILITY): our code, |
+|  compiled into the image,            |
+|  discovered through                  |
+|  AutoConfiguration.imports           |
++--------------------------------------+
+   |
+   v
+===== AMQP broker: the boundary =====
+  jobs exchange   -->  the worker's queue
+  events exchange <--  job.{jobId}.done
+                       or .error
+   |
+   v
++--------------------------------------+
+| the pack's worker (WORKER)           |
+|  its own process, its own language,  |
+|  declares its own queues,            |
+|  links no Sovkora library            |
++--------------------------------------+
+```
+
+### A WORKER pack, for real
+
+The reference pack is called `echo-toolkit`. It does almost nothing (it reverses a string), on purpose: a reference for an extension point should be readable in a minute. Its manifest, [`packs/echo-toolkit/pack.yaml`](repo:sovkora/blob/main/packs/echo-toolkit/pack.yaml), shortened:
+
+```yaml
+apiVersion: orazaka.dev/v1
+key: echo-toolkit
+version: 1.2.0
+tier: WORKER
+distribution: OSS
+regulatoryClass: STANDARD
+
+requires:
+  capabilities:
+    - key: orazaka.echo.text.reverse
+      routingKey: job.echo.reverse     # which queue receives the work
+      handlerKey: echo.reverse         # which code handles it
+      billableCapability: CHAT
+      billableUnit: KILOTOKEN
+  workers:
+    - name: orazaka-worker-echo
+      bindings:
+        - "job.echo.*"
+      concurrency: 1
+```
+
+The pack has its own version (1.2.0), independent of the engine's. The worker knows no capability: it declares routing keys in [`worker.yaml`](repo:sovkora/blob/main/packs/echo-toolkit/worker/worker.yaml) and sets up its own topology at startup. From [`echo_worker.py`](repo:sovkora/blob/main/packs/echo-toolkit/worker/echo_worker.py):
+
+```python
+# The worker declares its own queue, bindings and dead-letter queue:
+# installing a pack needs no change to the broker's configuration.
+channel.exchange_declare(exchange=JOBS_EXCHANGE, exchange_type="topic", durable=True)
+channel.exchange_declare(exchange=EVENTS_EXCHANGE, exchange_type="topic", durable=True)
+channel.queue_declare(
+    queue=QUEUE,
+    durable=True,
+    arguments={"x-dead-letter-exchange": DLX_EXCHANGE, "x-dead-letter-routing-key": QUEUE},
+)
+for binding in DECLARATION["bindings"]:
+    channel.queue_bind(queue=QUEUE, exchange=JOBS_EXCHANGE, routing_key=binding)
+
+channel.basic_qos(prefetch_count=DECLARATION.get("concurrency", 1))
+channel.basic_consume(queue=QUEUE, on_message_callback=_on_message)
+```
+
+The contract this worker honours is a document, [`docs/WORKER_PROTOCOL.md`](repo:sovkora/blob/main/docs/WORKER_PROTOCOL.md), which opens with this sentence: "This document is the extension point." Two `topic` exchanges, keys `job.{capability}.{action}` inbound and `job.{jobId}.done` or `error` outbound, exactly one terminal event per job, a failure cause taken from a closed list, idempotency by message id. A worker is **anything that honours this contract**, in any language, linking no Sovkora library at all. The media worker is Python, and so is the document validation one.
+
+### The installer checks before it writes
+
+When a bundle arrives through the admin API (`POST /api/v1/studios/packs/bundles`, role `ADMIN`), [`PackInstallerService`](repo:sovkora/blob/main/services/studio/sovkora-studio-service/src/main/java/com/krizaka/sovkora/studio/application/service/PackInstallerService.java) validates the whole bundle before the first write. A Studio step that asks for a capability nobody provides is refused:
+
+```java
+Set<String> contributed = bundle.capabilities().stream()
+    .map(PackCapability::key)
+    .collect(Collectors.toCollection(LinkedHashSet::new));
+
+for (PackStudio studio : bundle.studios()) {
+  for (String featureKey : capabilityKeysOf(studio)) {
+    if (contributed.contains(featureKey)) {
+      continue;   // the bundle brings it itself
+    }
+    if (capabilityRoutingClient.route(featureKey).isEmpty()) {
+      problems.add("studio " + studio.key() + " step capability " + featureKey
+          + " resolves to no enabled route, and the bundle does not contribute it");
+    }
+  }
+}
+```
+
+The install itself is compensated: if one slice fails, the earlier ones are undone before the error is raised.
+
+### The CAPABILITY tier: Java, but composed at build time
+
+For an executor light enough to run inside the job service, there is a Java port, [`JobExecutor`](repo:sovkora/blob/main/contracts/sovkora-jobs-api/src/main/java/com/krizaka/sovkora/jobs/api/domain/port/JobExecutor.java). It lives in a contract module with no Spring, no I/O and no engine type (shortened excerpt):
+
+```java
+public interface JobExecutor {
+
+  /** Unique across all executors: the service refuses to start on a duplicate. */
+  String handlerKey();
+
+  JobExecutionResult execute(JobCommand command, JobExecutionContext context)
+      throws JobExecutionException;
+}
+```
+
+It is discovered by Boot's standard mechanism. The job service declares a single line in its auto-configuration imports file:
+
+```text
+# META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+com.krizaka.sovkora.job.infrastructure.config.JobExecutorAutoConfiguration
+```
+
+and [`JobExecutorAutoConfiguration`](repo:sovkora/blob/main/services/job/sovkora-job-service/src/main/java/com/krizaka/sovkora/job/infrastructure/config/JobExecutorAutoConfiguration.java) lets Spring gather every `JobExecutor` bean into one list, then checks at startup that each enabled capability has an executor:
+
+```java
+@AutoConfiguration
+public class JobExecutorAutoConfiguration {
+
+  @Bean
+  ExecutorCoherenceService executorCoherenceService(
+      List<JobExecutor> executors,
+      CapabilityManager capabilityManager,
+      WorkerSelfRegistration workerSelfRegistration) {
+    return new ExecutorCoherenceService(
+        executors, capabilityManager, workerSelfRegistration.bindings());
+  }
+}
+```
+
+Its comment says why this is **not** a `ServiceLoader`: Spring already owns the lifecycle and the injection these executors need, and a second discovery mechanism would be one more thing to learn and to get wrong. The same pattern is already used elsewhere: the repository has six `AutoConfiguration.imports` files.
+
+Two keys, two possible failures, two guards: `routing_key` decides **which process** receives the job, `handler_key` **which code** handles it. Architecture rules check at build time that the engine names no pack, and the service checks at startup that the registry and the executors agree.
+
+## The best case for in-JVM plugins, and why it does not win today
+
+The study's second pass looked for the strongest case in favour of plugins inside the JVM. It is not the hostile partner. It is **our own expert pack, written in Java**: trusted code, signed by us, loaded at startup into a public engine, with no message hop, no extra container at an on-premises customer, and the typing of the `JobExecutor` port.
+
+That case is legitimate. It does not win today, on four facts anyone can check:
+
+1. no pack has any Java: 63 Python files, 0 CAPABILITY packs;
+2. it would mean publishing our contract module on Maven Central (a version published there can neither be changed nor removed) and rebuilding our JARs for `PropertiesLauncher`;
+3. an expert pack's value is in its data (catalogues, reference sets, thresholds), which a private DATA pack already delivers;
+4. PF4J would add nothing (there is no need to isolate trusted classes), Modulith loads nothing at run time, and a child context costs home-grown code for what `loader.path` already gives.
+
+We also wrote down what would reopen the question, **only if it is measured**: a paying customer who requires their own Java code in our process and whose latency budget cannot take the message hop; an on-premises customer who cannot run one more container; or two CAPABILITY packs that need incompatible versions of the same library, to the point of failing our duplicate-class guard. Even then, the soberest form for trusted code would be loading **at startup** (`loader.path`), signed, with a restart to update; never hot unloading. For **untrusted** code inside the process, the only serious lead I know is WebAssembly: each module runs in a sandbox it can only leave through the functions the host gives it, and [Chicory](https://github.com/dylibso/chicory) runs it inside the JVM with no native dependency. We would study it with a measurement, not before.
+
+## What it changed in our plan
+
+This is the part that matters most to me, because an architecture decision is judged by what it takes out of the plan.
+
+**What we stopped.** No plugin framework. No new module in [our shared Java library](repo:krizaka-java): the three planned modules (a plugin API, a core, a Spring starter) will not be written, so they will not be tested, guarded or published. No Maven Central release is owed to this work.
+
+**What we planned instead.** The work is in the engine's repository, in small waves, each one a pull request that passes on its own:
+
+<Steps>
+<Step title="The extension contract is proven">
+A test loads a test auto-configuration, sees its `JobExecutor` in the list, and proves that two executors on the same `handlerKey` stop the service from starting.
+</Step>
+<Step title="The CAPABILITY tier is reserved for our code">
+The schema and the installer refuse a CAPABILITY pack whose distribution is a partner's, with a clear message.
+</Step>
+<Step title="What a pack requires is checked">
+The platform exposes its version; a pack that asks for a platform or worker-protocol version it does not have is refused before any write.
+</Step>
+<Step title="The contract only changes by addition">
+Frozen v1 manifests and reference messages of the worker protocol are replayed in CI: removing a field fails the build. The message envelope gets a version field, added as an optional field.
+</Step>
+<Step title="Signed before any third-party pack">
+A bundle is verified before it is installed: content hash, detached signature, trusted keys set by the administrator, refusal by default. The pack's hash is logged on every run.
+</Step>
+<Step title="One image and one identity per worker">
+Each pack worker runs in its own image and has its own identity on the broker, limited to its own queues. That is what makes a separate process a real boundary.
+</Step>
+</Steps>
+
+**Why the order follows the rename of our engine.** The contract's names change with the rename: the AMQP exchanges, the capability ids, and the manifests' `apiVersion: orazaka.dev/v1`. If we froze the contract or signed packs before that rename, every reference manifest, every replayed message and every hash would have to be redone. After it, the v1 contract carries its final name, and it changes only once.
+
+At first I thought the rename was a deadline, "the last moment when breaking the contract costs nothing". The counter-review corrected that: with no customer and no pack outside the repository, breaking the contract costs nothing **until the first pack that lives elsewhere**. The rename is a prerequisite, not a deadline. So the real rule is: freeze the contract after the rename, and before the first pack outside the repository.
+
+**What waits for a trigger.** Signing, per-worker identities and the private repository of expert packs only start when their reason exists: a first licensed pack, or a first third-party pack. If neither comes, we stop after the contract freeze, and those waves stay written down, ready. I put no date on this plan: each wave starts when its conditions are true.
+
+## What I keep
+
+- **Check the premise before choosing the tool.** The proposal answered a problem the code did not have. Reading the code before writing the plan saved three modules.
+- **A class loader isolates dependencies, not permissions.** Since Java 24 the JVM offers no sandbox; isolating foreign code happens outside the process, and a process is a boundary only if it has its own identity.
+- **Composing at build time keeps doors open**: native images, reproducibility, a single way to discover code. Loading at run time closes them.
+- **Write down what would reopen the decision.** A decision that says what would change it can be reread without being argued again.
+
+## Sources
+
+- [PF4J, releases](https://github.com/pf4j/pf4j/releases) · [PF4J website](https://pf4j.org/)
+- [pf4j-spring, releases](https://github.com/pf4j/pf4j-spring/releases) · ["Support Spring Framework 7" issue](https://github.com/pf4j/pf4j-spring/issues/94) · [pull request with the same title](https://github.com/pf4j/pf4j-spring/pull/95) · [Spring version of 0.10.0](https://repo1.maven.org/maven2/org/pf4j/pf4j-spring-parent/0.10.0/pf4j-spring-parent-0.10.0.pom)
+- [Spring Framework 7.0, general availability (13 November 2025)](https://spring.io/blog/2025/11/13/spring-framework-7-0-general-availability/)
+- [Spring Boot 4.0.0 (20 November 2025)](https://spring.io/blog/2025/11/20/spring-boot-4-0-0-available-now/)
+- [Spring Framework, contexts and hierarchies](https://docs.spring.io/spring-framework/reference/core/beans/context-introduction.html)
+- [Spring Boot 4.0, launchers and `loader.path`](https://docs.spring.io/spring-boot/4.0/specification/executable-jar/launching.html)
+- [Spring Boot, native images and the closed world](https://docs.spring.io/spring-boot/reference/packaging/native-image/introducing-graalvm-native-images.html)
+- [Spring Modulith, application modules](https://docs.spring.io/spring-modulith/reference/fundamentals.html) · [`spring-modulith-core` 2.0.0](https://repo1.maven.org/maven2/org/springframework/modulith/spring-modulith-core/2.0.0/spring-modulith-core-2.0.0.pom)
+- [JEP 411, Security Manager deprecated for removal (Java 17)](https://openjdk.org/jeps/411)
+- [JEP 486, Security Manager permanently disabled (Java 24)](https://openjdk.org/jeps/486)
+- [Keycloak, providers and `kc.sh build`](https://www.keycloak.org/server/configuration-provider)
+- [VS Code, Extension Host](https://code.visualstudio.com/api/advanced-topics/extension-host) · [extension permissions](https://code.visualstudio.com/docs/configure/extensions/extension-runtime-security)
+- [Terraform, plugins run as separate processes and called over RPC](https://developer.hashicorp.com/terraform/plugin/how-terraform-works)
+- [WebAssembly, security model](https://webassembly.org/docs/security/) · [Chicory, a WebAssembly runtime for the JVM](https://github.com/dylibso/chicory)
+- [Maven Central, a published component can be neither changed nor removed](https://central.sonatype.org/publish/requirements/immutability/)
+- Spring Cloud Data Flow, which registered applications by URI, is no longer a model to follow: [its open-source repository is archived](https://github.com/spring-attic/spring-cloud-dataflow)
+- The Sovkora code cited: [the repository](repo:sovkora), [the worker protocol](repo:sovkora/blob/main/docs/WORKER_PROTOCOL.md), [the pack schema](repo:sovkora/blob/main/packs/pack.schema.json), [the reference pack](repo:sovkora/tree/main/packs/echo-toolkit)
