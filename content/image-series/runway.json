@@ -108,6 +108,11 @@
         "name": "light pastel look (kept)",
         "takes": 8,
         "credits": "8 medium at 6 each, 48 in all"
+      },
+      {
+        "name": "chapter 27 cover (2026-11-12, CTO)",
+        "takes": 1,
+        "credits": "8 (balance 2755 → 2747)"
       }
     ],
     "note": "Runway's organization endpoint, balance before and after each take; the account is shared with the home session, so a few jumps of 62 and 65 credits in the log are its own generations, not this blog's. This round stays under the 100 credits the founder allowed."

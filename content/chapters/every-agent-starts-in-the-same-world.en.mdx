@@ -1,0 +1,100 @@
+---
+title: "Every agent starts in the same world"
+description: "On November 11 we found that each of our agent teams started with a slightly different tool, different rules and a different context. We built one way to start: isolated, pinned, checked."
+seoTitle: "Every agent starts in the same world, checked"
+seoDescription: "Agent teams that each started in a different world, then one way to start: isolated, pinned, and checked from the first message."
+date: 2026-11-11
+tags: [ai, integration]
+author: oussama
+publishedAt: "2026-11-11T22:00:00-05:00"
+draft: false
+sensitive: true
+chapter: 27
+cover: series-27-every-agent-starts-in-the-same-world
+coverAlt: "The small snowy rail yard in light ink and watercolor: on the platform, a row of identical little wagons waits to leave in front of a wooden checking gantry, each with the same lit lantern, the small grey-violet owl on the footbridge checking a list, and the pigeon on the wooden sign"
+period: "2026-11-11/2026-11-12"
+sources:
+  - cette-semaine-2026-w46
+versus:
+  faced: "agent teams that each started with a different tool, different rules and a different context"
+  built: "one session builder, isolated, pinned and checked from the first message"
+stats:
+  - value: "76 → 19"
+    label: "skills loaded at start, each one only once"
+    section: "What we found on November 11"
+  - value: "40,000"
+    label: "tokens or so on a team's first turn, down from 190,000"
+    section: "What it changed already"
+  - value: "18 of 18"
+    label: "team sessions that finished cleanly since the stabilisation"
+    section: "What it changed already"
+---
+
+In [chapter 26](/story/the-big-clean-up-and-our-real-names/), we tidied everything up: one folder, one copy per repository, our real names. The tidy-up said where things live. It said nothing about how an agent starts.
+
+At Krizaka, code is written by teams of agents. The CTO, which is an agent too, opens a ticket, writes a short brief and starts a session with no screen. It works alone, opens a PR, then stops. On November 11, I understood that these sessions did not all start in the same world.
+
+## What we found on November 11
+
+That day the CTO measured instead of assuming. It started a test session with a single question and no tools, just to read what it saw when it started.
+
+What it saw was not what we thought. The teams ran a much older version of the tool than the one in my editor. Every skill was loaded four times: 76 instead of 19. A team started from the main folder also read the CTO's own instructions, its way of opening a session, as if they were its own. The session could see 73 connected tools, including accounts that had no business being there. Its first turn weighed about 190,000 tokens before it had even read the brief.
+
+<Numbers>
+  <Num value="76" label="skills loaded" hint="instead of 19: each one four times" />
+  <Num value="73" label="connected tools in sight" hint="including accounts that had no business being there" />
+  <Num value="190,000" label="tokens on the first turn" hint="about, before reading the brief" />
+</Numbers>
+
+There was also what we could not see. A team's log stayed empty until the end, so there was no way to know where it was. The rules shared by every team never arrived: only the brief went out. And when a team finished, nothing told the CTO. That same evening, three teams finished without anyone noticing.
+
+The numbers showed it. In the 24 hours before, 41 team sessions ran. Only 18 finished cleanly. The other 23 were cut off by their turn limit, often after going round in circles.
+
+## One way to start
+
+I gave a simple instruction: a team starts every time in the same environment, up to date, and proven. Not "the same, normally". Proven.
+
+The CTO turned it into one piece of code, the session builder. Every session with no screen goes through it: the teams, the crack that unblocks stuck PRs, the acceptance check that verifies a ticket after the merge. There is no other path.
+
+<Steps>
+  <Step title="Isolated">The session only sees what it is given: the index of our code, and the tools its team declares. Not the CTO's personal memory, not my accounts, not extensions we did not write.</Step>
+  <Step title="Pinned">The tool's version is written in the configuration, like a dependency. It moves up through a PR, never by itself, and never while a team is working.</Step>
+  <Step title="Checked before leaving">Before anything starts, a check compares the machine with what is expected: the version, our extensions, the number of skills. One difference, and nothing starts.</Step>
+  <Step title="Checked on the first message">The session's first message says what it really loaded. It is compared with what is expected, live. If it drifts, the session is stopped within seconds, with the reason.</Step>
+</Steps>
+
+Every start leaves a trace in our operations database: "conforms", with the size of the starting context, or "drift", with what differs. The shared rules now go out with every team. Its log fills in live. And the end of a team opens an alert the CTO has to acknowledge: it can no longer go unnoticed.
+
+<Figure id="agent-session-start-en" alt="The path of a team start: the ticket and the brief go into the session builder, which isolates and pins; a check refuses to leave if anything differs; the first message is checked live; every start writes conforms or drift to the operations database, and the end of the team opens an alert for the CTO." caption="One path for every session with no screen: two checks before work begins, a trace at every start, an alert at every end." />
+
+## What it changed already
+
+I only have a few hours of hindsight, so I give the numbers as they are.
+
+A team's starting context went from about 190,000 tokens to 40,000 to 50,000 on the first turn, measured on real starts on November 12. Each skill is loaded once: 19 of 19.
+
+Since the stabilisation began, on the evening of November 11, 18 team sessions ran. All 18 finished cleanly, none was cut off by its limit. And a session costs about three times less than before.
+
+<Numbers>
+  <Num value="40,000" label="tokens on the first turn" hint="to 50,000 depending on the brief, down from 190,000" />
+  <Num value="18" label="sessions out of 18 finished cleanly" hint="since the stabilisation; 18 out of 41 the day before" />
+  <Num value="3" label="times cheaper per session" hint="about, for comparable work" />
+</Numbers>
+
+It is not only the environment. The briefs are also shorter and more precise: one ticket, the cause read before starting, the files to change named. I cannot yet tell which part each one plays. That is exactly why we measure.
+
+There were misses along the way, and I would rather say them. An alert we thought was fixed kept ringing for PRs that were already merged. A lead the CTO gave a team was wrong, and the team disproved it, with evidence. A clean environment does not make agents infallible. It makes their mistakes visible, and comparable from one day to the next.
+
+## What changed for you this week
+
+Most of this work is invisible from outside. But while the teams finally started in the same world, they shipped.
+
+In Verikora, the report on a rental application does not give a score. It shows three signal levels: what is consistent, what is worth a look, what does not match. And each time, the line of the document that proves it. The documents of an application now have their own space, instead of sitting in an e-mail.
+
+On krizaka.com there is now a real contact page, a form rather than an address thrown into the void. And the person responsible for your personal information is named publicly: if you want to know who looks after your data, it is written down.
+
+## More in the next episode
+
+We set ourselves a rule before writing this chapter: three days of conforming starts, without a single drift, so we tell what really works and not what we hope. Those three days start now.
+
+In the next episode I will show the numbers from those three days, and the diagrams of this architecture generated straight from the code, so they stay true when the code changes.

@@ -153,3 +153,22 @@ test("media on the blog's CDN: the legacy prefix and the layout v2 prefix (ADR-0
     "https://krizaka-assets.b-cdn.net/sites/blog/posts/",
   );
 });
+
+/* A diagram is never a cover (krizaka-internal#3206, 2026-11-12): the W46 post took its Verikora signal-levels diagram as cover,
+   cropped in the 16:9 hero and the home's Featured card. A cover is an evocative still or a short clip; a diagram stays in its post. */
+test("a diagram drawn from code cannot be a post's cover", async () => {
+  const { coverProblems } = await import("../scripts/content-media.mjs");
+  const diagram = {
+    kind: "image",
+    style: "diagram",
+    width: 1200,
+    height: 800,
+    blur: "data:image/webp;base64,AA",
+    srcs: [{ w: 1200, url: "https://krizaka-assets.b-cdn.net/sites/blog/posts/p/d-1200.aa.webp" }],
+  };
+  const problems = coverProblems("p.fr.mdx", { cover: "d" }, "", { d: diagram });
+  assert.ok(
+    problems.some((p) => p.includes("a diagram is never a cover")),
+    problems.join("\n"),
+  );
+});
