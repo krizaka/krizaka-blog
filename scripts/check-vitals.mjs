@@ -19,7 +19,10 @@ export function vitalsProblems(path, metrics, budget = BUDGET) {
   return out;
 }
 
-/** The pages measured: the home in both languages, then the first post and the first chapter found in the build output. */
+/** A built page that is a stub of a moved address (RetiredPost: a 0-second refresh): it leaves at once and never paints. */
+const isStub = (file) => /<meta[^>]+http-equiv="refresh"/i.test(readFileSync(file, "utf8"));
+
+/** The pages measured: the home in both languages, then the first real post and chapter (never a stub) of the build output. */
 export function pagesToMeasure(postsDir) {
   const paths = ["/", "/fr/"];
   if (!postsDir) return paths;
@@ -27,7 +30,9 @@ export function pagesToMeasure(postsDir) {
     for (const section of ["basics", "story"]) {
       const dir = join(postsDir, prefix, section);
       if (!existsSync(dir)) continue;
-      const slug = readdirSync(dir).find((s) => existsSync(join(dir, s, "index.html")));
+      const slug = readdirSync(dir).find(
+        (s) => existsSync(join(dir, s, "index.html")) && !isStub(join(dir, s, "index.html")),
+      );
       if (slug) paths.push(`/${prefix}${section}/${slug}/`);
     }
   return paths;

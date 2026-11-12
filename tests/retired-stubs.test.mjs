@@ -191,3 +191,25 @@ test("the removed pages' components are gone: no search, saved, topics, series, 
   assert.ok(!existsSync(new URL("../app/components/feed/FeedPage.tsx", import.meta.url)));
   assert.ok(!existsSync(new URL("../app/components/SearchBox.tsx", import.meta.url)));
 });
+
+/* krizaka-internal#3206 (2026-11-12): the week 46 post lived at /basics/cette-semaine-2026-w46/, was folded into chapter 27, and its
+   address answered 404 although the newsletter e-mail linked it: a slug key only made the old /posts/ stub. Every retired post also
+   keeps a stub at /basics/<slug>/, never a live post's address. */
+test("every retired post keeps a stub at /basics/<slug>/ too, and no live post is shadowed by one", async () => {
+  const { stubSlugs, stubHref } = await import("../lib/retired-core.mjs");
+  const map = JSON.parse(readFileSync(new URL("../lib/redirects.json", import.meta.url), "utf8"));
+  const basicsStubSlugs = (l, live) => stubSlugs(map, l, live);
+  const basicsStubTarget = (l, slug) => ({ href: stubHref(map, l, slug) });
+  const live = (l) =>
+    new Set(
+      readdirSync(new URL("../content/posts/", import.meta.url))
+        .filter((f) => f.endsWith(`.${l}.mdx`))
+        .map((f) => f.split(".")[0]),
+    );
+  for (const l of ["en", "fr"]) {
+    const slugs = basicsStubSlugs(l, live(l));
+    assert.ok(slugs.includes("cette-semaine-2026-w46"), `${l}: the week 46 address keeps its stub`);
+    for (const s of slugs) assert.ok(!live(l).has(s), `${l}: ${s} is a live post, never a stub`);
+    assert.match(basicsStubTarget(l, "cette-semaine-2026-w46").href, /every-agent-starts-in-the-same-world/);
+  }
+});
