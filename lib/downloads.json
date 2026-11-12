@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "ba91e6d6c5e3",
+      "source": "33da824f500b",
       "files": {
         "epub": {
-          "hash": "6aed915b2f",
-          "bytes": 7614793
+          "hash": "377145686f",
+          "bytes": 7832694
         },
         "pdf": {
-          "hash": "44ebdff3e3",
-          "bytes": 10600886
+          "hash": "dcabd29ec2",
+          "bytes": 10875448
         }
       }
     },
@@ -287,15 +287,15 @@
       }
     },
     "fr/story": {
-      "source": "b6689f9c2e9f",
+      "source": "47f89bd3f728",
       "files": {
         "epub": {
-          "hash": "ab5111eba2",
-          "bytes": 7638181
+          "hash": "51bce19b2b",
+          "bytes": 7864073
         },
         "pdf": {
-          "hash": "21970276b3",
-          "bytes": 10774949
+          "hash": "3d02f309c4",
+          "bytes": 11059838
         }
       }
     },
@@ -699,6 +699,32 @@
         "pdf": {
           "hash": "ddcccd5d9c",
           "bytes": 1380093
+        }
+      }
+    },
+    "en/every-agent-starts-in-the-same-world": {
+      "source": "ba3aaf02f75f",
+      "files": {
+        "epub": {
+          "hash": "ccaec60fec",
+          "bytes": 788472
+        },
+        "pdf": {
+          "hash": "61fa74f538",
+          "bytes": 979084
+        }
+      }
+    },
+    "fr/every-agent-starts-in-the-same-world": {
+      "source": "f7b0c630e6bf",
+      "files": {
+        "epub": {
+          "hash": "e1f5894fa9",
+          "bytes": 804035
+        },
+        "pdf": {
+          "hash": "555f32f822",
+          "bytes": 1001100
         }
       }
     }

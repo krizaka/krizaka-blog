@@ -88,6 +88,11 @@ export function coverProblems(file, data, body, media) {
   if (data.cover === undefined) return [];
   if (!(data.cover in media))
     return [`${file}: "cover" ${JSON.stringify(data.cover)} is not in the media library (lib/media.json)`];
+  /* A diagram drawn from code stays inside its post: as a cover it is cropped in the 16:9 hero and the home's Featured card (#3206). */
+  if (media[data.cover].style === "diagram")
+    return [
+      `${file}: "cover" ${JSON.stringify(data.cover)} is a diagram — a diagram is never a cover; use an evocative still or a clip`,
+    ];
   /* A cover is the page's biggest picture (the LCP): it ships in responsive AVIF and WebP renditions, never one file for every screen. */
   const out = renditionProblems(data.cover, media[data.cover]).map((p) => `${file}: ${p}`);
   const entry = media[data.cover];

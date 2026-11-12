@@ -179,6 +179,12 @@
       "seed": 2601,
       "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
       "beat": "Not rendered by the series' renderer: drawn with GPT Image 2.5 (Sunburst) through Runway in the series' light, pastel ink-and-watercolor look, with three pale pictures of the series as style references (prompt and references in lib/media.json). The yard of chapters 23 to 25 on a clear pale morning after a tidy-up: one long open goods shed where identical small wooden crates stand in a single neat row, a handcart taking a heap of old mismatched crates away to a small shed at the edge of the yard, the owl on the footbridge with its rolled plan, the pigeon on a freshly painted blank sign board. The series' cast is carried over unchanged."
+    },
+    {
+      "post": "every-agent-starts-in-the-same-world",
+      "seed": 2701,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "Not rendered by the series' renderer: drawn with GPT Image 2.5 (Sunburst) through Runway in the series' light, pastel ink-and-watercolor look, with the covers of chapters 25 and 26 as style references (prompt and references in content/image-series/runway.json). The same snowy yard at the departure: a row of identical small wagons waits under a wooden checking gantry, each with the same lit lantern; the owl on the footbridge with a small paper list, the pigeon on a blank sign."
     }
   ],
   "sprites": {

@@ -1,0 +1,100 @@
+---
+title: "Chaque agent démarre dans le même monde"
+description: "Le 11 novembre, on a découvert que nos équipes d'agents démarraient chacune avec un outil, des règles et un contexte un peu différents. On a construit un seul démarrage : isolé, épinglé, vérifié."
+seoTitle: "Chaque agent démarre dans le même monde, vérifié"
+seoDescription: "Des équipes d'agents qui démarraient chacune dans un monde différent, puis un seul démarrage isolé, épinglé et vérifié au premier message."
+date: 2026-11-11
+tags: [ai, integration]
+author: oussama
+publishedAt: "2026-11-11T22:00:00-05:00"
+draft: false
+sensitive: true
+chapter: 27
+cover: series-27-every-agent-starts-in-the-same-world
+coverAlt: "La petite gare de triage enneigée, à l'encre et à l'aquarelle légère : sur le quai, une rangée de petits wagons identiques attend au départ devant un portique de contrôle en bois, chacun avec la même lanterne allumée, le petit hibou gris-violet sur la passerelle qui vérifie une liste, et le pigeon sur le panneau de bois"
+period: "2026-11-11/2026-11-12"
+sources:
+  - cette-semaine-2026-w46
+versus:
+  faced: "des équipes d'agents qui démarraient chacune avec un outil, des règles et un contexte différents"
+  built: "un seul constructeur de session, isolé, épinglé et vérifié dès le premier message"
+stats:
+  - value: "76 → 19"
+    label: "compétences chargées au démarrage, chacune une seule fois"
+    section: "Ce qu'on a trouvé le 11 novembre"
+  - value: "40 000"
+    label: "jetons environ au premier tour d'une équipe, contre 190 000 avant"
+    section: "Ce que ça a changé, déjà"
+  - value: "18 sur 18"
+    label: "sessions d'équipe finies proprement depuis la stabilisation"
+    section: "Ce que ça a changé, déjà"
+---
+
+Au [chapitre 26](/fr/story/the-big-clean-up-and-our-real-names/), on a tout rangé : un seul dossier, une copie par dépôt, nos vrais noms. Le rangement disait où vivent les choses. Il ne disait rien de la façon dont un agent démarre.
+
+Chez nous, le code est écrit par des équipes d'agents. Le CTO, qui est lui-même un agent, ouvre un ticket, écrit un court brief et lance une session sans écran. Elle travaille seule, ouvre une PR, puis s'arrête. Le 11 novembre, j'ai compris que ces sessions ne démarraient pas toutes dans le même monde.
+
+## Ce qu'on a trouvé le 11 novembre
+
+Ce jour-là, le CTO a mesuré au lieu de supposer. Il a lancé une session de test avec une seule question, sans outil, juste pour lire ce qu'elle voyait en démarrant.
+
+Ce qu'elle voyait n'était pas ce qu'on croyait. Les équipes tournaient avec une version de l'outil bien plus ancienne que celle de mon éditeur. Chaque compétence était chargée quatre fois : 76 au lieu de 19. Une équipe lancée depuis le dossier principal lisait aussi les consignes personnelles du CTO, sa façon de commencer une session, comme si c'étaient les siennes. La session voyait 73 outils branchés, dont des comptes qui n'avaient rien à faire là. Son premier tour pesait environ 190 000 jetons, avant même d'avoir lu le brief.
+
+<Numbers>
+  <Num value="76" label="compétences chargées" hint="au lieu de 19 : chacune quatre fois" />
+  <Num value="73" label="outils branchés visibles" hint="dont des comptes qui n'avaient rien à faire là" />
+  <Num value="190 000" label="jetons au premier tour" hint="environ, avant même de lire le brief" />
+</Numbers>
+
+Il y avait aussi ce qu'on ne voyait pas. Le journal d'une équipe restait vide jusqu'à la fin, impossible de savoir où elle en était. Les règles communes à toutes les équipes n'arrivaient jamais : seul le brief partait. Et quand une équipe finissait, rien ne prévenait le CTO. Le soir même, trois équipes ont terminé sans que personne le voie.
+
+Le résultat se lisait dans les chiffres. Sur les 24 heures d'avant, 41 sessions d'équipe ont tourné. 18 seulement ont fini proprement. Les 23 autres ont été coupées par leur plafond de tours, souvent après avoir tourné en rond.
+
+## Une seule façon de démarrer
+
+J'ai donné une consigne simple : une équipe démarre chaque fois dans le même environnement, à jour, et prouvé. Pas « normalement le même ». Prouvé.
+
+Le CTO l'a traduite en une seule pièce de code, le constructeur de session. Toutes les sessions sans écran passent par lui : les équipes, le crack qui débloque les PR coincées, la recette qui vérifie un ticket après le merge. Il n'y a plus d'autre chemin.
+
+<Steps>
+  <Step title="Isolée">La session ne voit que ce qu'on lui donne : l'index de notre code, et les outils que son équipe déclare. Pas la mémoire personnelle du CTO, pas mes comptes, pas les extensions qu'on n'a pas écrites.</Step>
+  <Step title="Épinglée">La version de l'outil est écrite dans la configuration, comme une dépendance. Elle monte par une PR, jamais toute seule, et jamais pendant qu'une équipe travaille.</Step>
+  <Step title="Vérifiée avant de partir">Avant de lancer quoi que ce soit, un contrôle compare la machine à ce qui est attendu : la version, nos extensions, le nombre de compétences. Une différence, et rien ne démarre.</Step>
+  <Step title="Vérifiée au premier message">Le premier message de la session dit ce qu'elle a vraiment chargé. Il est comparé à l'attendu, en direct. Si ça dérive, la session est arrêtée en quelques secondes, avec la raison.</Step>
+</Steps>
+
+Chaque démarrage laisse une trace dans notre base d'opérations : « conforme », avec la taille du contexte de départ, ou « dérive », avec ce qui diffère. Les règles communes partent maintenant avec chaque équipe. Son journal se remplit en direct. Et la fin d'une équipe ouvre une alerte que le CTO doit acquitter : elle ne peut plus passer inaperçue.
+
+<Figure id="agent-session-start-fr" alt="Le chemin d'un démarrage d'équipe : le ticket et le brief entrent dans le constructeur de session, qui isole et épingle ; un contrôle refuse de partir s'il y a une différence ; le premier message est vérifié en direct ; chaque démarrage écrit « conforme » ou « dérive » dans la base d'opérations, et la fin de l'équipe ouvre une alerte pour le CTO." caption="Un seul chemin pour toutes les sessions sans écran : deux contrôles avant que le travail commence, une trace à chaque démarrage, une alerte à chaque fin." />
+
+## Ce que ça a changé, déjà
+
+Je n'ai que quelques heures de recul, alors je donne les chiffres tels quels.
+
+Le contexte de départ d'une équipe est passé d'environ 190 000 jetons à 40 000 à 50 000 au premier tour, mesurés sur les démarrages réels du 12 novembre. Chaque compétence n'est chargée qu'une fois : 19 sur 19.
+
+Depuis le début de la stabilisation, le soir du 11 novembre, 18 sessions d'équipe ont tourné. Les 18 ont fini proprement, aucune n'a été coupée par son plafond. Et une session coûte environ trois fois moins cher qu'avant.
+
+<Numbers>
+  <Num value="40 000" label="jetons au premier tour" hint="à 50 000 selon le brief, contre 190 000 avant" />
+  <Num value="18" label="sessions sur 18 finies proprement" hint="depuis la stabilisation ; 18 sur 41 la veille" />
+  <Num value="3" label="fois moins cher par session" hint="environ, à travail comparable" />
+</Numbers>
+
+Ce n'est pas seulement l'environnement. Les briefs sont aussi plus courts et plus précis : un ticket, la cause lue avant de lancer, les fichiers à changer nommés. Je ne sais pas encore faire la part de chacun. C'est justement pour ça qu'on mesure.
+
+Il y a eu des ratés en route, et je préfère les dire. Une alerte qu'on croyait réglée sonnait encore pour des PR déjà mergées. Une piste que le CTO avait donnée à une équipe était fausse, et c'est l'équipe qui l'a réfutée, preuves à l'appui. Un environnement propre ne rend pas les agents infaillibles. Il rend leurs erreurs visibles, et comparables d'un jour à l'autre.
+
+## Ce qui a changé pour vous cette semaine
+
+Tout ce travail se voit peu de l'extérieur. Mais pendant que les équipes démarraient enfin dans le même monde, elles ont livré.
+
+Dans Verikora, le rapport d'un dossier de location ne donne pas une note. Il montre trois niveaux de signal : ce qui est cohérent, ce qui mérite d'être noté, ce qui ne concorde pas. Et à chaque fois, la ligne du document qui le prouve. Les pièces d'un dossier de candidature ont aussi leur propre espace, au lieu de traîner dans un courriel.
+
+Sur krizaka.com, il y a maintenant une vraie page de contact, un formulaire plutôt qu'une adresse lancée dans le vide. Et la personne responsable de vos renseignements personnels est nommée publiquement : si vous voulez savoir qui veille sur vos données, c'est écrit.
+
+## La suite au prochain épisode
+
+On s'était fixé une règle avant d'écrire ce chapitre : trois jours de démarrages conformes, sans une seule dérive, pour raconter ce qui marche vraiment et pas ce qu'on espère. Ces trois jours commencent maintenant.
+
+Dans le prochain épisode, je montrerai les chiffres de ces trois jours, et les schémas de cette architecture générés directement depuis le code, pour qu'ils restent vrais quand le code change.

@@ -24,6 +24,7 @@ const RUNWAY = JSON.parse(readFileSync(new URL("../content/image-series/runway.j
 const RUNWAY_TASK = new Set([
   "series-25-why-we-slowed-down-and-how-we-work-now",
   "series-26-the-big-clean-up-and-our-real-names",
+  "series-27-every-agent-starts-in-the-same-world",
 ]);
 export function coverProvenance(id, made) {
   if (!made || typeof made.note !== "string") return false;
