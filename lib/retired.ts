@@ -49,7 +49,8 @@ export const basicsStubSlugs = (locale: Locale, live: Set<string>): string[] => 
 /** Where /basics/<slug>/ goes when it is a stub: the withdrawn shelf post's target first, else the retired post's. */
 export const basicsStubTarget = (locale: Locale, slug: string): Retired | undefined => {
   const href = stubHref(MAP, locale, slug);
-  return href
-    ? retiredTarget(locale, MAP[`page:/basics/${slug}/`]?.[locale] === href ? pageKey(`/basics/${slug}/`) : slug)
-    : undefined;
+  if (!href) return undefined;
+  const page = `/basics/${slug}/`;
+  const withdrawnShelfPost = MAP[`page:${page}`]?.[locale] === href;
+  return retiredTarget(locale, withdrawnShelfPost ? pageKey(page) : slug);
 };
