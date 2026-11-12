@@ -137,12 +137,16 @@ test("home and /basics/ show the path as BasicsPath, with the intro; no nav entr
   assert.doesNotMatch(read("app/components/TopBar.tsx"), /basics/i);
 });
 
-test("a withdrawn basic keeps a stub at its address, to the shelf (krizaka/.github#413)", () => {
+test("a withdrawn basic keeps a stub at its address, to the shelf (krizaka/.github#413)", async () => {
   const key = "page:/basics/payments-and-high-risk-industries/";
   assert.deepEqual(map[key], { en: "/basics/", fr: "/fr/basics/" });
   for (const l of ["en", "fr"])
     assert.ok(!existsSync(new URL(`../content/posts/payments-and-high-risk-industries.${l}.mdx`, import.meta.url)), l);
-  assert.match(read("app/components/pages/BasicsRoute.tsx"), /retiredPagesUnder\("\/basics\/"\)/);
+  // The route builds its stubs from the one rule (lib/retired-core.mjs), which keeps this withdrawn basic (#3206 widened it to every retired post).
+  assert.match(read("app/components/pages/BasicsRoute.tsx"), /basicsStubSlugs\(/);
+  const { stubSlugs } = await import("../lib/retired-core.mjs");
+  for (const l of ["en", "fr"])
+    assert.ok(stubSlugs(map, l, new Set()).includes("payments-and-high-risk-industries"), l);
 });
 
 test("the path is a compact list: one link a row, read marks stay on the device, « Start here » and « Next » in both languages", () => {

@@ -7,6 +7,7 @@
    permanent move a static host can give. A live page never has a stub at its own address (tests/retired-stubs.test.mjs). */
 import redirects from "./redirects.json";
 import type { Locale } from "./i18n";
+import { stubHref, stubSlugs } from "./retired-core.mjs";
 
 export type Retired = { href: string; chapterSlug: string; anchor: string };
 
@@ -41,3 +42,14 @@ export function retiredTarget(locale: Locale, key: string): Retired | undefined 
   const slug = path.match(/^\/(?:fr\/)?(?:story|basics)\/([a-z0-9-]+)\/$/)?.[1] ?? "";
   return { href, chapterSlug: slug, anchor };
 }
+
+/** The /basics/<slug>/ addresses that are stubs in a language (lib/retired-core.mjs, krizaka-internal#3206). */
+export const basicsStubSlugs = (locale: Locale, live: Set<string>): string[] => stubSlugs(MAP, locale, live);
+
+/** Where /basics/<slug>/ goes when it is a stub: the withdrawn shelf post's target first, else the retired post's. */
+export const basicsStubTarget = (locale: Locale, slug: string): Retired | undefined => {
+  const href = stubHref(MAP, locale, slug);
+  return href
+    ? retiredTarget(locale, MAP[`page:/basics/${slug}/`]?.[locale] === href ? pageKey(`/basics/${slug}/`) : slug)
+    : undefined;
+};
