@@ -1,0 +1,366 @@
+---
+title: "Pourquoi Sovkora ne charge aucun plugin dans sa JVM"
+description: "Un moteur d'IA en Spring Boot 4 doit accepter des extensions. PF4J, contextes enfants, Spring Modulith, loader.path : ce que chaque option coûte, ce qu'on a choisi, et ce que ça a changé dans notre plan."
+seoTitle: "Plugins Spring Boot 4 : pourquoi on n'en charge aucun"
+seoDescription: "PF4J, contextes Spring enfants, Modulith, loader.path, Security Manager : pourquoi notre moteur étend par des packs et des workers derrière un broker."
+date: 2026-11-12
+tags: [sovkora, integration, security]
+author: oussama
+draft: true
+series: building-sovkora
+part: 1
+cover: why-sovkora-loads-no-plugin-in-the-jvm
+coverAlt: "Aquarelle et encre sur papier : une salle des machines en pierre avec des tuyaux de laiton à gauche, un long comptoir de bois à casiers au milieu où passent de petits colis ficelés, un pigeon gris posé dessus, et à droite trois petits ateliers de bois séparés, chacun avec sa porte et sa lampe"
+---
+
+Sovkora, notre moteur d'IA, devra accepter des extensions. D'abord les nôtres : des packs experts, vendus à part. Plus tard, peut-être, ceux d'un partenaire. Quand la question est arrivée sur la table, la proposition écrite était celle qu'on lit partout dans l'écosystème Java : un système de plugins chargés dynamiquement dans la JVM, avec PF4J ou des contextes Spring enfants, dans notre bibliothèque Java commune.
+
+Ce billet raconte pourquoi on ne l'a pas fait. Il s'adresse surtout aux développeurs Java et Spring : il y a du code, des versions précises et des sources. La décision a été approuvée aujourd'hui, après une étude, une deuxième passe indépendante et une contre-vérification de 78 affirmations une à une. Je ne garde ici que ce qui a tenu.
+
+<Note>
+Notre socle : Java 21 et Spring Boot 4.0.9. Les extraits de code viennent du dépôt public [Sovkora](repo:sovkora), relu le 12 novembre 2026. Le moteur s'appelait Orazaka avant de devenir Sovkora : certains noms dans le code portent encore l'ancien, et on verra plus bas pourquoi ça compte pour le plan.
+</Note>
+
+## Ce qu'on a trouvé en lisant le code avant d'écrire le plan
+
+La proposition partait d'une idée simple : le moteur est un monolithe, tout y est embarqué, ajouter un pack métier oblige à recompiler. Avant de choisir un cadre de plugins, j'ai demandé qu'on vérifie cette phrase dans le code. Elle était fausse.
+
+Sovkora n'est pas un monolithe : ce sont six services Spring Boot, un par contexte métier. Et il avait déjà son mécanisme d'extension. Il s'appelle le **pack**, et ce n'est pas du Java :
+
+<Numbers>
+<Num value="17" label="packs dans le dépôt" hint="un fichier pack.yaml chacun" />
+<Num value="0" label="fichier Java sous packs/" hint="la logique est en Python, en JSON et en YAML" />
+<Num value="63" label="fichiers Python sous packs/" hint="les workers des packs" />
+<Num value="0" label="pack de niveau CAPABILITY" hint="10 DATA, 7 WORKER" />
+</Numbers>
+
+Un pack déclare ce qu'il apporte dans un manifeste validé par un schéma ([`packs/pack.schema.json`](repo:sovkora/blob/main/packs/pack.schema.json)). Il existe à trois niveaux :
+
+| Niveau | Ce que le pack apporte | Comment il arrive |
+|---|---|---|
+| DATA | des blueprints, des traductions, des jeux de règles | installé à chaud par une API d'administration, sans recompiler le moteur |
+| WORKER | son propre processus, dans n'importe quel langage | il parle un contrat de messages AMQP, versionné |
+| CAPABILITY | un exécuteur Java dans le service de jobs | compilé dans notre image, découvert par `AutoConfiguration.imports` |
+
+La vraie question n'était donc pas « quel cadre de plugins choisir ? ». C'était : **faut-il charger du code d'extension dans notre JVM ?** Pour y répondre honnêtement, j'ai repris chaque option comme si on partait de zéro.
+
+## Option 1 : PF4J et pf4j-spring
+
+[PF4J](https://pf4j.org/) est le cadre de plugins Java le plus connu. Il est maintenu : sa version 3.16.1 date du 3 novembre 2026. Avec son pont Spring, une extension ressemblerait à ceci :
+
+```java
+// Ce qu'on aurait écrit avec PF4J (illustration, pas notre code)
+public interface DocumentCheck extends ExtensionPoint {
+  CheckResult check(Document document);
+}
+
+@Extension
+public class LeaseCheck implements DocumentCheck {
+  @Override
+  public CheckResult check(Document document) { /* … */ }
+}
+
+@Configuration
+class PluginConfiguration {
+  @Bean
+  SpringPluginManager pluginManager() {
+    return new SpringPluginManager(Path.of("plugins"));   // un chargeur de classes par plugin
+  }
+}
+```
+
+C'est propre. Le problème est le pont. La dernière version de `pf4j-spring` est la 0.10.0, publiée le 24 mai 2025, et elle est construite sur Spring Framework 6.2.2. Spring Framework 7 est sorti le 13 novembre 2025, Spring Boot 4.0 le 20 novembre 2025, en s'appuyant dessus. Le dernier commit du dépôt `pf4j-spring` date du 24 mai 2025 ; une demande « Support Spring Framework 7 » est ouverte depuis le 4 juin 2026, et une pull request du même titre depuis le 27 août 2026.
+
+Le pont ne dépend que de `spring-core` et `spring-context`. Il tournerait peut-être tel quel sur Spring 7. Mais personne ne l'a prouvé, et ce n'est pas le vrai défaut. Le vrai défaut est plus bas : un chargeur de classes par plugin isole des **dépendances**, pas des **droits**.
+
+## Option 2 : un contexte Spring enfant et un URLClassLoader
+
+Sans bibliothèque, Spring sait déjà faire des hiérarchies de contextes. On peut charger un dossier de JAR dans un chargeur à part et lui donner un contexte enfant :
+
+```java
+// Un contexte enfant par extension (illustration, pas notre code)
+URL[] jars = { Path.of("extensions/lease-check.jar").toUri().toURL() };
+URLClassLoader loader = new URLClassLoader(jars, getClass().getClassLoader());
+
+AnnotationConfigApplicationContext child = new AnnotationConfigApplicationContext();
+child.setParent(parentContext);      // l'extension voit les beans de l'hôte
+child.setClassLoader(loader);
+child.register(loader.loadClass("com.example.LeaseCheckConfiguration"));
+child.refresh();
+```
+
+Ça marche, et c'est du code natif de Spring. Mais regardez ce que ce code **ne retient pas**. Dans `LeaseCheck`, rien n'empêche d'appeler `System.exit(0)`, de lire un fichier du disque, d'ouvrir une socket, de lancer des fils d'exécution, ou de remonter par réflexion jusqu'aux beans du parent, avec leurs connexions aux bases. Le chargeur de classes décide **quelle version d'une classe** on voit. Il ne décide pas **ce que le code a le droit de faire**.
+
+On a donc tout le coût du chargement dynamique (le déchargement à chaud, les conflits de classes entre parent et enfant, du code maison à maintenir) sans frontière de sécurité.
+
+## Ce qu'un chargeur de classes ne protège pas, version par version
+
+Java a longtemps eu une réponse à ce problème : le Security Manager, un bac à sable dans la JVM. Il faut être précis sur les versions, parce que c'est là que l'argument se joue.
+
+- **Java 17** : le [JEP 411](https://openjdk.org/jeps/411) le déprécie pour suppression.
+- **Java 21**, notre version : il existe encore, déprécié, et l'activer affiche un avertissement.
+- **Java 24** : le [JEP 486](https://openjdk.org/jeps/486) le désactive définitivement. L'API reste pour la compatibilité, mais on ne peut plus l'activer.
+
+Bâtir un bac à sable de plugins sur le Security Manager, ce serait donc bâtir sur une fonction qui disparaît à la prochaine version LTS. Et le JEP 411 dit lui-même où l'OpenJDK place la sécurité désormais : en isolant tout le runtime Java des ressources sensibles « via des mécanismes hors processus, comme les conteneurs et les hyperviseurs ».
+
+Les produits matures disent la même chose dans leur propre documentation. Keycloak charge ses fournisseurs depuis un dossier de JAR, et sa page de configuration écrit en toutes lettres : « Do not install untrusted provider JARs! There is a single class loader for the entire application. » Chez Keycloak, un fournisseur est déposé dans `providers/`, puis intégré par la commande `kc.sh build` : c'est une composition au build, pas un chargement à chaud.
+
+D'autres ont sorti le code d'extension du processus. Terraform fait de chaque plugin un exécutable à part, que le cœur appelle par RPC.
+
+Un processus à part ne suffit pas pour autant, s'il garde tous les droits. VS Code fait tourner ses extensions dans un processus séparé, l'Extension Host, pour protéger la stabilité de l'éditeur ; sa documentation précise que ce processus « a les mêmes permissions que VS Code lui-même ». La leçon que j'en tire : **un processus est une frontière de sécurité seulement s'il a sa propre identité et ses propres droits.** On y revient dans le plan.
+
+## AOT et image native : le monde fermé
+
+Il y a un deuxième argument, moins visible. La documentation de Spring Boot sur les images natives GraalVM le dit sans détour : « The application classpath is fixed at build time and cannot change. » Spring suppose un monde fermé.
+
+Sovkora n'utilise ni l'AOT ni l'image native aujourd'hui. Mais un chargeur de JAR à l'exécution fermerait cette porte pour de bon. Une composition au build la laisse ouverte.
+
+## Les deux options qui ne chargent rien à l'exécution
+
+**Spring Modulith.** La ligne 2.0 est construite sur Spring Framework 7 (le `pom` de 2.0.0 dépend de `spring-core` 7.0.1), donc compatible avec Boot 4. Mais Modulith ne charge pas de plugins : il structure une seule application en modules, et par défaut chaque sous-paquet direct du paquet principal est un module. Il vérifie les dépendances entre ces modules, les teste et les documente. C'est un très bon outil pour garder un service propre ; ce n'est pas un mécanisme d'extension pour du code qui n'est pas le nôtre.
+
+**`loader.path`.** Spring Boot sait encore ajouter des JAR au classpath au démarrage, mais seulement avec `PropertiesLauncher`. La documentation de Boot 4.0 est précise : avec `JarLauncher` (le lanceur par défaut, celui de nos JAR), les chemins imbriqués sont fixes, et c'est `PropertiesLauncher` qui lit `LOADER_PATH` ou `loader.path`. Nos JAR démarrent avec `JarLauncher`, et notre build ne publie aucun artefact Java : un exécuteur Java n'arrive que par notre propre build.
+
+## Ce qu'on a choisi : le broker est la frontière
+
+La décision tient en trois lignes :
+
+1. **Aucun plugin chargé dynamiquement dans une JVM de Krizaka.** Pas de cadre de plugins, pas de rechargement à chaud.
+2. **La frontière d'extension est le pack et le broker.** Du code qui n'est pas le nôtre arrive comme pack DATA (des données) ou comme pack WORKER (un processus à part, qui parle le contrat de messages).
+3. **Le niveau CAPABILITY, du Java dans notre processus, est réservé à notre code**, composé au build par `AutoConfiguration.imports`.
+
+Les deux premières lignes n'étaient pas nouvelles : l'architecture du moteur les écrivait déjà, et le code de référence le dit en une phrase, « the broker is the plugin boundary ». La troisième est la seule restriction qu'on a ajoutée.
+
+Voici le chemin d'un pack, du manifeste jusqu'au worker :
+
+```text
+pack.yaml + blueprints + règles
+   |  bundle, par l'API d'administration
+   v
++--------------------------------------+
+| studio-service                       |
+|  PackInstallerService                |
+|  valide le schéma, résout requires,  |
+|  enregistre les capacités du pack    |
++--------------------------------------+
+   |
+   v
++--------------------------------------+
+| registre des capacités (des données) |
+|  routing_key : quel processus reçoit |
+|  handler_key : quel code s'exécute   |
++--------------------------------------+
+   |
+   v
++--------------------------------------+
+| job-service                          |
+|  publie job.{capacité}.{action}      |
+|  JobExecutor (CAPABILITY) : notre    |
+|  code, compilé dans l'image,         |
+|  découvert par                       |
+|  AutoConfiguration.imports           |
++--------------------------------------+
+   |
+   v
+====== broker AMQP : la frontière ======
+  échange jobs   -->  file du worker
+  échange events <--  job.{jobId}.done
+                      ou .error
+   |
+   v
++--------------------------------------+
+| worker du pack (WORKER)              |
+|  son processus, son langage,         |
+|  déclare ses propres files,          |
+|  aucune bibliothèque Sovkora         |
++--------------------------------------+
+```
+
+### Un pack WORKER, en vrai
+
+Le pack de référence s'appelle `echo-toolkit`. Il ne fait presque rien (il renverse une chaîne), exprès : une référence pour un point d'extension doit se lire en une minute. Son manifeste, [`packs/echo-toolkit/pack.yaml`](repo:sovkora/blob/main/packs/echo-toolkit/pack.yaml), raccourci :
+
+```yaml
+apiVersion: orazaka.dev/v1
+key: echo-toolkit
+version: 1.2.0
+tier: WORKER
+distribution: OSS
+regulatoryClass: STANDARD
+
+requires:
+  capabilities:
+    - key: orazaka.echo.text.reverse
+      routingKey: job.echo.reverse     # quelle file reçoit le travail
+      handlerKey: echo.reverse         # quel code le traite
+      billableCapability: CHAT
+      billableUnit: KILOTOKEN
+  workers:
+    - name: orazaka-worker-echo
+      bindings:
+        - "job.echo.*"
+      concurrency: 1
+```
+
+Le pack a sa propre version (1.2.0), indépendante de celle du moteur. Le worker, lui, ne connaît aucune capacité : il déclare des clés de routage dans [`worker.yaml`](repo:sovkora/blob/main/packs/echo-toolkit/worker/worker.yaml) et monte sa propre topologie au démarrage. Extrait de [`echo_worker.py`](repo:sovkora/blob/main/packs/echo-toolkit/worker/echo_worker.py) :
+
+```python
+# Le worker déclare lui-même sa file, ses liaisons et sa file des messages morts :
+# installer un pack ne demande aucun changement dans la configuration du broker.
+channel.exchange_declare(exchange=JOBS_EXCHANGE, exchange_type="topic", durable=True)
+channel.exchange_declare(exchange=EVENTS_EXCHANGE, exchange_type="topic", durable=True)
+channel.queue_declare(
+    queue=QUEUE,
+    durable=True,
+    arguments={"x-dead-letter-exchange": DLX_EXCHANGE, "x-dead-letter-routing-key": QUEUE},
+)
+for binding in DECLARATION["bindings"]:
+    channel.queue_bind(queue=QUEUE, exchange=JOBS_EXCHANGE, routing_key=binding)
+
+channel.basic_qos(prefetch_count=DECLARATION.get("concurrency", 1))
+channel.basic_consume(queue=QUEUE, on_message_callback=_on_message)
+```
+
+Le contrat que ce worker respecte est un document, [`docs/WORKER_PROTOCOL.md`](repo:sovkora/blob/main/docs/WORKER_PROTOCOL.md), qui commence par cette phrase : « This document is the extension point. » Deux échanges `topic`, des clés `job.{capability}.{action}` à l'aller et `job.{jobId}.done` ou `error` au retour, exactement un événement terminal par job, une cause d'échec prise dans une liste fermée, l'idempotence par identifiant de message. Un worker est **tout ce qui respecte ce contrat**, dans n'importe quel langage, sans lier une seule bibliothèque Sovkora. Celui du média est en Python, comme celui de la validation de documents.
+
+### L'installateur vérifie avant d'écrire
+
+Quand un bundle arrive par l'API d'administration (`POST /api/v1/studios/packs/bundles`, rôle `ADMIN`), [`PackInstallerService`](repo:sovkora/blob/main/services/studio/sovkora-studio-service/src/main/java/com/krizaka/sovkora/studio/application/service/PackInstallerService.java) valide le bundle entier avant la première écriture. Une étape de Studio qui demande une capacité que personne ne fournit est refusée :
+
+```java
+Set<String> contributed = bundle.capabilities().stream()
+    .map(PackCapability::key)
+    .collect(Collectors.toCollection(LinkedHashSet::new));
+
+for (PackStudio studio : bundle.studios()) {
+  for (String featureKey : capabilityKeysOf(studio)) {
+    if (contributed.contains(featureKey)) {
+      continue;   // le bundle l'apporte lui-même
+    }
+    if (capabilityRoutingClient.route(featureKey).isEmpty()) {
+      problems.add("studio " + studio.key() + " step capability " + featureKey
+          + " resolves to no enabled route, and the bundle does not contribute it");
+    }
+  }
+}
+```
+
+L'installation elle-même est compensée : si une tranche échoue, les précédentes sont défaites avant que l'erreur remonte.
+
+### Le niveau CAPABILITY : du Java, mais composé au build
+
+Pour un exécuteur assez léger pour tourner dans le service de jobs, il y a un port Java, [`JobExecutor`](repo:sovkora/blob/main/contracts/sovkora-jobs-api/src/main/java/com/krizaka/sovkora/jobs/api/domain/port/JobExecutor.java). Il vit dans un module de contrat sans Spring, sans entrée-sortie et sans type du moteur (extrait raccourci, commentaire traduit) :
+
+```java
+public interface JobExecutor {
+
+  /** Unique parmi tous les exécuteurs : le service refuse de démarrer sur un doublon. */
+  String handlerKey();
+
+  JobExecutionResult execute(JobCommand command, JobExecutionContext context)
+      throws JobExecutionException;
+}
+```
+
+Il est découvert par le mécanisme standard de Boot. Le service de jobs déclare une seule ligne dans son fichier d'imports d'auto-configuration :
+
+```text
+# META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+com.krizaka.sovkora.job.infrastructure.config.JobExecutorAutoConfiguration
+```
+
+et [`JobExecutorAutoConfiguration`](repo:sovkora/blob/main/services/job/sovkora-job-service/src/main/java/com/krizaka/sovkora/job/infrastructure/config/JobExecutorAutoConfiguration.java) laisse Spring rassembler tous les beans `JobExecutor` en une liste, puis vérifie au démarrage que chaque capacité active a un exécuteur :
+
+```java
+@AutoConfiguration
+public class JobExecutorAutoConfiguration {
+
+  @Bean
+  ExecutorCoherenceService executorCoherenceService(
+      List<JobExecutor> executors,
+      CapabilityManager capabilityManager,
+      WorkerSelfRegistration workerSelfRegistration) {
+    return new ExecutorCoherenceService(
+        executors, capabilityManager, workerSelfRegistration.bindings());
+  }
+}
+```
+
+Son commentaire dit pourquoi ce n'est **pas** un `ServiceLoader` : Spring possède déjà le cycle de vie et l'injection dont ces exécuteurs ont besoin, et un deuxième mécanisme de découverte serait une chose de plus à apprendre et à rater. Le même patron sert déjà ailleurs : le dépôt compte six fichiers `AutoConfiguration.imports`.
+
+Deux clés, deux pannes possibles, deux gardes : `routing_key` décide **quel processus** reçoit le job, `handler_key` **quel code** le traite. Des règles d'architecture vérifient au build que le moteur ne nomme aucun pack, et le service vérifie au démarrage que le registre et les exécuteurs sont cohérents.
+
+## Le meilleur argument pour l'in-JVM, et pourquoi il ne gagne pas aujourd'hui
+
+La deuxième passe de l'étude a cherché le cas le plus fort en faveur des plugins dans la JVM. Ce n'est pas le partenaire hostile. C'est **notre propre pack expert, écrit en Java** : du code de confiance, signé par nous, chargé au démarrage dans un moteur public, sans saut de message, sans conteneur de plus chez un client sur site, avec le typage du port `JobExecutor`.
+
+Ce cas est légitime. Il ne gagne pas aujourd'hui, pour quatre faits vérifiables :
+
+1. aucun pack n'a de Java : 63 fichiers Python, 0 pack CAPABILITY ;
+2. il faudrait publier notre module de contrat sur Maven Central (une version publiée là ne se modifie ni ne se retire) et reconstruire nos JAR pour `PropertiesLauncher` ;
+3. la valeur d'un pack expert est dans ses données (catalogues, jeux de référence, seuils), qu'un pack DATA privé livre déjà ;
+4. PF4J n'apporterait rien (pas besoin d'isoler des classes de confiance), Modulith ne charge rien à l'exécution, et un contexte enfant coûte du code maison pour le résultat de `loader.path`.
+
+On a aussi écrit ce qui rouvrirait la question, **seulement si c'est mesuré** : un client payant qui exige du code Java à lui dans notre processus et dont le budget de latence ne tolère pas le saut de message ; un client sur site qui ne peut pas faire tourner un conteneur de plus ; ou deux packs CAPABILITY qui exigent des versions incompatibles d'une même bibliothèque, au point de faire échouer notre garde de classes en double. Même alors, la forme la plus sobre pour du code de confiance serait un chargement **au démarrage** (`loader.path`), signé, avec un redémarrage pour mettre à jour ; jamais de déchargement à chaud. Pour du code **non fiable** dans le processus, la seule piste sérieuse que je connaisse est WebAssembly : chaque module y tourne dans un bac à sable dont il ne sort que par les fonctions que l'hôte lui donne, et [Chicory](https://github.com/dylibso/chicory) l'exécute dans la JVM, sans dépendance native. On l'étudierait avec une mesure, pas avant.
+
+## Ce que ça a changé dans notre plan
+
+C'est la partie qui m'importe le plus, parce qu'une décision d'architecture se juge à ce qu'elle retire du plan.
+
+**Ce qu'on a arrêté.** Pas de cadre de plugins. Pas de module nouveau dans [notre bibliothèque Java commune](repo:krizaka-java) : les trois modules prévus (une API de plugins, un cœur, un starter Spring) ne seront pas écrits, donc ni testés, ni gardés, ni publiés. Aucune publication Maven Central n'est due à ce chantier.
+
+**Ce qu'on a planifié à la place.** Le travail est dans le dépôt du moteur, en petites vagues, chacune une pull request qui passe seule :
+
+<Steps>
+<Step title="Le contrat d'extension est prouvé">
+Un test charge une auto-configuration de test, voit son `JobExecutor` dans la liste et prouve que deux exécuteurs sur la même `handlerKey` empêchent le service de démarrer.
+</Step>
+<Step title="Le niveau CAPABILITY est réservé à notre code">
+Le schéma et l'installateur refusent un pack CAPABILITY dont la distribution est celle d'un partenaire, avec un message clair.
+</Step>
+<Step title="Ce que le pack exige est vérifié">
+La plateforme expose sa version ; un pack qui demande une version de la plateforme ou du protocole worker qu'elle n'a pas est refusé avant toute écriture.
+</Step>
+<Step title="Le contrat ne change que par ajout">
+Des manifestes v1 et des messages de référence du protocole worker sont rejoués en CI : retirer un champ fait échouer le build. L'enveloppe des messages reçoit un champ de version, ajouté comme champ optionnel.
+</Step>
+<Step title="Signé avant tout pack d'un tiers">
+Un bundle est vérifié avant son installation : empreinte de contenu, signature détachée, clés de confiance réglées par l'administrateur, refus par défaut. L'empreinte du pack est journalisée à chaque exécution.
+</Step>
+<Step title="Une image et une identité par worker">
+Chaque worker de pack tourne dans sa propre image et a sa propre identité sur le broker, limitée à ses files. C'est ce qui fait d'un processus à part une vraie frontière.
+</Step>
+</Steps>
+
+**Pourquoi cet ordre suit le renommage du moteur.** Les noms du contrat changent avec le renommage : les échanges AMQP, les identifiants de capacité, et le `apiVersion: orazaka.dev/v1` des manifestes. Si on gelait le contrat ou si on signait des packs avant ce renommage, il faudrait refaire chaque manifeste de référence, chaque message rejoué et chaque empreinte. Après, le contrat v1 porte son nom définitif, et il ne change qu'une fois.
+
+J'ai d'abord cru que le renommage était une échéance, « le dernier moment où casser le contrat ne coûte rien ». La contre-vérification a corrigé ça : sans client et sans pack hors du dépôt, casser le contrat ne coûte rien **jusqu'au premier pack qui vit ailleurs**. Le renommage est un préalable, pas une date limite. La vraie règle est donc : geler le contrat après le renommage, et avant le premier pack hors du dépôt.
+
+**Ce qui attend un déclencheur.** La signature, les identités par worker et le dépôt privé des packs experts ne partent que lorsque leur raison existe : un premier pack sous licence, ou un premier pack d'un tiers. Si aucun des deux n'arrive, on s'arrête après le gel du contrat, et ces vagues restent écrites, prêtes. Je ne mets pas de date sur ce plan : chaque vague part quand ses conditions sont vraies.
+
+## Ce que je retiens
+
+- **Vérifier la prémisse avant de choisir l'outil.** La proposition répondait à un problème que le code n'avait pas. Lire le code avant d'écrire le plan a évité trois modules.
+- **Un chargeur de classes isole des dépendances, pas des droits.** Depuis Java 24, la JVM ne propose plus de bac à sable ; l'isolation d'un code étranger se fait hors du processus, et un processus n'est une frontière que s'il a sa propre identité.
+- **Composer au build garde des portes ouvertes** : l'image native, la reproductibilité, une seule façon de découvrir le code. Charger à l'exécution les ferme.
+- **Écrire les critères de réouverture.** Une décision qui dit ce qui la ferait changer se relit sans être redébattue.
+
+## Sources
+
+- [PF4J, versions](https://github.com/pf4j/pf4j/releases) · [site de PF4J](https://pf4j.org/)
+- [pf4j-spring, versions](https://github.com/pf4j/pf4j-spring/releases) · [demande « Support Spring Framework 7 »](https://github.com/pf4j/pf4j-spring/issues/94) · [pull request du même titre](https://github.com/pf4j/pf4j-spring/pull/95) · [version de Spring de 0.10.0](https://repo1.maven.org/maven2/org/pf4j/pf4j-spring-parent/0.10.0/pf4j-spring-parent-0.10.0.pom)
+- [Spring Framework 7.0, disponibilité générale (13 novembre 2025)](https://spring.io/blog/2025/11/13/spring-framework-7-0-general-availability/)
+- [Spring Boot 4.0.0 (20 novembre 2025)](https://spring.io/blog/2025/11/20/spring-boot-4-0-0-available-now/)
+- [Spring Framework, contextes et hiérarchies](https://docs.spring.io/spring-framework/reference/core/beans/context-introduction.html)
+- [Spring Boot 4.0, lanceurs et `loader.path`](https://docs.spring.io/spring-boot/4.0/specification/executable-jar/launching.html)
+- [Spring Boot, images natives et monde fermé](https://docs.spring.io/spring-boot/reference/packaging/native-image/introducing-graalvm-native-images.html)
+- [Spring Modulith, modules d'application](https://docs.spring.io/spring-modulith/reference/fundamentals.html) · [`spring-modulith-core` 2.0.0](https://repo1.maven.org/maven2/org/springframework/modulith/spring-modulith-core/2.0.0/spring-modulith-core-2.0.0.pom)
+- [JEP 411, Security Manager déprécié pour suppression (Java 17)](https://openjdk.org/jeps/411)
+- [JEP 486, Security Manager désactivé définitivement (Java 24)](https://openjdk.org/jeps/486)
+- [Keycloak, fournisseurs et `kc.sh build`](https://www.keycloak.org/server/configuration-provider)
+- [VS Code, Extension Host](https://code.visualstudio.com/api/advanced-topics/extension-host) · [permissions des extensions](https://code.visualstudio.com/docs/configure/extensions/extension-runtime-security)
+- [Terraform, plugins exécutés comme processus à part et appelés par RPC](https://developer.hashicorp.com/terraform/plugin/how-terraform-works)
+- [WebAssembly, modèle de sécurité](https://webassembly.org/docs/security/) · [Chicory, runtime WebAssembly pour la JVM](https://github.com/dylibso/chicory)
+- [Maven Central, un composant publié ne se modifie ni ne se supprime](https://central.sonatype.org/publish/requirements/immutability/)
+- Spring Cloud Data Flow, qui enregistrait des applications par URI, n'est plus un modèle à suivre : [son dépôt open source est archivé](https://github.com/spring-attic/spring-cloud-dataflow)
+- Le code de Sovkora cité : [le dépôt](repo:sovkora), [le protocole worker](repo:sovkora/blob/main/docs/WORKER_PROTOCOL.md), [le schéma des packs](repo:sovkora/blob/main/packs/pack.schema.json), [le pack de référence](repo:sovkora/tree/main/packs/echo-toolkit)

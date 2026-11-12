@@ -6784,5 +6784,75 @@
         }
       ]
     }
+  },
+  "why-sovkora-loads-no-plugin-in-the-jvm": {
+    "kind": "image",
+    "width": 1280,
+    "height": 720,
+    "blur": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAACwAQCdASoQAAkAA4BaJZQC7AELIYAAAP7wpqM8XuYbABxd6+IrmB13GK83Fwf77s9XbFcaGHjVmRj54/f5LeD/rHr5RvfwAAA=",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/why-sovkora-loads-no-plugin-in-the-jvm/why-sovkora-loads-no-plugin-in-the-jvm-480.1517200211.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/why-sovkora-loads-no-plugin-in-the-jvm/why-sovkora-loads-no-plugin-in-the-jvm-960.bfb4527501.webp"
+      },
+      {
+        "w": 1280,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/why-sovkora-loads-no-plugin-in-the-jvm/why-sovkora-loads-no-plugin-in-the-jvm-1280.d695f5d6e0.webp"
+      }
+    ],
+    "made": {
+      "model": "FLUX.2 [klein] 4B",
+      "licence": "Apache-2.0",
+      "engine": "mflux (mflux-generate-flux2), the media worker's engine, on the Mac's Metal GPU: 4 steps, 1280×720, text to image",
+      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+      "prompt": "Hand-drawn ink and watercolor illustration on white paper, light and airy, a lot of unpainted white paper around and inside the scene, soft pale transparent watercolor washes in a palette of indigo, teal, warm orange and cream, delicate thin pen-and-ink linework of varying weight with some broken lines, gentle muted colour. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no photographic detail. A quiet old sorting house at dusk, seen from a slightly high angle: in the middle, one long wooden counter with a row of small open pigeonholes, the only passage between two sides. On the left side, a large calm stone engine room with brass pipes and one warm lamp. On the right side, three small separate wooden workshops, each with its own door, its own little window and its own small lamp, standing apart from each other with white paper between them. Small plain cardboard parcels tied with string travel along the counter from the engine room to the workshops. On the counter stands one real grey rock pigeon, iridescent green-violet neck, two dark wing bars, beside a parcel. The bird is small and drawn naturalistically with a few ink strokes. Exactly one bird, no other animal. No people, no text, no letters, no numbers, no logos, no watermark.",
+      "seed": "4116",
+      "size": "1280×720",
+      "seconds": 28,
+      "costUsd": 0,
+      "note": "Made for this cover with the media worker's engine on the Mac, not through a Sovkora Studio: there is no run id. Three seeds were made (3303, 1207, 4116); 4116 was kept after a review at full size (1207 drew two pigeons, 3303 crowded the counter against the workshops). No person, no text, no logo."
+    },
+    "renditions": {
+      "avif": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/why-sovkora-loads-no-plugin-in-the-jvm/why-sovkora-loads-no-plugin-in-the-jvm-480.127b152ead.avif"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/why-sovkora-loads-no-plugin-in-the-jvm/why-sovkora-loads-no-plugin-in-the-jvm-768.adf32383a2.avif"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/why-sovkora-loads-no-plugin-in-the-jvm/why-sovkora-loads-no-plugin-in-the-jvm-1200.84a7a3297c.avif"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/why-sovkora-loads-no-plugin-in-the-jvm/why-sovkora-loads-no-plugin-in-the-jvm-1280.05b0044633.avif"
+        }
+      ],
+      "webp": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/why-sovkora-loads-no-plugin-in-the-jvm/why-sovkora-loads-no-plugin-in-the-jvm-480.0e14fd1f64.webp"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/why-sovkora-loads-no-plugin-in-the-jvm/why-sovkora-loads-no-plugin-in-the-jvm-768.0020bcce2f.webp"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/why-sovkora-loads-no-plugin-in-the-jvm/why-sovkora-loads-no-plugin-in-the-jvm-1200.a6f9e101ad.webp"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/why-sovkora-loads-no-plugin-in-the-jvm/why-sovkora-loads-no-plugin-in-the-jvm-1280.7a7236a28e.webp"
+        }
+      ]
+    }
   }
 }
