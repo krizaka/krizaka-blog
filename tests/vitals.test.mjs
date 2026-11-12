@@ -33,6 +33,22 @@ test("the pages measured are the home in both languages, then a post and a chapt
   assert.deepEqual(pagesToMeasure(out), ["/", "/fr/", "/basics/a/", "/story/b/", "/fr/basics/c/", "/fr/story/d/"]);
 });
 
+/* krizaka-internal#3206: every retired post got a stub under /basics/, and the first one (accounts-and-keys-…) was measured: a stub
+   leaves at once (0-second refresh), so it never paints and CI read « no LCP ». The pages measured are real pages, never a stub. */
+test("a stub (0-second refresh) is never the page measured: the first real post of the section is", () => {
+  const out = mkdtempSync(join(tmpdir(), "vitals-"));
+  const stub = '<html><head><meta http-equiv="refresh" content="0; url=/story/x/"/></head><body></body></html>';
+  for (const [dir, html] of [
+    ["basics/a-stub", stub],
+    ["basics/b-post", "<h1>Post</h1>"],
+    ["story/c", ""],
+  ]) {
+    mkdirSync(join(out, dir), { recursive: true });
+    writeFileSync(join(out, dir, "index.html"), html);
+  }
+  assert.deepEqual(pagesToMeasure(out), ["/", "/fr/", "/basics/b-post/", "/story/c/"]);
+});
+
 test("CI runs the check after the layout check, in the same browser install", () => {
   const sh = readFileSync(new URL("../scripts/ci-after-build.sh", import.meta.url), "utf8");
   const layout = sh.indexOf("check-layout.mjs");
