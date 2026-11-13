@@ -1,0 +1,226 @@
+---
+title: "Dans la salle des machines : comment nos équipes d'agents se parlent"
+description: "Le chat du CTO, les sessions sans écran, le train, la base d'opérations, les hooks avant et après chaque commande. Puis quatre audits en une journée : ce qu'ils ont trouvé, et ce qui reste ouvert."
+seoTitle: "Comment nos équipes d'agents se parlent, pièce par pièce"
+seoDescription: "Sessions sans écran, train, base d'opérations, hooks avant et après chaque commande, vie d'un ticket, et quatre audits en un jour avec leurs chiffres."
+date: 2026-11-13
+tags: [ai, integration, measurements]
+author: oussama
+draft: false
+sensitive: true
+newsletter: hold
+publishedAt: "2026-11-13T12:31:28-05:00"
+cover: series-21-working-with-agents-rules-that-refuse
+coverAlt: "Un vieux poste d'aiguillage à l'aquarelle, une rangée de leviers de fer devant de grandes fenêtres, des voies qui se rejoignent dehors sous la neige, et un petit canard rouge perché sur un levier, près d'une lampe allumée"
+---
+
+Au [chapitre 27](/fr/story/every-agent-starts-in-the-same-world/), j'ai promis trois jours de démarrages conformes, puis les chiffres. Les trois jours finissent demain soir. Je n'ai pas attendu : le 13 novembre, j'ai fait auditer nos équipes d'agents quatre fois dans la même journée, en lecture seule, à partir de leurs journaux.
+
+Sur la promesse elle-même, le compte est simple. Les trois premiers audits ont lu 150 contrôles d'environnement (118, puis 16, puis 16). Aucune dérive.
+
+Le reste est moins propre, et c'est ce qui m'intéresse. Les audits ont trouvé 14 bugs, puis 8, puis 10, puis 7. Presque tous sont dans notre outillage, pas dans le code des produits. Pour les comprendre, il faut d'abord voir comment la machine est faite. Je la montre pièce par pièce.
+
+Une précision avant de commencer. Cet outillage est un produit privé : je montre les pièces et comment elles se parlent, pas le code. Et j'avais promis des schémas générés depuis le code. Ils ne sont pas prêts. Ceux de ce billet sont dessinés à la main, à partir de ce que j'ai lu.
+
+## Les pièces
+
+Je suis seul dans l'entreprise. Le code est écrit par des agents, et le CTO, Mouloud, est lui-même un agent. J'ai raconté [le coordinateur](/fr/basics/agents-under-a-coordinator/) et [le démarrage des sessions](/fr/story/every-agent-starts-in-the-same-world/). Voici l'ensemble.
+
+<Layers label="Les pièces, de celui qui décide à ce qui affiche : chaque niveau ne parle qu'à ses voisins, et la vérité est sur GitHub.">
+  <Layer tag="1" title="Moi" note="L'argent, le légal, l'irréversible. J'approuve et je fusionne sous mon propre compte, rien d'autre." items="une consigne | une décision | une lecture" />
+  <Layer tag="2" title="Le chat du CTO" note="Une conversation avec écran. Il valide chaque tâche, la découpe, écrit le brief, lance, lit les alertes." items="un ticket par tâche | un brief par session | un guetteur par lancement" />
+  <Layer tag="3" title="Les sessions sans écran" note="Les équipes (une par dépôt), le crack qui débloque une PR coincée, la recette qui vérifie un ticket après la fusion. Toutes construites par la même pièce de code." items="plafond de tours, de budget et de minutes | personne ne répond pendant qu'elles tournent" level="1" />
+  <Layer tag="4" title="Les worktrees" note="Une copie de référence par dépôt, jamais modifiée. Un espace de travail par ticket, retiré après la fusion." items="aucun clone fait par une session" level="1" />
+  <Layer tag="5" title="Le train" note="Une file par dépôt. Il fait monter les PR une à une vers la file de fusion de GitHub." items="les correctifs d'abord | une PR rouge est sautée, avec la raison" level="1" />
+  <Layer tag="6" title="GitHub" note="Les tickets, le tableau, les PR, les contrôles exigés. Quand un fait diffère entre GitHub et notre base, GitHub gagne." items="la source" />
+  <Layer tag="7" title="La base d'opérations" note="Une copie locale pour lister et afficher : alertes, évènements, trains, sessions vivantes, appels à GitHub." items="jamais une source | on lit ici, on vérifie là-haut avant de décider" />
+  <Layer tag="8" title="Le chien de garde et les crons" note="Sans modèle, donc sans jetons. Les contrôles locaux toutes les 15 minutes, les lectures de GitHub au plus une fois par heure." items="13 crons actifs | 6 en pause voulue" level="1" />
+  <Layer tag="9" title="Le cockpit" note="Mon écran. Il lit, il n'écrit pas dans la machine." items="chaque donnée avec sa date" level="1" />
+</Layers>
+
+Deux choix expliquent le reste.
+
+Le premier : les sessions ne se parlent pas. Une équipe ne sait pas qu'une autre existe. Ce qu'elle a à dire, elle l'écrit à un endroit durable : un commit, une PR, un fichier de statut, une ligne dans la base. Une discussion libre entre agents n'est ni vérifiable ni rejouable, et elle coûte cher.
+
+Le second : là où il faut une réponse sûre, il n'y a pas de modèle. Le train, le chien de garde, les hooks et le lanceur sont du code ordinaire. Un modèle décide quoi écrire. Il ne décide pas si une PR peut fusionner.
+
+## Qui écrit, qui lit
+
+La base d'opérations est une base SQLite sur le Mac. Voici ce qui y entre et ce qui en sort.
+
+<Split label="La base d'opérations : à gauche ceux qui écrivent, au milieu ce qu'elle garde, à droite ceux qui lisent. Personne ne s'y parle directement : on écrit un fait, d'autres le lisent plus tard.">
+  <Side title="Ceux qui écrivent" tone="own" items="Le lanceur : démarrage conforme ou dérive, puis la fin d'une session avec ses tours, son modèle, son dépôt et sa PR | Le train : mise en file, saut avec la raison, fusion | Le chien de garde : cron en échec ou muet, branche principale rouge, PR sans propriétaire | Chaque appel à GitHub : un compteur par appelant et par heure | Une synchro toutes les 5 minutes : sessions vivantes, état des trains" />
+  <Side title="Ce qu'elle garde" tone="plain" items="Une alerte : une ligne par sujet tant qu'elle est active ; si elle revient, son compte monte | Trois états : ouverte, prise en charge, résolue avec une preuve | Purgée 7 jours après la prise en charge, jamais tant qu'elle est ouverte | Un évènement : gardé 30 jours, texte borné, secrets masqués avant l'écriture | Les ensembles fermés (états, gravités) vérifiés par la base elle-même" />
+  <Side title="Ceux qui lisent" tone="plug" items="Chaque début de session : les alertes ouvertes d'abord | Le CTO : avant tout nouveau travail | Le cockpit : santé des équipes, des trains, des crons | Les audits : des requêtes en lecture seule | Le lanceur : il refuse de relancer une équipe dont la dernière fin n'a pas été vue" />
+</Split>
+
+La fin d'une équipe montre bien le principe. Quand une session s'arrête, un seul morceau de code écrit sa fin. Il écrit toujours un évènement. Il ouvre aussi une alerte, sauf si la session a réussi et que sa PR est déjà dans le train : dans ce cas il n'y a rien à regarder. Tant qu'une alerte de fin n'est pas vue, le lanceur refuse de relancer cette équipe. Le CTO ne peut pas « oublier » une équipe.
+
+Cette base a une règle que j'ai apprise à mes dépens. Le matin du 11 novembre, 43 des 71 alertes ouvertes étaient périmées : des PR déjà fusionnées, des branches redevenues vertes. Depuis, la base sert à ne rien rater, jamais à décider. Avant de fusionner, de fermer un ticket ou d'écrire « fait », on vérifie sur GitHub.
+
+Elle a aussi une cible qui n'est pas atteinte. Je veux un seul service propriétaire par base : lui seul ouvre le fichier, les autres lui demandent. Et je veux pouvoir vider la base et la reconstruire depuis ses sources à tout moment. Aujourd'hui, les alertes et les évènements passent chacun par un seul module, mais plusieurs programmes ouvrent encore le fichier. Un morceau est fait : les rapports de démarrage des sessions sont d'abord écrits dans un journal en ajout seul, puis dans la base, et un rejeu du journal les redonne à une base vidée. Le reste est un ticket ouvert.
+
+## Les hooks : avant et après chaque commande
+
+Un agent travaille en appelant des outils : lancer une commande, lire un fichier, en modifier un. Notre harnais permet de brancher un programme avant chaque appel et un autre après. Celui d'avant peut refuser. Celui d'après peut corriger ou renvoyer un constat à l'agent.
+
+<Split label="Les hooks autour d'un appel d'outil : à gauche ce qui est refusé avant que la commande parte, à droite ce qui est fait après. À cela s'ajoutent les hooks de Git au commit et au push, qui font tourner la même porte que la CI.">
+  <Side title="Avant : ce qui est refusé" tone="refuse" items="Une commande ou une lecture qui afficherait un fichier de secrets, ou qui touche à mes dossiers personnels | Un commit ou un push dont le diff contient un secret : le fichier, la ligne et la règle sont nommés, jamais la valeur | Un clone : le travail se fait dans un worktree | Une écriture sur GitHub sans le jeton d'une app : elle partirait sous mon nom | Une lecture de code avant d'avoir interrogé l'index du code | Une commande qui échouera sur ce Mac, avec le correctif dans le message | Dans une session sans écran : ouvrir mon navigateur" />
+  <Side title="Après : ce qui est fait" tone="after" items="Les formes de secrets sont masquées dans la sortie avant que l'agent la lise | Le fichier modifié est formaté par l'outil du dépôt, sans bruit | Le fichier modifié est vérifié seul, en moins de 10 secondes : un défaut revient à l'agent tout de suite | Au début d'une session : la copie de travail est mise à jour | À la fin : les traces de la session sont retirées" />
+</Split>
+
+Pourquoi des hooks, et pas une consigne de plus ? J'en ai parlé au [chapitre 21](/fr/story/working-with-agents-rules-that-refuse/) : une règle qu'un agent doit se rappeler n'est pas une règle. Un hook ne se rappelle rien. Il lit la commande et répond oui ou non.
+
+Un détail de conception compte. Tous les hooks passent par un petit point d'entrée. Si l'installation est cassée et que ce point d'entrée ne trouve pas l'outil, il laisse passer avec un avertissement : une installation abîmée ne doit pas refuser toutes les commandes de toutes les sessions. Si l'outil tourne et dit non, c'est non.
+
+Le premier audit a montré qu'un garde peut exister et ne rien voir. Le garde « l'index du code d'abord » était en place depuis des jours. Sur 101 sessions, 86 n'ont jamais interrogé l'index. Le garde ne regardait que le début de la commande, et seulement les chemins écrits en entier. Les agents enchaînent leurs commandes : 1 552 lectures de code sont passées derrière un point-virgule ou un « et ». Le garde a bloqué 12 fois. Rapport mesuré : 1 appel à l'index pour 170 lectures à la main.
+
+Le même audit a trouvé deux règles qui se contredisaient. Notre hook de commit refuse toute ligne de co-auteur qui ne nomme pas une de nos identités. L'outil, lui, propose par défaut d'en ajouter une. Résultat : 81 sessions sur 101 ont perdu au moins une commande sur ce refus. Le correctif n'était pas un hook de plus. On a éteint la proposition à la source, dans les réglages de la session.
+
+## Pourquoi du Python ici et des .mjs là
+
+Je n'ai pas trouvé chez nous de document qui dise « on a choisi ce langage pour telle raison ». Je donne donc ce que le code montre, rien de plus.
+
+**L'outillage des agents est en Python et en shell.** J'ai compté : 160 fichiers Python, et un seul importe autre chose que la bibliothèque standard (un outil de captures d'écran, qui pilote un navigateur). SQLite est dans la bibliothèque standard. Il n'y a donc rien à installer : un cron, un hook ou un service de fond lance le Python du système, et ça tourne. Les tests sont des fichiers posés à côté des outils.
+
+**Le point d'entrée est un script shell d'une page.** Les crons, les hooks et Git passent tous par lui. Il trouve les outils par la configuration locale : déplacer le dossier ne casse aucune ligne de cron. Et il écrit une ligne à chaque passage d'un cron, quel que soit le résultat : le nom, le code de sortie, la durée. C'est ce fichier que le chien de garde lit pour voir un cron qui échoue deux fois de suite ou qui se tait.
+
+**Le cockpit, les outils du dossier de l'entreprise et les contrôles de chaque dépôt sont en .mjs.** Un fichier .mjs est un module JavaScript que Node lance tel quel : pas de compilation, pas d'étape de build. Dans le cockpit, la logique pure de chaque écran vit dans un module de ce type : trier, compter, décider si une donnée est fraîche. La partie serveur, en TypeScript, lit le disque et appelle ce module. Les tests l'importent directement, avec le lanceur de tests intégré à Node. Le serveur et le test lisent donc le même fichier, sans rien entre les deux. La base locale est lue avec le module SQLite intégré à Node. Dans les dépôts, les contrôles que la CI lance sont aussi des .mjs : la CI fait `node`, le nom du script, et c'est tout. Le lint de ce blog est fait comme ça.
+
+**Deux langages, un seul vocabulaire.** Les états d'une alerte, d'une entrée de train ou d'une session sont des ensembles fermés, déclarés une fois, en Python, avec leurs transitions permises. Un passage interdit lève une erreur. De cette déclaration sort un fichier JSON que le shell et les .mjs lisent, et les contraintes de la base sont générées depuis elle. Un test compte les états écrits « en dur » dans le code : ce compte ne peut que baisser.
+
+Deux langages ont quand même un prix, et le troisième audit l'a trouvé. Le pont qui montre les équipes dans le cockpit triait des dates comme du texte, et deux formats de date y cohabitaient. Les vieilles lignes passaient devant les nouvelles. Le cockpit affichait zéro équipe alors que cinq ou six tournaient.
+
+## La vie d'un ticket
+
+Tout travail part d'un ticket. Les tickets sont rangés en trois niveaux : un grand chantier, une fonctionnalité, une tâche. Ils vivent sur un tableau.
+
+<Pipeline label="Les états d'un ticket sur le tableau. Personne ne déplace une carte à la main pour dire « en revue » : c'est l'existence d'une PR ouverte qui le dit.">
+  <Stage title="Incubation" note="une idée, un constat d'audit">
+    Une idée du fondateur ou un constat d'audit attend ici. On ne ferme jamais une idée parce que personne ne l'a demandée.
+  </Stage>
+  <Stage title="Backlog" note="trié, pas encore prêt">
+    Le ticket est accepté, rattaché à son parent, avec sa voie.
+  </Stage>
+  <Stage title="Next" note="dix au plus par voie" tone="gate">
+    Prêt à être pris : il dit quand il sera fini et quels fichiers il touche. Un ticket qui touche les mêmes fichiers qu'un travail en cours n'est pas proposé.
+  </Stage>
+  <Stage title="En cours" note="les fichiers sont réservés">
+    Une session l'a pris. Sa liste de fichiers vaut réservation tant qu'il est en cours.
+  </Stage>
+  <Stage title="En revue" note="une PR ouverte le cite" tone="gate">
+    Une PR ouverte nomme le ticket : la carte passe en revue. Si la PR disparaît sans fusion, la carte revient dans Next.
+  </Stage>
+  <Stage title="À valider" note="après la fusion" tone="gate">
+    Pour les tickets marqués « recette » : une session courte vérifie le « fini quand » sur la plateforme, après la fusion.
+  </Stage>
+  <Stage title="Fait" note="fermé avec sa preuve" tone="ship">
+    Le ticket se ferme avec une preuve. Un doublon nomme toujours son original.
+  </Stage>
+</Pipeline>
+
+Le tableau est remis d'accord avec les tickets et les PR à trois moments : après chaque fusion, à la fin de chaque session, et une fois par nuit comme filet. Une carte « bloquée » n'est jamais déplacée par ces règles : c'est une décision, pas un état calculé.
+
+Les voies sont nos files de travail, une par produit. Quand une voie finit un ticket, la règle dit de la recharger avec le suivant. Cette règle est suspendue : les voies sont fermées en ce moment, et je dis plus bas pourquoi.
+
+## Le chemin d'une PR, et notre usage de GitHub
+
+<Pipeline label="Le chemin d'une PR, du worktree à la branche principale. Chaque porte refuse le plus tôt possible : ce qui peut être vu sur le Mac ne doit pas attendre la CI.">
+  <Stage title="Un worktree" note="un par ticket">
+    L'outil crée un espace de travail pour ce ticket, à partir de la copie de référence du dépôt.
+  </Stage>
+  <Stage title="L'ouverture" note="format, plafond, recouvrement" tone="gate">
+    Un seul outil ouvre une PR. Il formate les fichiers changés dans un commit à part, pousse la branche, puis refuse si la voie a déjà cinq PR ouvertes dans ce dépôt, ou si la PR partage un fichier avec une autre PR ouverte.
+  </Stage>
+  <Stage title="La CI" note="les contrôles exigés" tone="gate">
+    Tests, lint, analyse statique, scan de sécurité. Les actions sont épinglées par leur empreinte, pas par un numéro de version.
+  </Stage>
+  <Stage title="Le train" note="une file par dépôt" tone="gate">
+    Les correctifs d'abord, puis la plus ancienne ; une PR empilée après sa base ; les PR de release en dernier. Une PR rouge est sautée, avec la raison écrite.
+  </Stage>
+  <Stage title="La file de fusion" note="rejouée sur le vrai mélange" tone="gate">
+    GitHub rejoue les contrôles sur la PR mélangée à la branche principale du moment. Si c'est rouge, la PR sort de la file.
+  </Stage>
+  <Stage title="Un seul commit" note="squash" tone="ship">
+    La PR entre comme un seul commit. La branche principale est protégée partout : personne n'y pousse.
+  </Stage>
+  <Stage title="Après" note="tableau, worktree, release">
+    Le tableau est remis d'accord, le worktree est retiré, et la PR de release du dépôt se met à jour.
+  </Stage>
+</Pipeline>
+
+J'ai raconté le train aux chapitres [19](/fr/story/tchou-tchou-how-our-pull-requests-catch-the-train/) et [23](/fr/story/the-trains-second-version-rails-sidings-and-a-repair-train/). J'ajoute ici quatre points sur GitHub.
+
+**Les identités.** Les agents écrivent sur GitHub par des apps : commenter, pousser, ouvrir une PR. Mon compte ne sert qu'à approuver et à fusionner. Un hook refuse toute écriture faite sans le jeton d'une app, parce qu'elle partirait sous mon nom sans que je l'aie voulue.
+
+**La file de fusion.** Un contrôle exigé doit répondre aussi dans la file de fusion, pas seulement sur la PR. Sinon la PR attend un contrôle qui ne viendra jamais. Le deuxième audit cherchait ce cas, le troisième l'a vu une fois : l'outil a bien détecté le contrôle jamais démarré, mais sa relance a échoué.
+
+**Le quota.** Les sessions, les trains et le chien de garde partagent la même installation d'app, donc le même quota d'appels. Il s'est épuisé une fois, dans la nuit du 12 au 13, et une mise en file s'est arrêtée sans reprise. Depuis, chaque appel est compté par appelant et par heure dans la base. C'est aussi pour ce quota que le tableau a une copie locale, relue seulement pour ce qui a changé.
+
+**Les releases.** Dans les dépôts qui publient des versions, un outil (release-please, par exemple pour notre site) tient une PR de release à jour à partir des commits. La fusionner fait la version. Elle passe dans le même train que les autres, en dernier.
+
+Un mot sur les fusions forcées. Pendant la première fenêtre d'audit, il y en a eu 4, toutes sur le même test, toutes sur ma parole écrite. Dans les deux fenêtres suivantes, les journaux du train n'en montrent aucune ; je n'ai pas relu la quatrième sur ce point.
+
+## Bonjour, salut : la mémoire entre deux sessions
+
+Le chat du CTO n'est pas éternel. Une conversation longue devient chère et se trompe plus. Nous avons donc deux mots de code.
+
+« Salut Mouloud » ferme la session. Chaque agent en cours s'arrête à un point sûr. Le CTO réécrit une note de reprise courte, 12 Ko au plus : elle ne garde que ce que GitHub ne sait pas, mes consignes, les décisions en attente, les pièges. L'état du travail n'y est pas écrit à la main : il est généré depuis les équipes, les trains, le tableau et les PR. Un contrôle refuse une note qui contredit GitHub.
+
+« Bonjour Mouloud » ouvre la suivante, toujours dans le même ordre : lire la note en entier, traiter chaque alerte ouverte avant tout nouveau travail, vérifier l'environnement des équipes, puis relancer ce qui était en vol. Une équipe interrompue repart en lancement neuf, jamais en reprise d'une vieille session. Chaque lancement part avec son guetteur, dans le même tour.
+
+Cette boucle aussi avait un trou. Je le raconte avec le troisième audit.
+
+## Quatre audits en une journée
+
+Chaque audit lit les journaux d'une fenêtre de temps, sans rien modifier. Un bug, ici, c'est ce que l'outillage a mal fait ou a laissé passer. La faute de code d'une session ne compte pas. Les fenêtres n'ont pas la même taille : 101 sessions sur 31 heures pour le premier, puis 11, 10 et 7 sessions sur une à trois heures. Les comptes ne se comparent donc pas ligne à ligne.
+
+<Bars label="Les bugs d'outillage prouvés par chaque audit, par gravité. Les fenêtres vont de 101 sessions (audit 1) à 7 (audit 4) : la barre dit ce qui a été trouvé, pas un taux." source="Les quatre rapports d'audit du 13 novembre. Au quatrième, 4 bugs du troisième ont été revus en plus des 7 nouveaux ; ils ne sont pas comptés deux fois." format="integer" stacked="true" series="Haute:danger | Moyenne:warning | Basse:neutral" data="Audit 1 · 101 sessions=3,8,3; Audit 2 · 11 sessions=0,4,4; Audit 3 · 10 sessions=2,6,2; Audit 4 · 7 sessions=1,3,3" />
+
+**Audit 1 : les gardes qui ne voyaient rien.** 101 sessions, 97 réussies, 2 coupées par leur plafond de tours, 2 tuées. Zéro échec d'environnement. Et 14 bugs. J'ai raconté les deux premiers : le garde de l'index aveugle, et les deux règles de co-auteur qui se contredisaient. Le troisième : l'outil qui ouvre une PR ne poussait pas la branche et plantait sans message utile. Sur 106 appels, 53 ont ouvert une PR. Il y avait aussi du bruit : un même type d'alerte est revenu 1 401 fois pour 22 PR, et 89 fins d'équipe réussies ont demandé chacune un accusé de lecture à la main.
+
+Ce qui en est sorti : le garde lit maintenant chaque segment d'une commande ; la ligne de co-auteur est éteinte à la source ; l'outil pousse lui-même et affiche la raison de GitHub ; une fin réussie dont la PR est dans le train n'est plus une alerte ; les appels à GitHub sont comptés.
+
+**Audit 2 : est-ce que les correctifs tiennent ?** 11 sessions après le dernier correctif. Zéro refus sur la ligne de co-auteur, sur 26 commits. Zéro session sans appel à l'index. Zéro accusé de lecture à la main. Et 8 nouveaux bugs, aucun grave. Le plus instructif : le garde des secrets refusait du code qui contient `process.env`, parce que son motif y voyait un fichier de secrets. Un garde trop large est aussi un bug : les agents apprennent à le contourner.
+
+**Audit 3 : les agents qui pilotent.** 10 sessions, 10 bugs, dont 2 graves. Ces deux-là ne viennent pas des équipes. Ils viennent du chat du CTO.
+
+Le premier : un chat que j'avais fermé par « Salut » a continué d'agir. Ses guetteurs l'ont réveillé quatre fois. Il a fermé un ticket et en a rouvert un autre, pendant que le nouveau chat travaillait sur les mêmes sujets. Deux pilotes, chacun sans voir ce que l'autre savait.
+
+Le second me concerne directement. Un agent a écrit sur une PR que j'avais lu et approuvé une page. Mon message disait seulement que j'étais d'accord pour la lire. La PR a fusionné une demi-heure plus tard. Mon accord écrit est venu après. Rien n'empêchait un agent d'écrire « le fondateur a approuvé ».
+
+Le même audit a vu une équipe lancer un plan d'infrastructure avec de fausses clés. Son brief l'interdisait. Le plan a quand même relu dix vrais enregistrements. Aucun garde n'existait pour ça.
+
+Ce qui en est sorti tout de suite : la procédure de fermeture arrête maintenant chaque guetteur du chat qui se ferme, et un chat fermé n'écrit plus rien. Le reste est devenu des tickets : un garde qui refuse « le fondateur a lu, approuvé ou décidé » sans citer mon message, un garde sur les plans d'infrastructure, le cockpit qui doit montrer les équipes.
+
+**Audit 4 : attraper plus tôt.** 7 sessions, toutes réussies, 7 nouveaux bugs, et 4 du troisième audit revus. Le plus grave est presque drôle : le chat du CTO datait ses écrits de 45 à 60 minutes dans le futur. 17 heures futures sur 18 écritures, dont l'heure de mon accord sur un ticket. Une preuve mal datée n'est plus une preuve. Depuis, toute heure écrite vient de l'horloge de la machine, jamais de la mémoire du modèle.
+
+L'autre leçon : 4 PR sur 11 étaient rouges en CI, et pour 3 d'entre elles le contrôle en échec existe sur le Mac. Il ne tournait simplement pas avant le push. L'audit se termine par un classement des gardes à construire, par « erreurs attrapées pour l'effort » : les cinq premiers attrapent une trentaine des défauts comptés, pour environ une journée de travail.
+
+Entre le premier audit et les suivants, le train a changé d'allure.
+
+<Bars label="Le délai moyen entre la mise en file d'une PR et sa fusion, en minutes, dans chaque fenêtre d'audit. Les trois dernières fenêtres sont courtes : 14, 7 et 5 PR mesurées, contre 126 pour la première." source="Les évènements du train dans la base d'opérations, lus par chaque audit. Au deuxième audit, l'heure de fusion était écrite environ 3 minutes trop tard ; c'est corrigé depuis." format="number" series="Minutes:accent" data="Audit 1 · 126 PR=35; Audit 2 · 14 PR=11.3; Audit 3 · 7 PR=11.4; Audit 4 · 5 PR=9.4" />
+
+Je ne sais pas faire la part des correctifs et celle de la charge, qui était plus faible dans les fenêtres courtes. Je donne le chiffre, pas la cause.
+
+## Ce qui reste ouvert
+
+<Split label="L'état au 13 novembre, après le quatrième audit : ce qui tient avec sa preuve, ce qui est encore ouvert, et ce que je ne sais pas mesurer.">
+  <Side title="Ce qui tient" tone="own" items="150 contrôles d'environnement lus, 0 dérive | 28 sessions sur 28 réussies dans les trois dernières fenêtres | 0 refus sur la ligne de co-auteur depuis le correctif | L'index du code est interrogé : 85 % de sessions sans appel avant, 0 sur 11 puis 1 sur 10 après | L'ouverture d'une PR ne plante plus" />
+  <Side title="Encore ouvert" tone="refuse" items="Les voies restent fermées tant qu'un audit ne trouve pas 0 bug : quatre audits, quatre fois non | Les gardes des audits 3 et 4 sont des tickets, pas encore du code | Le garde des secrets refuse encore du code innocent | Le cockpit ne montre pas les équipes vivantes | Un contrôle exigé jamais démarré : détecté, pas encore relancé | Rien ne plafonne le nombre d'équipes en même temps : six ont tourné quand ma consigne disait trois | Un seul service par base : pas fait" />
+  <Side title="Pas mesuré" tone="plain" items="La cause d'un rouge de train par nature : la base garde le nom du contrôle, pas la raison | Le temps exact de résolution d'une alerte | Les appels à GitHub d'une session, avant le compteur | Le coût du contexte de départ, à part du reste | La part des correctifs dans la baisse du délai du train" />
+</Split>
+
+Deux points de plus, parce que je les avais annoncés.
+
+Le coordinateur du [billet précédent](/fr/basics/agents-under-a-coordinator/) dort. Son registre n'a aucune activité depuis le 11 novembre. Aujourd'hui, ce qui sépare les équipes est plus simple : une équipe par dépôt, un worktree par ticket, et le refus à l'ouverture d'une PR qui partage un fichier avec une autre. La comparaison promise avec les outils existants n'est pas faite.
+
+Et les trois jours. Ils finissent demain soir. Jusqu'ici, aucune dérive d'environnement. Mais « conforme au démarrage » ne voulait pas dire « sans défaut en route » : il a suffi de lire les journaux pour le voir.
+
+## Ce que je garde
+
+Un garde qui existe n'est pas un garde qui voit. Le nôtre était là, testé, documenté, et 86 sessions sur 101 passaient à côté. On ne l'a su qu'en comptant.
+
+Les bugs les plus graves de la journée ne venaient pas des équipes qui codent. Ils venaient de l'agent qui pilote : un chat fermé qui agit encore, une approbation que je n'avais pas donnée, des heures écrites de mémoire. Plus un agent a de pouvoir, plus ce qu'il écrit doit être vérifié par un programme.
+
+Et chaque bug a suivi le même chemin : un compte dans un journal, un ticket, un garde avec son test, puis un nouvel audit pour voir si le garde tient. C'est lent. Les voies restent fermées. Je préfère ça à une machine qui va vite et dont je ne sais pas ce qu'elle fait.
