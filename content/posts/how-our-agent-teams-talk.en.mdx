@@ -1,0 +1,226 @@
+---
+title: "Inside the machine room: how our agent teams talk to each other"
+description: "The CTO chat, the headless sessions, the train, the operations database, the hooks before and after every command. Then four audits in one day: what they found, and what is still open."
+seoTitle: "How our agent teams talk to each other, piece by piece"
+seoDescription: "Headless sessions, the train, the operations database, hooks around every command, a ticket's life, and four audits in one day with their numbers."
+date: 2026-11-13
+tags: [ai, integration, measurements]
+author: oussama
+draft: false
+sensitive: true
+newsletter: hold
+publishedAt: "2026-11-13T12:31:28-05:00"
+cover: series-21-working-with-agents-rules-that-refuse
+coverAlt: "An old railway signal box in watercolour, a row of iron levers in front of wide windows, tracks merging outside in the snow, and a small red duck perched on a lever, by a lit lamp"
+---
+
+In [chapter 27](/story/every-agent-starts-in-the-same-world/), I promised three days of conforming starts, then the numbers. The three days end tomorrow evening. I did not wait: on 13 November, I had our agent teams audited four times in the same day, read-only, from their logs.
+
+On the promise itself, the count is simple. The first three audits read 150 environment checks (118, then 16, then 16). No drift.
+
+The rest is less tidy, and that is the part I care about. The audits found 14 bugs, then 8, then 10, then 7. Almost all of them are in our tooling, not in the products' code. To understand them, you first need to see how the machine is built. I show it piece by piece.
+
+One note before we start. This tooling is a private product: I show the pieces and how they talk, not the code. And I had promised diagrams generated from the code. They are not ready. The ones in this post are drawn by hand, from what I read.
+
+## The pieces
+
+I am alone in the company. The code is written by agents, and the CTO, Mouloud, is an agent too. I have already told the story of [the coordinator](/basics/agents-under-a-coordinator/) and of [how sessions start](/story/every-agent-starts-in-the-same-world/). Here is the whole thing.
+
+<Layers label="The pieces, from the one who decides to what displays: each level talks only to its neighbours, and the truth is on GitHub.">
+  <Layer tag="1" title="Me" note="Money, legal, anything irreversible. I approve and merge under my own account, nothing else." items="an instruction | a decision | a reading" />
+  <Layer tag="2" title="The CTO chat" note="A conversation with a screen. It validates every task, splits it, writes the brief, launches, reads the alerts." items="one ticket per task | one brief per session | one watcher per launch" />
+  <Layer tag="3" title="The headless sessions" note="The teams (one per repository), the crack that unblocks a stuck PR, the acceptance check that verifies a ticket after the merge. All built by the same piece of code." items="a cap on turns, budget and minutes | nobody answers while they run" level="1" />
+  <Layer tag="4" title="The worktrees" note="One reference copy per repository, never modified. One workspace per ticket, removed after the merge." items="no clone made by a session" level="1" />
+  <Layer tag="5" title="The train" note="One queue per repository. It boards PRs one by one towards GitHub's merge queue." items="fixes first | a red PR is skipped, with the reason" level="1" />
+  <Layer tag="6" title="GitHub" note="The tickets, the board, the PRs, the required checks. When a fact differs between GitHub and our database, GitHub wins." items="the source" />
+  <Layer tag="7" title="The operations database" note="A local copy to list and display: alerts, events, trains, live sessions, calls to GitHub." items="never a source | read here, check up there before deciding" />
+  <Layer tag="8" title="The watchdog and the crons" note="No model, so no tokens. Local checks every 15 minutes, GitHub reads at most once an hour." items="13 active crons | 6 paused on purpose" level="1" />
+  <Layer tag="9" title="The cockpit" note="My screen. It reads, it does not write into the machine." items="every figure with its date" level="1" />
+</Layers>
+
+Two choices explain the rest.
+
+The first: sessions do not talk to each other. A team does not know another one exists. What it has to say, it writes somewhere durable: a commit, a PR, a status file, a row in the database. A free chat between agents can be neither checked nor replayed, and it is expensive.
+
+The second: where a sure answer is needed, there is no model. The train, the watchdog, the hooks and the launcher are ordinary code. A model decides what to write. It does not decide whether a PR may merge.
+
+## Who writes, who reads
+
+The operations database is a SQLite database on the Mac. Here is what goes in and what comes out.
+
+<Split label="The operations database: on the left those who write, in the middle what it keeps, on the right those who read. Nobody talks to anybody directly there: one writes a fact, others read it later.">
+  <Side title="Those who write" tone="own" items="The launcher: a conforming start or a drift, then the end of a session with its turns, model, repository and PR | The train: queued, skipped with the reason, merged | The watchdog: a cron failing or silent, a red main branch, a PR with no owner | Every call to GitHub: a counter per caller and per hour | A sync every 5 minutes: live sessions, the state of the trains" />
+  <Side title="What it keeps" tone="plain" items="An alert: one row per subject while it is active; if it comes back, its count goes up | Three states: open, acknowledged, resolved with a proof | Purged 7 days after it was acknowledged, never while open | An event: kept 30 days, bounded text, secrets masked before the write | The closed sets (states, severities) checked by the database itself" />
+  <Side title="Those who read" tone="plug" items="Every session start: open alerts first | The CTO: before any new work | The cockpit: health of the teams, the trains, the crons | The audits: read-only queries | The launcher: it refuses to relaunch a team whose last end has not been seen" />
+</Split>
+
+The end of a team shows the principle well. When a session stops, one single piece of code writes its end. It always writes an event. It also opens an alert, unless the session succeeded and its PR is already in the train: in that case there is nothing to look at. As long as an end alert has not been seen, the launcher refuses to relaunch that team. The CTO cannot « forget » a team.
+
+This database has a rule I learned the hard way. On the morning of 11 November, 43 of the 71 open alerts were stale: PRs already merged, branches green again. Since then, the database is there so that nothing is missed, never to decide. Before merging, closing a ticket or writing « done », we check on GitHub.
+
+It also has a target we have not reached. I want one owning service per database: it alone opens the file, the others ask it. And I want to be able to empty the database and rebuild it from its sources at any time. Today, alerts and events each go through a single module, but several programs still open the file. One part is done: the start reports of the sessions are first written to an append-only journal, then to the database, and a replay of the journal gives them back to an emptied database. The rest is an open ticket.
+
+## The hooks: before and after every command
+
+An agent works by calling tools: run a command, read a file, edit one. Our harness lets us plug one program before each call and another after. The one before can refuse. The one after can correct, or send a finding back to the agent.
+
+<Split label="The hooks around a tool call: on the left what is refused before the command leaves, on the right what is done after. On top of these come Git's own hooks at commit and at push, which run the same gate as CI.">
+  <Side title="Before: what is refused" tone="refuse" items="A command or a read that would display a secrets file, or that touches my personal folders | A commit or a push whose diff holds a secret: the file, the line and the rule are named, never the value | A clone: work happens in a worktree | A write to GitHub without an app's token: it would go out under my name | Reading code before asking the code index | A command that will fail on this Mac, with the fix in the message | In a headless session: opening my browser" />
+  <Side title="After: what is done" tone="after" items="Secret shapes are masked in the output before the agent reads it | The edited file is formatted by the repository's own tool, silently | The edited file is checked alone, in under 10 seconds: a defect comes back to the agent at once | At the start of a session: the working copy is brought up to date | At the end: the session's traces are removed" />
+</Split>
+
+Why hooks, and not one more instruction? I wrote about it in [chapter 21](/story/working-with-agents-rules-that-refuse/): a rule an agent has to remember is not a rule. A hook remembers nothing. It reads the command and answers yes or no.
+
+One design detail matters. Every hook goes through one small entry point. If the installation is broken and that entry point cannot find the tool, it lets the call through with a warning: a damaged installation must not refuse every command of every session. If the tool runs and says no, it is no.
+
+The first audit showed that a guard can exist and see nothing. The « code index first » guard had been in place for days. Out of 101 sessions, 86 never asked the index. The guard looked only at the beginning of the command, and only at paths written in full. Agents chain their commands: 1,552 code reads went through behind a semicolon or an « and ». The guard blocked 12 times. The measured ratio: 1 call to the index for 170 reads by hand.
+
+The same audit found two rules that contradicted each other. Our commit hook refuses any co-author line that does not name one of our identities. The tool, by default, offers to add one. The result: 81 sessions out of 101 lost at least one command to that refusal. The fix was not one more hook. We turned the offer off at the source, in the session's settings.
+
+## Why Python here and .mjs there
+
+I did not find, in our own documents, one that says « we chose this language for this reason ». So I give what the code shows, nothing more.
+
+**The agents' tooling is Python and shell.** I counted: 160 Python files, and only one imports anything outside the standard library (a screenshot tool, which drives a browser). SQLite is in the standard library. So there is nothing to install: a cron, a hook or a background service runs the system's Python, and it works. The tests are files that sit next to the tools.
+
+**The entry point is a one-page shell script.** Crons, hooks and Git all go through it. It finds the tools through the local configuration: moving the folder breaks no cron line. And it writes one line at every cron run, whatever the result: the name, the exit code, the duration. That is the file the watchdog reads to see a cron that fails twice in a row or goes silent.
+
+**The cockpit, the tools of the company folder and each repository's checks are .mjs.** A .mjs file is a JavaScript module that Node runs as it is: no compilation, no build step. In the cockpit, the pure logic of each screen lives in a module of that kind: sort, count, decide whether a figure is fresh. The server part, in TypeScript, reads the disk and calls that module. The tests import it directly, with Node's built-in test runner. So the server and the test read the same file, with nothing in between. The local database is read with Node's built-in SQLite module. In the repositories, the checks CI runs are .mjs too: CI says `node`, the script's name, and that is all. This blog's lint is made that way.
+
+**Two languages, one vocabulary.** The states of an alert, of a train entry or of a session are closed sets, declared once, in Python, with their allowed transitions. A forbidden move raises an error. From that declaration comes a JSON file that the shell and the .mjs read, and the database's constraints are generated from it. A test counts the states written as bare strings in the code: that count can only go down.
+
+Two languages still have a price, and the third audit found it. The bridge that shows the teams in the cockpit sorted dates as text, and two date formats lived there side by side. The old rows came before the new ones. The cockpit showed zero teams while five or six were running.
+
+## The life of a ticket
+
+All work starts from a ticket. Tickets are kept on three levels: a large piece of work, a feature, a task. They live on a board.
+
+<Pipeline label="The states of a ticket on the board. Nobody moves a card by hand to say « in review »: an open PR existing is what says it.">
+  <Stage title="Incubation" note="an idea, an audit finding">
+    An idea of the founder or a finding of an audit waits here. An idea is never closed because nobody asked for it.
+  </Stage>
+  <Stage title="Backlog" note="sorted, not ready yet">
+    The ticket is accepted, attached to its parent, with its lane.
+  </Stage>
+  <Stage title="Next" note="ten at most per lane" tone="gate">
+    Ready to be taken: it says when it will be done and which files it touches. A ticket that touches the same files as work in progress is not offered.
+  </Stage>
+  <Stage title="In progress" note="the files are reserved">
+    A session took it. Its list of files is a reservation while it is in progress.
+  </Stage>
+  <Stage title="In review" note="an open PR names it" tone="gate">
+    An open PR names the ticket: the card moves to review. If the PR goes away without merging, the card goes back to Next.
+  </Stage>
+  <Stage title="To validate" note="after the merge" tone="gate">
+    For tickets marked for acceptance: a short session checks the « done when » on the platform, after the merge.
+  </Stage>
+  <Stage title="Done" note="closed with its proof" tone="ship">
+    The ticket closes with a proof. A duplicate always names its original.
+  </Stage>
+</Pipeline>
+
+The board is brought back in line with the tickets and the PRs at three moments: after every merge, at the end of every session, and once a night as a safety net. A « blocked » card is never moved by these rules: it is a decision, not a computed state.
+
+The lanes are our work queues, one per product. When a lane finishes a ticket, the rule says to refill it with the next one. That rule is suspended: the lanes are closed right now, and I say why further down.
+
+## The path of a PR, and how we use GitHub
+
+<Pipeline label="The path of a PR, from the worktree to the main branch. Every gate refuses as early as it can: what can be seen on the Mac must not wait for CI.">
+  <Stage title="A worktree" note="one per ticket">
+    The tool creates a workspace for this ticket, from the repository's reference copy.
+  </Stage>
+  <Stage title="Opening" note="format, cap, overlap" tone="gate">
+    One single tool opens a PR. It formats the changed files in a separate commit, pushes the branch, then refuses if the lane already has five open PRs in this repository, or if the PR shares a file with another open PR.
+  </Stage>
+  <Stage title="CI" note="the required checks" tone="gate">
+    Tests, lint, static analysis, security scan. Actions are pinned by their hash, not by a version number.
+  </Stage>
+  <Stage title="The train" note="one queue per repository" tone="gate">
+    Fixes first, then the oldest; a stacked PR after its base; release PRs last. A red PR is skipped, with the reason written down.
+  </Stage>
+  <Stage title="The merge queue" note="replayed on the real mix" tone="gate">
+    GitHub replays the checks on the PR mixed with the main branch of the moment. If it is red, the PR leaves the queue.
+  </Stage>
+  <Stage title="One commit" note="squash" tone="ship">
+    The PR enters as one single commit. The main branch is protected everywhere: nobody pushes to it.
+  </Stage>
+  <Stage title="After" note="board, worktree, release">
+    The board is brought back in line, the worktree is removed, and the repository's release PR updates itself.
+  </Stage>
+</Pipeline>
+
+I told the train's story in chapters [19](/story/tchou-tchou-how-our-pull-requests-catch-the-train/) and [23](/story/the-trains-second-version-rails-sidings-and-a-repair-train/). Here I add four points about GitHub.
+
+**Identities.** Agents write to GitHub through apps: comment, push, open a PR. My account is only used to approve and to merge. A hook refuses any write made without an app's token, because it would go out under my name without my having meant it.
+
+**The merge queue.** A required check must also answer in the merge queue, not only on the PR. Otherwise the PR waits for a check that will never come. The second audit looked for that case, the third saw it once: the tool did detect the check that never started, but its nudge failed.
+
+**The quota.** The sessions, the trains and the watchdog share the same app installation, so the same quota of calls. It ran out once, in the night of the 12th to the 13th, and a queueing stopped with no retry. Since then, every call is counted per caller and per hour in the database. That quota is also why the board has a local copy, re-read only for what changed.
+
+**Releases.** In the repositories that publish versions, a tool (release-please, for our website for example) keeps a release PR up to date from the commits. Merging it makes the version. It takes the same train as the others, last.
+
+A word on forced merges. During the first audit window, there were 4, all on the same test, all on my written word. In the next two windows, the train's logs show none; I did not re-read the fourth one on that point.
+
+## Bonjour, salut: the memory between two sessions
+
+The CTO chat is not eternal. A long conversation becomes expensive and makes more mistakes. So we have two code words.
+
+« Salut Mouloud » closes the session. Every running agent stops at a safe point. The CTO rewrites a short resume note, 12 KB at most: it keeps only what GitHub does not know, my instructions, the decisions waiting, the traps. The state of the work is not written by hand in it: it is generated from the teams, the trains, the board and the PRs. A check refuses a note that contradicts GitHub.
+
+« Bonjour Mouloud » opens the next one, always in the same order: read the whole note, handle every open alert before any new work, check the teams' environment, then relaunch what was in flight. An interrupted team starts again as a fresh launch, never as the resume of an old session. Every launch leaves with its watcher, in the same turn.
+
+That loop had a hole too. I tell it with the third audit.
+
+## Four audits in one day
+
+Each audit reads the logs of a time window, without changing anything. A bug, here, is what the tooling did wrong or let through. A session's coding mistake does not count. The windows are not the same size: 101 sessions over 31 hours for the first, then 11, 10 and 7 sessions over one to three hours. So the counts do not compare line by line.
+
+<Bars label="The tooling bugs proven by each audit, by severity. The windows go from 101 sessions (audit 1) to 7 (audit 4): the bar says what was found, not a rate." source="The four audit reports of 13 November. In the fourth, 4 bugs of the third were seen again on top of the 7 new ones; they are not counted twice." format="integer" stacked="true" series="High:danger | Medium:warning | Low:neutral" data="Audit 1 · 101 sessions=3,8,3; Audit 2 · 11 sessions=0,4,4; Audit 3 · 10 sessions=2,6,2; Audit 4 · 7 sessions=1,3,3" />
+
+**Audit 1: the guards that saw nothing.** 101 sessions, 97 successful, 2 cut by their turn cap, 2 killed. Zero environment failure. And 14 bugs. I have told the first two: the blind index guard, and the two co-author rules that contradicted each other. The third: the tool that opens a PR did not push the branch, and crashed with no useful message. Out of 106 calls, 53 opened a PR. There was noise too: one kind of alert came back 1,401 times for 22 PRs, and 89 successful team ends each asked for an acknowledgement by hand.
+
+What came out of it: the guard now reads every segment of a command; the co-author line is turned off at the source; the tool pushes by itself and prints GitHub's own reason; a successful end whose PR is in the train is no longer an alert; calls to GitHub are counted.
+
+**Audit 2: do the fixes hold?** 11 sessions after the last fix. Zero refusal on the co-author line, over 26 commits. Zero session without a call to the index. Zero acknowledgement by hand. And 8 new bugs, none severe. The most instructive: the secrets guard refused code that contains `process.env`, because its pattern saw a secrets file in it. A guard that is too wide is a bug too: agents learn to work around it.
+
+**Audit 3: the agents that pilot.** 10 sessions, 10 bugs, 2 of them severe. Those two do not come from the teams. They come from the CTO chat.
+
+The first: a chat I had closed with « Salut » kept acting. Its watchers woke it four times. It closed one ticket and reopened another, while the new chat was working on the same subjects. Two pilots, neither seeing what the other knew.
+
+The second concerns me directly. An agent wrote on a PR that I had read and approved a page. My message only said I agreed to read it. The PR merged half an hour later. My written approval came after. Nothing stopped an agent from writing « the founder approved ».
+
+The same audit saw a team run an infrastructure plan with fake keys. Its brief forbade it. The plan still re-read ten real records. No guard existed for that.
+
+What came out of it at once: the closing procedure now stops every watcher of the chat that closes, and a closed chat writes nothing more. The rest became tickets: a guard that refuses « the founder read, approved or decided » without quoting my message, a guard on infrastructure plans, the cockpit that must show the teams.
+
+**Audit 4: catching earlier.** 7 sessions, all successful, 7 new bugs, and 4 of the third audit seen again. The most severe is almost funny: the CTO chat dated its writings 45 to 60 minutes in the future. 17 future times in 18 writes, including the time of my approval on a ticket. A proof with the wrong date is no longer a proof. Since then, every written time comes from the machine's clock, never from the model's memory.
+
+The other lesson: 4 PRs out of 11 were red in CI, and for 3 of them the failing check exists on the Mac. It simply did not run before the push. The audit ends with a ranking of the guards to build, by « errors caught for the effort »: the first five catch about thirty of the defects counted, for about one day of work.
+
+Between the first audit and the next ones, the train changed pace.
+
+<Bars label="The average time between a PR entering the queue and its merge, in minutes, in each audit window. The last three windows are short: 14, 7 and 5 PRs measured, against 126 for the first." source="The train's events in the operations database, read by each audit. In the second audit, the merge time was written about 3 minutes late; that has been fixed since." format="number" series="Minutes:accent" data="Audit 1 · 126 PRs=35; Audit 2 · 14 PRs=11.3; Audit 3 · 7 PRs=11.4; Audit 4 · 5 PRs=9.4" />
+
+I cannot tell the share of the fixes from the share of the load, which was lighter in the short windows. I give the number, not the cause.
+
+## What is still open
+
+<Split label="The state on 13 November, after the fourth audit: what holds with its proof, what is still open, and what I cannot measure.">
+  <Side title="What holds" tone="own" items="150 environment checks read, 0 drift | 28 sessions out of 28 successful in the last three windows | 0 refusal on the co-author line since the fix | The code index is asked: 85 % of sessions without a call before, 0 out of 11 then 1 out of 10 after | Opening a PR no longer crashes" />
+  <Side title="Still open" tone="refuse" items="The lanes stay closed until an audit finds 0 bugs: four audits, four times no | The guards of audits 3 and 4 are tickets, not code yet | The secrets guard still refuses innocent code | The cockpit does not show the live teams | A required check that never started: detected, not relaunched yet | Nothing caps the number of teams at once: six ran when my instruction said three | One service per database: not done" />
+  <Side title="Not measured" tone="plain" items="The cause of a red in the train by kind: the database keeps the check's name, not the reason | The exact time to resolve an alert | A session's calls to GitHub, before the counter | The cost of the starting context, apart from the rest | The share of the fixes in the train's shorter delay" />
+</Split>
+
+Two more points, because I had announced them.
+
+The coordinator of the [previous post](/basics/agents-under-a-coordinator/) is asleep. Its registry has had no activity since 11 November. Today, what keeps the teams apart is simpler: one team per repository, one worktree per ticket, and the refusal, at opening, of a PR that shares a file with another. The comparison I promised with existing tools has not been done.
+
+And the three days. They end tomorrow evening. So far, no environment drift. But « conforming at the start » did not mean « without a defect on the way »: reading the logs was enough to see it.
+
+## What I keep
+
+A guard that exists is not a guard that sees. Ours was there, tested, documented, and 86 sessions out of 101 walked past it. We only knew by counting.
+
+The most severe bugs of the day did not come from the teams that write code. They came from the agent that pilots: a closed chat still acting, an approval I had not given, times written from memory. The more power an agent has, the more what it writes must be checked by a program.
+
+And every bug followed the same path: a count in a log, a ticket, a guard with its test, then a new audit to see whether the guard holds. It is slow. The lanes stay closed. I prefer that to a machine that goes fast and that I cannot account for.
