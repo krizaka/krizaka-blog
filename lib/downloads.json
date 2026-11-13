@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "33da824f500b",
+      "source": "d3dcd70791ef",
       "files": {
         "epub": {
-          "hash": "377145686f",
-          "bytes": 7832694
+          "hash": "2d7697ff26",
+          "bytes": 8094213
         },
         "pdf": {
-          "hash": "dcabd29ec2",
-          "bytes": 10875448
+          "hash": "4a39766469",
+          "bytes": 11464367
         }
       }
     },
@@ -287,15 +287,15 @@
       }
     },
     "fr/story": {
-      "source": "47f89bd3f728",
+      "source": "6881fec335b2",
       "files": {
         "epub": {
-          "hash": "51bce19b2b",
-          "bytes": 7864073
+          "hash": "014567f31b",
+          "bytes": 8127465
         },
         "pdf": {
-          "hash": "3d02f309c4",
-          "bytes": 11059838
+          "hash": "153e8fe2a2",
+          "bytes": 11664641
         }
       }
     },
@@ -725,6 +725,58 @@
         "pdf": {
           "hash": "555f32f822",
           "bytes": 1001100
+        }
+      }
+    },
+    "en/why-sovkora-loads-no-plugin-in-the-jvm": {
+      "source": "3fc0278c8f54",
+      "files": {
+        "epub": {
+          "hash": "6e97d16269",
+          "bytes": 650280
+        },
+        "pdf": {
+          "hash": "50f5663ea4",
+          "bytes": 1028605
+        }
+      }
+    },
+    "en/how-our-agent-teams-talk": {
+      "source": "dd00b006d273",
+      "files": {
+        "epub": {
+          "hash": "b56fe69ad1",
+          "bytes": 753851
+        },
+        "pdf": {
+          "hash": "3ca8d45479",
+          "bytes": 1093567
+        }
+      }
+    },
+    "fr/why-sovkora-loads-no-plugin-in-the-jvm": {
+      "source": "c0f4db32bfab",
+      "files": {
+        "epub": {
+          "hash": "c38e690253",
+          "bytes": 662530
+        },
+        "pdf": {
+          "hash": "ea9cdf10bf",
+          "bytes": 1061943
+        }
+      }
+    },
+    "fr/how-our-agent-teams-talk": {
+      "source": "1b60f0d78fb9",
+      "files": {
+        "epub": {
+          "hash": "7a3200cf2a",
+          "bytes": 767426
+        },
+        "pdf": {
+          "hash": "ab56fcce41",
+          "bytes": 1124936
         }
       }
     }

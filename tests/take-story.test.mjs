@@ -17,6 +17,11 @@ const CDN_HOSTS = /^https:\/\/krizaka-assets\.b-cdn\.net\/sites?\/blog\//;
 const LOCAL_FREE = {
   "series-21-working-with-agents-rules-that-refuse":
     "free local render on the Mac with the media worker's model, no paid run",
+  /* Chapters 28 and 29 were first published as posts, each with a cover drawn for it (krizaka-internal#3517). */
+  "series-28-why-sovkora-loads-no-plugin-in-the-jvm":
+    "the cover drawn for the post on the Mac with the media worker's model, kept when the post became chapter 28, no paid run",
+  "series-29-how-our-agent-teams-talk":
+    "free local render on the Mac with the media worker's model when the post became chapter 29, no paid run",
 };
 /* The covers redrawn with GPT Image 2.5 Sunburst through Runway (content/image-series/runway.json: prompt, references, takes, credits). */
 const RUNWAY = JSON.parse(readFileSync(new URL("../content/image-series/runway.json", import.meta.url), "utf8")).images;
