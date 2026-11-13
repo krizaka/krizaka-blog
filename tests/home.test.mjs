@@ -51,7 +51,7 @@ test("of two chapters out at the same minute, the later in the story is the late
   assert.deepEqual(storyRows([]), []);
 });
 
-test("today's chapters: chapter 27 Featured, then 26 → 1 in both languages", () => {
+test("today's chapters: chapter 29 Featured, then 28 → 1 in both languages", () => {
   for (const locale of ["en", "fr"]) {
     const list = readdirSync(new URL("../content/chapters/", import.meta.url))
       .filter((f) => f.endsWith(`.${locale}.mdx`))
@@ -62,11 +62,11 @@ test("today's chapters: chapter 27 Featured, then 26 → 1 in both languages", (
     const rows = storyRows(list, featured);
     assert.deepEqual(
       rows.map((r) => r.chapter.chapter),
-      [26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
+      [28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
       locale,
     );
-    assert.equal(rows.length + 1, 27, `${locale}: twenty-seven chapters, one of them Featured`);
-    assert.equal(featured.slug, "every-agent-starts-in-the-same-world", `${locale}: the latest chapter is Featured`);
+    assert.equal(rows.length + 1, 29, `${locale}: twenty-nine chapters, one of them Featured`);
+    assert.equal(featured.slug, "how-our-agent-teams-talk", `${locale}: the latest chapter is Featured`);
   }
 });
 

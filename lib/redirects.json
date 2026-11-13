@@ -246,5 +246,13 @@
   "cette-semaine-2026-w46": {
     "en": "/story/every-agent-starts-in-the-same-world/#what-changed-for-you-this-week",
     "fr": "/fr/story/every-agent-starts-in-the-same-world/#ce-qui-a-changé-pour-vous-cette-semaine"
+  },
+  "why-sovkora-loads-no-plugin-in-the-jvm": {
+    "en": "/story/why-sovkora-loads-no-plugin-in-the-jvm/",
+    "fr": "/fr/story/why-sovkora-loads-no-plugin-in-the-jvm/"
+  },
+  "how-our-agent-teams-talk": {
+    "en": "/story/how-our-agent-teams-talk/",
+    "fr": "/fr/story/how-our-agent-teams-talk/"
   }
 }

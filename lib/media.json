@@ -6785,7 +6785,7 @@
       ]
     }
   },
-  "why-sovkora-loads-no-plugin-in-the-jvm": {
+  "series-28-why-sovkora-loads-no-plugin-in-the-jvm": {
     "kind": "image",
     "width": 1280,
     "height": 720,
@@ -6814,7 +6814,8 @@
       "size": "1280×720",
       "seconds": 28,
       "costUsd": 0,
-      "note": "Made for this cover with the media worker's engine on the Mac, not through a Sovkora Studio: there is no run id. Three seeds were made (3303, 1207, 4116); 4116 was kept after a review at full size (1207 drew two pigeons, 3303 crowded the counter against the workshops). No person, no text, no logo."
+      "note": "Chapter 28 of the image series (cover): the picture drawn for this text when it was first published as a post, kept as the chapter's own cover. Made with the media worker's engine on the Mac, outside an Orazaka Studio run: there is no run id. Three seeds were made (3303, 1207, 4116); 4116 was kept after a review at full size (1207 drew two pigeons, 3303 crowded the counter against the workshops). No person, no text, no logo.",
+      "via": "local"
     },
     "renditions": {
       "avif": [
@@ -6851,6 +6852,76 @@
         {
           "w": 1280,
           "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/why-sovkora-loads-no-plugin-in-the-jvm/why-sovkora-loads-no-plugin-in-the-jvm-1280.7a7236a28e.webp"
+        }
+      ]
+    }
+  },
+  "series-29-how-our-agent-teams-talk": {
+    "kind": "image",
+    "width": 1280,
+    "height": 720,
+    "blur": "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAADwAQCdASoQAAkABABoJZQC7AD0ZzDWacgA/vUeOn7TQLotF367o9V8Db1fa2Z76g5ldXBiTYcJhw68CziK83IbQTsRhgAA",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-29-how-our-agent-teams-talk-480.73ffe82993.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-29-how-our-agent-teams-talk-960.0c6e2ecd6c.webp"
+      },
+      {
+        "w": 1280,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-29-how-our-agent-teams-talk-1280.5bb7862e53.webp"
+      }
+    ],
+    "made": {
+      "model": "FLUX.2 [klein] 4B",
+      "licence": "Apache-2.0",
+      "engine": "mflux (mflux-generate-flux2), the media worker's engine, on the Mac's Metal GPU: 4 steps, 1280×720, text to image",
+      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+      "via": "local",
+      "prompt": "Hand-drawn ink and watercolor illustration on white paper, light and airy, a lot of unpainted white paper around and inside the scene, soft pale transparent watercolor washes in a palette of indigo, teal, warm orange and cream, delicate thin pen-and-ink linework of varying weight with some broken lines, gentle muted colour. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no photographic detail. The quiet back room of a small old railway station on a pale winter morning, seen from a slightly high angle: along the back wall, a row of five small identical wooden writing desks, each closed off from its neighbours by a low wooden partition, each with its own small brass lamp lit and its own sheet of paper. From every desk one thin brass tube runs along the floor to the middle of the room, where the five tubes meet at a wooden lectern that carries one very large open ledger book with blank ruled pages. Nothing else links the desks: they only meet at the book. Beside the lectern, a small wooden turnstile gate with a brass bell. Through a tall window, snow and one railway track. On the edge of the lectern stands one small real owl with soft violet-grey feathers and two ear tufts, looking down at the open ledger. The bird is small and drawn naturalistically with a few ink strokes. Exactly one bird, no other animal. No people, no text, no letters, no numbers, no logos, no watermark.",
+      "seed": "2933",
+      "size": "1280×720",
+      "costUsd": 0,
+      "note": "Chapter 29 of the image series (cover): the machine room of the agent teams, small separate desks that meet only at one open ledger, the owl reading it. Made with the media worker's engine on the Mac, outside an Orazaka Studio run: there is no run id. Three seeds were made (2901, 2917, 2933); 2933 was kept after a review at full size (2901 drew scribbles that read as writing on the ledger, 2917 crossed the tubes and drew a stern owl). It draws three desks where the prompt asked for five. No person, no text, no logo."
+    },
+    "renditions": {
+      "avif": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-29-how-our-agent-teams-talk-480.39f790c78c.avif"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-29-how-our-agent-teams-talk-768.56bb9ec755.avif"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-29-how-our-agent-teams-talk-1200.bac0b9054a.avif"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-29-how-our-agent-teams-talk-1280.789d8b9509.avif"
+        }
+      ],
+      "webp": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-29-how-our-agent-teams-talk-480.118a1b0c6d.webp"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-29-how-our-agent-teams-talk-768.5db4c97476.webp"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-29-how-our-agent-teams-talk-1200.d1eda18f94.webp"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-29-how-our-agent-teams-talk-1280.a23107fd1e.webp"
         }
       ]
     }

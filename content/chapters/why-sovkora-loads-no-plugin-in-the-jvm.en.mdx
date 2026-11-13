@@ -8,10 +8,16 @@ tags: [sovkora, integration, security]
 author: oussama
 draft: false
 publishedAt: "2026-11-12T15:49:00-05:00"
-series: building-sovkora
-part: 1
-cover: why-sovkora-loads-no-plugin-in-the-jvm
+cover: series-28-why-sovkora-loads-no-plugin-in-the-jvm
 coverAlt: "Watercolour and ink on paper: a stone engine room with brass pipes on the left, a long wooden counter with pigeonholes in the middle where small tied parcels pass, a grey pigeon standing on it, and on the right three small separate wooden workshops, each with its own door and lamp"
+newsletter: hold
+chapter: 28
+period: "2026-11-12"
+sources:
+  - why-sovkora-loads-no-plugin-in-the-jvm
+versus:
+  faced: "an engine that must accept extensions, and four ways to load them into its JVM"
+  built: "nothing loaded at run time: data packs and out-of-process workers behind the broker"
 ---
 
 Sovkora, our AI engine, will have to accept extensions. Our own first: expert packs, sold separately. Later, perhaps, a partner's. When the question came up, the written proposal was the one you read everywhere in the Java world: a system of plugins loaded dynamically into the JVM, with PF4J or child Spring contexts, in our shared Java library.
