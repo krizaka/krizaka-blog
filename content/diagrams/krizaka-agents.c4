@@ -1,0 +1,112 @@
+// The architecture of the agents tooling, for the post « the-architecture-of-krizaka-agents ».
+// Written against the org's base (krizaka/.github docs/architecture: specification.c4, org.c4): it only extends the
+// container « Agents tooling » of the platform and uses the org's people and external systems. Checked and laid out by
+// `node scripts/gen-architecture.mjs --tool <krizaka/.github checkout>/tools/architecture` (the org's architecture tool);
+// the layout is lib/architecture.json, whose hash of this file the tests compare.
+model {
+  extend platform.tooling {
+    cto = container 'CTO session' {
+      description 'An agent in conversation with the founder. Validates and splits the work, writes each brief, launches the teams, reads the alerts first.'
+      technology 'Claude Code'
+    }
+    launcher = container 'Launcher' {
+      description 'Plain code, no model. Builds every headless session the same way: isolated, pinned, checked at start, capped in turns, budget and minutes.'
+      technology 'Python'
+    }
+    sessions = container 'Team sessions' {
+      description 'Headless, one per ticket, each in its own worktree: the teams, the repair session, the acceptance check.'
+      technology 'Claude Code'
+    }
+    rules = library 'Rules and skills' {
+      description 'The rules, the skills and the preamble every session reads. Versioned and reviewed like code.'
+      technology 'Markdown'
+    }
+    guards = container 'Guards' {
+      description 'Hooks around every tool call, at commit and at push, the local precheck, the ratchets. They refuse; they never fix by themselves.'
+      technology 'Hooks, Python'
+    }
+    trains = queue 'Trains' {
+      description 'One ordered queue per repository. A runner carries the head through GitHub merge queue; a red PR is skipped with its reason.'
+      technology 'Python, shell'
+    }
+    watchdog = container 'Watchdog' {
+      description 'No model. Local checks every 15 minutes, GitHub read at most once an hour. Raises alerts; never writes to GitHub.'
+      technology 'Python, cron'
+    }
+    opsdb = datastore 'Operations database' {
+      description 'A local projection: alerts, events, trains, live sessions, a copy of the board. Never a source: GitHub wins.'
+      technology 'SQLite'
+    }
+    cockpit = app 'Cockpit' {
+      description 'The founder screen: teams, trains, alerts, the architecture. It reads; it never writes into the machine.'
+      technology 'Next.js'
+    }
+  }
+
+  founder -> platform.tooling.cto 'instructs, decides'
+  founder -> github 'writes the tickets'
+  founder -> platform.tooling.cockpit 'watches'
+  agents -> platform.tooling.sessions 'run as its sessions'
+  platform.tooling.cto -> github 'reads the board, writes the tickets'
+  platform.tooling.cto -> platform.tooling.launcher 'launches a team with a brief'
+  platform.tooling.cto -> platform.tooling.opsdb 'reads the open alerts first'
+  platform.tooling.launcher -> platform.tooling.sessions 'builds: isolated, pinned, checked'
+  platform.tooling.launcher -> platform.tooling.opsdb 'records starts and ends'
+  platform.tooling.sessions -> platform.tooling.rules 'read'
+  platform.tooling.sessions -> platform.tooling.guards 'commit and push through'
+  platform.tooling.sessions -> github 'open pull requests'
+  platform.tooling.sessions -> platform.tooling.trains 'queue a pull request'
+  platform.tooling.trains -> github 'update, approve, enqueue'
+  platform.tooling.trains -> platform.tooling.opsdb 'record events'
+  platform.tooling.watchdog -> github 'reads, at most hourly'
+  platform.tooling.watchdog -> platform.tooling.opsdb 'raises alerts'
+  platform.tooling.cockpit -> platform.tooling.opsdb 'reads'
+  github -> cloud 'deploys main'
+}
+
+views {
+  view agents_context {
+    title 'The agents tooling · context'
+    include founder, agents, platform.tooling, github, cloud
+    include founder -> platform.tooling with {
+      title 'instructs the CTO session, watches the cockpit'
+    }
+    include platform.tooling -> github with {
+      title 'opens, lands and watches pull requests'
+    }
+    style * {
+      size xsmall
+    }
+    autoLayout TopBottom 40 30
+  }
+
+  view agents_containers of platform.tooling {
+    title 'The agents tooling · containers'
+    include *
+    exclude agents
+    style * {
+      size xsmall
+    }
+    autoLayout TopBottom 40 30
+  }
+
+  dynamic view pr_life {
+    title 'The life of a pull request, from ticket to main'
+    founder -> github 'writes the ticket and its « Done when »'
+    platform.tooling.cto -> github 'validates and sizes the ticket'
+    platform.tooling.cto -> platform.tooling.launcher 'launches a team with the brief'
+    platform.tooling.launcher -> platform.tooling.sessions 'starts it in a fresh worktree'
+    platform.tooling.sessions -> platform.tooling.rules 'reads the rules and the skills'
+    platform.tooling.sessions -> platform.tooling.guards 'commits and pushes through the hooks'
+    platform.tooling.sessions -> github 'opens the PR, mirrors « Done when »'
+    platform.tooling.sessions -> platform.tooling.trains 'queues the PR'
+    platform.tooling.trains -> github 'updates, waits for CI, enqueues'
+    github -> cloud 'merges and deploys main'
+    platform.tooling.trains -> platform.tooling.opsdb 'records the landing'
+    platform.tooling.cockpit -> platform.tooling.opsdb 'reads it for the founder'
+    style * {
+      size xsmall
+    }
+    autoLayout TopBottom 40 30
+  }
+}

@@ -1,0 +1,138 @@
+---
+title: "The architecture of krizaka-agents, for enterprise architects"
+description: "One founder, AI agents, and the tooling between them: who decides, who writes, who refuses, who lands. Every component, how it works, and three diagrams drawn from a model the org's architecture tool checks."
+seoTitle: "The architecture of our AI agents tooling"
+seoDescription: "A CTO session, a launcher, isolated sessions, guards, trains, a watchdog, an operations database and a cockpit: each piece, with checked C4 diagrams."
+date: 2026-11-14
+tags: [ai, integration]
+author: oussama
+draft: true
+sensitive: true
+---
+
+This post is for enterprise architects and IT experts who ask a fair question: how does one person ship software with AI agents, and keep it under control? My answer is not a model. It is the tooling around the models, which we call krizaka-agents. It is private, so I show its pieces and how they talk, not its code.
+
+In [chapter 29](/story/how-our-agent-teams-talk/) I promised diagrams generated from a model rather than drawn by hand. Here they are. The three views below come from one model written in [LikeC4](https://likec4.dev), the notation of the [C4 model](https://c4model.com), against the same base and with the same check as every system of our organisation. How that works, and what it does not prove, is the last part.
+
+## Three principles first
+
+Everything below follows from three choices.
+
+1. **GitHub is the source.** Tickets, the board, pull requests, required checks, the merge queue: they live on GitHub. Everything local is a copy, kept to display and to warn, never to decide.
+2. **No model where a sure answer is needed.** The launcher, the guards, the trains and the watchdog are ordinary code. A model decides what to write. It never decides whether a change may merge.
+3. **Agents do not talk to each other.** What a session has to say, it writes somewhere durable: a commit, a pull request, a status file, a row in a database. A conversation between agents can be neither checked nor replayed.
+
+## The context
+
+<Architecture view="agents_context" label="The context: the founder and the AI agents around the agents tooling, inside the Krizaka platform; GitHub holds the work and deploys to the cloud after a merge." />
+
+Two kinds of people use the system. The founder writes the tickets, gives instructions to the CTO session and watches the cockpit. The AI agents do the rest, always as sessions of the tooling: there is no other way for an agent to touch a repository.
+
+The tooling talks to one external system for the work itself, GitHub. It opens pull requests there, lands them through GitHub's merge queue, and reads their checks. Deployment is not the tooling's job: once main has moved, each repository's own pipeline deploys it to its cloud host.
+
+## The containers
+
+<Architecture view="agents_containers" label="The containers of the agents tooling: the CTO session and the launcher start the team sessions; the sessions read the rules, pass the guards, open pull requests and queue them on the trains; the watchdog and the trains write to the operations database, which the cockpit reads." />
+
+Nine containers, each with one job. I take them in the order a piece of work meets them.
+
+### The CTO session and the launcher
+
+The pilot is an agent: a long conversation between the founder and a CTO session. It validates every task, splits it into tickets of one deliverable each, writes a short brief per ticket and launches a team to do it. Before any new work, it reads the open alerts.
+
+Launching is not the CTO's own act. It hands the brief to the **launcher**, plain code with no model, which builds every headless session the same way. We once tried a richer coordinator, with leases, fencing tokens and a scope reserved per task ([the coordinator](/basics/agents-under-a-coordinator/)). It is asleep today. What keeps teams apart is simpler: one team per repository, one worktree per ticket, and a pull request refused at opening when it shares a file with another open one.
+
+### The team sessions: isolated, pinned, checked at start
+
+A team session has no screen and no one to answer its questions. It has a ticket, a brief and caps on turns, budget and minutes. The launcher makes it the same every time ([chapter 27](/story/every-agent-starts-in-the-same-world/)):
+
+- **Isolated**: it sees the index of our code and the tools its team declares, nothing of the founder's accounts or personal settings.
+- **Pinned**: the version of the agent runtime and of our extensions is written in configuration, raised by a pull request, never by itself.
+- **Checked twice**: before the start, the machine is compared with what is expected; on the session's first message, what it really loaded is compared again. One difference and the session is stopped, with the reason.
+
+The same builder starts the repair session that unblocks a stuck pull request and the acceptance session that checks a ticket on the platform after the merge. There is no second path.
+
+### Rules and skills: the documentation the agents read
+
+Every session reads the same rules, a short preamble and the skills of its trade. They are Markdown, versioned in a repository, changed by pull request and reviewed like code. A rule a session has to remember is weak, so the rules that matter most are also written as guards.
+
+### The guards, and the shift-left rule
+
+A guard refuses; it never fixes by itself. They sit at four moments:
+
+- **Around every tool call** of an agent: before, a hook can refuse (a secret file displayed, a write to GitHub without an app's identity, code read before the code index was asked); after, the edited file is formatted and checked alone, in seconds.
+- **At commit and at push**: secrets, author identities, format, and the workflow linters on the files that changed.
+- **The precheck**, on the machine, before the push: the repository's fast loop on what changed against main (lint, types, the tests of the touched packages, the generators, the static-analysis rules that exist locally, the coverage of new code). The rule behind it is shift-left: what can be seen on the machine must not wait for CI. The fourth audit of chapter 29 is why: of 4 pull requests red in CI, 3 failed on a check that existed on the machine and had not run.
+- **In CI**, the last line: the required checks of each repository, plus two that are about method rather than code. A pull request titled as a fix must carry a guard (a test that fails without the fix) or a written, reviewable exemption. And **ratchets**: counts of debt (lint findings, states written as bare strings, frozen exceptions to architecture rules) recorded in a file that may only go down.
+
+Every refusal is counted. A rule is kept when its count shows an effect, and reviewed when it only produces noise.
+
+### The trains and the merge queue
+
+A session never merges. It opens its pull request with one tool, which formats the changes, pushes the branch, mirrors the ticket's « Done when » lines in the body, and refuses when the lane already has five open pull requests in the repository. Then it puts the pull request in the train of that repository.
+
+A train is one ordered queue per repository and one runner. Fixes go first, then the oldest; a pull request that depends on another goes after it. The runner takes the head, brings its branch up to date, waits for the required checks, and enqueues it in GitHub's merge queue, which replays the checks on the real mix with main. A red head is skipped, with its reason written down, and the next one runs. A red main freezes the merges, never the opening of pull requests, until a fix lands. The story is in chapters [19](/story/tchou-tchou-how-our-pull-requests-catch-the-train/) and [23](/story/the-trains-second-version-rails-sidings-and-a-repair-train/).
+
+### The watchdog and the alerts
+
+The watchdog has no model, so it costs no tokens. Every 15 minutes it runs its local checks (scheduled jobs that fail or go silent, sessions that stall or loop); at most once an hour it reads GitHub (a red main, a pull request red with no owner for an hour, a frozen repository). It never writes to GitHub. It raises **alerts**: one row per subject in the operations database, in three states (open, acknowledged with a note, resolved with a proof), purged seven days after acknowledgement and never while open. Every session start shows the open alerts first.
+
+### The board and the issue model
+
+Work is planned on three levels, an epic, a feature, a task, as linked GitHub issues on one board. One tool files every ticket: it gives the standard title and labels, refuses a duplicate, and asks a feature for the sections a reviewer needs (the value, the files it touches, the « Done when » lines that will prove it). The board's columns are computed, not dragged: an open pull request naming a ticket is what puts it in review; its merge is what sends it to done, or first to an acceptance check when the ticket asks for one. A ticket closes with its proof.
+
+### The operations database: a projection of GitHub
+
+A local SQLite database keeps what the founder and the CTO need to list and display: alerts, events, the trains, the live sessions, the calls made to GitHub, and a copy of the board refreshed only for what changed. It is a **projection**: when a fact differs between it and GitHub, GitHub wins, and nothing is merged, closed or declared done on its word alone. Its target is stricter than its state, and I say both: we want one owning service per database and a database that can be emptied and rebuilt from its sources at any time. Today, session start reports are journaled first and can be replayed into an empty database; the rest is an open ticket.
+
+### The cockpit
+
+The cockpit is the founder's screen: the teams at work, the trains, the alerts, the scheduled jobs, the architecture. It reads the operations database and GitHub, shows every figure with its date, and writes nothing into the machine.
+
+### Documentation and architecture as code
+
+The documentation that describes the tooling lives next to it and is tested against it: a table of the trains' settings in the documentation is compared with the values in the code by a test, so one cannot change without the other. The architecture follows the same rule, below.
+
+## The life of a pull request
+
+<Architecture view="pr_life" label="The life of a pull request, in twelve numbered steps: from the ticket the founder writes to the landing the cockpit shows." />
+
+Read the numbers in order. Nothing in this path asks an agent to be trusted on its word: the ticket says what « done » means; the session works in its own worktree; the guards refuse what can be refused early; the pull request repeats the ticket's lines with their proofs; the train only moves what is green; GitHub replays the checks before the merge; the landing is recorded, and the founder reads it.
+
+## What it costs, and what it gives
+
+<Split label="The price of the method and what it buys, as we see it today.">
+  <Side title="What it costs us" tone="before" items="Rigour before speed: one ticket per deliverable, one pull request per ticket, a brief per session | Refusals: agents lose commands to guards, and a guard that is too wide teaches them to work around it | Guards to maintain: each one has its test, its count, and its review | Waiting: a red main freezes the merges of a whole repository until a fix lands | A projection to keep honest: anything decisive is checked on GitHub again" />
+  <Side title="What it gives us" tone="after" items="Traceability: every change goes ticket, pull request, required checks, merge queue, main | Reproducible sessions: same environment at every start, proven, with the drift named | No model in the decision to merge | Defects caught on the machine rather than in CI | One founder can see the whole state on one screen, every figure dated" />
+</Split>
+
+The numbers we have are few, measured, and published with their source. On 13 November, four read-only audits of the sessions' logs read 150 environment checks at start: no drift. The same day, the first audit showed what a guard costs when nobody measures it: 86 sessions out of 101 had never asked the code index, though the guard requiring it was in place. Both are in [chapter 29](/story/how-our-agent-teams-talk/), with the method and the limits.
+
+<Numbers>
+  <Num value="150" label="environment checks read at start" hint="no drift, four audits of 13 November" />
+  <Num value="86 of 101" label="sessions that walked past a guard" hint="first audit, before the guard read whole commands" />
+</Numbers>
+
+What we have not measured, I do not claim: the share of each guard in the defects avoided, the cost of the rigour in hours, or how this would scale to a team of people.
+
+## How these diagrams are made
+
+The model is a LikeC4 file in this blog's repository. It is written against the organisation's base: one specification (the kinds of element) and the organisation's own part (the people, GitHub, the cloud, the platform and its containers). It adds nothing at the top level: it only details, inside the platform, the container « Agents tooling ».
+
+A script runs the organisation's architecture tool on it, the same code that checks every repository's model every day. The check is the tool's own: the file parses with the base, writes no specification of its own, and every element it adds lives inside the one system it details. Its verdict on this model is « ok », with 9 elements added. The script then lays the views out with LikeC4 and records the layout with the hash of the model; the blog's tests fail when the model changes and the layout does not. The page draws that layout in its own colours, so both themes follow; each view also exists as a standalone SVG file per theme, linked under it.
+
+One limit matters to an architect. The organisation's tool proves the containers it can bind to code against the main branch of each repository. It does not prove runtime relationships: those are drawn, not checked. The arrows in this post are what the documentation and the published chapters say, not a trace of calls.
+
+## Frequently asked questions
+
+### Is krizaka-agents open source?
+
+No. It is private: the scripts, rules and skills that run our agents. This post shows its architecture and its concepts, not its code.
+
+### Why not let the agents merge their own pull requests?
+
+Because a merge is a decision that needs a sure answer. The train is ordinary code that reads the required checks; GitHub's merge queue replays them on the real mix with main. A model can write the change; it does not decide that the change is safe.
+
+### Can the operations database be lost?
+
+It can be emptied without losing the work: the tickets, pull requests and checks are on GitHub. What is local only, such as the history of alerts, is a known gap, with a ticket to rebuild everything from journals.
