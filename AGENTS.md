@@ -85,6 +85,13 @@ caption?/>` (a light native player: muted loop while on screen, poster first, co
   (`style: "diagram"`); a diagram stays inside its post; a cover is an evocative still or a short clip. A clip cover shows its
   poster first and plays its muted loop only on hover (or, on a touch screen, while well in view after the page loaded), never
   under reduced motion or Save-Data (`CardLoop`).
+- **Architecture diagrams are a checked model, not a picture** (krizaka-internal#3643): `<Architecture view label/>` draws one view of
+  `content/diagrams/*.c4`, a LikeC4 model written against the org's base (krizaka/.github `docs/architecture/`) that only details a
+  container of the org's model. `node scripts/gen-architecture.mjs --tool <krizaka/.github checkout>/tools/architecture --tool-ref <sha>`
+  runs the org tool's own check (`checkHome`) and layout, and writes `lib/architecture.json` with the model's hash; the French drawing
+  is the same layout translated by `content/diagrams/*.fr.json` (a missing or unused entry fails). `npm run lint` (`… check`) and
+  `tests/architecture.test.mjs` fail when the model or the translations changed after the layout. The page draws the layout in the
+  tokens (both themes); `npm run gen` exports each view as a standalone SVG per language and theme into `public/diagrams/` (git-ignored).
 - **The story's chapters** (`content/chapters/`, `lib/chapters.ts`) are the blog's content: the home lists them from their front
   matter (`chapter`, `period`, `versus`), nothing typed; a new chapter appears by itself, Featured and marked « New ». Built from
   `@krizaka/ui` blocks only (`PageHero`, `Section`, `Card`, `LinkCard`, `Badge`); a missing block is an issue in krizaka-ui.

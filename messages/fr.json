@@ -591,5 +591,14 @@
     "back": "Retour",
     "zoomIn": "Zoomer",
     "note": "Notre diagramme est tiré du code sur main : état actuel et cible."
+  },
+  "architecture": {
+    "textVersion": "Le schéma en mots",
+    "elements": "Éléments",
+    "relations": "Relations",
+    "steps": "Étapes, dans l'ordre",
+    "files": "SVG :",
+    "light": "clair",
+    "dark": "sombre"
   }
 }
