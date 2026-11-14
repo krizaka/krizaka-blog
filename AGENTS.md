@@ -14,7 +14,7 @@
   first-class**; check every view in both. No hard-coded colours (`var(--kz-*)`), no page-local button class.
 - **The blog is one page: the story** (krizaka-blog#123, the CTO's UX decision). The home (EN `/`, FR `/fr/`) is the title and
   one sentence in Oussama's voice (these are his notes from building Krizaka), his byline, **Featured** (one card: the latest
-  chapter), then **every chapter in reading order, 1 → N** (number, title, what I faced → what we built, the period; the latest
+  chapter), then **every chapter, newest first** (founder, 2026-10-24; number, title, what I faced → what we built, the period; the latest
   marked « New » — a timeline, never a feed; `lib/home.ts`), then « The basics » as quiet links, the newsletter line, the footer.
   Each chapter keeps its page (`/story/<slug>/`), each basic its `/basics/<slug>/`; À propos and `/newsletter/` stay.
 - **Removed pages answer a permanent move**: `/story/`, `/series/` (and each series), `/tags/` (and each topic), `/search/`,

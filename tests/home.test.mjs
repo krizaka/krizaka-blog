@@ -213,3 +213,44 @@ test("latestFeatured: no chapters and no posts → undefined; no posts → chapt
   assert.equal(f?.kind, "chapter");
   assert.equal(f?.item.chapter, 3);
 });
+
+test("the start line: chapter 1 and the basics in both languages, and the download row's label is a note, not a heading (krizaka-internal#3600)", () => {
+  assert.match(home, /className="bl-home-start"/);
+  assert.match(home, /href=\{href\(first\.slug\)\}/);
+  assert.match(home, /href="#basics"/);
+  assert.match(home, /chapters\.find\(\(c\) => c\.chapter === 1\)/);
+  assert.equal(
+    messages.en.home.startPre +
+      messages.en.home.startChapter +
+      messages.en.home.startMid +
+      messages.en.home.startBasics +
+      messages.en.home.startPost,
+    "New here? Start with chapter 1, or with the basics: four short reads.",
+  );
+  assert.equal(
+    messages.fr.home.startPre +
+      messages.fr.home.startChapter +
+      messages.fr.home.startMid +
+      messages.fr.home.startBasics +
+      messages.fr.home.startPost,
+    "Nouveau ici ? Commencez par le chapitre 1, ou par les bases : quatre lectures courtes.",
+  );
+  const take = read("app/components/TakeStory.tsx");
+  const bookplate = take.slice(take.indexOf('<aside className="bl-take"'));
+  assert.ok(!/<h2/.test(bookplate), "the home's download label is a p");
+  assert.match(bookplate, /<p id="bl-take-story" className="bl-take-label">/);
+});
+
+/* The old code names leave the chapter titles (founder, 2026-11-14: commercial names everywhere): the table is
+   docs/standards/renames-2026-11-06.md of krizaka/.github (yomizaka → Verikora, akinaza → Folioviv, orazaka → Sovkora,
+   kachizaka → Kridoc). History keeps them in the slugs and the bodies; a title and its search title never. */
+const OLD_NAMES = /orazaka|yomizaka|akinaza|kachizaka/i;
+test("no chapter title (nor its search title) carries an old code name", () => {
+  const dir = new URL("../content/chapters/", import.meta.url);
+  const files = readdirSync(dir).filter((f) => f.endsWith(".mdx"));
+  assert.ok(files.length > 20);
+  for (const f of files) {
+    const { data } = matter(readFileSync(new URL(f, dir), "utf8"));
+    for (const key of ["title", "seoTitle"]) assert.doesNotMatch(String(data[key] ?? ""), OLD_NAMES, `${f}: ${key}`);
+  }
+});

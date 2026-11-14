@@ -45,6 +45,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
   /* An address is built from known values only: a slug of lower-case words (the file names of content/), never anything else. */
   const safe = (slug: string) => (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) ? slug : "");
   const href = (slug: string) => localizedPath(locale, chapterPath(safe(slug)));
+  const first = chapters.find((c) => c.chapter === 1);
   let n = 0;
   const no = () => `§ ${++n}`;
   return (
@@ -63,6 +64,19 @@ export default function HomePage({ locale }: { locale: Locale }) {
           </Link>
           {h.byline.split("{author}")[1]}
         </p>
+        {first && (
+          <p className="bl-home-start">
+            {h.startPre}
+            <Link href={href(first.slug)} className="bl-home-story">
+              {h.startChapter}
+            </Link>
+            {h.startMid}
+            <a href="#basics" className="bl-home-story">
+              {h.startBasics}
+            </a>
+            {h.startPost}
+          </p>
+        )}
         <TakeStory locale={locale} />
       </PageHero>
       {featuredItem && (

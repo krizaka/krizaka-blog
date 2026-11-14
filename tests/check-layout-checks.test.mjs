@@ -16,6 +16,12 @@ test("the layout checks keep every rule", () => {
   assert.match(src, /\.bl-byline-actions > :is\(a, button\)/);
 });
 
+test("the first screen links chapter 1 and the basics at 1440×900 and 360×780 (krizaka-internal#3600)", () => {
+  assert.match(src, /FIRST_SCREENS = \[\s*\{ width: 1440, height: 900 \},\s*\{ width: 360, height: 780 \}/);
+  assert.match(src, /const startLinksInFirstScreen = /);
+  assert.match(src, /is not in the first screen/);
+});
+
 test("the basics' path must fit one screen at 1440×900, numbered 01 → N top to bottom", () => {
   assert.match(src, /const basicsPathFits = /);
   assert.match(src, /BASICS_FIT = \{ width: 1440, height: 900/);

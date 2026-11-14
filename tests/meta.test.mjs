@@ -112,10 +112,12 @@ const homeHtml = ({
   sentence = "These are my notes from building Krizaka.",
   featured = "/story/c3/",
   rows = [row(2), row(1)],
+  start = '<p class="bl-home-start">New here? <a href="/story/c1/">chapter 1</a>, <a href="#basics">the basics</a></p>',
+  h2s = '<h2 id="chapters">The chapters</h2><h2 id="basics">The basics</h2>',
 } = {}) =>
-  `<html><head><title>Krizaka Blog</title><meta name="description" content="d"/></head><body><h1>The Krizaka story</h1><p><span class="bl-home-sentence">${sentence}</span></p>` +
+  `<html><head><title>Krizaka Blog</title><meta name="description" content="d"/></head><body><h1>The Krizaka story</h1><p><span class="bl-home-sentence">${sentence}</span></p>${start}` +
   `<section aria-labelledby="featured" class="kz-section"><h2 id="featured">Featured</h2><div class="bl-card bl-card-feature"><h3><a class="bl-card-link" href="${featured}">C3</a></h3></div></section>` +
-  `<section aria-labelledby="chapters"><ol role="list" aria-label="The chapters" data-margin="" class="kz-chapters">${rows.join("")}</ol></section></body></html>`;
+  `<section aria-labelledby="chapters">${h2s}<ol role="list" aria-label="The chapters" data-margin="" class="kz-chapters">${rows.join("")}</ol></section></body></html>`;
 
 test("the built home: the sentence, one Featured card (the newest), the others newest first, Featured not repeated", () => {
   assert.deepEqual(homeProblems(homeHtml()), []);
@@ -132,6 +134,16 @@ test("the built home: the sentence, one Featured card (the newest), the others n
     /no Featured/,
   );
   assert.match(pageProblems(homeHtml({ rows: [] }), "").join(), /no chapter/);
+});
+
+test("the built home: a start line links chapter 1 and the basics, and there are exactly three h2 (krizaka-internal#3600)", () => {
+  assert.match(homeProblems(homeHtml({ start: "" })).join(), /does not link chapter 1/);
+  assert.match(
+    homeProblems(homeHtml({ start: '<p class="bl-home-start"><a href="/story/c1/">x</a></p>' })).join(),
+    /basics/,
+  );
+  assert.match(homeProblems(homeHtml({ h2s: "" })).join(), /1 h2/);
+  assert.match(homeProblems(homeHtml({ h2s: "<h2>a</h2><h2>b</h2><h2>c</h2>" })).join(), /4 h2/);
 });
 
 test("no live page links to a removed address; a chapter, a shelf post, the shelf and the files are fine", () => {

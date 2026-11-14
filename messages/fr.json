@@ -51,6 +51,11 @@
     "basicsTitle": "Les bases, pour comprendre",
     "basicsLead": "Quatre lectures courtes, dans cet ordre, qui expliquent les mots et les règles sur lesquels les chapitres s’appuient. Si un chapitre vous perd, passez par ici, puis revenez.",
     "postsTitle": "Les autres articles",
+    "startPre": "Nouveau ici ? Commencez par le ",
+    "startChapter": "chapitre 1",
+    "startMid": ", ou par ",
+    "startBasics": "les bases",
+    "startPost": " : quatre lectures courtes.",
     "bylineStory": "Son histoire",
     "readPost": "Lire l’article"
   },
