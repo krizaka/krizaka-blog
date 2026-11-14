@@ -239,8 +239,8 @@ export function pathOf(points: readonly Point[]): string {
 
 function arrowOf(points: readonly Point[], fill: string): SvgElement | null {
   if (points.length < 2) return null;
-  const [tx, ty] = points[points.length - 1];
-  const [fx, fy] = points[points.length - 2];
+  const [tx, ty] = points.at(-1)!;
+  const [fx, fy] = points.at(-2)!;
   const a = Math.atan2(ty - fy, tx - fx);
   const at = (da: number, r: number) =>
     `${(tx - r * Math.cos(a + da)).toFixed(1)},${(ty - r * Math.sin(a + da)).toFixed(1)}`;
@@ -352,7 +352,8 @@ export function paletteFromCss(css: string, selector: string): Palette {
   if (start < 0) throw new Error(`tokens: no block ${selector}`);
   const block = css.slice(start, css.indexOf("}", start));
   const value = (name: string) => {
-    const m = new RegExp(`${name}:\\s*([^;]+);`).exec(block) ?? new RegExp(`${name}:\\s*([^;]+);`).exec(css);
+    const m =
+      new RegExp(String.raw`${name}:\s*([^;]+);`).exec(block) ?? new RegExp(String.raw`${name}:\s*([^;]+);`).exec(css);
     if (!m) throw new Error(`tokens: no ${name}`);
     return m[1].trim();
   };

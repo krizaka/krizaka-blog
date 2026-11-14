@@ -61,6 +61,7 @@ model {
   platform.tooling.watchdog -> github 'reads, at most hourly'
   platform.tooling.watchdog -> platform.tooling.opsdb 'raises alerts'
   platform.tooling.cockpit -> platform.tooling.opsdb 'reads'
+  platform.tooling.opsdb -> github 'asks only for what changed'
   github -> cloud 'deploys main'
 }
 
@@ -104,6 +105,36 @@ views {
     github -> cloud 'merges and deploys main'
     platform.tooling.trains -> platform.tooling.opsdb 'records the landing'
     platform.tooling.cockpit -> platform.tooling.opsdb 'reads it for the founder'
+    style * {
+      size xsmall
+    }
+    autoLayout TopBottom 40 30
+  }
+
+  dynamic view alert_life {
+    title 'The life of an alert, from the watchdog to its resolution'
+    platform.tooling.watchdog -> github 'reads the checks and the pull requests, at most hourly'
+    platform.tooling.watchdog -> platform.tooling.opsdb 'raises an alert: one row per subject, open'
+    platform.tooling.cockpit -> platform.tooling.opsdb 'reads it for the founder'
+    platform.tooling.cto -> platform.tooling.opsdb 'reads the open alerts before any new work'
+    platform.tooling.cto -> platform.tooling.sessions 'launches a team on the cause, with a brief'
+    platform.tooling.sessions -> github 'opens the fix; the train lands it through the merge queue'
+    platform.tooling.watchdog -> github 'sees the check green again'
+    platform.tooling.cto -> platform.tooling.opsdb 'acknowledges with a note, then resolves with a proof'
+    style * {
+      size xsmall
+    }
+    autoLayout TopBottom 40 30
+  }
+
+  dynamic view opsdb_sync {
+    title 'How the operations database follows GitHub'
+    platform.tooling.cto -> platform.tooling.opsdb 'a reader asks for the board copy'
+    platform.tooling.opsdb -> github 'if stale: asks only for what changed since the last read'
+    github -> platform.tooling.opsdb 'answers with the changed issues and pull requests, upserted'
+    platform.tooling.trains -> github 'a move is written on GitHub first'
+    platform.tooling.trains -> platform.tooling.opsdb 'then the cached card follows'
+    platform.tooling.cockpit -> platform.tooling.opsdb 'reads the copy, no network call'
     style * {
       size xsmall
     }

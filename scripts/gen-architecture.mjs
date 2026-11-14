@@ -24,7 +24,7 @@ export const MODEL = "content/diagrams/krizaka-agents.c4";
 export const TRANSLATIONS = "content/diagrams/krizaka-agents.fr.json";
 export const OUT = "lib/architecture.json";
 export const SYSTEM = "platform.tooling";
-export const VIEWS = ["agents_context", "agents_containers", "pr_life"];
+export const VIEWS = ["agents_context", "agents_containers", "pr_life", "alert_life", "opsdb_sync"];
 export const THEMES = { light: ".theme-light", dark: ":root, .theme-dark" };
 
 export const sha256 = (text) => createHash("sha256").update(text).digest("hex");

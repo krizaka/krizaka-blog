@@ -1,6 +1,6 @@
 ---
 title: "The architecture of krizaka-agents, for enterprise architects"
-description: "One founder, AI agents, and the tooling between them: who decides, who writes, who refuses, who lands. Every component, how it works, and three diagrams drawn from a model the org's architecture tool checks."
+description: "One founder, AI agents, and the tooling between them: who decides, who writes, who refuses, who lands. Every component, how it works, and five diagrams drawn from a model the org's architecture tool checks."
 seoTitle: "The architecture of our AI agents tooling"
 seoDescription: "A CTO session, a launcher, isolated sessions, guards, trains, a watchdog, an operations database and a cockpit: each piece, with checked C4 diagrams."
 date: 2026-11-14
@@ -12,7 +12,7 @@ sensitive: true
 
 This post is for enterprise architects and IT experts who ask a fair question: how does one person ship software with AI agents, and keep it under control? My answer is not a model. It is the tooling around the models, which we call krizaka-agents. It is private, so I show its pieces and how they talk, not its code.
 
-In [chapter 29](/story/how-our-agent-teams-talk/) I promised diagrams generated from a model rather than drawn by hand. Here they are. The three views below come from one model written in [LikeC4](https://likec4.dev), the notation of the [C4 model](https://c4model.com), against the same base and with the same check as every system of our organisation. How that works, and what it does not prove, is the last part.
+In [chapter 29](/story/how-our-agent-teams-talk/) I promised diagrams generated from a model rather than drawn by hand. Here they are. The views below come from one model written in [LikeC4](https://likec4.dev), the notation of the [C4 model](https://c4model.com), against the same base and with the same check as every system of our organisation. How that works, and what it does not prove, is the last part.
 
 ## Three principles first
 
@@ -83,9 +83,16 @@ Work is planned on three levels, an epic, a feature, a task, as linked GitHub is
 
 ### The operations database: a projection of GitHub
 
-A local SQLite database keeps what the founder and the CTO need to list and display: alerts, events, the trains, the live sessions, the calls made to GitHub, and a copy of the board refreshed only for what changed. It is a **projection**: when a fact differs between it and GitHub, GitHub wins, and nothing is merged, closed or declared done on its word alone. Its target is stricter than its state, and I say both: we want one owning service per database and a database that can be emptied and rebuilt from its sources at any time. Today, session start reports are journaled first and can be replayed into an empty database; the rest is an open ticket.
+A local SQLite database keeps what the founder and the CTO need to list and display: alerts, events, the trains, the live sessions, the calls made to GitHub, and a copy of the board refreshed only for what changed. Four rules describe it.
 
-### The cockpit
+- **A projection, not a source.** GitHub is the truth and the database only displays it. When a fact differs between the two, GitHub wins, and nothing is merged, closed or declared done on the database's word alone. A move on the board is written on GitHub first; the local copy follows.
+- **One owner.** The tables belong to one small module that owns the schema, its writes and its reads; the cockpit, the CTO session and the tools ask it, and nothing opens the file directly. This is the target, written as a rule: we want one owning service per database, and I say below where we are not there yet.
+- **Rebuildable at any time.** What comes from GitHub, the board and the state of the pull requests, is read again when the copy is stale, and only what changed since the last read. The database can be emptied and filled again; the work is not in it.
+- **It carries the machine's own state.** Alerts (open, acknowledged, resolved), the events of the trains, which team is alive and since when. This is what GitHub does not know. It is the part that cannot be rebuilt from GitHub, so it is the part we journal.
+
+Today, the start reports of sessions are journaled first and can be replayed into an empty database; the rest of the journaling is an open ticket, and the history of alerts is one of the things it would protect. The two flows below are the ones that matter: an alert's life and the way the copy follows GitHub.
+
+### The cockpit### The cockpit
 
 The cockpit is the founder's screen: the teams at work, the trains, the alerts, the scheduled jobs, the architecture. It reads the operations database and GitHub, shows every figure with its date, and writes nothing into the machine.
 
@@ -98,6 +105,48 @@ The documentation that describes the tooling lives next to it and is tested agai
 <Architecture view="pr_life" label="The life of a pull request, in twelve numbered steps: from the ticket the founder writes to the landing the cockpit shows." />
 
 Read the numbers in order. Nothing in this path asks an agent to be trusted on its word: the ticket says what « done » means; the session works in its own worktree; the guards refuse what can be refused early; the pull request repeats the ticket's lines with their proofs; the train only moves what is green; GitHub replays the checks before the merge; the landing is recorded, and the founder reads it.
+
+## The life of an alert
+
+<Architecture view="alert_life" label="The life of an alert, in eight numbered steps: the watchdog reads GitHub and raises it, the cockpit and the CTO session see it, a team fixes the cause, the watchdog sees green and the alert is resolved with a proof." />
+
+An alert is a row with a state, not a message. The watchdog raises it; every session start and the cockpit show it; the CTO session reads the open ones before any new work, and launches a team on the cause. When the watchdog sees the check green again, the alert is acknowledged with a note, then resolved with a proof. Nobody closes one by saying it is fine.
+
+## How the operations database follows GitHub
+
+<Architecture view="opsdb_sync" label="How the operations database follows GitHub, in six numbered steps: a reader asks, a stale copy asks GitHub only for what changed, a move is written on GitHub first, and the cockpit reads the copy without a network call." />
+
+No clock refreshes it. A reader that finds the copy older than a short threshold triggers one incremental read: a single bounded query for the issues and pull requests changed since the last read, then their board cards, upserted in one go. Ten readers at once page GitHub once. A first read, or too many changes, becomes a full read inside one transaction. The cockpit reads the copy and makes no network call of its own. The consequence is the one that matters: the worst a stale copy can do is display an old fact, because every decision is checked on GitHub again.
+
+## The other databases we run
+
+The operations database is one of several, and the others follow the same habit: each has one owner, each says what it holds, and each can be rebuilt.
+
+- **Each product's PostgreSQL.** Folioviv, Verikora and Sovkora each have their own PostgreSQL, with the schema written as code and versioned migrations. They hold the product's own data, the only data of customers in our systems, and each belongs to its product alone. In Sovkora, every bounded context has its own database and its own role, no foreign key crosses a context, and each context seeds only itself.
+- **The test databases, one per worktree.** A session never touches a shared database, or a demo one. Each worktree gets its own, and the tests create a database per file, on a real PostgreSQL (the one CI provides, or a throwaway one started by the test itself). The rules about data are proven on a real engine, never with mocks. A journey that creates a user deletes it, and a check compares the users before and after the run.
+- **The development databases, rebuilt from zero.** A development database is never patched by hand. A rebuild drops every schema, migrates from the first migration, seeds the configuration and one cast of demo people, then checks the result against a snapshot of the expected schema. CI builds a database from zero with the same steps. A nightly check reads the development schema, read-only, compares it with the snapshot on main and opens one ticket when they differ.
+- **Media and object storage.** Images, clips, downloadable books and the screenshots of pull requests live in object storage behind a CDN, never in a repository. The databases keep a reference and the sizes; the library of media of a post records how each file was made. A file is a hashed object: it is replaced, not edited.
+
+What each holds, who owns it, how it is rebuilt: that is the whole checklist. The operations database is the only one of them that is not a product's, and it is also the only one that holds no data it could not recover from somewhere else, apart from the journals we are adding.
+
+## The skills our sessions load
+
+The rules and the trades of our agents are packaged as **skills**, and the packaging is the official one of our agent runtime's maker. In the runtime's documentation, an [Agent Skill](https://code.claude.com/docs/en/skills) is a folder with a `SKILL.md` file: a header with the skill's name and a description of when to use it, then the instructions. A [plugin](https://code.claude.com/docs/en/plugins) bundles skills, subagents and other pieces as one installable unit, and a [marketplace](https://code.claude.com/docs/en/plugin-marketplaces) is a catalogue file listing plugins with their versions. The same maker publishes its own skills, for documents among others, in a [public repository](https://github.com/anthropics/skills).
+
+We use the official format, not the maker's skills. Our four plugins, from one marketplace, are:
+
+<Compare label="The four plugins of our marketplace, with their versions and what each holds" topic="Plugin" before="Version" after="Skills">
+  <Case topic="krizaka-ops" before="0.9.5" after="3: session, issue, landing" />
+  <Case topic="krizaka-engineering" before="0.9.4" after="11: the coding standard and the language rules" />
+  <Case topic="krizaka-design" before="0.8.0" after="4: the Cahier look, product design, 3D pages, the design intervention" />
+  <Case topic="krizaka-growth" before="0.5.0" after="1: honest technical posts" />
+</Compare>
+
+That makes 19 skills, plus a few subagents, all in the official layout: a folder per skill, a `SKILL.md`, the marketplace file listing them. The versions in this table are the ones the marketplace file gives.
+
+**Pinned and checked at start.** A session does not install anything. The launcher compares the installed plugins with the marketplace before the start, and the session's first message reports what it really loaded; a missing or unexpected skill, or a version that differs, stops it with the reason.
+
+**Which of the maker's official skills do our sessions use? None, by design.** The launcher sets every plugin that is not ours to disabled, recomputed at each start. When we built it, a team session inherited the whole account: 252 skills and about 190 000 tokens of context on its first turn. With only our plugins it starts with 52 skills, 19 of them ours, and about 47 000 tokens. The CLI's own built-in plugins stay, because they are part of the tool. The maker's official plugins can exist on the founder's machine and in an interactive session; a headless team session, which must start the same every time, does not load them. What we take from the maker is the format, the plugin and marketplace mechanics and the tool that runs them; the content of the skills is ours, and it stays private.
 
 ## What it costs, and what it gives
 
@@ -119,7 +168,7 @@ What we have not measured, I do not claim: the share of each guard in the defect
 
 The model is a LikeC4 file in this blog's repository. It is written against the organisation's base: one specification (the kinds of element) and the organisation's own part (the people, GitHub, the cloud, the platform and its containers). It adds nothing at the top level: it only details, inside the platform, the container « Agents tooling ».
 
-A script runs the organisation's architecture tool on it, the same code that checks every repository's model every day. The check is the tool's own: the file parses with the base, writes no specification of its own, and every element it adds lives inside the one system it details. Its verdict on this model is « ok », with 9 elements added. The script then lays the views out with LikeC4 and records the layout with the hash of the model; the blog's tests fail when the model changes and the layout does not. The page draws that layout in its own colours, so both themes follow; each view also exists as a standalone SVG file per theme, linked under it.
+A script runs the organisation's architecture tool on it, the same code that checks every repository's model every day. The check is the tool's own: the file parses with the base, writes no specification of its own, and every element it adds lives inside the one system it details. Its verdict on this model is « ok », with 9 elements added, and it covers the five views. The script then lays the views out with LikeC4 and records the layout with the hash of the model; the blog's tests fail when the model changes and the layout does not. The page draws that layout in its own colours, so both themes follow; each view also exists as a standalone SVG file per theme, linked under it.
 
 One limit matters to an architect. The organisation's tool proves the containers it can bind to code against the main branch of each repository. It does not prove runtime relationships: those are drawn, not checked. The arrows in this post are what the documentation and the published chapters say, not a trace of calls.
 
@@ -132,6 +181,10 @@ No. It is private: the scripts, rules and skills that run our agents. This post 
 ### Why not let the agents merge their own pull requests?
 
 Because a merge is a decision that needs a sure answer. The train is ordinary code that reads the required checks; GitHub's merge queue replays them on the real mix with main. A model can write the change; it does not decide that the change is safe.
+
+### Which skills do your agents use, the official ones or yours?
+
+Ours, written in the official Agent Skills format of the runtime's maker and packaged as plugins in a marketplace. Team sessions disable every other plugin, so that each one starts with the same skills and a small context.
 
 ### Can the operations database be lost?
 

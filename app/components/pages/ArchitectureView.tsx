@@ -30,7 +30,19 @@ function toReact(node: SvgElement | string, key: number): ReactNode {
   if (typeof node === "string") return node;
   const props: Record<string, string | number> = { key };
   for (const [k, v] of Object.entries(node.attrs)) props[reactName(k)] = v;
-  return createElement(node.tag, props, ...node.children.map(toReact));
+  return createElement(node.tag, props, ...node.children.map((child, i) => toReact(child, i)));
+}
+
+/** The words of a view as a list: ordered for the steps of a flow. */
+function WordList({ items, ordered = false }: Readonly<{ items: readonly string[]; ordered?: boolean }>) {
+  const Tag = ordered ? "ol" : "ul";
+  return (
+    <Tag>
+      {items.map((w, i) => (
+        <li key={`${i}-${w}`}>{w}</li>
+      ))}
+    </Tag>
+  );
 }
 
 export function viewFor(id: string, locale: Locale): ArchView {
@@ -58,25 +70,9 @@ export function ArchitectureView({
       <details className="bl-arch-text">
         <summary>{labels.textVersion}</summary>
         <p>{labels.elements}</p>
-        <ul>
-          {words.elements.map((w, i) => (
-            <li key={`${i}-${w}`}>{w}</li>
-          ))}
-        </ul>
+        <WordList items={words.elements} />
         <p>{view.dynamic ? labels.steps : labels.relations}</p>
-        {view.dynamic ? (
-          <ol>
-            {words.relations.map((w, i) => (
-              <li key={`${i}-${w}`}>{w}</li>
-            ))}
-          </ol>
-        ) : (
-          <ul>
-            {words.relations.map((w, i) => (
-              <li key={`${i}-${w}`}>{w}</li>
-            ))}
-          </ul>
-        )}
+        <WordList items={words.relations} ordered={view.dynamic} />
       </details>
       <figcaption>
         {label}{" "}
