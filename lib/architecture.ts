@@ -337,11 +337,12 @@ export function textVersion(view: ArchView): { elements: string[]; relations: st
   const elements = view.nodes
     .filter((n) => !n.compound)
     .map((n) =>
-      [n.title, n.technology ? ` (${n.technology})` : "", n.description ? `: ${n.description}` : ""].join(""),
+      [n.title, n.technology ? " (" + n.technology + ")" : "", n.description ? ": " + n.description : ""].join(""),
     );
-  const relations = view.edges.map(
-    (e) => `${title.get(e.source) ?? e.source} → ${title.get(e.target) ?? e.target}${e.label ? `: ${e.label}` : ""}`,
-  );
+  const relations = view.edges.map((e) => {
+    const said = e.label ? ": " + e.label : "";
+    return `${title.get(e.source) ?? e.source} → ${title.get(e.target) ?? e.target}${said}`;
+  });
   return { elements, relations };
 }
 

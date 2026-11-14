@@ -31,8 +31,16 @@ export const sha256 = (text) => createHash("sha256").update(text).digest("hex");
 const read = (path) => readFileSync(join(root, path), "utf8");
 const flag = (argv, name) => (argv.includes(name) ? argv[argv.indexOf(name) + 1] : null);
 /** LikeC4 breaks a long label with a newline for its own drawing; the page wraps words itself. */
-const flat = (s) => (s == null ? null : String(s).replace(/\s*\n\s*/g, " "));
+const flat = (s) =>
+  s == null
+    ? null
+    : String(s)
+        .split("\n")
+        .map((line) => line.trim())
+        .join(" ");
 const textOf = (d) => flat(typeof d === "string" ? d : (d?.txt ?? null));
+/** Strings one per line, indented and quoted, for an error message. */
+const listed = (strings) => strings.map((s) => "  " + JSON.stringify(s)).join("\n");
 const stepOf = (id) => (/^step-(\d+)$/.exec(id) ? Number(/^step-(\d+)$/.exec(id)[1]) : null);
 
 /** One laid-out LikeC4 view as the drawing needs it (lib/architecture.ts `ArchView`). */
@@ -146,14 +154,12 @@ async function generate(argv) {
   const missing = new Set();
   const fr = drawn.map((v) => translateView(v, JSON.parse(translations), missing));
   if (missing.size) {
-    console.error(`${TRANSLATIONS}: no French for:\n${[...missing].map((s) => `  ${JSON.stringify(s)}`).join("\n")}`);
+    console.error(`${TRANSLATIONS}: no French for:\n${listed([...missing])}`);
     process.exit(1);
   }
   const unused = Object.keys(JSON.parse(translations)).filter((s) => !used(drawn).has(s));
   if (unused.length) {
-    console.error(
-      `${TRANSLATIONS}: translations no view uses:\n${unused.map((s) => `  ${JSON.stringify(s)}`).join("\n")}`,
-    );
+    console.error(`${TRANSLATIONS}: translations no view uses:\n${listed(unused)}`);
     process.exit(1);
   }
   const pkg = JSON.parse(readFileSync(join(tool, "package.json"), "utf8"));
@@ -204,7 +210,8 @@ function exportSvg(argv) {
         n += 1;
       }
   }
-  console.log(`gen-architecture: ${n} SVG files in ${out.replace(`${root}/`, "")}`);
+  const where = out.replace(root + "/", "");
+  console.log(`gen-architecture: ${n} SVG files in ${where}`);
 }
 
 function check() {
