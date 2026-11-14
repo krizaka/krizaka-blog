@@ -122,6 +122,27 @@ const basicsPathFits = ({ max }) => {
   return out;
 };
 
+/* A newcomer finds where to start (krizaka-internal#3600): in the first screen (1440×900 and 360×780) the start line's two links,
+   chapter 1 and the basics, are on screen. */
+const FIRST_SCREENS = [
+  { width: 1440, height: 900 },
+  { width: 360, height: 780 },
+];
+const startLinksInFirstScreen = ({ height }) => {
+  const links = [...document.querySelectorAll(".bl-home-start a")];
+  const out = [];
+  if (links.length !== 2) return [`the start line has ${links.length} links (chapter 1 and the basics)`];
+  if (!/\/story\/[^/]+\/$/.test(new URL(links[0].href).pathname))
+    out.push("the first start link is not a chapter page");
+  if (new URL(links[1].href).hash !== "#basics") out.push("the second start link is not #basics");
+  for (const a of links) {
+    const r = a.getBoundingClientRect();
+    if (r.width === 0 || r.top < 0 || r.bottom > height)
+      out.push(`the start link "${a.textContent}" is not in the first screen`);
+  }
+  return out;
+};
+
 const ring = () => {
   const a = document.activeElement;
   const c = getComputedStyle(a);
@@ -145,6 +166,15 @@ try {
       problems.push(`${path} @${BASICS_FIT.width}: ${p}`);
     await page.close();
   }
+  for (const path of ["/", "/fr/"])
+    for (const screen of FIRST_SCREENS) {
+      const page = await browser.newPage({ viewport: screen });
+      await page.goto(base + path, { waitUntil: "networkidle" });
+      await page.evaluate(() => document.fonts.ready);
+      for (const p of await page.evaluate(startLinksInFirstScreen, screen))
+        problems.push(`${path} @${screen.width}×${screen.height}: ${p}`);
+      await page.close();
+    }
   for (const path of paths) {
     for (const width of WIDTHS) {
       const page = await browser.newPage({ viewport: { width, height: 900 } });

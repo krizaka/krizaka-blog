@@ -160,6 +160,16 @@ export function homeProblems(html) {
   rows.forEach((r, i) => {
     if (i > 0 && r.n >= rows[i - 1].n) out.push(`the chapters are not newest first: row ${i + 1} is chapter ${r.n}`);
   });
+  /* A newcomer finds where to start (krizaka-internal#3600): the line under the byline links chapter 1 and the basics, and the
+     home has exactly three h2: Featured, The chapters, The basics (the download row's label is a note, not a heading). */
+  const start = page.tags("p", (el) => hasClass(el, "bl-home-start"))[0];
+  const startLinks = start ? page.findAll((el) => el.name === "a" && isInside(el, start)) : [];
+  if (!startLinks.some((a) => /\/story\/[^/]+\/$/.test(a.attribs.href ?? "") && a.attribs.href === rows.at(-1)?.href))
+    out.push("the start line does not link chapter 1 (the last row of the list)");
+  if (!startLinks.some((a) => a.attribs.href === "#basics"))
+    out.push("the start line does not link the basics (#basics)");
+  const h2 = page.tags("h2").length;
+  if (h2 !== 3) out.push(`the home has ${h2} h2 (Featured, The chapters, The basics: exactly three)`);
   const card =
     featured &&
     page.findAll((el) => el.name === "a" && el.attribs.class === "bl-card-link" && isInside(el, featured))[0];

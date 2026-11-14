@@ -51,6 +51,11 @@
     "basicsTitle": "The basics, to understand the rest",
     "basicsLead": "Four short reads, in this order, that explain the words and the rules the chapters rely on. If a chapter loses you, come here, then go back.",
     "postsTitle": "The other posts",
+    "startPre": "New here? Start with ",
+    "startChapter": "chapter 1",
+    "startMid": ", or with ",
+    "startBasics": "the basics",
+    "startPost": ": four short reads.",
     "bylineStory": "His story",
     "readPost": "Read the post"
   },

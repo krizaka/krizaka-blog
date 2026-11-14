@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "d3dcd70791ef",
+      "source": "bfac5eba4ee7",
       "files": {
         "epub": {
-          "hash": "2d7697ff26",
-          "bytes": 8094213
+          "hash": "0ce07d0e63",
+          "bytes": 8094232
         },
         "pdf": {
-          "hash": "4a39766469",
-          "bytes": 11464367
+          "hash": "a16e20d128",
+          "bytes": 11464271
         }
       }
     },
@@ -79,15 +79,15 @@
       }
     },
     "en/the-first-products": {
-      "source": "9461823c0bc8",
+      "source": "89114dda1b2b",
       "files": {
         "epub": {
-          "hash": "1fcca859f4",
-          "bytes": 729331
+          "hash": "a88bcb527d",
+          "bytes": 727029
         },
         "pdf": {
-          "hash": "f65427e56f",
-          "bytes": 1033005
+          "hash": "098473e448",
+          "bytes": 1033142
         }
       }
     },
@@ -170,15 +170,15 @@
       }
     },
     "en/orazaka-v2-the-architecture-we-build": {
-      "source": "040972fa7da5",
+      "source": "0b4f5a9dbbbc",
       "files": {
         "epub": {
-          "hash": "84867664a5",
-          "bytes": 816433
+          "hash": "3e7230f660",
+          "bytes": 816599
         },
         "pdf": {
-          "hash": "629f22721a",
-          "bytes": 1271825
+          "hash": "19af269930",
+          "bytes": 1268941
         }
       }
     },
@@ -287,15 +287,15 @@
       }
     },
     "fr/story": {
-      "source": "6881fec335b2",
+      "source": "bca78b351961",
       "files": {
         "epub": {
-          "hash": "014567f31b",
-          "bytes": 8127465
+          "hash": "a949df4e8f",
+          "bytes": 8127487
         },
         "pdf": {
-          "hash": "153e8fe2a2",
-          "bytes": 11664641
+          "hash": "f426c9dbc1",
+          "bytes": 11664721
         }
       }
     },
@@ -365,15 +365,15 @@
       }
     },
     "fr/the-first-products": {
-      "source": "07cbf4efe394",
+      "source": "448c8a3934b3",
       "files": {
         "epub": {
-          "hash": "94f53f731d",
-          "bytes": 730784
+          "hash": "95e48ea840",
+          "bytes": 730483
         },
         "pdf": {
-          "hash": "6a4833b4b7",
-          "bytes": 1063230
+          "hash": "8159e615ce",
+          "bytes": 1064988
         }
       }
     },
@@ -456,15 +456,15 @@
       }
     },
     "fr/orazaka-v2-the-architecture-we-build": {
-      "source": "a43f0e538143",
+      "source": "90405e344175",
       "files": {
         "epub": {
-          "hash": "18292d24e9",
-          "bytes": 823978
+          "hash": "2c74929521",
+          "bytes": 823537
         },
         "pdf": {
-          "hash": "3350293de2",
-          "bytes": 1300980
+          "hash": "f41172cb11",
+          "bytes": 1299154
         }
       }
     },
@@ -573,28 +573,28 @@
       }
     },
     "en/how-orazaka-made-our-brand-film": {
-      "source": "0c3295ef606c",
+      "source": "10d4721cb29c",
       "files": {
         "epub": {
-          "hash": "dc3b1b9480",
-          "bytes": 1012722
+          "hash": "d6804dc0d6",
+          "bytes": 1014042
         },
         "pdf": {
-          "hash": "8952eda1f3",
-          "bytes": 1320539
+          "hash": "9d6617f1cb",
+          "bytes": 1323780
         }
       }
     },
     "fr/how-orazaka-made-our-brand-film": {
-      "source": "e5f5fce98a51",
+      "source": "178e9171dd23",
       "files": {
         "epub": {
-          "hash": "d492ded657",
-          "bytes": 1030789
+          "hash": "db5df8255f",
+          "bytes": 1030355
         },
         "pdf": {
-          "hash": "2e48be59bd",
-          "bytes": 1349974
+          "hash": "922fb0d6cb",
+          "bytes": 1353775
         }
       }
     },

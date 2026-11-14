@@ -116,9 +116,9 @@ export function TakeStory({
 
   return (
     <aside className="bl-take" aria-labelledby="bl-take-story">
-      <h2 id="bl-take-story" className="bl-take-label">
+      <p id="bl-take-story" className="bl-take-label">
         {d.takeTitle}
-      </h2>
+      </p>
       <p className="bl-take-meta">{format(d.takeMeta, { n: String(chapters.length) })}</p>
       <div className="bl-take-files">
         {story.map((f) => (

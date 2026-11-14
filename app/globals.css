@@ -1475,6 +1475,12 @@ picture {
   font-size: 0.8125rem;
   color: var(--kz-text-secondary);
 }
+.bl-home-start {
+  margin-top: 0.5rem;
+  font-family: var(--kz-font-mono);
+  font-size: 0.8125rem;
+  color: var(--kz-text-secondary);
+}
 /* The author's name leads to his story (/about/): ink, a hairline under it, the accent on hover. */
 .bl-home-story,
 .bl-byline-story {
