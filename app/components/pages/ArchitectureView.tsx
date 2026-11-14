@@ -47,7 +47,11 @@ export function ArchitectureView({
 }: Readonly<{ view: string; label: string; locale: Locale; labels: Labels }>) {
   const view = viewFor(id, locale);
   const words = textVersion(view);
-  const file = (theme: "light" | "dark") => `/diagrams/${view.id}.${locale}.${theme}.svg`;
+  // The view id comes from the generated lib/architecture.json: a strict pattern, encoded, so the link can only be a local SVG path.
+  if (!/^[a-z][a-z0-9_]*$/.test(view.id))
+    throw new Error(`architecture view id « ${view.id} » is not a plain identifier`);
+  const file = (theme: "light" | "dark") =>
+    `/diagrams/${encodeURIComponent(view.id)}.${encodeURIComponent(locale)}.${theme}.svg`;
   return (
     <figure className="bl-plate bl-arch" data-reveal="soft" data-wide={view.bounds.width > 1000 ? "true" : undefined}>
       <div className="bl-plate-paper bl-arch-paper">{toReact(svgTree(view, PAGE_PALETTE), 0)}</div>
