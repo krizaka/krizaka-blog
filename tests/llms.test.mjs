@@ -2,10 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { join } from "node:path";
 import { llmsText, readEntries } from "../scripts/postbuild.mjs";
-import { auditLlms } from "../scripts/check-seo-family.mjs";
 
 /* llms.txt says what the blog is now (krizaka-blog#123): one page, the story — the chapters in reading order in each language,
-   then « The basics », then the family. It passes the family's shape (scripts/check-seo-family.mjs). */
+   then « The basics », then the family. Its family shape is checked by krizaka-seo-family on the built site (CI). */
 const root = new URL("..", import.meta.url).pathname;
 const chapters = readEntries(join(root, "content/chapters"));
 const posts = readEntries(join(root, "content/posts"));
@@ -33,7 +32,6 @@ test("llms.txt lists the basics at /basics/, never a removed address, and passes
     assert.ok(text.includes(`https://blog.krizaka.com${p.locale === "fr" ? "/fr" : ""}/basics/${p.slug}/`), p.slug);
   assert.doesNotMatch(text, /\/(tags|series|search|saved|posts)\/|\/feed\//);
   assert.match(text, /one page, the story/);
-  assert.deepEqual(auditLlms(text, { host: "https://blog.krizaka.com" }), []);
 });
 
 import { llmsFullText } from "../scripts/postbuild.mjs";

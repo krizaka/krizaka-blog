@@ -40,7 +40,7 @@ node_modules/.bin/serve out -l 3000 >/dev/null 2>&1 &
 server=$!
 trap 'kill "$server" 2>/dev/null || true' EXIT
 for _ in $(seq 1 30); do curl -sf http://localhost:3000/robots.txt >/dev/null && break; sleep 1; done
-node scripts/check-seo-family.mjs --base http://localhost:3000 --host https://blog.krizaka.com --index on --limit 60
+node_modules/.bin/krizaka-seo-family --base http://localhost:3000 --host https://blog.krizaka.com --index on --limit 60
 node scripts/check-links.mjs --base http://localhost:3000 --host https://blog.krizaka.com --external
 node_modules/.bin/playwright install --with-deps chromium
 node scripts/check-layout.mjs --base http://localhost:3000 --posts out

@@ -182,8 +182,8 @@ blog/downloads`, manifest committed there); `lib/downloads.json` records each bo
 - **noindex until the first post is published**: `APP_INDEXING_ENABLED` (build-time, `.do/app.yaml`) is `false` → every
   page `noindex`, robots `Disallow: /`. Setting it to `"true"` opens the site (the family's AI-crawler list, sitemap with
   hreflang and `lastmod`, `llms.txt`, JSON-LD leading to the Krizaka Organization). A static host cannot send
-  `X-Robots-Tag`; the closed state relies on robots.txt and the meta tag. `scripts/check-seo-family.mjs` is the family's
-  file, copied unchanged — CI runs it on the open build.
+  `X-Robots-Tag`; the closed state relies on robots.txt and the meta tag. `krizaka-seo-family` (the bin of `@krizaka/config`, ADR-013) is the family's
+  check, never copied — CI runs it on the open build.
 
 ## 5. Definition of done
 

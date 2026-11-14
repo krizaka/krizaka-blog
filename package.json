@@ -37,7 +37,7 @@
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
-    "@krizaka/config": "^0.10.0",
+    "@krizaka/config": "^0.25.0",
     "@krizaka/email": "^1.2.0",
     "@krizaka/rate-limit": "0.2.0",
     "@tailwindcss/postcss": "^4",
