@@ -6,10 +6,10 @@
   "description": "blog.krizaka.com — the Krizaka company blog: a static site built from MDX posts, edited by GitHub accounts.",
   "scripts": {
     "prepare": "git config core.hooksPath .githooks || true",
-    "gen": "node scripts/gen-favicon.mjs",
+    "gen": "node scripts/gen-favicon.mjs && node scripts/gen-architecture.mjs svg",
     "dev": "npm run gen && next dev",
     "build": "npm run gen && node scripts/build.mjs",
-    "lint": "tsc --noEmit && krizaka-server-client-boundary && krizaka-i18n check messages && krizaka-code-names messages && node scripts/check-content.mjs && node scripts/gen-downloads.mjs check && npm run format:check",
+    "lint": "tsc --noEmit && krizaka-server-client-boundary && krizaka-i18n check messages && krizaka-code-names messages && node scripts/check-content.mjs && node scripts/gen-architecture.mjs check && node scripts/gen-downloads.mjs check && npm run format:check",
     "test": "node --test tests/*.test.mjs",
     "links": "node scripts/check-links.mjs --base http://localhost:3000 --external",
     "test:coverage": "node -e \"require('node:fs').mkdirSync('coverage',{recursive:true})\" && node --test --experimental-test-coverage --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info tests/*.test.mjs",

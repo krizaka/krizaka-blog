@@ -591,5 +591,14 @@
     "back": "Back",
     "zoomIn": "Zoom in",
     "note": "Our diagram is drawn from the code on main: current state and target."
+  },
+  "architecture": {
+    "textVersion": "The drawing in words",
+    "elements": "Elements",
+    "relations": "Relations",
+    "steps": "Steps, in order",
+    "files": "SVG:",
+    "light": "light",
+    "dark": "dark"
   }
 }

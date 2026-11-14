@@ -28,10 +28,17 @@ export const ARTICLE_FILES = [
   "lib/team-board.ts",
   "lib/cockpit-tour.ts",
   "lib/c4-zoom.ts",
+  "content/posts/the-architecture-of-krizaka-agents.en.mdx",
+  "content/posts/the-architecture-of-krizaka-agents.fr.mdx",
+  "content/diagrams/krizaka-agents.c4",
+  "content/diagrams/krizaka-agents.fr.json",
+  "app/components/pages/ArchitectureView.tsx",
+  "lib/architecture.ts",
+  "lib/architecture.json",
 ];
 
 /** The message subtrees the figures draw their words from (scanned as text). */
-export const FIGURE_MESSAGE_KEYS = ["train", "board", "mouloud", "cockpitTour", "c4Zoom"];
+export const FIGURE_MESSAGE_KEYS = ["train", "board", "mouloud", "cockpitTour", "c4Zoom", "architecture"];
 
 const privateRepoLink = new RegExp(`github\\.com/krizaka/(${PRIVATE_REPOS.join("|")})\\b`);
 

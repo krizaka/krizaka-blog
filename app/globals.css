@@ -2444,3 +2444,47 @@ picture {
   font-family: var(--kz-font-mono);
   text-align: end;
 }
+
+/* An architecture view (ArchitectureView, lib/architecture.ts): the drawing of a checked model in the page's tokens. A wide view
+   leaves the text column on a large screen (up to the page's width) and scrolls sideways on a phone, never shrunk below legible. */
+.bl-arch {
+  margin: 2.25rem 0;
+}
+.bl-arch-paper {
+  overflow-x: auto;
+  padding: 1rem;
+}
+.bl-arch-paper svg {
+  display: block;
+  width: 100%;
+  min-width: 34rem;
+  height: auto;
+}
+.bl-arch[data-wide="true"] .bl-arch-paper svg {
+  min-width: 46rem;
+}
+/* On a large screen the post's column has room on its right only (its contents sit on the left): a wide view takes it. */
+@media (min-width: 88rem) {
+  .bl-arch[data-wide="true"] {
+    width: calc(100% + 16rem);
+  }
+}
+.bl-arch-text {
+  font-size: 0.9375rem;
+  color: var(--kz-text-secondary);
+}
+.bl-arch-text summary {
+  cursor: pointer;
+  font-family: var(--kz-font-mono);
+  font-size: 0.8125rem;
+  color: var(--kz-accent-text);
+}
+.bl-arch-text ul,
+.bl-arch-text ol {
+  margin: 0.25rem 0 0.75rem;
+}
+.bl-arch-files {
+  font-family: var(--kz-font-mono);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
