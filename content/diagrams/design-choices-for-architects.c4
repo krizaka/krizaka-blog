@@ -1,0 +1,117 @@
+// The organisation at C1 and C2, for the post « design-choices-for-architects ». Written against the org's base
+// (krizaka/.github docs/architecture: specification.c4, org.c4): it uses the org's people, external systems and the platform,
+// writes no specification, and declares the three products and the shared libraries at the level the post needs (the org's
+// model generates them from @krizaka/org; each product's inside lives in its own repository). Less detail than the cockpit's
+// views, and nothing sensitive: no host, address, account or path. Checked and laid out by
+// `node scripts/gen-architecture.mjs --base <krizaka/.github checkout>/docs/architecture`.
+model {
+  verikora = system 'Verikora' {
+    description 'Checks documents and keeps the files they belong to.'
+    web = app 'Verikora web' {
+      description 'The site and the console, server-rendered.'
+      technology 'Next.js, one container'
+    }
+    mobile = mobile 'Verikora mobile' {
+      technology 'Expo'
+    }
+    db = datastore 'Verikora database' {
+      technology 'PostgreSQL'
+    }
+  }
+  folioviv = system 'Folioviv' {
+    description 'A shop, its storefront and its editor.'
+    web = app 'Folioviv web' {
+      description 'The storefront and the editor, server-rendered.'
+      technology 'Next.js, one container'
+    }
+    mobile = mobile 'Folioviv mobile' {
+      technology 'Expo'
+    }
+    db = datastore 'Folioviv database' {
+      technology 'PostgreSQL'
+    }
+  }
+  sovkora = system 'Sovkora' {
+    description 'The AI engine the products call: chat, documents, media, automations.'
+    edge = container 'Edge service' {
+      description 'The one public door: authentication, rate limits, routing.'
+      technology 'Spring Boot'
+    }
+    core = container 'Engine services' {
+      description 'One service per bounded context, several JVMs in one container.'
+      technology 'Spring Boot'
+    }
+    broker = queue 'Message broker' {
+      description 'Work queues per capability, retries, dead letters.'
+      technology 'RabbitMQ'
+    }
+    workers = container 'Workers' {
+      description 'Media, documents and models; consume the queues.'
+      technology 'Python'
+    }
+    db = datastore 'Sovkora databases' {
+      description 'One database per context; the outbox; the vectors beside the rows.'
+      technology 'PostgreSQL, pgvector'
+    }
+  }
+  libraries = system 'Shared libraries' {
+    description 'Written once, versioned, consumed by every product.'
+    ts = library 'TypeScript and UI packages' {
+      description 'UI, auth, data, payments, storage: the product imports, never copies.'
+      technology '@krizaka/*, npm'
+    }
+    java = library 'Java building blocks' {
+      description 'The parent build, the BOM and the Spring Boot starters.'
+      technology 'com.krizaka, Maven'
+    }
+  }
+  monitoring = external 'Monitoring' {
+    description 'Dashboards, logs, traces and probes from outside.'
+  }
+
+  customer -> verikora 'checks a document'
+  customer -> folioviv 'runs a shop'
+  visitor -> folioviv 'buys on a storefront'
+  verikora -> sovkora 'asks for checks'
+  verikora -> libraries 'builds on'
+  folioviv -> libraries 'builds on'
+  sovkora -> libraries 'builds on'
+  libraries -> registries 'published to'
+  platform -> github 'shared workflows, checks, merge queue'
+  github -> cloud 'deploys main'
+  sovkora -> monitoring 'logs, metrics, traces'
+
+  verikora.web -> verikora.db 'SQL'
+  verikora.mobile -> verikora.web 'HTTPS'
+  verikora.web -> sovkora.edge 'HTTPS'
+  folioviv.web -> folioviv.db 'SQL'
+  folioviv.mobile -> folioviv.web 'HTTPS'
+  sovkora.edge -> sovkora.core 'routes'
+  sovkora.core -> sovkora.db 'SQL, outbox in the same transaction'
+  sovkora.core -> sovkora.broker 'publishes from the outbox'
+  sovkora.broker -> sovkora.workers 'delivers, at least once'
+  sovkora.workers -> sovkora.broker 'reports outcomes'
+  verikora.web -> libraries.ts 'imports'
+  folioviv.web -> libraries.ts 'imports'
+  sovkora.core -> libraries.java 'builds on'
+}
+
+views {
+  view org_context {
+    title 'The organisation · context'
+    include customer, visitor, verikora, folioviv, sovkora, libraries, platform, github, registries, cloud, monitoring
+    style * {
+      size xsmall
+    }
+    autoLayout TopBottom 40 30
+  }
+
+  view org_containers {
+    title 'The products and the libraries · containers'
+    include verikora, verikora.*, folioviv, folioviv.*, sovkora, sovkora.*, libraries, libraries.*
+    style * {
+      size xsmall
+    }
+    autoLayout TopBottom 40 30
+  }
+}

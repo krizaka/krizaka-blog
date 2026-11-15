@@ -90,3 +90,40 @@ test("the shared component draws every view, in both languages, with each elemen
 test("the hashes are sha256 of the files", () => {
   assert.equal(data.source.sha256, sha256(read(MODEL)));
 });
+
+test("every model the posts draw is laid out as it is now, fully translated, and no view id is shared", async () => {
+  const { MODELS } = await import("../scripts/gen-architecture.mjs");
+  const ids = [];
+  for (const entry of MODELS) {
+    const layout = JSON.parse(read(entry.out));
+    const s = { model: read(entry.model), translations: read(entry.translations) };
+    assert.deepEqual(staleProblems(layout, s, entry), [], entry.model);
+    assert.equal(layout.check.status, "ok");
+    const map = JSON.parse(s.translations);
+    for (const id of entry.views) {
+      const en = layout.views.en.find((v) => v.id === id);
+      const missing = new Set();
+      assert.deepEqual(
+        translateView(en, map, missing),
+        layout.views.fr.find((v) => v.id === id),
+        id,
+      );
+      assert.equal(missing.size, 0, id);
+    }
+    ids.push(...layout.views.en.map((v) => v.id));
+  }
+  assert.equal(new Set(ids).size, ids.length, "a view id names one view");
+});
+
+test("the design-choices model is stale when it changes after its layout", async () => {
+  const { MODELS } = await import("../scripts/gen-architecture.mjs");
+  const entry = MODELS[1];
+  const layout = JSON.parse(read(entry.out));
+  const problems = staleProblems(
+    layout,
+    { model: `${read(entry.model)}\n// edited`, translations: read(entry.translations) },
+    entry,
+  );
+  assert.equal(problems.length, 1);
+  assert.match(problems[0], /design-choices-for-architects\.c4/);
+});
