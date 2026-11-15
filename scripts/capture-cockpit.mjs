@@ -11,137 +11,189 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-/* The masking patterns: a value that matches is replaced. `name` says why, for the log (never the value). */
+/* The masking patterns: a value that matches is replaced. `name` says why, for the log (never the value). Several simple patterns
+   may share a name: each stays small and linear (no nested quantifier), and the guard below is wider than all of them. */
+const NUM = String.raw`\d[\d   .,]{0,12}`;
 export const MASK = [
-  {
-    name: "money",
-    re: /[-−]?\d[\d   .,]*\s?(?:\$|€|£|CAD|USD|EUR)(?![A-Za-z])|(?:US\$|\$|€|£|CAD|USD|EUR)\s?\d[\d   .,]*/g,
-  },
-  { name: "email", re: /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}/g },
-  { name: "phone", re: /(?:\+?1[\s.-]?)?\(?\b\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}\b/g },
-  { name: "postal", re: /\b[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z](?:[\s-]?\d[ABCEGHJ-NPRSTV-Z]\d)?\b/g },
+  { name: "money", re: new RegExp(`${NUM}[$€£]`, "g") },
+  { name: "money", re: new RegExp(`${NUM}(?:CAD|USD|EUR)\\b`, "g") },
+  { name: "money", re: new RegExp(`(?:CAD|USD|EUR|US\\$|[$€£])\\s?${NUM}`, "g") },
+  { name: "email", re: /[\w.%+-]{1,64}@[\w-]{1,63}(?:\.[\w-]{1,63}){1,4}/g },
+  { name: "phone", re: /\(?\b\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}\b/g },
+  { name: "postal", re: /\b[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z]\b/g },
+  { name: "postal", re: /\b\d[ABCEGHJ-NPRSTV-Z]\d\b/g },
   {
     name: "address",
-    re: /\b\d{1,5}[, ]+(?:rue|avenue|av\.|boulevard|boul\.|chemin|rang|street|st\.|road|rd\.|drive)\b[^,.;\n]{0,30}|\b(?:rue|avenue|boulevard|chemin)\s+[A-ZÉ][\p{L}'-]+|\bSainte?-Marguerite\b/giu,
+    re: /\b\d{1,5},? (?:rue|avenue|av\.|boulevard|boul\.|chemin|rang|street|st\.|road|rd\.|drive)\b[^,.;\n]{0,30}/gi,
   },
-  { name: "tax-id", re: /\b\d{9}\s?(?:RT|TQ|RP)\s?\d{4}\b|\b\d{3}[ -]\d{3}[ -]\d{3}\b|\b\d{9,}\b/gi },
-  {
-    name: "token",
-    re: /\b(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{16,}|xox[baprs]-[A-Za-z0-9-]{10,}|AKIA[0-9A-Z]{16}|eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}(?:\.[A-Za-z0-9_-]+)?)\b/g,
-  },
-  { name: "hex", re: /\b[0-9a-fA-F]{24,}\b/g },
-  {
-    name: "base64",
-    re: /\b(?=[A-Za-z0-9+/_-]*\d)(?=[A-Za-z0-9+/_-]*[a-z])(?=[A-Za-z0-9+/_-]*[A-Z])[A-Za-z0-9+/_-]{32,}={0,2}/g,
-  },
-  { name: "secret-name", re: /\b[A-Z][A-Z0-9_]*(?:KEY|TOKEN|SECRET|PASSWORD|PASSPHRASE)[A-Z0-9_]*\b/g },
+  { name: "address", re: /\b(?:[Rr]ue|[Aa]venue|[Bb]oulevard|[Cc]hemin) [A-ZÉ][\p{L}'-]+/gu },
+  { name: "address", re: /\bSainte?-Marguerite\b/gi },
+  { name: "tax-id", re: /\b\d{9}\s?(?:RT|TQ|RP)\s?\d{4}\b/gi },
+  { name: "tax-id", re: /\b\d{3}[ -]\d{3}[ -]\d{3}\b/g },
+  { name: "tax-id", re: /\d{9,}/g },
+  { name: "token", re: /\bgh[pousr]_\w{20,}/g },
+  { name: "token", re: /\bgithub_pat_\w{20,}/g },
+  { name: "token", re: /\bsk-[\w-]{16,}/g },
+  { name: "token", re: /\bxox[baprs]-[\w-]{10,}/g },
+  { name: "token", re: /\bAKIA[0-9A-Z]{16}\b/g },
+  { name: "token", re: /\beyJ[\w-]{10,}\.[\w-]{10,}(?:\.[\w-]+)?/g },
+  { name: "hex", re: /\b[0-9a-f]{24,}\b/gi },
+  { name: "base64", re: /\b(?=\S*\d)(?=\S*[a-z])(?=\S*[A-Z])[\w+/-]{32,}={0,2}/g },
+  { name: "secret-name", re: /\b[A-Z][A-Z0-9_]{0,40}(?:KEY|TOKEN|SECRET|PASSWORD|PASSPHRASE)[A-Z0-9_]{0,40}/g },
   { name: "private-path", re: /(?:\/Users\/|\/private\/|\/var\/folders\/|~\/\.)[^\s"')]*/g },
-  {
-    name: "person",
-    re: /\b(?:M\.|Mme|Mr|Mrs|Ms|Dr|Me)\s+[A-ZÉ][\p{L}'-]+(?:\s+[A-ZÉ][\p{L}'-]+)?|\bAbid\b|oussamaabid/gu,
-  },
+  { name: "person", re: /\b(?:M\.|Mme|Mr|Mrs|Ms|Dr|Me) [A-ZÉ][\p{L}'-]+(?: [A-ZÉ][\p{L}'-]+)?/gu },
+  { name: "person", re: /\bAbid\b|oussamaabid/g },
 ];
 
 /* A line or a block that names one of these is a finance, tax, bank or security thing: the WHOLE block is replaced. */
-export const SENSITIVE_WORDS =
-  /\b(?:ledger|grand livre|comptabilit[ée]|accounting|bank|banque|iban|tps|tvq|gst|qst|impôts?|taxes?|factures?|invoices?|payroll|salaire|salary|secrets?|vault|coffre|sensible|sensitive|security|sécurité|credentials?|mot de passe|password)\b/i;
+const WORDS = [
+  ["ledger", "grand livre", "comptabilit[ée]", "accounting", "bank", "banque", "iban", "tps", "tvq", "gst", "qst"],
+  ["imp[ôo]ts?", "taxes?", "factures?", "invoices?", "payroll", "salaire", "salary"],
+  [
+    "secrets?",
+    "vault",
+    "coffre",
+    "sensible",
+    "sensitive",
+    "security",
+    "s[ée]curit[ée]",
+    "credentials?",
+    "mot de passe",
+    "password",
+  ],
+];
+export const SENSITIVE_WORDS = new RegExp(`\\b(?:${WORDS.flat().join("|")})\\b`, "i");
 
 /* The guard's net is WIDER than the masking: any long digit run, any address-like at-sign, any currency next to a digit, any long
    hex, any private path. A pattern here that masking missed is a refusal, never a silent pass. */
 export const GUARD = [
   ...MASK,
-  { name: "digits-run", re: /\d{9,}|\b\d{3}[ .\u00a0-]\d{3}[ .\u00a0-]\d{3,4}\b/g },
+  { name: "digits-run", re: /\b\d{3}[ . -]\d{3}[ . -]\d{3,4}\b/g },
   { name: "at-sign", re: /\S+@\S+/g },
   { name: "currency-digit", re: /[$€£]\s?\d|\d\s?[$€£]/g },
-  { name: "long-hex", re: /\b[0-9a-fA-F]{20,}\b/g },
+  { name: "long-hex", re: /\b[0-9a-f]{20,}\b/gi },
   { name: "sensitive-word", re: new RegExp(SENSITIVE_WORDS.source, "gi") },
 ];
 
 /** The names of the patterns that match `text`, never the matched value. */
 export function findings(text, patterns = GUARD) {
-  const hit = [];
+  const hit = new Set();
   for (const { name, re } of patterns) {
     re.lastIndex = 0;
-    if (re.test(text)) hit.push(name);
+    if (re.test(text)) hit.add(name);
     re.lastIndex = 0;
   }
-  return hit;
+  return [...hit];
 }
 
-/** Runs in the page: replaces what must not be read by a blurred placeholder of the same length. Returns the count per reason. */
-export function maskInPage({ mask, words, names }) {
-  const patterns = mask.map((m) => ({ name: m.name, re: new RegExp(m.re.source, m.re.flags) }));
-  const wordRe = new RegExp(words.source, words.flags);
-  const count = {};
-  const style = document.createElement("style");
-  style.textContent =
-    "[data-kz-masked]{filter:blur(4px);user-select:none;pointer-events:none;display:inline-block;color:transparent;background:rgba(110,120,140,.4);border-radius:3px}";
-  document.head.appendChild(style);
-  const placeholder = (s) => s.replace(/\S/g, "•");
-  const wrap = (node, start, end, why) => {
-    const before = node.splitText(start);
-    const rest = before.splitText(end - start);
-    const span = document.createElement("span");
-    span.setAttribute("data-kz-masked", why);
-    span.textContent = placeholder(before.data);
-    before.replaceWith(span);
-    count[why] = (count[why] ?? 0) + 1;
-    return rest;
+/* The in-page masking: small functions that are serialised and sent as one script (`maskScript`), so each stays simple. They run in the
+   browser and share only the `ctx` they are given. */
+const BLOCK = "tr, li, [role=row], [role=listitem], article, dt, dd, summary, p";
+const SKIP_TAGS = /^(SCRIPT|STYLE|NOSCRIPT)$/;
+const MASK_STYLE =
+  "[data-kz-masked]{filter:blur(4px);user-select:none;pointer-events:none;display:inline-block;color:transparent;background:rgba(110,120,140,.4);border-radius:3px}";
+
+function placeholderOf(s) {
+  return s.replace(/\S/g, "•");
+}
+function wrapText(node, start, end, why, ctx) {
+  const before = node.splitText(start);
+  const rest = before.splitText(end - start);
+  const span = document.createElement("span");
+  span.setAttribute("data-kz-masked", why);
+  span.textContent = placeholderOf(before.data);
+  before.replaceWith(span);
+  ctx.count[why] = (ctx.count[why] ?? 0) + 1;
+  return rest;
+}
+function textNodesOf(root) {
+  const out = [];
+  const accept = (n) => {
+    const p = n.parentElement;
+    const skip = !p || SKIP_TAGS.test(p.tagName) || p.closest("[data-kz-masked]");
+    return skip ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
   };
-  const maskNode = (node, why) => {
-    if (!node.data.trim()) return;
-    wrap(node, 0, node.data.length, why);
-  };
-  const textNodes = (root) => {
-    const out = [];
-    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
-      acceptNode: (n) =>
-        n.parentElement &&
-        !/^(SCRIPT|STYLE|NOSCRIPT)$/.test(n.parentElement.tagName) &&
-        !n.parentElement.closest("[data-kz-masked]")
-          ? NodeFilter.FILTER_ACCEPT
-          : NodeFilter.FILTER_REJECT,
-    });
-    while (w.nextNode()) out.push(w.currentNode);
-    return out;
-  };
-  /* 1. a block that names a finance / tax / bank / security word: all its text. */
-  const BLOCK = "tr, li, [role=row], [role=listitem], article, dt, dd, summary, p";
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: accept });
+  while (walker.nextNode()) out.push(walker.currentNode);
+  return out;
+}
+function maskBlocks(ctx) {
   const done = new Set();
-  for (const n of textNodes(document.body)) {
-    if (!wordRe.test(n.data)) continue;
+  for (const n of textNodesOf(document.body)) {
+    if (!ctx.words.test(n.data)) continue;
     const block = n.parentElement.closest(BLOCK) ?? n.parentElement;
     if (block.matches("nav, nav *, header, header *") || done.has(block)) continue;
     done.add(block);
-    for (const t of textNodes(block)) maskNode(t, "sensitive-block");
+    for (const t of textNodesOf(block)) if (t.data.trim()) wrapText(t, 0, t.data.length, "sensitive-block", ctx);
   }
-  /* 2. values, by pattern, inside the text that is left. */
-  const named = names.map((n) => n.toLowerCase());
-  for (const node of textNodes(document.body)) {
+}
+function firstMatch(data, ctx) {
+  let best = null;
+  const consider = (start, end, name) => {
+    if (end > start && (!best || start < best.start)) best = { start, end, name };
+  };
+  for (const { name, re } of ctx.patterns) {
+    re.lastIndex = 0;
+    const m = re.exec(data);
+    if (m) consider(m.index, m.index + m[0].length, name);
+  }
+  const lower = data.toLowerCase();
+  for (const nm of ctx.names) {
+    const i = lower.indexOf(nm);
+    if (i >= 0) consider(i, i + nm.length, "person");
+  }
+  return best;
+}
+function maskValues(ctx) {
+  for (const node of textNodesOf(document.body)) {
     let current = node;
-    for (let guard = 0; guard < 200 && current; guard++) {
-      let best = null;
-      for (const { name, re } of patterns) {
-        re.lastIndex = 0;
-        const m = re.exec(current.data);
-        if (m && m[0].length && (!best || m.index < best.start))
-          best = { start: m.index, end: m.index + m[0].length, name };
-      }
-      for (const nm of named) {
-        const i = current.data.toLowerCase().indexOf(nm);
-        if (i >= 0 && (!best || i < best.start)) best = { start: i, end: i + nm.length, name: "person" };
-      }
-      if (!best) break;
-      current = wrap(current, best.start, best.end, best.name);
+    for (let i = 0; i < 200 && current; i++) {
+      const hit = firstMatch(current.data, ctx);
+      if (!hit) break;
+      current = wrapText(current, hit.start, hit.end, hit.name, ctx);
     }
   }
-  /* 3. attributes and form values a reader can see or select. */
-  for (const el of document.querySelectorAll("input, textarea"))
-    if (el.value) ((el.value = placeholder(el.value)), (el.style.filter = "blur(6px)"));
+}
+function maskFields() {
+  for (const el of document.querySelectorAll("input, textarea")) {
+    if (el.value) el.value = placeholderOf(el.value);
+    el.style.filter = "blur(6px)";
+  }
   for (const el of document.querySelectorAll("[title], [alt], [aria-label], [placeholder]"))
     for (const a of ["title", "alt", "aria-label", "placeholder"]) el.removeAttribute(a);
   document.title = "cockpit";
-  return count;
+}
+function maskPage(spec) {
+  const ctx = {
+    count: {},
+    words: new RegExp(spec.words.source, spec.words.flags),
+    patterns: spec.mask.map((m) => ({ name: m.name, re: new RegExp(m.source, m.flags) })),
+    names: spec.names.map((n) => n.toLowerCase()),
+  };
+  const style = document.createElement("style");
+  style.textContent = spec.style;
+  document.head.appendChild(style);
+  maskBlocks(ctx);
+  maskValues(ctx);
+  maskFields();
+  return ctx.count;
+}
+
+/** The script that masks a page, as a string for `page.evaluate`: the helpers above plus the call, with the patterns as data. */
+export function maskScript({ mask, words, names }) {
+  const spec = {
+    mask: mask.map((m) => ({ name: m.name, source: m.re.source, flags: m.re.flags })),
+    words: { source: words.source, flags: words.flags },
+    names,
+    style: MASK_STYLE,
+  };
+  const helpers = [placeholderOf, wrapText, textNodesOf, maskBlocks, firstMatch, maskValues, maskFields, maskPage];
+  return `(() => {
+const BLOCK = ${JSON.stringify(BLOCK)};
+const SKIP_TAGS = ${SKIP_TAGS.toString()};
+${helpers.map((f) => f.toString()).join("\n")}
+return maskPage(${JSON.stringify(spec)});
+})()`;
 }
 
 /** Runs in the page: what a reader (or a screen reader) can read now. */
@@ -168,7 +220,7 @@ export function stripPng(buf) {
 
 /** Masks, guards, shoots. Throws (and writes nothing) when the guard finds something. */
 export async function shoot(page, { out, clip, names = [] }) {
-  const counts = await page.evaluate(maskInPage, { mask: MASK, words: SENSITIVE_WORDS, names });
+  const counts = await page.evaluate(maskScript({ mask: MASK, words: SENSITIVE_WORDS, names }));
   await page.waitForTimeout(150);
   const text = await page.evaluate(visibleText);
   const left = findings(text, GUARD);
