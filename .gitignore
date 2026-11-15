@@ -10,4 +10,3 @@ next-env.d.ts
 coverage/
 __pycache__/
 downloads-out/
-public/diagrams/

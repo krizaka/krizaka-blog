@@ -596,9 +596,6 @@
     "textVersion": "The drawing in words",
     "elements": "Elements",
     "relations": "Relations",
-    "steps": "Steps, in order",
-    "files": "SVG:",
-    "light": "light",
-    "dark": "dark"
+    "steps": "Steps, in order"
   }
 }

@@ -33,7 +33,6 @@ export const ARTICLE_FILES = [
   "content/diagrams/krizaka-agents.c4",
   "content/diagrams/krizaka-agents.fr.json",
   "app/components/pages/ArchitectureView.tsx",
-  "lib/architecture.ts",
   "lib/architecture.json",
 ];
 

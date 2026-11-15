@@ -1,14 +1,14 @@
 {
   "generatedBy": "scripts/gen-architecture.mjs",
-  "tool": {
-    "name": "krizaka/.github tools/architecture",
-    "ref": "0c35dac09569d65a5e059fa4d337ac6ffbd817bb",
-    "likec4": "1.60.0"
-  },
+  "tool": { "name": "@krizaka/architecture", "likec4": "1.60.0" },
   "source": {
     "path": "content/diagrams/krizaka-agents.c4",
     "sha256": "d7deffbd04aace53f0332f1034a5cdfc88ca8b11af3f13b83da8f3941bded4c7"
   },
+  "base": [
+    { "path": "org.c4", "sha256": "7bac4a793b0433ad5884513623d52d9961c3b7370ce331c20628420b7df90fda" },
+    { "path": "specification.c4", "sha256": "3e02a37911f2dcd67a88304b5342e8fa7d1ff7e9d57cd204fe94365a9db01764" }
+  ],
   "translations": {
     "path": "content/diagrams/krizaka-agents.fr.json",
     "sha256": "8df4b0f67898ab3b784a340b14e3756380673bff1bb1cff2a522c99a77f59502"

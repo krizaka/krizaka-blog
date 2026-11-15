@@ -596,9 +596,6 @@
     "textVersion": "Le schéma en mots",
     "elements": "Éléments",
     "relations": "Relations",
-    "steps": "Étapes, dans l'ordre",
-    "files": "SVG :",
-    "light": "clair",
-    "dark": "sombre"
+    "steps": "Étapes, dans l'ordre"
   }
 }

@@ -3,7 +3,9 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { PAGE_PALETTE, paletteFromCss, pathOf, svgString, svgTree, textVersion, wrap } from "../lib/architecture.ts";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { ArchitectureDiagram } from "@krizaka/ui/architecture-diagram";
 import {
   MODEL,
   OUT,
@@ -13,7 +15,6 @@ import {
   staleProblems,
   translateView,
   used,
-  viewOf,
 } from "../scripts/gen-architecture.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -76,128 +77,14 @@ test("the dynamic view numbers its steps in the model's order", () => {
   );
 });
 
-test("viewOf reads LikeC4's laid-out view: compounds, flattened labels, back edges, step numbers", () => {
-  const v = viewOf({
-    id: "x",
-    title: "X",
-    _type: "dynamic",
-    bounds: { x: 0, y: 0, width: 10, height: 10 },
-    nodes: [
-      {
-        id: "a",
-        kind: "system",
-        shape: "rectangle",
-        title: "A",
-        description: { txt: "about\nA" },
-        children: ["a.b"],
-        x: 0.4,
-        y: 0,
-        width: 5,
-        height: 5,
-      },
-      {
-        id: "a.b",
-        parent: "a",
-        kind: "container",
-        shape: "queue",
-        title: "B",
-        technology: "Python",
-        children: [],
-        x: 1,
-        y: 1,
-        width: 2,
-        height: 2,
-      },
-    ],
-    edges: [
-      {
-        id: "step-02",
-        source: "a.b",
-        target: "a",
-        label: "goes \nback",
-        dir: "back",
-        points: [
-          [0.4, 1],
-          [2, 2],
-        ],
-      },
-    ],
-  });
-  assert.equal(v.dynamic, true);
-  assert.equal(v.nodes[0].compound, true);
-  assert.equal(v.nodes[0].description, "about A");
-  assert.equal(v.nodes[1].compound, false);
-  assert.deepEqual(v.edges[0], {
-    id: "step-02",
-    source: "a.b",
-    target: "a",
-    label: "goes back",
-    points: [
-      [0, 1],
-      [2, 2],
-    ],
-    labelBBox: null,
-    step: 2,
-    back: true,
-  });
-});
-
-test("wrap keeps lines inside the width and French quotes with their word", () => {
-  assert.deepEqual(wrap("one two three four", 90, 10, 1), ["one two", "three", "four"]);
-  for (const line of wrap("opens the PR, mirrors « Done when »", 150, 10, 1)) {
-    assert.ok(!line.endsWith("«") && !line.startsWith("»"), line);
-  }
-});
-
-test("pathOf turns LikeC4's Bézier points into an SVG path", () => {
-  assert.equal(
-    pathOf([
-      [0, 0],
-      [1, 1],
-      [2, 2],
-      [3, 3],
-    ]),
-    "M0,0 C1,1 2,2 3,3",
-  );
-  assert.equal(
-    pathOf([
-      [0, 0],
-      [5, 5],
-    ]),
-    "M0,0 L5,5",
-  );
-  assert.equal(pathOf([[0, 0]]), "");
-});
-
-test("the drawing has every node's title, in the page's tokens, and escapes text", () => {
-  for (const v of data.views.fr) {
-    const svg = svgString(svgTree(v, PAGE_PALETTE));
-    assert.match(svg, /^<svg viewBox="[^"]+" role="img" aria-label="/);
-    assert.ok(!/#[0-9a-f]{3,6}\b|rgb\(|hsl\(/i.test(svg), `${v.id}: no colour outside the tokens`);
-    for (const n of v.nodes.filter((x) => !x.compound))
-      assert.ok(svg.includes(n.title.split(" ")[0]), `${v.id}: ${n.title}`);
-  }
-  const view = { ...data.views.en[0], title: 'a <b> & "c"' };
-  assert.match(svgString(svgTree(view, PAGE_PALETTE)), /aria-label="a &lt;b&gt; &amp; &quot;c&quot;"/);
-});
-
-test("an exported file stands alone, with each theme's colours read from the tokens", () => {
-  const css = read("node_modules/@krizaka/tokens/dist/tokens.css");
-  const light = paletteFromCss(css, ".theme-light");
-  const dark = paletteFromCss(css, ":root, .theme-dark");
-  assert.notEqual(light.paper, dark.paper);
-  const svg = svgString(svgTree(data.views.en[0], light, { standalone: true }));
-  assert.match(svg, /^<svg [^>]*xmlns="http:\/\/www\.w3\.org\/2000\/svg"/);
-  assert.match(svg, /<title>/);
-  assert.ok(svg.includes(light.paper));
-});
-
-test("the text version says every element and every relation or step", () => {
-  const v = data.views.en.find((x) => x.id === "pr_life");
-  const words = textVersion(v);
-  assert.equal(words.relations.length, v.edges.length);
-  assert.equal(words.elements.length, v.nodes.filter((n) => !n.compound).length);
-  assert.ok(words.relations[0].startsWith("Founder → GitHub: writes the ticket"));
+test("the shared component draws every view, in both languages, with each element's title and the words", () => {
+  for (const locale of ["en", "fr"])
+    for (const v of data.views[locale]) {
+      const html = renderToStaticMarkup(createElement(ArchitectureDiagram, { view: v }));
+      assert.ok(html.includes("<svg"), v.id);
+      for (const n of v.nodes)
+        assert.ok(html.includes(n.title.split(" ")[0].replace(/&/g, "&amp;")), `${locale} ${v.id}: ${n.title}`);
+    }
 });
 
 test("the hashes are sha256 of the files", () => {
