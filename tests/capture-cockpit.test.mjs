@@ -5,8 +5,12 @@ import assert from "node:assert/strict";
 import { mkdtempSync, existsSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { createServer } from "node:http";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
-import { findings, shoot, stripPng, GUARD, MASK } from "../scripts/capture-cockpit.mjs";
+import { findings, shoot, stripPng, mediaEntry, SCREENS, GUARD, MASK } from "../scripts/capture-cockpit.mjs";
 
 const FIXTURE = {
   money: "Dépensé : 1 234,56 $",
@@ -140,4 +144,71 @@ test("stripPng drops text and time chunks and refuses a non-PNG", () => {
 test("the masking and the guard share every pattern", () => {
   const names = new Set(GUARD.map((g) => g.name));
   for (const m of MASK) assert.ok(names.has(m.name), m.name);
+});
+
+const run = promisify(execFile);
+const SCRIPT = fileURLToPath(new URL("../scripts/capture-cockpit.mjs", import.meta.url));
+
+async function withServer(html, fn) {
+  const server = createServer((_req, res) => res.writeHead(200, { "content-type": "text/html" }).end(html));
+  await new Promise((ok) => server.listen(0, "127.0.0.1", ok));
+  try {
+    return await fn(`http://127.0.0.1:${server.address().port}`);
+  } finally {
+    server.close();
+  }
+}
+
+test("the command writes the image of a page once masked, and exits 0", async () => {
+  const dir = tmp();
+  await withServer("<!doctype html><body><p>Total 12 $ pour a@b.com</p><p>krizaka-ui#1</p></body>", async (base) => {
+    const { stdout } = await run("node", [SCRIPT, "--out", dir, "--base", base, "--only", SCREENS[0].id]);
+    assert.match(stdout, /cockpit-sante: \d+ bytes, masked/);
+    assert.ok(existsSync(join(dir, `${SCREENS[0].id}.png`)));
+  });
+});
+
+test("the command exits 1 and writes nothing when the guard refuses", async () => {
+  const dir = tmp();
+  const late =
+    "<!doctype html><body><p>ok</p><script>new MutationObserver(()=>setTimeout(()=>document.body.append('4374296412845'),50)).observe(document.head,{childList:true})</script></body>";
+  await withServer(late, async (base) => {
+    await assert.rejects(run("node", [SCRIPT, "--out", dir, "--base", base, "--only", SCREENS[0].id]), (e) => {
+      assert.equal(e.code, 1);
+      assert.match(e.stderr, /REFUSED/);
+      return true;
+    });
+    assert.equal(existsSync(join(dir, `${SCREENS[0].id}.png`)), false);
+  });
+});
+
+test("the command without --out prints its usage and exits 2", async () => {
+  await assert.rejects(run("node", [SCRIPT]), (e) => e.code === 2 && /usage/.test(e.stderr));
+});
+
+test("the media entry has the sizes, the blur, both formats at each width and its provenance", async () => {
+  const dir = tmp();
+  await withPage("<p>ok</p>", async (page) => {
+    await shoot(page, { out: join(dir, "shot.png") });
+  });
+  const entry = await mediaEntry({
+    png: join(dir, "shot.png"),
+    id: "x-shot",
+    slug: "a-post",
+    dir,
+    note: "A test.",
+    takenOn: "2026-11-15",
+  });
+  assert.equal(entry.kind, "image");
+  assert.match(entry.blur, /^data:image\/webp;base64,/);
+  assert.deepEqual(
+    entry.renditions.avif.map((r) => r.w),
+    entry.renditions.webp.map((r) => r.w),
+  );
+  assert.match(
+    entry.renditions.webp[0].url,
+    /^https:\/\/krizaka-assets\.b-cdn\.net\/sites\/blog\/posts\/a-post\/x-shot-\d+\.[0-9a-f]{10}\.webp$/,
+  );
+  assert.ok(existsSync(join(dir, "a-post", `x-shot-${entry.renditions.webp[0].w}.webp`)));
+  assert.match(entry.made.note, /sensitive values replaced then blurred/);
 });

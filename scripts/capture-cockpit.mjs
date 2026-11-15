@@ -69,7 +69,7 @@ export const SENSITIVE_WORDS = new RegExp(`\\b(?:${WORDS.flat().join("|")})\\b`,
 export const GUARD = [
   ...MASK,
   { name: "digits-run", re: /\b\d{3}[ . -]\d{3}[ . -]\d{3,4}\b/g },
-  { name: "at-sign", re: /\S+@\S+/g },
+  { name: "at-sign", re: /[^\s@]{1,64}@[^\s@]{1,64}/g },
   { name: "currency-digit", re: /[$€£]\s?\d|\d\s?[$€£]/g },
   { name: "long-hex", re: /\b[0-9a-f]{20,}\b/gi },
   { name: "sensitive-word", re: new RegExp(SENSITIVE_WORDS.source, "gi") },

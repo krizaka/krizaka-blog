@@ -16,7 +16,7 @@ sensitive: true
 
 On Sunday 15 November at 1:24 pm Montréal time, the release of a krizaka-ui version stopped halfway. The step that runs every package's checks was cancelled after 3 minutes 35 seconds, with 95 of 99 tasks done. The log says one sentence: "The operation was canceled." The release before it had failed too, at 12:52 pm; the last one that worked was at 11:49 am.
 
-The cockpit shows it on one line: a critical alert, raised by the watchdog, whose message starts with "main red: krizaka-ui release". It stayed open and was counted fifteen times between 2:15 pm and 5:45 pm.
+The cockpit shows it on one line: a critical alert, raised by the watchdog, whose message starts with "main red: krizaka-ui release". It stayed open and was counted sixteen times between 2:15 pm and 6:00 pm.
 
 This post is about that screen. It is a local app on my Mac that shows me the whole company in one place. I say why it exists, what we refused to do, what it cannot do yet, and then what seven different roles read on it. The captures are real screens, taken tonight; the sensitive values on them are masked, and I explain how at the end.
 
@@ -30,10 +30,10 @@ The left bar holds what matters to steer: « Aujourd'hui » (today), « La machi
 
 What the first page of « La machine » shows tonight, each block with its own date:
 
-- 6 team sessions at work;
+- 11 team sessions at work;
 - 4 red pull requests in the trains;
 - 14 active scheduled tasks, all of which ran;
-- 16 open alerts, 2 of them serious.
+- 15 open alerts, 2 of them serious.
 
 The banner on top says « En panne » (down): three blocks need a look. The cockpit does not reassure for the sake of it. When a block is too old, it says so on an orange chip (« Coûts cloud : vieux de 2 j », cloud costs: 2 days old).
 
@@ -62,7 +62,7 @@ The cockpit shows its data; it does not explain the cause. The release alert say
 
 One story for everyone, then a short part per role: what that person would read on the screen, and why it matters to them. We are not seven people; it is the same screen, read with seven questions.
 
-**Site reliability.** The Alerts tab: one line per subject, with its severity, its source (the watchdog or a team session), how many times it came back and its state (open, acknowledged, resolved). A critical alert that returns fifteen times reads faster than a message that scrolls by: you see that a problem lasts, not only that it happened.
+**Site reliability.** The Alerts tab: one line per subject, with its severity, its source (the watchdog or a team session), how many times it came back and its state (open, acknowledged, resolved). A critical alert that returns sixteen times reads faster than a message that scrolls by: you see that a problem lasts, not only that it happened.
 
 **Project direction.** « Ce qui sort »: per product, the board, the open pull requests, the state of the train, the last release, the last deployment. Each card carries the date of its oldest source. A project is judged on what actually left, not on what was planned.
 
