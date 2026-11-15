@@ -16,6 +16,21 @@ test("the layout checks keep every rule", () => {
   assert.match(src, /\.bl-byline-actions > :is\(a, button\)/);
 });
 
+test("the language link is measured at 1280 and 360 px in both themes (krizaka-internal#3907)", () => {
+  assert.match(src, /const bylineLanguageLink = /);
+  assert.match(src, /BYLINE_LINK_WIDTHS = \[1280, 360\]/);
+  assert.match(src, /BYLINE_THEMES = \["dark", "light"\]/);
+  assert.match(src, /Math\.abs\(link\.right - lead\.right\) > 2/);
+  assert.match(src, /Math\.abs\(dy\) > 2/);
+});
+
+test("the byline fills the text column, so the link can sit at its right edge (krizaka-internal#3907)", () => {
+  const css = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
+  const rule = /\.bl-byline \{([^}]*)\}/.exec(css)?.[1] ?? "";
+  assert.match(rule, /width: 100%/);
+  assert.match(rule, /max-width: 42\.5rem/);
+});
+
 test("the first screen links chapter 1 and the basics at 1440×900 and 360×780 (krizaka-internal#3600)", () => {
   assert.match(src, /FIRST_SCREENS = \[\s*\{ width: 1440, height: 900 \},\s*\{ width: 360, height: 780 \}/);
   assert.match(src, /const startLinksInFirstScreen = /);
