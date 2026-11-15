@@ -6,6 +6,7 @@
      node scripts/capture-cockpit.mjs --out <dir> [--base http://127.0.0.1:3457] [--only <id>] [--names "A B,C D"]
    Writes <dir>/<id>.png (1440 px, PNG chunks stripped to the critical ones: no text, no time, no ICC) and exits 1 without
    writing it when the guard finds a value. Used by content/posts/one-local-cockpit-to-run-the-whole-company. */
+import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -218,48 +219,232 @@ export function stripPng(buf) {
   return Buffer.concat(out);
 }
 
-/** Masks, guards, shoots. Throws (and writes nothing) when the guard finds something. */
-export async function shoot(page, { out, clip, names = [] }) {
+/** What a screen does before the shot: open a section, press a button, wait, hide a column. Nothing here reads or writes data. */
+export async function runSteps(page, steps = []) {
+  for (const st of steps) {
+    if (st.click) await page.click(st.click, { timeout: 8000 });
+    if (st.wait) await page.waitForTimeout(st.wait);
+    if (st.hide) await page.addStyleTag({ content: `${st.hide}{display:none !important}` });
+  }
+}
+
+/** The rectangle of a block of the page, in page coordinates: from the heading that says `text` to the end of its parent, at most `height` tall. */
+export async function clipOfHeading(page, { text, height, pad = 12 }) {
+  return page.evaluate(
+    ({ text, height, pad }) => {
+      const h = [...document.querySelectorAll("h2, h3")].find((e) => e.textContent.trim() === text);
+      if (!h) return null;
+      const r = h.parentElement.getBoundingClientRect();
+      const top = h.getBoundingClientRect().y;
+      return {
+        x: Math.max(0, r.x - pad),
+        y: Math.max(0, top + window.scrollY - pad),
+        width: r.width + 2 * pad,
+        height: Math.min(r.bottom - top, height) + pad,
+      };
+    },
+    { text, height, pad },
+  );
+}
+
+/** Masks the page, then reads it again with the guard: throws, naming the kinds only, when anything is left. */
+export async function maskAndGuard(page, names = []) {
   const counts = await page.evaluate(maskScript({ mask: MASK, words: SENSITIVE_WORDS, names }));
   await page.waitForTimeout(150);
   const text = await page.evaluate(visibleText);
   const left = findings(text, GUARD);
   const leftNames = names.filter((n) => text.toLowerCase().includes(n.toLowerCase()));
   if (left.length || leftNames.length) {
-    const err = new Error(
-      `guard: ${[...left, ...leftNames.map(() => "person")].join(", ")} still visible, nothing written`,
-    );
-    err.findings = [...left, ...leftNames.map(() => "person")];
+    const kinds = [...left, ...leftNames.map(() => "person")];
+    const err = new Error(`guard: ${kinds.join(", ")} still visible, nothing written`);
+    err.findings = kinds;
     throw err;
   }
-  const png = stripPng(await page.screenshot({ fullPage: true, clip, animations: "disabled" }));
+  return counts;
+}
+
+/** Masks, guards, shoots, and guards again: the cockpit re-renders by itself, so a frame counts only when the page is clean before AND
+    after the shot; else it is tried again (4 times), then the last refusal is thrown and nothing is written. */
+export async function guardedShot(page, { names = [], area }) {
+  let last;
+  for (let attempt = 0; attempt < 4; attempt++) {
+    try {
+      const counts = await maskAndGuard(page, names);
+      const png = stripPng(await page.screenshot({ fullPage: true, clip: area, animations: "disabled" }));
+      const after = findings(await page.evaluate(visibleText), GUARD);
+      if (after.length === 0) return { png, counts };
+      last = new Error(`guard: ${after.join(", ")} appeared during the shot, nothing written`);
+    } catch (e) {
+      last = e;
+    }
+  }
+  throw last;
+}
+
+/** Steps, masks, guards, shoots. Throws (and writes nothing) when the guard finds something. */
+export async function shoot(page, { out, clip, clipOf, steps, names = [] }) {
+  await runSteps(page, steps);
+  const area = clipOf ? await clipOfHeading(page, clipOf) : clip;
+  if (clipOf && !area) throw new Error(`no heading « ${clipOf.text} » on the page, nothing written`);
+  const { png, counts } = await guardedShot(page, { names, area });
   mkdirSync(dirname(out), { recursive: true });
   writeFileSync(out, png);
   return { counts, bytes: png.length };
 }
 
 /* The screens of the post: id, address (French, light), the part of the page kept. Public: session titles, repositories, PR numbers,
-   train and alert states. Not here: Coûts, Affaires, Entreprise, Documents, Secrets. */
+   train and alert states. Not here: Coûts, Affaires, Entreprise, Documents, Secrets. A security-labelled title is masked as a whole
+   block by the words rule. `width` is the window's: narrower than the cockpit's 1440, so the text stays readable once the figure is
+   shown at phone width; `scale` is the pixel ratio. */
+const OPEN_TEAMS = [
+  { click: "summary:has-text('Équipes, trains')" },
+  { click: "button:has-text('Rafraîchir')" },
+  { wait: 1500 },
+];
 export const SCREENS = [
   {
-    id: "cockpit-sante",
+    id: "cockpit-equipes",
     path: "/fr/machine",
-    note: "The cockpit, « La machine », Santé: one verdict per block (teams, merge trains, scheduled tasks, alerts, locks).",
-    clip: { x: 0, y: 0, width: 1440, height: 900 },
+    note: "The cockpit, « La machine », the opened section « Équipes, trains et arbre du travail, en détail » after a refresh: every ticket in progress under its feature and its epic, with its title and the pull requests that close it.",
+    width: 1280,
+    scale: 2,
+    steps: OPEN_TEAMS,
+    clipOf: { text: "De l'épopée à la PR", height: 585 },
   },
   {
     id: "cockpit-alertes",
     path: "/fr/machine?tab=alerts",
-    note: "The cockpit, « La machine », Alertes: the watchdog's and the team sessions' open alerts, with severity, source and count.",
-    clip: { x: 0, y: 0, width: 1440, height: 900 },
+    note: "The cockpit, « La machine », Alertes: the watchdog's and the team sessions' open alerts, with severity, source, message, count and state (the two date columns are hidden: their layout overlaps, krizaka-internal#3894).",
+    width: 1440,
+    scale: 2,
+    steps: [{ hide: "th:nth-child(5), td:nth-child(5), th:nth-child(6), td:nth-child(6)" }],
+    clip: { x: 300, y: 445, width: 840, height: 390 },
   },
   {
     id: "cockpit-livraison",
     path: "/fr/machine?tab=delivery",
-    note: "The cockpit, « La machine », Livraison: the merge queue of each repository, what merged in 24 h, the red pull requests.",
-    clip: { x: 0, y: 0, width: 1440, height: 760 },
+    note: "The cockpit, « La machine », Livraison: the merge queue of each repository, then what merged in 24 h and the red pull requests, cut under the figures' row.",
+    width: 1100,
+    scale: 2,
+    clip: { x: 255, y: 435, width: 845, height: 445 },
   },
 ];
+
+/* The refresh, as a short loop: the Livraison page, a click on « Rafraîchir ». Each frame is masked and guarded
+   like a still; the frames are put end to end by ffmpeg. Times in milliseconds. */
+export const LOOP = {
+  id: "cockpit-rafraichir",
+  path: "/fr/machine?tab=delivery",
+  width: 1100,
+  note: "The cockpit, « La machine », Livraison: a click on « Rafraîchir »; the collection date moves to now and the merge-queue badges are read again.",
+  steps: [],
+  button: "button:has-text('Rafraîchir')",
+  clip: { x: 255, y: 130, width: 845, height: 400 },
+  holdBefore: 3000,
+  holdAfter: 3500,
+  frameMs: 500,
+  frames: 4,
+  badge: /À jour · [^\n]+/,
+  waitMax: 90000,
+};
+
+/** The frame list of a loop: [{ png, ms }]. Throws, writing nothing, as soon as one frame fails the guard. */
+export async function loopFrames(page, { spec = LOOP, names = [] } = {}) {
+  await runSteps(page, spec.steps);
+  const grab = async (ms) => ({ png: (await guardedShot(page, { names, area: spec.clip })).png, ms });
+  const frames = [await grab(spec.holdBefore)];
+  const badge = (text) => spec.badge.exec(text)?.[0];
+  const first = badge(await page.evaluate(visibleText));
+  await page.click(spec.button, { timeout: 8000 });
+  for (let i = 0; i < spec.frames; i++) {
+    await page.waitForTimeout(spec.frameMs);
+    frames.push(await grab(spec.frameMs));
+  }
+  // The collection takes a while: the wait is cut out of the clip (no frame is taken), and its length is said in the note.
+  const started = Date.now();
+  while (badge(await page.evaluate(visibleText)) === first) {
+    if (Date.now() - started > spec.waitMax) throw new Error("the refresh did not finish, nothing written");
+    await page.waitForTimeout(500);
+  }
+  frames.waitedMs = Date.now() - started + spec.frames * spec.frameMs;
+  await page.waitForTimeout(800);
+  frames.push(await grab(spec.holdAfter));
+  return frames;
+}
+
+/** Makes <dir>/<slug>/<id>.webm, .mp4 and -poster.webp from the frames, and returns the `lib/media.json` entry of the clip. */
+export async function clipEntry({ frames, spec = LOOP, slug, dir, takenOn, run = execFileSync }) {
+  const { default: sharp } = await import("sharp");
+  const work = join(dir, "frames");
+  mkdirSync(work, { recursive: true });
+  const list = frames
+    .map((f, i) => {
+      writeFileSync(join(work, `f${i}.png`), f.png);
+      return `file 'f${i}.png'\nduration ${(f.ms / 1000).toFixed(3)}`;
+    })
+    .concat(`file 'f${frames.length - 1}.png'`)
+    .join("\n");
+  writeFileSync(join(work, "list.txt"), `${list}\n`);
+  const total = (frames.reduce((n, f) => n + f.ms, 0) / 1000).toFixed(2);
+  const out = join(dir, slug);
+  mkdirSync(out, { recursive: true });
+  const base = [
+    "-y",
+    "-loglevel",
+    "error",
+    "-f",
+    "concat",
+    "-safe",
+    "0",
+    "-i",
+    join(work, "list.txt"),
+    "-t",
+    String(total),
+    "-vf",
+    "fps=10,scale=trunc(iw/2)*2:trunc(ih/2)*2",
+    "-an",
+  ];
+  run("ffmpeg", [...base, "-c:v", "libvpx-vp9", "-crf", "38", "-b:v", "0", join(out, `${spec.id}.webm`)]);
+  run("ffmpeg", [
+    ...base,
+    "-c:v",
+    "libx264",
+    "-pix_fmt",
+    "yuv420p",
+    "-crf",
+    "30",
+    "-movflags",
+    "+faststart",
+    join(out, `${spec.id}.mp4`),
+  ]);
+  const first = frames[0].png;
+  const { width, height } = await sharp(first).metadata();
+  const poster = await sharp(first).webp({ quality: 78 }).toBuffer();
+  writeFileSync(join(out, `${spec.id}-poster.webp`), poster);
+  const tiny = await sharp(first).resize({ width: 24 }).webp({ quality: 20 }).toBuffer();
+  const url = (name, data) =>
+    `${CDN}/${slug}/${name.replace(/\.(\w+)$/, `.${createHash("sha256").update(data).digest("hex").slice(0, 10)}.$1`)}`;
+  const webm = readFileSync(join(out, `${spec.id}.webm`));
+  const mp4 = readFileSync(join(out, `${spec.id}.mp4`));
+  return {
+    kind: "video",
+    width,
+    height,
+    blur: `data:image/webp;base64,${tiny.toString("base64")}`,
+    poster: url(`${spec.id}-poster.webp`, poster),
+    mp4: url(`${spec.id}.mp4`, mp4),
+    webm: url(`${spec.id}.webm`, webm),
+    bytes: { mp4: mp4.length, webm: webm.length },
+    made: {
+      model: "none: a screen recording of the local cockpit",
+      engine:
+        "Playwright (Chromium) frames put end to end by ffmpeg (VP9 and H.264), prefers-reduced-motion set to reduce, light theme",
+      machine: "MacBook Pro, Apple M1 Max",
+      costUsd: 0,
+      note: `${spec.note} Taken on ${takenOn}: ${Math.round(frames.reduce((n, f) => n + f.ms, 0) / 1000)} seconds, muted; the refresh itself took about ${Math.round((frames.waitedMs ?? 0) / 1000)} seconds, the wait is cut out. Every frame has its sensitive values replaced by a placeholder and blurred before it is shot, and a guard refuses the clip if anything sensitive is readable (scripts/capture-cockpit.mjs). Not a generated video, not a Sovkora run.`,
+    },
+  };
+}
 
 const CDN = "https://krizaka-assets.b-cdn.net/sites/blog/posts";
 const QUALITY = { avif: { quality: 52, effort: 6 }, webp: { quality: 78, effort: 5 } };
@@ -299,6 +484,65 @@ export async function mediaEntry({ png, id, slug, dir, note, takenOn }) {
   };
 }
 
+function record(root, id, entry) {
+  const file = join(root, "lib/media.json");
+  const media = JSON.parse(readFileSync(file, "utf8"));
+  media[id] = entry;
+  writeFileSync(file, `${JSON.stringify(media, null, 2)}\n`);
+}
+
+async function captureStill(browser, s, o) {
+  const context = await browser.newContext({
+    viewport: { width: s.width ?? 1440, height: 900 },
+    deviceScaleFactor: s.scale ?? 1,
+    reducedMotion: "reduce",
+    colorScheme: "light",
+  });
+  const page = await context.newPage();
+  await page.goto(o.base + s.path, { waitUntil: "networkidle" });
+  try {
+    const out = join(o.out, `${s.id}.png`);
+    const r = await shoot(page, { out, clip: s.clip, clipOf: s.clipOf, steps: s.steps, names: o.names });
+    console.log(`${s.id}: ${r.bytes} bytes, masked ${JSON.stringify(r.counts)}`);
+    if (o.record)
+      record(
+        o.root,
+        s.id,
+        await mediaEntry({ png: out, id: s.id, slug: o.record, dir: o.out, note: s.note, takenOn: today() }),
+      );
+    return 0;
+  } catch (e) {
+    console.error(`${s.id}: REFUSED — ${e.message}`);
+    return 1;
+  } finally {
+    await context.close();
+  }
+}
+
+async function captureLoop(browser, o) {
+  const context = await browser.newContext({
+    viewport: { width: LOOP.width, height: 900 },
+    reducedMotion: "reduce",
+    colorScheme: "light",
+  });
+  const page = await context.newPage();
+  await page.goto(o.base + LOOP.path, { waitUntil: "networkidle" });
+  try {
+    const frames = await loopFrames(page, { names: o.names });
+    const entry = await clipEntry({ frames, slug: o.record ?? "clip", dir: o.out, takenOn: today() });
+    console.log(`${LOOP.id}: ${frames.length} frames, webm ${entry.bytes.webm} bytes, mp4 ${entry.bytes.mp4} bytes`);
+    if (o.record) record(o.root, LOOP.id, entry);
+    return 0;
+  } catch (e) {
+    console.error(`${LOOP.id}: REFUSED — ${e.message}`);
+    return 1;
+  } finally {
+    await context.close();
+  }
+}
+
+const today = () => new Date().toISOString().slice(0, 10);
+
 async function main() {
   const arg = (k, d) => {
     const i = process.argv.indexOf(k);
@@ -311,48 +555,19 @@ async function main() {
     );
     process.exit(2);
   }
-  const base = arg("--base", "http://127.0.0.1:3457");
   const only = arg("--only");
-  const record = arg("--record");
+  const root = join(dirname(fileURLToPath(import.meta.url)), "..");
   const names = (arg("--names", process.env.KZ_CAPTURE_NAMES ?? "") || "")
     .split(",")
-    .map((s) => s.trim())
+    .map((x) => x.trim())
     .filter(Boolean);
-  const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+  const o = { out, root, names, base: arg("--base", "http://127.0.0.1:3457"), record: arg("--record") };
   const { chromium } = await import(pathToFileURL(join(root, "node_modules/playwright/index.mjs")).href);
   const browser = await chromium.launch();
   let failed = 0;
   try {
-    for (const s of SCREENS.filter((x) => !only || x.id === only)) {
-      const context = await browser.newContext({
-        viewport: { width: 1440, height: 900 },
-        reducedMotion: "reduce",
-        colorScheme: "light",
-      });
-      const page = await context.newPage();
-      await page.goto(base + s.path, { waitUntil: "networkidle" });
-      try {
-        const r = await shoot(page, { out: join(out, `${s.id}.png`), clip: s.clip, names });
-        console.log(`${s.id}: ${r.bytes} bytes, masked ${JSON.stringify(r.counts)}`);
-        if (record) {
-          const file = join(root, "lib/media.json");
-          const media = JSON.parse(readFileSync(file, "utf8"));
-          media[s.id] = await mediaEntry({
-            png: join(out, `${s.id}.png`),
-            id: s.id,
-            slug: record,
-            dir: out,
-            note: s.note,
-            takenOn: new Date().toISOString().slice(0, 10),
-          });
-          writeFileSync(file, `${JSON.stringify(media, null, 2)}\n`);
-        }
-      } catch (e) {
-        failed++;
-        console.error(`${s.id}: REFUSED — ${e.message}`);
-      }
-      await context.close();
-    }
+    for (const s of SCREENS.filter((x) => !only || x.id === only)) failed += await captureStill(browser, s, o);
+    if (!only || only === LOOP.id) failed += await captureLoop(browser, o);
   } finally {
     await browser.close();
   }
