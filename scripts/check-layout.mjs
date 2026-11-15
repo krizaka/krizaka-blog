@@ -138,7 +138,7 @@ const IS_POST = /\/(basics|story)\/[^/]+\/$/;
 const themedSeen = new Set();
 const themedSample = (path) => {
   if (!IS_POST.test(path)) return false;
-  const key = path.replace(/[^/]+\/$/, "");
+  const key = path.slice(0, path.lastIndexOf("/", path.length - 2) + 1);
   if (themedSeen.has(key)) return false;
   themedSeen.add(key);
   return true;
