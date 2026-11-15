@@ -159,4 +159,4 @@ async function main() {
   console.log(`check-visual: ${shots().length} pictures ${update ? "written" : "match their baselines"}`);
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) main();
+if (process.argv[1] === fileURLToPath(import.meta.url)) await main();
