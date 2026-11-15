@@ -86,9 +86,9 @@ export function svgOf(view) {
 ${lines.join("")}
 <path d="M110 0 V${H}" stroke="${RED}" stroke-width="2" opacity="0.7"/><path d="M116 0 V${H}" stroke="${RED}" stroke-width="1" opacity="0.45"/>
 <g filter="url(#pen)" stroke="${INK}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none">${edges}${boxes}</g>
-<text class="t" x="150" y="${H / 2 - 6}" fill="${INK}" filter="url(#pen)">krizaka-agents</text>
-<path d="M152 ${H / 2 + 14} Q300 ${H / 2 + 6} 452 ${H / 2 + 16}" stroke="${RED}" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.85" filter="url(#pen)"/>
-<text class="m" x="152" y="${H / 2 + 52}" fill="${INK}">fig. 2 · C2</text>
+<text class="t" x="150" y="108" fill="${INK}" filter="url(#pen)">krizaka-agents</text>
+<path d="M152 124 Q300 116 452 126" stroke="${RED}" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.85" filter="url(#pen)"/>
+<text class="m" x="152" y="160" fill="${INK}">fig. 2 · C2</text>
 </svg>`;
 }
 
