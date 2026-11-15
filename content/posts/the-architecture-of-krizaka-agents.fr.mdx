@@ -26,6 +26,18 @@ Tout ce qui suit découle de trois choix.
 2. **Pas de modèle là où il faut une réponse sûre.** Le lanceur, les gardes, les trains et le chien de garde sont du code ordinaire. Un modèle décide de ce qu'il écrit. Il ne décide jamais si un changement peut fusionner. Pourquoi : à la même question posée deux fois, un modèle peut répondre deux fois autrement ; une fusion doit avoir une seule réponse.
 3. **Les agents ne se parlent pas.** Ce qu'une session a à dire, elle l'écrit dans un endroit durable : un commit, une pull request, un fichier d'état, une ligne en base. Une conversation entre agents ne peut être ni vérifiée ni rejouée.
 
+## Le QG : où vit le travail, et pourquoi
+
+Tout ce qui précède tourne sur une seule machine, dans une seule arborescence que j'appelle le QG. Sa forme est un ensemble de choix, chacun avec sa raison.
+
+- **Le dossier de l'entreprise, privé.** Les décisions, la marque et les notes de travail de l'entreprise vivent dans un dossier qui n'est jamais poussé sur GitHub. Pourquoi : c'est la part de l'entreprise qui n'est ni du code ni publique. Ce que ça coûte : il n'existe que sur cette machine et ses sauvegardes, donc c'est le seul endroit où GitHub ne peut pas être la source.
+- **Une copie de référence par dépôt, jamais modifiée.** L'espace de travail garde une copie de chaque dépôt, tenue sur `main` par un seul outil ; rien n'y commit et aucune session n'en change la branche. Pourquoi : une copie par session donnerait des dizaines de clones qui dérivent et remplissent le disque, et l'index du code se construit une fois par dépôt, sur cette copie. Ce que ça coûte : une session ne peut pas « aller modifier le dépôt » ; elle doit d'abord demander un worktree.
+- **Un worktree par pièce de travail.** Une session travaille dans un worktree fait pour son ticket, sur sa propre branche, et nulle part ailleurs. Pourquoi : deux sessions ne peuvent pas se marcher sur les fichiers, et le train sait quelle branche appartient à quel ticket. Ce que ça coûte : un worktree demande ses dépendances, donc un premier build est plus lent ; un worktree fini est supprimé, pas réutilisé.
+- **Les outils vivent dans krizaka-agents et ne s'appellent que depuis la copie de référence.** Une session lance les outils vivants, jamais la copie des outils qui se trouve dans un worktree. Pourquoi : une copie dans un worktree serait une seconde file et un second exécuteur, chacun se croyant le seul. Ce que ça coûte : un changement d'outil arrive par pull request et par le train, comme tout autre changement, avant qu'une session le voie.
+- **La base d'exploitation, décrite plus haut.** C'est l'état propre de la machine, et la seule part du QG qui n'est pas la copie d'autre chose.
+
+Cette forme répond à une question : que se passe-t-il quand dix sessions travaillent en même temps ? Chacune a son propre endroit où écrire, un seul endroit où lire le code, et une seule porte vers main, le train.
+
 ## Le contexte
 
 <Architecture view="agents_context" label="Le contexte : le fondateur et les agents IA autour de l'outillage des agents, à l'intérieur de la plateforme Krizaka ; GitHub porte le travail et déploie dans le cloud après une fusion ; chaque session tourne sur un modèle hébergé." />
@@ -59,6 +71,17 @@ Une session d'équipe n'a ni écran ni personne pour répondre à ses questions.
 - **Vérifiée deux fois** : avant le départ, la machine est comparée à ce qui est attendu ; au premier message de la session, ce qu'elle a réellement chargé est comparé de nouveau. Un seul écart, et la session est arrêtée, avec la raison.
 
 Le même constructeur démarre la session de dépannage qui débloque une pull request coincée et la session de recette qui vérifie un ticket sur la plateforme après la fusion. Il n'existe pas de second chemin.
+
+### Les outils que reçoit une session d'équipe
+
+Le lanceur donne à chaque équipe la même courte liste, et pas plus.
+
+- **L'index du code, imposé.** Chaque session a l'index du code de nos dépôts, et un hook refuse toute lecture d'un chemin de code tant que l'index n'a pas été interrogé une fois. Pourquoi : un agent qui cherche et lit les fichiers un à un dépense son budget à trouver ce que l'index rend en un appel, et il manque les appelants. Le démarrage lui-même est refusé quand l'index de son dépôt ne peut pas être mis à jour en une minute. Ce que ça coûte : une minute au plus avant un démarrage, et un refus quand l'index est cassé, ce qui est le but.
+- **Un service de recherche web assistée par IA, pour les faits extérieurs.** Onze de nos douze équipes l'ont ; il répond avec ses sources. Le préambule le limite aux questions publiques et génériques : jamais de code privé, de données de clients ni de secrets. Pourquoi : un modèle à qui l'on demande la version d'une bibliothèque ou un avis de sécurité répond de mémoire, et la mémoire a un an. Ce que ça coûte : un service payant appelé par la session, dans le plafond de son budget, et la discipline de citer ce qu'il a rendu.
+- **Nos compétences, et rien d'autre du compte.** Les plugins décrits plus haut, épinglés, et aucun connecteur ni serveur du compte du fondateur : la liste d'outils de la session est fermée au démarrage, et ce qu'elle a réellement chargé est comparé à cette liste au premier message.
+- **Les gardes**, décrites plus haut, autour de chaque appel d'outil.
+
+La raison commune tient en une phrase : une session a une source pour le code, une pour les faits extérieurs, et aucun moyen de répondre de nulle part. Quand elle ne sait pas, elle a deux endroits où chercher, et les deux laissent une trace.
 
 ### Règles et compétences : la documentation que lisent les agents
 
@@ -155,6 +178,25 @@ Cela fait 19 compétences, plus quelques sous-agents, dans la disposition offici
 **Épinglées et vérifiées au démarrage.** Une session n'installe rien ; une compétence manquante ou inattendue, ou une version différente de la place de marché, l'arrête au démarrage, comme décrit plus haut.
 
 **Lesquelles des compétences officielles d'Anthropic nos sessions utilisent-elles ? Aucune, par conception.** Le lanceur désactive chaque plugin qui n'est pas le nôtre, recalculé à chaque démarrage. Quand nous l'avons construit, une session d'équipe héritait de tout le compte : 252 compétences et environ 190 000 jetons de contexte dès son premier tour. Avec nos seuls plugins, elle démarre avec 52 compétences, dont 19 sont les nôtres, et environ 47 000 jetons. Les plugins intégrés de l'outil restent, parce qu'ils font partie de l'outil. Ce que nous prenons à Anthropic, c'est le format, la mécanique des plugins et des places de marché, et l'outil qui les exécute ; le contenu des compétences est le nôtre, et il reste privé.
+
+## Sovkora au travail : une photo en entrée, une courte vidéo en sortie
+
+Sovkora est le produit que nous construisons avec ces outils, et son studio est le meilleur endroit pour voir ce que fait un modèle et ce que fait le système autour. Je le montre dans le Studio vidéo : on choisit une photo, on écrit le mouvement en une phrase, et on appuie sur Run.
+
+<Clip id="studio-flow-fast" alt="Le Studio vidéo de Sovkora sur un téléphone, accéléré : une photo est choisie, le mouvement est décrit en une phrase, le format est vertical, et au lancement l'écran dit qu'un GPU est loué et que le plan est filmé." caption="Le studio, accéléré 1,5× depuis notre film du flux complet (10 secondes, muet) : la photo, la phrase, Run. Le sous-titrage du film est en anglais." />
+
+Ce qui se passe derrière le bouton Run, tel que le code le montre :
+
+- **Le modèle est une ligne, pas une branche de code.** Le catalogue des modèles est une donnée de la base de la plateforme : chaque ligne nomme un modèle et le fournisseur qui le sert. Le worker choisit un adaptateur par le nom du fournisseur, jamais par celui du modèle, et refuse un fournisseur que personne n'a déclaré. Pourquoi : ajouter ou remplacer un modèle est un changement de données avec un test, et un nom que nous n'avions pas prévu ne peut pas envoyer silencieusement un travail au mauvais endroit.
+- **Trois sortes de lieux peuvent servir une vidéo.** Le worker peut faire tourner un modèle lui-même sur une machine GPU, ou router vers l'un de deux fournisseurs hébergés derrière le même petit port : un service d'inférence hébergé, et un point d'accès GPU public facturé à la seconde. Dans les deux cas le clip est fait ailleurs ; ce qui reste à nous, c'est le run, sa graine, sa mesure, le fichier scellé et sa provenance.
+- **Un refus est un refus.** Un travail échoué, un délai dépassé ou un lien non sécurisé lève une erreur ; aucun clip de remplacement n'est jamais rendu. Le prix d'un clip hébergé est réservé avant l'appel.
+- **Les images et la voix tournent aujourd'hui sur nos propres machines.** L'adaptateur d'images parle à un serveur d'images local, et la transcription et la synthèse vocale utilisent des modèles ouverts servis localement. Aucun fournisseur de voix hébergé n'est branché dans Sovkora ; je n'en revendique pas.
+
+<Figure id="studio-gpu-rented" alt="Le studio Sovkora sur un téléphone : le mouvement écrit dans le champ de texte, une étiquette indiquant qu'un GPU A100 est loué et que le plan est filmé, et le bouton Run." caption="Le même écran, un instant plus tard : le studio dit ce qu'il fait, un GPU est loué pendant que le plan est filmé. Le texte à l'écran est en anglais." />
+
+Le run de notre film, un plan vertical de 704 sur 1280 fait à partir d'une photo avec <Model id="wan22-ti2v-5b">Wan 2.2 TI2V 5B</Model>, a pris 230 secondes entre le clic et le résultat, sur un GPU loué pour le run et éteint ensuite. C'est un run, montré dans un film, pas un banc d'essai.
+
+Deux autres outils à nous méritent d'être nommés : pour nos films de marque, nous utilisons aussi des services de génération hébergés, l'un pour les images et les clips, l'autre pour la voix et la musique. Ce sont des outils de l'équipe, pas du code de Sovkora : rien dans le produit ne les appelle aujourd'hui. Le film que j'ai utilisé plus haut le dit dans son générique, et moi aussi.
 
 ## Ce que cela coûte, et ce que cela donne
 

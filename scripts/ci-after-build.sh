@@ -30,6 +30,10 @@ echo "::group::Every published post is linked from the home page, in each langua
 node scripts/check-home-posts.mjs --out out
 echo "::endgroup::"
 
+echo "::group::The page contract of a post: the founder's signature at its end, the other language a link (krizaka-internal#3643)"
+node scripts/check-post-pages.mjs --out out
+echo "::endgroup::"
+
 echo "::group::Commercial names (krizaka-internal#2103): the old chapters keep their historical names, so the built site is a report"
 node_modules/.bin/krizaka-code-names --report out | tail -1
 echo "::endgroup::"
@@ -44,6 +48,8 @@ node scripts/check-seo-family.mjs --base http://localhost:3000 --host https://bl
 node scripts/check-links.mjs --base http://localhost:3000 --host https://blog.krizaka.com --external
 node_modules/.bin/playwright install --with-deps chromium
 node scripts/check-layout.mjs --base http://localhost:3000 --posts out
+# The top and the end of a post against their approved baselines (tests/visual/; a change to the template remakes them with --update).
+node scripts/check-visual.mjs --base http://localhost:3000
 echo "::endgroup::"
 
 echo "::group::Reading offline: every chapter is saveable and in the service worker's precache, and a saved chapter opens with no network"

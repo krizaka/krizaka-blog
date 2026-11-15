@@ -6992,5 +6992,46 @@
         }
       ]
     }
+  },
+  "studio-gpu-rented": {
+    "kind": "image",
+    "width": 720,
+    "height": 1280,
+    "blur": "data:image/webp;base64,UklGRtQAAABXRUJQVlA4IMgAAADQBQCdASoYACsAPu1oqU4ppiOiKrgN+TAdiWcAzjgiwonU5hYH2crRPSsecqbR5v1pVyPZFQoAAP7e2vPOsYs9b2BRCYZCVsWDdXBN7M3RkteHS2oty1NUp4deNXtwwqVVtGBpLcdAg51MXpcnn5AB5Fx1r9ue31crWIwoGgb1GfBO9tGG6Ecb9g6D3VEYSttGF7gZUvcARnjPWQTDsmOIYtSya0gwNWKPGA+W2wUMiBeCp5ZsP+GC5bplG8kLfeaLjHTY94AAAA==",
+    "srcs": [
+      {
+        "w": 720,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/the-architecture-of-krizaka-agents/studio-gpu.9acdb46b90.webp"
+      }
+    ],
+    "made": {
+      "model": "Wan 2.2 TI2V 5B",
+      "engine": "Sovkora Video Studio, on a rented GPU switched off after the run",
+      "via": "screen of the studio, taken from the full-flow film",
+      "size": "720×1280",
+      "note": "A screen of Sovkora's Video Studio (development version, a fictional demo workshop), taken from our own film of the full flow; not a new run."
+    }
+  },
+  "studio-flow-fast": {
+    "kind": "video",
+    "width": 450,
+    "height": 800,
+    "blur": "data:image/webp;base64,UklGRrwAAABXRUJQVlA4ILAAAACwBQCdASoYACsAPu1wrlGppqQiqrgIATAdiWcAy+AijijFmEQfIygFqKBd+9iMelm2CW3E2cAA/t+IMEeKRiONFFFEj8pTqNEtl0lI7j64WQml6Ns1SCBVyNuNAfanQtv2AVt0LlBzUGILtQPi9E7KIN2deTtaAph8FEBp6ru9lhqw7pnO8FE1LXW4E7s9Jo4lFFaK6g352rEpzhHNzcx1Epu5TwoIFPbYON+CmAAAAA==",
+    "poster": "https://krizaka-assets.b-cdn.net/sites/blog/posts/the-architecture-of-krizaka-agents/studio-flow-fast-poster.d0b5a2b6af.webp",
+    "mp4": "https://krizaka-assets.b-cdn.net/sites/blog/posts/the-architecture-of-krizaka-agents/studio-flow-fast.9fd971690a.mp4",
+    "webm": "https://krizaka-assets.b-cdn.net/sites/blog/posts/the-architecture-of-krizaka-agents/studio-flow-fast.5769f69493.webm",
+    "bytes": {
+      "mp4": 420584,
+      "webm": 520344
+    },
+    "made": {
+      "model": "Wan 2.2 TI2V 5B",
+      "engine": "Sovkora Video Studio, on a rented GPU switched off after the run",
+      "via": "screen of the studio, taken from the full-flow film",
+      "size": "450×800",
+      "fps": 24,
+      "durationSeconds": 10.3,
+      "note": "The Studio part of our own film of the full flow (15.5 s of it), sped up 1.5×, muted; not a new run."
+    }
   }
 }
