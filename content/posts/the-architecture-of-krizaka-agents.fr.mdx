@@ -92,7 +92,7 @@ Une base SQLite locale garde ce que le fondateur et la session CTO doivent liste
 
 Aujourd'hui, les rapports de démarrage des sessions passent d'abord par un journal et peuvent être rejoués dans une base vide ; le reste de la journalisation est un ticket ouvert, et l'historique des alertes fait partie de ce qu'il protégerait. Les deux flux ci-dessous sont ceux qui comptent : la vie d'une alerte et la façon dont la copie suit GitHub.
 
-### Le cockpit### Le cockpit
+### Le cockpit
 
 Le cockpit est l'écran du fondateur : les équipes au travail, les trains, les alertes, les tâches planifiées, l'architecture. Il lit la base d'exploitation et GitHub, montre chaque chiffre avec sa date, et n'écrit rien dans la machine.
 
@@ -122,7 +122,7 @@ Aucune horloge ne la rafraîchit. Un lecteur qui trouve la copie plus vieille qu
 
 La base d'exploitation n'est qu'une parmi plusieurs, et les autres suivent la même habitude : chacune a un propriétaire, dit ce qu'elle contient, et peut être reconstruite.
 
-- **Le PostgreSQL de chaque produit.** Folioviv, Verikora et Sovkora ont chacun leur PostgreSQL, avec le schéma écrit en code et des migrations versionnées. Elles contiennent les données propres du produit, les seules données de clients de nos systèmes, et chacune n'appartient qu'à son produit. Dans Sovkora, chaque contexte délimité a sa propre base et son propre rôle, aucune clé étrangère ne traverse un contexte, et chaque contexte n'alimente que lui-même.
+- **Le PostgreSQL de chaque produit.** Folioviv, Verikora et Sovkora ont chacun leur PostgreSQL, avec le schéma écrit en code et des migrations versionnées. Elles contiennent les données propres du produit, les seules données de clients de nos systèmes, et chacune n'appartient qu'à son produit. Dans Sovkora, les contextes déjà basculés tournent dans leur propre base avec leur propre rôle et les autres en partagent encore une jusqu'à leur tour ; aucune clé étrangère ne traverse un contexte, et chaque contexte n'alimente que lui-même.
 - **Les bases de test, une par worktree.** Une session ne touche jamais une base partagée, ni une base de démonstration. Chaque worktree a la sienne, et les tests créent une base par fichier, sur un vrai PostgreSQL (celui que fournit la CI, ou un jetable que le test démarre lui-même). Les règles sur les données sont prouvées sur un vrai moteur, jamais avec des simulacres. Un parcours qui crée un utilisateur le supprime, et un contrôle compare les utilisateurs avant et après l'exécution.
 - **Les bases de développement, reconstruites de zéro.** Une base de développement n'est jamais corrigée à la main. Une reconstruction supprime tous les schémas, migre depuis la première migration, charge la configuration et une distribution de personnages de démonstration, puis compare le résultat à un instantané du schéma attendu. La CI construit une base de zéro avec les mêmes étapes. Un contrôle de nuit lit le schéma de développement, en lecture seule, le compare à l'instantané de main et ouvre un seul ticket quand ils diffèrent.
 - **Les médias et le stockage d'objets.** Les images, les clips, les livres à télécharger et les captures des pull requests vivent dans un stockage d'objets derrière un CDN, jamais dans un dépôt. Les bases gardent une référence et les tailles ; la bibliothèque de médias d'un billet consigne comment chaque fichier a été fait. Un fichier est un objet à empreinte : on le remplace, on ne le modifie pas.
@@ -131,9 +131,9 @@ Ce que chacune contient, qui la possède, comment elle se reconstruit : c'est to
 
 ## Les compétences que chargent nos sessions
 
-Les règles et les métiers de nos agents sont empaquetés en **compétences** (skills), et l'emballage est l'officiel du fabricant de notre runtime d'agents. Dans la documentation du runtime, une [compétence d'agent](https://code.claude.com/docs/en/skills) est un dossier avec un fichier `SKILL.md` : un en-tête avec le nom de la compétence et une description de quand l'utiliser, puis les instructions. Un [plugin](https://code.claude.com/docs/en/plugins) regroupe compétences, sous-agents et autres pièces en une unité installable, et une [place de marché](https://code.claude.com/docs/en/plugin-marketplaces) (marketplace) est un fichier catalogue qui liste des plugins avec leurs versions. Le même fabricant publie aussi ses propres compétences, pour les documents entre autres, dans un [dépôt public](https://github.com/anthropics/skills).
+Les règles et les métiers de nos agents sont empaquetés en **compétences** (skills), et l'emballage est l'officiel d'Anthropic, le fabricant de Claude Code, le runtime d'agents que nous utilisons. Dans la documentation de Claude Code, une [compétence d'agent](https://code.claude.com/docs/en/skills) est un dossier avec un fichier `SKILL.md` : un en-tête avec le nom de la compétence et une description de quand l'utiliser, puis les instructions. Un [plugin](https://code.claude.com/docs/en/plugins) regroupe compétences, sous-agents et autres pièces en une unité installable, et une [place de marché](https://code.claude.com/docs/en/plugin-marketplaces) (marketplace) est un fichier catalogue qui liste des plugins avec leurs versions. Anthropic publie aussi ses propres compétences, pour les documents entre autres, dans un [dépôt public](https://github.com/anthropics/skills).
 
-Nous utilisons le format, pas les compétences du fabricant. Nos quatre plugins, d'une seule place de marché, sont :
+Nous utilisons le format d'Anthropic, pas les compétences d'Anthropic. Nos quatre plugins, d'une seule place de marché, sont :
 
 <Compare label="Les quatre plugins de notre place de marché, avec leurs versions et ce que chacun contient" topic="Plugin" before="Version" after="Compétences">
   <Case topic="krizaka-ops" before="0.9.5" after="3 : session, ticket, atterrissage" />
@@ -146,7 +146,7 @@ Cela fait 19 compétences, plus quelques sous-agents, tous dans la disposition o
 
 **Épinglées et vérifiées au démarrage.** Une session n'installe rien. Le lanceur compare les plugins installés à la place de marché avant le démarrage, et le premier message de la session rapporte ce qu'elle a vraiment chargé ; une compétence manquante ou inattendue, ou une version différente, l'arrête avec la raison.
 
-**Lesquelles des compétences officielles du fabricant nos sessions utilisent-elles ? Aucune, par conception.** Le lanceur désactive chaque plugin qui n'est pas le nôtre, recalculé à chaque démarrage. Quand nous l'avons construit, une session d'équipe héritait de tout le compte : 252 compétences et environ 190 000 jetons de contexte dès son premier tour. Avec nos seuls plugins, elle démarre avec 52 compétences, dont 19 sont les nôtres, et environ 47 000 jetons. Les plugins intégrés de l'outil restent, parce qu'ils font partie de l'outil. Les plugins officiels du fabricant peuvent exister sur la machine du fondateur et dans une session interactive ; une session d'équipe sans écran, qui doit démarrer pareil à chaque fois, ne les charge pas. Ce que nous prenons au fabricant, c'est le format, la mécanique des plugins et des places de marché, et l'outil qui les exécute ; le contenu des compétences est le nôtre, et il reste privé.
+**Lesquelles des compétences officielles d'Anthropic nos sessions utilisent-elles ? Aucune, par conception.** Le lanceur désactive chaque plugin qui n'est pas le nôtre, recalculé à chaque démarrage. Quand nous l'avons construit, une session d'équipe héritait de tout le compte : 252 compétences et environ 190 000 jetons de contexte dès son premier tour. Avec nos seuls plugins, elle démarre avec 52 compétences, dont 19 sont les nôtres, et environ 47 000 jetons. Les plugins intégrés de l'outil restent, parce qu'ils font partie de l'outil. Les plugins officiels d'Anthropic peuvent exister sur la machine du fondateur et dans une session interactive ; une session d'équipe sans écran, qui doit démarrer pareil à chaque fois, ne les charge pas. Ce que nous prenons à Anthropic, c'est le format, la mécanique des plugins et des places de marché, et l'outil qui les exécute ; le contenu des compétences est le nôtre, et il reste privé.
 
 ## Ce que cela coûte, et ce que cela donne
 
@@ -155,10 +155,10 @@ Cela fait 19 compétences, plus quelques sous-agents, tous dans la disposition o
   <Side title="Ce que cela nous donne" tone="after" items="La traçabilité : chaque changement va du ticket à la pull request, aux contrôles requis, à la file de fusion, à main | Des sessions reproductibles : le même environnement à chaque départ, prouvé, avec l'écart nommé | Aucun modèle dans la décision de fusionner | Des défauts attrapés sur la machine plutôt qu'en CI | Un fondateur seul voit tout l'état sur un écran, chaque chiffre daté" />
 </Split>
 
-Les chiffres dont nous disposons sont peu nombreux, mesurés, et publiés avec leur source. Le 13 novembre, quatre audits en lecture seule des journaux des sessions ont lu 150 contrôles d'environnement au démarrage : aucun écart. Le même jour, le premier audit a montré ce que coûte une garde que personne ne mesure : 86 sessions sur 101 n'avaient jamais interrogé l'index du code, alors que la garde qui l'exigeait était en place. Les deux sont au [chapitre 29](/story/how-our-agent-teams-talk/), avec la méthode et les limites.
+Les chiffres dont nous disposons sont peu nombreux, mesurés, et publiés avec leur source. Le 13 novembre, quatre audits en lecture seule des journaux des sessions ont été menés ; les trois premiers ont lu 150 contrôles d'environnement au démarrage (118, 16 et 16) : aucun écart. Le même jour, le premier audit a montré ce que coûte une garde que personne ne mesure : 86 sessions sur 101 n'avaient jamais interrogé l'index du code, alors que la garde qui l'exigeait était en place. Les deux sont au [chapitre 29](/story/how-our-agent-teams-talk/), avec la méthode et les limites.
 
 <Numbers>
-  <Num value="150" label="contrôles d'environnement lus au démarrage" hint="aucun écart, quatre audits du 13 novembre" />
+  <Num value="150" label="contrôles d'environnement lus au démarrage" hint="aucun écart, les trois premiers audits du 13 novembre" />
   <Num value="86 sur 101" label="sessions passées à côté d'une garde" hint="premier audit, avant que la garde lise les commandes entières" />
 </Numbers>
 
@@ -168,7 +168,7 @@ Ce que nous n'avons pas mesuré, je ne l'affirme pas : la part de chaque garde d
 
 Le modèle est un fichier LikeC4 dans le dépôt de ce blogue. Il est écrit sur la base de l'organisation : une spécification (les sortes d'éléments) et la part propre à l'organisation (les personnes, GitHub, le cloud, la plateforme et ses conteneurs). Il n'ajoute rien au premier niveau : il ne fait que détailler, à l'intérieur de la plateforme, le conteneur « Outillage des agents ».
 
-Un script lui applique l'outil d'architecture de l'organisation, le même code qui vérifie chaque jour le modèle de chaque dépôt. La vérification est celle de l'outil : le fichier se lit avec la base, n'écrit pas de spécification à lui, et chaque élément qu'il ajoute vit à l'intérieur du seul système qu'il détaille. Son verdict sur ce modèle est « ok », avec 9 éléments ajoutés, et elle couvre les cinq vues. Le script dispose ensuite les vues avec LikeC4 et consigne la disposition avec l'empreinte du modèle ; les tests du blogue échouent si le modèle change sans que la disposition suive. La page dessine cette disposition dans ses propres couleurs, si bien que les deux thèmes suivent ; chaque vue existe aussi en fichier SVG autonome par thème, lié sous elle.
+Un script lui applique `layoutViews` du paquet d'architecture de l'organisation (`@krizaka/architecture`), avec la base de l'organisation : la même vérification que celle appliquée au modèle de chaque dépôt. La vérification est celle du paquet : le fichier se lit avec la base, n'écrit pas de spécification à lui, et chaque élément qu'il ajoute vit à l'intérieur du seul système qu'il détaille. Son verdict sur ce modèle est « ok », avec 9 éléments ajoutés, et elle couvre les cinq vues. Le même appel dispose les vues avec LikeC4, et le script consigne la disposition avec l'empreinte du modèle ; les tests du blogue échouent si le modèle change sans que la disposition suive. La page dessine cette disposition avec le composant de schéma partagé de l'organisation (`ArchitectureDiagram` de `@krizaka/ui`), dans les couleurs de la page, si bien que les deux thèmes suivent, avec la version texte de chaque vue dessous. Le blogue n'a aucun code de dessin à lui.
 
 Une limite compte pour un architecte. L'outil de l'organisation prouve les conteneurs qu'il peut rattacher à du code sur la branche main de chaque dépôt. Il ne prouve pas les relations à l'exécution : elles sont dessinées, pas vérifiées. Les flèches de ce billet disent ce que disent la documentation et les chapitres publiés, pas une trace d'appels.
 
@@ -184,7 +184,7 @@ Parce qu'une fusion est une décision qui demande une réponse sûre. Le train e
 
 ### Quelles compétences vos agents utilisent-ils, les officielles ou les vôtres ?
 
-Les nôtres, écrites dans le format officiel des compétences d'agent du fabricant du runtime et empaquetées en plugins dans une place de marché. Les sessions d'équipe désactivent tous les autres plugins, pour que chacune démarre avec les mêmes compétences et un petit contexte.
+Les nôtres, écrites dans le format officiel des compétences d'agent d'Anthropic (celui de Claude Code) et empaquetées en plugins dans une place de marché. Les sessions d'équipe désactivent tous les autres plugins, pour que chacune démarre avec les mêmes compétences et un petit contexte.
 
 ### Peut-on perdre la base d'exploitation ?
 

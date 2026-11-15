@@ -85,3 +85,15 @@ test("firstAmount: a $ before a figure, or figures (spaces, dots, commas) before
   assert.equal(firstAmount("chapter 12, 13 and 14"), null);
   assert.equal(firstAmount("$ x"), null);
 });
+
+test("the architecture article may name Anthropic, and only it, and no other post may", () => {
+  const sensitive = { sensitive: true, title: "t" };
+  const arch = "the-architecture-of-krizaka-agents.en.mdx";
+  assert.deepEqual(confidentialityProblems(arch, sensitive, "the format of Anthropic"), []);
+  assert.equal(
+    confidentialityProblems(arch, sensitive, "paid to Bunny").length,
+    1,
+    "another supplier is still refused",
+  );
+  assert.equal(confidentialityProblems("other.en.mdx", sensitive, "the format of Anthropic").length, 1);
+});

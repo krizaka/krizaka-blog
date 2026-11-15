@@ -41,6 +41,16 @@ export const SUPPLIER_NAMES = [
   "Firebase",
   "BigQuery",
 ];
+/** The supplier names a post is allowed to carry, by post slug (the CTO's decision, krizaka-internal#3643): the architecture article
+    names Anthropic, the maker of the agent runtime, because it explains which skills format it uses. An exception is one slug and
+    one name, never a rule: no other post and no other supplier follows. */
+export const SUPPLIER_EXCEPTIONS = { "the-architecture-of-krizaka-agents": ["Anthropic"] };
+const slugOf = (file) =>
+  file
+    .split("/")
+    .pop()
+    .replace(/\.(en|fr)\.mdx$/, "");
+
 /** Ledger, fiscal and bank words (English and French). */
 export const LEDGER_WORDS = [
   "grand livre",
@@ -148,10 +158,12 @@ export const CONFIDENTIAL_ALWAYS = [
   [/\b(sk|pk|rk)[-_](live|test|ant|proj)?[-_]?[A-Za-z0-9]{20,}/, "a key-looking value"],
   [/\b(NEQ|TPS|TVQ|GST|QST|SIN|NAS)\b/, "a registration, tax or identity-number word"],
 ];
+/** The supplier rule is a function the checker recognises, so that an exception can narrow its list for one post. */
+const SUPPLIER_RULE = (text) => firstWord(text, SUPPLIER_NAMES);
 export const CONFIDENTIAL_STRICT = [
   [firstAmount, "an amount of money"],
   [firstSecretVariable, "a key or variable name"],
-  [(text) => firstWord(text, SUPPLIER_NAMES), "a supplier name"],
+  [SUPPLIER_RULE, "a supplier name"],
   [(text) => firstWord(text, LEDGER_WORDS), "a ledger, fiscal or bank word"],
 ];
 
@@ -165,8 +177,15 @@ export function confidentialityProblems(file, data, body) {
     .filter((x) => typeof x === "string")
     .join("\n");
   const rules = data.sensitive === true ? [...CONFIDENTIAL_ALWAYS, ...CONFIDENTIAL_STRICT] : CONFIDENTIAL_ALWAYS;
+  const allowed = SUPPLIER_EXCEPTIONS[slugOf(file)] ?? [];
   for (const [matcher, what] of rules) {
-    const hit = found(matcher, text);
+    const hit =
+      matcher === SUPPLIER_RULE
+        ? firstWord(
+            text,
+            SUPPLIER_NAMES.filter((n) => !allowed.includes(n)),
+          )
+        : found(matcher, text);
     if (hit)
       out.push(
         `${file}: confidential — ${what} (“${hit.trim().slice(0, 40)}”); describe the pattern, not the internals`,

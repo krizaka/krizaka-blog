@@ -92,7 +92,7 @@ A local SQLite database keeps what the founder and the CTO need to list and disp
 
 Today, the start reports of sessions are journaled first and can be replayed into an empty database; the rest of the journaling is an open ticket, and the history of alerts is one of the things it would protect. The two flows below are the ones that matter: an alert's life and the way the copy follows GitHub.
 
-### The cockpit### The cockpit
+### The cockpit
 
 The cockpit is the founder's screen: the teams at work, the trains, the alerts, the scheduled jobs, the architecture. It reads the operations database and GitHub, shows every figure with its date, and writes nothing into the machine.
 
@@ -122,7 +122,7 @@ No clock refreshes it. A reader that finds the copy older than a short threshold
 
 The operations database is one of several, and the others follow the same habit: each has one owner, each says what it holds, and each can be rebuilt.
 
-- **Each product's PostgreSQL.** Folioviv, Verikora and Sovkora each have their own PostgreSQL, with the schema written as code and versioned migrations. They hold the product's own data, the only data of customers in our systems, and each belongs to its product alone. In Sovkora, every bounded context has its own database and its own role, no foreign key crosses a context, and each context seeds only itself.
+- **Each product's PostgreSQL.** Folioviv, Verikora and Sovkora each have their own PostgreSQL, with the schema written as code and versioned migrations. They hold the product's own data, the only data of customers in our systems, and each belongs to its product alone. In Sovkora, the contexts already cut over run in their own database with their own role and the others still share one until their turn; no foreign key crosses a context, and each context seeds only itself.
 - **The test databases, one per worktree.** A session never touches a shared database, or a demo one. Each worktree gets its own, and the tests create a database per file, on a real PostgreSQL (the one CI provides, or a throwaway one started by the test itself). The rules about data are proven on a real engine, never with mocks. A journey that creates a user deletes it, and a check compares the users before and after the run.
 - **The development databases, rebuilt from zero.** A development database is never patched by hand. A rebuild drops every schema, migrates from the first migration, seeds the configuration and one cast of demo people, then checks the result against a snapshot of the expected schema. CI builds a database from zero with the same steps. A nightly check reads the development schema, read-only, compares it with the snapshot on main and opens one ticket when they differ.
 - **Media and object storage.** Images, clips, downloadable books and the screenshots of pull requests live in object storage behind a CDN, never in a repository. The databases keep a reference and the sizes; the library of media of a post records how each file was made. A file is a hashed object: it is replaced, not edited.
@@ -131,9 +131,9 @@ What each holds, who owns it, how it is rebuilt: that is the whole checklist. Th
 
 ## The skills our sessions load
 
-The rules and the trades of our agents are packaged as **skills**, and the packaging is the official one of our agent runtime's maker. In the runtime's documentation, an [Agent Skill](https://code.claude.com/docs/en/skills) is a folder with a `SKILL.md` file: a header with the skill's name and a description of when to use it, then the instructions. A [plugin](https://code.claude.com/docs/en/plugins) bundles skills, subagents and other pieces as one installable unit, and a [marketplace](https://code.claude.com/docs/en/plugin-marketplaces) is a catalogue file listing plugins with their versions. The same maker publishes its own skills, for documents among others, in a [public repository](https://github.com/anthropics/skills).
+The rules and the trades of our agents are packaged as **skills**, and the packaging is the official one of Anthropic, the maker of Claude Code, the agent runtime we use. In Claude Code's documentation, an [Agent Skill](https://code.claude.com/docs/en/skills) is a folder with a `SKILL.md` file: a header with the skill's name and a description of when to use it, then the instructions. A [plugin](https://code.claude.com/docs/en/plugins) bundles skills, subagents and other pieces as one installable unit, and a [marketplace](https://code.claude.com/docs/en/plugin-marketplaces) is a catalogue file listing plugins with their versions. Anthropic publishes its own skills, for documents among others, in a [public repository](https://github.com/anthropics/skills).
 
-We use the official format, not the maker's skills. Our four plugins, from one marketplace, are:
+We use Anthropic's format, not Anthropic's skills. Our four plugins, from one marketplace, are:
 
 <Compare label="The four plugins of our marketplace, with their versions and what each holds" topic="Plugin" before="Version" after="Skills">
   <Case topic="krizaka-ops" before="0.9.5" after="3: session, issue, landing" />
@@ -146,7 +146,7 @@ That makes 19 skills, plus a few subagents, all in the official layout: a folder
 
 **Pinned and checked at start.** A session does not install anything. The launcher compares the installed plugins with the marketplace before the start, and the session's first message reports what it really loaded; a missing or unexpected skill, or a version that differs, stops it with the reason.
 
-**Which of the maker's official skills do our sessions use? None, by design.** The launcher sets every plugin that is not ours to disabled, recomputed at each start. When we built it, a team session inherited the whole account: 252 skills and about 190 000 tokens of context on its first turn. With only our plugins it starts with 52 skills, 19 of them ours, and about 47 000 tokens. The CLI's own built-in plugins stay, because they are part of the tool. The maker's official plugins can exist on the founder's machine and in an interactive session; a headless team session, which must start the same every time, does not load them. What we take from the maker is the format, the plugin and marketplace mechanics and the tool that runs them; the content of the skills is ours, and it stays private.
+**Which of Anthropic's official skills do our sessions use? None, by design.** The launcher sets every plugin that is not ours to disabled, recomputed at each start. When we built it, a team session inherited the whole account: 252 skills and about 190 000 tokens of context on its first turn. With only our plugins it starts with 52 skills, 19 of them ours, and about 47 000 tokens. The CLI's own built-in plugins stay, because they are part of the tool. Anthropic's official plugins can exist on the founder's machine and in an interactive session; a headless team session, which must start the same every time, does not load them. What we take from Anthropic is the format, the plugin and marketplace mechanics and the tool that runs them; the content of the skills is ours, and it stays private.
 
 ## What it costs, and what it gives
 
@@ -155,10 +155,10 @@ That makes 19 skills, plus a few subagents, all in the official layout: a folder
   <Side title="What it gives us" tone="after" items="Traceability: every change goes ticket, pull request, required checks, merge queue, main | Reproducible sessions: same environment at every start, proven, with the drift named | No model in the decision to merge | Defects caught on the machine rather than in CI | One founder can see the whole state on one screen, every figure dated" />
 </Split>
 
-The numbers we have are few, measured, and published with their source. On 13 November, four read-only audits of the sessions' logs read 150 environment checks at start: no drift. The same day, the first audit showed what a guard costs when nobody measures it: 86 sessions out of 101 had never asked the code index, though the guard requiring it was in place. Both are in [chapter 29](/story/how-our-agent-teams-talk/), with the method and the limits.
+The numbers we have are few, measured, and published with their source. On 13 November, four read-only audits of the sessions' logs were run; the first three read 150 environment checks at start (118, 16 and 16): no drift. The same day, the first audit showed what a guard costs when nobody measures it: 86 sessions out of 101 had never asked the code index, though the guard requiring it was in place. Both are in [chapter 29](/story/how-our-agent-teams-talk/), with the method and the limits.
 
 <Numbers>
-  <Num value="150" label="environment checks read at start" hint="no drift, four audits of 13 November" />
+  <Num value="150" label="environment checks read at start" hint="no drift, the first three audits of 13 November" />
   <Num value="86 of 101" label="sessions that walked past a guard" hint="first audit, before the guard read whole commands" />
 </Numbers>
 
@@ -168,7 +168,7 @@ What we have not measured, I do not claim: the share of each guard in the defect
 
 The model is a LikeC4 file in this blog's repository. It is written against the organisation's base: one specification (the kinds of element) and the organisation's own part (the people, GitHub, the cloud, the platform and its containers). It adds nothing at the top level: it only details, inside the platform, the container « Agents tooling ».
 
-A script runs the organisation's architecture tool on it, the same code that checks every repository's model every day. The check is the tool's own: the file parses with the base, writes no specification of its own, and every element it adds lives inside the one system it details. Its verdict on this model is « ok », with 9 elements added, and it covers the five views. The script then lays the views out with LikeC4 and records the layout with the hash of the model; the blog's tests fail when the model changes and the layout does not. The page draws that layout in its own colours, so both themes follow; each view also exists as a standalone SVG file per theme, linked under it.
+A script runs `layoutViews` of the organisation's architecture package (`@krizaka/architecture`) on it, with the organisation's base: the same check the organisation applies to every repository's model. The check is the package's own: the file parses with the base, writes no specification of its own, and every element it adds lives inside the one system it details. Its verdict on this model is « ok », with 9 elements added, and it covers the five views. The same call lays the views out with LikeC4, and the script records the layout with the hash of the model; the blog's tests fail when the model changes and the layout does not. The page draws that layout with the organisation's shared diagram component (`ArchitectureDiagram` of `@krizaka/ui`), in the page's colours, so both themes follow, with each view's text version under it. The blog has no drawing code of its own.
 
 One limit matters to an architect. The organisation's tool proves the containers it can bind to code against the main branch of each repository. It does not prove runtime relationships: those are drawn, not checked. The arrows in this post are what the documentation and the published chapters say, not a trace of calls.
 
@@ -184,7 +184,7 @@ Because a merge is a decision that needs a sure answer. The train is ordinary co
 
 ### Which skills do your agents use, the official ones or yours?
 
-Ours, written in the official Agent Skills format of the runtime's maker and packaged as plugins in a marketplace. Team sessions disable every other plugin, so that each one starts with the same skills and a small context.
+Ours, written in Anthropic's official Agent Skills format (the one of Claude Code) and packaged as plugins in a marketplace. Team sessions disable every other plugin, so that each one starts with the same skills and a small context.
 
 ### Can the operations database be lost?
 
