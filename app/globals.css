@@ -715,6 +715,7 @@ picture {
   min-width: 0;
 }
 .bl-byline-name {
+  line-height: 1.5rem;
   font-weight: 650;
   color: var(--kz-text-primary);
   font-size: 0.9375rem;
@@ -741,14 +742,17 @@ picture {
   align-items: center;
   gap: 0.5rem;
   margin-inline-start: auto;
+  /* On the name's line: the avatar stays centred on the two lines, the link takes the name's line box. */
+  align-self: flex-start;
 }
 /* The other language: a discreet text link, not a button (founder 2026-11-15). */
 .bl-byline-other {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  padding-block: 0.25rem;
+  min-height: 1.5rem;
   font-size: 0.875rem;
+  line-height: 1.5rem;
   color: var(--kz-text-secondary);
   text-decoration: none;
   border-radius: 2px;
@@ -766,6 +770,7 @@ picture {
   .bl-byline-actions {
     flex-basis: 100%;
     margin-inline-start: 0;
+    align-self: auto;
   }
 }
 

@@ -40,7 +40,7 @@ The shape is the answer to one question: what happens when ten sessions work at 
 
 ## The context
 
-<Architecture view="agents_context" label="The context: the founder and the AI agents around the agents tooling, inside the Krizaka platform; GitHub holds the work and deploys to the cloud after a merge; every session runs on a hosted model." />
+<Architecture view="agents_context" label="The context" description="The founder and the AI agents around the agents tooling, inside the Krizaka platform; GitHub holds the work and deploys to the cloud after a merge; every session runs on a hosted model." />
 
 Two kinds of people use the system. The founder writes the tickets, gives instructions to the CTO session and watches the cockpit. The AI agents do the rest, always as sessions of the tooling: there is no other way for an agent to touch a repository.
 
@@ -50,7 +50,7 @@ The other dependency is the model. The CTO session and every team session run in
 
 ## The containers
 
-<Architecture view="agents_containers" label="The containers of the agents tooling: the CTO session and the launcher start the team sessions; the sessions read the rules, pass the guards, open pull requests and queue them on the trains; the watchdog and the trains write to the operations database, which the cockpit reads." />
+<Architecture view="agents_containers" label="The containers of the agents tooling" description="The CTO session and the launcher start the team sessions; the sessions read the rules, pass the guards, open pull requests and queue them on the trains; the watchdog and the trains write to the operations database, which the cockpit reads." />
 
 Nine containers, each with one job. I take them in the order a piece of work meets them.
 
@@ -135,19 +135,19 @@ The documentation that describes the tooling lives next to it and is tested agai
 
 ## The life of a pull request
 
-<Architecture view="pr_life" label="The life of a pull request, in twelve numbered steps: from the ticket the founder writes to the landing the cockpit shows." />
+<Architecture view="pr_life" label="The life of a pull request, in twelve numbered steps" description="From the ticket the founder writes to the landing the cockpit shows." />
 
 Read the numbers in order. The one point where an agent is taken at its word is the reading of its own diff, and that reading decides nothing alone. The rest is checked: the ticket says what « done » means; the session works in its own worktree; the guards refuse what can be refused early; the pull request repeats the ticket's lines with their proofs; the train only moves what is green; GitHub replays the checks before the merge; the landing is recorded, and the founder reads it.
 
 ## The life of an alert
 
-<Architecture view="alert_life" label="The life of an alert, in nine numbered steps: the watchdog reads GitHub and raises it, the cockpit and the CTO session see it, the CTO acknowledges it and a team fixes the cause, the watchdog sees green on a complete read and resolves it with that read as proof." />
+<Architecture view="alert_life" label="The life of an alert, in nine numbered steps" description="The watchdog reads GitHub and raises it, the cockpit and the CTO session see it, the CTO acknowledges it and a team fixes the cause, the watchdog sees green on a complete read and resolves it with that read as proof." />
 
 An alert is a row with a state, not a message. The watchdog raises it; every session start and the cockpit show it; the CTO session reads the open ones before any new work, acknowledges one with a note (who looked, what was decided) and launches a team on the cause. The acknowledgement does not close it. The watchdog resolves its own row when the next complete read no longer sees the problem, and writes that read as the proof. Why only a complete read: a read that could not reach a repository proves nothing about its pull requests, so an incomplete pass never resolves a GitHub alert. Whoever resolves an alert, the store refuses a resolution without its proof. Nobody closes one by saying it is fine.
 
 ## How the operations database follows GitHub
 
-<Architecture view="opsdb_sync" label="How the operations database follows GitHub, in six numbered steps: a reader asks, a stale copy asks GitHub only for what changed, a move is written on GitHub first, and the cockpit reads the copy without a network call." />
+<Architecture view="opsdb_sync" label="How the operations database follows GitHub, in six numbered steps" description="A reader asks, a stale copy asks GitHub only for what changed, a move is written on GitHub first, and the cockpit reads the copy without a network call." />
 
 No clock refreshes it. A reader that finds the copy older than a short threshold triggers one incremental read: a single bounded query for the issues and pull requests changed since the last read, then their board cards, upserted in one go. Ten readers at once wait on one lock, and GitHub is read once. A first read, or too many changes, becomes a full read inside one transaction. The cockpit asks the board's tool for the copy and makes no network call of its own; when the copy is stale, the tool reads GitHub for it. The consequence is the one that matters: the worst a stale copy can do is display an old fact, because every decision is checked on GitHub again.
 

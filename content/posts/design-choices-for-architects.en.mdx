@@ -19,9 +19,9 @@ This post is for architects, tech leads and designers. It is short on prose on p
 
 Two views of one model written in [LikeC4](https://likec4.dev/), the notation of the [C4 model](https://c4model.com/), checked against our organisation's base model. Less detail than our internal views, and nothing sensitive: no host, address or account.
 
-<Architecture view="org_context" label="The context: customers and visitors use Verikora and Folioviv; Verikora asks Sovkora, the AI engine, for checks; the three products build on the shared libraries, published to the package registries; the platform runs the shared workflows on GitHub, which deploys main to the cloud; Sovkora sends its logs, metrics and traces to monitoring." />
+<Architecture view="org_context" label="The context (C1)" description="Customers and visitors use Verikora and Folioviv; Verikora asks Sovkora, the AI engine, for checks; the three products build on the shared libraries, published to the package registries; the platform runs the shared workflows on GitHub, which deploys main to the cloud; Sovkora sends its logs, metrics and traces to monitoring." />
 
-<Architecture view="org_containers" label="The containers: Verikora and Folioviv each have a Next.js web app in one container, an Expo mobile app and a PostgreSQL database; Sovkora has an edge service, the engine services, a RabbitMQ broker, Python workers and PostgreSQL databases with pgvector; the web apps import the TypeScript packages and the engine services build on the Java building blocks." />
+<Architecture view="org_containers" label="The containers (C2)" description="Verikora and Folioviv each have a Next.js web app in one container, an Expo mobile app and a PostgreSQL database; Sovkora has an edge service, the engine services, a RabbitMQ broker, Python workers and PostgreSQL databases with pgvector; the web apps import the TypeScript packages and the engine services build on the Java building blocks." />
 
 ## 1. RabbitMQ rather than Kafka
 
