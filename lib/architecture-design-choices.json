@@ -3,7 +3,7 @@
   "tool": { "name": "@krizaka/architecture", "likec4": "1.60.0" },
   "source": {
     "path": "content/diagrams/design-choices-for-architects.c4",
-    "sha256": "584c663c4463d1471334ffeb0bb4bc3e0134de47de0c2168e8e1ccaf54628394"
+    "sha256": "1c52317a35596dc9f959530bb58252f6762c678db91ee5548b64913edbbc6f5f"
   },
   "base": [
     { "path": "org.c4", "sha256": "76a9cd37ed1b70ec0037acea65408f1800fbb46572cc6c206d8126a0b77e8818" },
@@ -11,7 +11,7 @@
   ],
   "translations": {
     "path": "content/diagrams/design-choices-for-architects.fr.json",
-    "sha256": "a95944b8d33cc23e4f3baf4ce902ee566cf03195b298c427d9a6058430ca44f8"
+    "sha256": "8910f8ed4ef8b1d8e9b9ebf15e0e780ec2427a96b2ef968d194e64d4115d4a97"
   },
   "check": {
     "status": "ok",
@@ -59,7 +59,7 @@
         "id": "org_context",
         "title": "The organisation · context",
         "dynamic": false,
-        "bounds": { "x": 0, "y": 0, "width": 881, "height": 751 },
+        "bounds": { "x": 0, "y": 0, "width": 962, "height": 751 },
         "nodes": [
           {
             "id": "customer",
@@ -70,7 +70,7 @@
             "technology": null,
             "description": "An organisation or a person who uses a Krizaka product.",
             "compound": false,
-            "x": 169,
+            "x": 168,
             "y": 0,
             "width": 180,
             "height": 100
@@ -84,7 +84,7 @@
             "technology": null,
             "description": "Reads the company site, the blog and the library sites.",
             "compound": false,
-            "x": 412,
+            "x": 411,
             "y": 0,
             "width": 180,
             "height": 100
@@ -98,7 +98,7 @@
             "technology": null,
             "description": "How the org works: shared CI and standards, the agents tooling, the infrastructure as code, the templates.",
             "compound": false,
-            "x": 697,
+            "x": 621,
             "y": 0,
             "width": 180,
             "height": 100
@@ -112,7 +112,7 @@
             "technology": null,
             "description": "Checks documents and keeps the files they belong to.",
             "compound": false,
-            "x": 136,
+            "x": 135,
             "y": 163,
             "width": 180,
             "height": 100
@@ -140,7 +140,7 @@
             "technology": null,
             "description": "Code, issues, pull requests, CI, the merge queue and the tags.",
             "compound": false,
-            "x": 580,
+            "x": 623,
             "y": 163,
             "width": 180,
             "height": 100
@@ -168,7 +168,7 @@
             "technology": null,
             "description": "The app and static site hosting, the managed databases.",
             "compound": false,
-            "x": 665,
+            "x": 726,
             "y": 326,
             "width": 180,
             "height": 100
@@ -223,15 +223,15 @@
             "target": "verikora",
             "label": "checks a document",
             "points": [
-              [231, 100],
-              [228, 106],
-              [226, 113],
-              [224, 120],
-              [222, 130],
-              [221, 142],
-              [221, 153]
+              [230, 100],
+              [227, 106],
+              [225, 113],
+              [223, 120],
+              [221, 130],
+              [220, 142],
+              [220, 153]
             ],
-            "labelBBox": { "x": 225, "y": 121, "width": 125, "height": 18 },
+            "labelBBox": { "x": 224, "y": 121, "width": 125, "height": 18 },
             "step": null,
             "back": false
           },
@@ -241,15 +241,15 @@
             "target": "folioviv",
             "label": "runs a shop",
             "points": [
-              [328, 100],
-              [337, 107],
-              [346, 113],
-              [354, 120],
-              [368, 131],
-              [384, 144],
-              [398, 156]
+              [327, 100],
+              [336, 107],
+              [345, 113],
+              [353, 120],
+              [367, 131],
+              [383, 144],
+              [397, 156]
             ],
-            "labelBBox": { "x": 382, "y": 121, "width": 77, "height": 18 },
+            "labelBBox": { "x": 381, "y": 121, "width": 77, "height": 18 },
             "step": null,
             "back": false
           },
@@ -260,11 +260,11 @@
             "label": "buys on a storefront",
             "points": [
               [489, 100],
-              [485, 116],
-              [480, 135],
+              [484, 116],
+              [479, 135],
               [475, 153]
             ],
-            "labelBBox": { "x": 485, "y": 121, "width": 128, "height": 18 },
+            "labelBBox": { "x": 484, "y": 121, "width": 128, "height": 18 },
             "step": null,
             "back": false
           },
@@ -274,8 +274,8 @@
             "target": "sovkora",
             "label": "asks for checks",
             "points": [
-              [215, 263],
-              [211, 279],
+              [214, 263],
+              [210, 279],
               [206, 298],
               [202, 316]
             ],
@@ -289,12 +289,12 @@
             "target": "libraries",
             "label": "builds on",
             "points": [
-              [303, 262],
+              [303, 263],
               [309, 269],
-              [314, 275],
+              [314, 276],
               [318, 283],
               [351, 343],
-              [351, 424],
+              [352, 424],
               [347, 478]
             ],
             "labelBBox": { "x": 350, "y": 365, "width": 60, "height": 18 },
@@ -341,14 +341,17 @@
             "id": "1w9anm8",
             "source": "platform",
             "target": "github",
-            "label": "[...]",
+            "label": "checks, trains and releases",
             "points": [
-              [752, 100],
-              [739, 117],
-              [725, 137],
-              [711, 155]
+              [690, 100],
+              [687, 114],
+              [685, 129],
+              [687, 143],
+              [688, 146],
+              [689, 150],
+              [690, 153]
             ],
-            "labelBBox": { "x": 737, "y": 119, "width": 25, "height": 18 },
+            "labelBBox": { "x": 688, "y": 121, "width": 174, "height": 18 },
             "step": null,
             "back": false
           },
@@ -373,15 +376,18 @@
             "target": "cloud",
             "label": "provisions",
             "points": [
-              [799, 100],
-              [810, 152],
-              [821, 236],
-              [800, 306],
-              [799, 309],
-              [798, 313],
-              [796, 316]
+              [801, 71],
+              [826, 81],
+              [851, 97],
+              [866, 120],
+              [911, 189],
+              [891, 227],
+              [866, 306],
+              [865, 309],
+              [863, 313],
+              [862, 316]
             ],
-            "labelBBox": { "x": 813, "y": 202, "width": 67, "height": 18 },
+            "labelBBox": { "x": 894, "y": 202, "width": 67, "height": 18 },
             "step": null,
             "back": false
           },
@@ -391,15 +397,12 @@
             "target": "cloud",
             "label": "deploys main",
             "points": [
-              [688, 263],
-              [694, 277],
-              [701, 292],
-              [709, 306],
-              [711, 309],
-              [713, 313],
-              [715, 317]
+              [744, 263],
+              [755, 280],
+              [768, 299],
+              [779, 317]
             ],
-            "labelBBox": { "x": 710, "y": 284, "width": 86, "height": 18 },
+            "labelBBox": { "x": 772, "y": 284, "width": 86, "height": 18 },
             "step": null,
             "back": false
           },
@@ -890,7 +893,7 @@
         "id": "org_context",
         "title": "L'organisation · contexte",
         "dynamic": false,
-        "bounds": { "x": 0, "y": 0, "width": 881, "height": 751 },
+        "bounds": { "x": 0, "y": 0, "width": 962, "height": 751 },
         "nodes": [
           {
             "id": "customer",
@@ -901,7 +904,7 @@
             "technology": null,
             "description": "Une organisation ou une personne qui utilise un produit Krizaka.",
             "compound": false,
-            "x": 169,
+            "x": 168,
             "y": 0,
             "width": 180,
             "height": 100
@@ -915,7 +918,7 @@
             "technology": null,
             "description": "Lit le site de l'entreprise, le blog et les sites des bibliothèques.",
             "compound": false,
-            "x": 412,
+            "x": 411,
             "y": 0,
             "width": 180,
             "height": 100
@@ -929,7 +932,7 @@
             "technology": null,
             "description": "Comment l'organisation travaille : CI et standards partagés, outillage des agents, infrastructure as code, gabarits.",
             "compound": false,
-            "x": 697,
+            "x": 621,
             "y": 0,
             "width": 180,
             "height": 100
@@ -943,7 +946,7 @@
             "technology": null,
             "description": "Vérifie des documents et garde les dossiers auxquels ils appartiennent.",
             "compound": false,
-            "x": 136,
+            "x": 135,
             "y": 163,
             "width": 180,
             "height": 100
@@ -971,7 +974,7 @@
             "technology": null,
             "description": "Le code, les tickets, les pull requests, la CI, la file de fusion et les tags.",
             "compound": false,
-            "x": 580,
+            "x": 623,
             "y": 163,
             "width": 180,
             "height": 100
@@ -999,7 +1002,7 @@
             "technology": null,
             "description": "L'hébergement des applications et des sites statiques, les bases de données gérées.",
             "compound": false,
-            "x": 665,
+            "x": 726,
             "y": 326,
             "width": 180,
             "height": 100
@@ -1054,15 +1057,15 @@
             "target": "verikora",
             "label": "vérifie un document",
             "points": [
-              [231, 100],
-              [228, 106],
-              [226, 113],
-              [224, 120],
-              [222, 130],
-              [221, 142],
-              [221, 153]
+              [230, 100],
+              [227, 106],
+              [225, 113],
+              [223, 120],
+              [221, 130],
+              [220, 142],
+              [220, 153]
             ],
-            "labelBBox": { "x": 225, "y": 121, "width": 125, "height": 18 },
+            "labelBBox": { "x": 224, "y": 121, "width": 125, "height": 18 },
             "step": null,
             "back": false
           },
@@ -1072,15 +1075,15 @@
             "target": "folioviv",
             "label": "tient une boutique",
             "points": [
-              [328, 100],
-              [337, 107],
-              [346, 113],
-              [354, 120],
-              [368, 131],
-              [384, 144],
-              [398, 156]
+              [327, 100],
+              [336, 107],
+              [345, 113],
+              [353, 120],
+              [367, 131],
+              [383, 144],
+              [397, 156]
             ],
-            "labelBBox": { "x": 382, "y": 121, "width": 77, "height": 18 },
+            "labelBBox": { "x": 381, "y": 121, "width": 77, "height": 18 },
             "step": null,
             "back": false
           },
@@ -1091,11 +1094,11 @@
             "label": "achète sur une vitrine",
             "points": [
               [489, 100],
-              [485, 116],
-              [480, 135],
+              [484, 116],
+              [479, 135],
               [475, 153]
             ],
-            "labelBBox": { "x": 485, "y": 121, "width": 128, "height": 18 },
+            "labelBBox": { "x": 484, "y": 121, "width": 128, "height": 18 },
             "step": null,
             "back": false
           },
@@ -1105,8 +1108,8 @@
             "target": "sovkora",
             "label": "demande des vérifications",
             "points": [
-              [215, 263],
-              [211, 279],
+              [214, 263],
+              [210, 279],
               [206, 298],
               [202, 316]
             ],
@@ -1120,12 +1123,12 @@
             "target": "libraries",
             "label": "s'appuie sur",
             "points": [
-              [303, 262],
+              [303, 263],
               [309, 269],
-              [314, 275],
+              [314, 276],
               [318, 283],
               [351, 343],
-              [351, 424],
+              [352, 424],
               [347, 478]
             ],
             "labelBBox": { "x": 350, "y": 365, "width": 60, "height": 18 },
@@ -1172,14 +1175,17 @@
             "id": "1w9anm8",
             "source": "platform",
             "target": "github",
-            "label": "[...]",
+            "label": "vérifications, trains et publications",
             "points": [
-              [752, 100],
-              [739, 117],
-              [725, 137],
-              [711, 155]
+              [690, 100],
+              [687, 114],
+              [685, 129],
+              [687, 143],
+              [688, 146],
+              [689, 150],
+              [690, 153]
             ],
-            "labelBBox": { "x": 737, "y": 119, "width": 25, "height": 18 },
+            "labelBBox": { "x": 688, "y": 121, "width": 174, "height": 18 },
             "step": null,
             "back": false
           },
@@ -1204,15 +1210,18 @@
             "target": "cloud",
             "label": "provisionne",
             "points": [
-              [799, 100],
-              [810, 152],
-              [821, 236],
-              [800, 306],
-              [799, 309],
-              [798, 313],
-              [796, 316]
+              [801, 71],
+              [826, 81],
+              [851, 97],
+              [866, 120],
+              [911, 189],
+              [891, 227],
+              [866, 306],
+              [865, 309],
+              [863, 313],
+              [862, 316]
             ],
-            "labelBBox": { "x": 813, "y": 202, "width": 67, "height": 18 },
+            "labelBBox": { "x": 894, "y": 202, "width": 67, "height": 18 },
             "step": null,
             "back": false
           },
@@ -1222,15 +1231,12 @@
             "target": "cloud",
             "label": "déploie main",
             "points": [
-              [688, 263],
-              [694, 277],
-              [701, 292],
-              [709, 306],
-              [711, 309],
-              [713, 313],
-              [715, 317]
+              [744, 263],
+              [755, 280],
+              [768, 299],
+              [779, 317]
             ],
-            "labelBBox": { "x": 710, "y": 284, "width": 86, "height": 18 },
+            "labelBBox": { "x": 772, "y": 284, "width": 86, "height": 18 },
             "step": null,
             "back": false
           },
