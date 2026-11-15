@@ -101,7 +101,41 @@ const titleOverflow = () => {
     : [];
 };
 
-const LAYOUT_CHECKS = [sidewaysScroll, chromePastEdge, contentPastEdge, bylineActions, titleOverflow];
+/* A plate's head reads « fig. N — title » at the left, the description under it (krizaka-internal#3880): the title starts near the
+   head's left edge (the number is the ::before just before it), and the description sits below the title, never beside it. */
+const figureHead = () => {
+  const out = [];
+  for (const head of document.querySelectorAll("figcaption.kz-plate-head")) {
+    const title = head.querySelector(".kz-plate-title")?.getBoundingClientRect();
+    const sub = head.querySelector(".kz-plate-sub")?.getBoundingClientRect();
+    const box = head.getBoundingClientRect();
+    if (!title?.width) continue;
+    if (title.left - box.left > 120)
+      out.push(`a figure's title floats ${Math.round(title.left - box.left)} px from its « fig. N — »`);
+    if (sub?.width && sub.top < title.bottom - 1)
+      out.push("a figure's description sits beside its title, not under it");
+  }
+  return out;
+};
+
+/* The byline: the avatar sits beside the name (on a phone too), never alone above it. */
+const bylineBeside = () => {
+  const mark = document.querySelector(".bl-byline-mark")?.getBoundingClientRect();
+  const name = document.querySelector(".bl-byline-name")?.getBoundingClientRect();
+  return mark?.width && name?.width && name.top >= mark.bottom - 1
+    ? ["the avatar sits alone above the author's name"]
+    : [];
+};
+
+const LAYOUT_CHECKS = [
+  sidewaysScroll,
+  chromePastEdge,
+  contentPastEdge,
+  bylineActions,
+  titleOverflow,
+  figureHead,
+  bylineBeside,
+];
 
 /* The basics' path (krizaka-internal#1869): at 1440×900 the whole ordered list fits one screen below the bar (so it reads in five
    seconds), its steps read 01 → N in the DOM and top to bottom on the page, each with its one link. */

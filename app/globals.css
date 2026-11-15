@@ -712,7 +712,13 @@ picture {
 .bl-byline-text {
   display: grid;
   gap: 0.125rem;
+  /* flex-basis 0: the text shares the row with the avatar and wraps inside itself; with `auto` its full one-line width pushed
+     the whole block under the avatar on a phone (krizaka-internal#3880). */
+  flex: 1 1 0;
   min-width: 0;
+}
+.bl-byline-mark {
+  flex: none;
 }
 .bl-byline-name {
   line-height: 1.5rem;
@@ -1414,6 +1420,15 @@ picture {
   font-size: 0.8125rem;
   line-height: 1.55;
   color: var(--kz-text-secondary);
+}
+/* A plate's head (@krizaka/ui kz-plate-head: a flex row that spreads its children): « fig. N — » is the blog's ::before, so the
+   blog sets it with the title on the left, in one line, the description on its own line below (krizaka-internal#3880). */
+.bl-prose figure > figcaption.kz-plate-head {
+  justify-content: flex-start;
+  column-gap: 0.4em;
+}
+.bl-prose figure > figcaption.kz-plate-head > .kz-plate-sub {
+  flex-basis: 100%;
 }
 .bl-prose figure:not(.kz-code) > figcaption::before {
   counter-increment: bl-fig;

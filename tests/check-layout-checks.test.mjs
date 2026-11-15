@@ -9,7 +9,7 @@ const src = readFileSync(new URL("../scripts/check-layout.mjs", import.meta.url)
 test("the layout checks keep every rule", () => {
   assert.match(
     src,
-    /LAYOUT_CHECKS = \[[^\]]*sidewaysScroll[^\]]*chromePastEdge[^\]]*contentPastEdge[^\]]*bylineActions[^\]]*titleOverflow/,
+    /LAYOUT_CHECKS = \[[^\]]*sidewaysScroll[^\]]*chromePastEdge[^\]]*contentPastEdge[^\]]*bylineActions[^\]]*titleOverflow[^\]]*figureHead[^\]]*bylineBeside/,
   );
   assert.match(src, /const visuallyHidden = /);
   assert.match(src, /scrolls\(e\) \|\| visuallyHidden\(e\)/);

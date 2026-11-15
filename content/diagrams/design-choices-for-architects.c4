@@ -77,7 +77,6 @@ model {
   folioviv -> libraries 'builds on'
   sovkora -> libraries 'builds on'
   libraries -> registries 'published to'
-  platform -> github 'shared workflows, checks, merge queue'
   github -> cloud 'deploys main'
   sovkora -> monitoring 'logs, metrics, traces'
 
