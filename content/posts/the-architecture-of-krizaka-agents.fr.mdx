@@ -1,0 +1,195 @@
+---
+title: "L'architecture de krizaka-agents, pour les architectes d'entreprise"
+description: "Un fondateur, des agents IA, et l'outillage entre eux : qui décide, qui écrit, qui refuse, qui fait atterrir. Chaque composant, son fonctionnement, et cinq schémas tirés d'un modèle que l'outil d'architecture vérifie."
+seoTitle: "L'architecture de notre outillage d'agents IA"
+seoDescription: "Session CTO, lanceur, sessions isolées, gardes, trains, chien de garde, base d'exploitation, cockpit : chaque pièce, avec des schémas C4 vérifiés."
+date: 2026-11-14
+tags: [ai, integration]
+author: oussama
+draft: true
+sensitive: true
+---
+
+Ce billet s'adresse aux architectes d'entreprise et aux experts en TI qui posent une question légitime : comment une seule personne livre-t-elle du logiciel avec des agents IA, en gardant le contrôle ? Ma réponse n'est pas un modèle. C'est l'outillage autour des modèles, que nous appelons krizaka-agents. Il est privé : j'en montre les pièces et la façon dont elles se parlent, pas le code.
+
+Au [chapitre 29](/story/how-our-agent-teams-talk/), j'avais promis des schémas générés à partir d'un modèle plutôt que dessinés à la main. Les voici. Les vues ci-dessous viennent d'un seul modèle écrit en [LikeC4](https://likec4.dev), la notation du [modèle C4](https://c4model.com), sur la même base et avec la même vérification que tous les systèmes de notre organisation. Comment cela fonctionne, et ce que cela ne prouve pas, fait l'objet de la dernière partie.
+
+## D'abord, trois principes
+
+Tout ce qui suit découle de trois choix.
+
+1. **GitHub est la source.** Les tickets, le tableau, les pull requests, les contrôles requis, la file de fusion : tout vit sur GitHub. Ce qui est local est une copie, gardée pour afficher et avertir, jamais pour décider. Pourquoi : GitHub impose les contrôles requis et la file de fusion à tous les acteurs, nous compris ; une copie locale n'impose rien.
+2. **Pas de modèle là où il faut une réponse sûre.** Le lanceur, les gardes, les trains et le chien de garde sont du code ordinaire. Un modèle décide de ce qu'il écrit. Il ne décide jamais si un changement peut fusionner. Pourquoi : à la même question posée deux fois, un modèle peut répondre deux fois autrement ; une fusion doit avoir une seule réponse.
+3. **Les agents ne se parlent pas.** Ce qu'une session a à dire, elle l'écrit dans un endroit durable : un commit, une pull request, un fichier d'état, une ligne en base. Une conversation entre agents ne peut être ni vérifiée ni rejouée.
+
+## Le contexte
+
+<Architecture view="agents_context" label="Le contexte : le fondateur et les agents IA autour de l'outillage des agents, à l'intérieur de la plateforme Krizaka ; GitHub porte le travail et déploie dans le cloud après une fusion ; chaque session tourne sur un modèle hébergé." />
+
+Deux sortes d'acteurs utilisent le système. Le fondateur écrit les tickets, donne ses consignes à la session CTO et regarde le cockpit. Les agents IA font le reste, toujours comme sessions de l'outillage : un agent n'a pas d'autre moyen de toucher un dépôt.
+
+Pour le travail lui-même, l'outillage parle à un seul système externe, GitHub. Il y ouvre les pull requests, les fait atterrir par la file de fusion de GitHub et en lit les contrôles. Le déploiement n'est pas son affaire : une fois main avancé, le pipeline de chaque dépôt le déploie chez son hébergeur.
+
+L'autre dépendance, c'est le modèle. La session CTO et chaque session d'équipe tournent dans Claude Code sur les modèles hébergés d'Anthropic, montrés comme « Fournisseurs de modèles ». C'est la seule pièce que nous ne pouvons pas remplacer par du code simple, donc celle que nous plafonnons : chaque session d'équipe a son plafond en tours, en budget et en minutes.
+
+## Les conteneurs
+
+<Architecture view="agents_containers" label="Les conteneurs de l'outillage des agents : la session CTO et le lanceur démarrent les sessions d'équipe ; les sessions lisent les règles, passent les gardes, ouvrent des pull requests et les mettent dans les trains ; le chien de garde et les trains écrivent dans la base d'exploitation, que lit le cockpit." />
+
+Neuf conteneurs, chacun avec un seul rôle. Je les prends dans l'ordre où un travail les rencontre.
+
+### La session CTO et le lanceur
+
+Le pilote est un agent : une longue conversation entre le fondateur et une session CTO. Elle valide chaque tâche, la découpe en tickets d'un livrable chacun, écrit un brief court par ticket et lance une équipe pour le faire.
+
+Lancer n'est pas un geste de la session CTO. Elle remet le brief au **lanceur**, du code simple sans modèle, qui construit toutes les sessions sans interface de la même façon. Pourquoi du code : une session doit démarrer de la même façon à chaque fois, et un modèle chargé de la construire pourrait en décider autrement.
+
+Nous avons aussi construit un coordinateur plus riche, avec des baux, des jetons et un périmètre réservé par tâche ([le coordinateur](/basics/agents-under-a-coordinator/)). Il tourne, mais pour un seul dépôt local ; aucun dépôt GitHub n'est encore sous lui. Ce qui y sépare les équipes est plus simple : un worktree par ticket, et une pull request refusée à l'ouverture si elle modifie un fichier qu'une autre pull request ouverte modifie déjà. Pourquoi la règle simple : elle n'a besoin d'aucun service en marche pour que le travail commence. Ce qu'elle coûte : elle compare des chemins exacts, donc deux changements qui touchent le même comportement par des fichiers différents ne se rencontrent que dans les contrôles, une fois la seconde branche mise à jour avec main.
+
+### Les sessions d'équipe : isolées, épinglées, vérifiées au démarrage
+
+Une session d'équipe n'a ni écran ni personne pour répondre à ses questions. Elle a un ticket, un brief, et des plafonds en tours, en budget et en minutes. Le lanceur la rend identique à chaque fois ([chapitre 27](/story/every-agent-starts-in-the-same-world/)) :
+
+- **Isolée** : elle voit l'index de notre code et les outils que son équipe déclare, rien des comptes ni des réglages personnels du fondateur.
+- **Épinglée** : la version de l'environnement d'exécution des agents et de nos extensions est écrite dans la configuration, montée par une pull request, jamais d'elle-même.
+- **Vérifiée deux fois** : avant le départ, la machine est comparée à ce qui est attendu ; au premier message de la session, ce qu'elle a réellement chargé est comparé de nouveau. Un seul écart, et la session est arrêtée, avec la raison.
+
+Le même constructeur démarre la session de dépannage qui débloque une pull request coincée et la session de recette qui vérifie un ticket sur la plateforme après la fusion. Il n'existe pas de second chemin.
+
+### Règles et compétences : la documentation que lisent les agents
+
+Chaque session lit les mêmes règles, un court préambule et les compétences de son métier. Ce sont des fichiers Markdown, versionnés dans un dépôt, modifiés par pull request et relus comme du code. Une règle qu'une session doit retenir est faible : les règles qui comptent le plus sont donc aussi écrites sous forme de gardes.
+
+### Les gardes, et la règle du décalage à gauche
+
+Une garde refuse, avec sa raison ; hors le formatage, elle ne corrige jamais d'elle-même. Pourquoi : une correction silencieuse cache la cause à la session qui l'a produite, et la même erreur revient à la suivante. Elles se tiennent à quatre moments :
+
+- **Autour de chaque appel d'outil** d'un agent : avant, un hook peut refuser (un fichier de secrets affiché, une écriture sur GitHub sans l'identité d'une application, du code lu avant d'avoir interrogé l'index) ; après, le fichier modifié est formaté et vérifié seul, en quelques secondes.
+- **Au commit et au push** : les secrets et les identités des auteurs au commit ; au push, les mêmes, plus le format et les vérificateurs de workflows sur les fichiers modifiés.
+- **Le précontrôle**, sur la machine, avant le push : la boucle rapide du dépôt sur ce qui a changé par rapport à main (lint, types, tests des paquets touchés, générateurs, règles d'analyse statique disponibles en local, couverture du code neuf). La règle derrière, c'est le décalage à gauche : ce qui peut se voir sur la machine ne doit pas attendre la CI. Le quatrième audit du chapitre 29 en est la raison : sur 4 pull requests rouges en CI, 3 échouaient sur un contrôle qui existait sur la machine et n'avait pas tourné.
+- **En CI**, la dernière ligne : les contrôles requis de chaque dépôt, plus deux qui portent sur la méthode plutôt que sur le code. Une pull request intitulée comme un correctif doit modifier une garde (un test ou une règle) ou porter une exemption écrite avec sa raison ; le contrôle voit qu'une garde a changé, pas qu'elle échoue sans le correctif. Et les **cliquets** : des comptes de dette (alertes de lint, code dupliqué, états écrits en chaînes nues, exceptions gelées aux règles d'architecture) consignés dans des fichiers que la CI laisse baisser, jamais monter. Pourquoi un cliquet : une règle neuve s'active le jour où elle est écrite, sans corriger d'abord chaque cas ancien ; les cas anciens sont comptés et ne peuvent que diminuer.
+
+Les refus des portes (ouvrir une pull request, créer un ticket, démarrer une session, entrer dans un train, un main gelé) sont comptés dans un seul journal. Une règle est gardée quand son compte montre un effet, et revue quand elle ne produit que du bruit. Les hooks autour des appels d'outils ne sont pas encore dans ce journal ; le chapitre 29 les a mesurés dans les journaux des sessions.
+
+### Les trains et la file de fusion
+
+Une session ne fusionne jamais. Elle ouvre sa pull request avec un seul outil, qui formate les changements, pousse la branche, reprend dans le corps les lignes « Done when » du ticket, et refuse si la voie a déjà cinq pull requests ouvertes dans le dépôt. Puis elle met la pull request dans le train de ce dépôt.
+
+Un train, c'est une file ordonnée par dépôt et un convoyeur. Les correctifs passent d'abord, puis les plus anciennes ; une pull request qui dépend d'une autre passe après elle. Le convoyeur prend la tête, met sa branche à jour, attend les contrôles requis et l'inscrit dans la file de fusion de GitHub, qui rejoue les contrôles sur le vrai mélange avec main. Une tête rouge est sautée, avec sa raison écrite, et la suivante part. Un main rouge gèle les fusions, jamais l'ouverture des pull requests, jusqu'à ce qu'un correctif atterrisse.
+
+Pourquoi un convoyeur et pas la session : un passage dans la file de fusion peut prendre un quart d'heure, et une session qui l'attend dépense son budget à ne rien faire ; le convoyeur est un script shell qui attend gratuitement. Ce que cela coûte, dit simplement : la revue que GitHub demande est donnée par une seconde application à nous, une fois par commit de tête, après que la session qui a écrit le changement en a lu le diff. Personne n'a à lire un diff avant qu'il atterrisse. Ce qui se tient entre un changement et main, ce sont les contrôles, rejoués par la file de fusion. Nous l'avons choisi parce qu'un contrôle se teste et se compte, là où un coup d'œil humain ne le peut pas ; cela nous coûte ceci : un trou dans un contrôle est un trou dans la revue. L'histoire est aux chapitres [19](/story/tchou-tchou-how-our-pull-requests-catch-the-train/) et [23](/story/the-trains-second-version-rails-sidings-and-a-repair-train/).
+
+### Le chien de garde et les alertes
+
+Le chien de garde n'a pas de modèle : il ne coûte aucun jeton. Toutes les 15 minutes, il fait ses contrôles locaux (tâches planifiées qui échouent ou se taisent, sessions figées ou qui tournent en rond) ; au plus une fois par heure, il lit GitHub (un main rouge, une pull request rouge sans responsable depuis une heure, un dépôt gelé). Il n'écrit jamais sur GitHub. Il lève des **alertes** : une ligne par sujet dans la base d'exploitation, en trois états (ouverte, prise en charge avec une note, résolue avec une preuve), purgée sept jours après sa prise en charge ou sa résolution et jamais tant qu'elle est ouverte.
+
+### Le tableau et le modèle des tickets
+
+Le travail se planifie sur trois niveaux, un epic, une fonctionnalité, une tâche, sous forme de tickets GitHub liés sur un seul tableau. Un seul outil crée chaque ticket : il donne le titre et les étiquettes standard, refuse un doublon, et avertit quand une fonctionnalité ne nomme pas les fichiers qu'elle touche. Les lignes « Done when » du ticket sont imposées une étape plus loin : la pull request qui le ferme doit les reprendre, sinon elle n'est pas ouverte. Les colonnes du tableau sont calculées par un réconciliateur, pas glissées à la main : c'est une pull request ouverte qui nomme le ticket qui le met en revue ; c'est sa fusion qui l'envoie en terminé, ou d'abord en recette quand le ticket en demande une. Pourquoi calculées : une colonne qu'une personne ou un agent déplace à la main dérive du travail ; une colonne tirée des pull requests les suit.
+
+### La base d'exploitation : une projection de GitHub
+
+Une base SQLite locale garde ce que le fondateur et la session CTO doivent lister et afficher : les alertes, les événements, les trains, les sessions vivantes, les appels faits à GitHub. La copie du tableau, rafraîchie seulement pour ce qui a changé, est dans un second fichier SQLite, avec son propre outil. Pourquoi SQLite sur la machine : tout ce qui la lit tourne sur cette machine, et un fichier n'a besoin d'aucun serveur en marche. Quatre règles les décrivent.
+
+- **Une projection, pas une source.** GitHub est la vérité et la base ne fait que l'afficher. Quand un fait diffère entre les deux, GitHub l'emporte, et rien n'est fusionné, fermé ou déclaré fait sur la seule parole de la base. Un déplacement sur le tableau s'écrit d'abord sur GitHub ; la copie locale suit.
+- **Un seul propriétaire.** Les tables appartiennent à un petit module qui possède le schéma, ses écritures et ses lectures ; les autres lui demandent, et rien n'ouvre le fichier directement. C'est la cible, écrite en règle, et nous n'y sommes pas : la copie du tableau a son seul propriétaire, et le cockpit demande à cet outil plutôt qu'au fichier ; les alertes et les événements ont leurs modules ; mais les trains et les sessions vivantes sont écrits dans le même fichier par une autre synchronisation, et le cockpit ouvre le fichier lui-même, en lecture seule.
+- **Reconstructible à tout moment.** Ce qui vient de GitHub, le tableau et l'état des pull requests, est relu quand la copie est périmée, et seulement ce qui a changé depuis la dernière lecture. On peut vider la base et la remplir de nouveau ; le travail n'y est pas.
+- **Elle porte l'état propre de la machine.** Les alertes (ouvertes, acquittées, résolues), les événements des trains, quelle équipe est vivante et depuis quand. C'est ce que GitHub ne sait pas. C'est la partie qu'on ne peut pas reconstruire depuis GitHub, donc celle qu'on journalise.
+
+Aujourd'hui, les rapports d'environnement des démarrages de session passent d'abord par un journal, et leurs événements peuvent être rejoués dans une base vide ; les alertes ne sont pas rejouées. Le reste de la journalisation est un ticket ouvert, et l'historique des alertes fait partie de ce qu'il protégerait. Les deux flux ci-dessous sont ceux qui comptent : la vie d'une alerte et la façon dont la copie suit GitHub.
+
+### Le cockpit
+
+Le cockpit est l'écran du fondateur : les équipes au travail, les trains, les alertes, les tâches planifiées, l'architecture. Il lit la base d'exploitation et GitHub et montre chaque chiffre avec sa date. Il peut lancer une liste courte et fixe de commandes locales (réindexer le code, alimenter une base de développement, rafraîchir une vue), seulement depuis la machine elle-même. Il n'écrit jamais sur GitHub, ni dans les alertes ni dans le tableau : cela passe par leurs outils.
+
+### La documentation et l'architecture comme du code
+
+La documentation qui décrit l'outillage vit à côté de lui et est testée contre lui : une table des réglages des trains, dans la documentation, est comparée par un test aux valeurs du code, si bien que l'une ne peut pas changer sans l'autre. L'architecture suit la même règle, plus bas.
+
+## La vie d'une pull request
+
+<Architecture view="pr_life" label="La vie d'une pull request en douze étapes numérotées : du ticket qu'écrit le fondateur à l'atterrissage que montre le cockpit." />
+
+Lisez les numéros dans l'ordre. Le seul point où l'on croit un agent sur parole est la lecture de son propre diff, et cette lecture ne décide rien seule. Le reste est vérifié : le ticket dit ce que « fait » veut dire ; la session travaille dans son propre worktree ; les gardes refusent tôt ce qui peut l'être ; la pull request reprend les lignes du ticket avec leurs preuves ; le train ne déplace que ce qui est vert ; GitHub rejoue les contrôles avant la fusion ; l'atterrissage est consigné, et le fondateur le lit.
+
+## La vie d'une alerte
+
+<Architecture view="alert_life" label="La vie d'une alerte, en neuf étapes numérotées : le chien de garde lit GitHub et la lève, le cockpit et la session CTO la voient, la session CTO la prend en charge et une équipe corrige la cause, le chien de garde revoit le vert sur une lecture complète et la résout avec cette lecture pour preuve." />
+
+Une alerte est une ligne avec un état, pas un message. Le chien de garde la lève ; chaque démarrage de session et le cockpit l'affichent ; la session CTO lit les alertes ouvertes avant tout nouveau travail, en prend une en charge avec une note (qui a regardé, ce qui a été décidé) et lance une équipe sur la cause. La prise en charge ne la ferme pas. Le chien de garde résout sa propre ligne quand la lecture complète suivante ne voit plus le problème, et inscrit cette lecture comme preuve. Pourquoi seulement une lecture complète : une lecture qui n'a pas pu joindre un dépôt ne prouve rien sur ses pull requests, donc un passage incomplet ne résout jamais une alerte GitHub. Qui que ce soit qui résout une alerte, la base refuse une résolution sans sa preuve. Personne n'en ferme une en disant que tout va bien.
+
+## Comment la base d'exploitation suit GitHub
+
+<Architecture view="opsdb_sync" label="Comment la base d'exploitation suit GitHub, en six étapes numérotées : un lecteur demande, une copie périmée ne demande à GitHub que ce qui a changé, un déplacement s'écrit d'abord sur GitHub, et le cockpit lit la copie sans appel réseau." />
+
+Aucune horloge ne la rafraîchit. Un lecteur qui trouve la copie plus vieille qu'un court seuil déclenche une lecture incrémentale : une seule requête bornée pour les tickets et pull requests modifiés depuis la dernière lecture, puis leurs cartes du tableau, insérées ou mises à jour d'un coup. Dix lecteurs en même temps attendent un seul verrou, et GitHub n'est lu qu'une fois. Une première lecture, ou trop de changements, devient une lecture complète dans une seule transaction. Le cockpit demande la copie à l'outil du tableau et ne fait aucun appel réseau de lui-même ; quand la copie est périmée, c'est l'outil qui lit GitHub pour lui. La conséquence est celle qui compte : le pire qu'une copie périmée puisse faire est d'afficher un fait ancien, parce que chaque décision est revérifiée sur GitHub.
+
+## Les autres bases que nous faisons tourner
+
+La base d'exploitation n'est qu'une parmi plusieurs, et les autres suivent la même habitude : chacune a un propriétaire, dit ce qu'elle contient, et peut être reconstruite.
+
+- **Le PostgreSQL de chaque produit.** Folioviv, Verikora et Sovkora ont chacun leur PostgreSQL, avec le schéma écrit en code et des migrations versionnées. Elles contiennent les données propres du produit, les seules données de clients de nos systèmes, et chacune n'appartient qu'à son produit. Dans Sovkora, les contextes déjà basculés tournent dans leur propre base avec leur propre rôle et les autres en partagent encore une jusqu'à leur tour ; aucune clé étrangère ne traverse un contexte, et chaque contexte n'alimente que lui-même.
+- **Les bases de test, une par worktree.** Une session ne touche jamais une base partagée, ni une base de démonstration. Chaque worktree a la sienne, et les tests créent une base par fichier, sur un vrai PostgreSQL (celui que fournit la CI, ou un jetable que le test démarre lui-même). Les règles sur les données sont prouvées sur un vrai moteur, jamais avec des simulacres. Un parcours qui crée un utilisateur le supprime, et un contrôle compare les utilisateurs avant et après l'exécution.
+- **Les bases de développement, reconstruites de zéro.** Une base de développement n'est jamais corrigée à la main. Une reconstruction supprime tous les schémas, migre depuis la première migration, charge la configuration et une distribution de personnages de démonstration, puis compare le résultat à un instantané du schéma attendu. La CI construit une base de zéro avec les mêmes étapes. Un contrôle de nuit lit le schéma de développement, en lecture seule, le compare à l'instantané de main et ouvre un seul ticket quand ils diffèrent.
+- **Les médias et le stockage d'objets.** Les images, les clips, les livres à télécharger et les captures des pull requests vivent dans un stockage d'objets derrière un CDN, jamais dans un dépôt. Les bases gardent une référence et les tailles ; la bibliothèque de médias d'un billet consigne comment chaque fichier a été fait. Un fichier est un objet à empreinte : on le remplace, on ne le modifie pas.
+
+## Les compétences que chargent nos sessions
+
+Les règles et les métiers de nos agents sont empaquetés en **compétences** (skills), et l'emballage est l'officiel d'Anthropic, le fabricant de Claude Code, le runtime d'agents que nous utilisons. Dans la documentation de Claude Code, une [compétence d'agent](https://code.claude.com/docs/en/skills) est un dossier avec un fichier `SKILL.md` : un en-tête avec le nom de la compétence et une description de quand l'utiliser, puis les instructions. Un [plugin](https://code.claude.com/docs/en/plugins) regroupe compétences, sous-agents et autres pièces en une unité installable, et une [place de marché](https://code.claude.com/docs/en/plugin-marketplaces) (marketplace) est un fichier catalogue qui liste des plugins avec leurs versions. Anthropic publie aussi ses propres compétences, pour les documents entre autres, dans un [dépôt public](https://github.com/anthropics/skills).
+
+Nous utilisons le format d'Anthropic, pas les compétences d'Anthropic. Nos quatre plugins, d'une seule place de marché, sont :
+
+<Compare label="Les quatre plugins de notre place de marché, avec leurs versions et ce que chacun contient" topic="Plugin" before="Version" after="Compétences">
+  <Case topic="krizaka-ops" before="0.9.5" after="3 : session, ticket, atterrissage" />
+  <Case topic="krizaka-engineering" before="0.9.4" after="11 : la norme de code et les règles par langage" />
+  <Case topic="krizaka-design" before="0.8.0" after="4 : le style Cahier, le design produit, les pages 3D, l'intervention de design" />
+  <Case topic="krizaka-growth" before="0.5.0" after="1 : des billets techniques honnêtes" />
+</Compare>
+
+Cela fait 19 compétences, plus quelques sous-agents, dans la disposition officielle ; les versions sont celles du fichier de place de marché.
+
+**Épinglées et vérifiées au démarrage.** Une session n'installe rien ; une compétence manquante ou inattendue, ou une version différente de la place de marché, l'arrête au démarrage, comme décrit plus haut.
+
+**Lesquelles des compétences officielles d'Anthropic nos sessions utilisent-elles ? Aucune, par conception.** Le lanceur désactive chaque plugin qui n'est pas le nôtre, recalculé à chaque démarrage. Quand nous l'avons construit, une session d'équipe héritait de tout le compte : 252 compétences et environ 190 000 jetons de contexte dès son premier tour. Avec nos seuls plugins, elle démarre avec 52 compétences, dont 19 sont les nôtres, et environ 47 000 jetons. Les plugins intégrés de l'outil restent, parce qu'ils font partie de l'outil. Ce que nous prenons à Anthropic, c'est le format, la mécanique des plugins et des places de marché, et l'outil qui les exécute ; le contenu des compétences est le nôtre, et il reste privé.
+
+## Ce que cela coûte, et ce que cela donne
+
+<Split label="Le prix de la méthode et ce qu'il achète, tel que nous le voyons aujourd'hui.">
+  <Side title="Ce que cela nous coûte" tone="before" items="La rigueur avant la vitesse : un ticket par livrable, une pull request par ticket, un brief par session | Des refus : les agents perdent des commandes sur les gardes, et une garde trop large leur apprend à la contourner | Des gardes à entretenir : chacune a son test, son compte et sa revue | De l'attente : un main rouge gèle les fusions de tout un dépôt jusqu'à ce qu'un correctif atterrisse | Une projection à garder honnête : tout ce qui est décisif se revérifie sur GitHub | Personne n'a à lire un diff : les contrôles sont la revue, donc un trou dans les contrôles est un trou dans la revue | Un seul fournisseur pour la réflexion : chaque session tourne sur ses modèles hébergés" />
+  <Side title="Ce que cela nous donne" tone="after" items="La traçabilité : chaque changement va du ticket à la pull request, aux contrôles requis, à la file de fusion, à main | Des sessions reproductibles : le même environnement à chaque départ, prouvé, avec l'écart nommé | Aucun modèle dans la décision de fusionner | Des défauts attrapés sur la machine plutôt qu'en CI | Un fondateur seul voit tout l'état sur un écran, chaque chiffre daté" />
+</Split>
+
+Les chiffres dont nous disposons sont peu nombreux, mesurés, et publiés avec leur source. Le 13 novembre, quatre audits en lecture seule des journaux des sessions ont été menés ; les trois premiers ont lu 150 contrôles d'environnement au démarrage (118, 16 et 16) : aucun écart. Le même jour, le premier audit a montré ce que coûte une garde que personne ne mesure : 86 sessions sur 101 n'avaient jamais interrogé l'index du code, alors que la garde qui l'exigeait était en place. Les deux sont au [chapitre 29](/story/how-our-agent-teams-talk/), avec la méthode et les limites.
+
+<Numbers>
+  <Num value="150" label="contrôles d'environnement lus au démarrage" hint="aucun écart, les trois premiers audits du 13 novembre" />
+  <Num value="86 sur 101" label="sessions passées à côté d'une garde" hint="premier audit, avant que la garde lise les commandes entières" />
+</Numbers>
+
+Ce que nous n'avons pas mesuré, je ne l'affirme pas : la part de chaque garde dans les défauts évités, le coût de la rigueur en heures, ou la façon dont cela tiendrait avec une équipe de personnes.
+
+## Comment ces schémas sont faits
+
+Le modèle est un fichier LikeC4 dans le dépôt de ce blogue. Il est écrit sur la base de l'organisation : une spécification (les sortes d'éléments) et la part propre à l'organisation (les personnes, GitHub, le cloud, la plateforme et ses conteneurs). Il n'ajoute rien au premier niveau : il ne fait que détailler, à l'intérieur de la plateforme, le conteneur « Outillage des agents ».
+
+Un script lui applique `layoutViews` du paquet d'architecture de l'organisation (`@krizaka/architecture`), avec la base de l'organisation : la même vérification que celle appliquée au modèle de chaque dépôt. La vérification est celle du paquet : le fichier se lit avec la base, n'écrit pas de spécification à lui, et chaque élément qu'il ajoute vit à l'intérieur du seul système qu'il détaille. Son verdict sur ce modèle est « ok », avec 9 éléments ajoutés, et elle couvre les cinq vues. Le même appel dispose les vues avec LikeC4, et le script consigne la disposition avec l'empreinte du modèle ; les tests du blogue échouent si le modèle change sans que la disposition suive. La page dessine cette disposition avec le composant de schéma partagé de l'organisation (`ArchitectureDiagram` de `@krizaka/ui`), dans les couleurs de la page, si bien que les deux thèmes suivent, avec la version texte de chaque vue dessous. Le blogue n'a aucun code de dessin à lui.
+
+Une limite compte pour un architecte. L'outil de l'organisation prouve les conteneurs qu'il peut rattacher à du code sur la branche main de chaque dépôt. Il ne prouve pas les relations à l'exécution : elles sont dessinées, pas vérifiées. Les flèches de ce billet disent ce que disent la documentation et les chapitres publiés, pas une trace d'appels. Avant publication, chaque composant et chaque flèche ont été relus contre le code par un relecteur qui n'avait pas écrit le billet ; c'est une lecture, pas une preuve.
+
+## Questions fréquentes
+
+### krizaka-agents est-il libre ?
+
+Non. Il est privé : les scripts, les règles et les compétences qui font tourner nos agents. Ce billet en montre l'architecture et les concepts, pas le code.
+
+### Pourquoi ne pas laisser les agents fusionner leurs propres pull requests ?
+
+Parce qu'une fusion est une décision qui demande une réponse sûre. Le train est du code ordinaire qui lit les contrôles requis ; la file de fusion de GitHub les rejoue sur le vrai mélange avec main. Un modèle peut écrire le changement ; il ne décide pas que le changement est sûr.
+
+### Quelles compétences vos agents utilisent-ils, les officielles ou les vôtres ?
+
+Les nôtres, écrites dans le format officiel des compétences d'agent d'Anthropic (celui de Claude Code) et empaquetées en plugins dans une place de marché. Les sessions d'équipe désactivent tous les autres plugins, pour que chacune démarre avec les mêmes compétences et un petit contexte.
+
+### Peut-on perdre la base d'exploitation ?
+
+On peut la vider sans perdre le travail : les tickets, les pull requests et les contrôles sont sur GitHub. Ce qui n'existe qu'en local, comme l'historique des alertes, est un manque connu, avec un ticket pour tout reconstruire depuis des journaux.

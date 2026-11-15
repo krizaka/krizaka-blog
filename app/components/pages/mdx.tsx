@@ -20,6 +20,7 @@ import { TeamBoard } from "./TeamBoard";
 import { MouloudPlate } from "./MouloudPlate";
 import { CockpitTour } from "./CockpitTour";
 import { C4Zoom } from "./C4Zoom";
+import { ArchitectureView } from "./ArchitectureView";
 import { trainFrames } from "@/lib/train-sim";
 import { BOARD } from "@/lib/team-board";
 
@@ -76,6 +77,10 @@ export function mdxComponentsFor(locale: Locale) {
     CockpitTour: ({ label }: { label?: string }) => <CockpitTour labels={d.cockpitTour} label={label} />,
     /* C4 architecture zoom on a fictional system (lib/c4-zoom.ts): <C4Zoom label?/>. Click to drill from C1 to C4. */
     C4Zoom: ({ label }: { label?: string }) => <C4Zoom labels={d.c4Zoom} label={label} />,
+    /* One view of a checked architecture model (lib/architecture.json, scripts/gen-architecture.mjs): <Architecture view label/>. */
+    Architecture: ({ view, label }: { view: string; label: string }) => (
+      <ArchitectureView view={view} label={label} locale={locale} labels={d.architecture} />
+    ),
     pre: ({ children, ...rest }: ComponentProps<"pre">) => {
       const block = fenced(children);
       return block ? (

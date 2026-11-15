@@ -1,0 +1,46 @@
+import { ArchitectureDiagram, type ArchView } from "@krizaka/ui/architecture-diagram";
+import data from "@/lib/architecture.json";
+import type { Locale } from "@/lib/i18n";
+
+/* <Architecture view="agents_containers" label="…"/> in a post: one view of a checked architecture model, laid out at build time
+   (lib/architecture.json, made by scripts/gen-architecture.mjs with `layoutViews` of @krizaka/architecture) and drawn by the family's
+   `ArchitectureDiagram` of @krizaka/ui, in the page's tokens (dark and light follow the theme), with its text version. The words of
+   the drawing are the model's (French: content/diagrams/*.fr.json). Server-rendered, no script. */
+
+type Labels = {
+  textVersion: string;
+  elements: string;
+  relations: string;
+  steps: string;
+};
+
+const VIEWS = data.views as unknown as Record<Locale, ArchView[]>;
+
+export function viewFor(id: string, locale: Locale): ArchView {
+  const view = VIEWS[locale].find((v) => v.id === id);
+  if (!view) throw new Error(`lib/architecture.json has no view "${id}" (${locale})`);
+  return view;
+}
+
+export function ArchitectureView({
+  view: id,
+  label,
+  locale,
+  labels,
+}: Readonly<{ view: string; label: string; locale: Locale; labels: Labels }>) {
+  const view = viewFor(id, locale);
+  return (
+    <div className="bl-arch" data-reveal="soft" data-wide={view.bounds.width > 1000 ? "true" : undefined}>
+      <ArchitectureDiagram
+        view={view}
+        title={label}
+        words={{
+          summary: labels.textVersion,
+          elements: labels.elements,
+          relations: labels.relations,
+          steps: labels.steps,
+        }}
+      />
+    </div>
+  );
+}
