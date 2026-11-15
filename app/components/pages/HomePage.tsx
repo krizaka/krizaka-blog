@@ -4,13 +4,12 @@ import { PageHero } from "@krizaka/ui/page-hero";
 import { ChapterIndex } from "@krizaka/ui/chapter";
 import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
 import { chapterNumber, chaptersOf } from "@/lib/chapters";
-import { latestFeatured, storyRows } from "@/lib/home";
+import { latestFeatured, postsNewestFirst, storyRows } from "@/lib/home";
 import { postsOf } from "@/lib/posts";
 import { formatDate } from "./PostList";
 import { splitBasics } from "@/lib/basics";
 import { chapterPath, postPath } from "@/lib/seo";
 import { coverOf, type Cover } from "@/lib/media";
-import { formatPeriod } from "./PostList";
 import { BasicsPath } from "./BasicsPath";
 import { PostCard } from "./PostCard";
 import { Signature } from "./Signature";
@@ -41,7 +40,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
   const { basics, others } = splitBasics(posts);
   /* The posts that are not a way in (the weekly, the integration notes) stay on the home as quiet links under the path, newest
      first: the home is the story, never a feed of cards (krizaka-blog#123, krizaka-internal#3219). */
-  const newestFirst = [...others].sort((a, b) => b.date.localeCompare(a.date));
+  const newestFirst = postsNewestFirst(others);
   /* An address is built from known values only: a slug of lower-case words (the file names of content/), never anything else. */
   const safe = (slug: string) => (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) ? slug : "");
   const href = (slug: string) => localizedPath(locale, chapterPath(safe(slug)));
@@ -123,14 +122,14 @@ export default function HomePage({ locale }: { locale: Locale }) {
             linkAs={Link}
             paper={false}
             variant="album"
-            chapters={rows.map(({ chapter: c, isNew }) => ({
+            chapters={rows.map(({ chapter: c, isNew, shown }) => ({
               number: chapterNumber(c.chapter),
               title: c.title,
               href: href(c.slug),
               // The album (krizaka-ui#621): the chapter's cover as a taped print, and one short line, what we built.
               detail: upperFirst(c.versus.built),
               cover: c.cover ? albumCover(coverOf(c.cover)) : undefined,
-              period: <time dateTime={c.period.split("/")[0]}>{formatPeriod(c.period, locale)}</time>,
+              period: <time dateTime={shown}>{formatDate(shown, locale)}</time>,
               isNew,
             }))}
           />

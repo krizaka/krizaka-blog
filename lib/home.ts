@@ -12,7 +12,8 @@ export type StoryChapter = {
   period: string;
   versus: { faced: string; built: string };
 };
-export type StoryRow<C extends StoryChapter = StoryChapter> = { chapter: C; isNew: boolean };
+/** `shown` is the one date a row displays: the chapter's front-matter `date`, never its `period` (krizaka-internal#3906). */
+export type StoryRow<C extends StoryChapter = StoryChapter> = { chapter: C; isNew: boolean; shown: string };
 
 type Dated = { slug: string; publishedAt?: string; date?: string };
 
@@ -40,12 +41,17 @@ export function latestFeatured<C extends StoryChapter, P extends Dated>(
   return all[0];
 }
 
-/** Every chapter in reading order (newest first by number), excluding the Featured chapter when one is explicitly given.
-    When a post is Featured (excluded is undefined), every chapter stays in the list. */
+/** Every chapter, newest first by `publishedAt` (then `date`; of two out together, the later in the story), excluding the
+    Featured chapter when one is explicitly given. Each row shows its front-matter date, the very one it is ordered by
+    (krizaka-internal#3906: a period overlaps its neighbours and made the list read out of order). */
 export function storyRows<C extends StoryChapter>(chapters: readonly C[], excluded?: C): StoryRow<C>[] {
-  // Oussama (2026-10-24): the newest is Featured, and the others go down below it, newest first by chapter number.
   return [...chapters]
     .filter((c) => c !== excluded)
-    .sort((a, b) => b.chapter - a.chapter)
-    .map((chapter) => ({ chapter, isNew: false }));
+    .sort((a, b) => publishedTime(b) - publishedTime(a) || b.chapter - a.chapter)
+    .map((chapter) => ({ chapter, isNew: false, shown: chapter.date }));
+}
+
+/** The posts newest first by `publishedAt` (then `date`); ties by slug. */
+export function postsNewestFirst<P extends Dated>(posts: readonly P[]): P[] {
+  return [...posts].sort((a, b) => publishedTime(b) - publishedTime(a) || a.slug.localeCompare(b.slug));
 }

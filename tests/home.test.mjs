@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import matter from "gray-matter";
-import { latestChapter, latestFeatured, storyRows } from "../lib/home.ts";
+import { latestChapter, latestFeatured, postsNewestFirst, storyRows } from "../lib/home.ts";
 
 /* The home is the story (krizaka-blog#123): the title and one sentence (the notes from building Krizaka, in Oussama's voice),
    Featured (one card: the latest chapter), every chapter in reading order 1 → N with the latest marked « New », then « The basics »
@@ -22,7 +22,7 @@ const ch = (chapter, publishedAt, extra = {}) => ({
   ...extra,
 });
 
-test("the newest chapter is Featured; the others follow newest first (by number), Featured not repeated", () => {
+test("the newest chapter is Featured; the others follow newest first (by publishedAt), Featured not repeated", () => {
   const list = [
     ch(3, "2026-10-20T09:00:00-04:00"),
     ch(1, "2026-10-23T09:00:00-04:00"),
@@ -33,8 +33,8 @@ test("the newest chapter is Featured; the others follow newest first (by number)
   assert.equal(featured.chapter, 1, "the one that went out last is Featured, whatever its number");
   assert.deepEqual(
     rows.map((r) => r.chapter.chapter),
-    [3, 2],
-    "the others, newest first",
+    [2, 3],
+    "the others, newest first by publishedAt",
   );
   assert.equal(rows.filter((r) => r.isNew).length, 0);
 });
@@ -117,7 +117,7 @@ test("the home renders the sentence, its byline, Featured, the chapters, the bas
     /c\.versus\.faced|LinkCard|<Badge/,
     "no box, and the faced line stays on the chapter's head",
   );
-  assert.match(home, /formatPeriod\(c\.period, locale\)/, "and its period");
+  assert.match(home, /formatDate\(shown, locale\)/, "and its front-matter date");
 });
 
 test("the removed home blocks are gone: latest posts, series, who writes, where the work lives, the topics", () => {
@@ -253,4 +253,50 @@ test("no chapter title (nor its search title) carries an old code name", () => {
     const { data } = matter(readFileSync(new URL(f, dir), "utf8"));
     for (const key of ["title", "seoTitle"]) assert.doesNotMatch(String(data[key] ?? ""), OLD_NAMES, `${f}: ${key}`);
   }
+});
+
+/* krizaka-internal#3906: one date per item, the front matter's; every list shows it and is ordered by it, newest first. */
+const readChapters = (locale) =>
+  readdirSync(new URL("../content/chapters/", import.meta.url))
+    .filter((f) => f.endsWith(`.${locale}.mdx`))
+    .map((f) => ({ slug: f.split(".")[0], ...matter(read(`content/chapters/${f}`)).data }))
+    .filter((c) => c.draft !== true)
+    .map((c) => ({ ...c, date: String(c.date instanceof Date ? c.date.toISOString().slice(0, 10) : c.date) }));
+
+test("the chapter rows are ordered by publishedAt, newest first, whatever the numbers or periods say", () => {
+  const list = [
+    ch(1, "2026-10-20T09:00:00-04:00"),
+    ch(2, "2026-10-22T09:00:00-04:00"),
+    ch(3, "2026-10-21T09:00:00-04:00"),
+  ];
+  assert.deepEqual(
+    storyRows(list).map((r) => r.chapter.chapter),
+    [2, 3, 1],
+  );
+});
+
+test("each row shows its front-matter date, never its period", () => {
+  const rows = storyRows([ch(1, "2026-10-20T09:00:00-04:00", { period: "2026-10-01/2026-10-30" })]);
+  assert.equal(rows[0].shown, "2026-10-20");
+  assert.doesNotMatch(home, /formatPeriod|c\.period/, "the home never shows a chapter's period");
+  assert.match(home, /shown/, "the home shows the row's date");
+});
+
+test("today's lists: the shown dates never go up, in both languages (chapters, then « More posts »)", () => {
+  for (const locale of ["en", "fr"]) {
+    const rows = storyRows(readChapters(locale));
+    const shown = rows.map((r) => r.shown);
+    assert.deepEqual(shown, [...shown].sort().reverse(), `${locale}: chapters newest first by their shown date`);
+    for (const r of rows)
+      assert.equal(r.shown, r.chapter.date, `${locale}: ${r.chapter.slug} shows its front-matter date`);
+  }
+});
+
+test("« More posts » is ordered by publishedAt, so two posts of one day keep their order", () => {
+  const a = { slug: "a", date: "2026-10-20", publishedAt: "2026-10-20T08:00:00-04:00" };
+  const b = { slug: "b", date: "2026-10-20", publishedAt: "2026-10-20T18:00:00-04:00" };
+  assert.deepEqual(
+    postsNewestFirst([a, b]).map((p) => p.slug),
+    ["b", "a"],
+  );
 });
