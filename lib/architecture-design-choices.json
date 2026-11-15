@@ -1,0 +1,1720 @@
+{
+  "generatedBy": "scripts/gen-architecture.mjs",
+  "tool": { "name": "@krizaka/architecture", "likec4": "1.60.0" },
+  "source": {
+    "path": "content/diagrams/design-choices-for-architects.c4",
+    "sha256": "584c663c4463d1471334ffeb0bb4bc3e0134de47de0c2168e8e1ccaf54628394"
+  },
+  "base": [
+    { "path": "org.c4", "sha256": "76a9cd37ed1b70ec0037acea65408f1800fbb46572cc6c206d8126a0b77e8818" },
+    { "path": "specification.c4", "sha256": "3e02a37911f2dcd67a88304b5342e8fa7d1ff7e9d57cd204fe94365a9db01764" }
+  ],
+  "translations": {
+    "path": "content/diagrams/design-choices-for-architects.fr.json",
+    "sha256": "a95944b8d33cc23e4f3baf4ce902ee566cf03195b298c427d9a6058430ca44f8"
+  },
+  "check": {
+    "status": "ok",
+    "system": null,
+    "errors": [],
+    "elements": [
+      "agents",
+      "cdn",
+      "cloud",
+      "contributor",
+      "customer",
+      "folioviv",
+      "folioviv.db",
+      "folioviv.mobile",
+      "folioviv.web",
+      "founder",
+      "github",
+      "libraries",
+      "libraries.java",
+      "libraries.ts",
+      "models",
+      "monitoring",
+      "platform",
+      "platform.infra",
+      "platform.standards",
+      "platform.template",
+      "platform.tooling",
+      "registries",
+      "sovkora",
+      "sovkora.broker",
+      "sovkora.core",
+      "sovkora.db",
+      "sovkora.edge",
+      "sovkora.workers",
+      "verikora",
+      "verikora.db",
+      "verikora.mobile",
+      "verikora.web",
+      "visitor"
+    ]
+  },
+  "views": {
+    "en": [
+      {
+        "id": "org_context",
+        "title": "The organisation · context",
+        "dynamic": false,
+        "bounds": { "x": 0, "y": 0, "width": 881, "height": 751 },
+        "nodes": [
+          {
+            "id": "customer",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "Customer",
+            "technology": null,
+            "description": "An organisation or a person who uses a Krizaka product.",
+            "compound": false,
+            "x": 169,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "visitor",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "Visitor",
+            "technology": null,
+            "description": "Reads the company site, the blog and the library sites.",
+            "compound": false,
+            "x": 412,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "platform",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Krizaka platform",
+            "technology": null,
+            "description": "How the org works: shared CI and standards, the agents tooling, the infrastructure as code, the templates.",
+            "compound": false,
+            "x": 697,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "verikora",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Verikora",
+            "technology": null,
+            "description": "Checks documents and keeps the files they belong to.",
+            "compound": false,
+            "x": 136,
+            "y": 163,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "folioviv",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Folioviv",
+            "technology": null,
+            "description": "A shop, its storefront and its editor.",
+            "compound": false,
+            "x": 370,
+            "y": 163,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "github",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "GitHub",
+            "technology": null,
+            "description": "Code, issues, pull requests, CI, the merge queue and the tags.",
+            "compound": false,
+            "x": 580,
+            "y": 163,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "sovkora",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Sovkora",
+            "technology": null,
+            "description": "The AI engine the products call: chat, documents, media, automations.",
+            "compound": false,
+            "x": 98,
+            "y": 326,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "cloud",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "Cloud hosting",
+            "technology": null,
+            "description": "The app and static site hosting, the managed databases.",
+            "compound": false,
+            "x": 665,
+            "y": 326,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "libraries",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Shared libraries",
+            "technology": null,
+            "description": "Written once, versioned, consumed by every product.",
+            "compound": false,
+            "x": 248,
+            "y": 488,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "monitoring",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "Monitoring",
+            "technology": null,
+            "description": "Dashboards, logs, traces and probes from outside.",
+            "compound": false,
+            "x": 0,
+            "y": 488,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "registries",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "Package registries",
+            "technology": null,
+            "description": "npm (@krizaka/*), Maven Central and GitHub Packages (com.krizaka), where the libraries are published.",
+            "compound": false,
+            "x": 248,
+            "y": 651,
+            "width": 180,
+            "height": 100
+          }
+        ],
+        "edges": [
+          {
+            "id": "13uyvox",
+            "source": "customer",
+            "target": "verikora",
+            "label": "checks a document",
+            "points": [
+              [231, 100],
+              [228, 106],
+              [226, 113],
+              [224, 120],
+              [222, 130],
+              [221, 142],
+              [221, 153]
+            ],
+            "labelBBox": { "x": 225, "y": 121, "width": 125, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "peu77o",
+            "source": "customer",
+            "target": "folioviv",
+            "label": "runs a shop",
+            "points": [
+              [328, 100],
+              [337, 107],
+              [346, 113],
+              [354, 120],
+              [368, 131],
+              [384, 144],
+              [398, 156]
+            ],
+            "labelBBox": { "x": 382, "y": 121, "width": 77, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "9knklo",
+            "source": "visitor",
+            "target": "folioviv",
+            "label": "buys on a storefront",
+            "points": [
+              [489, 100],
+              [485, 116],
+              [480, 135],
+              [475, 153]
+            ],
+            "labelBBox": { "x": 485, "y": 121, "width": 128, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1of63rc",
+            "source": "verikora",
+            "target": "sovkora",
+            "label": "asks for checks",
+            "points": [
+              [215, 263],
+              [211, 279],
+              [206, 298],
+              [202, 316]
+            ],
+            "labelBBox": { "x": 210, "y": 284, "width": 100, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "elof64",
+            "source": "verikora",
+            "target": "libraries",
+            "label": "builds on",
+            "points": [
+              [303, 262],
+              [309, 269],
+              [314, 275],
+              [318, 283],
+              [351, 343],
+              [351, 424],
+              [347, 478]
+            ],
+            "labelBBox": { "x": 350, "y": 365, "width": 60, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1fp3ldl",
+            "source": "folioviv",
+            "target": "libraries",
+            "label": "builds on",
+            "points": [
+              [456, 263],
+              [451, 307],
+              [441, 373],
+              [418, 426],
+              [410, 445],
+              [398, 464],
+              [386, 480]
+            ],
+            "labelBBox": { "x": 447, "y": 365, "width": 60, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1jx551q",
+            "source": "sovkora",
+            "target": "libraries",
+            "label": "builds on",
+            "points": [
+              [219, 425],
+              [229, 440],
+              [241, 455],
+              [253, 468],
+              [257, 473],
+              [262, 478],
+              [267, 482]
+            ],
+            "labelBBox": { "x": 254, "y": 447, "width": 60, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1w9anm8",
+            "source": "platform",
+            "target": "github",
+            "label": "[...]",
+            "points": [
+              [752, 100],
+              [739, 117],
+              [725, 137],
+              [711, 155]
+            ],
+            "labelBBox": { "x": 737, "y": 119, "width": 25, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "apx6e8",
+            "source": "libraries",
+            "target": "registries",
+            "label": "published to",
+            "points": [
+              [338, 588],
+              [338, 605],
+              [338, 624],
+              [338, 641]
+            ],
+            "labelBBox": { "x": 339, "y": 609, "width": 80, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1skdrok",
+            "source": "platform",
+            "target": "cloud",
+            "label": "provisions",
+            "points": [
+              [799, 100],
+              [810, 152],
+              [821, 236],
+              [800, 306],
+              [799, 309],
+              [798, 313],
+              [796, 316]
+            ],
+            "labelBBox": { "x": 813, "y": 202, "width": 67, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "fkss2m",
+            "source": "github",
+            "target": "cloud",
+            "label": "deploys main",
+            "points": [
+              [688, 263],
+              [694, 277],
+              [701, 292],
+              [709, 306],
+              [711, 309],
+              [713, 313],
+              [715, 317]
+            ],
+            "labelBBox": { "x": 710, "y": 284, "width": 86, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "l09e0r",
+            "source": "sovkora",
+            "target": "monitoring",
+            "label": "logs, metrics, traces",
+            "points": [
+              [102, 426],
+              [96, 432],
+              [91, 438],
+              [88, 446],
+              [82, 456],
+              [80, 467],
+              [80, 478]
+            ],
+            "labelBBox": { "x": 89, "y": 447, "width": 128, "height": 18 },
+            "step": null,
+            "back": false
+          }
+        ]
+      },
+      {
+        "id": "org_containers",
+        "title": "The products and the libraries · containers",
+        "dynamic": false,
+        "bounds": { "x": 0, "y": 0, "width": 1695, "height": 1186 },
+        "nodes": [
+          {
+            "id": "verikora",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Verikora",
+            "technology": null,
+            "description": "Checks documents and keeps the files they belong to.",
+            "compound": true,
+            "x": 8,
+            "y": 8,
+            "width": 260,
+            "height": 576
+          },
+          {
+            "id": "folioviv",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Folioviv",
+            "technology": null,
+            "description": "A shop, its storefront and its editor.",
+            "compound": true,
+            "x": 1427,
+            "y": 383,
+            "width": 260,
+            "height": 604
+          },
+          {
+            "id": "verikora.mobile",
+            "parent": "verikora",
+            "kind": "mobile",
+            "shape": "mobile",
+            "title": "Verikora mobile",
+            "technology": "Expo",
+            "description": null,
+            "compound": false,
+            "x": 48,
+            "y": 69,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "folioviv.mobile",
+            "parent": "folioviv",
+            "kind": "mobile",
+            "shape": "mobile",
+            "title": "Folioviv mobile",
+            "technology": "Expo",
+            "description": null,
+            "compound": false,
+            "x": 1467,
+            "y": 444,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "verikora.web",
+            "parent": "verikora",
+            "kind": "app",
+            "shape": "browser",
+            "title": "Verikora web",
+            "technology": "Next.js, one container",
+            "description": "The site and the console, server-rendered.",
+            "compound": false,
+            "x": 48,
+            "y": 232,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "folioviv.web",
+            "parent": "folioviv",
+            "kind": "app",
+            "shape": "browser",
+            "title": "Folioviv web",
+            "technology": "Next.js, one container",
+            "description": "The storefront and the editor, server-rendered.",
+            "compound": false,
+            "x": 1467,
+            "y": 635,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "verikora.db",
+            "parent": "verikora",
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Verikora database",
+            "technology": "PostgreSQL",
+            "description": null,
+            "compound": false,
+            "x": 48,
+            "y": 444,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "sovkora",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Sovkora",
+            "technology": null,
+            "description": "The AI engine the products call: chat, documents, media, automations.",
+            "compound": true,
+            "x": 276,
+            "y": 383,
+            "width": 603,
+            "height": 795
+          },
+          {
+            "id": "folioviv.db",
+            "parent": "folioviv",
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Folioviv database",
+            "technology": "PostgreSQL",
+            "description": null,
+            "compound": false,
+            "x": 1467,
+            "y": 847,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "sovkora.edge",
+            "parent": "sovkora",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Edge service",
+            "technology": "Spring Boot",
+            "description": "The one public door: authentication, rate limits, routing.",
+            "compound": false,
+            "x": 416,
+            "y": 444,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "sovkora.core",
+            "parent": "sovkora",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Engine services",
+            "technology": "Spring Boot",
+            "description": "One service per bounded context, several JVMs in one container.",
+            "compound": false,
+            "x": 416,
+            "y": 635,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "sovkora.broker",
+            "parent": "sovkora",
+            "kind": "queue",
+            "shape": "queue",
+            "title": "Message broker",
+            "technology": "RabbitMQ",
+            "description": "Work queues per capability, retries, dead letters.",
+            "compound": false,
+            "x": 316,
+            "y": 851,
+            "width": 180,
+            "height": 92
+          },
+          {
+            "id": "sovkora.db",
+            "parent": "sovkora",
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Sovkora databases",
+            "technology": "PostgreSQL, pgvector",
+            "description": "One database per context; the outbox; the vectors beside the rows.",
+            "compound": false,
+            "x": 526,
+            "y": 847,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "libraries",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Shared libraries",
+            "technology": null,
+            "description": "Written once, versioned, consumed by every product.",
+            "compound": true,
+            "x": 887,
+            "y": 786,
+            "width": 532,
+            "height": 201
+          },
+          {
+            "id": "sovkora.workers",
+            "parent": "sovkora",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Workers",
+            "technology": "Python",
+            "description": "Media, documents and models; consume the queues.",
+            "compound": false,
+            "x": 389,
+            "y": 1038,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "libraries.ts",
+            "parent": "libraries",
+            "kind": "library",
+            "shape": "component",
+            "title": "TypeScript and UI packages",
+            "technology": "@krizaka/*, npm",
+            "description": "UI, auth, data, payments, storage: the product imports, never copies.",
+            "compound": false,
+            "x": 1147,
+            "y": 847,
+            "width": 231,
+            "height": 100
+          },
+          {
+            "id": "libraries.java",
+            "parent": "libraries",
+            "kind": "library",
+            "shape": "component",
+            "title": "Java building blocks",
+            "technology": "com.krizaka, Maven",
+            "description": "The parent build, the BOM and the Spring Boot starters.",
+            "compound": false,
+            "x": 927,
+            "y": 847,
+            "width": 190,
+            "height": 100
+          }
+        ],
+        "edges": [
+          {
+            "id": "w89uik",
+            "source": "verikora.web",
+            "target": "verikora.db",
+            "label": "SQL",
+            "points": [
+              [138, 332],
+              [138, 362],
+              [138, 401],
+              [138, 433]
+            ],
+            "labelBBox": { "x": 139, "y": 353, "width": 32, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1xs9ji2",
+            "source": "verikora.mobile",
+            "target": "verikora.web",
+            "label": "HTTPS",
+            "points": [
+              [138, 169],
+              [138, 186],
+              [138, 205],
+              [138, 222]
+            ],
+            "labelBBox": { "x": 139, "y": 190, "width": 50, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1pksba4",
+            "source": "folioviv.web",
+            "target": "folioviv.db",
+            "label": "SQL",
+            "points": [
+              [1557, 735],
+              [1557, 765],
+              [1557, 804],
+              [1557, 836]
+            ],
+            "labelBBox": { "x": 1558, "y": 756, "width": 32, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "5cwfqy",
+            "source": "folioviv.mobile",
+            "target": "folioviv.web",
+            "label": "HTTPS",
+            "points": [
+              [1557, 544],
+              [1557, 568],
+              [1557, 599],
+              [1557, 625]
+            ],
+            "labelBBox": { "x": 1558, "y": 593, "width": 50, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1ujoqu3",
+            "source": "verikora.web",
+            "target": "sovkora.edge",
+            "label": "HTTPS",
+            "points": [
+              [224, 332],
+              [280, 364],
+              [354, 406],
+              [412, 439]
+            ],
+            "labelBBox": { "x": 290, "y": 353, "width": 50, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "ejwgxe",
+            "source": "sovkora.edge",
+            "target": "sovkora.core",
+            "label": "routes",
+            "points": [
+              [506, 544],
+              [506, 568],
+              [506, 599],
+              [506, 625]
+            ],
+            "labelBBox": { "x": 507, "y": 593, "width": 43, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1sjvlyq",
+            "source": "sovkora.core",
+            "target": "sovkora.broker",
+            "label": "publishes from the outbox",
+            "points": [
+              [419, 735],
+              [413, 741],
+              [408, 747],
+              [404, 755],
+              [390, 781],
+              [390, 813],
+              [393, 841]
+            ],
+            "labelBBox": { "x": 405, "y": 756, "width": 164, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1s9fo3b",
+            "source": "sovkora.core",
+            "target": "sovkora.db",
+            "label": "SQL, outbox in the same transaction",
+            "points": [
+              [559, 735],
+              [564, 741],
+              [569, 748],
+              [573, 755],
+              [588, 780],
+              [598, 810],
+              [604, 836]
+            ],
+            "labelBBox": { "x": 585, "y": 756, "width": 230, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "14xjedo",
+            "source": "sovkora.broker",
+            "target": "sovkora.workers",
+            "label": "delivers, at least once",
+            "points": [
+              [379, 943],
+              [368, 966],
+              [361, 994],
+              [374, 1018],
+              [376, 1022],
+              [379, 1027],
+              [383, 1031]
+            ],
+            "labelBBox": { "x": 375, "y": 996, "width": 139, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "f395ho",
+            "source": "sovkora.workers",
+            "target": "sovkora.broker",
+            "label": "reports outcomes",
+            "points": [
+              [516, 1038],
+              [522, 1024],
+              [524, 1009],
+              [518, 995],
+              [516, 991],
+              [493, 971],
+              [468, 949]
+            ],
+            "labelBBox": { "x": 523, "y": 996, "width": 112, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "xj0wrf",
+            "source": "verikora.web",
+            "target": "libraries.ts",
+            "label": "imports",
+            "points": [
+              [228, 286],
+              [402, 294],
+              [776, 318],
+              [886, 383],
+              [1069, 492],
+              [1191, 728],
+              [1239, 838]
+            ],
+            "labelBBox": { "x": 1114, "y": 593, "width": 50, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1tgds26",
+            "source": "folioviv.web",
+            "target": "libraries.ts",
+            "label": "imports",
+            "points": [
+              [1488, 735],
+              [1444, 767],
+              [1386, 808],
+              [1340, 841]
+            ],
+            "labelBBox": { "x": 1455, "y": 756, "width": 50, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "bch7u1",
+            "source": "sovkora.core",
+            "target": "libraries.java",
+            "label": "builds on",
+            "points": [
+              [596, 694],
+              [677, 704],
+              [797, 729],
+              [886, 786],
+              [911, 802],
+              [937, 822],
+              [960, 840]
+            ],
+            "labelBBox": { "x": 869, "y": 756, "width": 60, "height": 18 },
+            "step": null,
+            "back": false
+          }
+        ]
+      }
+    ],
+    "fr": [
+      {
+        "id": "org_context",
+        "title": "L'organisation · contexte",
+        "dynamic": false,
+        "bounds": { "x": 0, "y": 0, "width": 881, "height": 751 },
+        "nodes": [
+          {
+            "id": "customer",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "Client",
+            "technology": null,
+            "description": "Une organisation ou une personne qui utilise un produit Krizaka.",
+            "compound": false,
+            "x": 169,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "visitor",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "Visiteur",
+            "technology": null,
+            "description": "Lit le site de l'entreprise, le blog et les sites des bibliothèques.",
+            "compound": false,
+            "x": 412,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "platform",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Plateforme Krizaka",
+            "technology": null,
+            "description": "Comment l'organisation travaille : CI et standards partagés, outillage des agents, infrastructure as code, gabarits.",
+            "compound": false,
+            "x": 697,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "verikora",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Verikora",
+            "technology": null,
+            "description": "Vérifie des documents et garde les dossiers auxquels ils appartiennent.",
+            "compound": false,
+            "x": 136,
+            "y": 163,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "folioviv",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Folioviv",
+            "technology": null,
+            "description": "Une boutique, sa vitrine et son éditeur.",
+            "compound": false,
+            "x": 370,
+            "y": 163,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "github",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "GitHub",
+            "technology": null,
+            "description": "Le code, les tickets, les pull requests, la CI, la file de fusion et les tags.",
+            "compound": false,
+            "x": 580,
+            "y": 163,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "sovkora",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Sovkora",
+            "technology": null,
+            "description": "Le moteur d'IA qu'appellent les produits : conversation, documents, médias, automatisations.",
+            "compound": false,
+            "x": 98,
+            "y": 326,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "cloud",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "Hébergement cloud",
+            "technology": null,
+            "description": "L'hébergement des applications et des sites statiques, les bases de données gérées.",
+            "compound": false,
+            "x": 665,
+            "y": 326,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "libraries",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Bibliothèques partagées",
+            "technology": null,
+            "description": "Écrites une fois, versionnées, consommées par chaque produit.",
+            "compound": false,
+            "x": 248,
+            "y": 488,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "monitoring",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "Supervision",
+            "technology": null,
+            "description": "Tableaux de bord, journaux, traces et sondes de l'extérieur.",
+            "compound": false,
+            "x": 0,
+            "y": 488,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "registries",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "Registres de paquets",
+            "technology": null,
+            "description": "npm (@krizaka/*), Maven Central et GitHub Packages (com.krizaka), où les bibliothèques sont publiées.",
+            "compound": false,
+            "x": 248,
+            "y": 651,
+            "width": 180,
+            "height": 100
+          }
+        ],
+        "edges": [
+          {
+            "id": "13uyvox",
+            "source": "customer",
+            "target": "verikora",
+            "label": "vérifie un document",
+            "points": [
+              [231, 100],
+              [228, 106],
+              [226, 113],
+              [224, 120],
+              [222, 130],
+              [221, 142],
+              [221, 153]
+            ],
+            "labelBBox": { "x": 225, "y": 121, "width": 125, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "peu77o",
+            "source": "customer",
+            "target": "folioviv",
+            "label": "tient une boutique",
+            "points": [
+              [328, 100],
+              [337, 107],
+              [346, 113],
+              [354, 120],
+              [368, 131],
+              [384, 144],
+              [398, 156]
+            ],
+            "labelBBox": { "x": 382, "y": 121, "width": 77, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "9knklo",
+            "source": "visitor",
+            "target": "folioviv",
+            "label": "achète sur une vitrine",
+            "points": [
+              [489, 100],
+              [485, 116],
+              [480, 135],
+              [475, 153]
+            ],
+            "labelBBox": { "x": 485, "y": 121, "width": 128, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1of63rc",
+            "source": "verikora",
+            "target": "sovkora",
+            "label": "demande des vérifications",
+            "points": [
+              [215, 263],
+              [211, 279],
+              [206, 298],
+              [202, 316]
+            ],
+            "labelBBox": { "x": 210, "y": 284, "width": 100, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "elof64",
+            "source": "verikora",
+            "target": "libraries",
+            "label": "s'appuie sur",
+            "points": [
+              [303, 262],
+              [309, 269],
+              [314, 275],
+              [318, 283],
+              [351, 343],
+              [351, 424],
+              [347, 478]
+            ],
+            "labelBBox": { "x": 350, "y": 365, "width": 60, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1fp3ldl",
+            "source": "folioviv",
+            "target": "libraries",
+            "label": "s'appuie sur",
+            "points": [
+              [456, 263],
+              [451, 307],
+              [441, 373],
+              [418, 426],
+              [410, 445],
+              [398, 464],
+              [386, 480]
+            ],
+            "labelBBox": { "x": 447, "y": 365, "width": 60, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1jx551q",
+            "source": "sovkora",
+            "target": "libraries",
+            "label": "s'appuie sur",
+            "points": [
+              [219, 425],
+              [229, 440],
+              [241, 455],
+              [253, 468],
+              [257, 473],
+              [262, 478],
+              [267, 482]
+            ],
+            "labelBBox": { "x": 254, "y": 447, "width": 60, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1w9anm8",
+            "source": "platform",
+            "target": "github",
+            "label": "[...]",
+            "points": [
+              [752, 100],
+              [739, 117],
+              [725, 137],
+              [711, 155]
+            ],
+            "labelBBox": { "x": 737, "y": 119, "width": 25, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "apx6e8",
+            "source": "libraries",
+            "target": "registries",
+            "label": "publiées sur",
+            "points": [
+              [338, 588],
+              [338, 605],
+              [338, 624],
+              [338, 641]
+            ],
+            "labelBBox": { "x": 339, "y": 609, "width": 80, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1skdrok",
+            "source": "platform",
+            "target": "cloud",
+            "label": "provisionne",
+            "points": [
+              [799, 100],
+              [810, 152],
+              [821, 236],
+              [800, 306],
+              [799, 309],
+              [798, 313],
+              [796, 316]
+            ],
+            "labelBBox": { "x": 813, "y": 202, "width": 67, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "fkss2m",
+            "source": "github",
+            "target": "cloud",
+            "label": "déploie main",
+            "points": [
+              [688, 263],
+              [694, 277],
+              [701, 292],
+              [709, 306],
+              [711, 309],
+              [713, 313],
+              [715, 317]
+            ],
+            "labelBBox": { "x": 710, "y": 284, "width": 86, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "l09e0r",
+            "source": "sovkora",
+            "target": "monitoring",
+            "label": "journaux, métriques, traces",
+            "points": [
+              [102, 426],
+              [96, 432],
+              [91, 438],
+              [88, 446],
+              [82, 456],
+              [80, 467],
+              [80, 478]
+            ],
+            "labelBBox": { "x": 89, "y": 447, "width": 128, "height": 18 },
+            "step": null,
+            "back": false
+          }
+        ]
+      },
+      {
+        "id": "org_containers",
+        "title": "Les produits et les bibliothèques · conteneurs",
+        "dynamic": false,
+        "bounds": { "x": 0, "y": 0, "width": 1695, "height": 1186 },
+        "nodes": [
+          {
+            "id": "verikora",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Verikora",
+            "technology": null,
+            "description": "Vérifie des documents et garde les dossiers auxquels ils appartiennent.",
+            "compound": true,
+            "x": 8,
+            "y": 8,
+            "width": 260,
+            "height": 576
+          },
+          {
+            "id": "folioviv",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Folioviv",
+            "technology": null,
+            "description": "Une boutique, sa vitrine et son éditeur.",
+            "compound": true,
+            "x": 1427,
+            "y": 383,
+            "width": 260,
+            "height": 604
+          },
+          {
+            "id": "verikora.mobile",
+            "parent": "verikora",
+            "kind": "mobile",
+            "shape": "mobile",
+            "title": "Verikora mobile",
+            "technology": "Expo",
+            "description": null,
+            "compound": false,
+            "x": 48,
+            "y": 69,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "folioviv.mobile",
+            "parent": "folioviv",
+            "kind": "mobile",
+            "shape": "mobile",
+            "title": "Folioviv mobile",
+            "technology": "Expo",
+            "description": null,
+            "compound": false,
+            "x": 1467,
+            "y": 444,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "verikora.web",
+            "parent": "verikora",
+            "kind": "app",
+            "shape": "browser",
+            "title": "Verikora web",
+            "technology": "Next.js, un conteneur",
+            "description": "Le site et la console, rendus côté serveur.",
+            "compound": false,
+            "x": 48,
+            "y": 232,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "folioviv.web",
+            "parent": "folioviv",
+            "kind": "app",
+            "shape": "browser",
+            "title": "Folioviv web",
+            "technology": "Next.js, un conteneur",
+            "description": "La vitrine et l'éditeur, rendus côté serveur.",
+            "compound": false,
+            "x": 1467,
+            "y": 635,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "verikora.db",
+            "parent": "verikora",
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Base Verikora",
+            "technology": "PostgreSQL",
+            "description": null,
+            "compound": false,
+            "x": 48,
+            "y": 444,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "sovkora",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Sovkora",
+            "technology": null,
+            "description": "Le moteur d'IA qu'appellent les produits : conversation, documents, médias, automatisations.",
+            "compound": true,
+            "x": 276,
+            "y": 383,
+            "width": 603,
+            "height": 795
+          },
+          {
+            "id": "folioviv.db",
+            "parent": "folioviv",
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Base Folioviv",
+            "technology": "PostgreSQL",
+            "description": null,
+            "compound": false,
+            "x": 1467,
+            "y": 847,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "sovkora.edge",
+            "parent": "sovkora",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Service edge",
+            "technology": "Spring Boot",
+            "description": "La seule porte publique : authentification, limites de débit, routage.",
+            "compound": false,
+            "x": 416,
+            "y": 444,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "sovkora.core",
+            "parent": "sovkora",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Services du moteur",
+            "technology": "Spring Boot",
+            "description": "Un service par contexte borné, plusieurs JVM dans un conteneur.",
+            "compound": false,
+            "x": 416,
+            "y": 635,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "sovkora.broker",
+            "parent": "sovkora",
+            "kind": "queue",
+            "shape": "queue",
+            "title": "Courtier de messages",
+            "technology": "RabbitMQ",
+            "description": "Files de travail par capacité, reprises, lettres mortes.",
+            "compound": false,
+            "x": 316,
+            "y": 851,
+            "width": 180,
+            "height": 92
+          },
+          {
+            "id": "sovkora.db",
+            "parent": "sovkora",
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Bases Sovkora",
+            "technology": "PostgreSQL, pgvector",
+            "description": "Une base par contexte ; l'outbox ; les vecteurs à côté des lignes.",
+            "compound": false,
+            "x": 526,
+            "y": 847,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "libraries",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Bibliothèques partagées",
+            "technology": null,
+            "description": "Écrites une fois, versionnées, consommées par chaque produit.",
+            "compound": true,
+            "x": 887,
+            "y": 786,
+            "width": 532,
+            "height": 201
+          },
+          {
+            "id": "sovkora.workers",
+            "parent": "sovkora",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Workers",
+            "technology": "Python",
+            "description": "Médias, documents et modèles ; consomment les files.",
+            "compound": false,
+            "x": 389,
+            "y": 1038,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "libraries.ts",
+            "parent": "libraries",
+            "kind": "library",
+            "shape": "component",
+            "title": "Paquets TypeScript et UI",
+            "technology": "@krizaka/*, npm",
+            "description": "UI, authentification, données, paiements, stockage : le produit importe, il ne copie jamais.",
+            "compound": false,
+            "x": 1147,
+            "y": 847,
+            "width": 231,
+            "height": 100
+          },
+          {
+            "id": "libraries.java",
+            "parent": "libraries",
+            "kind": "library",
+            "shape": "component",
+            "title": "Briques Java",
+            "technology": "com.krizaka, Maven",
+            "description": "Le build parent, la BOM et les starters Spring Boot.",
+            "compound": false,
+            "x": 927,
+            "y": 847,
+            "width": 190,
+            "height": 100
+          }
+        ],
+        "edges": [
+          {
+            "id": "w89uik",
+            "source": "verikora.web",
+            "target": "verikora.db",
+            "label": "SQL",
+            "points": [
+              [138, 332],
+              [138, 362],
+              [138, 401],
+              [138, 433]
+            ],
+            "labelBBox": { "x": 139, "y": 353, "width": 32, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1xs9ji2",
+            "source": "verikora.mobile",
+            "target": "verikora.web",
+            "label": "HTTPS",
+            "points": [
+              [138, 169],
+              [138, 186],
+              [138, 205],
+              [138, 222]
+            ],
+            "labelBBox": { "x": 139, "y": 190, "width": 50, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1pksba4",
+            "source": "folioviv.web",
+            "target": "folioviv.db",
+            "label": "SQL",
+            "points": [
+              [1557, 735],
+              [1557, 765],
+              [1557, 804],
+              [1557, 836]
+            ],
+            "labelBBox": { "x": 1558, "y": 756, "width": 32, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "5cwfqy",
+            "source": "folioviv.mobile",
+            "target": "folioviv.web",
+            "label": "HTTPS",
+            "points": [
+              [1557, 544],
+              [1557, 568],
+              [1557, 599],
+              [1557, 625]
+            ],
+            "labelBBox": { "x": 1558, "y": 593, "width": 50, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1ujoqu3",
+            "source": "verikora.web",
+            "target": "sovkora.edge",
+            "label": "HTTPS",
+            "points": [
+              [224, 332],
+              [280, 364],
+              [354, 406],
+              [412, 439]
+            ],
+            "labelBBox": { "x": 290, "y": 353, "width": 50, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "ejwgxe",
+            "source": "sovkora.edge",
+            "target": "sovkora.core",
+            "label": "route",
+            "points": [
+              [506, 544],
+              [506, 568],
+              [506, 599],
+              [506, 625]
+            ],
+            "labelBBox": { "x": 507, "y": 593, "width": 43, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1sjvlyq",
+            "source": "sovkora.core",
+            "target": "sovkora.broker",
+            "label": "publie depuis l'outbox",
+            "points": [
+              [419, 735],
+              [413, 741],
+              [408, 747],
+              [404, 755],
+              [390, 781],
+              [390, 813],
+              [393, 841]
+            ],
+            "labelBBox": { "x": 405, "y": 756, "width": 164, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1s9fo3b",
+            "source": "sovkora.core",
+            "target": "sovkora.db",
+            "label": "SQL, outbox dans la même transaction",
+            "points": [
+              [559, 735],
+              [564, 741],
+              [569, 748],
+              [573, 755],
+              [588, 780],
+              [598, 810],
+              [604, 836]
+            ],
+            "labelBBox": { "x": 585, "y": 756, "width": 230, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "14xjedo",
+            "source": "sovkora.broker",
+            "target": "sovkora.workers",
+            "label": "livre, au moins une fois",
+            "points": [
+              [379, 943],
+              [368, 966],
+              [361, 994],
+              [374, 1018],
+              [376, 1022],
+              [379, 1027],
+              [383, 1031]
+            ],
+            "labelBBox": { "x": 375, "y": 996, "width": 139, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "f395ho",
+            "source": "sovkora.workers",
+            "target": "sovkora.broker",
+            "label": "rend les résultats",
+            "points": [
+              [516, 1038],
+              [522, 1024],
+              [524, 1009],
+              [518, 995],
+              [516, 991],
+              [493, 971],
+              [468, 949]
+            ],
+            "labelBBox": { "x": 523, "y": 996, "width": 112, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "xj0wrf",
+            "source": "verikora.web",
+            "target": "libraries.ts",
+            "label": "importe",
+            "points": [
+              [228, 286],
+              [402, 294],
+              [776, 318],
+              [886, 383],
+              [1069, 492],
+              [1191, 728],
+              [1239, 838]
+            ],
+            "labelBBox": { "x": 1114, "y": 593, "width": 50, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1tgds26",
+            "source": "folioviv.web",
+            "target": "libraries.ts",
+            "label": "importe",
+            "points": [
+              [1488, 735],
+              [1444, 767],
+              [1386, 808],
+              [1340, 841]
+            ],
+            "labelBBox": { "x": 1455, "y": 756, "width": 50, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "bch7u1",
+            "source": "sovkora.core",
+            "target": "libraries.java",
+            "label": "s'appuie sur",
+            "points": [
+              [596, 694],
+              [677, 704],
+              [797, 729],
+              [886, 786],
+              [911, 802],
+              [937, 822],
+              [960, 840]
+            ],
+            "labelBBox": { "x": 869, "y": 756, "width": 60, "height": 18 },
+            "step": null,
+            "back": false
+          }
+        ]
+      }
+    ]
+  }
+}

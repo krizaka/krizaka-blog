@@ -1,0 +1,85 @@
+---
+title: "Our design choices, for architects: each one with its official docs"
+description: "RabbitMQ over Kafka, PostgreSQL over NoSQL, vectors beside the rows, Next.js in one container, Playwright and Maestro, shared CI, Grafana, shared libraries: the choice, the refusal, why, the cost."
+seoTitle: "Krizaka's design choices, with the official docs"
+seoDescription: "RabbitMQ over Kafka, PostgreSQL over NoSQL, pgvector, Next.js containers, Playwright and Maestro, shared CI, Grafana, shared libraries: why and the cost."
+date: 2026-11-15
+tags: [integration]
+author: oussama
+draft: false
+publishedAt: "2026-11-15T13:30:00-05:00"
+cover: series-13-orazaka-v2-the-architecture-we-build
+coverAlt: "A long brick hall with arched doorways and hanging lamps, a small yellow duck walking toward the far end"
+newsletter: hold
+---
+
+This post is for architects, tech leads and designers. It is short on prose on purpose: each decision is one block, with the choice, the alternative we refused, why, and what it costs us. Every claim about a tool links to its official documentation, so you can check it. What we run is read from our code on `main`, not from memory.
+
+## The view at C1 and C2
+
+Two views of one model written in [LikeC4](https://likec4.dev/), the notation of the [C4 model](https://c4model.com/), checked against our organisation's base model. Less detail than our internal views, and nothing sensitive: no host, address or account.
+
+<Architecture view="org_context" label="The context: customers and visitors use Verikora and Folioviv; Verikora asks Sovkora, the AI engine, for checks; the three products build on the shared libraries, published to the package registries; the platform runs the shared workflows on GitHub, which deploys main to the cloud; Sovkora sends its logs, metrics and traces to monitoring." />
+
+<Architecture view="org_containers" label="The containers: Verikora and Folioviv each have a Next.js web app in one container, an Expo mobile app and a PostgreSQL database; Sovkora has an edge service, the engine services, a RabbitMQ broker, Python workers and PostgreSQL databases with pgvector; the web apps import the TypeScript packages and the engine services build on the Java building blocks." />
+
+## 1. RabbitMQ rather than Kafka
+
+- **Choice.** [RabbitMQ](https://www.rabbitmq.com/docs/queues) carries Sovkora's jobs to its workers. A service writes the job to an outbox table in the same database transaction as its own change; a relay publishes it. Each capability has its own routing key, so a CPU job and a GPU job land in different [queues](https://www.rabbitmq.com/docs/exchanges). Queues are bounded ([max length and overflow](https://www.rabbitmq.com/docs/maxlength)), a failing message is retried and then [dead-lettered](https://www.rabbitmq.com/docs/dlx), and a consumer [acknowledges](https://www.rabbitmq.com/docs/confirms) what it finished.
+- **Refused.** [Apache Kafka](https://kafka.apache.org/intro).
+- **Why.** Our need is work queues: a job is done once, by one worker, then it is gone. Kafka is a partitioned log where « events are not deleted after consumption » and are retained per topic ([Kafka, introduction](https://kafka.apache.org/intro)); its strengths, replay and very high throughput, are not our problem today. AMQP routing is exactly our problem.
+- **Cost.** We operate the broker ourselves: our host offers [managed Kafka](https://docs.digitalocean.com/products/databases/kafka/), but RabbitMQ only as a [Marketplace droplet](https://docs.digitalocean.com/products/marketplace/catalog/rabbitmq/). A broker lost with messages in flight loses them, which is why the outbox and the database, not the broker, hold the truth. Delivery is at least once, so every consumer must be idempotent.
+
+## 2. Relational rather than NoSQL
+
+- **Choice.** [PostgreSQL](https://www.postgresql.org/docs/current/tutorial-transactions.html) for every product, one database per bounded context in Sovkora (engine, users, billing, studio). The flexible parts are [`jsonb`](https://www.postgresql.org/docs/current/datatype-json.html) columns; Verikora's search is PostgreSQL [full text](https://www.postgresql.org/docs/current/textsearch.html); concurrent writers queue on [row and advisory locks](https://www.postgresql.org/docs/current/explicit-locking.html) and [`FOR UPDATE … SKIP LOCKED`](https://www.postgresql.org/docs/current/sql-select.html).
+- **Refused.** A document store as the system of record.
+- **Why.** Our data carries invariants across rows: a credit hold and the job it pays for, a rule and its revisions, a document and its checks. A transaction keeps them true together, and the outbox only works because the message and the change commit at once. `jsonb` gives us the schema-light part where we need it, without a second engine.
+- **Cost.** Every change of shape is a versioned migration. We scale up before we scale out. A relational model has to be watched for unbounded reads and N+1 queries, so our Java rules refuse them.
+
+## 3. Vectors beside the rows: pgvector, not a separate vector database
+
+- **Choice.** [pgvector](https://github.com/pgvector/pgvector) in the same PostgreSQL. Sovkora's semantic cache stores a 1024-dimension embedding with an HNSW index on cosine distance, and the recommendations live in the knowledge database. The cache is off by default; a pack has to turn it on.
+- **Refused.** A dedicated vector database beside PostgreSQL.
+- **Why.** A vector is useful only with the row it describes: same transaction, same backup, same tenant filter in the same query. pgvector offers exact and approximate search ([HNSW, IVFFlat](https://github.com/pgvector/pgvector#indexing)) with « ACID compliance, point-in-time recovery, JOINs » of Postgres ([pgvector](https://github.com/pgvector/pgvector)).
+- **Cost.** The extension must be installed by the cluster's administrator, before the migrations run. An HNSW index takes memory and time to build. At a scale we have not reached, a dedicated engine may answer faster; we have not measured it.
+
+## 4. A few containers, and Next.js in one of them
+
+- **Choice.** Each product's web app is a Next.js server built with [`output: "standalone"`](https://nextjs.org/docs/app/api-reference/config/next-config-js/output), one Docker image, run as one service on [DigitalOcean App Platform](https://docs.digitalocean.com/products/app-platform/). Sovkora runs an edge container and an engine container that starts several JVMs side by side; the stateful parts (PostgreSQL, the broker) live outside the app containers. Our sites (this blog, the library docs) are static exports. Each app is described by an [app spec](https://docs.digitalocean.com/products/app-platform/reference/app-spec/) committed in its repository, and a tool reports any drift between the file and the live app.
+- **Refused.** One container per service on an orchestrator we would operate ourselves.
+- **Why.** A small team, one founder and AI agents: the platform builds, deploys on push to `main`, restarts and routes. The spec in the repository is the whole deployment, reviewed like code.
+- **Cost.** The JVMs in one container start, stop and scale together: if one exits, the container exits and the platform restarts the set. Each JVM gets its own heap inside the container's memory, which we size by hand. The platform's limits are ours.
+
+## 5. Playwright for the web, Maestro for mobile
+
+- **Choice.** The main proof of a product is its journeys: one customer promise each, played as a seeded demo cast. Web journeys are [Playwright](https://playwright.dev/docs/test-projects) tests in a project named `critical`; mobile journeys are [Maestro](https://docs.maestro.dev/) YAML flows on an Android emulator, on every pull request. Both run from one shared workflow each, with one required check each.
+- **Refused.** Testing the library's components again in every product (snapshots, copies of what `@krizaka/ui` already asserts), and long end-to-end suites rerun after a flake.
+- **Why.** A product test has one of three subjects: its rules (unit), its server and API (integration, on a real database), its journeys (end to end). A bug found in a library component gets its test in the library. Playwright's projects give one configuration per browser or device; Maestro's flows are short and readable by a non-developer.
+- **Cost.** Two tools, two syntaxes (TypeScript and YAML). Emulator runs are the slowest part of our CI. Few journeys means a gap is possible between them, which unit and integration tests must cover.
+
+## 6. CI written once, in GitHub
+
+- **Choice.** Our organisation's [`.github` repository](repo:.github) holds 36 [reusable workflows](https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows) (`on: workflow_call`): Node, Java, Python, Rust, mobile end to end, journeys, security scans. Every product calls them, [pinned to a full commit SHA](https://docs.github.com/en/actions/reference/security/secure-use), and lands through a [merge queue](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue).
+- **Refused.** A copy of the CI in each repository.
+- **Why.** A fix to a check lands everywhere with a pin bump, and every repository answers to the same required checks, agents included.
+- **Cost.** A change to a shared workflow is a change to every repository, so it is tested on its own and rolled out by pin bumps. A caller can only change what the workflow exposes as inputs.
+
+## 7. Monitoring with Grafana, as code
+
+- **Choice.** One [Grafana Cloud](https://grafana.com/docs/grafana-cloud/platform/pricing-and-usage/stack-plans/) stack. [Synthetic Monitoring](https://grafana.com/docs/grafana-cloud/observe-and-act/testing/synthetic-monitoring/) probes our public sites from outside; the Java services emit structured logs, metrics and traces through our observability starter and export them over [OTLP](https://opentelemetry.io/docs/specs/otlp/) once an environment's endpoint is set. [Dashboards](https://grafana.com/docs/grafana/latest/visualizations/dashboards/) are JSON kept as code and linted.
+- **The shape of a dashboard, without its data.** One row per app: availability and latency seen from outside, then rate, errors and duration of the requests, then saturation, then the error lines of the logs ([Loki](https://grafana.com/docs/loki/latest/)). No host name, address or account appears in this post; that is why it shows the shape, not a screenshot.
+- **Refused.** Running Prometheus, Loki and Grafana ourselves.
+- **Why.** The probes, the storage and the alerting are not our product; the hosted free tier covers what we send today.
+- **Cost.** The free tier's limits are ours, and the telemetry leaves our hosting: that is why the logs (Loki) join the dashboards only after a shared redaction step. Today the probes are live; the services' telemetry is switched on environment by environment.
+
+## 8. Shared libraries, consumed, never copied
+
+- **Choice.** TypeScript and UI packages under the [`@krizaka` scope](https://docs.npmjs.com/about-scopes) ([krizaka-ui](repo:krizaka-ui), [krizaka-ts](repo:krizaka-ts), docs on [ui.krizaka.com](site:ui) and [ts.krizaka.com](site:ts)); Java building blocks under `com.krizaka` ([krizaka-java](repo:krizaka-java), docs on [java.krizaka.com](site:java)): a parent build, a [BOM](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html) and [Spring Boot starters](https://docs.spring.io/spring-boot/reference/features/developing-auto-configuration.html) for web, security, RabbitMQ, observability, persistence and more. Verikora's web app depends on 28 `@krizaka` packages, Folioviv's on 23; Sovkora's services import the BOM and then the starters, with no version of their own.
+- **Refused.** Copying code between products, and one repository for all products.
+- **Why.** A behaviour is written, tested and documented once; a product imports it and tests only its own rules. The RabbitMQ starter is where « published by one transactional line, retried with back-off, then dead-lettered » is written once for every service.
+- **Cost.** A library change reaches a product only through a version bump, and a breaking change needs a major version and a migration in each consumer. Libraries are public and open source, so their API is a promise.
+
+## What this post does not show
+
+The internal decision records stay internal; this post gives their reasons, not their text. The model behind the two views declares the three products and the libraries at the level of this post; each product's full model lives in its own repository.
