@@ -3,7 +3,7 @@ import agents from "@/lib/architecture.json";
 import designChoices from "@/lib/architecture-design-choices.json";
 import type { Locale } from "@/lib/i18n";
 
-/* <Architecture view="agents_containers" label="…"/> in a post: one view of a checked architecture model, laid out at build time
+/* <Architecture view="agents_containers" label="short title" description="the long sentence"/> in a post: one view of a checked architecture model, laid out at build time
    (lib/architecture.json, made by scripts/gen-architecture.mjs with `layoutViews` of @krizaka/architecture) and drawn by the family's
    `ArchitectureDiagram` of @krizaka/ui, in the page's tokens (dark and light follow the theme), with its text version. The words of
    the drawing are the model's (French: content/diagrams/*.fr.json). Server-rendered, no script. */
@@ -31,15 +31,17 @@ export function viewFor(id: string, locale: Locale): ArchView {
 export function ArchitectureView({
   view: id,
   label,
+  description,
   locale,
   labels,
-}: Readonly<{ view: string; label: string; locale: Locale; labels: Labels }>) {
+}: Readonly<{ view: string; label: string; description?: string; locale: Locale; labels: Labels }>) {
   const view = viewFor(id, locale);
   return (
     <div className="bl-arch" data-reveal="soft" data-wide={view.bounds.width > 1000 ? "true" : undefined}>
       <ArchitectureDiagram
         view={view}
         title={label}
+        subtitle={description}
         words={{
           summary: labels.textVersion,
           elements: labels.elements,

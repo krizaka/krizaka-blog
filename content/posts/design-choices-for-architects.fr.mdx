@@ -19,9 +19,9 @@ Ce billet s'adresse aux architectes, aux leads techniques et aux concepteurs. Il
 
 Deux vues d'un même modèle écrit en [LikeC4](https://likec4.dev/), la notation du [modèle C4](https://c4model.com/), vérifié contre le modèle de base de notre organisation. Moins de détail que nos vues internes, et rien de sensible : ni hôte, ni adresse, ni compte.
 
-<Architecture view="org_context" label="Le contexte : clients et visiteurs utilisent Verikora et Folioviv ; Verikora demande des vérifications à Sovkora, le moteur d'IA ; les trois produits s'appuient sur les bibliothèques partagées, publiées sur les registres de paquets ; la plateforme fait tourner les workflows partagés sur GitHub, qui déploie main dans le cloud ; Sovkora envoie ses journaux, métriques et traces à la supervision." />
+<Architecture view="org_context" label="Le contexte (C1)" description="Clients et visiteurs utilisent Verikora et Folioviv ; Verikora demande des vérifications à Sovkora, le moteur d'IA ; les trois produits s'appuient sur les bibliothèques partagées, publiées sur les registres de paquets ; la plateforme fait tourner les workflows partagés sur GitHub, qui déploie main dans le cloud ; Sovkora envoie ses journaux, métriques et traces à la supervision." />
 
-<Architecture view="org_containers" label="Les conteneurs : Verikora et Folioviv ont chacun une application web Next.js dans un conteneur, une application mobile Expo et une base PostgreSQL ; Sovkora a un service edge, les services du moteur, un courtier RabbitMQ, des workers Python et des bases PostgreSQL avec pgvector ; les applications web importent les paquets TypeScript et les services du moteur s'appuient sur les briques Java." />
+<Architecture view="org_containers" label="Les conteneurs (C2)" description="Verikora et Folioviv ont chacun une application web Next.js dans un conteneur, une application mobile Expo et une base PostgreSQL ; Sovkora a un service edge, les services du moteur, un courtier RabbitMQ, des workers Python et des bases PostgreSQL avec pgvector ; les applications web importent les paquets TypeScript et les services du moteur s'appuient sur les briques Java." />
 
 ## 1. RabbitMQ plutôt que Kafka
 

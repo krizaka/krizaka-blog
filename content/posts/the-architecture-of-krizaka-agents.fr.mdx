@@ -40,7 +40,7 @@ Cette forme répond à une question : que se passe-t-il quand dix sessions trava
 
 ## Le contexte
 
-<Architecture view="agents_context" label="Le contexte : le fondateur et les agents IA autour de l'outillage des agents, à l'intérieur de la plateforme Krizaka ; GitHub porte le travail et déploie dans le cloud après une fusion ; chaque session tourne sur un modèle hébergé." />
+<Architecture view="agents_context" label="Le contexte" description="Le fondateur et les agents IA autour de l'outillage des agents, à l'intérieur de la plateforme Krizaka ; GitHub porte le travail et déploie dans le cloud après une fusion ; chaque session tourne sur un modèle hébergé." />
 
 Deux sortes d'acteurs utilisent le système. Le fondateur écrit les tickets, donne ses consignes à la session CTO et regarde le cockpit. Les agents IA font le reste, toujours comme sessions de l'outillage : un agent n'a pas d'autre moyen de toucher un dépôt.
 
@@ -50,7 +50,7 @@ L'autre dépendance, c'est le modèle. La session CTO et chaque session d'équip
 
 ## Les conteneurs
 
-<Architecture view="agents_containers" label="Les conteneurs de l'outillage des agents : la session CTO et le lanceur démarrent les sessions d'équipe ; les sessions lisent les règles, passent les gardes, ouvrent des pull requests et les mettent dans les trains ; le chien de garde et les trains écrivent dans la base d'exploitation, que lit le cockpit." />
+<Architecture view="agents_containers" label="Les conteneurs de l'outillage des agents" description="La session CTO et le lanceur démarrent les sessions d'équipe ; les sessions lisent les règles, passent les gardes, ouvrent des pull requests et les mettent dans les trains ; le chien de garde et les trains écrivent dans la base d'exploitation, que lit le cockpit." />
 
 Neuf conteneurs, chacun avec un seul rôle. Je les prends dans l'ordre où un travail les rencontre.
 
@@ -135,19 +135,19 @@ La documentation qui décrit l'outillage vit à côté de lui et est testée con
 
 ## La vie d'une pull request
 
-<Architecture view="pr_life" label="La vie d'une pull request en douze étapes numérotées : du ticket qu'écrit le fondateur à l'atterrissage que montre le cockpit." />
+<Architecture view="pr_life" label="La vie d'une pull request en douze étapes numérotées" description="Du ticket qu'écrit le fondateur à l'atterrissage que montre le cockpit." />
 
 Lisez les numéros dans l'ordre. Le seul point où l'on croit un agent sur parole est la lecture de son propre diff, et cette lecture ne décide rien seule. Le reste est vérifié : le ticket dit ce que « fait » veut dire ; la session travaille dans son propre worktree ; les gardes refusent tôt ce qui peut l'être ; la pull request reprend les lignes du ticket avec leurs preuves ; le train ne déplace que ce qui est vert ; GitHub rejoue les contrôles avant la fusion ; l'atterrissage est consigné, et le fondateur le lit.
 
 ## La vie d'une alerte
 
-<Architecture view="alert_life" label="La vie d'une alerte, en neuf étapes numérotées : le chien de garde lit GitHub et la lève, le cockpit et la session CTO la voient, la session CTO la prend en charge et une équipe corrige la cause, le chien de garde revoit le vert sur une lecture complète et la résout avec cette lecture pour preuve." />
+<Architecture view="alert_life" label="La vie d'une alerte, en neuf étapes numérotées" description="Le chien de garde lit GitHub et la lève, le cockpit et la session CTO la voient, la session CTO la prend en charge et une équipe corrige la cause, le chien de garde revoit le vert sur une lecture complète et la résout avec cette lecture pour preuve." />
 
 Une alerte est une ligne avec un état, pas un message. Le chien de garde la lève ; chaque démarrage de session et le cockpit l'affichent ; la session CTO lit les alertes ouvertes avant tout nouveau travail, en prend une en charge avec une note (qui a regardé, ce qui a été décidé) et lance une équipe sur la cause. La prise en charge ne la ferme pas. Le chien de garde résout sa propre ligne quand la lecture complète suivante ne voit plus le problème, et inscrit cette lecture comme preuve. Pourquoi seulement une lecture complète : une lecture qui n'a pas pu joindre un dépôt ne prouve rien sur ses pull requests, donc un passage incomplet ne résout jamais une alerte GitHub. Qui que ce soit qui résout une alerte, la base refuse une résolution sans sa preuve. Personne n'en ferme une en disant que tout va bien.
 
 ## Comment la base d'exploitation suit GitHub
 
-<Architecture view="opsdb_sync" label="Comment la base d'exploitation suit GitHub, en six étapes numérotées : un lecteur demande, une copie périmée ne demande à GitHub que ce qui a changé, un déplacement s'écrit d'abord sur GitHub, et le cockpit lit la copie sans appel réseau." />
+<Architecture view="opsdb_sync" label="Comment la base d'exploitation suit GitHub, en six étapes numérotées" description="Un lecteur demande, une copie périmée ne demande à GitHub que ce qui a changé, un déplacement s'écrit d'abord sur GitHub, et le cockpit lit la copie sans appel réseau." />
 
 Aucune horloge ne la rafraîchit. Un lecteur qui trouve la copie plus vieille qu'un court seuil déclenche une lecture incrémentale : une seule requête bornée pour les tickets et pull requests modifiés depuis la dernière lecture, puis leurs cartes du tableau, insérées ou mises à jour d'un coup. Dix lecteurs en même temps attendent un seul verrou, et GitHub n'est lu qu'une fois. Une première lecture, ou trop de changements, devient une lecture complète dans une seule transaction. Le cockpit demande la copie à l'outil du tableau et ne fait aucun appel réseau de lui-même ; quand la copie est périmée, c'est l'outil qui lit GitHub pour lui. La conséquence est celle qui compte : le pire qu'une copie périmée puisse faire est d'afficher un fait ancien, parce que chaque décision est revérifiée sur GitHub.
 
