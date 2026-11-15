@@ -156,7 +156,7 @@ export function seriesOf(locale: Locale): { series: string; posts: Post[] }[] {
 export const postsInSeries = (locale: Locale, series: string): Post[] =>
   seriesOf(locale).find((s) => s.series === series)?.posts ?? [];
 
-/** The posts closest to one: same series first, then shared topics (most shared first), then the newest. Never the post itself. */
+/** The posts closest to one: same series first, then shared topics (most shared first), then the newest (by when it went out). Never the post itself. */
 export function relatedPosts(post: Post, limit = 3): Post[] {
   const mine = new Set(post.tags.map(tagSlug));
   return postsOf(post.locale)
@@ -165,7 +165,7 @@ export function relatedPosts(post: Post, limit = 3): Post[] {
       p,
       score: (p.series && p.series === post.series ? 10 : 0) + p.tags.map(tagSlug).filter((t) => mine.has(t)).length,
     }))
-    .sort((a, b) => b.score - a.score || b.p.date.localeCompare(a.p.date))
+    .sort((a, b) => b.score - a.score || publishedTime(b.p) - publishedTime(a.p) || a.p.slug.localeCompare(b.p.slug))
     .slice(0, limit)
     .map((x) => x.p);
 }
