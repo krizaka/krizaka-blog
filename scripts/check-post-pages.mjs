@@ -7,7 +7,7 @@
 
    Every published post whose author signs (lib/author-picture.ts, SIGNING_AUTHORS) ends with the Signature block (`aside.bl-sign`,
    after the article); the other-language action of its byline is a link (role link, `hreflang`, `lang`), never a button. */
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
@@ -36,42 +36,47 @@ export function postPageProblems(html, { signs, hasOther }) {
   return problems;
 }
 
-function main() {
-  const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
-  const i = process.argv.indexOf("--out");
-  const out = resolve(root, i === -1 ? "out" : process.argv[i + 1]);
-  const signing = [
+/** The author ids that sign, read from the one list the page uses. */
+const signingAuthors = (root) =>
+  [
     ...readFileSync(join(root, "lib/author-picture.ts"), "utf8")
       .match(/SIGNING_AUTHORS = \[([^\]]*)\]/)[1]
       .matchAll(/"([^"]+)"/g),
   ].map((m) => m[1]);
+
+/** The built page of a published post file, or null when the post has none under /basics/ (a stub or a chapter has its own contract). */
+function builtPost(dir, out, file, signing) {
+  const m = file.match(/^(.+)\.(en|fr)\.mdx$/);
+  if (!m) return null;
+  const { data } = matter(readFileSync(join(dir, file), "utf8"));
+  if (data.draft) return null;
+  const [, slug, locale] = m;
+  const page = join(out, locale === "en" ? "" : "fr", "basics", slug, "index.html");
+  if (!existsSync(page)) return null;
+  return {
+    id: `${locale}/${slug}`,
+    html: readFileSync(page, "utf8"),
+    signs: signing.includes(String(data.author)),
+    hasOther: existsSync(join(dir, `${slug}.${locale === "en" ? "fr" : "en"}.mdx`)),
+  };
+}
+
+function main() {
+  const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
+  const i = process.argv.indexOf("--out");
+  const out = resolve(root, i === -1 ? "out" : process.argv[i + 1]);
   const dir = join(root, "content/posts");
-  const problems = [];
-  let checked = 0;
-  for (const file of readdirSync(dir).filter((f) => f.endsWith(".mdx"))) {
-    const m = file.match(/^(.+)\.(en|fr)\.mdx$/);
-    if (!m) continue;
-    const { data } = matter(readFileSync(join(dir, file), "utf8"));
-    if (data.draft) continue;
-    const [, slug, locale] = m;
-    const hasOther = readdirSync(dir).includes(`${slug}.${locale === "en" ? "fr" : "en"}.mdx`);
-    const page = join(out, locale === "en" ? "" : "fr", "basics", slug, "index.html");
-    let html;
-    try {
-      html = readFileSync(page, "utf8");
-    } catch {
-      continue; // a post kept as a story chapter or a stub has its own contract
-    }
-    checked += 1;
-    for (const p of postPageProblems(html, { signs: signing.includes(String(data.author)), hasOther }))
-      problems.push(`${locale}/${slug}: ${p}`);
-  }
-  if (checked === 0) problems.push("no built post page was found under /basics/");
+  const signing = signingAuthors(root);
+  const posts = readdirSync(dir)
+    .map((file) => builtPost(dir, out, file, signing))
+    .filter(Boolean);
+  const problems = posts.flatMap((post) => postPageProblems(post.html, post).map((p) => `${post.id}: ${p}`));
+  if (posts.length === 0) problems.push("no built post page was found under /basics/");
   if (problems.length > 0) {
     console.error(`check-post-pages:\n  ${problems.join("\n  ")}`);
     process.exit(1);
   }
-  console.log(`check-post-pages: ${checked} post pages, signature and other-language link as contracted`);
+  console.log(`check-post-pages: ${posts.length} post pages, signature and other-language link as contracted`);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) main();
