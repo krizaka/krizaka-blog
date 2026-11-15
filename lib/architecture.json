@@ -3,7 +3,7 @@
   "tool": { "name": "@krizaka/architecture", "likec4": "1.60.0" },
   "source": {
     "path": "content/diagrams/krizaka-agents.c4",
-    "sha256": "b134bc1e75ba3c8ab8591b1cf0012f1580e958eecc4a7aae2d094bb39b71eede"
+    "sha256": "5ad5f4a4619fce16159b2fa9ce26501af97d3566b2a6372e0efe945f5365c959"
   },
   "base": [
     { "path": "org.c4", "sha256": "7bac4a793b0433ad5884513623d52d9961c3b7370ce331c20628420b7df90fda" },
@@ -11,7 +11,7 @@
   ],
   "translations": {
     "path": "content/diagrams/krizaka-agents.fr.json",
-    "sha256": "8df4b0f67898ab3b784a340b14e3756380673bff1bb1cff2a522c99a77f59502"
+    "sha256": "208cc64686b8f7b76c2cb96862cec319378be8181078fcc1a37f465efd9142a1"
   },
   "check": {
     "status": "ok",
@@ -35,7 +35,7 @@
         "id": "agents_context",
         "title": "The agents tooling · context",
         "dynamic": false,
-        "bounds": { "x": 0, "y": 0, "width": 525, "height": 666 },
+        "bounds": { "x": 0, "y": 0, "width": 653, "height": 666 },
         "nodes": [
           {
             "id": "founder",
@@ -74,7 +74,7 @@
             "technology": null,
             "description": "How the org works: shared CI and standards, the agents tooling, the infrastructure as code, the templates.",
             "compound": true,
-            "x": 231,
+            "x": 267,
             "y": 168,
             "width": 244,
             "height": 185
@@ -88,7 +88,7 @@
             "technology": "Python, Node",
             "description": "Lanes, trains, guards and skills; runs on the founder machine.",
             "compound": false,
-            "x": 263,
+            "x": 299,
             "y": 221,
             "width": 180,
             "height": 100
@@ -103,6 +103,20 @@
             "description": "Code, issues, pull requests, CI, the merge queue and the tags.",
             "compound": false,
             "x": 0,
+            "y": 404,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "models",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "Model providers",
+            "technology": null,
+            "description": "The AI models Sovkora routes to, local or hosted.",
+            "compound": false,
+            "x": 337,
             "y": 404,
             "width": 180,
             "height": 100
@@ -129,18 +143,18 @@
             "target": "platform.tooling",
             "label": "instructs the CTO session, watches the cockpit",
             "points": [
-              [105, 100],
-              [114, 125],
-              [125, 152],
-              [135, 160],
-              [148, 169],
-              [191, 162],
+              [107, 100],
+              [117, 122],
+              [131, 145],
+              [152, 160],
+              [172, 173],
+              [183, 160],
               [206, 168],
-              [235, 179],
-              [264, 197],
-              [288, 215]
+              [241, 179],
+              [276, 198],
+              [307, 216]
             ],
-            "labelBBox": { "x": 136, "y": 121, "width": 247, "height": 35 },
+            "labelBBox": { "x": 153, "y": 121, "width": 247, "height": 35 },
             "step": null,
             "back": false
           },
@@ -150,15 +164,12 @@
             "target": "platform.tooling",
             "label": "run as its sessions",
             "points": [
-              [410, 100],
-              [404, 119],
-              [397, 140],
-              [391, 160],
-              [385, 176],
-              [379, 195],
-              [374, 211]
+              [417, 100],
+              [412, 133],
+              [404, 176],
+              [399, 211]
             ],
-            "labelBBox": { "x": 404, "y": 129, "width": 119, "height": 18 },
+            "labelBBox": { "x": 414, "y": 129, "width": 119, "height": 18 },
             "step": null,
             "back": false
           },
@@ -183,12 +194,18 @@
             "target": "github",
             "label": "opens, lands and watches pull requests",
             "points": [
-              [282, 321],
-              [247, 345],
-              [205, 373],
-              [170, 398]
+              [299, 317],
+              [270, 331],
+              [237, 344],
+              [206, 353],
+              [182, 360],
+              [171, 347],
+              [150, 361],
+              [137, 369],
+              [126, 382],
+              [117, 395]
             ],
-            "labelBBox": { "x": 223, "y": 362, "width": 249, "height": 18 },
+            "labelBBox": { "x": 151, "y": 362, "width": 249, "height": 18 },
             "step": null,
             "back": false
           },
@@ -204,6 +221,21 @@
               [90, 557]
             ],
             "labelBBox": { "x": 91, "y": 525, "width": 86, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "den8wv",
+            "source": "platform.tooling",
+            "target": "models",
+            "label": "every session runs on a hosted model",
+            "points": [
+              [399, 321],
+              [404, 343],
+              [410, 370],
+              [415, 393]
+            ],
+            "labelBBox": { "x": 412, "y": 362, "width": 240, "height": 18 },
             "step": null,
             "back": false
           }
@@ -264,7 +296,7 @@
             "shape": "browser",
             "title": "Cockpit",
             "technology": "Next.js",
-            "description": "The founder screen: teams, trains, alerts, the architecture. It reads; it never writes into the machine.",
+            "description": "The founder screen: teams, trains, alerts, the architecture. It reads; it never writes to GitHub, the alerts or the board.",
             "compound": false,
             "x": 396,
             "y": 212,
@@ -362,7 +394,7 @@
             "shape": "storage",
             "title": "Operations database",
             "technology": "SQLite",
-            "description": "A local projection: alerts, events, trains, live sessions, a copy of the board. Never a source: GitHub wins.",
+            "description": "Local SQLite files, a projection: alerts, events, trains, live sessions; the board copy in a file of its own. Never a source: GitHub wins.",
             "compound": false,
             "x": 332,
             "y": 863,
@@ -862,7 +894,7 @@
             "shape": "browser",
             "title": "Cockpit",
             "technology": "Next.js",
-            "description": "The founder screen: teams, trains, alerts, the architecture. It reads; it never writes into the machine.",
+            "description": "The founder screen: teams, trains, alerts, the architecture. It reads; it never writes to GitHub, the alerts or the board.",
             "compound": false,
             "x": 776,
             "y": 536,
@@ -876,7 +908,7 @@
             "shape": "storage",
             "title": "Operations database",
             "technology": "SQLite",
-            "description": "A local projection: alerts, events, trains, live sessions, a copy of the board. Never a source: GitHub wins.",
+            "description": "Local SQLite files, a projection: alerts, events, trains, live sessions; the board copy in a file of its own. Never a source: GitHub wins.",
             "compound": false,
             "x": 388,
             "y": 715,
@@ -1107,7 +1139,7 @@
         "id": "alert_life",
         "title": "The life of an alert, from the watchdog to its resolution",
         "dynamic": true,
-        "bounds": { "x": 0, "y": 0, "width": 1266, "height": 608 },
+        "bounds": { "x": 0, "y": 0, "width": 1268, "height": 715 },
         "nodes": [
           {
             "id": "platform.tooling.watchdog",
@@ -1119,7 +1151,7 @@
             "description": "No model. Local checks every 15 minutes, GitHub read at most once an hour. Raises alerts; never writes to GitHub.",
             "compound": false,
             "x": 0,
-            "y": 49,
+            "y": 518,
             "width": 180,
             "height": 100
           },
@@ -1132,8 +1164,8 @@
             "technology": null,
             "description": "Code, issues, pull requests, CI, the merge queue and the tags.",
             "compound": false,
-            "x": 575,
-            "y": 49,
+            "x": 578,
+            "y": 560,
             "width": 180,
             "height": 100
           },
@@ -1144,10 +1176,10 @@
             "shape": "browser",
             "title": "Cockpit",
             "technology": "Next.js",
-            "description": "The founder screen: teams, trains, alerts, the architecture. It reads; it never writes into the machine.",
+            "description": "The founder screen: teams, trains, alerts, the architecture. It reads; it never writes to GitHub, the alerts or the board.",
             "compound": false,
             "x": 0,
-            "y": 224,
+            "y": 196,
             "width": 180,
             "height": 100
           },
@@ -1161,7 +1193,7 @@
             "description": "An agent in conversation with the founder. Validates and splits the work, writes each brief, launches the teams, reads the alerts first.",
             "compound": false,
             "x": 0,
-            "y": 406,
+            "y": 336,
             "width": 180,
             "height": 100
           },
@@ -1172,10 +1204,10 @@
             "shape": "storage",
             "title": "Operations database",
             "technology": "SQLite",
-            "description": "A local projection: alerts, events, trains, live sessions, a copy of the board. Never a source: GitHub wins.",
+            "description": "Local SQLite files, a projection: alerts, events, trains, live sessions; the board copy in a file of its own. Never a source: GitHub wins.",
             "compound": false,
-            "x": 575,
-            "y": 270,
+            "x": 578,
+            "y": 287,
             "width": 180,
             "height": 100
           },
@@ -1188,8 +1220,8 @@
             "technology": "Claude Code",
             "description": "Headless, one per ticket, each in its own worktree: the teams, the repair session, the acceptance check.",
             "compound": false,
-            "x": 1086,
-            "y": 508,
+            "x": 1088,
+            "y": 300,
             "width": 180,
             "height": 100
           }
@@ -1201,18 +1233,15 @@
             "target": "github",
             "label": "reads the checks and the pull requests, at most hourly",
             "points": [
-              [180, 66],
-              [190, 63],
-              [200, 61],
-              [210, 59],
-              [337, 38],
-              [372, 44],
-              [500, 59],
-              [522, 62],
-              [544, 66],
-              [566, 71]
+              [180, 607],
+              [190, 610],
+              [200, 613],
+              [210, 615],
+              [332, 638],
+              [474, 631],
+              [568, 622]
             ],
-            "labelBBox": { "x": 223, "y": 4, "width": 270, "height": 35 },
+            "labelBBox": { "x": 224, "y": 573, "width": 270, "height": 35 },
             "step": 1,
             "back": false
           },
@@ -1222,18 +1251,21 @@
             "target": "platform.tooling.opsdb",
             "label": "raises an alert: one row per subject, open",
             "points": [
-              [172, 149],
-              [184, 156],
-              [197, 162],
-              [210, 167],
-              [333, 215],
-              [376, 189],
-              [500, 235],
-              [525, 244],
-              [550, 256],
-              [573, 268]
+              [140, 518],
+              [156, 500],
+              [171, 478],
+              [180, 456],
+              [201, 405],
+              [168, 245],
+              [210, 208],
+              [259, 165],
+              [441, 187],
+              [503, 208],
+              [544, 222],
+              [583, 252],
+              [613, 279]
             ],
-            "labelBBox": { "x": 234, "y": 125, "width": 248, "height": 35 },
+            "labelBBox": { "x": 235, "y": 142, "width": 248, "height": 34 },
             "step": 2,
             "back": false
           },
@@ -1243,12 +1275,15 @@
             "target": "platform.tooling.opsdb",
             "label": "reads it for the founder",
             "points": [
-              [180, 281],
-              [284, 290],
-              [456, 304],
-              [564, 312]
+              [180, 254],
+              [264, 262],
+              [392, 276],
+              [503, 296],
+              [524, 300],
+              [546, 305],
+              [567, 310]
             ],
-            "labelBBox": { "x": 274, "y": 252, "width": 167, "height": 20 },
+            "labelBBox": { "x": 276, "y": 224, "width": 166, "height": 21 },
             "step": 3,
             "back": false
           },
@@ -1258,94 +1293,109 @@
             "target": "platform.tooling.opsdb",
             "label": "reads the open alerts before any new work",
             "points": [
-              [180, 419],
-              [190, 415],
-              [200, 412],
-              [210, 409],
-              [336, 375],
-              [372, 388],
-              [500, 362],
-              [521, 358],
-              [543, 352],
-              [565, 347]
+              [180, 379],
+              [284, 370],
+              [457, 355],
+              [567, 346]
             ],
-            "labelBBox": { "x": 229, "y": 320, "width": 257, "height": 35 },
+            "labelBBox": { "x": 230, "y": 310, "width": 257, "height": 35 },
             "step": 4,
             "back": false
           },
           {
             "id": "step-05",
             "source": "platform.tooling.cto",
-            "target": "platform.tooling.sessions",
-            "label": "launches a team on the cause, with a brief",
+            "target": "platform.tooling.opsdb",
+            "label": "acknowledges it with a note: who looked, what was decided",
             "points": [
-              [180, 490],
-              [190, 493],
-              [200, 495],
-              [210, 497],
-              [579, 570],
-              [680, 519],
-              [1056, 547],
-              [1062, 548],
-              [1068, 548],
-              [1075, 549]
+              [180, 423],
+              [190, 426],
+              [200, 429],
+              [210, 431],
+              [338, 454],
+              [377, 464],
+              [503, 431],
+              [533, 423],
+              [564, 407],
+              [590, 392]
             ],
-            "labelBBox": { "x": 539, "y": 496, "width": 257, "height": 35 },
+            "labelBBox": { "x": 219, "y": 389, "width": 280, "height": 35 },
             "step": 5,
             "back": false
           },
           {
             "id": "step-06",
+            "source": "platform.tooling.cto",
+            "target": "platform.tooling.sessions",
+            "label": "launches a team on the cause, with a brief",
+            "points": [
+              [164, 337],
+              [170, 330],
+              [176, 323],
+              [180, 316],
+              [223, 243],
+              [146, 183],
+              [210, 128],
+              [474, -97],
+              [923, 171],
+              [1101, 294]
+            ],
+            "labelBBox": { "x": 542, "y": 4, "width": 257, "height": 35 },
+            "step": 6,
+            "back": false
+          },
+          {
+            "id": "step-07",
             "source": "platform.tooling.sessions",
             "target": "github",
             "label": "opens the fix; the train lands it through the merge queue",
             "points": [
-              [729, 156],
-              [830, 247],
-              [1024, 422],
-              [1119, 508]
+              [767, 560],
+              [860, 512],
+              [998, 441],
+              [1088, 395]
             ],
-            "labelBBox": { "x": 840, "y": 206, "width": 212, "height": 35 },
-            "step": 6,
+            "labelBBox": { "x": 842, "y": 371, "width": 212, "height": 35 },
+            "step": 7,
             "back": true
           },
           {
-            "id": "step-07",
+            "id": "step-08",
             "source": "platform.tooling.watchdog",
             "target": "github",
-            "label": "sees the check green again",
+            "label": "sees the check green again, on a complete read",
             "points": [
-              [180, 107],
-              [190, 107],
-              [200, 108],
-              [210, 108],
-              [339, 113],
-              [371, 112],
-              [500, 108],
-              [521, 108],
-              [544, 107],
-              [565, 105]
+              [126, 618],
+              [147, 643],
+              [176, 672],
+              [210, 686],
+              [330, 735],
+              [376, 714],
+              [503, 686],
+              [525, 681],
+              [547, 673],
+              [569, 664]
             ],
-            "labelBBox": { "x": 259, "y": 76, "width": 197, "height": 20 },
-            "step": 7,
+            "labelBBox": { "x": 243, "y": 644, "width": 232, "height": 35 },
+            "step": 8,
             "back": false
           },
           {
-            "id": "step-08",
-            "source": "platform.tooling.cto",
+            "id": "step-09",
+            "source": "platform.tooling.watchdog",
             "target": "platform.tooling.opsdb",
-            "label": "acknowledges with a note, then resolves with a proof",
+            "label": "resolves the row, with the passing read as proof",
             "points": [
-              [180, 477],
-              [265, 492],
-              [396, 504],
-              [500, 465],
-              [546, 448],
-              [588, 411],
-              [617, 379]
+              [180, 562],
+              [284, 553],
+              [448, 536],
+              [503, 508],
+              [553, 482],
+              [597, 434],
+              [627, 396]
             ],
-            "labelBBox": { "x": 219, "y": 423, "width": 277, "height": 35 },
-            "step": 8,
+            "labelBBox": { "x": 225, "y": 466, "width": 268, "height": 35 },
+            "step": 9,
             "back": false
           }
         ]
@@ -1354,7 +1404,7 @@
         "id": "opsdb_sync",
         "title": "How the operations database follows GitHub",
         "dynamic": true,
-        "bounds": { "x": 0, "y": 0, "width": 818, "height": 628 },
+        "bounds": { "x": 0, "y": 0, "width": 883, "height": 464 },
         "nodes": [
           {
             "id": "platform.tooling.cto",
@@ -1365,7 +1415,7 @@
             "technology": "Claude Code",
             "description": "An agent in conversation with the founder. Validates and splits the work, writes each brief, launches the teams, reads the alerts first.",
             "compound": false,
-            "x": 83,
+            "x": 298,
             "y": 0,
             "width": 180,
             "height": 100
@@ -1377,9 +1427,9 @@
             "shape": "browser",
             "title": "Cockpit",
             "technology": "Next.js",
-            "description": "The founder screen: teams, trains, alerts, the architecture. It reads; it never writes into the machine.",
+            "description": "The founder screen: teams, trains, alerts, the architecture. It reads; it never writes to GitHub, the alerts or the board.",
             "compound": false,
-            "x": 359,
+            "x": 586,
             "y": 0,
             "width": 180,
             "height": 100
@@ -1391,26 +1441,12 @@
             "shape": "storage",
             "title": "Operations database",
             "technology": "SQLite",
-            "description": "A local projection: alerts, events, trains, live sessions, a copy of the board. Never a source: GitHub wins.",
+            "description": "Local SQLite files, a projection: alerts, events, trains, live sessions; the board copy in a file of its own. Never a source: GitHub wins.",
             "compound": false,
-            "x": 221,
+            "x": 217,
             "y": 179,
             "width": 180,
             "height": 100
-          },
-          {
-            "id": "platform.tooling.trains",
-            "parent": null,
-            "kind": "queue",
-            "shape": "queue",
-            "title": "Trains",
-            "technology": "Python, shell",
-            "description": "One ordered queue per repository. A runner carries the head through GitHub merge queue; a red PR is skipped with its reason.",
-            "compound": false,
-            "x": 638,
-            "y": 358,
-            "width": 180,
-            "height": 92
           },
           {
             "id": "github",
@@ -1421,8 +1457,8 @@
             "technology": null,
             "description": "Code, issues, pull requests, CI, the merge queue and the tags.",
             "compound": false,
-            "x": 221,
-            "y": 528,
+            "x": 217,
+            "y": 364,
             "width": 180,
             "height": 100
           }
@@ -1434,15 +1470,15 @@
             "target": "platform.tooling.opsdb",
             "label": "a reader asks for the board copy",
             "points": [
-              [161, 100],
-              [159, 120],
-              [160, 142],
-              [171, 159],
-              [181, 174],
-              [195, 187],
-              [211, 196]
+              [298, 61],
+              [226, 72],
+              [134, 90],
+              [110, 120],
+              [76, 164],
+              [142, 193],
+              [206, 209]
             ],
-            "labelBBox": { "x": 180, "y": 127, "width": 228, "height": 20 },
+            "labelBBox": { "x": 120, "y": 127, "width": 227, "height": 20 },
             "step": 1,
             "back": false
           },
@@ -1452,18 +1488,15 @@
             "target": "github",
             "label": "if stale: asks only for what changed since the last read",
             "points": [
-              [220, 243],
-              [151, 257],
-              [62, 289],
-              [17, 358],
-              [-6, 392],
-              [-6, 415],
-              [17, 450],
-              [60, 515],
-              [143, 547],
-              [211, 563]
+              [216, 239],
+              [139, 249],
+              [38, 267],
+              [13, 299],
+              [-44, 371],
+              [101, 398],
+              [207, 408]
             ],
-            "labelBBox": { "x": 26, "y": 385, "width": 244, "height": 35 },
+            "labelBBox": { "x": 22, "y": 303, "width": 244, "height": 35 },
             "step": 2,
             "back": false
           },
@@ -1473,44 +1506,59 @@
             "target": "platform.tooling.opsdb",
             "label": "answers with the changed issues and pull requests, upserted",
             "points": [
-              [311, 290],
-              [311, 358],
-              [311, 466],
-              [311, 529]
+              [305, 290],
+              [305, 293],
+              [305, 296],
+              [305, 299],
+              [304, 319],
+              [304, 324],
+              [305, 344],
+              [305, 351],
+              [305, 358],
+              [305, 364]
             ],
-            "labelBBox": { "x": 320, "y": 385, "width": 284, "height": 35 },
+            "labelBBox": { "x": 314, "y": 303, "width": 284, "height": 35 },
             "step": 3,
             "back": true
           },
           {
             "id": "step-04",
-            "source": "platform.tooling.trains",
+            "source": "platform.tooling.cto",
             "target": "github",
             "label": "a move is written on GitHub first",
             "points": [
-              [638, 442],
-              [571, 470],
-              [479, 508],
-              [410, 536]
+              [478, 71],
+              [526, 83],
+              [578, 101],
+              [593, 120],
+              [654, 199],
+              [667, 266],
+              [605, 344],
+              [580, 375],
+              [484, 394],
+              [407, 404]
             ],
-            "labelBBox": { "x": 578, "y": 476, "width": 224, "height": 21 },
+            "labelBBox": { "x": 655, "y": 216, "width": 224, "height": 20 },
             "step": 4,
             "back": false
           },
           {
             "id": "step-05",
-            "source": "platform.tooling.trains",
+            "source": "platform.tooling.cto",
             "target": "platform.tooling.opsdb",
             "label": "then the cached card follows",
             "points": [
-              [411, 272],
-              [480, 300],
-              [571, 338],
-              [638, 365]
+              [376, 100],
+              [370, 119],
+              [363, 140],
+              [354, 159],
+              [352, 162],
+              [351, 166],
+              [349, 169]
             ],
-            "labelBBox": { "x": 578, "y": 305, "width": 203, "height": 21 },
+            "labelBBox": { "x": 378, "y": 127, "width": 203, "height": 20 },
             "step": 5,
-            "back": true
+            "back": false
           },
           {
             "id": "step-06",
@@ -1518,15 +1566,15 @@
             "target": "platform.tooling.opsdb",
             "label": "reads the copy, no network call",
             "points": [
-              [441, 100],
-              [436, 120],
-              [428, 142],
-              [415, 159],
-              [411, 164],
-              [406, 169],
-              [401, 174]
+              [649, 100],
+              [635, 121],
+              [616, 144],
+              [593, 159],
+              [538, 195],
+              [466, 212],
+              [408, 220]
             ],
-            "labelBBox": { "x": 443, "y": 127, "width": 219, "height": 20 },
+            "labelBBox": { "x": 642, "y": 127, "width": 219, "height": 20 },
             "step": 6,
             "back": false
           }
@@ -1538,7 +1586,7 @@
         "id": "agents_context",
         "title": "L'outillage des agents · contexte",
         "dynamic": false,
-        "bounds": { "x": 0, "y": 0, "width": 525, "height": 666 },
+        "bounds": { "x": 0, "y": 0, "width": 653, "height": 666 },
         "nodes": [
           {
             "id": "founder",
@@ -1577,7 +1625,7 @@
             "technology": null,
             "description": "Comment l'organisation travaille : CI et normes partagées, outillage des agents, infrastructure as code, gabarits.",
             "compound": true,
-            "x": 231,
+            "x": 267,
             "y": 168,
             "width": 244,
             "height": 185
@@ -1591,7 +1639,7 @@
             "technology": "Python, Node",
             "description": "Voies, trains, gardes et compétences ; tourne sur la machine du fondateur.",
             "compound": false,
-            "x": 263,
+            "x": 299,
             "y": 221,
             "width": 180,
             "height": 100
@@ -1606,6 +1654,20 @@
             "description": "Le code, les tickets, les pull requests, la CI, la file de fusion et les étiquettes.",
             "compound": false,
             "x": 0,
+            "y": 404,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "models",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "Fournisseurs de modèles",
+            "technology": null,
+            "description": "Les modèles d'IA vers lesquels Sovkora route, locaux ou hébergés.",
+            "compound": false,
+            "x": 337,
             "y": 404,
             "width": 180,
             "height": 100
@@ -1632,18 +1694,18 @@
             "target": "platform.tooling",
             "label": "instruit la session CTO, regarde le cockpit",
             "points": [
-              [105, 100],
-              [114, 125],
-              [125, 152],
-              [135, 160],
-              [148, 169],
-              [191, 162],
+              [107, 100],
+              [117, 122],
+              [131, 145],
+              [152, 160],
+              [172, 173],
+              [183, 160],
               [206, 168],
-              [235, 179],
-              [264, 197],
-              [288, 215]
+              [241, 179],
+              [276, 198],
+              [307, 216]
             ],
-            "labelBBox": { "x": 136, "y": 121, "width": 247, "height": 35 },
+            "labelBBox": { "x": 153, "y": 121, "width": 247, "height": 35 },
             "step": null,
             "back": false
           },
@@ -1653,15 +1715,12 @@
             "target": "platform.tooling",
             "label": "tournent comme ses sessions",
             "points": [
-              [410, 100],
-              [404, 119],
-              [397, 140],
-              [391, 160],
-              [385, 176],
-              [379, 195],
-              [374, 211]
+              [417, 100],
+              [412, 133],
+              [404, 176],
+              [399, 211]
             ],
-            "labelBBox": { "x": 404, "y": 129, "width": 119, "height": 18 },
+            "labelBBox": { "x": 414, "y": 129, "width": 119, "height": 18 },
             "step": null,
             "back": false
           },
@@ -1686,12 +1745,18 @@
             "target": "github",
             "label": "ouvre, fait atterrir et surveille les pull requests",
             "points": [
-              [282, 321],
-              [247, 345],
-              [205, 373],
-              [170, 398]
+              [299, 317],
+              [270, 331],
+              [237, 344],
+              [206, 353],
+              [182, 360],
+              [171, 347],
+              [150, 361],
+              [137, 369],
+              [126, 382],
+              [117, 395]
             ],
-            "labelBBox": { "x": 223, "y": 362, "width": 249, "height": 18 },
+            "labelBBox": { "x": 151, "y": 362, "width": 249, "height": 18 },
             "step": null,
             "back": false
           },
@@ -1707,6 +1772,21 @@
               [90, 557]
             ],
             "labelBBox": { "x": 91, "y": 525, "width": 86, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "den8wv",
+            "source": "platform.tooling",
+            "target": "models",
+            "label": "chaque session tourne sur un modèle hébergé",
+            "points": [
+              [399, 321],
+              [404, 343],
+              [410, 370],
+              [415, 393]
+            ],
+            "labelBBox": { "x": 412, "y": 362, "width": 240, "height": 18 },
             "step": null,
             "back": false
           }
@@ -1767,7 +1847,7 @@
             "shape": "browser",
             "title": "Cockpit",
             "technology": "Next.js",
-            "description": "L'écran du fondateur : équipes, trains, alertes, architecture. Il lit ; il n'écrit jamais dans la machine.",
+            "description": "L'écran du fondateur : équipes, trains, alertes, architecture. Il lit ; il n'écrit jamais sur GitHub, ni dans les alertes ni dans le tableau.",
             "compound": false,
             "x": 396,
             "y": 212,
@@ -1865,7 +1945,7 @@
             "shape": "storage",
             "title": "Base d'exploitation",
             "technology": "SQLite",
-            "description": "Une projection locale : alertes, événements, trains, sessions vivantes, une copie du tableau. Jamais une source : GitHub l'emporte.",
+            "description": "Des fichiers SQLite locaux, une projection : alertes, événements, trains, sessions vivantes ; la copie du tableau dans un fichier à elle. Jamais une source : GitHub l'emporte.",
             "compound": false,
             "x": 332,
             "y": 863,
@@ -2365,7 +2445,7 @@
             "shape": "browser",
             "title": "Cockpit",
             "technology": "Next.js",
-            "description": "L'écran du fondateur : équipes, trains, alertes, architecture. Il lit ; il n'écrit jamais dans la machine.",
+            "description": "L'écran du fondateur : équipes, trains, alertes, architecture. Il lit ; il n'écrit jamais sur GitHub, ni dans les alertes ni dans le tableau.",
             "compound": false,
             "x": 776,
             "y": 536,
@@ -2379,7 +2459,7 @@
             "shape": "storage",
             "title": "Base d'exploitation",
             "technology": "SQLite",
-            "description": "Une projection locale : alertes, événements, trains, sessions vivantes, une copie du tableau. Jamais une source : GitHub l'emporte.",
+            "description": "Des fichiers SQLite locaux, une projection : alertes, événements, trains, sessions vivantes ; la copie du tableau dans un fichier à elle. Jamais une source : GitHub l'emporte.",
             "compound": false,
             "x": 388,
             "y": 715,
@@ -2610,7 +2690,7 @@
         "id": "alert_life",
         "title": "La vie d'une alerte, du chien de garde à sa résolution",
         "dynamic": true,
-        "bounds": { "x": 0, "y": 0, "width": 1266, "height": 608 },
+        "bounds": { "x": 0, "y": 0, "width": 1268, "height": 715 },
         "nodes": [
           {
             "id": "platform.tooling.watchdog",
@@ -2622,7 +2702,7 @@
             "description": "Sans modèle. Contrôles locaux toutes les 15 minutes, GitHub lu au plus une fois par heure. Lève des alertes ; n'écrit jamais sur GitHub.",
             "compound": false,
             "x": 0,
-            "y": 49,
+            "y": 518,
             "width": 180,
             "height": 100
           },
@@ -2635,8 +2715,8 @@
             "technology": null,
             "description": "Le code, les tickets, les pull requests, la CI, la file de fusion et les étiquettes.",
             "compound": false,
-            "x": 575,
-            "y": 49,
+            "x": 578,
+            "y": 560,
             "width": 180,
             "height": 100
           },
@@ -2647,10 +2727,10 @@
             "shape": "browser",
             "title": "Cockpit",
             "technology": "Next.js",
-            "description": "L'écran du fondateur : équipes, trains, alertes, architecture. Il lit ; il n'écrit jamais dans la machine.",
+            "description": "L'écran du fondateur : équipes, trains, alertes, architecture. Il lit ; il n'écrit jamais sur GitHub, ni dans les alertes ni dans le tableau.",
             "compound": false,
             "x": 0,
-            "y": 224,
+            "y": 196,
             "width": 180,
             "height": 100
           },
@@ -2664,7 +2744,7 @@
             "description": "Un agent en conversation avec le fondateur. Valide et découpe le travail, écrit chaque brief, lance les équipes, lit d'abord les alertes.",
             "compound": false,
             "x": 0,
-            "y": 406,
+            "y": 336,
             "width": 180,
             "height": 100
           },
@@ -2675,10 +2755,10 @@
             "shape": "storage",
             "title": "Base d'exploitation",
             "technology": "SQLite",
-            "description": "Une projection locale : alertes, événements, trains, sessions vivantes, une copie du tableau. Jamais une source : GitHub l'emporte.",
+            "description": "Des fichiers SQLite locaux, une projection : alertes, événements, trains, sessions vivantes ; la copie du tableau dans un fichier à elle. Jamais une source : GitHub l'emporte.",
             "compound": false,
-            "x": 575,
-            "y": 270,
+            "x": 578,
+            "y": 287,
             "width": 180,
             "height": 100
           },
@@ -2691,8 +2771,8 @@
             "technology": "Claude Code",
             "description": "Sans interface, une par ticket, chacune dans son worktree : les équipes, la session de dépannage, la recette.",
             "compound": false,
-            "x": 1086,
-            "y": 508,
+            "x": 1088,
+            "y": 300,
             "width": 180,
             "height": 100
           }
@@ -2704,18 +2784,15 @@
             "target": "github",
             "label": "lit les contrôles et les pull requests, au plus une fois par heure",
             "points": [
-              [180, 66],
-              [190, 63],
-              [200, 61],
-              [210, 59],
-              [337, 38],
-              [372, 44],
-              [500, 59],
-              [522, 62],
-              [544, 66],
-              [566, 71]
+              [180, 607],
+              [190, 610],
+              [200, 613],
+              [210, 615],
+              [332, 638],
+              [474, 631],
+              [568, 622]
             ],
-            "labelBBox": { "x": 223, "y": 4, "width": 270, "height": 35 },
+            "labelBBox": { "x": 224, "y": 573, "width": 270, "height": 35 },
             "step": 1,
             "back": false
           },
@@ -2725,18 +2802,21 @@
             "target": "platform.tooling.opsdb",
             "label": "lève une alerte : une ligne par sujet, ouverte",
             "points": [
-              [172, 149],
-              [184, 156],
-              [197, 162],
-              [210, 167],
-              [333, 215],
-              [376, 189],
-              [500, 235],
-              [525, 244],
-              [550, 256],
-              [573, 268]
+              [140, 518],
+              [156, 500],
+              [171, 478],
+              [180, 456],
+              [201, 405],
+              [168, 245],
+              [210, 208],
+              [259, 165],
+              [441, 187],
+              [503, 208],
+              [544, 222],
+              [583, 252],
+              [613, 279]
             ],
-            "labelBBox": { "x": 234, "y": 125, "width": 248, "height": 35 },
+            "labelBBox": { "x": 235, "y": 142, "width": 248, "height": 34 },
             "step": 2,
             "back": false
           },
@@ -2746,12 +2826,15 @@
             "target": "platform.tooling.opsdb",
             "label": "le lit pour le fondateur",
             "points": [
-              [180, 281],
-              [284, 290],
-              [456, 304],
-              [564, 312]
+              [180, 254],
+              [264, 262],
+              [392, 276],
+              [503, 296],
+              [524, 300],
+              [546, 305],
+              [567, 310]
             ],
-            "labelBBox": { "x": 274, "y": 252, "width": 167, "height": 20 },
+            "labelBBox": { "x": 276, "y": 224, "width": 166, "height": 21 },
             "step": 3,
             "back": false
           },
@@ -2761,94 +2844,109 @@
             "target": "platform.tooling.opsdb",
             "label": "lit les alertes ouvertes avant tout nouveau travail",
             "points": [
-              [180, 419],
-              [190, 415],
-              [200, 412],
-              [210, 409],
-              [336, 375],
-              [372, 388],
-              [500, 362],
-              [521, 358],
-              [543, 352],
-              [565, 347]
+              [180, 379],
+              [284, 370],
+              [457, 355],
+              [567, 346]
             ],
-            "labelBBox": { "x": 229, "y": 320, "width": 257, "height": 35 },
+            "labelBBox": { "x": 230, "y": 310, "width": 257, "height": 35 },
             "step": 4,
             "back": false
           },
           {
             "id": "step-05",
             "source": "platform.tooling.cto",
-            "target": "platform.tooling.sessions",
-            "label": "lance une équipe sur la cause, avec un brief",
+            "target": "platform.tooling.opsdb",
+            "label": "la prend en charge avec une note : qui a regardé, ce qui a été décidé",
             "points": [
-              [180, 490],
-              [190, 493],
-              [200, 495],
-              [210, 497],
-              [579, 570],
-              [680, 519],
-              [1056, 547],
-              [1062, 548],
-              [1068, 548],
-              [1075, 549]
+              [180, 423],
+              [190, 426],
+              [200, 429],
+              [210, 431],
+              [338, 454],
+              [377, 464],
+              [503, 431],
+              [533, 423],
+              [564, 407],
+              [590, 392]
             ],
-            "labelBBox": { "x": 539, "y": 496, "width": 257, "height": 35 },
+            "labelBBox": { "x": 219, "y": 389, "width": 280, "height": 35 },
             "step": 5,
             "back": false
           },
           {
             "id": "step-06",
+            "source": "platform.tooling.cto",
+            "target": "platform.tooling.sessions",
+            "label": "lance une équipe sur la cause, avec un brief",
+            "points": [
+              [164, 337],
+              [170, 330],
+              [176, 323],
+              [180, 316],
+              [223, 243],
+              [146, 183],
+              [210, 128],
+              [474, -97],
+              [923, 171],
+              [1101, 294]
+            ],
+            "labelBBox": { "x": 542, "y": 4, "width": 257, "height": 35 },
+            "step": 6,
+            "back": false
+          },
+          {
+            "id": "step-07",
             "source": "platform.tooling.sessions",
             "target": "github",
             "label": "ouvre le correctif ; le train le fait atterrir par la file de fusion",
             "points": [
-              [729, 156],
-              [830, 247],
-              [1024, 422],
-              [1119, 508]
+              [767, 560],
+              [860, 512],
+              [998, 441],
+              [1088, 395]
             ],
-            "labelBBox": { "x": 840, "y": 206, "width": 212, "height": 35 },
-            "step": 6,
+            "labelBBox": { "x": 842, "y": 371, "width": 212, "height": 35 },
+            "step": 7,
             "back": true
           },
           {
-            "id": "step-07",
+            "id": "step-08",
             "source": "platform.tooling.watchdog",
             "target": "github",
-            "label": "voit le contrôle redevenu vert",
+            "label": "revoit le contrôle au vert, sur une lecture complète",
             "points": [
-              [180, 107],
-              [190, 107],
-              [200, 108],
-              [210, 108],
-              [339, 113],
-              [371, 112],
-              [500, 108],
-              [521, 108],
-              [544, 107],
-              [565, 105]
+              [126, 618],
+              [147, 643],
+              [176, 672],
+              [210, 686],
+              [330, 735],
+              [376, 714],
+              [503, 686],
+              [525, 681],
+              [547, 673],
+              [569, 664]
             ],
-            "labelBBox": { "x": 259, "y": 76, "width": 197, "height": 20 },
-            "step": 7,
+            "labelBBox": { "x": 243, "y": 644, "width": 232, "height": 35 },
+            "step": 8,
             "back": false
           },
           {
-            "id": "step-08",
-            "source": "platform.tooling.cto",
+            "id": "step-09",
+            "source": "platform.tooling.watchdog",
             "target": "platform.tooling.opsdb",
-            "label": "acquitte avec une note, puis résout avec une preuve",
+            "label": "résout la ligne, avec la lecture au vert pour preuve",
             "points": [
-              [180, 477],
-              [265, 492],
-              [396, 504],
-              [500, 465],
-              [546, 448],
-              [588, 411],
-              [617, 379]
+              [180, 562],
+              [284, 553],
+              [448, 536],
+              [503, 508],
+              [553, 482],
+              [597, 434],
+              [627, 396]
             ],
-            "labelBBox": { "x": 219, "y": 423, "width": 277, "height": 35 },
-            "step": 8,
+            "labelBBox": { "x": 225, "y": 466, "width": 268, "height": 35 },
+            "step": 9,
             "back": false
           }
         ]
@@ -2857,7 +2955,7 @@
         "id": "opsdb_sync",
         "title": "Comment la base d'exploitation suit GitHub",
         "dynamic": true,
-        "bounds": { "x": 0, "y": 0, "width": 818, "height": 628 },
+        "bounds": { "x": 0, "y": 0, "width": 883, "height": 464 },
         "nodes": [
           {
             "id": "platform.tooling.cto",
@@ -2868,7 +2966,7 @@
             "technology": "Claude Code",
             "description": "Un agent en conversation avec le fondateur. Valide et découpe le travail, écrit chaque brief, lance les équipes, lit d'abord les alertes.",
             "compound": false,
-            "x": 83,
+            "x": 298,
             "y": 0,
             "width": 180,
             "height": 100
@@ -2880,9 +2978,9 @@
             "shape": "browser",
             "title": "Cockpit",
             "technology": "Next.js",
-            "description": "L'écran du fondateur : équipes, trains, alertes, architecture. Il lit ; il n'écrit jamais dans la machine.",
+            "description": "L'écran du fondateur : équipes, trains, alertes, architecture. Il lit ; il n'écrit jamais sur GitHub, ni dans les alertes ni dans le tableau.",
             "compound": false,
-            "x": 359,
+            "x": 586,
             "y": 0,
             "width": 180,
             "height": 100
@@ -2894,26 +2992,12 @@
             "shape": "storage",
             "title": "Base d'exploitation",
             "technology": "SQLite",
-            "description": "Une projection locale : alertes, événements, trains, sessions vivantes, une copie du tableau. Jamais une source : GitHub l'emporte.",
+            "description": "Des fichiers SQLite locaux, une projection : alertes, événements, trains, sessions vivantes ; la copie du tableau dans un fichier à elle. Jamais une source : GitHub l'emporte.",
             "compound": false,
-            "x": 221,
+            "x": 217,
             "y": 179,
             "width": 180,
             "height": 100
-          },
-          {
-            "id": "platform.tooling.trains",
-            "parent": null,
-            "kind": "queue",
-            "shape": "queue",
-            "title": "Trains",
-            "technology": "Python, shell",
-            "description": "Une file ordonnée par dépôt. Un convoyeur porte la tête jusqu'à la file de fusion de GitHub ; une PR rouge est sautée, avec sa raison.",
-            "compound": false,
-            "x": 638,
-            "y": 358,
-            "width": 180,
-            "height": 92
           },
           {
             "id": "github",
@@ -2924,8 +3008,8 @@
             "technology": null,
             "description": "Le code, les tickets, les pull requests, la CI, la file de fusion et les étiquettes.",
             "compound": false,
-            "x": 221,
-            "y": 528,
+            "x": 217,
+            "y": 364,
             "width": 180,
             "height": 100
           }
@@ -2937,15 +3021,15 @@
             "target": "platform.tooling.opsdb",
             "label": "un lecteur demande la copie du tableau",
             "points": [
-              [161, 100],
-              [159, 120],
-              [160, 142],
-              [171, 159],
-              [181, 174],
-              [195, 187],
-              [211, 196]
+              [298, 61],
+              [226, 72],
+              [134, 90],
+              [110, 120],
+              [76, 164],
+              [142, 193],
+              [206, 209]
             ],
-            "labelBBox": { "x": 180, "y": 127, "width": 228, "height": 20 },
+            "labelBBox": { "x": 120, "y": 127, "width": 227, "height": 20 },
             "step": 1,
             "back": false
           },
@@ -2955,18 +3039,15 @@
             "target": "github",
             "label": "si elle est périmée : ne demande que ce qui a changé depuis la dernière lecture",
             "points": [
-              [220, 243],
-              [151, 257],
-              [62, 289],
-              [17, 358],
-              [-6, 392],
-              [-6, 415],
-              [17, 450],
-              [60, 515],
-              [143, 547],
-              [211, 563]
+              [216, 239],
+              [139, 249],
+              [38, 267],
+              [13, 299],
+              [-44, 371],
+              [101, 398],
+              [207, 408]
             ],
-            "labelBBox": { "x": 26, "y": 385, "width": 244, "height": 35 },
+            "labelBBox": { "x": 22, "y": 303, "width": 244, "height": 35 },
             "step": 2,
             "back": false
           },
@@ -2976,44 +3057,59 @@
             "target": "platform.tooling.opsdb",
             "label": "répond avec les tickets et pull requests modifiés, insérés ou mis à jour",
             "points": [
-              [311, 290],
-              [311, 358],
-              [311, 466],
-              [311, 529]
+              [305, 290],
+              [305, 293],
+              [305, 296],
+              [305, 299],
+              [304, 319],
+              [304, 324],
+              [305, 344],
+              [305, 351],
+              [305, 358],
+              [305, 364]
             ],
-            "labelBBox": { "x": 320, "y": 385, "width": 284, "height": 35 },
+            "labelBBox": { "x": 314, "y": 303, "width": 284, "height": 35 },
             "step": 3,
             "back": true
           },
           {
             "id": "step-04",
-            "source": "platform.tooling.trains",
+            "source": "platform.tooling.cto",
             "target": "github",
             "label": "un déplacement s'écrit d'abord sur GitHub",
             "points": [
-              [638, 442],
-              [571, 470],
-              [479, 508],
-              [410, 536]
+              [478, 71],
+              [526, 83],
+              [578, 101],
+              [593, 120],
+              [654, 199],
+              [667, 266],
+              [605, 344],
+              [580, 375],
+              [484, 394],
+              [407, 404]
             ],
-            "labelBBox": { "x": 578, "y": 476, "width": 224, "height": 21 },
+            "labelBBox": { "x": 655, "y": 216, "width": 224, "height": 20 },
             "step": 4,
             "back": false
           },
           {
             "id": "step-05",
-            "source": "platform.tooling.trains",
+            "source": "platform.tooling.cto",
             "target": "platform.tooling.opsdb",
             "label": "puis la carte en copie suit",
             "points": [
-              [411, 272],
-              [480, 300],
-              [571, 338],
-              [638, 365]
+              [376, 100],
+              [370, 119],
+              [363, 140],
+              [354, 159],
+              [352, 162],
+              [351, 166],
+              [349, 169]
             ],
-            "labelBBox": { "x": 578, "y": 305, "width": 203, "height": 21 },
+            "labelBBox": { "x": 378, "y": 127, "width": 203, "height": 20 },
             "step": 5,
-            "back": true
+            "back": false
           },
           {
             "id": "step-06",
@@ -3021,15 +3117,15 @@
             "target": "platform.tooling.opsdb",
             "label": "lit la copie, sans appel réseau",
             "points": [
-              [441, 100],
-              [436, 120],
-              [428, 142],
-              [415, 159],
-              [411, 164],
-              [406, 169],
-              [401, 174]
+              [649, 100],
+              [635, 121],
+              [616, 144],
+              [593, 159],
+              [538, 195],
+              [466, 212],
+              [408, 220]
             ],
-            "labelBBox": { "x": 443, "y": 127, "width": 219, "height": 20 },
+            "labelBBox": { "x": 642, "y": 127, "width": 219, "height": 20 },
             "step": 6,
             "back": false
           }

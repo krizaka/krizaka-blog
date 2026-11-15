@@ -1,7 +1,7 @@
 // The architecture of the agents tooling, for the post « the-architecture-of-krizaka-agents ».
 // Written against the org's base (krizaka/.github docs/architecture: specification.c4, org.c4): it only extends the
 // container « Agents tooling » of the platform and uses the org's people and external systems. Checked and laid out by
-// `node scripts/gen-architecture.mjs --tool <krizaka/.github checkout>/tools/architecture` (the org's architecture tool);
+// `node scripts/gen-architecture.mjs --base <krizaka/.github checkout>/docs/architecture` (`layoutViews` of @krizaka/architecture);
 // the layout is lib/architecture.json, whose hash of this file the tests compare.
 model {
   extend platform.tooling {
@@ -34,11 +34,11 @@ model {
       technology 'Python, cron'
     }
     opsdb = datastore 'Operations database' {
-      description 'A local projection: alerts, events, trains, live sessions, a copy of the board. Never a source: GitHub wins.'
+      description 'Local SQLite files, a projection: alerts, events, trains, live sessions; the board copy in a file of its own. Never a source: GitHub wins.'
       technology 'SQLite'
     }
     cockpit = app 'Cockpit' {
-      description 'The founder screen: teams, trains, alerts, the architecture. It reads; it never writes into the machine.'
+      description 'The founder screen: teams, trains, alerts, the architecture. It reads; it never writes to GitHub, the alerts or the board.'
       technology 'Next.js'
     }
   }
@@ -48,6 +48,7 @@ model {
   founder -> platform.tooling.cockpit 'watches'
   agents -> platform.tooling.sessions 'run as its sessions'
   platform.tooling.cto -> github 'reads the board, writes the tickets'
+  platform.tooling.cto -> models 'thinks on a hosted model'
   platform.tooling.cto -> platform.tooling.launcher 'launches a team with a brief'
   platform.tooling.cto -> platform.tooling.opsdb 'reads the open alerts first'
   platform.tooling.launcher -> platform.tooling.sessions 'builds: isolated, pinned, checked'
@@ -55,6 +56,7 @@ model {
   platform.tooling.sessions -> platform.tooling.rules 'read'
   platform.tooling.sessions -> platform.tooling.guards 'commit and push through'
   platform.tooling.sessions -> github 'open pull requests'
+  platform.tooling.sessions -> models 'think on a hosted model'
   platform.tooling.sessions -> platform.tooling.trains 'queue a pull request'
   platform.tooling.trains -> github 'update, approve, enqueue'
   platform.tooling.trains -> platform.tooling.opsdb 'record events'
@@ -68,12 +70,15 @@ model {
 views {
   view agents_context {
     title 'The agents tooling · context'
-    include founder, agents, platform.tooling, github, cloud
+    include founder, agents, platform.tooling, github, cloud, models
     include founder -> platform.tooling with {
       title 'instructs the CTO session, watches the cockpit'
     }
     include platform.tooling -> github with {
       title 'opens, lands and watches pull requests'
+    }
+    include platform.tooling -> models with {
+      title 'every session runs on a hosted model'
     }
     style * {
       size xsmall
@@ -84,7 +89,8 @@ views {
   view agents_containers of platform.tooling {
     title 'The agents tooling · containers'
     include *
-    exclude agents
+    // the model provider is drawn in the context view; here it would widen the view past a desktop page
+    exclude agents, models
     style * {
       size xsmall
     }
@@ -117,10 +123,11 @@ views {
     platform.tooling.watchdog -> platform.tooling.opsdb 'raises an alert: one row per subject, open'
     platform.tooling.cockpit -> platform.tooling.opsdb 'reads it for the founder'
     platform.tooling.cto -> platform.tooling.opsdb 'reads the open alerts before any new work'
+    platform.tooling.cto -> platform.tooling.opsdb 'acknowledges it with a note: who looked, what was decided'
     platform.tooling.cto -> platform.tooling.sessions 'launches a team on the cause, with a brief'
     platform.tooling.sessions -> github 'opens the fix; the train lands it through the merge queue'
-    platform.tooling.watchdog -> github 'sees the check green again'
-    platform.tooling.cto -> platform.tooling.opsdb 'acknowledges with a note, then resolves with a proof'
+    platform.tooling.watchdog -> github 'sees the check green again, on a complete read'
+    platform.tooling.watchdog -> platform.tooling.opsdb 'resolves the row, with the passing read as proof'
     style * {
       size xsmall
     }
@@ -132,8 +139,8 @@ views {
     platform.tooling.cto -> platform.tooling.opsdb 'a reader asks for the board copy'
     platform.tooling.opsdb -> github 'if stale: asks only for what changed since the last read'
     github -> platform.tooling.opsdb 'answers with the changed issues and pull requests, upserted'
-    platform.tooling.trains -> github 'a move is written on GitHub first'
-    platform.tooling.trains -> platform.tooling.opsdb 'then the cached card follows'
+    platform.tooling.cto -> github 'a move is written on GitHub first'
+    platform.tooling.cto -> platform.tooling.opsdb 'then the cached card follows'
     platform.tooling.cockpit -> platform.tooling.opsdb 'reads the copy, no network call'
     style * {
       size xsmall
