@@ -18,6 +18,7 @@ test("the layout checks keep every rule", () => {
 
 test("the language link is measured at 1280 and 360 px in both themes (krizaka-internal#3907)", () => {
   assert.match(src, /const bylineLanguageLink = /);
+  assert.match(src, /bylineBeside,\s*bylineLanguageLink,\s*\]/);
   assert.match(src, /BYLINE_LINK_WIDTHS = \[1280, 360\]/);
   assert.match(src, /BYLINE_THEMES = \["dark", "light"\]/);
   assert.match(src, /Math\.abs\(link\.right - lead\.right\) > 2/);

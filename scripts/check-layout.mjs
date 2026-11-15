@@ -133,6 +133,16 @@ const bylineBeside = () => {
 const BYLINE_LINK_WIDTHS = [1280, 360];
 const BYLINE_THEMES = ["dark", "light"];
 const IS_POST = /\/(basics|story)\/[^/]+\/$/;
+/* Every post is measured at every width (LAYOUT_CHECKS); the two themes on the first post of each language and section only: the layout
+   does not depend on the theme, and a full second pass over every post took the CI past its 30 minutes. */
+const themedSeen = new Set();
+const themedSample = (path) => {
+  if (!IS_POST.test(path)) return false;
+  const key = path.replace(/[^/]+\/$/, "");
+  if (themedSeen.has(key)) return false;
+  themedSeen.add(key);
+  return true;
+};
 const bylineLanguageLink = () => {
   const q = (s) => document.querySelector(s)?.getBoundingClientRect();
   const link = q(".bl-byline-other");
@@ -164,6 +174,7 @@ const LAYOUT_CHECKS = [
   titleOverflow,
   figureHead,
   bylineBeside,
+  bylineLanguageLink,
 ];
 
 /* The basics' path (krizaka-internal#1869): at 1440×900 the whole ordered list fits one screen below the bar (so it reads in five
@@ -247,7 +258,7 @@ try {
         for (const p of await page.evaluate(check)) problems.push(`${path} @${width}: ${p}`);
       await page.close();
     }
-    for (const colorScheme of IS_POST.test(path) ? BYLINE_THEMES : [])
+    for (const colorScheme of themedSample(path) ? BYLINE_THEMES : [])
       for (const width of BYLINE_LINK_WIDTHS) {
         const context = await browser.newContext({ viewport: { width, height: 900 }, colorScheme });
         await context.addInitScript((t) => localStorage.setItem("kz-theme", t), colorScheme);
