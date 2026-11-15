@@ -9,7 +9,11 @@
 
    The comparison is done in the browser (a canvas), with no dependency: the share of pixels that differ by more than a visible step
    must stay under TOLERANCE, which leaves room for the anti-aliasing of another machine and none for a missing block or a button
-   where a link was. Baselines are made on the CI's own image (Linux); a local macOS run may differ by the text's rendering only. */
+   where a link was. The baselines are made on the CI's own platform (Linux, the Playwright image of the same version: a local macOS run
+   lays the text out differently and would not match). To remake them after `npm run build` (the build of the open CI has the same pages):
+
+     docker run --rm --ipc=host -v "$PWD":/w -w /w mcr.microsoft.com/playwright:v<playwright version>-noble bash -c \
+       'npx --yes serve@14.2.6 out -l 3000 >/dev/null 2>&1 & sleep 5; node scripts/check-visual.mjs --base http://localhost:3000 --update' */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
