@@ -92,3 +92,11 @@ test("JSON Feed 1.1: both languages, the same entries as the RSS, each with its 
   assert.match(feeds, /feed_url: `\$\{SITE_URL\}\$\{prefix\(locale\)\}\/feed\.json`/);
   assert.match(read("lib/seo.ts"), /"application\/feed\+json"/);
 });
+
+test("the feeds show each entry's publishedAt, the instant they are ordered by (krizaka-internal#3906)", () => {
+  const feeds = read("lib/feeds.ts");
+  assert.match(feeds, /<pubDate>\$\{new Date\(publishedTime\(p\)\)/);
+  assert.match(feeds, /<published>\$\{published\(p\)\}/);
+  assert.match(feeds, /date_published: published\(p\)/);
+  assert.doesNotMatch(feeds, /iso\(p\.date\)/);
+});
