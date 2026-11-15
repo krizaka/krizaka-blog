@@ -424,7 +424,8 @@ export async function clipEntry({ frames, spec = LOOP, slug, dir, takenOn, run =
   const tiny = await sharp(first).resize({ width: 24 }).webp({ quality: 20 }).toBuffer();
   const url = (name, data) => {
     const hash = createHash("sha256").update(data).digest("hex").slice(0, 10);
-    return `${CDN}/${slug}/${name.replace(/\.(\w+)$/, `.${hash}.$1`)}`;
+    const hashed = name.replace(/\.(\w+)$/, `.${hash}.$1`);
+    return `${CDN}/${slug}/${hashed}`;
   };
   const webm = readFileSync(join(out, `${spec.id}.webm`));
   const mp4 = readFileSync(join(out, `${spec.id}.mp4`));
