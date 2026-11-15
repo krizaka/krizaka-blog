@@ -195,6 +195,26 @@ test("chapter links to the removed topic and series pages are refused, even when
   assert.equal(problems.filter((p) => /\/basics\/a/.test(p)).length, 0);
 });
 
+test("a chapter's number grows with its publishedAt (krizaka-internal#3906)", async () => {
+  const { mkdtempSync, writeFileSync, mkdirSync } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const dir = mkdtempSync(join(tmpdir(), "chapters-"));
+  const posts = join(dir, "posts");
+  const chapters = join(dir, "chapters");
+  mkdirSync(posts);
+  mkdirSync(chapters);
+  writeFileSync(join(posts, "a.en.mdx"), "---\ntitle: T\n---\n");
+  const fm = (n, at) =>
+    `---\ntitle: T\ndescription: D\ndate: ${at.slice(0, 10)}\npublishedAt: "${at}"\ndraft: false\nchapter: ${n}\nperiod: "2026-10-16"\nsources: [a]\nversus: { faced: x, built: y }\n---\nText.\n`;
+  writeFileSync(join(chapters, "one.en.mdx"), fm(1, "2026-10-24T09:00:00-04:00"));
+  writeFileSync(join(chapters, "two.en.mdx"), fm(2, "2026-10-23T09:00:00-04:00"));
+  const { problems } = checkChapters(chapters, posts);
+  assert.ok(
+    problems.some((p) => /chapter 2.*publishedAt|publishedAt.*chapter 2/.test(p)),
+    problems.join("\n"),
+  );
+});
+
 test("the story as a whole: each chapter in both languages, numbers from 1 without a gap", async () => {
   const { mkdtempSync, writeFileSync, mkdirSync } = await import("node:fs");
   const { tmpdir } = await import("node:os");

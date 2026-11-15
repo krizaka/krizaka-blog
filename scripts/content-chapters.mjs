@@ -217,6 +217,25 @@ function numberingProblems(chapters) {
   return problems;
 }
 
+/** The story is a timeline: a chapter's number grows with its `publishedAt` (then `date`), so the list the home shows
+    (newest first by that date) is also the story's order (krizaka-internal#3906). */
+function dateOrderProblems(chapters) {
+  const problems = [];
+  const at = (d) =>
+    Date.parse(d.publishedAt ?? `${d.date instanceof Date ? d.date.toISOString().slice(0, 10) : d.date}T12:00:00Z`);
+  for (const locale of ["en", "fr"]) {
+    const list = chapters
+      .filter((c) => c.file.endsWith(`.${locale}.mdx`) && c.data.draft !== true)
+      .sort((a, b) => a.data.chapter - b.data.chapter);
+    for (let i = 1; i < list.length; i++)
+      if (at(list[i].data) < at(list[i - 1].data))
+        problems.push(
+          `chapters (${locale}): chapter ${list[i].data.chapter} is dated before chapter ${list[i - 1].data.chapter} (publishedAt): a chapter's number must grow with its publishedAt`,
+        );
+  }
+  return problems;
+}
+
 /** Every chapter: its own problems, then the story as a whole — each chapter in both languages with the same slug, number,
     period and sources; the numbers of a language run from 1 without a gap or a repeat; no dead internal link. */
 export function checkChapters(dir, postsDir, ctx) {
@@ -228,6 +247,6 @@ export function checkChapters(dir, postsDir, ctx) {
     ...chapterProblems(c.file, c.data, c.content, ctx, postSlugs),
     ...internalLinkProblems(c.file, c.content, known, c.data.draft === true),
   ]);
-  problems.push(...bothLanguagesProblems(chapters), ...numberingProblems(chapters));
+  problems.push(...bothLanguagesProblems(chapters), ...numberingProblems(chapters), ...dateOrderProblems(chapters));
   return { files: chapters.map((c) => c.file), problems: [...new Set(problems)] };
 }
