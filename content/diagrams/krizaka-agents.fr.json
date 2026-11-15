@@ -3,7 +3,6 @@
   "The agents tooling · containers": "L'outillage des agents · conteneurs",
   "The life of a pull request, from ticket to main": "La vie d'une pull request, du ticket à main",
   "Founder": "Fondateur",
-  "Decides money, legal and direction; approves and merges.": "Décide l'argent, le juridique et la direction ; approuve et fusionne.",
   "AI agents": "Agents IA",
   "One session per lane, one pull request per issue, under the agents rules.": "Une session par voie, une pull request par ticket, sous les règles des agents.",
   "Krizaka platform": "Plateforme Krizaka",
@@ -87,11 +86,12 @@
   "reads the copy, no network call": "lit la copie, sans appel réseau",
   "opens the fix; the train lands it through the merge queue": "ouvre le correctif ; le train le fait atterrir par la file de fusion",
   "Model providers": "Fournisseurs de modèles",
-  "The AI models Sovkora routes to, local or hosted.": "Les modèles d'IA vers lesquels Sovkora route, locaux ou hébergés.",
   "every session runs on a hosted model": "chaque session tourne sur un modèle hébergé",
   "The founder screen: teams, trains, alerts, the architecture. It reads; it never writes to GitHub, the alerts or the board.": "L'écran du fondateur : équipes, trains, alertes, architecture. Il lit ; il n'écrit jamais sur GitHub, ni dans les alertes ni dans le tableau.",
   "Local SQLite files, a projection: alerts, events, trains, live sessions; the board copy in a file of its own. Never a source: GitHub wins.": "Des fichiers SQLite locaux, une projection : alertes, événements, trains, sessions vivantes ; la copie du tableau dans un fichier à elle. Jamais une source : GitHub l'emporte.",
   "acknowledges it with a note: who looked, what was decided": "la prend en charge avec une note : qui a regardé, ce qui a été décidé",
   "sees the check green again, on a complete read": "revoit le contrôle au vert, sur une lecture complète",
-  "resolves the row, with the passing read as proof": "résout la ligne, avec la lecture au vert pour preuve"
+  "resolves the row, with the passing read as proof": "résout la ligne, avec la lecture au vert pour preuve",
+  "Decides the direction and the money. A second app approves pull requests and the train merges them.": "Décide la direction et l'argent. Une seconde app approuve les pull requests et le train les fusionne.",
+  "The AI models the products and the agents run on, local or hosted.": "Les modèles d'IA sur lesquels tournent les produits et les agents, locaux ou hébergés."
 }
