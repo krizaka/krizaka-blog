@@ -22,6 +22,8 @@ import { seriesName } from "./series-label";
 import { PostEngage } from "../engage/PostEngage";
 import { NewsletterSection } from "../newsletter/NewsletterSection";
 import { Byline } from "./Byline";
+import { Signature } from "./Signature";
+import { signs } from "@/lib/author-picture";
 import { Button } from "@krizaka/ui/button";
 import { RssMark } from "../RssMark";
 import { CoverImage } from "./CoverImage";
@@ -121,6 +123,11 @@ export default function PostPage({ post }: { post: Post }) {
           body
         )}
       </Section>
+      {signs(post.author) && (
+        <Section reveal={false} spacing="sm">
+          <Signature locale={locale} />
+        </Section>
+      )}
       <NewsletterSection locale={locale} where="post" />
       {(prev || next) && post.series && (
         <Section title={seriesName(locale, post.series)} divider reveal={false}>

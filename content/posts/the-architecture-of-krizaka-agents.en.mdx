@@ -26,6 +26,18 @@ Everything below follows from three choices.
 2. **No model where a sure answer is needed.** The launcher, the guards, the trains and the watchdog are ordinary code. A model decides what to write. It never decides whether a change may merge. Why: asked the same question twice, a model can answer twice differently; a merge must have one answer.
 3. **Agents do not talk to each other.** What a session has to say, it writes somewhere durable: a commit, a pull request, a status file, a row in a database. A conversation between agents can be neither checked nor replayed.
 
+## The HQ: where the work lives, and why
+
+Everything above runs on one machine, in one folder tree that I call the HQ. Its shape is a set of choices, each with a reason.
+
+- **The company folder, private.** The decisions, the brand and the working notes of the company live in one folder that is never pushed to GitHub. Why: it is the part of the company that is not code and not public. What it costs: it is only on this machine and its backups, so it is the one place where GitHub cannot be the source.
+- **One reference copy of each repository, never edited.** The workspace holds one copy of every repository, kept on `main` by one tool; nothing commits in it and no session switches its branch. Why: a copy per session would mean dozens of clones that drift and fill the disk, and the code index is built once per repository, on that copy. What it costs: a session cannot just « go and edit the repository »; it has to ask for a worktree first.
+- **One worktree per piece of work.** A session works in a worktree made for its ticket, under its own branch, and nowhere else. Why: two sessions cannot step on each other's files, and the train knows which branch belongs to which ticket. What it costs: a worktree needs its dependencies installed, so a first build is slower; a finished worktree is removed, not reused.
+- **The tools live in krizaka-agents and are called from the reference copy only.** A session runs the live tools, never the copy of the tools that sits inside a worktree. Why: a copy inside a worktree would be a second queue and a second runner, each believing it is the only one. What it costs: a change to a tool lands by pull request and the train, like any other change, before any session sees it.
+- **The operations database, described above.** It is the machine's own state, and it is the only part of the HQ that is not a copy of something else.
+
+The shape is the answer to one question: what happens when ten sessions work at the same time? Each has its own place to write, one place to read the code, and one door, the train, to main.
+
 ## The context
 
 <Architecture view="agents_context" label="The context: the founder and the AI agents around the agents tooling, inside the Krizaka platform; GitHub holds the work and deploys to the cloud after a merge; every session runs on a hosted model." />
@@ -59,6 +71,17 @@ A team session has no screen and no one to answer its questions. It has a ticket
 - **Checked twice**: before the start, the machine is compared with what is expected; on the session's first message, what it really loaded is compared again. One difference and the session is stopped, with the reason.
 
 The same builder starts the repair session that unblocks a stuck pull request and the acceptance session that checks a ticket on the platform after the merge. There is no second path.
+
+### The tools a team session gets
+
+The builder gives each team the same short list, and no more.
+
+- **The code index, forced.** Every session has the code index of our repositories, and a hook refuses any read of a code path until the index has been asked once. Why: an agent that greps and reads files one by one spends its budget finding things the index returns in one call, and it misses the callers. The start itself is refused when the index of its repository cannot be brought up to date in a minute. What it costs: a minute at most before a start, and a refusal when the index is broken, which is the point.
+- **An AI-assisted web search service, for outside facts.** Eleven of our twelve teams have it; it answers with sources. The preamble limits it to generic public questions: never private code, customer data or secrets. Why: a model asked about a library's version or an advisory answers from memory, and memory is a year old. What it costs: a paid service called by the session, inside the session's budget cap, and the discipline of citing what it returned.
+- **Our skills and nothing else of the account's.** The plugins described above, pinned, and no connector or server of the founder's account: the session's tool list is closed at start, and what it really loaded is compared with it at the first message.
+- **The guards**, as described above, around every tool call.
+
+The common reason is one sentence: a session gets one source for the code, one for the outside facts, and no way to answer from nowhere. When it does not know, it has two places to look, and both leave a trace.
 
 ### Rules and skills: the documentation the agents read
 
@@ -155,6 +178,25 @@ That makes 19 skills, plus a few subagents, in the official layout; the versions
 **Pinned and checked at start.** A session installs nothing; a missing or unexpected skill, or a version that differs from the marketplace, stops it at start, as described above.
 
 **Which of Anthropic's official skills do our sessions use? None, by design.** The launcher sets every plugin that is not ours to disabled, recomputed at each start. When we built it, a team session inherited the whole account: 252 skills and about 190 000 tokens of context on its first turn. With only our plugins it starts with 52 skills, 19 of them ours, and about 47 000 tokens. The CLI's own built-in plugins stay, because they are part of the tool. What we take from Anthropic is the format, the plugin and marketplace mechanics and the tool that runs them; the content of the skills is ours, and it stays private.
+
+## Sovkora at work: a photo in, a short video out
+
+Sovkora is the product we build with these tools, and its studio is the cleanest place to see what a model does and what the system around it does. I show it in the Video Studio: you pick a photo, write the motion in one sentence, and press Run.
+
+<Clip id="studio-flow-fast" alt="The Sovkora Video Studio on a phone, sped up: a photo is chosen, the motion is described in one sentence, the format is vertical, and while the run is launched the screen says a GPU is rented and the shot is filmed." caption="The studio, sped up 1.5× from our film of the full flow (10 seconds, muted): the photo, the sentence, Run." />
+
+What happens behind the Run button, as the code shows it:
+
+- **The model is a row, not a branch of code.** The catalogue of models is data in the platform's database: each row names a model and the provider that serves it. The worker picks an adapter by that provider's name, never by the model's name, and refuses a provider nobody declared. Why: adding or replacing a model is a data change with a test, and a name we did not plan for cannot silently send a job to the wrong place.
+- **Three kinds of place can serve a video.** The worker can run a model itself on a GPU machine, or route to one of two hosted providers behind the same small port: a hosted inference service, and a public GPU endpoint that bills by the second. Either way the clip is made elsewhere; what stays ours is the run, its seed, its metering, the sealed file and its provenance.
+- **A refusal is a refusal.** A failed job, a timeout or a link that is not secure raises an error; no placeholder clip is ever returned. The price of a hosted clip is reserved before the call.
+- **Images and speech run on our own machines today.** The image adapter speaks to a local image server, and transcription and voice synthesis use open models served locally. A hosted voice provider is not wired into Sovkora; I do not claim one.
+
+<Figure id="studio-gpu-rented" alt="The Sovkora studio on a phone: the motion written in the text field, a label saying an A100 GPU is rented and the shot is filmed, and the Run button." caption="The same screen, a moment later: the studio says what it is doing, a GPU is rented while the shot is filmed." />
+
+The run in our film, a vertical shot of 704 by 1280 made from one photo with <Model id="wan22-ti2v-5b">Wan 2.2 TI2V 5B</Model>, took 230 seconds from the click to the result, on a GPU rented for the run and switched off afterwards. It is one run, shown in a film, not a benchmark.
+
+Two more tools of ours are worth naming: for our brand films, we also use hosted generation services, one for pictures and clips and one for voice and music. They are the team's tools, not Sovkora's code: nothing in the product calls them today. The film I used above says so in its credits, and so do I.
 
 ## What it costs, and what it gives
 

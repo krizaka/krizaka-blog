@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { KrizakaLogo } from "@krizaka/ui";
-import { Button } from "@krizaka/ui/button";
 import { ClockIcon, GlobeIcon } from "@krizaka/icons";
 import { format, getDictionary, localizedPath, type Locale } from "@/lib/i18n";
 import type { Post } from "@/lib/posts";
@@ -73,16 +72,20 @@ export function Byline({
           )}
         </p>
       </div>
-      {/* The actions of the post, one row centred on the author block: the same Button size and family for each. */}
+      {/* The actions of the post, one row centred on the author block; the other language is a discreet text link (globe, muted), the rest are what the page passes. */}
       {(other || children) && (
         <div className="bl-byline-actions">
           {other && (
-            <Button asChild variant="secondary" size="sm">
-              <Link href={otherHref} hrefLang={otherLang} lang={otherLang} title={t.post.otherLabel}>
-                <GlobeIcon size={15} aria-hidden="true" />
-                {t.post.readInOther}
-              </Link>
-            </Button>
+            <Link
+              href={otherHref}
+              hrefLang={otherLang}
+              lang={otherLang}
+              title={t.post.otherLabel}
+              className="bl-byline-other"
+            >
+              <GlobeIcon size={15} aria-hidden="true" />
+              {t.post.readInOther}
+            </Link>
           )}
           {children}
         </div>
