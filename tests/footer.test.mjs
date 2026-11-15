@@ -54,9 +54,9 @@ test("the footer's settings pass the admin's validation and name the company onc
 test("the products are the commercial names on their www address, never a code name", async () => {
   const { footerSettings } = await import("../lib/footer.ts");
   const products = footerSettings.columns.find((c) => c.id === "products");
-  assert.deepEqual(products.links.map((l) => l.label).sort(), ["Folioviv", "Sovkora", "Verikora"]);
+  assert.deepEqual(products.links.map((l) => l.label).sort(), ["Folioviv", "Kridoc", "Sovkora", "Verikora"]);
   assert.equal(products.status, undefined, "no one status for the column: each product says its own");
-  for (const l of products.links) assert.match(l.href, /^https:\/\/www\.(sovkora|verikora|folioviv)\.com$/);
+  for (const l of products.links) assert.match(l.href, /^https:\/\/www\.(sovkora|verikora|folioviv|kridoc)\.com$/);
   assert.doesNotMatch(read("lib/footer.ts"), /orazaka\.com|yomizaka\.com|akinaza\.com|Orazaka|Yomizaka|Akinaza/);
 });
 
@@ -90,21 +90,15 @@ test("SiteFooter.tsx draws the settings and types no column", () => {
   assert.doesNotMatch(footer, /<FamilyFooter\.Column|<FamilyFooter\.Link|FOOTER_PRODUCT_IDS/);
 });
 
-/* One status per product, the same word as krizaka.com (decision 2026-11-05, reunion 6): Verikora and Sovkora in
-   development, Folioviv paused. krizaka.com's own words for « development » are pinned here (its messages/*.json,
-   site.nav.status.development); « paused » is the decided word, not yet in @krizaka/org. */
+/* Each product says its own status, the org's (tests/org-products.test.mjs pins the set, order and status); the words
+   are krizaka.com's own (its messages/*.json, site.nav.status). */
 test("each product says its own status, in both languages", async () => {
-  const { PRODUCT_STATUS, productLabel } = await import("../lib/footer.ts");
-  assert.deepEqual(PRODUCT_STATUS, { Verikora: "development", Sovkora: "development", Folioviv: "paused" });
-  const words = {
-    en: { development: "In development", paused: "Paused" },
-    fr: { development: "En développement", paused: "En pause" },
-  };
+  const { productLabel } = await import("../lib/footer.ts");
   for (const l of ["en", "fr"]) {
-    assert.deepEqual(messages(l).footer.status, words[l]);
-    assert.equal(productLabel("Folioviv", messages(l).footer.status), `Folioviv · ${words[l].paused}`);
-    assert.equal(productLabel("Verikora", messages(l).footer.status), `Verikora · ${words[l].development}`);
-    assert.equal(productLabel("Sovkora", messages(l).footer.status), `Sovkora · ${words[l].development}`);
+    const words = messages(l).footer.status;
+    for (const name of ["Sovkora", "Verikora", "Folioviv", "Kridoc"]) {
+      assert.equal(productLabel(name, words), `${name} · ${words.development}`);
+    }
   }
 });
 

@@ -5,24 +5,28 @@
    Krizaka — then the blog's own, then one legal line that names the company once. Links to www.krizaka.com are absolute
    and take the reader's language (`localized`); the blog's own links are unprefixed paths, prefixed by the renderer. */
 import type { FooterSettings } from "@krizaka/ui/site-footer";
-import { brandOf, displayName } from "@krizaka/org";
+import { org, type ProductStatus } from "@krizaka/org";
 
 import { localizedPath, type Locale } from "./locale.ts";
 import { COMPANY, GITHUB_ORG_URL, JAVA_URL, KRIZAKA_URL, LAB_URL, OPEN_SOURCE_URL, TS_URL, UI_URL } from "./site.ts";
 
-const PRODUCT_IDS = ["orazaka", "yomizaka", "akinaza"] as const;
 const www = (path: string) => `${KRIZAKA_URL}${path}`;
 
-/** One status per product, the same word as krizaka.com (decision 2026-11-05, reunion 6): Verikora and Sovkora are in
-    development, Folioviv is paused. Keyed by the commercial name (@krizaka/org's), the status words are `footer.status.*`. */
-export const PRODUCT_STATUS = { Verikora: "development", Sovkora: "development", Folioviv: "paused" } as const;
-export type ProductStatus = (typeof PRODUCT_STATUS)[keyof typeof PRODUCT_STATUS];
+/** The products of the footer: the org family's `products` group, in its order (@krizaka/org). Nothing typed here. */
+const FAMILY_PRODUCTS = org.family.filter((e) => e.group === "products");
 
-/** « Folioviv · Paused »: the product's name then its own status, in the reader's language. */
+/** A product's status, the org's own (`org.products`, the closed set `PRODUCT_STATUS`); a product the org does not carry
+    is an error, never a default. Keyed by the commercial name; the words are `footer.status.<status>`. */
+export function productStatusOf(name: string): ProductStatus {
+  const entry = FAMILY_PRODUCTS.find((e) => e.name === name);
+  const found = entry && org.products.find((p) => p.id === entry.id);
+  if (!found) throw new Error(`footer: no status for the product ${name}`);
+  return found.status;
+}
+
+/** « Kridoc · In development »: the product's name then its own status, in the reader's language. */
 export function productLabel(name: string, words: Record<ProductStatus, string>): string {
-  const status = PRODUCT_STATUS[name as keyof typeof PRODUCT_STATUS];
-  if (!status) throw new Error(`footer: no status for the product ${name}`);
-  return `${name} · ${words[status]}`;
+  return `${name} · ${words[productStatusOf(name)]}`;
 }
 
 export const footerSettings = {
@@ -32,9 +36,9 @@ export const footerSettings = {
       id: "products",
       titleKey: "footer.products",
       // No status on the heading: each product says its own, on its link (`productLabel`).
-      links: PRODUCT_IDS.map((id) => ({
-        label: displayName(id),
-        href: brandOf(id).domains.site.replace(/\/$/, ""),
+      links: FAMILY_PRODUCTS.map((e) => ({
+        label: e.name,
+        href: e.url.replace(/\/$/, ""),
         external: true,
       })),
     },

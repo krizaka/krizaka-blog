@@ -15,8 +15,12 @@
   "footer": {
     "aria": "Pied de page",
     "status": {
+      "design": "En conception",
+      "upcoming": "Bientôt",
+      "construction": "En construction",
       "development": "En développement",
-      "paused": "En pause"
+      "paused": "En pause",
+      "devPreview": "Préversion dev"
     },
     "products": "Produits",
     "openSourceColumn": "Open source",
