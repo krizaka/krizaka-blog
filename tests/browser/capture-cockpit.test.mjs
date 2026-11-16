@@ -24,7 +24,7 @@ import {
   LOOP,
   GUARD,
   MASK,
-} from "../scripts/capture-cockpit.mjs";
+} from "../../scripts/capture-cockpit.mjs";
 
 const FIXTURE = {
   money: "Dépensé : 1 234,56 $",
@@ -182,7 +182,7 @@ test("the masking and the guard share every pattern", () => {
 });
 
 const run = promisify(execFile);
-const SCRIPT = fileURLToPath(new URL("../scripts/capture-cockpit.mjs", import.meta.url));
+const SCRIPT = fileURLToPath(new URL("../../scripts/capture-cockpit.mjs", import.meta.url));
 
 async function withServer(html, fn) {
   const server = createServer((_req, res) => res.writeHead(200, { "content-type": "text/html" }).end(html));

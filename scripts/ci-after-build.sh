@@ -54,6 +54,8 @@ for _ in $(seq 1 30); do curl -sf http://localhost:3000/robots.txt >/dev/null &&
 timed node scripts/check-seo-family.mjs --base http://localhost:3000 --host https://blog.krizaka.com --index on --limit 60
 timed node scripts/check-links.mjs --base http://localhost:3000 --host https://blog.krizaka.com --external
 node_modules/.bin/playwright install --with-deps chromium
+# The tests that open a browser run here, once Chromium is installed (never in `npm test`, which runs before it).
+timed node --test tests/browser/*.test.mjs
 timed node scripts/check-layout.mjs --base http://localhost:3000 --posts out
 # The top and the end of a post against their approved baselines (tests/visual/; a change to the template remakes them with --update).
 timed node scripts/check-visual.mjs --base http://localhost:3000
