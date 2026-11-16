@@ -59,6 +59,7 @@ test("numbers are read the way each language writes them", () => {
   assert.equal(timesOf("à 0 h 45, puis 18 h", "fr"), "à 0:45, puis 18");
   assert.deepEqual([...numbersOf("from 19:00 to 7:00 pm", "en")], ["19"]);
   assert.deepEqual([...numbersOf("de 19 h à 19 h 00", "fr")], ["19"]);
+  assert.deepEqual([...numbersOf("1 367 heures sur 1 487, cent", "fr")], ["1367", "1487"]);
   assert.equal(timesOf("at 12:45 am, then 6 p.m.", "en"), "at 0:45, then 18");
 });
 

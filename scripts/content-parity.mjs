@@ -49,7 +49,8 @@ export function timesOf(text, locale) {
 
 /** One written number on a neutral form: the French decimal comma and the English thousands commas removed. */
 function plainNumber(token, locale) {
-  const n = token.replace(/[.,]+$/, "");
+  let n = token;
+  while (n.endsWith(".") || n.endsWith(",")) n = n.slice(0, -1);
   if (locale === "fr") return /^\d+,\d+$/.test(n) ? n.replace(",", ".") : n;
   return /^\d{1,3}(?:,\d{3})+(?:\.\d+)?$/.test(n) ? n.replaceAll(",", "") : n;
 }
@@ -67,7 +68,7 @@ export function numbersOf(text, locale) {
   });
   plain = plain.replace(/\]\([^)]*\)/g, "]").replace(/https?:\/\/\S+/g, "");
   if (locale === "fr")
-    plain = plain.replace(/(?<![\p{L}\d.,])\d{1,3}(?: \d{3})+(?![\d,])/gu, (m) => m.replaceAll(" ", ""));
+    plain = plain.replace(/(?<![\p{L}\d.,])\d{1,3}(?: \d{3})+(?!\d)/gu, (m) => m.replaceAll(" ", ""));
   for (const [m] of plain.matchAll(/(?<![\p{L}\d.,])\d[\d.,]*/gu)) out.add(plainNumber(m, locale));
   return out;
 }
@@ -75,7 +76,7 @@ export function numbersOf(text, locale) {
 /** Link targets of a body: the language segment (`/fr/`, `site:www/en`) and the fragment (a heading's own words)
  * removed, so the two languages of one link compare equal. */
 export function linksOf(body) {
-  return [...body.matchAll(/(?<!!)\[[^\]\n]*\]\(([^)\s]+)(?:\s[^)]*)?\)/g)].map(([, href]) => {
+  return [...body.matchAll(/\]\(([^\s)]+)/g)].map(([, href]) => {
     const target = href
       .split("#")[0]
       .replace(/(^|\/)(?:fr|en)(?=\/|$)/, "$1")
