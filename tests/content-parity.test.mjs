@@ -61,6 +61,8 @@ test("numbers are read the way each language writes them", () => {
   assert.deepEqual([...numbersOf("de 19 h à 19 h 00", "fr")], ["19"]);
   assert.deepEqual([...numbersOf("1 367 heures sur 1 487, cent", "fr")], ["1367", "1487"]);
   assert.equal(timesOf("at 12:45 am, then 6 p.m.", "en"), "at 0:45, then 18");
+  assert.equal(timesOf("à 19 h 10, puis 19\u00a0h\u00a010", "fr"), "à 19:10, puis 19:10");
+  assert.deepEqual([...numbersOf("à 19 h 10", "fr")], [...numbersOf("at 7:10 pm", "en")]);
 });
 
 test("code is not prose: numbers and components inside a fence are ignored", () => {
