@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import matter from "gray-matter";
 import GithubSlugger from "github-slugger";
+import { isRedirectStub } from "../lib/retired-core.mjs";
 
 /* The old addresses (lib/redirects.json): each keeps a static stub that moves the reader to its new place.
    - an absorbed post is removed; its stub goes to a chapter's section;
@@ -212,4 +213,14 @@ test("every retired post keeps a stub at /basics/<slug>/ too, and no live post i
     for (const s of slugs) assert.ok(!live(l).has(s), `${l}: ${s} is a live post, never a stub`);
     assert.match(basicsStubTarget(l, "cette-semaine-2026-w46").href, /every-agent-starts-in-the-same-world/);
   }
+});
+
+test("a built page is a redirect stub only when it carries a 0-second refresh meta (krizaka-internal#4029)", () => {
+  assert.equal(isRedirectStub('<head><meta http-equiv="refresh" content="0; url=/story/x/"></head>'), true);
+  assert.equal(isRedirectStub('<head><META HTTP-EQUIV="Refresh" content="0; url=/"></head>'), true);
+  assert.equal(
+    isRedirectStub('<head><meta name="description" content="refresh"></head><p>http-equiv="refresh"</p>'),
+    false,
+  );
+  assert.equal(isRedirectStub("<main><h1>A chapter</h1></main>"), false);
 });

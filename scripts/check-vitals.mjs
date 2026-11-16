@@ -6,6 +6,7 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
+import { isRedirectStub } from "../lib/retired-core.mjs";
 
 export const BUDGET = JSON.parse(readFileSync(new URL("./vitals-budget.json", import.meta.url), "utf8"));
 
@@ -19,8 +20,7 @@ export function vitalsProblems(path, metrics, budget = BUDGET) {
   return out;
 }
 
-/** A built page that is a stub of a moved address (RetiredPost: a 0-second refresh): it leaves at once and never paints. */
-const isStub = (file) => /<meta[^>]+http-equiv="refresh"/i.test(readFileSync(file, "utf8"));
+const isStub = (file) => isRedirectStub(readFileSync(file, "utf8"));
 
 /** The pages measured: the home in both languages, then the first real post and chapter (never a stub) of the build output. */
 export function pagesToMeasure(postsDir) {
