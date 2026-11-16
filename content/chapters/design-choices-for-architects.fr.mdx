@@ -20,11 +20,27 @@ versus:
   built: "chaque choix en un bloc : le choix, le refus, pourquoi, le coût, avec sa doc officielle"
 ---
 
-Ce billet s'adresse aux architectes, aux leads techniques et aux concepteurs. Il est court exprès : chaque décision tient en un bloc, avec le choix, l'option refusée, la raison et ce qu'elle nous coûte. Chaque affirmation sur un outil renvoie à sa documentation officielle, pour que vous puissiez la vérifier. Ce que nous faisons tourner est lu dans notre code sur `main`, pas de mémoire.
+
+Ce chapitre est pour les architectes, les leads techniques et les concepteurs. Il est court exprès : huit décisions, chacune avec l'option qu'on a écartée, la raison et ce qu'elle nous coûte. Chaque affirmation sur un outil pointe vers sa doc officielle, pour que vous puissiez vérifier. Ce qu'on fait tourner est lu dans notre code sur `main`, pas de mémoire.
+
+## Les huit choix d'un coup d'œil
+
+| Sujet | Écarté | Choisi | Pourquoi | Ce que ça coûte |
+| --- | --- | --- | --- | --- |
+| Messages | Kafka | RabbitMQ | des files de travail : une tâche, un worker, puis elle disparaît | on opère le courtier ; chaque consommateur doit être idempotent |
+| Données | NoSQL comme référence | PostgreSQL, `jsonb` où il faut | des invariants entre lignes, gardés par une transaction | une migration à chaque changement de forme |
+| Vecteurs | une base vectorielle à part | pgvector dans le même PostgreSQL | le vecteur vit avec sa ligne : même transaction, même sauvegarde | l'extension avant les migrations ; HNSW coûte en mémoire |
+| Exécution | un orchestrateur à nous | peu de conteneurs, Next.js `standalone` | la plateforme build, déploie, redémarre et route | les JVM d'un conteneur vivent et meurent ensemble |
+| Tests de bout en bout | retester la bibliothèque dans chaque produit | Playwright (web), Maestro (mobile), sur les parcours | chaque test a un seul sujet | deux outils, et l'émulateur est lent |
+| CI | une copie par dépôt | 36 workflows réutilisables, épinglés | une correction arrive partout par une montée d'épingle | changer un workflow partagé, c'est changer chaque dépôt |
+| Supervision | Prometheus, Loki et Grafana chez nous | Grafana Cloud, tableaux de bord en code | les sondes et le stockage ne sont pas notre produit | les limites de l'offre gratuite, et un caviardage avant Loki |
+| Code partagé | copier entre produits, ou un seul dépôt | des bibliothèques publiées, importées | un comportement écrit et testé une fois | une montée de version pour chaque changement |
+
+Le détail suit, dans le même ordre.
 
 ## La vue en C1 et C2
 
-Deux vues d'un même modèle écrit en [LikeC4](https://likec4.dev/), la notation du [modèle C4](https://c4model.com/), vérifié contre le modèle de base de notre organisation. Moins de détail que nos vues internes, et rien de sensible : ni hôte, ni adresse, ni compte.
+Deux vues d'un même modèle écrit en [LikeC4](https://likec4.dev/), la notation du [modèle C4](https://c4model.com/), vérifié contre le modèle de base de l'organisation. Moins de détail que nos vues internes, et rien de sensible : ni hôte, ni adresse, ni compte.
 
 <Architecture view="org_context" label="Le contexte (C1)" description="Clients et visiteurs utilisent Verikora et Folioviv ; Verikora demande des vérifications à Sovkora, le moteur d'IA ; les trois produits s'appuient sur les bibliothèques partagées, publiées sur les registres de paquets ; la plateforme fait tourner les workflows partagés sur GitHub, qui déploie main dans le cloud ; Sovkora envoie ses journaux, métriques et traces à la supervision." />
 
@@ -32,61 +48,70 @@ Deux vues d'un même modèle écrit en [LikeC4](https://likec4.dev/), la notatio
 
 ## 1. RabbitMQ plutôt que Kafka
 
-- **Choix.** [RabbitMQ](https://www.rabbitmq.com/docs/queues) porte les tâches de Sovkora jusqu'à ses workers. Un service écrit la tâche dans une table outbox, dans la même transaction que son propre changement ; un relais la publie. Chaque capacité a sa clé de routage : une tâche CPU et une tâche GPU arrivent dans des [files](https://www.rabbitmq.com/docs/exchanges) différentes. Les files sont bornées ([longueur maximale et débordement](https://www.rabbitmq.com/docs/maxlength)), un message en échec est repris puis envoyé en [lettre morte](https://www.rabbitmq.com/docs/dlx), et un consommateur [acquitte](https://www.rabbitmq.com/docs/confirms) ce qu'il a fini.
-- **Refusé.** [Apache Kafka](https://kafka.apache.org/intro).
-- **Pourquoi.** Notre besoin, ce sont des files de travail : une tâche est faite une fois, par un worker, puis elle disparaît. Kafka est un journal partitionné où les événements « are not deleted after consumption » et sont conservés selon une durée par topic ([Kafka, introduction](https://kafka.apache.org/intro)) ; ses forces, le rejeu et un très gros débit, ne sont pas notre problème aujourd'hui. Le routage AMQP, si.
-- **Coût.** Nous opérons le courtier nous-mêmes : notre hébergeur cloud au Canada propose Kafka en service géré, mais pas RabbitMQ. Un courtier perdu avec des messages en vol les perd : c'est pourquoi l'outbox et la base, pas le courtier, portent la vérité. La livraison est au moins une fois, donc chaque consommateur doit être idempotent.
+[RabbitMQ](https://www.rabbitmq.com/docs/queues) porte les tâches de Sovkora jusqu'à ses workers. Un service écrit la tâche dans une table outbox, dans la même transaction que son propre changement, et un relais la publie. Chaque capacité a sa routing key : une tâche CPU et une tâche GPU arrivent dans des [queues](https://www.rabbitmq.com/docs/exchanges) différentes. Les queues sont bornées ([longueur maximale et débordement](https://www.rabbitmq.com/docs/maxlength)), un message en échec est repris puis envoyé en [dead letter](https://www.rabbitmq.com/docs/dlx), et un consommateur [acquitte](https://www.rabbitmq.com/docs/confirms) ce qu'il a fini.
+
+Pourquoi pas [Apache Kafka](https://kafka.apache.org/intro) : on a besoin de files de travail. Une tâche est faite une fois, par un worker, puis elle disparaît. Kafka est un journal partitionné où les événements « are not deleted after consumption » et sont gardés selon une durée par topic ([Kafka, introduction](https://kafka.apache.org/intro)). Le rejeu et le très gros débit, ses forces, ne sont pas notre problème aujourd'hui. Le routage AMQP, oui.
+
+Le coût : on opère le courtier nous-mêmes, parce que notre hébergeur cloud au Canada propose Kafka en service géré, pas RabbitMQ. Un courtier perdu perd ses messages en vol ; c'est pour ça que l'outbox et la base portent la vérité, pas le courtier. La livraison est au moins une fois : chaque consommateur doit être idempotent.
 
 ## 2. Le relationnel plutôt que le NoSQL
 
-- **Choix.** [PostgreSQL](https://www.postgresql.org/docs/current/tutorial-transactions.html) pour chaque produit, une base par contexte borné dans Sovkora (moteur, utilisateurs, facturation, studio). Les parties souples sont des colonnes [`jsonb`](https://www.postgresql.org/docs/current/datatype-json.html) ; la recherche de Verikora est la [recherche plein texte](https://www.postgresql.org/docs/current/textsearch.html) de PostgreSQL ; les écritures concurrentes passent par des [verrous de ligne et consultatifs](https://www.postgresql.org/docs/current/explicit-locking.html) et [`FOR UPDATE … SKIP LOCKED`](https://www.postgresql.org/docs/current/sql-select.html).
-- **Refusé.** Une base documentaire comme système de référence.
-- **Pourquoi.** Nos données portent des invariants entre lignes : une réserve de crédits et la tâche qu'elle paie, une règle et ses révisions, un document et ses vérifications. Une transaction les garde vraies ensemble, et l'outbox ne marche que parce que le message et le changement sont validés d'un coup. `jsonb` nous donne la souplesse là où il la faut, sans second moteur.
-- **Coût.** Chaque changement de forme est une migration versionnée. Nous grandissons en taille avant de grandir en nombre. Un modèle relationnel doit être surveillé contre les lectures non bornées et les requêtes N+1 : nos règles Java les refusent.
+[PostgreSQL](https://www.postgresql.org/docs/current/tutorial-transactions.html) pour chaque produit, et une base par contexte borné dans Sovkora (moteur, utilisateurs, facturation, studio). Les parties souples sont des colonnes [`jsonb`](https://www.postgresql.org/docs/current/datatype-json.html). La recherche de Verikora est la [recherche plein texte](https://www.postgresql.org/docs/current/textsearch.html) de PostgreSQL. Les écritures concurrentes passent par des [verrous de ligne et consultatifs](https://www.postgresql.org/docs/current/explicit-locking.html) et par [`FOR UPDATE … SKIP LOCKED`](https://www.postgresql.org/docs/current/sql-select.html).
+
+Pourquoi pas une base documentaire comme référence : nos données ont des règles qui lient plusieurs lignes. Une réserve de crédits et la tâche qu'elle paie, une règle et ses révisions, un document et ses vérifications. Une transaction les garde vraies ensemble, et l'outbox ne marche que parce que le message et le changement sont commités d'un coup. `jsonb` donne la souplesse là où on en a besoin, sans deuxième moteur.
+
+Le coût : chaque changement de forme est une migration versionnée, et on grandit en taille avant de grandir en nombre. Un modèle relationnel doit être surveillé contre les lectures non bornées et les requêtes N+1 ; nos règles Java les refusent.
 
 ## 3. Les vecteurs à côté des lignes : pgvector, pas une base vectorielle à part
 
-- **Choix.** [pgvector](https://github.com/pgvector/pgvector) dans le même PostgreSQL. Le cache sémantique de Sovkora garde un embedding de 1024 dimensions avec un index HNSW en distance cosinus, et les recommandations vivent dans la base de connaissances. Le cache est éteint par défaut ; un pack doit l'allumer.
-- **Refusé.** Une base vectorielle dédiée à côté de PostgreSQL.
-- **Pourquoi.** Un vecteur ne sert qu'avec la ligne qu'il décrit : même transaction, même sauvegarde, même filtre par client dans la même requête. pgvector offre la recherche exacte et approchée ([HNSW, IVFFlat](https://github.com/pgvector/pgvector#indexing)) avec « ACID compliance, point-in-time recovery, JOINs » de Postgres ([pgvector](https://github.com/pgvector/pgvector)).
-- **Coût.** L'extension doit être installée par l'administrateur du cluster, avant les migrations. Un index HNSW prend de la mémoire et du temps à construire. À une échelle que nous n'avons pas atteinte, un moteur dédié répondrait peut-être plus vite ; nous ne l'avons pas mesuré.
+[pgvector](https://github.com/pgvector/pgvector), dans le même PostgreSQL. Le cache sémantique de Sovkora garde un embedding de 1024 dimensions, avec un index HNSW en distance cosinus, et les recommandations vivent dans la base de connaissances. Ce cache est éteint par défaut ; un pack doit l'allumer.
+
+Pourquoi pas une base vectorielle dédiée : un vecteur ne sert qu'avec la ligne qu'il décrit. Même transaction, même sauvegarde, même filtre par client dans la même requête. pgvector fait la recherche exacte et approchée ([HNSW, IVFFlat](https://github.com/pgvector/pgvector#indexing)) avec « ACID compliance, point-in-time recovery, JOINs » de Postgres ([pgvector](https://github.com/pgvector/pgvector)).
+
+Le coût : l'administrateur du cluster doit installer l'extension avant les migrations. Un index HNSW prend de la mémoire et du temps à construire. À une échelle qu'on n'a pas atteinte, un moteur dédié répondrait peut-être plus vite ; on ne l'a pas mesuré.
 
 ## 4. Peu de conteneurs, et Next.js dans l'un d'eux
 
-- **Choix.** L'application web de chaque produit est un serveur Next.js construit avec [`output: "standalone"`](https://nextjs.org/docs/app/api-reference/config/next-config-js/output), une image Docker, lancée comme un service chez notre hébergeur cloud au Canada. Sovkora fait tourner un conteneur edge et un conteneur moteur qui démarre plusieurs JVM côte à côte ; les parties à état (PostgreSQL, le courtier) vivent hors des conteneurs d'application. Nos sites (ce blog, les docs des bibliothèques) sont des exports statiques. Chaque application est décrite par une spec d'application versionnée dans son dépôt, et un outil signale tout écart entre le fichier et l'application en ligne.
-- **Refusé.** Un conteneur par service sur un orchestrateur que nous opérerions nous-mêmes.
-- **Pourquoi.** Une petite équipe, un fondateur et des agents IA : la plateforme construit, déploie à chaque push sur `main`, redémarre et route. La spec dans le dépôt est tout le déploiement, revue comme du code.
-- **Coût.** Les JVM d'un même conteneur démarrent, s'arrêtent et grandissent ensemble : si l'une sort, le conteneur sort et la plateforme relance le tout. Chaque JVM a son tas dans la mémoire du conteneur, dimensionné à la main. Les limites de la plateforme sont les nôtres.
+L'application web de chaque produit est un serveur Next.js buildé avec [`output: "standalone"`](https://nextjs.org/docs/app/api-reference/config/next-config-js/output) : une image Docker, lancée comme un service chez notre hébergeur cloud au Canada. Sovkora fait tourner un conteneur edge et un conteneur moteur qui démarre plusieurs JVM côte à côte. Ce qui a un état (PostgreSQL, le courtier) vit hors des conteneurs d'application. Nos sites (ce blogue, les docs des bibliothèques) sont des exports statiques. Chaque application est décrite par une spec versionnée dans son dépôt, et un outil signale tout écart entre ce fichier et l'application en ligne.
+
+Pourquoi pas un conteneur par service sur un orchestrateur à nous : on est une petite équipe, un fondateur et des agents IA. La plateforme build, déploie à chaque push sur `main`, redémarre et route. La spec dans le dépôt est tout le deploy, relue comme du code.
+
+Le coût : les JVM d'un même conteneur démarrent, s'arrêtent et grandissent ensemble. Si l'une sort, le conteneur sort et la plateforme relance le tout. Chaque JVM a sa heap dans la mémoire du conteneur, réglée à la main. Les limites de la plateforme sont les nôtres.
 
 ## 5. Playwright pour le web, Maestro pour le mobile
 
-- **Choix.** La preuve principale d'un produit, ce sont ses parcours : une promesse au client chacun, joués par une distribution de démonstration semée. Les parcours web sont des tests [Playwright](https://playwright.dev/docs/test-projects) dans un projet nommé `critical` ; les parcours mobiles sont des flows YAML [Maestro](https://docs.maestro.dev/) sur un émulateur Android, à chaque pull request. Chacun tourne depuis un workflow partagé, avec un check requis.
-- **Refusé.** Retester les composants de la bibliothèque dans chaque produit (snapshots, copies de ce que `@krizaka/ui` vérifie déjà), et de longues suites de bout en bout relancées après un test instable.
-- **Pourquoi.** Un test de produit a l'un de trois sujets : ses règles (unitaire), son serveur et son API (intégration, sur une vraie base), ses parcours (bout en bout). Un bogue trouvé dans un composant de la bibliothèque reçoit son test dans la bibliothèque. Les projets de Playwright donnent une configuration par navigateur ou appareil ; les flows de Maestro sont courts et lisibles par un non-développeur.
-- **Coût.** Deux outils, deux syntaxes (TypeScript et YAML). Les passages sur émulateur sont la partie la plus lente de notre CI. Peu de parcours, c'est un trou possible entre eux, que les tests unitaires et d'intégration doivent couvrir.
+La preuve principale d'un produit, ce sont ses parcours : chacun tient une promesse au client, joué par une distribution de démonstration semée. Les parcours web sont des tests [Playwright](https://playwright.dev/docs/test-projects) dans un projet nommé `critical`. Les parcours mobiles sont des flows YAML [Maestro](https://docs.maestro.dev/) sur un émulateur Android, à chaque pull request. Chacun tourne depuis un workflow partagé, avec un check requis.
+
+Ce qu'on a écarté : retester les composants de la bibliothèque dans chaque produit (snapshots, copies de ce que `@krizaka/ui` vérifie déjà), et de longues suites de bout en bout relancées après un test instable. Un test de produit a un seul sujet parmi trois : ses règles (unitaire), son serveur et son API (intégration, sur une vraie base), ses parcours (bout en bout). Un bogue dans un composant de la bibliothèque reçoit son test dans la bibliothèque. Les projets Playwright donnent une config par navigateur ou par appareil ; les flows Maestro sont courts, et quelqu'un qui ne code pas peut les lire.
+
+Le coût : deux outils, deux syntaxes (TypeScript et YAML). L'émulateur est la partie la plus lente de notre CI. Et peu de parcours, c'est un trou possible entre eux, que les tests unitaires et d'intégration doivent couvrir.
 
 ## 6. La CI écrite une fois, dans GitHub
 
-- **Choix.** Le [dépôt `.github`](repo:.github) de notre organisation porte 36 [workflows réutilisables](https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows) (`on: workflow_call`) : Node, Java, Python, Rust, bout en bout mobile, parcours, analyses de sécurité. Chaque produit les appelle, [épinglés à un SHA de commit complet](https://docs.github.com/en/actions/reference/security/secure-use), et atterrit par une [merge queue](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue).
-- **Refusé.** Une copie de la CI dans chaque dépôt.
-- **Pourquoi.** Une correction d'un check arrive partout par une montée d'épingle, et chaque dépôt répond aux mêmes checks requis, agents compris.
-- **Coût.** Changer un workflow partagé, c'est changer chaque dépôt : il est donc testé seul et déployé par montées d'épingle. Un appelant ne peut changer que ce que le workflow expose en entrées.
+Le [dépôt `.github`](repo:.github) de l'organisation porte 36 [workflows réutilisables](https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows) (`on: workflow_call`) : Node, Java, Python, Rust, bout en bout mobile, parcours, analyses de sécurité. Chaque produit les appelle, [épinglés à un SHA de commit complet](https://docs.github.com/en/actions/reference/security/secure-use), et merge par une [merge queue](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue).
+
+Pourquoi pas une copie de la CI dans chaque dépôt : quand on corrige un check, la correction arrive partout par une montée d'épingle, et chaque dépôt répond aux mêmes checks requis, agents compris.
+
+Le coût : changer un workflow partagé, c'est changer chaque dépôt. Il est donc testé seul, puis déployé par montées d'épingle. Un appelant ne peut changer que ce que le workflow expose en entrées.
 
 ## 7. La supervision avec Grafana, en code
 
-- **Choix.** Une pile [Grafana Cloud](https://grafana.com/docs/grafana-cloud/platform/pricing-and-usage/stack-plans/). [Synthetic Monitoring](https://grafana.com/docs/grafana-cloud/observe-and-act/testing/synthetic-monitoring/) sonde nos sites publics de l'extérieur ; les services Java émettent des journaux structurés, des métriques et des traces par notre starter d'observabilité et les exportent en [OTLP](https://opentelemetry.io/docs/specs/otlp/) dès que le point d'entrée d'un environnement est réglé. Les [tableaux de bord](https://grafana.com/docs/grafana/latest/visualizations/dashboards/) sont du JSON gardé en code et vérifié par un linter.
-- **La forme d'un tableau de bord, sans ses données.** Une rangée par application : disponibilité et latence vues de l'extérieur, puis débit, erreurs et durée des requêtes, puis saturation, puis les lignes d'erreur des journaux ([Loki](https://grafana.com/docs/loki/latest/)). Aucun nom d'hôte, aucune adresse, aucun compte dans ce billet : c'est pourquoi il montre la forme, pas une capture.
-- **Refusé.** Faire tourner Prometheus, Loki et Grafana nous-mêmes.
-- **Pourquoi.** Les sondes, le stockage et les alertes ne sont pas notre produit ; l'offre gratuite hébergée couvre ce que nous envoyons aujourd'hui.
-- **Coût.** Les limites de l'offre gratuite sont les nôtres, et la télémétrie quitte notre hébergement : c'est pourquoi les journaux (Loki) ne rejoignent les tableaux de bord qu'après une étape de caviardage partagée. Aujourd'hui, les sondes tournent ; la télémétrie des services s'allume environnement par environnement.
+Une stack [Grafana Cloud](https://grafana.com/docs/grafana-cloud/platform/pricing-and-usage/stack-plans/). [Synthetic Monitoring](https://grafana.com/docs/grafana-cloud/observe-and-act/testing/synthetic-monitoring/) sonde nos sites publics de l'extérieur. Les services Java émettent des journaux structurés, des métriques et des traces par notre starter d'observabilité, et les exportent en [OTLP](https://opentelemetry.io/docs/specs/otlp/) dès que le point d'entrée d'un environnement est réglé. Les [dashboards](https://grafana.com/docs/grafana/latest/visualizations/dashboards/) sont du JSON gardé en code et passé au lint.
 
-## 8. Des bibliothèques partagées, consommées, jamais copiées
+Un dashboard a toujours la même forme : une rangée par application. D'abord la disponibilité et la latence vues de l'extérieur, puis le débit, les erreurs et la durée des requêtes, puis la saturation, puis les lignes d'erreur des journaux ([Loki](https://grafana.com/docs/loki/latest/)). On montre la forme et pas une capture, parce qu'une capture porterait des noms d'hôtes, des adresses et des comptes.
 
-- **Choix.** Des paquets TypeScript et UI sous le [scope `@krizaka`](https://docs.npmjs.com/about-scopes) ([krizaka-ui](repo:krizaka-ui), [krizaka-ts](repo:krizaka-ts), docs sur [ui.krizaka.com](site:ui) et [ts.krizaka.com](site:ts)) ; des briques Java sous `com.krizaka` ([krizaka-java](repo:krizaka-java), docs sur [java.krizaka.com](site:java)) : un build parent, une [BOM](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html) et des [starters Spring Boot](https://docs.spring.io/spring-boot/reference/features/developing-auto-configuration.html) pour le web, la sécurité, RabbitMQ, l'observabilité, la persistance et d'autres. L'application web de Verikora dépend de 28 paquets `@krizaka`, celle de Folioviv de 23 ; les services de Sovkora importent la BOM puis les starters, sans version à eux.
-- **Refusé.** Copier du code entre produits, et un seul dépôt pour tous les produits.
-- **Pourquoi.** Un comportement est écrit, testé et documenté une fois ; un produit l'importe et ne teste que ses propres règles. Le starter RabbitMQ est l'endroit où « publié par une ligne transactionnelle, repris avec un délai croissant, puis mis en lettre morte » est écrit une fois pour chaque service.
-- **Coût.** Un changement de bibliothèque n'atteint un produit que par une montée de version, et un changement cassant demande une version majeure et une migration chez chaque consommateur. Les bibliothèques sont publiques et open source : leur API est une promesse.
+Pourquoi pas Prometheus, Loki et Grafana chez nous : les sondes, le stockage et les alertes ne sont pas notre produit, et l'offre gratuite hébergée couvre ce qu'on envoie aujourd'hui.
 
-## Ce que ce billet ne montre pas
+Le coût : les limites de l'offre gratuite sont les nôtres, et la télémétrie sort de notre hébergement. C'est pour ça que les journaux ne rejoignent Loki qu'après une étape de caviardage partagée. Aujourd'hui, les sondes tournent ; la télémétrie des services s'allume un environnement à la fois.
 
-Les registres de décision internes restent internes ; ce billet en donne les raisons, pas le texte. Le modèle derrière les deux vues déclare les trois produits et les bibliothèques au niveau de ce billet ; le modèle complet de chaque produit vit dans son propre dépôt.
+## 8. Des bibliothèques partagées, importées, jamais copiées
+
+Des paquets TypeScript et UI sous le [scope `@krizaka`](https://docs.npmjs.com/about-scopes) ([krizaka-ui](repo:krizaka-ui), [krizaka-ts](repo:krizaka-ts), docs sur [ui.krizaka.com](site:ui) et [ts.krizaka.com](site:ts)). Des briques Java sous `com.krizaka` ([krizaka-java](repo:krizaka-java), docs sur [java.krizaka.com](site:java)) : un build parent, une [BOM](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html) et des [starters Spring Boot](https://docs.spring.io/spring-boot/reference/features/developing-auto-configuration.html) pour le web, la sécurité, RabbitMQ, l'observabilité, la persistance et d'autres. L'application web de Verikora dépend de 28 paquets `@krizaka`, celle de Folioviv de 23 ; les services de Sovkora importent la BOM puis les starters, sans version à eux.
+
+Pourquoi pas copier du code entre produits, ni un seul dépôt pour tout : un comportement est écrit, testé et documenté une fois ; un produit l'importe et ne teste que ses propres règles. Le starter RabbitMQ est l'endroit où « publié par une ligne transactionnelle, repris avec un délai croissant, puis mis en dead letter » est écrit une fois pour tous les services.
+
+Le coût : un changement de bibliothèque n'arrive dans un produit que par une montée de version, et un changement cassant demande une version majeure et une migration chez chaque consommateur. Les bibliothèques sont publiques et open source : leur API est une promesse.
+
+## Ce que ce chapitre ne montre pas
+
+Nos registres de décision restent internes : on en donne les raisons, pas le texte. Le modèle derrière les deux vues déclare les trois produits et les bibliothèques au niveau de ce chapitre ; le modèle complet de chaque produit vit dans son propre dépôt.
