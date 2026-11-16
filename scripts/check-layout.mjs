@@ -273,7 +273,7 @@ try {
         problems.push(`${path} @${screen.width}×${screen.height}: ${p}`);
       await page.close();
     }
-  const checkPath = async (path) => {
+  const widthProblems = async (path) => {
     const found = [];
     for (const width of WIDTHS) {
       const page = await browser.newPage({ viewport: { width, height: 900 } });
@@ -283,6 +283,10 @@ try {
         for (const p of await page.evaluate(check)) found.push(`${path} @${width}: ${p}`);
       await page.close();
     }
+    return found;
+  };
+  const bylineProblems = async (path) => {
+    const found = [];
     for (const colorScheme of themedSample(path) ? BYLINE_THEMES : [])
       for (const width of BYLINE_LINK_WIDTHS) {
         const context = await browser.newContext({ viewport: { width, height: 900 }, colorScheme });
@@ -293,6 +297,10 @@ try {
         for (const p of await themed.evaluate(bylineLanguageLink)) found.push(`${path} @${width} ${colorScheme}: ${p}`);
         await context.close();
       }
+    return found;
+  };
+  const focusProblems = async (path) => {
+    const found = [];
     const page = await browser.newPage({ viewport: { width: 1366, height: 900 } });
     await page.goto(base + path, { waitUntil: "networkidle" });
     const onLoad = await page.evaluate(ring);
@@ -315,6 +323,11 @@ try {
     await page.close();
     return found;
   };
+  const checkPath = async (path) => [
+    ...(await widthProblems(path)),
+    ...(await bylineProblems(path)),
+    ...(await focusProblems(path)),
+  ];
   const started = Date.now();
   const total = paths.length;
   const perPath = await mapPool(paths, concurrency, checkPath, (n) => {
