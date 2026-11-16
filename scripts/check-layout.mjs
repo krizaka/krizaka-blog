@@ -127,6 +127,45 @@ const bylineBeside = () => {
     : [];
 };
 
+/* The other language's link (krizaka-internal#3907): on a desktop it sits flush with the right edge of the text column (the lead's
+   right edge, ±2 px) and on the name's line (centre-y ±2 px); on a phone it wraps under the author lines, aligned left with the
+   avatar. Measured, so a later CSS change cannot move it silently. */
+const BYLINE_LINK_WIDTHS = [1280, 360];
+const BYLINE_THEMES = ["dark", "light"];
+const IS_POST = /\/(basics|story)\/[^/]+\/$/;
+/* Every post is measured at every width (LAYOUT_CHECKS); the two themes on the first post of each language and section only: the layout
+   does not depend on the theme, and a full second pass over every post took the CI past its 30 minutes. */
+const themedSeen = new Set();
+const themedSample = (path) => {
+  if (!IS_POST.test(path)) return false;
+  const key = path.slice(0, path.lastIndexOf("/", path.length - 2) + 1);
+  if (themedSeen.has(key)) return false;
+  themedSeen.add(key);
+  return true;
+};
+const bylineLanguageLink = () => {
+  const q = (s) => document.querySelector(s)?.getBoundingClientRect();
+  const link = q(".bl-byline-other");
+  const name = q(".bl-byline-name");
+  const lead = q(".kz-hero-lead");
+  const mark = q(".bl-byline-mark");
+  if (!link?.width || !name?.width) return [];
+  const out = [];
+  if (document.documentElement.clientWidth > 640) {
+    if (lead?.width && Math.abs(link.right - lead.right) > 2)
+      out.push(
+        `the language link's right edge (${Math.round(link.right)}) is not the text column's (${Math.round(lead.right)})`,
+      );
+    const dy = link.top + link.height / 2 - (name.top + name.height / 2);
+    if (Math.abs(dy) > 2) out.push(`the language link is ${Math.round(dy)} px off the name's line`);
+  } else {
+    if (link.top < name.bottom - 1) out.push("the language link is not under the author lines on a phone");
+    if (mark?.width && Math.abs(link.left - mark.left) > 2)
+      out.push("the language link is not aligned left on a phone");
+  }
+  return out;
+};
+
 const LAYOUT_CHECKS = [
   sidewaysScroll,
   chromePastEdge,
@@ -135,6 +174,7 @@ const LAYOUT_CHECKS = [
   titleOverflow,
   figureHead,
   bylineBeside,
+  bylineLanguageLink,
 ];
 
 /* The basics' path (krizaka-internal#1869): at 1440×900 the whole ordered list fits one screen below the bar (so it reads in five
@@ -218,6 +258,17 @@ try {
         for (const p of await page.evaluate(check)) problems.push(`${path} @${width}: ${p}`);
       await page.close();
     }
+    for (const colorScheme of themedSample(path) ? BYLINE_THEMES : [])
+      for (const width of BYLINE_LINK_WIDTHS) {
+        const context = await browser.newContext({ viewport: { width, height: 900 }, colorScheme });
+        await context.addInitScript((t) => localStorage.setItem("kz-theme", t), colorScheme);
+        const themed = await context.newPage();
+        await themed.goto(base + path, { waitUntil: "networkidle" });
+        await themed.evaluate(() => document.fonts.ready);
+        for (const p of await themed.evaluate(bylineLanguageLink))
+          problems.push(`${path} @${width} ${colorScheme}: ${p}`);
+        await context.close();
+      }
     const page = await browser.newPage({ viewport: { width: 1366, height: 900 } });
     await page.goto(base + path, { waitUntil: "networkidle" });
     const onLoad = await page.evaluate(ring);

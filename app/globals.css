@@ -693,6 +693,10 @@ picture {
   align-items: center;
   gap: 0.75rem 1rem;
   margin-top: 0.5rem;
+  /* The text column: the hero's extra slot shrink-wraps its child, which left the link mid-row. The row fills the column and stops at
+     the lead's measure (42.5rem = the hero lead's 680px) so the link sits at the lead's right edge (krizaka-internal#3907). */
+  width: 100%;
+  max-width: 42.5rem;
 }
 .bl-byline-mark {
   display: inline-grid;
