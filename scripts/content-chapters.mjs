@@ -88,11 +88,13 @@ function draftCoverProblems(file, data) {
   return [];
 }
 
-function sourceProblems(file, data, locale, postSlugs) {
+/* A piece written directly as a chapter (every new piece is one, krizaka-internal#3941) was never a post: its source is its own
+   slug (krizaka-internal#3905). */
+function sourceProblems(file, data, locale, postSlugs, slug) {
   if (!Array.isArray(data.sources) || data.sources.length === 0)
     return [`${file}: "sources" must list the slugs of the posts it is written from`];
   return data.sources
-    .filter((s) => !postSlugs.has(`${locale}:${s}`))
+    .filter((s) => s !== slug && !postSlugs.has(`${locale}:${s}`))
     .map((s) => `${file}: source "${s}" is not a post of content/posts in this language`);
 }
 
@@ -129,7 +131,8 @@ function statsProblems(file, data, body) {
 }
 
 /** The problems of one chapter: a post's rules (cover, publishedAt, confidentiality, <Model>, media…), plus the story's
-    fields. `postSlugs` is the set of `<locale>:<slug>` of content/posts, which every source must be in. */
+    fields. `postSlugs` is the set of `<locale>:<slug>` of content/posts, which every source must be in, unless it is the chapter's own
+    slug (a piece written as a chapter from the start). */
 export function chapterProblems(file, data, body, ctx, postSlugs) {
   const out = postProblems(file, data, body, ctx);
   const m = file.match(FILE);
@@ -141,7 +144,7 @@ export function chapterProblems(file, data, body, ctx, postSlugs) {
     ...periodProblems(file, data),
     ...placeProblems(file, data),
     ...draftCoverProblems(file, data),
-    ...sourceProblems(file, data, locale, postSlugs),
+    ...sourceProblems(file, data, locale, postSlugs, m[1]),
     ...versusProblems(file, data),
     ...statsProblems(file, data, body),
   ];
@@ -236,6 +239,29 @@ function dateOrderProblems(chapters) {
   return problems;
 }
 
+/** The only pieces that live on the shelf (« The basics », /basics/<slug>/): the four introductions. Every other piece is a chapter
+    of the book, numbered by date (krizaka-internal#3941). A closed list: adding to it is a decision, not a habit. */
+export const SHELF_INTRODUCTIONS = [
+  "understanding-ai-before-you-start",
+  "anatomy-of-an-ai-prompt",
+  "ai-model-families-and-why-you-need-a-gpu",
+  "is-that-ai-model-really-open-source",
+];
+
+/** A published post outside the book that is not one of the declared introductions: it must be a chapter (content/chapters). */
+export function shelfProblems(posts) {
+  return posts
+    .filter((p) => p.data.draft !== true)
+    .flatMap((p) => {
+      const m = p.file.match(FILE);
+      return m && !SHELF_INTRODUCTIONS.includes(m[1])
+        ? [
+            `${p.file}: a published post outside the book — every piece is a chapter of content/chapters (numbered by publishedAt); only ${SHELF_INTRODUCTIONS.length} introductions stay on the shelf (SHELF_INTRODUCTIONS)`,
+          ]
+        : [];
+    });
+}
+
 /** Every chapter: its own problems, then the story as a whole — each chapter in both languages with the same slug, number,
     period and sources; the numbers of a language run from 1 without a gap or a repeat; no dead internal link. */
 export function checkChapters(dir, postsDir, ctx) {
@@ -247,6 +273,11 @@ export function checkChapters(dir, postsDir, ctx) {
     ...chapterProblems(c.file, c.data, c.content, ctx, postSlugs),
     ...internalLinkProblems(c.file, c.content, known, c.data.draft === true),
   ]);
-  problems.push(...bothLanguagesProblems(chapters), ...numberingProblems(chapters), ...dateOrderProblems(chapters));
+  problems.push(
+    ...bothLanguagesProblems(chapters),
+    ...numberingProblems(chapters),
+    ...dateOrderProblems(chapters),
+    ...shelfProblems(posts),
+  );
   return { files: chapters.map((c) => c.file), problems: [...new Set(problems)] };
 }

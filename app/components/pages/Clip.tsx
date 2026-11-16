@@ -2,6 +2,7 @@ import { format, getDictionary, type Locale } from "@/lib/i18n";
 import { mediaOf } from "@/lib/media";
 import { ClipPlayer } from "./ClipPlayer";
 import { Provenance } from "./Provenance";
+import { megabytes } from "@/lib/file-weight.mjs";
 
 /* A clip of a post, from the library: the light player, then how it was made. The sound (a music bed Sovkora made) is on the
    file; the player starts muted. */
@@ -32,7 +33,7 @@ export function Clip({
       />
       <figcaption>
         {caption ?? alt}
-        {m.bytes && <span className="bl-weight"> · {format(t.fileSize, { mb: (m.bytes.mp4 / 1e6).toFixed(1) })}</span>}
+        {m.bytes && <span className="bl-weight"> · {format(t.fileSize, { mb: megabytes(m.bytes.mp4) })}</span>}
       </figcaption>
       {m.made && <Provenance made={m.made} locale={locale} />}
     </figure>

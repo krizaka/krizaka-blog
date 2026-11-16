@@ -46,7 +46,7 @@ Le 17 octobre, la page des plateformes compte 156 composants sur le web, 79 sur 
 
 La règle qui compte le plus n'est pas un composant, c'est une décision : chaque composant doit dire, pour chaque plateforme, s'il y existe, s'il reste à faire (avec un ticket), ou s'il n'a pas de sens là (et quoi utiliser à la place). Un nouveau composant sans cette décision fait échouer les tests ([krizaka-ui#283](repo:krizaka-ui/pull/283)). Côté mobile, il reste 22 trous à combler. Je préfère les voir écrits que les découvrir dans une app.
 
-Réutiliser un composant, ce n'est pas copier son code d'une plateforme à l'autre. C'est garder la même interface : le même nom, les mêmes variantes, les mêmes couleurs tirées des mêmes jetons de design. Sur le web :
+Réutiliser un composant, ce n'est pas copier son code d'une plateforme à l'autre. C'est garder la même interface : le même nom, les mêmes variantes, les mêmes couleurs tirées des mêmes tokens de design. Sur le web :
 
 ```tsx
 import { Button } from "@krizaka/ui/button";
@@ -72,7 +72,7 @@ La parité native. 22 trous, c'est 22 endroits où une app mobile doit attendre,
 
 ## D'abord compter, ensuite juger
 
-Le 20 octobre, j'ai montré Krizaka UI à des développeurs de mon entourage. Leur verdict est tombé vite : « Ça fait trop IA. C'est comme tous les projets générés par Claude : le même gabarit, la même façon de faire, le même résultat au premier coup d'œil. »
+Le 20 octobre, j'ai montré Krizaka UI à des développeurs de mon entourage. Leur verdict est tombé vite : « Ça fait trop IA. C'est comme tous les projets générés par Claude : le même template, la même façon de faire, le même résultat au premier coup d'œil. »
 
 Ça m'a piqué, parce que c'était juste. Le kit a été écrit avec un assistant, et il en portait la signature. Chaque détail pris seul était défendable. Ensemble, ils formaient un décor qu'on a déjà vu cent fois.
 
@@ -82,7 +82,7 @@ Le même jour, un peu plus tôt, j'avais fait retirer trois choses qui m'agaçai
 
 Voici ce que l'audit a trouvé.
 
-Les polices étaient Inter, Plus Jakarta Sans en graisse 800 et JetBrains Mono : le trio par défaut des gabarits Next.js. Le hero de krizaka.com était centré, avec une étiquette en capitales mono, un titre de 64 px à tiret long, un bouton plein et un bouton fantôme. Une étiquette en capitales mono surmontait 5 titres sur 6 sur krizaka.com, 6 sur 7 sur Orazaka et sur Yomizaka. Une bande de 3 à 4 gros chiffres qui défilent suivait chaque hero.
+Les polices étaient Inter, Plus Jakarta Sans en graisse 800 et JetBrains Mono : le trio par défaut des templates Next.js. Le hero de krizaka.com était centré, avec une étiquette en capitales mono, un titre de 64 px à tiret long, un bouton plein et un bouton fantôme. Une étiquette en capitales mono surmontait 5 titres sur 6 sur krizaka.com, 6 sur 7 sur Orazaka et sur Yomizaka. Une bande de 3 à 4 gros chiffres qui défilent suivait chaque hero.
 
 Il y avait de fausses fenêtres de navigateur, avec leurs trois points et leur barre d'adresse, sur ui.krizaka.com, sur Orazaka et sur Yomizaka. Il y avait des éléments flous : 11 sur krizaka.com, 6 sur la page du bouton, 4 sur l'accueil de ui., 3 sur Yomizaka. Sur la seule page du bouton, 231 éléments avaient exactement le même rayon de 16 px.
 
@@ -104,7 +104,7 @@ Plutôt que de corriger au hasard, nous avons dessiné trois directions complèt
 
 **Affiche** : un mur d'affiches, des aplats de couleur, des titres qui changent de largeur, les oiseaux en autocollants.
 
-J'ai choisi Cahier. La raison tient en une phrase : c'est la seule direction où les oiseaux organisent le système au lieu de l'orner. Ils deviennent les planches et les légendes, et ça, une invite générique ne le produit pas toute seule. Habitat était la plus sûre, mais celle qui risquait le plus de retomber en outil de développeur banal. Affiche était la plus bruyante, difficile à garder calme sur un écran professionnel. Nous gardons de celle-là un tampon pour les grands moments.
+J'ai choisi Cahier. La raison tient en une phrase : c'est la seule direction où les oiseaux organisent le système au lieu de l'orner. Ils deviennent les planches et les légendes, et ça, un prompt générique ne le produit pas toute seule. Habitat était la plus sûre, mais celle qui risquait le plus de retomber en outil de développeur banal. Affiche était la plus bruyante, difficile à garder calme sur un écran professionnel. Nous gardons de celle-là un tampon pour les grands moments.
 
 **Les coins coupés sont partis.** Sur chaque bouton d'action, nous avions un coin taillé à 45 degrés. Une astuce qui donnait à la commande la plus importante d'une page un air de jeu vidéo. Un seul rayon de 8 px, celui d'un champ de saisie, à la place. Puis, avec Cahier, 2 px sur les contrôles et 0 sur les cartes.
 
@@ -131,7 +131,7 @@ Ce qui m'a le plus appris, c'est pourquoi personne ne l'avait vu. Toutes nos vé
 
 Depuis, le mouvement est testé là où il bouge. Chaque élément animé a deux vérifications dans un vrai navigateur : une avec le mouvement réduit éteint, qui lit la propriété animée pendant environ sept dixièmes de seconde et exige des valeurs différentes et finies, et une avec le mouvement réduit allumé, qui exige que tout reste au repos. Et une règle de lint : jamais de longueur animée sans son unité.
 
-Le flux du moteur est devenu [`EngineFlow`](site:ui/components/engine-flow) dans Krizaka UI, redessiné en SVG et en CSS. Les conduits sont des tracés, les photons des points de longueur nulle dont le décalage glisse. On a ainsi, gratuitement, ce qu'un canevas ne donne pas : la pause hors écran, le texte lisible par un lecteur d'écran, des boutons réels pour les nœuds, la couleur qui vient des jetons dans les deux thèmes, et pas de saut de mise en page. Il pèse 2,2 ko compressé. Sur le téléphone, il se met en colonne.
+Le flux du moteur est devenu [`EngineFlow`](site:ui/components/engine-flow) dans Krizaka UI, redessiné en SVG et en CSS. Les conduits sont des tracés, les photons des points de longueur nulle dont le décalage glisse. On a ainsi, gratuitement, ce qu'un canevas ne donne pas : la pause hors écran, le texte lisible par un lecteur d'écran, des boutons réels pour les nœuds, la couleur qui vient des tokens dans les deux thèmes, et pas de saut de mise en page. Il pèse 2,2 ko compressé. Sur le téléphone, il se met en colonne.
 
 <Clip id="motion-engine-clip" alt="Le flux d'Orazaka dans le labo : des points de lumière vont et viennent entre le moteur au centre et les produits autour, avec le panneau de réglages à droite" caption="Le flux du moteur, joué dans le labo avec ses réglages à droite. Muet." />
 
@@ -159,7 +159,7 @@ Voilà donc la vraie réponse à « pourquoi pas un site » : pas pour dessiner 
 
 Orazaka a un client web, une app pour téléphones et une app Mac. Si nous devions dessiner chaque écran trois fois, nous n'en finirions pas, et les trois ne se ressembleraient plus au bout d'un mois. Voici comment le code est rangé pour que ce ne soit pas le cas.
 
-**Les jetons.** Les couleurs et les thèmes viennent de `@krizaka/tokens`. Le paquet a une sortie en CSS pour le web et une entrée `native` pour React Native. Une couleur se change à un endroit.
+**Les tokens.** Les couleurs et les thèmes viennent de `@krizaka/tokens`. Le paquet a une sortie en CSS pour le web et une entrée `native` pour React Native. Une couleur se change à un endroit.
 
 **Les composants.** `@krizaka/ui` pour le web, et la même fenêtre pour l'app Mac. `@krizaka/ui/native` pour le téléphone. Les noms sont les mêmes (`Button`, `Badge`, `Card`, `Header`, `TextField`), les variantes aussi. L'app mobile fait une quarantaine d'imports depuis `@krizaka/ui/native`, et son dossier d'interface local ne contient plus que quatre petits fichiers, 177 lignes en tout.
 
@@ -171,6 +171,6 @@ L'app téléphone est un projet Expo, en React Native. Android et iOS sortent du
 
 Même interface ne veut pas dire même écran. Sur le web, la navigation d'une application est un rail d'icônes à gauche. Sur un téléphone, ce rail devient une barre d'onglets en bas ([le journal du kit](repo:krizaka-ui/blob/main/packages/ui/CHANGELOG.md) le dit pour `RailNav`). Sur le Mac, c'est la forme web dans la fenêtre, et le kit prévoit pour elle une barre de titre et une densité de bureau.
 
-Ce qui est commun, c'est le contrat : les noms, les états, les jetons, les mots. Ce qui change, c'est la forme que prend un même élément selon la machine.
+Ce qui est commun, c'est le contrat : les noms, les états, les tokens, les mots. Ce qui change, c'est la forme que prend un même élément selon la machine.
 
-Où nous allons : la direction est que le même contrat d'interface vaille partout, web, Mac, Android, iOS. Un composant, un nom, des variantes, des états et des jetons, et la forme que chaque machine lui donne. Je ne promets pas de date et je ne promets pas de couverture complète. Si ça ne marchait pas, je le verrais à ceci : un écran qui a besoin d'un comportement propre à une seule machine, sans que le kit puisse l'exprimer. Alors il faudra ajouter la chose au kit, pas la copier dans l'app.
+Où nous allons : la direction est que le même contrat d'interface vaille partout, web, Mac, Android, iOS. Un composant, un nom, des variantes, des états et des tokens, et la forme que chaque machine lui donne. Je ne promets pas de date et je ne promets pas de couverture complète. Si ça ne marchait pas, je le verrais à ceci : un écran qui a besoin d'un comportement propre à une seule machine, sans que le kit puisse l'exprimer. Alors il faudra ajouter la chose au kit, pas la copier dans l'app.

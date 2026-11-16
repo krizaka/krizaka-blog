@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { CheckIcon, CopyIcon, Share90Icon } from "@krizaka/icons";
-import { Button } from "@krizaka/ui/button";
 import { shareLinks } from "@/lib/share";
 import { useI18n } from "../I18nProvider";
 
@@ -45,26 +44,25 @@ export function ShareBar({ url, title }: { url: string; title: string }) {
   return (
     <div className="bl-share" role="group" aria-label={e.shareAria}>
       {native && (
-        <Button type="button" variant="secondary" size="sm" onClick={share}>
+        <button type="button" onClick={() => void share()}>
           <Share90Icon size={15} />
           {e.shareNative}
-        </Button>
+        </button>
       )}
-      <Button type="button" variant="secondary" size="sm" onClick={copy}>
+      <button type="button" onClick={() => void copy()}>
         {copied ? <CheckIcon size={15} /> : <CopyIcon size={15} />}
         {copied ? e.copied : e.copy}
-      </Button>
+      </button>
       {shareLinks(url, title).map(({ target, href }) => (
-        <Button key={target} asChild variant="ghost" size="sm">
-          <a
-            href={href}
-            target={target === "email" ? undefined : "_blank"}
-            rel="noopener noreferrer"
-            aria-label={`${e.targets[target]} — ${e.opensNew}`}
-          >
-            {e.targets[target]}
-          </a>
-        </Button>
+        <a
+          key={target}
+          href={href}
+          target={target === "email" ? undefined : "_blank"}
+          rel="noopener noreferrer"
+          aria-label={`${e.targets[target]} — ${e.opensNew}`}
+        >
+          {e.targets[target]}
+        </a>
       ))}
       <span className="sr-only" role="status" aria-live="polite">
         {copied ? e.copied : ""}

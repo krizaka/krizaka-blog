@@ -38,6 +38,25 @@ await page.waitForFunction(() => navigator.serviceWorker.controller !== null, nu
 await page.getByRole("button", { name: offline.save, exact: true }).first().click();
 await page.getByText(offline.saved, { exact: true }).first().waitFor({ timeout: 30000 });
 
+// The covers (AVIF on the CDN) are fetched by the worker in CORS mode: the pull zone must answer them, else a saved chapter loses its covers (krizaka-internal#3975).
+const manifest = JSON.parse(readFileSync(join(out, "offline-manifest.json"), "utf8"));
+const entry = Object.values(manifest.chapters)
+  .flat()
+  .find((e) => new URL(e.url, base).pathname === `/story/${saved}/`);
+const avifs = (entry?.assets ?? []).filter((a) => /\.avif(\?|$)/.test(a));
+const cachedAvifs = await page.evaluate(async () => {
+  const urls = [];
+  for (const name of (await caches.keys()).filter((n) => n.startsWith("kz-saved-"))) {
+    for (const req of await (await caches.open(name)).keys()) {
+      urls.push(req.url);
+    }
+  }
+  return urls.filter((u) => /\.avif(\?|$)/.test(u));
+});
+for (const a of avifs) {
+  if (!cachedAvifs.includes(new URL(a, base).href)) fail(`the saved chapter lost its cover ${a} (CORS on the CDN?)`);
+}
+
 await context.setOffline(true);
 await page.goto(`${base}/story/${saved}/`);
 const h1 = await page.locator("h1").first().textContent();

@@ -254,5 +254,25 @@
   "how-our-agent-teams-talk": {
     "en": "/story/how-our-agent-teams-talk/",
     "fr": "/fr/story/how-our-agent-teams-talk/"
+  },
+  "let-me-show-you-the-machine": {
+    "en": "/story/let-me-show-you-the-machine/",
+    "fr": "/fr/story/let-me-show-you-the-machine/"
+  },
+  "agents-under-a-coordinator": {
+    "en": "/story/agents-under-a-coordinator/",
+    "fr": "/fr/story/agents-under-a-coordinator/"
+  },
+  "the-architecture-of-krizaka-agents": {
+    "en": "/story/the-architecture-of-krizaka-agents/",
+    "fr": "/fr/story/the-architecture-of-krizaka-agents/"
+  },
+  "design-choices-for-architects": {
+    "en": "/story/design-choices-for-architects/",
+    "fr": "/fr/story/design-choices-for-architects/"
+  },
+  "five-ergonomics-choices-on-our-real-screens": {
+    "en": "/story/five-ergonomics-choices-on-our-real-screens/",
+    "fr": "/fr/story/five-ergonomics-choices-on-our-real-screens/"
   }
 }

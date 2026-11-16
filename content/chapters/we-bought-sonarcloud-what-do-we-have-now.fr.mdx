@@ -2,7 +2,7 @@
 title: "On a acheté SonarCloud, qu'est-ce qu'on a maintenant ?"
 description: "On est passé au plan payant de SonarCloud. Ce que ça a changé dans notre CI, pourquoi les portes sont d'abord devenues rouges, ce que disent les chiffres, et ce que nos gardes font à la place de Sonar."
 seoTitle: "SonarCloud payant : ce que ça change dans notre CI"
-seoDescription: "Analyse en CI, couverture, file de fusion, version précédente : ce que le plan payant de SonarCloud a changé chez Krizaka, chiffres lus sur l'API."
+seoDescription: "Analyse en CI, couverture, merge queue, version précédente : ce que le plan payant de SonarCloud a changé chez Krizaka, chiffres lus sur l'API."
 date: 2026-10-28
 publishedAt: "2026-10-28T00:50:00-04:00"
 tags: [integration, security]
@@ -16,7 +16,7 @@ sources:
   - coding-agents-one-night
   - from-vibe-coding-to-agentic-engineering
 versus:
-  faced: "un tableau Sonar qui ne voyait ni la couverture ni la file de fusion"
+  faced: "un tableau Sonar qui ne voyait ni la couverture ni la merge queue"
   built: "une analyse lancée par la CI, des chiffres honnêtes, et un partage clair avec nos gardes"
 stats:
   - value: "37 à 0"
@@ -38,15 +38,15 @@ On est passé au plan payant de SonarCloud. Je l'ai décidé, parce que je voula
 
 Au début, on utilisait l'analyse automatique de SonarCloud. On l'active d'un clic, Sonar lit le dépôt sans rien demander à notre CI, et il répond sur les pull requests. C'est pratique, et on s'en est contenté longtemps.
 
-Mais elle a deux limites que j'ai découvertes l'une après l'autre. Elle ne peut pas importer la couverture de tests, parce que les tests tournent chez nous, pas chez Sonar. Et elle ne répond pas sur les branches temporaires de la file de fusion de GitHub. C'est ce qui m'avait fait écrire, au chapitre précédent, que Sonar « ne répondait que sur les PR ». C'était vrai de l'analyse automatique, pas de Sonar.
+Mais elle a deux limites que j'ai découvertes l'une après l'autre. Elle ne peut pas importer la couverture de tests, parce que les tests tournent chez nous, pas chez Sonar. Et elle ne répond pas sur les branches temporaires de la merge queue de GitHub. C'est ce qui m'avait fait écrire, au chapitre précédent, que Sonar « ne répondait que sur les PR ». C'était vrai de l'analyse automatique, pas de Sonar.
 
 <Pipeline label="Avant et maintenant : où Sonar regarde">
-  <Stage title="Avant" note="analyse automatique">Sonar lit le dépôt de son côté et répond sur la pull request. Pas de couverture, rien sur la file de fusion.</Stage>
+  <Stage title="Avant" note="analyse automatique">Sonar lit le dépôt de son côté et répond sur la pull request. Pas de couverture, rien sur la merge queue.</Stage>
   <Stage title="Éditeur" note="lint, ratchet">Les règles `sonarjs` répondent pendant qu'on écrit.</Stage>
   <Stage title="Tests" note="lcov, JaCoCo">Le job de tests dépose son rapport de couverture.</Stage>
   <Stage title="Analyse en CI" note="après les tests" tone="gate">Le job `sonar` du pipeline commun lance l'analyse, importe la couverture et attend le verdict de la porte.</Stage>
   <Stage title="CI gate" note="un seul verdict" tone="gate">Une seule vérification exigée résume le pipeline, Sonar compris.</Stage>
-  <Stage title="File de fusion" note="Sonar y répond aussi" tone="ship">L'analyse de la CI répond sur la branche temporaire de la file, puis GitHub fusionne.</Stage>
+  <Stage title="Merge queue" note="Sonar y répond aussi" tone="ship">L'analyse de la CI répond sur la branche temporaire de la file, puis GitHub fusionne.</Stage>
 </Pipeline>
 
 ## Ce que le plan payant a changé
@@ -57,7 +57,7 @@ La première est que l'analyse est lancée par notre CI, après les tests, avec 
 
 La deuxième est la couverture. Le job de tests dépose son rapport, en lcov pour JavaScript et TypeScript, en JaCoCo pour Java, et le job Sonar l'importe. C'est la raison pour laquelle Sonar est « entré » dans le workflow : la couverture ne peut venir que d'une analyse lancée par la CI.
 
-La troisième est la file de fusion. Une analyse de la CI répond sur n'importe quelle branche, y compris `gh-readonly-queue/main/...`. Je l'ai vu sur krizaka-ts : l'API publique de SonarCloud liste les branches de la file de ce dépôt, chacune avec le verdict de sa porte. Les autres dépôts y passent un par un, selon une recette écrite dans nos standards. Tant qu'un dépôt n'a pas fait le pas, il garde l'obligation d'être à jour avant la fusion.
+La troisième est la merge queue. Une analyse de la CI répond sur n'importe quelle branche, y compris `gh-readonly-queue/main/...`. Je l'ai vu sur krizaka-ts : l'API publique de SonarCloud liste les branches de la file de ce dépôt, chacune avec le verdict de sa porte. Les autres dépôts y passent un par un, selon une recette écrite dans nos standards. Tant qu'un dépôt n'a pas fait le pas, il garde l'obligation d'être à jour avant la fusion.
 
 Et une petite chose en plus, parce qu'on y a pensé tard : une PR qui ne change que de la documentation a droit à une analyse légère, sans build, plutôt qu'à une vérification qui n'arrive jamais. C'est [.github#336](repo:.github/pull/336).
 
@@ -108,6 +108,6 @@ Depuis, j'ai tranché l'ordre. D'abord un schéma C4 généré depuis le code : 
 
 ## Ce que j'en retiens
 
-On a payé pour que Sonar voie notre couverture, juge ce qui change et se prononce sur la file de fusion. C'est fait, et c'est vérifiable. On n'a pas payé pour un tampon vert, et les portes rouges d'aujourd'hui me le rappellent.
+On a payé pour que Sonar voie notre couverture, juge ce qui change et se prononce sur la merge queue. C'est fait, et c'est vérifiable. On n'a pas payé pour un tampon vert, et les portes rouges d'aujourd'hui me le rappellent.
 
 Le travail est resté le même : remonter les contrôles le plus tôt possible, et garder Sonar pour ce que lui seul voit.

@@ -14,6 +14,7 @@ import { postProblems } from "./content-post.mjs";
 
 export * from "./content-chapters.mjs";
 export * from "./content-confidentiality.mjs";
+export * from "./content-french.mjs";
 export * from "./content-links.mjs";
 export * from "./content-media.mjs";
 export * from "./content-names.mjs";

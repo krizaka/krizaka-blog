@@ -41,14 +41,17 @@ test("chapters 1, 2, 5 and 6 exist in FR and EN, with the same number, period an
   }
 });
 
-test("every chapter's sources are posts of content/posts or retired posts (lib/redirects.json), in its language", () => {
+test("every chapter's sources are posts of content/posts, retired posts (lib/redirects.json) or itself, in its language", () => {
   const retired = Object.keys(JSON.parse(readFileSync(new URL("../lib/redirects.json", import.meta.url), "utf8")));
   for (const f of readdirSync(CHAPTERS).filter((f) => f.endsWith(".mdx"))) {
     const locale = f.match(/\.(en|fr)\.mdx$/)[1];
     const { sources } = read(f).data;
     assert.ok(Array.isArray(sources) && sources.length > 0, f);
     for (const s of sources)
-      assert.ok(existsSync(join(POSTS, `${s}.${locale}.mdx`)) || retired.includes(s), `${f}: source ${s}`);
+      assert.ok(
+        existsSync(join(POSTS, `${s}.${locale}.mdx`)) || retired.includes(s) || f.startsWith(`${s}.`),
+        `${f}: source ${s}`,
+      );
   }
 });
 
@@ -71,6 +74,9 @@ const slugs = new Set(["en:a", "fr:a"]);
 test("a well-formed chapter has no problem", () =>
   assert.deepEqual(chapterProblems("c.en.mdx", good, body, undefined, slugs), []));
 
+test("a piece written as a chapter from the start names itself as its source (krizaka-internal#3905)", () =>
+  assert.deepEqual(chapterProblems("c.en.mdx", { ...good, sources: ["c"] }, body, undefined, slugs), []));
+
 test("a chapter without its story's fields, or with a source that is not a post, is refused", () => {
   const p = (data) => chapterProblems("c.en.mdx", { ...good, ...data }, body, undefined, slugs).join("\n");
   assert.match(p({ chapter: undefined }), /"chapter"/);
@@ -79,6 +85,7 @@ test("a chapter without its story's fields, or with a source that is not a post,
   assert.match(p({ period: "2026-10-17/2026-10-16" }), /ends before/);
   assert.match(p({ sources: [] }), /"sources"/);
   assert.match(p({ sources: ["gone"] }), /source "gone"/);
+  assert.match(p({ sources: ["c", "gone"] }), /source "gone"/);
   assert.match(p({ versus: { faced: "x" } }), /versus\.built/);
   assert.match(p({ series: "measured", part: 1 }), /no "series"/);
 });
@@ -346,4 +353,32 @@ test("h2Text: the words of a `## ` line, trimmed; not an h3, not `##` glued to i
   assert.equal(h2Text("## a\rb"), null);
   assert.equal(h2Text("##   "), " ");
   assert.equal(h2Text("## "), null);
+});
+
+test("a published post outside the book is refused unless it is one of the four introductions (krizaka-internal#3941)", async () => {
+  const { mkdtempSync, writeFileSync, mkdirSync } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const { SHELF_INTRODUCTIONS, shelfProblems } = await import("../scripts/content-rules.mjs");
+  assert.equal(SHELF_INTRODUCTIONS.length, 4);
+  const dir = mkdtempSync(join(tmpdir(), "chapters-"));
+  const posts = join(dir, "posts");
+  mkdirSync(posts);
+  const chapters = join(dir, "chapters");
+  mkdirSync(chapters);
+  writeFileSync(join(posts, "a-new-piece.en.mdx"), "---\ntitle: T\ndraft: false\n---\n");
+  writeFileSync(join(posts, "a-draft.en.mdx"), "---\ntitle: T\ndraft: true\n---\n");
+  writeFileSync(join(posts, `${SHELF_INTRODUCTIONS[0]}.en.mdx`), "---\ntitle: T\ndraft: false\n---\n");
+  const { problems } = checkChapters(chapters, posts);
+  const shelf = problems.filter((p) => /outside the book/.test(p));
+  assert.equal(shelf.length, 1, shelf.join("\n"));
+  assert.match(shelf[0], /a-new-piece\.en\.mdx/);
+  assert.deepEqual(shelfProblems([]), []);
+});
+
+test("the real posts folder holds only the declared introductions", () => {
+  const { problems } = checkChapters(CHAPTERS, POSTS, readContext(root));
+  assert.deepEqual(
+    problems.filter((p) => /outside the book/.test(p)),
+    [],
+  );
 });

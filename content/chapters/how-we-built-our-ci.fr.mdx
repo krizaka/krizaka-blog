@@ -122,7 +122,7 @@ La protection s'applique aussi aux administrateurs, donc à moi. L'historique re
 
 Un cliquet, c'est la pièce qui laisse tourner une roue dans un seul sens. On en a trois, et ils marchent tous de la même façon. Un fichier dans le dépôt garde un compte. La CI recompte. Si le compte monte, elle refuse.
 
-- **lint-ratchet** compte des dettes d'interface : une couleur écrite en dur au lieu d'un jeton, un `fetch` dans un effet côté client, un import direct de TanStack au lieu de notre façade. L'outil s'appelle `krizaka-ratchet`, il vient du paquet `@krizaka/config`.
+- **lint-ratchet** compte des dettes d'interface : une couleur écrite en dur au lieu d'un token, un `fetch` dans un effet côté client, un import direct de TanStack au lieu de notre façade. L'outil s'appelle `krizaka-ratchet`, il vient du paquet `@krizaka/config`.
 - **sg-ratchet** compte les violations de nos règles [ast-grep](https://ast-grep.github.io), règle par règle.
 - **dup-ratchet** compte les lignes dupliquées, avec jscpd. Pour krizaka.com, le compte est à zéro.
 
@@ -252,7 +252,7 @@ Dans krizaka-ui, les captures des composants sont comparées pixel par pixel, da
 
 Nos bibliothèques, Krizaka UI et Krizaka TypeScript, utilisent [changesets](https://github.com/changesets/changesets). Chaque PR qui change un paquet ajoute un petit fichier qui dit quoi, et à quel niveau : correctif, mineure ou majeure. Sur main, une action tient une PR « chore: version packages » à jour. Quand on la fusionne, les paquets partent sur npm, avec leur provenance.
 
-Je dois être précis sur un point. La provenance est là, mais pas encore la publication de confiance d'npm, celle qui se passe de jeton. npm a refusé notre première tentative, parce que les paquets n'avaient pas encore d'éditeur de confiance déclaré. Pour l'instant, un jeton d'automatisation fait la publication.
+Je dois être précis sur un point. La provenance est là, mais pas encore la publication de confiance d'npm, celle qui se passe de token. npm a refusé notre première tentative, parce que les paquets n'avaient pas encore d'éditeur de confiance déclaré. Pour l'instant, un token d'automatisation fait la publication.
 
 Pour krizaka.com, on a mis en place un train de versions le 25 octobre, dans [krizaka-com#390](repo:krizaka-com/pull/390). C'est la fin du premier schéma. release-please tient une PR de version. Quand je la fusionne, l'étiquette est créée, et un workflow avance la branche `production` jusqu'à elle. Dans `krizaka-com/scripts/promote-production.mjs` :
 

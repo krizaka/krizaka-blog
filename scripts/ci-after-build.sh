@@ -12,6 +12,13 @@ fetch_pinned() {
   echo "$sum  $dest" | sha256sum -c -
 }
 
+# Each step of the open build prints how long it took, so a slow Verify is never silent (krizaka-internal#3970).
+timed() {
+  local t0=$SECONDS
+  "$@"
+  echo "timing: $* took $((SECONDS - t0)) s"
+}
+
 echo "::group::Closed means closed"
 grep -q "Disallow: /$" out/robots.txt
 grep -q 'name="robots" content="noindex' out/index.html
@@ -44,12 +51,16 @@ node_modules/.bin/serve out -l 3000 >/dev/null 2>&1 &
 server=$!
 trap 'kill "$server" 2>/dev/null || true' EXIT
 for _ in $(seq 1 30); do curl -sf http://localhost:3000/robots.txt >/dev/null && break; sleep 1; done
-node scripts/check-seo-family.mjs --base http://localhost:3000 --host https://blog.krizaka.com --index on --limit 60
-node scripts/check-links.mjs --base http://localhost:3000 --host https://blog.krizaka.com --external
+timed node scripts/check-seo-family.mjs --base http://localhost:3000 --host https://blog.krizaka.com --index on --limit 60
+timed node scripts/check-links.mjs --base http://localhost:3000 --host https://blog.krizaka.com --external
 node_modules/.bin/playwright install --with-deps chromium
-node scripts/check-layout.mjs --base http://localhost:3000 --posts out
+# The tests that open a browser run here, once Chromium is installed (never in `npm test`, which runs before it).
+timed node --test tests/browser/*.test.mjs
+timed node scripts/check-layout.mjs --base http://localhost:3000 --posts out
 # The top and the end of a post against their approved baselines (tests/visual/; a change to the template remakes them with --update).
-node scripts/check-visual.mjs --base http://localhost:3000
+timed node scripts/check-visual.mjs --base http://localhost:3000
+# The console of the home and of a chapter: no CORS refusal on the CDN's AVIF covers, no unused preload (krizaka-internal#3975).
+timed node scripts/check-console.mjs --base http://localhost:3000 --out out
 echo "::endgroup::"
 
 echo "::group::Reading offline: every chapter is saveable and in the service worker's precache, and a saved chapter opens with no network"

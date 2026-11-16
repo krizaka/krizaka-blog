@@ -11,9 +11,31 @@ publishedAt: "2026-11-15T13:30:00-05:00"
 cover: series-13-orazaka-v2-the-architecture-we-build
 coverAlt: "A long brick hall with arched doorways and hanging lamps, a small yellow duck walking toward the far end"
 newsletter: hold
+chapter: 33
+period: "2026-11-15"
+sources:
+  - design-choices-for-architects
+versus:
+  faced: "eight design choices an architect can question, each against the alternative we refused"
+  built: "each choice as one block: the choice, the refusal, why, the cost, with its official docs"
 ---
 
 This post is for architects, tech leads and designers. It is short on prose on purpose: each decision is one block, with the choice, the alternative we refused, why, and what it costs us. Every claim about a tool links to its official documentation, so you can check it. What we run is read from our code on `main`, not from memory.
+
+## The eight choices at a glance
+
+<Compare label="The eight choices: for each subject, the option set aside, the one we chose, why and what it costs" topic="Subject" before="Set aside" after="Chosen">
+  <Case topic="Messaging" before="Kafka" after="RabbitMQ" afterDetail="Why: we need work queues (one task, one worker, then it is gone). What it costs: we run the broker; every consumer must be idempotent." />
+  <Case topic="Data" before="NoSQL as the system of record" after="PostgreSQL, jsonb where needed" afterDetail="Why: invariants across rows, kept by one transaction. What it costs: a migration for every change of shape." />
+  <Case topic="Vectors" before="a separate vector database" after="pgvector in the same PostgreSQL" afterDetail="Why: the vector lives with its row, in the same transaction and the same backup. What it costs: the extension before the migrations; HNSW costs memory." />
+  <Case topic="Runtime" before="an orchestrator we run" after="few containers, Next.js standalone" afterDetail="Why: the platform builds, deploys, restarts and routes. What it costs: the JVMs of one container live and die together." />
+  <Case topic="End-to-end tests" before="retesting the library in every product" after="Playwright (web), Maestro (mobile), on the journeys" afterDetail="Why: every test has one subject. What it costs: two tools, and the emulator is slow." />
+  <Case topic="CI" before="a copy per repository" after="36 reusable workflows, pinned" afterDetail="Why: a fix reaches every repository with a pin bump. What it costs: changing a shared workflow changes every repository." />
+  <Case topic="Monitoring" before="Prometheus, Loki and Grafana run by us" after="Grafana Cloud, dashboards as code" afterDetail="Why: probes and storage are not our product. What it costs: the free tier's limits, and a redaction step before Loki." />
+  <Case topic="Shared code" before="copying between products, or one repository" after="published libraries, imported" afterDetail="Why: a behaviour written and tested once. What it costs: a version bump for every change." />
+</Compare>
+
+The detail follows, in the same order.
 
 ## The view at C1 and C2
 

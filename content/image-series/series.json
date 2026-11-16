@@ -197,6 +197,42 @@
       "seed": 2933,
       "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
       "beat": "Not rendered by the series' renderer: drawn as its own text-to-image picture with the media worker's engine (mflux, FLUX.2 [klein] 4B) in the series' ink-and-watercolor look (prompt and seed in lib/media.json). The back room of the small station of chapters 23 to 27 on a pale winter morning: small identical wooden desks kept apart by partitions, each with its own lamp, each joined by a thin brass tube to one large ledger lying open on a lectern in the middle; the owl stands at the edge of the ledger. The series' cast is carried over unchanged."
+    },
+    {
+      "post": "let-me-show-you-the-machine",
+      "seed": 3951,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "Not rendered by the series' renderer: the cover this piece was published with, when it was a post (prompt and seed in lib/media.json). It became a chapter of the story on 16 November 2026."
+    },
+    {
+      "post": "agents-under-a-coordinator",
+      "seed": 3952,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "Not rendered by the series' renderer: the cover this piece was published with, when it was a post (prompt and seed in lib/media.json). It became a chapter of the story on 16 November 2026."
+    },
+    {
+      "post": "the-architecture-of-krizaka-agents",
+      "seed": 3953,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "Not rendered by the series' renderer: the cover this piece was published with, when it was a post (prompt and seed in lib/media.json). It became a chapter of the story on 16 November 2026."
+    },
+    {
+      "post": "design-choices-for-architects",
+      "seed": 3954,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "Not rendered by the series' renderer: the cover this piece was published with, when it was a post (prompt and seed in lib/media.json). It became a chapter of the story on 16 November 2026."
+    },
+    {
+      "post": "five-ergonomics-choices-on-our-real-screens",
+      "seed": 3955,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "Not rendered by the series' renderer: the cover this piece was published with, when it was a post (prompt and seed in lib/media.json). It became a chapter of the story on 16 November 2026."
+    },
+    {
+      "post": "one-local-cockpit-to-run-the-whole-company",
+      "seed": 3549,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "Not rendered by the series' renderer: drawn as its own text-to-image picture with the media worker's engine (mflux, FLUX.2 [klein] 4B) in the series' ink-and-watercolor look (prompt and seed in lib/media.json). The signal box of the station of chapters 23 to 31 at dusk: one empty chair at one desk, one wide window over the whole yard, a long panel of small lamps above it, the kestrel on the desk watching the tracks."
     }
   ],
   "sprites": {

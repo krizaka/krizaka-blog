@@ -22,6 +22,8 @@ const LOCAL_FREE = {
     "the cover drawn for the post on the Mac with the media worker's model, kept when the post became chapter 28, no paid run",
   "series-29-how-our-agent-teams-talk":
     "free local render on the Mac with the media worker's model when the post became chapter 29, no paid run",
+  "series-35-one-local-cockpit-to-run-the-whole-company":
+    "free local render on the Mac with the media worker's model when the cockpit post became chapter 35, no paid run",
 };
 /* The covers redrawn with GPT Image 2.5 Sunburst through Runway (content/image-series/runway.json: prompt, references, takes, credits). */
 const RUNWAY = JSON.parse(readFileSync(new URL("../content/image-series/runway.json", import.meta.url), "utf8")).images;
@@ -64,7 +66,7 @@ export function coverProvenance(id, made) {
     typeof LOCAL_FREE[id] === "string" &&
     LOCAL_FREE[id].length > 20 &&
     /^FLUX\.2 \[klein\]/.test(made.model) &&
-    /outside an Orazaka Studio run/.test(made.note)
+    /outside an? (Orazaka|Sovkora) Studio run/.test(made.note)
   );
 }
 
@@ -74,6 +76,7 @@ test("a cover without a Studio run id passes only as a listed local-free excepti
   const listed = "series-21-working-with-agents-rules-that-refuse";
   assert.ok(coverProvenance("series-01-x", studio));
   assert.ok(coverProvenance(listed, local));
+  assert.ok(coverProvenance(listed, { ...local, note: "made outside a Sovkora Studio run" }), "the commercial name");
   assert.ok(!coverProvenance(listed, { ...local, note: "rendered on the Mac" }), "no provenance note");
   assert.ok(!coverProvenance(listed, { model: local.model, via: "local" }), "no note at all");
   assert.ok(!coverProvenance("series-22-unlisted", local), "unlisted id");
@@ -107,10 +110,19 @@ test("a cover without a Studio run id passes only as a listed local-free excepti
   assert.ok(!coverProvenance("series-22-x", { ...klein, via: "local" }), "not a Studio run");
 });
 
+// The pieces that were published as posts before they became chapters (krizaka-internal#3941) keep the cover they came with.
+const OWN_COVERS = [
+  "let-me-show-you-the-machine",
+  "agents-under-a-coordinator",
+  "the-architecture-of-krizaka-agents",
+  "design-choices-for-architects",
+  "five-ergonomics-choices-on-our-real-screens",
+];
+
 test("every chapter of the series but the 10th wears its series cover, and each cover is a media entry sold in every size", () => {
   const picked = series.chapters.map((c, i) => ({ ...c, id: `series-${String(i + 1).padStart(2, "0")}-${c.post}` }));
   for (const c of picked) {
-    if (c.post === KEEPS) continue;
+    if (c.post === KEEPS || OWN_COVERS.includes(c.post)) continue;
     // a draft owes no cover yet (content-rules: only a published chapter does); its cover is made before it is published
     if (matter(read(`content/chapters/${c.post}.en.mdx`)).data.draft === true) continue;
     for (const loc of ["en", "fr"]) {

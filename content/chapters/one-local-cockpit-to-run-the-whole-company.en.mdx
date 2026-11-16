@@ -1,0 +1,130 @@
+---
+title: "One screen to run a company of agents"
+description: "A founder, teams of agents, one app on his Mac: sessions, merge trains, alerts, the board, sensitive values masked. The moment that justified it, what we refused, one limit, and what each role reads there."
+seoTitle: "One screen to run a company of agents"
+seoDescription: "Sessions, merge trains, alerts, the board: the founder's local app, its choices, one limit, what each role reads there."
+date: 2026-11-16
+tags: [ai, integration]
+author: oussama
+draft: false
+publishedAt: "2026-11-16T00:06:34-05:00"
+cover: series-35-one-local-cockpit-to-run-the-whole-company
+coverAlt: "Ink and watercolor: an empty chair at a small wooden desk with a brass lamp in a signal box, a wide window over the tracks of a station and a waiting train, a long panel of small green and red lamps above it, a kestrel on the desk looking out"
+newsletter: hold
+sensitive: true
+chapter: 35
+period: "2026-11-15"
+sources:
+  - one-local-cockpit-to-run-the-whole-company
+versus:
+  faced: "a release stopped while ten sessions worked at once, and no single place to look"
+  built: "one local screen that reads GitHub and never writes to it, each figure with its age, sensitive values masked"
+stats:
+  - value: "196"
+    label: "pull requests merged in 24 hours, that evening"
+    section: "The screen"
+  - value: "13"
+    label: "team sessions at work on the health page"
+    section: "The screen"
+  - value: "86"
+    label: "the Mac's load average that held a team launch back, above the brake of 60"
+    section: "What each role reads there"
+  - value: "38"
+    label: "things waiting for me on « Today »"
+    section: "What each role reads there"
+---
+
+On Sunday 15 November, at 1:24 pm Montréal time, the release of a krizaka-ui version stopped. The step that runs the checks of every package was cancelled after 3 minutes 35 seconds, with 95 tasks out of 99 done. The release before it had failed too, at 12:52; the last one that worked was at 11:49.
+
+The cockpit showed it on one line: a critical alert, raised by the watchdog, whose message starts with « main red: krizaka-ui release ». It stayed open, counted sixteen times between 2:15 pm and 6 pm.
+
+I did not do the next steps; the agent that pilots our teams did, Mouloud, the CTO session. It read the alert, then opened the full log on GitHub, which says more than the alert: the runner received a shutdown signal (« The runner has received a shutdown signal ») during the checks step. It was not the 45-minute time limit, and not two releases stepping on each other. Mouloud wrote the ticket and launched a team on it, from a brief: the team works isolated, with a ceiling on turns, spend and minutes, and a watchdog keeps an eye on it.
+
+The team proved the cause. The release ran the build, the lint, the tests and the typecheck of the ui package all at once, with no cache. The build alone peaks at about 15 GB of memory, on a runner that has 16. The runner was shut down, and what the tests had printed (axe-core's « Frame does not have a content window », the notices of the simulated browser about iframes) was flushed only after the kill. The printed `window` object was a detail, not the cause. The fix runs the lint and the types first, then the checks, two tasks at a time, and silences those notices at the source; it was merged at 6:34 pm, the release that followed succeeded, version 4.9.0 is out, and the ticket is closed. The build's memory has its own follow-up ticket.
+
+My part was to see it, on the cockpit, and to leave the agents to it. That is the point of the screen: a founder supervises a company of agents, he does not do each step.
+
+This chapter describes the screen where I saw it. It is a local application, on my Mac, that shows me the whole company in one place. I say why it exists, what we refused to do, what it cannot do yet, then what seven different roles read there. The captures are real screens, taken on the evening of 15 November 2026; the sensitive values are masked, and I say how at the end.
+
+## The screen
+
+One application, the cockpit, that runs on 127.0.0.1 and nowhere else. It is a Next.js app built with [our components](site:ui); it reads our local data and GitHub. It is not a dashboard for customers, it serves one person.
+
+In the left bar, everything that matters to run the place: « Today », « The machine », « What ships » and the costs. Further down, the company, then the architecture. Inside « The machine », six tabs: health, delivery, quality, rules, automations, alerts. On the evening of 15 November, the health page counted 13 team sessions at work, 4 red pull requests in the trains, 14 active scheduled tasks and 16 open alerts, 2 of them serious.
+
+The part that says what the company is doing right now is the section « Teams, trains and the work tree, in detail », opened below. Each ticket in progress sits there under its feature and its epic, with its title, its state on the board and the pull requests that close it. A line whose epic is about security is blurred whole, like any block of that kind.
+
+<Figure id="cockpit-equipes" alt="The cockpit, the section « From the epic to the PR »: tickets in progress, each under its feature and its epic with its repository, its title and its state on the board (Backlog, Next, In progress, In review); one epic and its tickets are blurred whole." caption="The cockpit, « The machine », the section « Teams, trains and the work tree » opened, light theme. The block about security is blurred whole. Sensitive values masked." />
+
+The cockpit does not lie to reassure. When a block is too old, it says so on an orange badge (« Cloud costs: 2 d old »), and refreshing it is a gesture, a button. That evening the « Delivery » block counted 196 pull requests merged in 24 hours. Nobody reads 196 notifications. One line turning red, you see.
+
+<Clip id="cockpit-rafraichir" alt="The cockpit, Delivery tab: a click on « Rafraîchir » (refresh), then the collection date moves to the current time and the merge-queue badges are read again." caption="The refresh gesture, 9 seconds, no sound. The collection took about 16 seconds; the wait is cut from the film. Sensitive values masked." />
+
+It is the same idea as our film [« Montrer son travail »](site:www/en/films/montrer-son-travail): show the work instead of telling it.
+
+<Figure id="cockpit-alertes" alt="The cockpit, Alerts tab: a table of alerts with their severity, source, message, how many times they were raised and their state." caption="The cockpit, « The machine », Alerts tab, light theme. The two date columns, whose layout overlaps (a cockpit defect we are fixing), are left out of the image. Sensitive values masked." />
+
+## What made it necessary
+
+The engine behind it, krizaka-agents, our product for running teams of agents, fits in one sentence: you launch a team from a brief, it works isolated, it has a ceiling on turns, spend and minutes, a watchdog keeps an eye on it, a train lands only the green pull requests, and a bug becomes a guard. [The architecture of all this](/story/the-architecture-of-krizaka-agents/) is described elsewhere. Here the question is simpler: when ten sessions work at once, where does the person who decides look?
+
+Without the cockpit, the answer would be: in several places. The sessions in the terminal, the trains in GitHub, the alerts in a database, the board in a browser. The cockpit puts them on one screen, each with its date.
+
+## What we refused
+
+| Refused | What we do | What it costs |
+| --- | --- | --- |
+| An online service for our own operations | the application listens only on the machine, has no remote repository and sends no document to anyone; no content of the company's folder goes to a third party | it exists only on this Mac: I do not look at the company from my phone |
+| A local database that decides | GitHub is the source (tickets, board, pull requests, required checks, merge queue); the cockpit shows a copy and never writes to GitHub | what must change goes through GitHub's tools, not through the screen |
+| A model that judges | the guards, the trains and the watchdog are ordinary code; a model writes a change, it never decides whether it merges | every rule is code to write and to test |
+| A machine that decides about money, law or what cannot be undone | a team has a ceiling on spend and time; beyond it, the team writes the question under « Decisions » in its report and carries on with the rest | those decisions wait for a person |
+
+GitHub enforces the required checks on every actor, us included; a local copy enforces nothing. That is why the cockpit reads and does not write.
+
+## Its limit
+
+The cockpit shows its data, it does not explain its cause. The release alert says main is red, since when and how many times; why is in GitHub's full log, where the CTO session found the sentence about the shutdown signal. And a figure has an age: that evening two orange badges said « Cloud costs: 2 d old » and « Code graph: 2 d old ». The cockpit says it; refreshing takes a gesture, and a whole collection takes something like fifteen seconds.
+
+## What each role reads there
+
+One story for everyone, then a short part per role: what that person would read on the screen, and why it matters to them. We do not have seven people; it is the same screen, read with seven questions.
+
+**Reliability.** The « Alerts » tab: one line per subject, with its severity, its source (the watchdog or a team session), how many times it came back and its state. A critical alert that returns sixteen times reads faster than a message that passes: you see that a problem lasts. The rest is a loop, which that evening's alert went through: the alert becomes a ticket, the ticket a team, the team a pull request that the train lands if it is green:
+
+<Pipeline label="From the alert to the merge: the watchdog raises the alert, the CTO session writes the ticket, a team takes it, the train sends its pull request through if it is green, and the merge closes the ticket.">
+  <Stage title="Alert" note="the watchdog">
+    A critical line on the cockpit: « main red: krizaka-ui release ».
+  </Stage>
+  <Stage title="Ticket" note="the CTO session">
+    The CTO session reads the full log, writes the ticket and the brief.
+  </Stage>
+  <Stage title="Team" note="turns, spend, minutes" tone="gate">
+    An isolated team, with its caps, proves the cause and opens its pull request.
+  </Stage>
+  <Stage title="Train" note="only when green" tone="gate">
+    The train waits for the required checks and sends the pull request through the merge queue.
+  </Stage>
+  <Stage title="Merge" note="6:34 pm" tone="ship">
+    The next release passes, version 4.9.0 ships, the ticket is closed.
+  </Stage>
+</Pipeline>
+
+Each link has a ceiling: turns, spend, minutes, and a load brake. That evening, a launch of a team by the CTO session was refused because the Mac's five-minute load average was 86, above the brake of 60; the launch waited for the load to fall. It is a limit the machine puts on itself.
+
+**Project management.** « What ships »: per product, the board, the open pull requests, the train's state, the last version, the last deployment. Each card carries the date of its oldest source. A project is judged by what actually left, not by what was planned.
+
+**Product management.** The board, from epic to task, and « Today », which separates what waits for a human decision from the rest. What the agents cannot settle piles up there: it is the queue that limits the rest.
+
+**Architecture.** The « Architecture » screen draws, in C1 and C2, what each repository declares in its own architecture folder, and counts the gaps with what main contains. A diagram that is not compared with the code ends up telling something else.
+
+**Marketing.** « Community »: who follows us, what moves people, and whether the publishing calendar is kept. The figures come from each network's official interface, filed in the local database; nothing leaves the Mac. The screen also says when a sync has never happened and what it lacks.
+
+**Bookkeeping.** The cost and company screens are the ones we do not show, and they stay masked. What one reads there, with no amount here: the book is kept by us, in date order. One date rule splits it, 8 October 2026: before that day, spending is start-up cost, with no sales taxes; from that day, it is operating cost, with input tax credits. Receipts are filed from the inbox under one name pattern, duplicates are deleted, and private documents stay locked.
+
+**Running the company.** « Today »: what waits for me, the decisions to make, the next deadline. The first line says « 38 things are waiting for you. The rest moves without you. » It is the sentence I wanted, and it is what the cockpit has to prove every day.
+
+## How the captures are made
+
+Blurring a value is not safe: a blur and a pixelation can be undone on text. So we never blur a real value. Before the capture, a script walks the page and replaces each sensitive value (amounts, e-mail addresses, numbers, keys, private paths, any block that talks about finance or security) with a neutral text of the same length, and blurs only that neutral text. Then a guard reads all the visible text of the page again, with wider filters than the masking, and refuses to write the image if anything is left. The refresh film follows the same rule, frame by frame. The files are stripped of their metadata. The script and its tests are in the blog's repository.
+
+One gap remains: what the pixels of a capture do not show, they do not show. There is no underneath to recover. That is also why the captions say « sensitive values masked ».

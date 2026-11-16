@@ -1,0 +1,51 @@
+{
+  "$comment": "The French of the blog (krizaka-internal#3942). `keep`: the technical words a French-speaking developer says in English; a French text writes them in English. `refuse`: the calques that read as a word-for-word translation; `npm run lint` fails on them and names the word to use (`pattern` is a case-insensitive regular expression on whole words). `french`: the words where a real French word is what a developer says. scripts/content-french.mjs reads this file.",
+  "keep": [
+    "watchdog",
+    "pull request",
+    "merge queue",
+    "runner",
+    "build",
+    "lint",
+    "commit",
+    "release",
+    "CI",
+    "deploy",
+    "cache",
+    "token",
+    "prompt",
+    "hook",
+    "template",
+    "worktree",
+    "rebase",
+    "train"
+  ],
+  "refuse": [
+    { "pattern": "chiens? de garde", "use": "watchdog" },
+    { "pattern": "veilleurs?", "use": "watchdog" },
+    { "pattern": "agents? de surveillance", "use": "watchdog" },
+    { "pattern": "postes? d'exécution", "use": "runner" },
+    { "pattern": "coureurs?", "use": "runner" },
+    { "pattern": "(?:demandes?|requêtes?) de (?:tirage|fusion)", "use": "pull request" },
+    { "pattern": "requêtes? d'extraction", "use": "pull request" },
+    { "pattern": "files? (?:d'attente )?de fusion", "use": "merge queue" },
+    { "pattern": "trains? de fusion", "use": "train (our merge train)" },
+    { "pattern": "jetons?", "use": "token" },
+    { "pattern": "(?<!entre )crochets?", "use": "hook (« entre crochets » stays: brackets)" },
+    { "pattern": "(?:une|l'|cette|chaque|son|sa|ses|des|les|mes|nos) invites?", "use": "prompt" },
+    { "pattern": "intégration continue", "use": "CI" },
+    { "pattern": "gabarits?", "use": "template" },
+    { "pattern": "antémémoire", "use": "cache" }
+  ],
+  "french": [
+    { "en": "repository", "fr": "dépôt" },
+    { "en": "branch", "fr": "branche" },
+    { "en": "dashboard", "fr": "tableau de bord" },
+    { "en": "to push", "fr": "pousser" },
+    { "en": "to deploy", "fr": "déployer" },
+    { "en": "test", "fr": "test" },
+    { "en": "alert", "fr": "alerte" },
+    { "en": "ticket", "fr": "ticket" },
+    { "en": "issue", "fr": "ticket" }
+  ]
+}
