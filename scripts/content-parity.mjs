@@ -51,7 +51,7 @@ export function timesOf(text, locale) {
  * @returns {Set<string>} */
 export function numbersOf(text, locale) {
   const out = new Set();
-  text = timesOf(text, locale);
+  text = timesOf(text, locale).replace(/(?<![\d,.])(\d{1,2}):00(?!\d)/g, "$1");
   /* Data attributes (a chart's series, dates, ids) are written the same in both languages: read as plain digits. */
   const plain = text
     .replace(DATA_ATTRIBUTE, (_, value) => {

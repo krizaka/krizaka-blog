@@ -57,6 +57,8 @@ test("numbers are read the way each language writes them", () => {
   assert.deepEqual([...numbersOf("1,440 runs, 0.033, Wan 2.2, Qwen3 235B", "en")], ["1440", "0.033", "2.2", "235"]);
   assert.deepEqual([...numbersOf('<Bars data="a=0,22; b=4,19" />', "fr")], ["0", "22", "4", "19"]);
   assert.equal(timesOf("à 0 h 45, puis 18 h", "fr"), "à 0:45, puis 18");
+  assert.deepEqual([...numbersOf("from 19:00 to 7:00 pm", "en")], ["19"]);
+  assert.deepEqual([...numbersOf("de 19 h à 19 h 00", "fr")], ["19"]);
   assert.equal(timesOf("at 12:45 am, then 6 p.m.", "en"), "at 0:45, then 18");
 });
 

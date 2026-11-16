@@ -49,7 +49,7 @@ Two views of one model written in [LikeC4](https://likec4.dev/), the notation of
 
 - **Choice.** [RabbitMQ](https://www.rabbitmq.com/docs/queues) carries Sovkora's jobs to its workers. A service writes the job to an outbox table in the same database transaction as its own change; a relay publishes it. Each capability has its own routing key, so a CPU job and a GPU job land in different [queues](https://www.rabbitmq.com/docs/exchanges). Queues are bounded ([max length and overflow](https://www.rabbitmq.com/docs/maxlength)), a failing message is retried and then [dead-lettered](https://www.rabbitmq.com/docs/dlx), and a consumer [acknowledges](https://www.rabbitmq.com/docs/confirms) what it finished.
 - **Refused.** [Apache Kafka](https://kafka.apache.org/intro).
-- **Why.** Our need is work queues: a job is done once, by one worker, then it is gone. Kafka is a partitioned log where « events are not deleted after consumption » and are retained per topic ([Kafka, introduction](https://kafka.apache.org/intro)); its strengths, replay and very high throughput, are not our problem today. AMQP routing is exactly our problem.
+- **Why.** Our need is work queues: a job is done once, by one worker, then it is gone. Kafka is a partitioned log where “events are not deleted after consumption” and are retained per topic ([Kafka, introduction](https://kafka.apache.org/intro)); its strengths, replay and very high throughput, are not our problem today. AMQP routing is exactly our problem.
 - **Cost.** We operate the broker ourselves: our cloud host in Canada offers Kafka as a managed service, but not RabbitMQ. A broker lost with messages in flight loses them, which is why the outbox and the database, not the broker, hold the truth. Delivery is at least once, so every consumer must be idempotent.
 
 ## 2. Relational rather than NoSQL
@@ -63,7 +63,7 @@ Two views of one model written in [LikeC4](https://likec4.dev/), the notation of
 
 - **Choice.** [pgvector](https://github.com/pgvector/pgvector) in the same PostgreSQL. Sovkora's semantic cache stores a 1024-dimension embedding with an HNSW index on cosine distance, and the recommendations live in the knowledge database. The cache is off by default; a pack has to turn it on.
 - **Refused.** A dedicated vector database beside PostgreSQL.
-- **Why.** A vector is useful only with the row it describes: same transaction, same backup, same tenant filter in the same query. pgvector offers exact and approximate search ([HNSW, IVFFlat](https://github.com/pgvector/pgvector#indexing)) with « ACID compliance, point-in-time recovery, JOINs » of Postgres ([pgvector](https://github.com/pgvector/pgvector)).
+- **Why.** A vector is useful only with the row it describes: same transaction, same backup, same tenant filter in the same query. pgvector offers exact and approximate search ([HNSW, IVFFlat](https://github.com/pgvector/pgvector#indexing)) with “ACID compliance, point-in-time recovery, JOINs” of Postgres ([pgvector](https://github.com/pgvector/pgvector)).
 - **Cost.** The extension must be installed by the cluster's administrator, before the migrations run. An HNSW index takes memory and time to build. At a scale we have not reached, a dedicated engine may answer faster; we have not measured it.
 
 ## 4. A few containers, and Next.js in one of them
@@ -99,7 +99,7 @@ Two views of one model written in [LikeC4](https://likec4.dev/), the notation of
 
 - **Choice.** TypeScript and UI packages under the [`@krizaka` scope](https://docs.npmjs.com/about-scopes) ([krizaka-ui](repo:krizaka-ui), [krizaka-ts](repo:krizaka-ts), docs on [ui.krizaka.com](site:ui) and [ts.krizaka.com](site:ts)); Java building blocks under `com.krizaka` ([krizaka-java](repo:krizaka-java), docs on [java.krizaka.com](site:java)): a parent build, a [BOM](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html) and [Spring Boot starters](https://docs.spring.io/spring-boot/reference/features/developing-auto-configuration.html) for web, security, RabbitMQ, observability, persistence and more. Verikora's web app depends on 28 `@krizaka` packages, Folioviv's on 23; Sovkora's services import the BOM and then the starters, with no version of their own.
 - **Refused.** Copying code between products, and one repository for all products.
-- **Why.** A behaviour is written, tested and documented once; a product imports it and tests only its own rules. The RabbitMQ starter is where « published by one transactional line, retried with back-off, then dead-lettered » is written once for every service.
+- **Why.** A behaviour is written, tested and documented once; a product imports it and tests only its own rules. The RabbitMQ starter is where “published by one transactional line, retried with back-off, then dead-lettered” is written once for every service.
 - **Cost.** A library change reaches a product only through a version bump, and a breaking change needs a major version and a migration in each consumer. Libraries are public and open source, so their API is a promise.
 
 ## What this post does not show
