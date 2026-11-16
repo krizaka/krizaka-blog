@@ -65,7 +65,27 @@ The cockpit shows its data, it does not explain its cause. The release alert say
 
 One story for everyone, then a short part per role: what that person would read on the screen, and why it matters to them. We do not have seven people; it is the same screen, read with seven questions.
 
-For reliability, it is the « Alerts » tab: one line per subject, with its severity, its source (the watchdog or a team session), how many times it came back and its state. A critical alert that returns sixteen times reads faster than a message that passes: you see that a problem lasts. The rest is a loop, which that evening's alert went through: the alert becomes a ticket, the ticket a team, the team a pull request that the train lands if it is green. Each link has a ceiling: turns, spend, minutes, and a load brake. That evening, a launch of a team by the CTO session was refused because the Mac's five-minute load average was 86, above the brake of 60; the launch waited for the load to fall. It is a limit the machine puts on itself.
+For reliability, it is the « Alerts » tab: one line per subject, with its severity, its source (the watchdog or a team session), how many times it came back and its state. A critical alert that returns sixteen times reads faster than a message that passes: you see that a problem lasts. The rest is a loop, which that evening's alert went through: the alert becomes a ticket, the ticket a team, the team a pull request that the train lands if it is green.
+
+<Pipeline label="From the alert to the merge: the watchdog raises the alert, the CTO session writes the ticket, a team takes it, the train sends its pull request through if it is green, and the merge closes the ticket.">
+  <Stage title="Alert" note="the watchdog">
+    A critical line on the cockpit: « main red: krizaka-ui release ».
+  </Stage>
+  <Stage title="Ticket" note="the CTO session">
+    The CTO session reads the full log, writes the ticket and the brief.
+  </Stage>
+  <Stage title="Team" note="turns, spend, minutes" tone="gate">
+    An isolated team, with its caps, proves the cause and opens its pull request.
+  </Stage>
+  <Stage title="Train" note="only when green" tone="gate">
+    The train waits for the required checks and sends the pull request through the merge queue.
+  </Stage>
+  <Stage title="Merge" note="6:34 pm" tone="ship">
+    The next release passes, version 4.9.0 ships, the ticket is closed.
+  </Stage>
+</Pipeline>
+
+Each link has a ceiling: turns, spend, minutes, and a load brake. That evening, a launch of a team by the CTO session was refused because the Mac's five-minute load average was 86, above the brake of 60; the launch waited for the load to fall. It is a limit the machine puts on itself.
 
 For project management, « What ships »: per product, the board, the open pull requests, the train's state, the last version, the last deployment. Each card carries the date of its oldest source. A project is judged by what actually left, not by what was planned.
 
