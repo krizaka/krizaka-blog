@@ -982,6 +982,12 @@ picture {
   display: block;
   color: var(--kz-text-secondary);
 }
+/* Sketches (lib/sketches.ts, content/sketches/): drawn by @krizaka/ui/sketch (krizaka-internal#4006); the blog only spaces
+   them in the reading column. */
+.bl-sketch {
+  margin: 2.25rem 0;
+  min-width: 0;
+}
 /* Trains (Rails, lib/rails.ts): rails drawn from the tokens on a plate, the station a post with its name, wagons on wheels,
    a red wagon on its siding, a frozen rail dashed. A name column on a wide screen, the name above its rail on a phone; then
    the legend and the text version (an ordered list). The drawing is decoration; the list is the content. */

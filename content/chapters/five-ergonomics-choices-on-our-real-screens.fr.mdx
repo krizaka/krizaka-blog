@@ -1,8 +1,8 @@
 ---
-title: "Cinq choix d'ergonomie, montrés sur nos vrais écrans"
-description: "Une action principale, un téléphone où rien ne dépasse, un écran vide qui dit quoi faire, une erreur qui reste en place, deux thèmes. Pour chaque choix : l'écran, la raison, le coût."
-seoTitle: "Cinq choix d'ergonomie, sur nos vrais écrans"
-seoDescription: "Cinq choix d'interface de Verikora, Folioviv et Sovkora sur de vrais écrans : pourquoi, ce qu'ils coûtent, ce qui reste à régler."
+title: "Cinq choix d'ergonomie, dessinés sur nos écrans"
+description: "L'action principale, le téléphone, l'écran vide, l'erreur, les thèmes : cinq choix de Verikora, Folioviv et Sovkora, dessinés au stylo, avec la règle qui les fonde et ce qu'ils coûtent."
+seoTitle: "Cinq choix d'ergonomie, dessinés sur nos écrans"
+seoDescription: "Cinq choix d'interface de Verikora, Folioviv et Sovkora, dessinés écran par écran : la règle, la mesure, ce qu'ils coûtent, ce qui reste à régler."
 date: 2026-11-15
 publishedAt: "2026-11-15T17:00:00-05:00"
 tags: [ui, verikora, measurements]
@@ -15,106 +15,136 @@ period: "2026-11-15"
 sources:
   - five-ergonomics-choices-on-our-real-screens
 versus:
-  faced: "cinq choix d'ergonomie, chacun à montrer sur un vrai écran"
-  built: "pour chaque choix : l'écran, la raison, le coût"
+  faced: "cinq choix d'ergonomie à expliquer sans noyer l'écran sous les mots"
+  built: "un dessin par écran, des numéros, une légende, la règle et la mesure"
 ---
 
-Un outil se juge à ce qu'il laisse sur l'écran. Depuis octobre, dans Verikora, Folioviv et Sovkora, nous retirons des écrans ce qui ne servait pas la personne qui les regarde. Chaque choix est écrit dans un registre de décisions, à côté du code : le problème, le principe qui le justifie, ce que nous avons refusé, ce que ça coûte, et ce qui nous dirait que nous nous trompons.
+Depuis octobre, je retire des écrans de Verikora, Folioviv et Sovkora ce qui ne sert pas la personne qui les regarde. Je note chaque retrait dans un registre de décisions, à côté du code, avec le principe qui le justifie et ce qu'il coûte.
 
-Voici cinq de ces choix. Chacun est montré sur un écran réel de nos versions de développement, avec une persona inventée de notre distribution de démonstration, jamais un client et jamais un administrateur. Pour chacun, la raison vient d'abord, puis le coût. Quand nous avons une mesure, nous la donnons. Quand un écran ne respecte pas encore sa propre règle, nous le disons à la fin.
+J'en montre cinq ici. Les écrans sont dessinés au stylo, pas capturés : chaque numéro du dessin renvoie à une ligne de la légende. Éric Tremblay, la personne des exemples, vient de notre distribution de démonstration ; ce n'est ni un client ni un administrateur.
+
+| Choix | Retenu, plutôt que | Règle | Chiffre |
+| --- | --- | --- | --- |
+| Arrivée | un seul bouton plein, plutôt qu'une zone de dépôt au milieu | la reconnaissance plutôt que le rappel | 1 bouton plein sur l'accueil, mesuré le 15 novembre |
+| Téléphone | une ligne par document et un menu, plutôt qu'un tableau et cinq onglets | WCAG 2.2, critère 1.4.10 | 0 px de débordement à 390 px, mesuré |
+| Écran vide | une phrase et une action, plutôt qu'une page blanche | une action, deux au plus | 1 toucher jusqu'au premier fichier |
+| Erreur | le message à la place du résultat, plutôt qu'une notification qui s'efface | WCAG 2.2, critère 3.3.3 | le squelette attend 300 ms |
+| Thèmes et mouvement | clair, sombre ou système, et rien ne bouge sous le mouvement réduit | WCAG 2.2, critère 2.3.3 | 0 animation sous le mouvement réduit, mesuré |
 
 ## Une seule action principale à l'arrivée
 
-Éric Tremblay ouvre Verikora avec un bail en PDF. Il veut savoir ce que le bail contient de douteux, et il ne veut pas chercher où le déposer.
+Éric ouvre Verikora avec un bail en PDF. Il veut savoir ce que le bail contient de douteux, pas chercher où le déposer.
 
-<Figure id="ergo-verikora-home" alt="Accueil de Verikora : un seul bouton plein, Vérifier un document, dans l'en-tête." caption="Verikora, l'accueil, Éric Tremblay (démo), 1440 px, thème sombre. Un seul bouton plein : « Vérifier un document »." />
+La première version de l'accueil avait une zone de dépôt et deux cases à cocher, reprises sur trois écrans ; ce qu'il y avait à faire venait en quatrième. Le 4 novembre, j'ai retiré de l'accueil la zone en pointillés, son deuxième bouton principal et les suggestions « Ou essayez ».
 
-L'accueil n'a qu'une action principale, celle de l'en-tête. Il n'y a plus de zone de dépôt en pointillés au milieu de la page : la fenêtre entière accepte le fichier. Éric peut lâcher son PDF n'importe où, et la vérification part. Derrière l'action principale, il reste un vrai champ de fichier, pour le clavier et pour les téléphones, où l'on ne glisse pas de fichier. C'est ce que fait [la superposition de dépôt](site:ui/fr/components/drop-overlay) de notre bibliothèque de composants.
+<Sketch id="ergo-home" title="L'accueil de Verikora, avant et après le 4 novembre">
+  <Callout n="1" label="La zone en pointillés">au milieu de la page, elle prenait la place de la réponse.</Callout>
+  <Callout n="2" label="Son bouton plein">un deuxième bouton principal, en plus de celui de l'en-tête.</Callout>
+  <Callout n="3" label="« Ou essayez »">des suggestions pour quelqu'un qui a déjà son document.</Callout>
+  <Callout n="4" label="« Vérifier un document »">le seul bouton plein de l'écran ; derrière lui, un vrai champ de fichier pour le clavier et pour les téléphones.</Callout>
+  <Callout n="5" label="La fenêtre entière">un PDF lâché n'importe où lance la vérification.</Callout>
+</Sketch>
 
-Mesuré sur l'accueil le 15 novembre : un seul bouton plein, celui de l'en-tête.
+J'ai écrit la règle en une ligne : la réponse d'abord, au plus une zone de dépôt par écran, et ailleurs c'est la fenêtre entière qui reçoit le fichier. C'est [la reconnaissance plutôt que le rappel](https://www.nngroup.com/articles/ten-usability-heuristics/) : personne ne devrait chercher la seule chose pour laquelle la page existe. Dans notre bibliothèque, c'est [la superposition de dépôt](site:ui/fr/components/drop-overlay). Seul l'écran du tout premier jour garde les suggestions, parce que quelqu'un qui n'a encore rien a besoin d'un exemple.
 
-**Pourquoi.** La première version de cet accueil avait une zone de dépôt et deux cases à cocher qui se retrouvaient sur trois écrans, et ce qu'il y avait à faire venait en quatrième. Le principe écrit est « la réponse d'abord ; une zone de dépôt par écran, la fenêtre elle-même ailleurs ». C'est l'idée de [la reconnaissance plutôt que le rappel](https://www.nngroup.com/articles/ten-usability-heuristics/) : la personne ne devrait pas avoir à chercher la seule chose pour laquelle la page existe. Le 4 novembre, nous avons retiré de l'accueil la zone en pointillés, son deuxième bouton principal et les suggestions « Ou essayez ». Seul l'écran du tout premier jour les garde, parce que quelqu'un qui n'a encore rien a besoin d'un exemple.
+J'ai refusé un bouton « Charger la démo » : aucun service ne le faisait. Quand Verikora ne sait pas de quel document il s'agit, il pose une seule question, « Quel document ? », plutôt que de lancer une analyse qui coûterait quand même. En échange, un fichier lâché sur la page prend les options par défaut du propriétaire, puisqu'elles n'ont de sens qu'une fois le fichier connu.
 
-Ce que nous avons refusé :
+Dans Sovkora, l'écran des Studios est une liste, et la même règle donne une action par ligne. Avant, c'était une grille de cartes sur deux colonnes, trois par écran, où l'on ne distinguait pas un Studio installé d'un Studio qui demande un pack.
 
-- Un bouton « Charger la démo », parce qu'aucun service ne le faisait. Il aurait promis quelque chose que le produit ne fait pas.
-- Lancer l'analyse quand on ne sait pas quel document c'est, parce qu'un mauvais fichier coûte quand même une analyse. Verikora pose alors une seule question, « Quel document ? ».
+<Sketch id="ergo-studios" title="Les Studios de Sovkora, la grille puis la liste">
+  <Callout n="1" label="Les cartes">trois par écran, sans état lisible.</Callout>
+  <Callout n="2" label="Le filtre « Tous 45 · Prêts 29 · À obtenir 16 »">il vit dans l'adresse, donc la liste filtrée s'envoie par un lien.</Callout>
+  <Callout n="3" label="L'état">écrit en mots sur chaque ligne.</Callout>
+  <Callout n="4" label="L'action">une seule par ligne, « Lancer » si le Studio est prêt, « Obtenir le pack » sinon.</Callout>
+</Sketch>
 
-Le coût : un fichier lâché sur la page prend les options par défaut du propriétaire, car ces options n'ont de sens qu'une fois les fichiers connus.
+J'ai écarté deux onglets « Prêts » et « À obtenir » : le même Studio aurait vécu à deux endroits selon ce qu'on possède. La description, elle, tient désormais sur une seule ligne, tronquée.
 
-Dans Sovkora, la même idée prend une autre forme, parce que l'écran est une liste. Chaque Studio a une seule action sur sa ligne, « Lancer » s'il est prêt, « Obtenir le pack » sinon, et son état écrit en mots.
+## Sur un téléphone, rien ne dépasse
 
-<Figure id="ergo-sovkora-studios" alt="Liste des Studios de Sovkora : chaque ligne a son état et une seule action, Lancer." caption="Sovkora, Studios, persona « Krizaka » (démo), 1440 px, thème sombre. Un filtre « Tous 45 · Prêts 29 · À obtenir 16 », une action par ligne." />
+Éric relit une vérification debout dans l'escalier d'un immeuble, le téléphone dans une main.
 
-Avant, c'était une grille de cartes sur deux colonnes, trois par écran, et personne ne distinguait un Studio installé d'un Studio disponible, ou qui demande un pack. Nous voulions que chaque ligne dise ce qu'on obtient et ce que ça coûte. Nous avons refusé deux onglets « Prêts » et « À obtenir » : le même Studio aurait vécu à deux endroits selon ce qu'on possède. Le filtre vit dans l'adresse, ce qui permet d'envoyer la liste filtrée par un lien. Le coût : la description tient sur une ligne tronquée par ligne.
+Les réglages de Verikora avaient cinq onglets en rang. Sur un écran de 390 px, ils poussaient la page 167 px trop loin, et 197 px à 360 px. C'est un écart à [la règle de reflux de WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html) (critère 1.4.10, niveau AA) : le contenu doit tenir dans la largeur sans défilement dans deux directions. Sur un téléphone, ces sections sont devenues un seul menu.
 
-## Sur un téléphone, rien ne dépasse et tout est au pouce
+<Sketch id="ergo-phone-settings" title="Les réglages de Verikora sur un téléphone, avant et après">
+  <Callout n="1" label="Cinq onglets en rang">les derniers sortent de l'écran.</Callout>
+  <Callout n="2" label="Le débordement">la page entière glisse sur le côté.</Callout>
+  <Callout n="3" label="Un seul menu">la section ouverte est écrite, les autres sont à un toucher.</Callout>
+</Sketch>
 
-Le même Éric relit une vérification debout, dans l'escalier d'un immeuble, son téléphone dans une main.
+Les listes ont suivi. Une ligne imprimait quatre paires « libellé : valeur » par document : il fallait lire un formulaire pour trouver un titre et un résultat. Sur un écran large, le tableau reste.
 
-<Figure id="ergo-verikora-phone" alt="Verikora sur téléphone : la liste des vérifications en lignes, en sombre, et les réglages en un menu, en clair." caption="Verikora, 390 px, Éric Tremblay (démo). À gauche, « Vérifications » en sombre : un titre, une ligne de faits, le résultat au bout. À droite, « Réglages » en clair : les sections deviennent un menu." />
+<Sketch id="ergo-phone-list" title="Une ligne de la liste des vérifications sur un téléphone, avant et après">
+  <Callout n="1" label="Quatre paires libellé : valeur">pour chaque document, avant même le résultat.</Callout>
+  <Callout n="2" label="Le titre">ce que la personne cherche d'abord.</Callout>
+  <Callout n="3" label="Une ligne de faits">le type et la date, « Bail · 1 nov. 2026 ».</Callout>
+  <Callout n="4" label="Le résultat">au bout de la ligne ; le reste attend dans le détail, à un toucher.</Callout>
+</Sketch>
 
-Sur un téléphone, une liste de Verikora n'est plus un tableau. Chaque ligne porte un titre, une seule ligne de faits (« Bail · 1 nov. 2026 ») et le résultat au bout. Le reste attend dans le détail, à un toucher. Sur un écran large, le tableau reste. Les réglages avaient cinq onglets en rang, qui poussaient la page 167 px au-delà d'un écran de 390 px, et 197 px à 360 px. Sur téléphone, ces sections sont maintenant un seul menu.
+Ce que ça coûte : sur un téléphone, on voit deux lignes par document, pas tout le dossier. Mesuré le 15 novembre, aucun des neuf écrans ne déborde sur le côté à 390 px, ni en clair ni en sombre.
 
-Mesuré le 15 novembre : aucun des neuf écrans capturés ne déborde sur le côté à 390 px, ni en clair ni en sombre (0 px).
+L'application Sovkora pour téléphone a suivi le même raisonnement pour la navigation. Je n'ai pour elle que son registre de décisions, pas de mesure.
 
-**Pourquoi.** Deux raisons, une par correction. Une page qui demande un défilement latéral à la largeur d'un téléphone enfreint [la règle de reflux de WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html) : le contenu doit tenir dans la largeur sans défilement dans deux directions. Et une ligne qui imprime quatre paires « libellé : valeur » par document oblige à lire un formulaire, quand la personne venait chercher un titre et un résultat. La ligne garde donc un titre, une ligne de faits et le résultat, et le reste est à un toucher. Le coût : un téléphone montre deux lignes par rangée, pas tout le dossier.
+<Sketch id="ergo-sovkora-tabs" title="La navigation de l'application Sovkora pour téléphone">
+  <Callout n="1" label="Quatre onglets en bas">à portée du pouce.</Callout>
+  <Callout n="2" label="Une icône et un mot">le mot n'est jamais coupé.</Callout>
+  <Callout n="3" label="Rien en haut">pas de menu caché à l'endroit le plus dur à atteindre d'une main.</Callout>
+</Sketch>
 
-Le téléphone change aussi l'ordre des blocs. Sur un ordinateur, « À traiter » occupe le tiers droit de l'accueil. Sur un téléphone, il passe juste après les dossiers des candidats. Pour Éric, qui n'en a pas, c'est le premier bloc sous le titre.
-
-L'application Sovkora pour téléphone a fait le même raisonnement pour la navigation (nous n'avons pas de capture ici, seulement son registre de décisions) : quatre onglets en bas, au pouce, chacun avec son icône et un mot jamais coupé. Nous avons refusé le menu caché en haut, parce que les endroits les plus utilisés devenaient les plus durs à atteindre d'une main. Nos raisons écrites : la plupart des gens tiennent leur téléphone d'une main et atteignent la moitié basse de l'écran, [une barre visible vaut mieux qu'un menu caché pour la découvrabilité](https://www.nngroup.com/articles/hamburger-menus/), et [une icône accompagnée de son mot](https://www.nngroup.com/articles/icon-usability/) est plus claire qu'une icône seule. Le coût : le forfait, les packs et les crédits ne sont pas sur le téléphone. Qui les veut va sur le web.
+La plupart des gens tiennent leur téléphone d'une main et atteignent la moitié basse de l'écran. [Une barre visible se découvre mieux qu'un menu caché](https://www.nngroup.com/articles/hamburger-menus/), et [une icône avec son mot](https://www.nngroup.com/articles/icon-usability/) se comprend mieux qu'une icône seule. Le forfait, les packs et les crédits ne sont pas sur le téléphone : qui les veut va sur le web.
 
 ## Un écran vide dit quoi faire
 
-Éric crée une collection « À classer » et l'ouvre avant d'y avoir mis quoi que ce soit.
+Éric crée une collection « À classer » et l'ouvre avant d'y avoir rien mis.
 
-<Figure id="ergo-verikora-empty" alt="Verikora, collection vide : le hibou, une phrase et une zone de dépôt ; en dessous, un écran qui propose Changer de rôle." caption="Verikora, Éric Tremblay (démo), 1440 px. En haut, en sombre : la collection vide. En bas, en clair : « Dossiers de candidats » vu par un locataire." />
+<Sketch id="ergo-empty" title="Une collection vide dans Verikora">
+  <Callout n="1" label="Le hibou">il accompagne la phrase, il ne la remplace jamais.</Callout>
+  <Callout n="2" label="La phrase">« Rien ici pour l'instant. Déposez un document ou créez un dossier. »</Callout>
+  <Callout n="3" label="La seule zone de dépôt de l'écran">avec ce qu'elle accepte : PDF, Word, OpenDocument, texte ou photo, jusqu'à 10 Mo.</Callout>
+</Sketch>
 
-L'écran vide ne reste pas blanc. Il montre le hibou, une phrase (« Rien ici pour l'instant. Déposez un document ou créez un dossier. ») et la seule zone de dépôt de l'écran, avec ce qu'elle accepte : PDF, Word, OpenDocument, texte ou photo, jusqu'à 10 Mo. Le premier jour, la bibliothèque entière vide ajoute deux exemples à essayer, un bail de locataire et un dossier de propriétaire.
+[Un écran vide est l'occasion d'expliquer](https://www.nngroup.com/articles/empty-state-interface-design/) à quoi sert l'endroit et quoi faire en premier. J'ai mis la règle dans la bibliothèque, pour que chaque produit la suive : [l'état vide](site:ui/fr/components/empty-state) a un titre qui dit ce qui est vide, une description qui dit ce qui viendra le remplir, une action, deux au plus, et [l'état à mascotte](site:ui/fr/components/mascot-state) entoure toujours des mots. Il faut un toucher pour passer de l'écran vide au premier fichier, aucun si on lâche le document sur la page. Le premier jour, la bibliothèque entière vide propose deux exemples à essayer, un bail de locataire et un dossier de propriétaire.
 
-Quand une page ne s'adresse pas à vous, elle le dit au lieu de paraître cassée : « Les dossiers de candidats sont pour les gestionnaires », puis un seul bouton, « Changer de rôle ».
+Une page qui ne s'adresse pas à vous le dit au lieu de paraître cassée : « Les dossiers de candidats sont pour les gestionnaires », puis un seul bouton, « Changer de rôle ». Folioviv suit la même règle avec son castor : « Aucune réservation pour l'instant », puis ce qui viendra ici, vos réservations, vos factures et vos dossiers.
 
-**Pourquoi.** [Un écran vide est l'occasion pour le produit d'expliquer](https://www.nngroup.com/articles/empty-state-interface-design/) : il doit dire à quoi sert l'endroit et quoi faire en premier. Les règles vivent dans la bibliothèque, donc chaque produit les suit : [l'état vide](site:ui/fr/components/empty-state) a un titre qui dit ce qui est vide et une description qui dit ce qui viendra le remplir, avec une action, deux au plus. La mascotte ne porte jamais le message seule ([l'état à mascotte](site:ui/fr/components/mascot-state) entoure des mots). Ce qui compte, c'est le nombre de gestes : un toucher pour passer de l'écran vide au premier fichier, ou aucun si on lâche le document sur la page.
+## Une erreur reste à sa place
 
-<Figure id="ergo-folioviv-empty-phone" alt="Folioviv sur téléphone : Mes réservations est vide, le castor et une phrase disent ce qui s'affichera ici." caption="Folioviv, « Mes réservations », Éric Tremblay (démo, côté client), 390 px, thème sombre." />
+Éric dépose un contrat d'entretien. Le PDF est fait d'une façon que Verikora ne sait pas lire.
 
-Folioviv suit la même règle avec son castor. « Aucune réservation pour l'instant », puis ce qui viendra : vos réservations, vos factures et vos dossiers.
+<Sketch id="ergo-error" title="Une vérification qui n'a pas abouti, dans Verikora">
+  <Callout n="1" label="Le message">à l'endroit où le rapport aurait été : « Ce PDF n'est pas sous une forme que nous pouvons vérifier. Choisissez une autre copie du document, ou réessayez. »</Callout>
+  <Callout n="2" label="« Réessayer »">le geste suivant, sur le même écran.</Callout>
+  <Callout n="3" label="« Choisir un autre fichier »">un toucher mène à la page de dépôt.</Callout>
+  <Callout n="4" label="Le menu et la barre du haut">ils restent utilisables.</Callout>
+  <Callout n="5" label="« Lancer la vérification »">le bouton plein de la carte « Au regard de la loi », un deuxième sur l'écran, pas encore réglé.</Callout>
+</Sketch>
 
-## Une erreur reste à sa place et propose la suite
+Le message dit ce qui s'est passé avec nos mots, sans le nom d'un moteur ; le message technique reste dans nos journaux. Quand un PDF n'a pas de texte, il dit aussi ce qui continue : « L'examen du fichier, lui, a lieu. » [WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html) (critère 3.3.3, niveau AA) demande de proposer la correction quand on la connaît. Je vais un peu plus loin : l'erreur et son geste suivant prennent la place du résultat qui n'est pas venu. Dans la bibliothèque, c'est [l'alerte](site:ui/fr/components/alert).
 
-Éric a déposé un contrat d'entretien. Le PDF est fait d'une façon que Verikora ne sait pas lire.
-
-<Figure id="ergo-verikora-failed" alt="Verikora, vérification échouée : le message en mots simples, puis Réessayer et Choisir un autre fichier, sur ordinateur et sur téléphone." caption="Verikora, une vérification qui n'a pas abouti, Éric Tremblay (démo). À gauche à 1440 px en sombre, à droite à 390 px en clair." />
-
-Le message est à l'endroit où le rapport aurait été. Il dit ce qui s'est passé avec nos mots, sans le nom d'un moteur : « Ce PDF n'est pas sous une forme que nous pouvons vérifier. Choisissez une autre copie du document, ou réessayez. » Deux gestes suivent, « Réessayer » et « Choisir un autre fichier ». Un toucher mène à la page de dépôt. Le menu de gauche et la barre du haut restent utilisables, et le message technique reste dans nos journaux. Quand un PDF n'a pas de texte, le message dit aussi ce qui continue : « L'examen du fichier, lui, a lieu. »
-
-**Pourquoi.** [WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html) demande que, lorsqu'une erreur est détectée et que l'on sait comment la corriger, la suggestion soit donnée à la personne. Nous avons fait un pas de plus : l'erreur et son geste suivant appartiennent au même écran, à la place du résultat qui n'est pas venu. [L'alerte](site:ui/fr/components/alert) est le composant qui la porte. C'est pourquoi nous avons refusé deux choses :
-
-- La notification qui s'efface en quelques secondes, pour un échec sur lequel il faut agir. La personne ne regarde peut-être même pas.
-- Un chargement unique, commun à toutes les pages. Ce n'est qu'une roue centrée sous un autre nom. Chaque page a son [squelette](site:ui/fr/components/skeleton), à sa forme, affiché seulement après 300 ms pour qu'une page rapide ne clignote pas. La seule roue qui tourne dans Verikora est celle d'un bouton qui travaille, et un test refuse toutes les autres.
-
-Le coût : trente-huit petits fichiers, deux par page, et une nouvelle page doit apporter les siens ou son test échoue. Le signal qui nous dirait que nous nous trompons : des gens qui réessaient une page qui échoue encore, parce que la cause n'est pas la leur. Il faudrait alors un lien vers l'état du service.
+J'ai écarté la notification qui s'efface en quelques secondes : pour un échec sur lequel il faut agir, la personne ne regarde peut-être même pas. J'ai aussi écarté un chargement commun à toutes les pages, qui n'est qu'une roue centrée sous un autre nom. Chaque page a son [squelette](site:ui/fr/components/skeleton), à sa forme, affiché après 300 ms seulement pour qu'une page rapide ne clignote pas. La seule roue de Verikora est celle d'un bouton qui travaille, et un test refuse toutes les autres. Cela fait trente-huit petits fichiers, deux par page, et une nouvelle page doit apporter les siens ou son test échoue. Si des gens réessaient une page qui échoue encore parce que la cause n'est pas la leur, il faudra un lien vers l'état du service.
 
 ## Deux thèmes, et rien ne bouge si vous l'avez demandé
 
-<Figure id="ergo-verikora-themes" alt="Réglages d'apparence de Verikora : Système, Clair et Sombre, montrés en sombre puis en clair." caption="Verikora, Réglages, Apparence, Éric Tremblay (démo), 1440 px. En haut le thème sombre choisi, en bas le clair." />
+<Sketch id="ergo-themes" title="Les réglages d'apparence de Verikora">
+  <Callout n="1" label="« Système »">suit l'appareil, grâce à prefers-color-scheme.</Callout>
+  <Callout n="2" label="« Clair »">le même écran, les mêmes tokens.</Callout>
+  <Callout n="3" label="« Sombre »">le thème par défaut ; le choix est gardé dans le navigateur.</Callout>
+</Sketch>
 
-Chaque écran existe en clair et en sombre. Le choix est dans les réglages : « Système » suit l'appareil, « Clair », ou « Sombre », qui est le thème par défaut. Le choix est gardé dans le navigateur. Les couleurs viennent d'[un seul jeu de tokens](site:ui/fr/foundations/tokens) que les deux thèmes lisent, et [la page de thématisation](site:ui/fr/theming) dit comment un produit porte sa propre couleur. [prefers-color-scheme](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-color-scheme) est ce qui permet à « Système » de suivre l'appareil.
+Chaque écran existe en clair et en sombre. Les couleurs viennent d'[un seul jeu de tokens](site:ui/fr/foundations/tokens) que les deux thèmes lisent, et [la page de thématisation](site:ui/fr/theming) dit comment un produit porte sa propre couleur. [prefers-color-scheme](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-color-scheme) est ce qui permet à « Système » de suivre l'appareil.
 
-Le mouvement suit la même logique. Quand votre appareil demande moins de mouvement, rien ne bouge. Nous l'avons mesuré sur les neuf écrans capturés : aucune animation en cours avec le mouvement réduit. Avec le mouvement permis, on en compte jusqu'à 11 sur les réglages et 6 sur la liste des Studios.
-
-**Pourquoi.** [prefers-reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion) existe parce que le mouvement peut rendre certaines personnes malades, et [WCAG 2.2 demande](https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html) qu'un mouvement déclenché par une interaction puisse être désactivé. Notre règle est [un seul système de mouvement](site:ui/fr/foundations/motion) : une animation est là parce qu'elle montre quelque chose, jamais pour décorer, et elle s'arrête sous le mouvement réduit. Dans la bibliothèque, l'oiseau d'un écran vide arrive une seule fois, puis les mots, puis l'action, et pas du tout sous le mouvement réduit. Chaque étape d'une vérification est aussi un mot, donc le mouvement réduit ne fait rien perdre.
+Le mouvement suit la même logique. [prefers-reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion) existe parce que le mouvement peut rendre certaines personnes malades, et [WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html) (critère 2.3.3, niveau AAA) demande qu'un mouvement déclenché par une interaction puisse être désactivé. Je n'ai gardé qu'[un seul système de mouvement](site:ui/fr/foundations/motion) : une animation sert à montrer quelque chose, jamais à décorer, et elle s'arrête sous le mouvement réduit. Sur les neuf écrans mesurés, aucune animation ne tourne avec le mouvement réduit ; avec le mouvement permis, on en compte jusqu'à 11 sur les réglages et 6 sur la liste des Studios. Chaque étape d'une vérification est aussi écrite en mots, donc le mouvement réduit ne fait rien perdre.
 
 ## Ce que nous n'avons pas encore réglé
 
-Sur l'écran de la vérification échouée, sous « Réessayer », la carte « Au regard de la loi » garde un bouton plein « Lancer la vérification ». Deux boutons pleins sur le même écran : ce que nous refusons ailleurs.
+Sur l'écran de la vérification échouée, la carte « Au regard de la loi » garde son bouton plein sous « Réessayer » (le 5 du dessin plus haut). Deux boutons pleins sur un même écran, c'est ce que je refuse ailleurs.
 
-Notre règle veut aussi des cibles d'au moins 44 px sur un téléphone, et nous ne la tenons pas partout. C'est plus strict que [le minimum de 24 px de WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html), et pourtant nous ne l'atteignons pas partout. Mesuré à 390 px, « Réessayer » fait 40 px de haut, « Choisir des fichiers » 36 px. Les boutons qui déplient une ligne des vérifications font 28 × 28 px, et leur nom pour les lecteurs d'écran est resté en anglais.
+Je me suis fixé des cibles d'au moins 44 px sur un téléphone. C'est plus strict que [le minimum de 24 px de WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html) (critère 2.5.8, niveau AA), et je ne m'y tiens pas partout. Mesuré à 390 px, « Réessayer » fait 40 px de haut et « Choisir des fichiers » 36 px. Les boutons qui déplient une ligne des vérifications font 28 × 28 px, et leur nom pour les lecteurs d'écran est resté en anglais.
 
-Dans Folioviv, l'écran vide des réservations dit d'ouvrir la page d'une boutique, mais son seul bouton sert à ouvrir *sa* boutique.
+Dans Folioviv, l'écran vide des réservations dit d'ouvrir la page d'une boutique, mais son seul bouton ouvre *sa* boutique.
 
-Ces écarts sont notés. Si un écran de nos produits vous fait hésiter, écrivez-nous : c'est de là que viennent la plupart de ces choix.
+Je les ai notés. Si un écran de nos produits vous fait hésiter, écrivez-moi : c'est de là que viennent la plupart de ces choix.
 
 ## Ce que nous avons mesuré, et ce que nous n'avons pas mesuré
 
-Les écrans ont été capturés le 15 novembre, sur nos versions de développement, avec Playwright, à 1440 et 390 px, en clair et en sombre, avec le mouvement réduit, puis une seconde fois avec le mouvement permis. Nous avons compté le débordement horizontal, les contrôles de moins de 44 px, les animations en cours et les boutons à fond plein. Les chiffres « avant » (167 px, trois écrans, quatre paires par ligne) sont ceux écrits dans nos registres le jour de chaque décision ; nous ne les avons pas remesurés. Nous n'avons chronométré rien et interrogé personne : ce qu'un choix économise est compté en gestes et en écarts à la règle, jamais en minutes.
+Les écrans ont été mesurés le 15 novembre sur nos versions de développement, avec Playwright, à 1440 et 390 px, en clair et en sombre, avec le mouvement réduit puis permis. Nous avons compté le débordement horizontal, les contrôles de moins de 44 px, les animations en cours et les boutons à fond plein. Les chiffres d'avant (167 px, trois écrans, quatre paires par ligne) sont ceux des registres le jour de chaque décision ; nous ne les avons pas remesurés. Les dessins sont faits d'après ces écrans et ces registres, ils ne sont pas à l'échelle. Rien n'a été chronométré et personne n'a été interrogé : ce qu'un choix économise se compte en gestes et en écarts à la règle, jamais en minutes.

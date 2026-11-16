@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "decfcc4418f0",
+      "source": "2c9564dae817",
       "files": {
         "epub": {
-          "hash": "eeedc6ff37",
-          "bytes": 9233070
+          "hash": "fa21c32fc4",
+          "bytes": 8908207
         },
         "pdf": {
-          "hash": "6e0604b01f",
-          "bytes": 13576647
+          "hash": "7c3c2d1db8",
+          "bytes": 13236156
         }
       }
     },
@@ -287,15 +287,15 @@
       }
     },
     "fr/story": {
-      "source": "87eafbd4d8af",
+      "source": "aaa1404f19a7",
       "files": {
         "epub": {
-          "hash": "2fa8c76bc9",
-          "bytes": 9270099
+          "hash": "d827e544e3",
+          "bytes": 8945157
         },
         "pdf": {
-          "hash": "74b04088b8",
-          "bytes": 13786785
+          "hash": "f928867b82",
+          "bytes": 13444229
         }
       }
     },
@@ -833,15 +833,15 @@
       }
     },
     "en/five-ergonomics-choices-on-our-real-screens": {
-      "source": "2fc574eed7f2",
+      "source": "e12604b9d48e",
       "files": {
         "epub": {
-          "hash": "ff98f913ba",
-          "bytes": 810713
+          "hash": "a3b1a610bb",
+          "bytes": 482013
         },
         "pdf": {
-          "hash": "280039f87b",
-          "bytes": 1037572
+          "hash": "cb3c1d2ca4",
+          "bytes": 738923
         }
       }
     },
@@ -898,15 +898,15 @@
       }
     },
     "fr/five-ergonomics-choices-on-our-real-screens": {
-      "source": "3ddca16e92c5",
+      "source": "9445553d654c",
       "files": {
         "epub": {
-          "hash": "14e3b19606",
-          "bytes": 815390
+          "hash": "d1da4d4f77",
+          "bytes": 490129
         },
         "pdf": {
-          "hash": "0f4c013268",
-          "bytes": 1055188
+          "hash": "7655c4e55f",
+          "bytes": 763859
         }
       }
     },

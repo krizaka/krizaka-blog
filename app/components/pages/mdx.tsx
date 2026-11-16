@@ -24,6 +24,8 @@ import { C4Zoom } from "./C4Zoom";
 import { ArchitectureView } from "./ArchitectureView";
 import { trainFrames } from "@/lib/train-sim";
 import { BOARD } from "@/lib/team-board";
+import { Sketch, SketchPair, type SketchLegendItem } from "@krizaka/ui/sketch";
+import { drawingProblems, legendFor, legendProblems, sketchOf } from "@/lib/sketches";
 
 type RailProps = { name: string; state?: string; station?: string; wagons: string };
 
@@ -269,6 +271,60 @@ export function mdxComponentsFor(locale: Locale) {
       data: string;
     }) => <Bars {...props} locale={locale} />,
     Row: ({ children }: { children: React.ReactNode }) => <div className="bl-row">{children}</div>,
+    /* <Sketch id title><Callout n label>what it is for</Callout></Sketch>: a screen drawn as with a pen in a notebook by
+       @krizaka/ui/sketch, its spec in content/sketches/<id>.ts (lib/sketches.ts), its legend the chapter's words, one line
+       per circled number. A before / after pair is a SketchPair, each side with its own lines. A bad id, a number without
+       its line or a line without its number fails the build. The SVG is named by aria-label only (no <title>). */
+    Sketch: ({ id, title, children }: { id: string; title: string; children?: ReactNode }) => {
+      const entry = sketchOf(id);
+      const legend: SketchLegendItem[] = childProps<{ n: string; label: string; children?: ReactNode }>(children).map(
+        (c) => ({
+          n: Number(c.n),
+          label: `${c.label}${d.sketch.separator.trimEnd()}`,
+          text: textOf(c.children).trim(),
+        }),
+      );
+      const problems = [
+        ...drawingProblems(id, entry),
+        ...legendProblems(
+          id,
+          entry,
+          legend.map((l) => l.n),
+        ),
+      ];
+      if (problems.length > 0) throw new Error(problems.join("\n"));
+      if ("spec" in entry)
+        return (
+          <Sketch
+            className="bl-sketch"
+            data-sketch={id}
+            title={title}
+            spec={entry.spec}
+            legend={legend}
+            caption={title}
+          />
+        );
+      return (
+        <figure className="bl-sketch" data-sketch={id}>
+          <SketchPair
+            beforeLabel={d.sketch.before}
+            afterLabel={d.sketch.after}
+            before={{
+              title: `${d.sketch.before}${d.sketch.separator}${title}`,
+              spec: entry.before,
+              legend: legendFor(entry.before, legend),
+            }}
+            after={{
+              title: `${d.sketch.after}${d.sketch.separator}${title}`,
+              spec: entry.after,
+              legend: legendFor(entry.after, legend),
+            }}
+          />
+          <figcaption className="kz-sketch-caption">{title}</figcaption>
+        </figure>
+      );
+    },
+    Callout: () => null,
     /* A model named in a post, linked to its official page (lib/models.ts) — the first mention; the lint checks it. */
     Model: ({ id, children }: { id: string; children: ReactNode }) => (
       <a className="bl-model" href={modelUrl(id)} rel="external noopener">
