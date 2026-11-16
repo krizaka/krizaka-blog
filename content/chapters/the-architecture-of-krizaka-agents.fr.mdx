@@ -195,13 +195,13 @@ Le deuxième audit a comparé chaque base locale aux journaux et à GitHub, le 1
 
 ## Nos arbitrages
 
-| Question | Option écartée | Choisie | Pourquoi | Ce que ça coûte |
-| --- | --- | --- | --- | --- |
-| Qui décide d'un merge ? | la session elle-même | le train et la merge queue | du code qui lit des contrôles répond pareil à chaque fois | un trou dans un contrôle est un trou dans la revue |
-| Comment séparer les équipes ? | un service de réservation par tâche | un worktree par ticket, un refus sur les fichiers déjà touchés | ne demande aucun service en marche | deux changements par des fichiers différents ne se croisent qu'en CI |
-| Où garder l'état ? | une base serveur | SQLite sur la machine, GitHub comme source | tout ce qui la lit tourne ici ; elle se reconstruit | l'historique des alertes n'existe qu'ici |
-| Où voir une erreur ? | en CI | sur la machine, avant le push | une boucle de quelques secondes au lieu d'un aller-retour CI | un précontrôle à garder rapide |
-| Quelles compétences charger ? | tout le compte | nos 19 compétences, épinglées | même contexte à chaque départ, et plus petit | chaque compétence est à nous d'entretenir |
+<Compare label="Nos arbitrages : pour chaque question, l'option écartée, celle qu'on a choisie, pourquoi et ce que ça coûte" topic="Question" before="Écartée" after="Choisie">
+  <Case topic="Qui décide d'un merge ?" before="la session elle-même" after="le train et la merge queue" afterDetail="Pourquoi : du code qui lit des contrôles répond pareil à chaque fois. Ce que ça coûte : un trou dans un contrôle est un trou dans la revue." />
+  <Case topic="Comment séparer les équipes ?" before="un service de réservation par tâche" after="un worktree par ticket, un refus sur les fichiers déjà touchés" afterDetail="Pourquoi : ne demande aucun service en marche. Ce que ça coûte : deux changements par des fichiers différents ne se croisent qu'en CI." />
+  <Case topic="Où garder l'état ?" before="une base serveur" after="SQLite sur la machine, GitHub comme source" afterDetail="Pourquoi : tout ce qui la lit tourne ici ; elle se reconstruit. Ce que ça coûte : l'historique des alertes n'existe qu'ici." />
+  <Case topic="Où voir une erreur ?" before="en CI" after="sur la machine, avant le push" afterDetail="Pourquoi : une boucle de quelques secondes au lieu d'un aller-retour CI. Ce que ça coûte : un précontrôle à garder rapide." />
+  <Case topic="Quelles compétences charger ?" before="tout le compte" after="nos 19 compétences, épinglées" afterDetail="Pourquoi : même contexte à chaque départ, et plus petit. Ce que ça coûte : chaque compétence est à nous d'entretenir." />
+</Compare>
 
 ## Les compétences que chargent nos sessions
 

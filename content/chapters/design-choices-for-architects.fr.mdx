@@ -25,16 +25,16 @@ Ce chapitre est pour les architectes, les leads techniques et les concepteurs. I
 
 ## Les huit choix d'un coup d'œil
 
-| Sujet | Écarté | Choisi | Pourquoi | Ce que ça coûte |
-| --- | --- | --- | --- | --- |
-| Messages | Kafka | RabbitMQ | des files de travail : une tâche, un worker, puis elle disparaît | on opère le courtier ; chaque consommateur doit être idempotent |
-| Données | NoSQL comme référence | PostgreSQL, `jsonb` où il faut | des invariants entre lignes, gardés par une transaction | une migration à chaque changement de forme |
-| Vecteurs | une base vectorielle à part | pgvector dans le même PostgreSQL | le vecteur vit avec sa ligne : même transaction, même sauvegarde | l'extension avant les migrations ; HNSW coûte en mémoire |
-| Exécution | un orchestrateur à nous | peu de conteneurs, Next.js `standalone` | la plateforme build, déploie, redémarre et route | les JVM d'un conteneur vivent et meurent ensemble |
-| Tests de bout en bout | retester la bibliothèque dans chaque produit | Playwright (web), Maestro (mobile), sur les parcours | chaque test a un seul sujet | deux outils, et l'émulateur est lent |
-| CI | une copie par dépôt | 36 workflows réutilisables, épinglés | une correction arrive partout par une montée d'épingle | changer un workflow partagé, c'est changer chaque dépôt |
-| Supervision | Prometheus, Loki et Grafana chez nous | Grafana Cloud, tableaux de bord en code | les sondes et le stockage ne sont pas notre produit | les limites de l'offre gratuite, et un caviardage avant Loki |
-| Code partagé | copier entre produits, ou un seul dépôt | des bibliothèques publiées, importées | un comportement écrit et testé une fois | une montée de version pour chaque changement |
+<Compare label="Les huit choix : pour chaque sujet, l'option écartée, celle qu'on a choisie, pourquoi et ce que ça coûte" topic="Sujet" before="Écarté" after="Choisi">
+  <Case topic="Messages" before="Kafka" after="RabbitMQ" afterDetail="Pourquoi : il nous faut des files de travail (une tâche, un worker, puis elle disparaît). Ce que ça coûte : on opère le courtier ; chaque consommateur doit être idempotent." />
+  <Case topic="Données" before="NoSQL comme référence" after="PostgreSQL, jsonb où il faut" afterDetail="Pourquoi : des invariants entre lignes, gardés par une transaction. Ce que ça coûte : une migration à chaque changement de forme." />
+  <Case topic="Vecteurs" before="une base vectorielle à part" after="pgvector dans le même PostgreSQL" afterDetail="Pourquoi : le vecteur vit avec sa ligne, dans la même transaction et la même sauvegarde. Ce que ça coûte : l'extension avant les migrations ; HNSW coûte en mémoire." />
+  <Case topic="Exécution" before="un orchestrateur à nous" after="peu de conteneurs, Next.js standalone" afterDetail="Pourquoi : la plateforme build, déploie, redémarre et route. Ce que ça coûte : les JVM d'un conteneur vivent et meurent ensemble." />
+  <Case topic="Tests de bout en bout" before="retester la bibliothèque dans chaque produit" after="Playwright (web), Maestro (mobile), sur les parcours" afterDetail="Pourquoi : chaque test a un seul sujet. Ce que ça coûte : deux outils, et l'émulateur est lent." />
+  <Case topic="CI" before="une copie par dépôt" after="36 workflows réutilisables, épinglés" afterDetail="Pourquoi : une correction arrive partout par une montée d'épingle. Ce que ça coûte : changer un workflow partagé, c'est changer chaque dépôt." />
+  <Case topic="Supervision" before="Prometheus, Loki et Grafana chez nous" after="Grafana Cloud, tableaux de bord en code" afterDetail="Pourquoi : les sondes et le stockage ne sont pas notre produit. Ce que ça coûte : les limites de l'offre gratuite, et un caviardage avant Loki." />
+  <Case topic="Code partagé" before="copier entre produits, ou un seul dépôt" after="des bibliothèques publiées, importées" afterDetail="Pourquoi : un comportement écrit et testé une fois. Ce que ça coûte : une montée de version pour chaque changement." />
+</Compare>
 
 Le détail suit, dans le même ordre.
 

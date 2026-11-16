@@ -195,13 +195,13 @@ The second audit compared every local database with the logs and with GitHub, on
 
 ## Our trade-offs
 
-| Question | Option set aside | Chosen | Why | What it costs |
-| --- | --- | --- | --- | --- |
-| Who decides a merge? | the session itself | the train and the merge queue | code that reads checks answers the same way every time | a hole in a check is a hole in the review |
-| How to keep teams apart? | a reservation service per task | one worktree per issue, a refusal on files already touched | needs no running service | two changes through different files only meet in CI |
-| Where to keep state? | a server database | SQLite on the machine, GitHub as the source | everything that reads it runs here; it rebuilds | the history of alerts exists only here |
-| Where to see an error? | in CI | on the machine, before the push | a loop of a few seconds instead of a CI round trip | a pre-check to keep fast |
-| Which skills to load? | the whole account | our 19 skills, pinned | the same context at every start, and a smaller one | every skill is ours to maintain |
+<Compare label="Our trade-offs: for each question, the option set aside, the one we chose, why and what it costs" topic="Question" before="Set aside" after="Chosen">
+  <Case topic="Who decides a merge?" before="the session itself" after="the train and the merge queue" afterDetail="Why: code that reads checks answers the same way every time. What it costs: a hole in a check is a hole in the review." />
+  <Case topic="How to keep teams apart?" before="a reservation service per task" after="one worktree per issue, a refusal on files already touched" afterDetail="Why: needs no running service. What it costs: two changes through different files only meet in CI." />
+  <Case topic="Where to keep state?" before="a server database" after="SQLite on the machine, GitHub as the source" afterDetail="Why: everything that reads it runs here; it rebuilds. What it costs: the history of alerts exists only here." />
+  <Case topic="Where to see an error?" before="in CI" after="on the machine, before the push" afterDetail="Why: a loop of a few seconds instead of a CI round trip. What it costs: a pre-check to keep fast." />
+  <Case topic="Which skills to load?" before="the whole account" after="our 19 skills, pinned" afterDetail="Why: the same context at every start, and a smaller one. What it costs: every skill is ours to maintain." />
+</Compare>
 
 ## The skills our sessions load
 
