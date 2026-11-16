@@ -79,6 +79,8 @@ test("resolve maps the production host onto the base, drops fragments and other 
 test("the hosts that refuse robots are a short explicit list; nothing else is soft", () => {
   assert.ok(SOFT_HOSTS.length <= 15);
   assert.ok(isSoft("https://www.linkedin.com/in/x"));
+  // opensource.org answers the CI runner 403 and a browser 200 (krizaka-internal#4034): reported, never fatal.
+  assert.ok(isSoft("https://opensource.org/osd"));
   assert.ok(!isSoft("https://github.com/krizaka"));
 });
 
