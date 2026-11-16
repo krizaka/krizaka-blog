@@ -12,11 +12,18 @@ cover: architecture-krizaka-agents
 coverAlt: "Blue pen plate on Seyès paper with a red margin: the container diagram of krizaka-agents, eleven boxes numbered like figures and joined by arrows, beside the tooling's name underlined in red and the caption “fig. 2 · C2”"
 newsletter: hold
 sensitive: true
+chapter: 32
+period: "2026-11-15"
+sources:
+  - the-architecture-of-krizaka-agents
+versus:
+  faced: "how one person ships software with AI agents and keeps it under control"
+  built: "the tooling around the models: a launcher, guards, trains, a watchdog, an operations database and a cockpit, drawn as checked C4 views"
 ---
 
 This post is for enterprise architects and IT experts who ask a fair question: how does one person ship software with AI agents, and keep it under control? My answer is not a model. It is the tooling around the models, which we call krizaka-agents. It is private, so I show its pieces and how they talk, not its code.
 
-In [chapter 29](/story/how-our-agent-teams-talk/) I promised diagrams generated from a model rather than drawn by hand. Here they are. The views below come from one model written in [LikeC4](https://likec4.dev), the notation of the [C4 model](https://c4model.com), against the same base and with the same check as every system of our organisation. How that works, and what it does not prove, is the last part.
+In [chapter 31](/story/how-our-agent-teams-talk/) I promised diagrams generated from a model rather than drawn by hand. Here they are. The views below come from one model written in [LikeC4](https://likec4.dev), the notation of the [C4 model](https://c4model.com), against the same base and with the same check as every system of our organisation. How that works, and what it does not prove, is the last part.
 
 ## Three principles first
 
@@ -60,7 +67,7 @@ The pilot is an agent: a long conversation between the founder and a CTO session
 
 Launching is not the CTO's own act. It hands the brief to the **launcher**, plain code with no model, which builds every headless session the same way. Why code: a session must start the same way every time, and a model asked to build it could decide otherwise.
 
-We also built a richer coordinator, with leases, fencing tokens and a scope reserved per task ([the coordinator](/basics/agents-under-a-coordinator/)). It runs, but for one local repository only; no GitHub repository is under it yet. What keeps teams apart there is simpler: one worktree per ticket, and a pull request refused at opening when it changes a file that another open one already changes. Why the simple rule: it needs no service to be up before work can start. What it costs: it compares exact paths, so two changes that touch the same behaviour through different files only meet in the checks, once the second branch is brought up to date with main.
+We also built a richer coordinator, with leases, fencing tokens and a scope reserved per task ([the coordinator](/story/agents-under-a-coordinator/)). It runs, but for one local repository only; no GitHub repository is under it yet. What keeps teams apart there is simpler: one worktree per ticket, and a pull request refused at opening when it changes a file that another open one already changes. Why the simple rule: it needs no service to be up before work can start. What it costs: it compares exact paths, so two changes that touch the same behaviour through different files only meet in the checks, once the second branch is brought up to date with main.
 
 ### The team sessions: isolated, pinned, checked at start
 
@@ -205,7 +212,7 @@ Two more tools of ours are worth naming: for our brand films, we also use hosted
   <Side title="What it gives us" tone="after" items="Traceability: every change goes ticket, pull request, required checks, merge queue, main | Reproducible sessions: same environment at every start, proven, with the drift named | No model in the decision to merge | Defects caught on the machine rather than in CI | One founder can see the whole state on one screen, every figure dated" />
 </Split>
 
-The numbers we have are few, measured, and published with their source. On 13 November, four read-only audits of the sessions' logs were run; the first three read 150 environment checks at start (118, 16 and 16): no drift. The same day, the first audit showed what a guard costs when nobody measures it: 86 sessions out of 101 had never asked the code index, though the guard requiring it was in place. Both are in [chapter 29](/story/how-our-agent-teams-talk/), with the method and the limits.
+The numbers we have are few, measured, and published with their source. On 13 November, four read-only audits of the sessions' logs were run; the first three read 150 environment checks at start (118, 16 and 16): no drift. The same day, the first audit showed what a guard costs when nobody measures it: 86 sessions out of 101 had never asked the code index, though the guard requiring it was in place. Both are in [chapter 31](/story/how-our-agent-teams-talk/), with the method and the limits.
 
 <Numbers>
   <Num value="150" label="environment checks read at start" hint="no drift, the first three audits of 13 November" />

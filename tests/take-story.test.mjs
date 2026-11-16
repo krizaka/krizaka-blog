@@ -107,10 +107,19 @@ test("a cover without a Studio run id passes only as a listed local-free excepti
   assert.ok(!coverProvenance("series-22-x", { ...klein, via: "local" }), "not a Studio run");
 });
 
+// The pieces that were published as posts before they became chapters (krizaka-internal#3941) keep the cover they came with.
+const OWN_COVERS = [
+  "let-me-show-you-the-machine",
+  "agents-under-a-coordinator",
+  "the-architecture-of-krizaka-agents",
+  "design-choices-for-architects",
+  "five-ergonomics-choices-on-our-real-screens",
+];
+
 test("every chapter of the series but the 10th wears its series cover, and each cover is a media entry sold in every size", () => {
   const picked = series.chapters.map((c, i) => ({ ...c, id: `series-${String(i + 1).padStart(2, "0")}-${c.post}` }));
   for (const c of picked) {
-    if (c.post === KEEPS) continue;
+    if (c.post === KEEPS || OWN_COVERS.includes(c.post)) continue;
     // a draft owes no cover yet (content-rules: only a published chapter does); its cover is made before it is published
     if (matter(read(`content/chapters/${c.post}.en.mdx`)).data.draft === true) continue;
     for (const loc of ["en", "fr"]) {
