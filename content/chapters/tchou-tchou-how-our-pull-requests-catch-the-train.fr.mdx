@@ -1,8 +1,8 @@
 ---
 title: "Tchou-tchou : comment nos pull requests prennent le train"
-description: "Cent quarante PR ouvertes, des sessions qui attendent la CI, et un petit script sans jeton qui les dépose une à une. Ce qui a cassé, ce qu'on a gardé, et les règles qui en sont sorties."
+description: "Cent quarante PR ouvertes, des sessions qui attendent la CI, et un petit script sans token qui les dépose une à une. Ce qui a cassé, ce qu'on a gardé, et les règles qui en sont sorties."
 seoTitle: "Tchou-tchou : nos pull requests prennent le train"
-seoDescription: "Comment Krizaka dépose ses pull requests une par une avec un petit train sans jeton, ce qui a cassé cette semaine et les gardes qui en sont sorties."
+seoDescription: "Comment Krizaka dépose ses pull requests une par une avec un petit train sans token, ce qui a cassé cette semaine et les gardes qui en sont sorties."
 date: 2026-10-30
 publishedAt: "2026-10-30T22:30:00-04:00"
 tags: [ai, integration, measurements]
@@ -30,7 +30,7 @@ stats:
     section: "Ce qui a cassé, et la garde qui en est sortie"
 ---
 
-Cette semaine, j'ai compris que mes agents ne manquaient pas de vitesse. Ils manquaient de quai. Chaque session finissait son travail, ouvrait une pull request, puis attendait que la CI passe, que la file de fusion l'accepte, que la branche soit à jour. Pendant ce temps, la session coûtait, et la pile grossissait.
+Cette semaine, j'ai compris que mes agents ne manquaient pas de vitesse. Ils manquaient de quai. Chaque session finissait son travail, ouvrait une pull request, puis attendait que la CI passe, que la merge queue l'accepte, que la branche soit à jour. Pendant ce temps, la session coûtait, et la pile grossissait.
 
 Ce chapitre raconte le petit système qui a remis ça en mouvement. Je l'appelle le train, parce que c'est exactement ça : des wagons qui partent l'un derrière l'autre, sans se doubler.
 
@@ -38,7 +38,7 @@ Ce chapitre raconte le petit système qui a remis ça en mouvement. Je l'appelle
 
 Nous travaillons avec cinq lanes : une session par application (Yomizaka, Akinaza, Orazaka), une pour la plateforme, une pour la sécurité. Chacune ouvre ses PR. En fin de journée jeudi, il y avait une centaine de PR ouvertes dans l'organisation. Vendredi à 2 h du matin, il y en avait 140, et une heure plus tard le dépôt d'Akinaza en portait 24 à lui seul.
 
-Le goulot n'était pas le code. C'était la capacité de la CI et de la file de fusion : une PR doit passer, une autre attend derrière, et si la branche change entre-temps, tout recommence. Une session qui attend, c'est une session qui brûle du budget pour regarder un cercle tourner.
+Le goulot n'était pas le code. C'était la capacité de la CI et de la merge queue : une PR doit passer, une autre attend derrière, et si la branche change entre-temps, tout recommence. Une session qui attend, c'est une session qui brûle du budget pour regarder un cercle tourner.
 
 <Numbers>
   <Num value="5" label="lanes" hint="une session par application, la plateforme, la sécurité" />
@@ -48,13 +48,13 @@ Le goulot n'était pas le code. C'était la capacité de la CI et de la file de 
 
 ## Le train
 
-Le train est un petit script : moins de quatre-vingts lignes de shell, sans aucun jeton de modèle. Il prend des PR déjà relues, dans l'ordre, et pour chacune :
+Le train est un petit script : moins de quatre-vingts lignes de shell, sans aucun token de modèle. Il prend des PR déjà relues, dans l'ordre, et pour chacune :
 
 <Steps>
   <Step title="Attendre">La PR précédente est fusionnée. Pas avant.</Step>
   <Step title="Mettre à jour">La branche rattrape `main`. Si GitHub a changé sa base, elle suit.</Step>
   <Step title="Approuver">Une seule fois par version de la branche, avec mon compte.</Step>
-  <Step title="Mettre en file">La PR entre dans la file de fusion.</Step>
+  <Step title="Mettre en file">La PR entre dans la merge queue.</Step>
   <Step title="S'arrêter au premier rouge">Un check rouge, un conflit, une éjection : le train s'arrête et dit pourquoi. Il ne fusionne jamais autour d'un échec.</Step>
 </Steps>
 
@@ -63,8 +63,8 @@ Le point important : la relecture se fait avant, par la session qui a écrit la 
 <Pipeline label="Le trajet d'une pull request, de sa branche à la production : la session écrit et relit, le train ne fait que porter.">
   <Stage title="Branche" note="une session">Un worktree depuis main, une issue, le test d'abord. La session relit son propre diff avant d'ouvrir la PR.</Stage>
   <Stage title="Checks" note="CI sur la PR">Lint, tests, build, analyse du code. Un check rouge arrête tout ici.</Stage>
-  <Stage title="Le train" note="aucun jeton" tone="gate">Il attend la PR précédente, met la branche à jour, approuve une fois par version, met en file. Il s'arrête au premier rouge.</Stage>
-  <Stage title="File de fusion" note="CI encore">Les checks repassent, sur la PR fusionnée avec ce qui la précède dans la file.</Stage>
+  <Stage title="Le train" note="aucun token" tone="gate">Il attend la PR précédente, met la branche à jour, approuve une fois par version, met en file. Il s'arrête au premier rouge.</Stage>
+  <Stage title="Merge queue" note="CI encore">Les checks repassent, sur la PR fusionnée avec ce qui la précède dans la file.</Stage>
   <Stage title="main" note="un commit">La PR devient un seul commit sur main, et sa branche est supprimée.</Stage>
   <Stage title="Déploiement" note="puis vérifié" tone="ship">Le site est construit et déployé ; un job vérifie ensuite que le site en ligne porte bien ce commit.</Stage>
 </Pipeline>
@@ -80,7 +80,7 @@ Le train n'a pas marché du premier coup. Chaque panne est devenue une règle, e
   <Case topic="quota" before="Vingt-sept trains qui interrogeaient l'API toutes les 90 secondes ont vidé le quota partagé." after="REST, toutes les 3 minutes" afterDetail="Les lectures passent par l'API REST ; seul la mise en file reste une mutation." />
   <Case topic="silence" before="Une réécriture du script a fait tourner tous les trains à vide pendant une heure, sans erreur." after="Un test des fonctions de lecture" afterDetail="L'état d'une PR est maintenant testé avant chaque changement du script." />
   <Case topic="bot de versions" before="Un bot ouvrait une PR de mise à jour par fusion : 116 doublons." after="Une PR de versions par dépôt" afterDetail="Une règle d'organisation s'ajoute à la PR de masse ouverte, elle n'en ouvre pas une autre." />
-  <Case topic="délai" before="Le délai de la file de fusion était plus court que la CI : des éjections à tort." after="Un délai plus long que la CI" afterDetail="La file ne juge plus une CI saine trop lente." />
+  <Case topic="délai" before="Le délai de la merge queue était plus court que la CI : des éjections à tort." after="Un délai plus long que la CI" afterDetail="La file ne juge plus une CI saine trop lente." />
   <Case topic="check sauté" before="Le nom d'un job sauté n'était pas évalué : une PR restait bloquée sur un check fantôme." after="Des noms littéraux" afterDetail="Les checks requis portent leur nom exact." />
 </Compare>
 
@@ -124,7 +124,7 @@ Le train dépend de la CI, et la CI reste lente : [le chapitre suivant](/fr/stor
 
 Cette semaine, j'ai aussi posé une phrase en tête de toutes les règles de nos agents : « Le flux tourne, l'échéance est à nous : elle peut bouger, la qualité jamais. » Le flux, ce sont les trains et les petites PR. L'échéance, c'est nous qui la fixons, et nous disons quand elle bouge. La qualité, on ne la rogne pas pour tenir une date : pas de hook sauté, pas de test affaibli, pas de rendu « assez bien ».
 
-Quand mon usage de Claude a atteint 75 % de la semaine, vendredi, nous sommes passés en mode économie : deux sessions au plus, un modèle moins coûteux pour les tâches de dépôt, pas de rendu payant. Les trains, eux, ont continué à travailler sans consommer un jeton de modèle. Le mode économie a duré quelques heures, puis j'ai décidé de continuer. C'était mon choix, et mon budget.
+Quand mon usage de Claude a atteint 75 % de la semaine, vendredi, nous sommes passés en mode économie : deux sessions au plus, un modèle moins coûteux pour les tâches de dépôt, pas de rendu payant. Les trains, eux, ont continué à travailler sans consommer un token de modèle. Le mode économie a duré quelques heures, puis j'ai décidé de continuer. C'était mon choix, et mon budget.
 
 ## Questions fréquentes
 

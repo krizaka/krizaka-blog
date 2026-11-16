@@ -50,11 +50,11 @@ Pour Akinaza, les parcours web sont dans [`journeys.visual.mjs`](repo:folioviv/b
 
 Les captures de référence sont faites sous Linux, dans le conteneur officiel de Playwright, jamais sur mon Mac. Sinon deux machines dessineraient la même police de deux façons et tout serait rouge. Quand une référence doit changer, un workflow « Update visual baselines » le fait sur la branche, et je n'ai pas à lancer Docker chez moi.
 
-Le job tourne en [environ 2 minutes](repo:folioviv/actions/workflows/visual.yml) (les huit derniers lancements réussis que j'ai lus aujourd'hui), et c'est un contrôle obligatoire de la file de fusion. Dates, heures et créneaux libres sont masqués, la carte aussi, puisque ses tuiles viennent du réseau.
+Le job tourne en [environ 2 minutes](repo:folioviv/actions/workflows/visual.yml) (les huit derniers lancements réussis que j'ai lus aujourd'hui), et c'est un contrôle obligatoire de la merge queue. Dates, heures et créneaux libres sont masqués, la carte aussi, puisque ses tuiles viennent du réseau.
 
 La configuration dit une chose qui m'importe plus que le reste, et qui tient en une ligne : [`retries: 0`](repo:folioviv/blob/main/apps/web/e2e/visual/playwright.config.mjs). Pas de rejeu. Un test qui échoue puis réussit au deuxième essai ne passe pas pour moi, il cache un bogue.
 
-Le noyau commun de ces parcours (se connecter une fois par processus, les masques, les crochets de vidéo, la quarantaine plafonnée) est dans `@krizaka/page-audit/journey`, écrit dans [krizaka-ts#277](repo:krizaka-ts/pull/277) puis publié par [la PR de version #278](repo:krizaka-ts/pull/278). Le premier produit à s'en servir est Yomizaka, avec [yomizaka#623](repo:verikora/pull/623) : un catalogue de parcours dans un fichier, et un premier parcours, la section G du bail. Au moment où j'écris, cette PR est encore dans la file de fusion. Akinaza n'a pas encore son catalogue.
+Le noyau commun de ces parcours (se connecter une fois par processus, les masques, les hooks de vidéo, la quarantaine plafonnée) est dans `@krizaka/page-audit/journey`, écrit dans [krizaka-ts#277](repo:krizaka-ts/pull/277) puis publié par [la PR de version #278](repo:krizaka-ts/pull/278). Le premier produit à s'en servir est Yomizaka, avec [yomizaka#623](repo:verikora/pull/623) : un catalogue de parcours dans un fichier, et un premier parcours, la section G du bail. Au moment où j'écris, cette PR est encore dans la merge queue. Akinaza n'a pas encore son catalogue.
 
 ## Le téléphone : Maestro
 
@@ -223,7 +223,7 @@ Le workflow [`download-videos.yml`](repo:folioviv/blob/main/.github/workflows/do
 
 <Pipeline label="Quand chaque test tourne, et quand il filme">
   <Stage title="Pull request" note="chaque changement">Lint, tests unitaires, build ; les parcours Playwright sur le web, ceux de Maestro sur un émulateur Android. La porte mobile est un contrôle requis.</Stage>
-  <Stage title="File de fusion" note="merge_group" tone="gate">Les mêmes contrôles, sur la branche de la file : le changement avec le dernier main fusionné.</Stage>
+  <Stage title="Merge queue" note="merge_group" tone="gate">Les mêmes contrôles, sur la branche de la file : le changement avec le dernier main fusionné.</Stage>
   <Stage title="main vert" note="après la fusion">Les parcours mobiles tournent encore une fois sur main.</Stage>
   <Stage title="Chaque nuit" note="download-videos">Sur main, Playwright et Maestro filment les parcours : 30 secondes au plus, sans son, 720 pixels de large au plus.</Stage>
   <Stage title="Les films" note="empreinte, puis une PR" tone="ship">Envoyés sur notre stockage de médias sous un nom qui porte leur empreinte ; une PR met à jour le manifeste, et un test échoue si une vidéo manque ou a plus de 14 jours.</Stage>
@@ -258,7 +258,7 @@ Ce qui vient des dépôts aujourd'hui :
 - Akinaza compte 345 fichiers de test (unitaires, d'intégration, parcours), comptés dans le dépôt.
 - 6 parcours web avec 22 captures de référence, 7 parcours Maestro et 1 parcours de vidéo pour le téléphone.
 - Sur les huit derniers lancements réussis que j'ai lus, la CI complète d'une PR prend de 23 à 28 minutes, le job de captures environ 2 et le job mobile de 16 à 19.
-- Dans nos relevés de coût, une PR fusionnée d'Akinaza consomme 45 000 jetons en médiane, sur 131 PR, de 9 375 à 190 000. Je donne des jetons, pas des dollars, parce que c'est ce que le relevé mesure.
+- Dans nos relevés de coût, une PR fusionnée d'Akinaza consomme 45 000 tokens en médiane, sur 131 PR, de 9 375 à 190 000. Je donne des tokens, pas des dollars, parce que c'est ce que le relevé mesure.
 
 Et ce qui manque :
 

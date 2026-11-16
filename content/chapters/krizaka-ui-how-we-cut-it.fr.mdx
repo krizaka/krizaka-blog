@@ -53,7 +53,7 @@ Toutes les coupes qui suivent répondent à la même question : où cette chose 
 Le dépôt contient aujourd'hui 19 paquets. La règle de placement tient en trois niveaux, et pas un de plus.
 
 <Layers label="Les trois niveaux de Krizaka UI. Seuls les niveaux 0 et 1 vivent dans son dépôt ; les mots d'un produit restent au niveau 2.">
-  <Layer tag="0" title="Fondations" note="Les jetons de design et le préréglage Tailwind. Aucun composant." items="@krizaka/tokens | @krizaka/tailwind" />
+  <Layer tag="0" title="Fondations" note="Les tokens de design et le préréglage Tailwind. Aucun composant." items="@krizaka/tokens | @krizaka/tailwind" />
   <Layer tag="0" title="Briques de plateforme" note="Du code sans interface que chaque produit veut de la même façon : formats, messages, temps réel, état du serveur, notifications, paiements." items="intl | i18n | realtime | query | push | pacer | payments | email…" />
   <Layer tag="1" title="Primitives" note="Tout composant sans vocabulaire de produit. Les mots arrivent par les props." items="@krizaka/ui/button | card | dialog | tabs…" />
   <Layer tag="2" title="Composites de produit" note="Un dépôt par produit : son thème et les composants qui portent son vocabulaire. Jamais une primitive copiée." />
@@ -63,7 +63,7 @@ Le test de placement est une question : *un autre produit pourrait-il l'utiliser
 
 Pourquoi autant de paquets plutôt qu'un gros ? Pour qu'une application ne paie que ce dont elle a besoin. Une application mobile n'a que faire de Tailwind. Un service qui envoie des courriels n'a pas besoin des composants. `@krizaka/intl` n'a aucune dépendance, et les pilotes du temps réel (`pg`, `ioredis`) sont optionnels : les connexions et les adresses sont données par l'application, jamais lues dans son environnement.
 
-Une exception volontaire : `tokens`, `tailwind` et `ui` forment un groupe fixe et partagent un seul numéro de version, aujourd'hui 3.63.1. Ils se tiennent ensemble : un jeton renommé casse le préréglage et les composants en même temps. Les autres paquets ont leur propre numéro.
+Une exception volontaire : `tokens`, `tailwind` et `ui` forment un groupe fixe et partagent un seul numéro de version, aujourd'hui 3.63.1. Ils se tiennent ensemble : un token renommé casse le préréglage et les composants en même temps. Les autres paquets ont leur propre numéro.
 
 ## Une entrée par composant
 
@@ -77,7 +77,7 @@ import { Button } from "@krizaka/ui/button";
 
 C'est une décision d'adoption autant que de taille. Un produit qui n'utilise que le bouton et la carte ne doit pas embarquer le calendrier. Et on peut adopter le kit un composant à la fois, sans migration d'un bloc.
 
-Le mobile n'est pas une entrée parmi les autres : `@krizaka/ui/native` est la version React Native, avec les mêmes jetons. Le bureau est plus simple, et c'est volontaire. L'ADR-002 dit que le bureau, c'est le web dans une fenêtre : l'app Mac d'Orazaka est une fenêtre Tauri, un binaire d'environ 10 Mo qui affiche les composants web tels quels, là où Electron aurait embarqué un Chromium de 150 Mo. Pas de troisième implémentation à tenir en phase avec les deux autres.
+Le mobile n'est pas une entrée parmi les autres : `@krizaka/ui/native` est la version React Native, avec les mêmes tokens. Le bureau est plus simple, et c'est volontaire. L'ADR-002 dit que le bureau, c'est le web dans une fenêtre : l'app Mac d'Orazaka est une fenêtre Tauri, un binaire d'environ 10 Mo qui affiche les composants web tels quels, là où Electron aurait embarqué un Chromium de 150 Mo. Pas de troisième implémentation à tenir en phase avec les deux autres.
 
 ## Le code écrit la documentation
 
@@ -91,7 +91,7 @@ Il y a une conséquence que j'apprécie : pour chaque composant, il faut dire s'
 
 Au-dessus des primitives, il y a un deuxième étage : les blocs de page. `Page`, `PageHero`, `Section`, `CardGrid`, `LinkCard`, `ActionBar`… Chaque page de krizaka.com, du blog et de ui.krizaka.com est faite de ces blocs, jamais d'une copie locale. Quand un bloc manque, on l'ajoute au kit, on le publie, puis on l'utilise.
 
-Chaque page déclare aussi son gabarit, choisi parmi 15 : accueil, produit, comment ça marche, galerie, accueil de documentation, article de documentation, composant, catalogue, texte long, journal des versions, contact, mentions légales, statut, erreur, tarifs. Le fichier `lib/page-templates.ts` de krizaka.com les liste, et la commande de lint échoue si une page n'y est pas. Sur ui.krizaka.com, les gabarits sont classés par intention : convaincre, expliquer, montrer, agir, exploiter, converser, se remettre d'une erreur.
+Chaque page déclare aussi son template, choisi parmi 15 : accueil, produit, comment ça marche, galerie, accueil de documentation, article de documentation, composant, catalogue, texte long, journal des versions, contact, mentions légales, statut, erreur, tarifs. Le fichier `lib/page-templates.ts` de krizaka.com les liste, et la commande de lint échoue si une page n'y est pas. Sur ui.krizaka.com, les templates sont classés par intention : convaincre, expliquer, montrer, agir, exploiter, converser, se remettre d'une erreur.
 
 La règle du langage de pages tient en une phrase : se lire en cinq secondes, puis aller plus loin à la demande. Une carte montre une icône, un nom, une phrase. Le détail se déplie.
 
@@ -107,12 +107,12 @@ Ce n'est pas une règle qu'on espère voir respectée. `krizakaStack()` (ESLint)
 
 ## Livrer sans casser personne
 
-Une bibliothèque partagée ne vaut que si la mise à jour est sans peur. Tout passe par des changesets : une pull request qui change ce qu'un paquet livre ajoute une note. Sur `main`, un robot ouvre une pull request « version packages ». La fusionner publie sur npm, avec une publication de confiance (OIDC) et une provenance, sans aucun jeton npm dans les secrets.
+Une bibliothèque partagée ne vaut que si la mise à jour est sans peur. Tout passe par des changesets : une pull request qui change ce qu'un paquet livre ajoute une note. Sur `main`, un robot ouvre une pull request « version packages ». La fusionner publie sur npm, avec une publication de confiance (OIDC) et une provenance, sans aucun token npm dans les secrets.
 
 <Pipeline label="Le chemin d'une version de Krizaka UI, d'une pull request jusqu'aux produits">
   <Stage title="Un changeset" note="dans la pull request">Une pull request qui change ce qu'un paquet livre ajoute une note.</Stage>
   <Stage title="La PR de version" note="ouverte par un robot">Sur main, un robot rassemble les notes dans une pull request « version packages ».</Stage>
-  <Stage title="npm" note="OIDC, provenance" tone="gate">La fusionner publie, avec la publication de confiance et la provenance. Aucun jeton npm dans les secrets.</Stage>
+  <Stage title="npm" note="OIDC, provenance" tone="gate">La fusionner publie, avec la publication de confiance et la provenance. Aucun token npm dans les secrets.</Stage>
   <Stage title="Le test d'installation" note="chaque jour" tone="gate">Les paquets publiés, depuis npm, vont dans une vraie app Next.js, une app Expo et un script Node, et chaque exemple compile.</Stage>
   <Stage title="Les produits" note="Renovate" tone="ship">Une pull request par version dans chaque produit ; les correctifs fusionnent seuls quand la CI est verte.</Stage>
 </Pipeline>

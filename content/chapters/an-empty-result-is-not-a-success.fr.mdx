@@ -69,7 +69,7 @@ La première fois, le moteur s'arrête et montre exactement ce qu'il écrirait. 
 
 Enfin, chaque décision laisse une ligne dans un journal où chaque entrée porte l'empreinte SHA-256 de la précédente. Une ligne modifiée ou retirée casse la chaîne, et l'application dit si elle se vérifie. Le journal ne contient jamais le contenu des fichiers.
 
-Ce que ça donne, mesuré sur un Mac avec le modèle <Model id="qwen25-7b">Qwen2.5 7B</Model> servi par Ollama, trois PDF d'un utilisateur de démonstration : une exécution qui lit les trois, produit trois notes après un accord « toujours pour ce dossier », en 36 secondes, 1 040 jetons lus et 515 écrits, une chaîne de 13 entrées qui se vérifie. Le lendemain matin, elle écrit sans redemander, et ne résume pas deux fois les mêmes PDF.
+Ce que ça donne, mesuré sur un Mac avec le modèle <Model id="qwen25-7b">Qwen2.5 7B</Model> servi par Ollama, trois PDF d'un utilisateur de démonstration : une exécution qui lit les trois, produit trois notes après un accord « toujours pour ce dossier », en 36 secondes, 1 040 tokens lus et 515 écrits, une chaîne de 13 entrées qui se vérifie. Le lendemain matin, elle écrit sans redemander, et ne résume pas deux fois les mêmes PDF.
 
 <Clip id="agent-mac-clip" alt="L'application Mac : création d'une automatisation, approbation des notes avant l'écriture, historique pas à pas et journal vérifié" caption="L'interface de l'application, alimentée par les états de cette exécution réelle. Muet." />
 
@@ -139,7 +139,7 @@ Celle d'Orazaka a quatre règles, que j'ai relues dans le code avant d'écrire c
 
 **Le rôle se vérifie sur le serveur.** Il n'y a pas de connexion sociale. Un compte sans le rôle d'administrateur n'obtient pas de session de console, et chaque point d'accès administratif revérifie ce rôle de son côté, quel que soit le client qui appelle.
 
-**Le navigateur ne voit jamais un service.** La console est un proxy côté serveur : le jeton de session est ajouté à l'appel par l'application, pas par la page. Et les routes internes ne sont tout simplement pas dans la table de routes de la porte d'entrée. La console ne peut pas les atteindre, par construction.
+**Le navigateur ne voit jamais un service.** La console est un proxy côté serveur : le token de session est ajouté à l'appel par l'application, pas par la page. Et les routes internes ne sont tout simplement pas dans la table de routes de la porte d'entrée. La console ne peut pas les atteindre, par construction.
 
 **Elle a ses propres secrets de session.** Un cookie, une clé de signature et un interrupteur de connexion à elle, distincts de ceux du site public. Si la connexion est fermée, les routes de l'API de la console répondent 404.
 

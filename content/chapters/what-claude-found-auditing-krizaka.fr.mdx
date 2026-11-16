@@ -172,14 +172,14 @@ Un audit par une IA est une liste de pistes, pas un verdict. J'ai repris les aff
   <Case topic="Le jour UTC (Gemini)" before="8 dépôts" after="Vrai" afterDetail="Corrigé dans Yomizaka (#311), une règle refuse désormais le motif ; les autres dépôts suivent." />
 </Compare>
 
-Les chiffres des deux modèles étaient exacts. Deux affirmations de Gemini sont plus fortes que la réalité, et je l'écris dans le tableau. Le défaut du préfixe `TIMEOUT` est réel. Un ticket existait déjà pour découper ce fichier, mais il ne parlait que du crochet de simulation, qui lui est bien protégé par un réglage. J'y ai ajouté ce que le modèle a trouvé : une ligne qui avait échappé à notre propre ticket. Je l'ai corrigé le soir même : un prompt ne choisit plus son propre délai, seule la simulation de test le peut, derrière son réglage (orazaka-job-service#72).
+Les chiffres des deux modèles étaient exacts. Deux affirmations de Gemini sont plus fortes que la réalité, et je l'écris dans le tableau. Le défaut du préfixe `TIMEOUT` est réel. Un ticket existait déjà pour découper ce fichier, mais il ne parlait que du hook de simulation, qui lui est bien protégé par un réglage. J'y ai ajouté ce que le modèle a trouvé : une ligne qui avait échappé à notre propre ticket. Je l'ai corrigé le soir même : un prompt ne choisit plus son propre délai, seule la simulation de test le peut, derrière son réglage (orazaka-job-service#72).
 
 Je n'ai pas vérifié le reste. L'affirmation sur les tâches qui continuent après leur délai, par exemple, le modèle lui-même dit ne pas l'avoir vérifiée jusqu'au bout. Elle reste une piste.
 
 <Pipeline label="Une ligne trouvée par un modèle, suivie jusqu'à sa correction">
   <Stage title="L'affirmation" note="Claude">Un prompt qui commence par TIMEOUT obtient un délai de cinq secondes, sans garde.</Stage>
   <Stage title="Mesuré" note="lignes 696 à 702">Vrai sur main : aucune propriété ne le protège.</Stage>
-  <Stage title="Notre propre issue" note="orazaka-job-service#50">Le découpage du fichier était prévu, mais ne couvrait que le crochet de simulation. La ligne y a été ajoutée.</Stage>
+  <Stage title="Notre propre issue" note="orazaka-job-service#50">Le découpage du fichier était prévu, mais ne couvrait que le hook de simulation. La ligne y a été ajoutée.</Stage>
   <Stage title="La correction" note="orazaka-job-service#72" tone="ship">Un prompt ne choisit plus son propre délai ; seule la simulation de test le peut, derrière son réglage.</Stage>
   <Stage title="Ce que ça apprend" note="aucune règle ne l'a vue" tone="gate">Nos garde-fous attrapent ce pour quoi on a écrit une règle. Cette ligne n'en enfreignait aucune.</Stage>
 </Pipeline>
@@ -214,7 +214,7 @@ L'audit a tourné le 24 octobre 2026, de 23 h 53 à 23 h 58 UTC, avec Claude Cod
 
 - [le prompt](site:blog/audits/2026-10-24-ai-audit/prompt.txt) ;
 - [la réponse complète de Claude](site:blog/audits/2026-10-24-ai-audit/claude-opus-5-5-answer.md), sans coupure ;
-- [les détails de l'exécution](site:blog/audits/2026-10-24-ai-audit/run.json) : la commande, les modèles, les jetons, le coût, et ce qui n'a pas pu tourner ;
+- [les détails de l'exécution](site:blog/audits/2026-10-24-ai-audit/run.json) : la commande, les modèles, les tokens, le coût, et ce qui n'a pas pu tourner ;
 - [la réponse complète de Gemini](site:blog/audits/2026-10-24-ai-audit/gemini-3-8-flash-answer.md), avec une seule retouche, le mot de passe d'une adresse locale masqué ;
 - [les métadonnées de l'exécution de Gemini](site:blog/audits/2026-10-24-ai-audit/antigravity-run.json), lues dans Antigravity : le modèle, le nombre d'étapes et chaque commande lancée.
 
@@ -235,7 +235,7 @@ Please:
 Be specific and neutral. Do not flatter and do not soften criticism. If something is ordinary, say it is ordinary.
 ```
 
-Les jetons, tels que l'outil les a comptés :
+Les tokens, tels que l'outil les a comptés :
 
-- **Claude Opus 5.5** : 30 jetons en entrée, 47 862 écrits en cache et 416 449 lus, 14 027 en sortie, soit 0,61 $.
-- **Claude Haiku 5.5**, pour les résumés des pages : 481 596 jetons en entrée et 79 082 en sortie, soit 0,09 $.
+- **Claude Opus 5.5** : 30 tokens en entrée, 47 862 écrits en cache et 416 449 lus, 14 027 en sortie, soit 0,61 $.
+- **Claude Haiku 5.5**, pour les résumés des pages : 481 596 tokens en entrée et 79 082 en sortie, soit 0,09 $.
