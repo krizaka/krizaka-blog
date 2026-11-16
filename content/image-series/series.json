@@ -233,6 +233,12 @@
       "seed": 3549,
       "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
       "beat": "Not rendered by the series' renderer: drawn as its own text-to-image picture with the media worker's engine (mflux, FLUX.2 [klein] 4B) in the series' ink-and-watercolor look (prompt and seed in lib/media.json). The signal box of the station of chapters 23 to 31 at dusk: one empty chair at one desk, one wide window over the whole yard, a long panel of small lamps above it, the kestrel on the desk watching the tracks."
+    },
+    {
+      "post": "how-the-interface-is-built",
+      "seed": 3633,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "Not rendered by the series' renderer: drawn as its own text-to-image picture with the media worker's engine (mflux, FLUX.2 [klein] 4B) in the series' ink-and-watercolor look (prompt and seed in lib/media.json), no bird in it. The workshop where the windows of chapter 34 are made, at the dusk light of chapter 35: a long wooden workbench under one wide window, four small ink pots in the four product colours and a larger pot of plain dark ink, a thin indigo window frame, a ruler, swatches pinned in rows."
     }
   ],
   "sprites": {

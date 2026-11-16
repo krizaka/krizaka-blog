@@ -7496,5 +7496,75 @@
         }
       ]
     }
+  },
+  "series-36-how-the-interface-is-built": {
+    "kind": "image",
+    "width": 1280,
+    "height": 720,
+    "blur": "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAADwAQCdASoQAAkABABoJZQCsAEVzeyv4yQA/vCHfVWnDyIKnlDNhA7E8FIqO/MLV4A/EIl79OvaETAA",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-36-how-the-interface-is-built-480.54325b0e86.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-36-how-the-interface-is-built-960.6024a622bf.webp"
+      },
+      {
+        "w": 1280,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-36-how-the-interface-is-built-1280.a43f879a71.webp"
+      }
+    ],
+    "made": {
+      "model": "FLUX.2 [klein] 4B",
+      "licence": "Apache-2.0",
+      "engine": "mflux (mflux-generate-flux2), the media worker's engine, on the Mac's Metal GPU: 4 steps, 1280×720, text to image",
+      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+      "via": "local",
+      "prompt": "Hand-drawn ink and watercolor illustration on white paper, light and airy, a lot of unpainted white paper around and inside the scene, soft pale transparent watercolor washes in a palette of indigo, teal, warm orange and cream, delicate thin pen-and-ink linework of varying weight with some broken lines, gentle muted colour. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no photographic detail. Inside a calm, ordered wooden workshop at dusk, the same soft dusk light as a railway signal box: one long wooden workbench under one wide window. On the bench, in a neat row, four small ink pots in four colours, steel blue, indigo, green and warm orange, and beside them one larger pot of plain dark ink they are all mixed from. One finished window frame, thin indigo frame with a grid of small panes, stands upright on a wooden trestle. A wooden ruler lies on the bench. On the wall, a few small colour swatches pinned in neat rows. Nothing is on fire, nothing is cluttered. No birds, no animals, no people, no text, no letters, no numbers, no logos, no watermark.",
+      "seed": "3633",
+      "size": "1280×720",
+      "costUsd": 0,
+      "note": "Chapter 36 of the image series (cover): the workshop where the windows of chapter 34 are made, at the dusk light of chapter 35's signal box: one long workbench under one wide window, four small ink pots in the four product colours and a larger pot of plain dark ink, a thin indigo window frame, a ruler, swatches pinned in rows. Made with the media worker's engine on the Mac, outside a Sovkora Studio run: there is no run id. Three seeds were made (3601, 3617, 3633); 3633 was kept after a review at full size, the only one with the four colour pots and the larger dark pot (3601 had no steel-blue pot, 3617 no orange one). Its frame stands against the wall rather than on the trestle and shows two panes, not the grid of chapter 34. No bird, no person, no text, no logo."
+    },
+    "renditions": {
+      "avif": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-36-how-the-interface-is-built-480.eaba488e5e.avif"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-36-how-the-interface-is-built-768.83518abd9e.avif"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-36-how-the-interface-is-built-1200.f2b276addb.avif"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-36-how-the-interface-is-built-1280.2bc484d39c.avif"
+        }
+      ],
+      "webp": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-36-how-the-interface-is-built-480.fe268a5dfa.webp"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-36-how-the-interface-is-built-768.8bf7c6a295.webp"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-36-how-the-interface-is-built-1200.df039a3f88.webp"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-36-how-the-interface-is-built-1280.ed83891b28.webp"
+        }
+      ]
+    }
   }
 }
