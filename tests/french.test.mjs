@@ -34,7 +34,21 @@ test("the title, the description and the cover words are read; code is not", () 
 });
 
 test("the glossary keeps the words the founder named in English", () => {
-  for (const w of ["watchdog", "pull request", "merge queue", "runner", "build", "lint", "commit", "release", "CI", "deploy", "cache", "token", "prompt"])
+  for (const w of [
+    "watchdog",
+    "pull request",
+    "merge queue",
+    "runner",
+    "build",
+    "lint",
+    "commit",
+    "release",
+    "CI",
+    "deploy",
+    "cache",
+    "token",
+    "prompt",
+  ])
     assert.ok(FR_TERMS.keep.includes(w), w);
   for (const { use } of FR_TERMS.refuse) assert.ok(use.trim(), "every refused word names the word to use");
 });

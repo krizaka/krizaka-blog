@@ -30,7 +30,8 @@ export function frenchProblems(file, data, body) {
   const out = [];
   for (const { re, use } of REFUSED) {
     const found = [...new Set([...text.matchAll(re)].map((m) => m[0].toLowerCase()))];
-    for (const word of found) out.push(`${file}: « ${word} » is a calque: say « ${use} » (content/glossary/fr-terms.json)`);
+    for (const word of found)
+      out.push(`${file}: « ${word} » is a calque: say « ${use} » (content/glossary/fr-terms.json)`);
   }
   return out;
 }
