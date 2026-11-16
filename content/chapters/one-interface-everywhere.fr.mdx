@@ -32,7 +32,7 @@ stats:
     section: "Un kit, trois plateformes"
 ---
 
-Vendredi soir, une barre d'onglets d'une de nos applications affichait un petit ascenseur vertical à droite. Un pixel de trop, à cause de l'anneau de focus. Un détail. Mais le même motif se retrouvait dans la navigation des réglages, dans une rangée de vidéos courtes, dans un sélecteur de dates et dans la table des matières des pages de lecture.
+Vendredi soir, une barre d'onglets d'une de nos applications affichait une petite barre de défilement verticale à droite. Un pixel de trop, à cause de l'anneau de focus. Un détail. Mais le même motif se retrouvait dans la navigation des réglages, dans une rangée de vidéos courtes, dans un sélecteur de dates et dans la table des matières des pages de lecture.
 
 La correction a été faite une fois, dans le kit ([krizaka-ui#295](repo:krizaka-ui/pull/295)), avec des tests qui échouaient avant. Ensuite, chaque application l'a reçue en montant de version. C'est ça, l'idée d'un kit partagé.
 
@@ -46,7 +46,7 @@ Le 17 octobre, la page des plateformes compte 156 composants sur le web, 79 sur 
 
 La règle qui compte le plus n'est pas un composant, c'est une décision : chaque composant doit dire, pour chaque plateforme, s'il y existe, s'il reste à faire (avec un ticket), ou s'il n'a pas de sens là (et quoi utiliser à la place). Un nouveau composant sans cette décision fait échouer les tests ([krizaka-ui#283](repo:krizaka-ui/pull/283)). Côté mobile, il reste 22 trous à combler. Je préfère les voir écrits que les découvrir dans une app.
 
-Réutiliser un composant, ce n'est pas copier son code d'une plateforme à l'autre. C'est garder la même interface : le même nom, les mêmes variantes, les mêmes couleurs tirées des mêmes tokens de design. Sur le web :
+Réutiliser un composant, ce n'est pas copier son code d'une plateforme à l'autre. C'est garder la même interface : le même nom, les mêmes variantes, les mêmes couleurs tirées des mêmes design tokens. Sur le web :
 
 ```tsx
 import { Button } from "@krizaka/ui/button";
@@ -82,7 +82,7 @@ Le même jour, un peu plus tôt, j'avais fait retirer trois choses qui m'agaçai
 
 Voici ce que l'audit a trouvé.
 
-Les polices étaient Inter, Plus Jakarta Sans en graisse 800 et JetBrains Mono : le trio par défaut des templates Next.js. Le hero de krizaka.com était centré, avec une étiquette en capitales mono, un titre de 64 px à tiret long, un bouton plein et un bouton fantôme. Une étiquette en capitales mono surmontait 5 titres sur 6 sur krizaka.com, 6 sur 7 sur Orazaka et sur Yomizaka. Une bande de 3 à 4 gros chiffres qui défilent suivait chaque hero.
+Les polices étaient Inter, Plus Jakarta Sans en graisse 800 et JetBrains Mono : le trio par défaut des templates Next.js. Le hero de krizaka.com était centré, avec une étiquette en capitales mono, un titre de 64 px à tiret long, un bouton plein et un bouton fantôme. Une étiquette en capitales mono surmontait 5 titres sur 6 sur krizaka.com, 6 sur 7 sur Orazaka et sur Yomizaka (la page d'accueil de Yomizaka en avait 25). Une bande de 3 à 4 gros chiffres qui défilent suivait chaque hero.
 
 Il y avait de fausses fenêtres de navigateur, avec leurs trois points et leur barre d'adresse, sur ui.krizaka.com, sur Orazaka et sur Yomizaka. Il y avait des éléments flous : 11 sur krizaka.com, 6 sur la page du bouton, 4 sur l'accueil de ui., 3 sur Yomizaka. Sur la seule page du bouton, 231 éléments avaient exactement le même rayon de 16 px.
 

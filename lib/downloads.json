@@ -1,184 +1,184 @@
 {
   "books": {
     "en/story": {
-      "source": "3e667b99e78c",
+      "source": "decfcc4418f0",
       "files": {
         "epub": {
-          "hash": "b51abb181a",
-          "bytes": 9232883
+          "hash": "eeedc6ff37",
+          "bytes": 9233070
         },
         "pdf": {
-          "hash": "123dcb88ad",
-          "bytes": 13575298
+          "hash": "6e0604b01f",
+          "bytes": 13576647
         }
       }
     },
     "en/why-krizaka": {
-      "source": "0f4cd0c1d5a7",
+      "source": "386fca60f851",
       "files": {
         "epub": {
-          "hash": "f6fc436676",
-          "bytes": 522626
+          "hash": "f457daa2d2",
+          "bytes": 522637
         },
         "pdf": {
-          "hash": "eff98e30c8",
-          "bytes": 740366
+          "hash": "58fb10b75d",
+          "bytes": 740822
         }
       }
     },
     "en/an-engine-on-a-laptop": {
-      "source": "7f1c523d3536",
+      "source": "972851af325e",
       "files": {
         "epub": {
-          "hash": "92fd958485",
-          "bytes": 1226118
+          "hash": "8fa4ee8609",
+          "bytes": 1226124
         },
         "pdf": {
-          "hash": "128c9baab2",
-          "bytes": 1585095
+          "hash": "23cc449281",
+          "bytes": 1585564
         }
       }
     },
     "en/what-a-gpu-costs": {
-      "source": "80e41c1b1db4",
+      "source": "a14bbe07fbfc",
       "files": {
         "epub": {
-          "hash": "c5c84a1c76",
-          "bytes": 1296435
+          "hash": "cde5ee76e3",
+          "bytes": 1296426
         },
         "pdf": {
-          "hash": "08fbeaf37a",
-          "bytes": 1630921
+          "hash": "a3236912a8",
+          "bytes": 1631376
         }
       }
     },
     "en/from-a-clip-to-a-film": {
-      "source": "cd979c847b87",
+      "source": "3e853a6f6007",
       "files": {
         "epub": {
-          "hash": "2f204b4089",
-          "bytes": 851426
+          "hash": "a84d9b3add",
+          "bytes": 851430
         },
         "pdf": {
-          "hash": "dffd391d22",
-          "bytes": 1146956
+          "hash": "94cf5686d6",
+          "bytes": 1146087
         }
       }
     },
     "en/one-interface-everywhere": {
-      "source": "24928002351f",
+      "source": "a64b54bf2aed",
       "files": {
         "epub": {
-          "hash": "3cace80da0",
-          "bytes": 1745166
+          "hash": "bba0768897",
+          "bytes": 1744066
         },
         "pdf": {
-          "hash": "93a296847c",
-          "bytes": 2201947
+          "hash": "d9e84b93f2",
+          "bytes": 2203216
         }
       }
     },
     "en/the-first-products": {
-      "source": "89114dda1b2b",
+      "source": "37ff73c41e4c",
       "files": {
         "epub": {
-          "hash": "fcb3ee90e5",
-          "bytes": 727273
+          "hash": "10235daa68",
+          "bytes": 727280
         },
         "pdf": {
-          "hash": "6cc188cf6d",
-          "bytes": 1038636
+          "hash": "9a164dadc8",
+          "bytes": 1039111
         }
       }
     },
     "en/an-empty-result-is-not-a-success": {
-      "source": "c0b283ba0197",
+      "source": "95d2bd9b84e7",
       "files": {
         "epub": {
-          "hash": "740e9ca350",
-          "bytes": 499925
+          "hash": "c2aeb4f57c",
+          "bytes": 498862
         },
         "pdf": {
-          "hash": "63c570f867",
-          "bytes": 757458
+          "hash": "54a4261f5d",
+          "bytes": 758088
         }
       }
     },
     "en/building-with-agents": {
-      "source": "3fac11e96edc",
+      "source": "9d0ad128de1c",
       "files": {
         "epub": {
-          "hash": "541477593c",
-          "bytes": 908933
+          "hash": "5ecb41f934",
+          "bytes": 908936
         },
         "pdf": {
-          "hash": "0675181bea",
-          "bytes": 1289767
+          "hash": "1cb6c4c4c5",
+          "bytes": 1289416
         }
       }
     },
     "en/what-claude-found-auditing-krizaka": {
-      "source": "aeeafe194db2",
+      "source": "9bcb1d0090db",
       "files": {
         "epub": {
-          "hash": "97c62dcef0",
-          "bytes": 544355
+          "hash": "2a4c004c44",
+          "bytes": 544365
         },
         "pdf": {
-          "hash": "d5c4f2af4b",
-          "bytes": 834503
+          "hash": "3a70d0d535",
+          "bytes": 835382
         }
       }
     },
     "en/a-curve-that-climbs": {
-      "source": "85563be29521",
+      "source": "8e360a7008e8",
       "files": {
         "epub": {
-          "hash": "a38e0a4706",
-          "bytes": 818952
+          "hash": "930d48846a",
+          "bytes": 818960
         },
         "pdf": {
-          "hash": "98ae0b3e73",
-          "bytes": 1227866
+          "hash": "df7697ae56",
+          "bytes": 1228301
         }
       }
     },
     "en/how-we-built-our-ci": {
-      "source": "48639896ee93",
+      "source": "6876b8239c82",
       "files": {
         "epub": {
-          "hash": "2770177cd0",
-          "bytes": 660024
+          "hash": "dcc2a387e9",
+          "bytes": 660033
         },
         "pdf": {
-          "hash": "01c4156de5",
-          "bytes": 1084579
+          "hash": "6c37977eef",
+          "bytes": 1085337
         }
       }
     },
     "en/krizaka-ui-how-we-cut-it": {
-      "source": "c7958c0de051",
+      "source": "7e454bbbd972",
       "files": {
         "epub": {
-          "hash": "1ec2f5cdf5",
-          "bytes": 764957
+          "hash": "d8b9e50ee4",
+          "bytes": 764963
         },
         "pdf": {
-          "hash": "0eae234d40",
-          "bytes": 1136866
+          "hash": "14275b759d",
+          "bytes": 1137301
         }
       }
     },
     "en/orazaka-v2-the-architecture-we-build": {
-      "source": "0b4f5a9dbbbc",
+      "source": "7756c5228f0c",
       "files": {
         "epub": {
-          "hash": "aae2fe6bf5",
-          "bytes": 816843
+          "hash": "e8bb7aacb4",
+          "bytes": 816854
         },
         "pdf": {
-          "hash": "0cbf386964",
-          "bytes": 1274495
+          "hash": "e4e856cd75",
+          "bytes": 1274940
         }
       }
     },
@@ -186,51 +186,51 @@
       "source": "d29680afdc02",
       "files": {
         "epub": {
-          "hash": "2672205e7d",
-          "bytes": 397039
+          "hash": "e4f96a1557",
+          "bytes": 397045
         },
         "pdf": {
-          "hash": "4ae765bfb6",
-          "bytes": 627070
+          "hash": "49200c14a0",
+          "bytes": 627520
         }
       }
     },
     "en/we-bought-sonarcloud-what-do-we-have-now": {
-      "source": "1fb5261c843e",
+      "source": "85562d392cd7",
       "files": {
         "epub": {
-          "hash": "85de855145",
-          "bytes": 647277
+          "hash": "eab041d836",
+          "bytes": 647282
         },
         "pdf": {
-          "hash": "904b4ec355",
-          "bytes": 943519
+          "hash": "7b16739977",
+          "bytes": 944004
         }
       }
     },
     "en/the-audit-said-ai-code-we-measured": {
-      "source": "2345884808c3",
+      "source": "fc9f33342e22",
       "files": {
         "epub": {
-          "hash": "8e1b026232",
-          "bytes": 621215
+          "hash": "46823e3b5d",
+          "bytes": 620964
         },
         "pdf": {
-          "hash": "d1628e8186",
-          "bytes": 893252
+          "hash": "dc2683ce73",
+          "bytes": 893697
         }
       }
     },
     "en/how-the-founder-and-the-cto-agent-work": {
-      "source": "6116494cde18",
+      "source": "59ad87e2f70b",
       "files": {
         "epub": {
-          "hash": "8cd32dff69",
-          "bytes": 543665
+          "hash": "1e63ec1c37",
+          "bytes": 543671
         },
         "pdf": {
-          "hash": "3f9e99191f",
-          "bytes": 750260
+          "hash": "8d37e15501",
+          "bytes": 750700
         }
       }
     },
@@ -238,12 +238,12 @@
       "source": "1c410d0c0aa9",
       "files": {
         "epub": {
-          "hash": "059f92ac8a",
-          "bytes": 911083
+          "hash": "2f9f634e03",
+          "bytes": 911089
         },
         "pdf": {
-          "hash": "5cf77aefa3",
-          "bytes": 1307797
+          "hash": "6d3bffa53b",
+          "bytes": 1308243
         }
       }
     },
@@ -251,51 +251,51 @@
       "source": "d02058335fbd",
       "files": {
         "epub": {
-          "hash": "d9d3df0b54",
-          "bytes": 600905
+          "hash": "c13e0b898c",
+          "bytes": 600911
         },
         "pdf": {
-          "hash": "ae46362b72",
-          "bytes": 916376
+          "hash": "c676fa88fa",
+          "bytes": 916827
         }
       }
     },
     "en/how-our-automation-grew": {
-      "source": "5cbd26bb954b",
+      "source": "9a54be09888f",
       "files": {
         "epub": {
-          "hash": "cdc5f37fd3",
-          "bytes": 806013
+          "hash": "c78a67609b",
+          "bytes": 806017
         },
         "pdf": {
-          "hash": "6ffc843382",
-          "bytes": 1139253
+          "hash": "55621f1e04",
+          "bytes": 1139711
         }
       }
     },
     "en/working-with-agents-rules-that-refuse": {
-      "source": "178c9461d017",
+      "source": "4325d0ba0939",
       "files": {
         "epub": {
-          "hash": "86df67a93f",
-          "bytes": 923825
+          "hash": "33c0ba2a68",
+          "bytes": 923839
         },
         "pdf": {
-          "hash": "025d545983",
-          "bytes": 1210365
+          "hash": "7755837d18",
+          "bytes": 1210865
         }
       }
     },
     "fr/story": {
-      "source": "16a6bc99fe51",
+      "source": "87eafbd4d8af",
       "files": {
         "epub": {
-          "hash": "e4a24390d3",
-          "bytes": 9270103
+          "hash": "2fa8c76bc9",
+          "bytes": 9270099
         },
         "pdf": {
-          "hash": "5018b006e3",
-          "bytes": 13787235
+          "hash": "74b04088b8",
+          "bytes": 13786785
         }
       }
     },
@@ -307,7 +307,7 @@
           "bytes": 526818
         },
         "pdf": {
-          "hash": "3525f4bc1a",
+          "hash": "aa8a6be506",
           "bytes": 760254
         }
       }
@@ -320,21 +320,21 @@
           "bytes": 1238050
         },
         "pdf": {
-          "hash": "db6f7901c6",
+          "hash": "563f582f68",
           "bytes": 1612470
         }
       }
     },
     "fr/what-a-gpu-costs": {
-      "source": "bec5113d1ed5",
+      "source": "478815baecfc",
       "files": {
         "epub": {
-          "hash": "a7e2f59c0f",
-          "bytes": 1308765
+          "hash": "223ff714a6",
+          "bytes": 1308763
         },
         "pdf": {
-          "hash": "4aa294feb8",
-          "bytes": 1671363
+          "hash": "4ff66b1b5d",
+          "bytes": 1671418
         }
       }
     },
@@ -346,34 +346,34 @@
           "bytes": 856831
         },
         "pdf": {
-          "hash": "53c887afee",
+          "hash": "52b6e23f24",
           "bytes": 1178544
         }
       }
     },
     "fr/one-interface-everywhere": {
-      "source": "8e4f1a21ac75",
+      "source": "4e702ed71f02",
       "files": {
         "epub": {
-          "hash": "40099d33a5",
-          "bytes": 1744278
+          "hash": "b45daca426",
+          "bytes": 1744290
         },
         "pdf": {
-          "hash": "e1a86bfb5a",
-          "bytes": 2227907
+          "hash": "b41d4fd54d",
+          "bytes": 2227990
         }
       }
     },
     "fr/the-first-products": {
-      "source": "aa87d63770e8",
+      "source": "730e19424ad4",
       "files": {
         "epub": {
-          "hash": "80a9ca0635",
-          "bytes": 730762
+          "hash": "ae4cb719b8",
+          "bytes": 730767
         },
         "pdf": {
-          "hash": "6c97d6fbbf",
-          "bytes": 1070712
+          "hash": "6fc1a6bf34",
+          "bytes": 1070777
         }
       }
     },
@@ -385,21 +385,21 @@
           "bytes": 507046
         },
         "pdf": {
-          "hash": "53aaea5da8",
+          "hash": "ebe6f301bb",
           "bytes": 785205
         }
       }
     },
     "fr/building-with-agents": {
-      "source": "c9a6a4363d1c",
+      "source": "5e2215c70bb7",
       "files": {
         "epub": {
-          "hash": "6b343898ed",
-          "bytes": 914865
+          "hash": "1be6b41976",
+          "bytes": 914863
         },
         "pdf": {
-          "hash": "a609d26a94",
-          "bytes": 1318881
+          "hash": "bdf6d4e5e1",
+          "bytes": 1318867
         }
       }
     },
@@ -411,7 +411,7 @@
           "bytes": 543124
         },
         "pdf": {
-          "hash": "053e2cbeb8",
+          "hash": "6e7eb0968d",
           "bytes": 860117
         }
       }
@@ -424,86 +424,86 @@
           "bytes": 824432
         },
         "pdf": {
-          "hash": "4def55c337",
+          "hash": "3b84bc0237",
           "bytes": 1252968
         }
       }
     },
     "fr/how-we-built-our-ci": {
-      "source": "e02b19ab9b0c",
+      "source": "d902a23b6de4",
       "files": {
         "epub": {
-          "hash": "1445b20dc7",
-          "bytes": 673386
+          "hash": "7725ef8067",
+          "bytes": 673376
         },
         "pdf": {
-          "hash": "f9e829c468",
-          "bytes": 1122290
+          "hash": "b6cd3f51ce",
+          "bytes": 1121531
         }
       }
     },
     "fr/krizaka-ui-how-we-cut-it": {
-      "source": "e80437a33f37",
+      "source": "4de378461c65",
       "files": {
         "epub": {
-          "hash": "23505e0f26",
-          "bytes": 777666
+          "hash": "7c9945a35f",
+          "bytes": 777665
         },
         "pdf": {
-          "hash": "6751c1475f",
-          "bytes": 1165861
+          "hash": "1e94f852f5",
+          "bytes": 1165832
         }
       }
     },
     "fr/orazaka-v2-the-architecture-we-build": {
-      "source": "3b2019330ff9",
+      "source": "0575d6bc079e",
       "files": {
         "epub": {
-          "hash": "944053760a",
-          "bytes": 823813
+          "hash": "34780dac09",
+          "bytes": 823823
         },
         "pdf": {
-          "hash": "3c317e111d",
-          "bytes": 1305039
+          "hash": "25d530212f",
+          "bytes": 1305108
         }
       }
     },
     "fr/ci-the-error-never-leaves-the-editor": {
-      "source": "8bea2cfd5d0c",
+      "source": "15802d4bed44",
       "files": {
         "epub": {
-          "hash": "cc4aa8e6d1",
-          "bytes": 398909
+          "hash": "5f77f3cf3b",
+          "bytes": 398901
         },
         "pdf": {
-          "hash": "f919d174bd",
-          "bytes": 645916
+          "hash": "2e080dfd55",
+          "bytes": 645719
         }
       }
     },
     "fr/we-bought-sonarcloud-what-do-we-have-now": {
-      "source": "627eab4ff510",
+      "source": "8f4718aef23f",
       "files": {
         "epub": {
-          "hash": "7ff884dd4d",
-          "bytes": 661058
+          "hash": "b0cf5269b5",
+          "bytes": 661062
         },
         "pdf": {
-          "hash": "b6ef41a0c0",
-          "bytes": 966913
+          "hash": "6747ec431e",
+          "bytes": 967564
         }
       }
     },
     "fr/the-audit-said-ai-code-we-measured": {
-      "source": "3126d0c532cc",
+      "source": "c633836c2b4d",
       "files": {
         "epub": {
-          "hash": "dd873b356a",
-          "bytes": 629430
+          "hash": "30e0860a3a",
+          "bytes": 629436
         },
         "pdf": {
-          "hash": "425785259a",
-          "bytes": 926303
+          "hash": "a2619dc614",
+          "bytes": 926286
         }
       }
     },
@@ -515,73 +515,73 @@
           "bytes": 556487
         },
         "pdf": {
-          "hash": "d8b7f5f3b2",
+          "hash": "e723ec5099",
           "bytes": 777162
         }
       }
     },
     "fr/how-we-test-our-uis": {
-      "source": "052cb556dfb3",
+      "source": "4a4078acd605",
       "files": {
         "epub": {
-          "hash": "302d1e6e4f",
-          "bytes": 924204
+          "hash": "3a69806ac4",
+          "bytes": 924191
         },
         "pdf": {
-          "hash": "2ae2e7ab71",
-          "bytes": 1341246
+          "hash": "78c55b1396",
+          "bytes": 1341179
         }
       }
     },
     "fr/tchou-tchou-how-our-pull-requests-catch-the-train": {
-      "source": "9a168e4cae1d",
+      "source": "a522c6db81a0",
       "files": {
         "epub": {
-          "hash": "06ea157353",
-          "bytes": 608691
+          "hash": "68a23aed4d",
+          "bytes": 608676
         },
         "pdf": {
-          "hash": "11125534f6",
-          "bytes": 937893
+          "hash": "b3c17e19e7",
+          "bytes": 937914
         }
       }
     },
     "fr/how-our-automation-grew": {
-      "source": "542529b9cbdc",
+      "source": "372fe025a61e",
       "files": {
         "epub": {
-          "hash": "bd771f42c2",
-          "bytes": 826780
+          "hash": "45a40f4e9f",
+          "bytes": 826784
         },
         "pdf": {
-          "hash": "c1bdfe7a4d",
-          "bytes": 1174959
+          "hash": "99ac2ac88a",
+          "bytes": 1175525
         }
       }
     },
     "fr/working-with-agents-rules-that-refuse": {
-      "source": "f4da3b78d14d",
+      "source": "a9647fedc118",
       "files": {
         "epub": {
-          "hash": "ea28916a29",
-          "bytes": 932625
+          "hash": "8a006da329",
+          "bytes": 932623
         },
         "pdf": {
-          "hash": "463c151bd0",
-          "bytes": 1233362
+          "hash": "84432e1ce4",
+          "bytes": 1233346
         }
       }
     },
     "en/how-orazaka-made-our-brand-film": {
-      "source": "10d4721cb29c",
+      "source": "f8af0fe4fad7",
       "files": {
         "epub": {
-          "hash": "214103c845",
-          "bytes": 1014286
+          "hash": "5c7375fbe1",
+          "bytes": 1014294
         },
         "pdf": {
-          "hash": "07a8d0591b",
-          "bytes": 1329273
+          "hash": "a102af879f",
+          "bytes": 1330038
         }
       }
     },
@@ -593,47 +593,47 @@
           "bytes": 1030629
         },
         "pdf": {
-          "hash": "70a05fe208",
+          "hash": "2913ffe154",
           "bytes": 1359427
         }
       }
     },
     "en/the-trains-second-version-rails-sidings-and-a-repair-train": {
-      "source": "8cca3680836b",
+      "source": "ef868ac357b4",
       "files": {
         "epub": {
-          "hash": "259b47b15e",
-          "bytes": 1108564
+          "hash": "7c5a8b6161",
+          "bytes": 1108578
         },
         "pdf": {
-          "hash": "159f7482b5",
-          "bytes": 1375707
+          "hash": "7ba4b7b7da",
+          "bytes": 1376188
         }
       }
     },
     "fr/the-trains-second-version-rails-sidings-and-a-repair-train": {
-      "source": "3adef1755bc4",
+      "source": "a459e60aa339",
       "files": {
         "epub": {
-          "hash": "d762944fc6",
-          "bytes": 1132998
+          "hash": "fd4c394461",
+          "bytes": 1132991
         },
         "pdf": {
-          "hash": "fc4542121c",
-          "bytes": 1407027
+          "hash": "eb75cff662",
+          "bytes": 1406978
         }
       }
     },
     "en/how-we-stay-in-sync": {
-      "source": "e3d979d7d719",
+      "source": "ff0c1bb8d641",
       "files": {
         "epub": {
-          "hash": "53c71f2337",
-          "bytes": 767867
+          "hash": "54664aaf94",
+          "bytes": 767882
         },
         "pdf": {
-          "hash": "7dfbb9c42a",
-          "bytes": 1000998
+          "hash": "f5c101be5d",
+          "bytes": 1001572
         }
       }
     },
@@ -645,21 +645,21 @@
           "bytes": 766990
         },
         "pdf": {
-          "hash": "21a6efa804",
+          "hash": "6cd569392d",
           "bytes": 1015765
         }
       }
     },
     "en/why-we-slowed-down-and-how-we-work-now": {
-      "source": "36e16f9ea997",
+      "source": "95a5f47d60b1",
       "files": {
         "epub": {
-          "hash": "b53445cf69",
-          "bytes": 1017342
+          "hash": "cf6a514595",
+          "bytes": 1017350
         },
         "pdf": {
-          "hash": "db2f6b260a",
-          "bytes": 1319163
+          "hash": "699e31f1d8",
+          "bytes": 1319509
         }
       }
     },
@@ -671,21 +671,21 @@
           "bytes": 1034669
         },
         "pdf": {
-          "hash": "69a6729abf",
+          "hash": "c26e76d758",
           "bytes": 1350526
         }
       }
     },
     "en/the-big-clean-up-and-our-real-names": {
-      "source": "bf34a82b4d09",
+      "source": "8e3b0efbfdb0",
       "files": {
         "epub": {
-          "hash": "36f3e78b18",
-          "bytes": 1061813
+          "hash": "1ce9a28821",
+          "bytes": 1061816
         },
         "pdf": {
-          "hash": "7e3b2b93a2",
-          "bytes": 1361168
+          "hash": "443b9d4137",
+          "bytes": 1361656
         }
       }
     },
@@ -697,7 +697,7 @@
           "bytes": 1064074
         },
         "pdf": {
-          "hash": "0c72c338d4",
+          "hash": "9b64440ac7",
           "bytes": 1388661
         }
       }
@@ -706,12 +706,12 @@
       "source": "32788e566e17",
       "files": {
         "epub": {
-          "hash": "f518a61242",
-          "bytes": 788808
+          "hash": "bde1d975ad",
+          "bytes": 788814
         },
         "pdf": {
-          "hash": "df98310965",
-          "bytes": 986845
+          "hash": "cb3431fb6d",
+          "bytes": 987297
         }
       }
     },
@@ -723,7 +723,7 @@
           "bytes": 804410
         },
         "pdf": {
-          "hash": "af9fd17e2b",
+          "hash": "bd49d669d6",
           "bytes": 1008979
         }
       }
@@ -732,51 +732,51 @@
       "source": "e54a32911b96",
       "files": {
         "epub": {
-          "hash": "14726c1c38",
-          "bytes": 650522
+          "hash": "0a2cf4f35e",
+          "bytes": 650528
         },
         "pdf": {
-          "hash": "4c89c52269",
-          "bytes": 1034106
+          "hash": "2949738b7a",
+          "bytes": 1034553
         }
       }
     },
     "en/how-our-agent-teams-talk": {
-      "source": "aac5f8908dfb",
+      "source": "027caf145843",
       "files": {
         "epub": {
-          "hash": "564f1c783a",
-          "bytes": 754087
+          "hash": "ec69a6208b",
+          "bytes": 754094
         },
         "pdf": {
-          "hash": "b43647cf45",
-          "bytes": 1098868
+          "hash": "994286d984",
+          "bytes": 1099171
         }
       }
     },
     "fr/why-sovkora-loads-no-plugin-in-the-jvm": {
-      "source": "93347be11d4a",
+      "source": "a53ac0c996b6",
       "files": {
         "epub": {
-          "hash": "6d4c50c5a7",
+          "hash": "c2b7b9ab92",
           "bytes": 662804
         },
         "pdf": {
-          "hash": "6cfc610afd",
-          "bytes": 1067582
+          "hash": "9855759fca",
+          "bytes": 1067192
         }
       }
     },
     "fr/how-our-agent-teams-talk": {
-      "source": "ce47d8576233",
+      "source": "a8444de9c5e8",
       "files": {
         "epub": {
-          "hash": "fd194ed0d1",
-          "bytes": 767692
+          "hash": "403f0d7640",
+          "bytes": 767698
         },
         "pdf": {
-          "hash": "71119bee38",
-          "bytes": 1130644
+          "hash": "c047c5be57",
+          "bytes": 1131019
         }
       }
     },
@@ -784,51 +784,51 @@
       "source": "32296662a1b8",
       "files": {
         "epub": {
-          "hash": "2e0f18612d",
-          "bytes": 565343
+          "hash": "301d407586",
+          "bytes": 565349
         },
         "pdf": {
-          "hash": "ec71e4ed6d",
-          "bytes": 926619
+          "hash": "602083442e",
+          "bytes": 927070
         }
       }
     },
     "en/agents-under-a-coordinator": {
-      "source": "55ec3a1cded2",
+      "source": "6fbeb8ede6e8",
       "files": {
         "epub": {
-          "hash": "4d595da650",
-          "bytes": 626175
+          "hash": "3a701b3b51",
+          "bytes": 626182
         },
         "pdf": {
-          "hash": "d46ace374f",
-          "bytes": 993192
+          "hash": "5fe2d60ff5",
+          "bytes": 993621
         }
       }
     },
     "en/the-architecture-of-krizaka-agents": {
-      "source": "cada90d7eeca",
+      "source": "3691ee6ce3d3",
       "files": {
         "epub": {
-          "hash": "7c33bbe559",
-          "bytes": 644282
+          "hash": "198c8cf5c1",
+          "bytes": 644298
         },
         "pdf": {
-          "hash": "23693ee9fd",
-          "bytes": 1081831
+          "hash": "89af475f14",
+          "bytes": 1082679
         }
       }
     },
     "en/design-choices-for-architects": {
-      "source": "02d99f13aacd",
+      "source": "788612e3431b",
       "files": {
         "epub": {
-          "hash": "139a39a2be",
-          "bytes": 841094
+          "hash": "7aad21a410",
+          "bytes": 841097
         },
         "pdf": {
-          "hash": "99a5388b4f",
-          "bytes": 1307768
+          "hash": "902d14ef78",
+          "bytes": 1308233
         }
       }
     },
@@ -836,12 +836,12 @@
       "source": "2fc574eed7f2",
       "files": {
         "epub": {
-          "hash": "ae1366d0b9",
-          "bytes": 810707
+          "hash": "ff98f913ba",
+          "bytes": 810713
         },
         "pdf": {
-          "hash": "933a46627c",
-          "bytes": 1036718
+          "hash": "280039f87b",
+          "bytes": 1037572
         }
       }
     },
@@ -853,21 +853,21 @@
           "bytes": 568455
         },
         "pdf": {
-          "hash": "07d6c51d03",
+          "hash": "6f06712f07",
           "bytes": 946067
         }
       }
     },
     "fr/agents-under-a-coordinator": {
-      "source": "11f8995e123c",
+      "source": "86c7fd45f317",
       "files": {
         "epub": {
-          "hash": "fa06bd24de",
-          "bytes": 634654
+          "hash": "3b9ce66c5e",
+          "bytes": 634662
         },
         "pdf": {
-          "hash": "b1c172e2ce",
-          "bytes": 1032853
+          "hash": "1394e4c1a8",
+          "bytes": 1032921
         }
       }
     },
@@ -879,7 +879,7 @@
           "bytes": 649851
         },
         "pdf": {
-          "hash": "17b414081c",
+          "hash": "4ede892212",
           "bytes": 1119967
         }
       }
@@ -892,7 +892,7 @@
           "bytes": 854641
         },
         "pdf": {
-          "hash": "35a1535df7",
+          "hash": "c84fcf6e6b",
           "bytes": 1320335
         }
       }
@@ -905,21 +905,21 @@
           "bytes": 815390
         },
         "pdf": {
-          "hash": "23e32d4fe4",
+          "hash": "0f4c013268",
           "bytes": 1055188
         }
       }
     },
     "en/one-local-cockpit-to-run-the-whole-company": {
-      "source": "086175476d9f",
+      "source": "15c7051892fd",
       "files": {
         "epub": {
-          "hash": "5c69d52baf",
-          "bytes": 910436
+          "hash": "d0b1ad668b",
+          "bytes": 910443
         },
         "pdf": {
-          "hash": "843951164d",
-          "bytes": 1212832
+          "hash": "6db68bde04",
+          "bytes": 1214258
         }
       }
     },
@@ -931,7 +931,7 @@
           "bytes": 918781
         },
         "pdf": {
-          "hash": "989a0bb851",
+          "hash": "1937910755",
           "bytes": 1232985
         }
       }

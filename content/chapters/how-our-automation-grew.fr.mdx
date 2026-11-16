@@ -37,7 +37,7 @@ C'est la suite directe de [Tchou-tchou](/fr/story/tchou-tchou-how-our-pull-reque
 
 ## Une CI qui grossit
 
-Au début, krizaka.com avait sa propre CI : un fichier, quelques étapes, lint, tests, build. Puis, le 21 octobre, le site est passé sur le workflow commun de l'organisation, celui que partagent nos applications Node. Le 22, un contrôle de code dupliqué avec un cliquet. Le 26, l'analyse de SonarCloud avec la couverture des tests. Le 28, la merge queue. Chacun de ces ajouts avait une raison, et chacun a coûté des minutes.
+Au début, krizaka.com avait sa propre CI : un fichier, quelques étapes, lint, tests, build. Puis, le 21 octobre, le site est passé sur le workflow commun de l'organisation, celui que partagent nos applications Node. Le 22, un contrôle de code dupliqué avec un ratchet. Le 26, l'analyse de SonarCloud avec la couverture des tests. Le 28, la merge queue. Chacun de ces ajouts avait une raison, et chacun a coûté des minutes.
 
 <Bars label="La durée médiane d'une CI réussie sur une pull request de krizaka.com, par semaine : elle grandit à mesure qu'on ajoute des contrôles." source="Compté depuis l'API de GitHub le 31 octobre : les 1 000 dernières exécutions du workflow CI de krizaka.com depuis le 9 octobre, seulement les pull requests terminées en succès ; semaines du lundi au dimanche, la dernière jusqu'au 31 octobre." format="number" series="Minutes:accent" data="Sem. du 6 oct.=1.4; Sem. du 13 oct.=2.1; Sem. du 20 oct.=6.1; Sem. du 27 oct.=10.6" />
 
@@ -51,12 +51,12 @@ Voici ce que fait la CI de krizaka.com quand une pull request s'ouvre. Le fichie
   <Stage title="Fichiers modifiés" note="quelques secondes">Un premier job regarde ce que la PR touche. Une PR qui ne change que de la documentation saute tout le lourd.</Stage>
   <Stage title="Plan" note="la matrice">Il lit les scripts du dépôt et en fait une liste de tâches à lancer en parallèle.</Stage>
   <Stage title="Vérifier" note="en parallèle" tone="gate">Lint, types, tests et build, chacun dans son job. À côté, deux contrôles qui n'attendent personne : « un correctif a besoin d'une garde » et le code dupliqué.</Stage>
-  <Stage title="Parcours" note="en éclats">Les tests de bout en bout, découpés en plusieurs morceaux qui tournent en même temps, seulement si l'interface change.</Stage>
+  <Stage title="Parcours" note="en shards">Les tests de bout en bout, découpés en plusieurs morceaux qui tournent en même temps, seulement si l'interface change.</Stage>
   <Stage title="Image et analyse" note="après le vert">L'image du conteneur est construite et démarrée, et SonarCloud analyse le code. Les deux attendent que la vérification soit verte : inutile de payer le plus long pour une PR déjà rouge.</Stage>
-  <Stage title="Porte de la CI" note="un seul check" tone="ship">Un dernier job lit tous les autres et donne une seule réponse. C'est le seul check exigé sur main.</Stage>
+  <Stage title="Gate de la CI" note="un seul check" tone="ship">Un dernier job lit tous les autres et donne une seule réponse. C'est le seul check exigé sur main.</Stage>
 </Pipeline>
 
-Deux choix comptent plus que les autres. D'abord, sauter ce qui ne sert à rien : une PR qui ne touche pas l'interface ne lance pas les parcours, et une PR de documentation ne lance ni les tests ni l'image. Ensuite, un seul check exigé, la porte. Avant, chaque dépôt exigeait une liste de noms de jobs, et la moindre modification d'un nom bloquait les PR sur un check qui n'existait plus.
+Deux choix comptent plus que les autres. D'abord, sauter ce qui ne sert à rien : une PR qui ne touche pas l'interface ne lance pas les parcours, et une PR de documentation ne lance ni les tests ni l'image. Ensuite, un seul check exigé, le gate. Avant, chaque dépôt exigeait une liste de noms de jobs, et la moindre modification d'un nom bloquait les PR sur un check qui n'existait plus.
 
 ## La boucle : un bug, une garde
 
@@ -91,7 +91,7 @@ La décision s'appelle ADR-018. Au lieu d'un gros workflow qui fait tout pour to
 
 <Split label="Avant et après : un workflow qui fait tout, puis des workflows qui ont chacun un sujet, un moment et un budget.">
   <Side title="Avant" tone="before" items="Un gros workflow par langage, qui fait tout | Le même travail sur chaque PR, quel que soit le changement | Une liste de checks exigés à recopier dans chaque dépôt | Aucune mesure de la durée" />
-  <Side title="Après" tone="after" items="Un workflow par sujet : ci, ui, mobile, deps, release, seo | Des filtres de chemins : on ne lance que ce que la PR concerne | Un profil par dépôt, et une seule porte exigée | Un budget de vitesse, mesuré chaque semaine" />
+  <Side title="Après" tone="after" items="Un workflow par sujet : ci, ui, mobile, deps, release, seo | Des filtres de chemins : on ne lance que ce que la PR concerne | Un profil par dépôt, et un seul gate exigé | Un budget de vitesse, mesuré chaque semaine" />
 </Split>
 
 Chaque dépôt déclare un profil (une bibliothèque, une application web, une application mobile, un service Java, un site) et reçoit l'ensemble de workflows qui va avec. Akinaza est à la fois une application web et une application mobile : elle compose les deux. Un test refuse un dépôt actif sans profil.
@@ -120,7 +120,7 @@ Parce qu'elle fait beaucoup plus : des tests de bout en bout, l'image du contene
 
 ### Pourquoi un seul check exigé ?
 
-Parce qu'une liste de noms de jobs à exiger se casse dès qu'un nom change. La porte lit tous les autres jobs et donne une seule réponse : c'est elle qu'on exige.
+Parce qu'une liste de noms de jobs à exiger se casse dès qu'un nom change. Le gate lit tous les autres jobs et donne une seule réponse : c'est elle qu'on exige.
 
 ### Un workflow par sujet, ça ne fait pas trop de fichiers ?
 

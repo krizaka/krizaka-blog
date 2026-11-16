@@ -31,7 +31,7 @@ Le déclic est venu d'une série de petites dérives, toutes dans la même semai
 
 On a fini par comprendre une chose simple : si une règle peut être enfreinte, elle le sera, tôt ou tard, par quelqu'un de pressé. Un humain comme un agent. Alors on a arrêté d'ajouter des phrases et on a mis les règles là où le travail passe forcément : dans les commandes.
 
-Aujourd'hui, un agent n'ouvre pas une issue avec l'outil de GitHub. Il passe par notre commande, qui la range dans un dépôt privé, lui donne un titre standard et ses étiquettes, la pose sur le tableau, et refuse un doublon. Pour une pull request, c'est pareil : la commande refuse un titre mal formé, une PR sans issue, ou un dépôt qui a déjà cinq PR ouvertes. En fin de session, une dernière commande refuse de clore si une PR n'a pas de train, ou si la session n'a pas laissé de passation.
+Aujourd'hui, un agent n'ouvre pas une issue avec l'outil de GitHub. Il passe par notre commande, qui la range dans un dépôt privé, lui donne un titre standard et ses labels, la pose sur le tableau, et refuse un doublon. Pour une pull request, c'est pareil : la commande refuse un titre mal formé, une PR sans issue, ou un dépôt qui a déjà cinq PR ouvertes. En fin de session, une dernière commande refuse de clore si une PR n'a pas de train, ou si la session n'a pas laissé de passation.
 
 Voici l'idée, réduite à l'os. Ce n'est pas notre code, c'est sa forme :
 
@@ -78,7 +78,7 @@ Ce que ça a donné : trois refus, code de sortie 2, rien de créé, et chaque f
 Rien ne démarre sans une issue. Chaque issue appartient à une voie, et chaque voie a une seule session à la fois. Il y en a cinq aujourd'hui : Yomizaka, Akinaza, Orazaka, la Plateforme et la Sécurité, plus une file pour mes demandes ponctuelles, comme celle qui a donné ce chapitre. La voie Sécurité est arrivée cette semaine : avant, la sécurité se glissait dans la Plateforme et passait après le reste.
 
 <Pipeline label="Le chemin d'un changement chez nous. Les commandes refusent à l'entrée, le train ne juge rien, la merge queue rejoue les contrôles, et personne ne fusionne à la main.">
-  <Stage title="Issue" note="une commande" tone="gate">Titre standard, étiquettes, une carte sur le tableau. Un doublon est refusé.</Stage>
+  <Stage title="Issue" note="une commande" tone="gate">Titre standard, labels, une carte sur le tableau. Un doublon est refusé.</Stage>
   <Stage title="Session de voie" note="une par voie">Un agent, un modèle choisi pour la tâche, un budget. Le test d'abord, puis le code.</Stage>
   <Stage title="Pull request" note="une commande" tone="gate">Le titre, l'issue, la limite de cinq PR par dépôt. La PR lance son train.</Stage>
   <Stage title="Train" note="aucun token">Il attend la PR précédente, met la branche à jour, la met en file. Il s'arrête au premier rouge.</Stage>

@@ -76,7 +76,7 @@ class PluginConfiguration {
 }
 ```
 
-C'est propre. Le problème est le pont. La dernière version de `pf4j-spring` est la 0.10.0, publiée le 24 mai 2025, et elle est construite sur Spring Framework 6.2.2. Spring Framework 7 est sorti le 13 novembre 2025, Spring Boot 4.0 le 20 novembre 2025, en s'appuyant dessus. Le dernier commit du dépôt `pf4j-spring` date du 24 mai 2025 ; une demande « Support Spring Framework 7 » est ouverte depuis le 4 juin 2026, et une pull request du même titre depuis le 27 août 2026.
+C'est propre. Le problème est le pont. La dernière version de `pf4j-spring` est la 0.10.0, publiée le 24 mai 2025, et elle est construite sur Spring Framework 6.2.2. Spring Framework 7 est sorti le 13 novembre 2025, Spring Boot 4.0 le 20 novembre 2025, en s'appuyant dessus. Le dernier commit du dépôt `pf4j-spring` date du 24 mai 2025 ; une issue « Support Spring Framework 7 » est ouverte depuis le 4 juin 2026, et une pull request du même titre depuis le 27 août 2026.
 
 Le pont ne dépend que de `spring-core` et `spring-context`. Il tournerait peut-être tel quel sur Spring 7. Mais personne ne l'a prouvé, et ce n'est pas le vrai défaut. Le vrai défaut est plus bas : un chargeur de classes par plugin isole des **dépendances**, pas des **droits**.
 
@@ -96,7 +96,7 @@ child.register(loader.loadClass("com.example.LeaseCheckConfiguration"));
 child.refresh();
 ```
 
-Ça marche, et c'est du code natif de Spring. Mais regardez ce que ce code **ne retient pas**. Dans `LeaseCheck`, rien n'empêche d'appeler `System.exit(0)`, de lire un fichier du disque, d'ouvrir une socket, de lancer des fils d'exécution, ou de remonter par réflexion jusqu'aux beans du parent, avec leurs connexions aux bases. Le chargeur de classes décide **quelle version d'une classe** on voit. Il ne décide pas **ce que le code a le droit de faire**.
+Ça marche, et c'est du code natif de Spring. Mais regardez ce que ce code **ne retient pas**. Dans `LeaseCheck`, rien n'empêche d'appeler `System.exit(0)`, de lire un fichier du disque, d'ouvrir une socket, de démarrer des threads, ou de remonter par réflexion jusqu'aux beans du parent, avec leurs connexions aux bases. Le chargeur de classes décide **quelle version d'une classe** on voit. Il ne décide pas **ce que le code a le droit de faire**.
 
 On a donc tout le coût du chargement dynamique (le déchargement à chaud, les conflits de classes entre parent et enfant, du code maison à maintenir) sans frontière de sécurité.
 
@@ -355,7 +355,7 @@ J'ai d'abord cru que le renommage était une échéance, « le dernier moment o�
 ## Sources
 
 - [PF4J, versions](https://github.com/pf4j/pf4j/releases) · [site de PF4J](https://pf4j.org/)
-- [pf4j-spring, versions](https://github.com/pf4j/pf4j-spring/releases) · [demande « Support Spring Framework 7 »](https://github.com/pf4j/pf4j-spring/issues/94) · [pull request du même titre](https://github.com/pf4j/pf4j-spring/pull/95) · [version de Spring de 0.10.0](https://repo1.maven.org/maven2/org/pf4j/pf4j-spring-parent/0.10.0/pf4j-spring-parent-0.10.0.pom)
+- [pf4j-spring, versions](https://github.com/pf4j/pf4j-spring/releases) · [issue « Support Spring Framework 7 »](https://github.com/pf4j/pf4j-spring/issues/94) · [pull request du même titre](https://github.com/pf4j/pf4j-spring/pull/95) · [version de Spring de 0.10.0](https://repo1.maven.org/maven2/org/pf4j/pf4j-spring-parent/0.10.0/pf4j-spring-parent-0.10.0.pom)
 - [Spring Framework 7.0, disponibilité générale (13 novembre 2025)](https://spring.io/blog/2025/11/13/spring-framework-7-0-general-availability/)
 - [Spring Boot 4.0.0 (20 novembre 2025)](https://spring.io/blog/2025/11/20/spring-boot-4-0-0-available-now/)
 - [Spring Framework, contextes et hiérarchies](https://docs.spring.io/spring-framework/reference/core/beans/context-introduction.html)

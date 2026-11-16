@@ -39,7 +39,7 @@ That Mac is the first server of [Orazaka](site:sovkora), the AI engine I'm build
 
 ## On 12 October, the Mac hit the wall
 
-On 12 October my Mac hit the wall. The system load swung between 100 and 260, and tools started failing with `ENFILE`: the system refused to open a single file more. Several agent sessions were working in parallel, each with its own native builds, Docker containers or mobile simulator. All of it on a MacBook Pro M1 Max with 64 GB of memory.
+On 12 October my Mac hit the wall. The system load swung between 100 and 260, and tools started failing with `ENFILE`: the system refused to open one more file. Several agent sessions were working in parallel, each with its own native builds, Docker containers or mobile simulator. All of it on a MacBook Pro M1 Max with 64 GB of memory.
 
 Even without AI, a platform needs several things at once: a database, a message broker, the Java services themselves. Add a language-model server, an image engine, a worker for video. They all share the same memory. When two big dishes cook at once, the oven gives out.
 

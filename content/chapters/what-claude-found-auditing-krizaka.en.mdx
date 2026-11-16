@@ -127,33 +127,33 @@ Gemini wrote a longer audit with more figures, because it read more code and Son
 
 On what holds:
 
-> « The platform architecture cleanly decouples domain logic from framework baggage. […] Architectural boundaries are automatically verified on every build via ArchUnit. »
+> “The platform architecture cleanly decouples domain logic from framework baggage. […] Architectural boundaries are automatically verified on every build via ArchUnit.”
 >
-> « quality-controls.md explicitly catalogs gaps, copy-paste drift, and technical debt instead of hiding them. »
+> “quality-controls.md explicitly catalogs gaps, copy-paste drift, and technical debt instead of hiding them.”
 >
-> « CI workflows consistently employ full-SHA pinning, OpenSSF Scorecard scans […], reproducible Maven build timestamps […], and binary compatibility checks via japicmp-maven-plugin. »
+> “CI workflows consistently employ full-SHA pinning, OpenSSF Scorecard scans […], reproducible Maven build timestamps […], and binary compatibility checks via japicmp-maven-plugin.”
 
 On what does not, its list is longer than its strengths:
 
-> « Infrastructure as Code Repository is Completely Empty. »
+> “Infrastructure as Code Repository is Completely Empty.”
 >
-> « Copy-Pasted Scripts and Configuration Drift Across 12 Repositories. »
+> “Copy-Pasted Scripts and Configuration Drift Across 12 Repositories.”
 >
-> « The "UTC Day" Date Slice Bug Across 8 Repositories. »
+> “The "UTC Day" Date Slice Bug Across 8 Repositories.”
 >
-> « While web frontends use strict rules, mobile applications […] lint with bare typescript-eslint, bypassing @krizaka/config and ast-grep quality ratchets entirely. »
+> “While web frontends use strict rules, mobile applications […] lint with bare typescript-eslint, bypassing @krizaka/config and ast-grep quality ratchets entirely.”
 >
-> « SonarCloud quality gates display "Passed / OK" on repositories with dozens or hundreds of open issues […], creating a false visual impression of a clean codebase. »
+> “SonarCloud quality gates display "Passed / OK" on repositories with dozens or hundreds of open issues […], creating a false visual impression of a clean codebase.”
 
 And its overall view:
 
-> « The core platform libraries […] receive top-tier engineering attention, while downstream products and tooling […] contain critical gaps. »
+> “The core platform libraries […] receive top-tier engineering attention, while downstream products and tooling […] contain critical gaps.”
 
 ## Where they agree, where they differ
 
-Both models say the same thing on the essentials: the documentation and the CI are solid, and the gap between what is written and what runs is the real risk. Claude says it about review (« one human »), Gemini about breadth (« visibly stretched across 43 repositories »).
+Both models say the same thing on the essentials: the documentation and the CI are solid, and the gap between what is written and what runs is the real risk. Claude says it about review (“one human”), Gemini about breadth (“visibly stretched across 43 repositories”).
 
-They differ in tone and in material. Claude stays sober (« above average for a small organisation ») and found a defect Gemini did not see, the `TIMEOUT` prefix. Gemini is warmer about the Java core, but brings more checkable facts: SonarCloud's figures, the copied scripts, the UTC day bug across several repositories. Part of that gap comes from access: Gemini read more files, and measures Claude did not have.
+They differ in tone and in material. Claude stays sober (“above average for a small organisation”) and found a defect Gemini did not see, the `TIMEOUT` prefix. Gemini is warmer about the Java core, but brings more checkable facts: SonarCloud's figures, the copied scripts, the UTC day bug across several repositories. Part of that gap comes from access: Gemini read more files, and measures Claude did not have.
 
 ## What I checked myself
 
@@ -165,9 +165,9 @@ An AI audit is a list of leads, not a verdict. I took the claims that can be che
   <Case topic="The TIMEOUT prefix" before="5 seconds, no guard" after="True" afterDetail="Lines 696 to 702, no property protects it." />
   <Case topic="Versions of @krizaka/ui" before="about 83" after="83 on npm" />
   <Case topic="Open issues in krizaka-ui" before="128" after="128" />
-  <Case topic="krizaka-ui on SonarCloud (Gemini)" before="172 bugs, 73 vulnerabilities" after="172 and 73" afterDetail="And the quality gate says « OK »: Gemini is right, it only judges new code." />
-  <Case topic="A demo app's password (Gemini)" before="« Blocker », in production" after="Overstated" afterDetail="A local-development address, already refused in production. Removed anyway." />
-  <Case topic="Concatenated SQL (Gemini)" before="« Dynamic SQL »" after="Overstated" afterDetail="Constant fragments, the values bound as parameters: no injection, but the shape fools the scanner." />
+  <Case topic="krizaka-ui on SonarCloud (Gemini)" before="172 bugs, 73 vulnerabilities" after="172 and 73" afterDetail="And the quality gate says “OK”: Gemini is right, it only judges new code." />
+  <Case topic="A demo app's password (Gemini)" before="“Blocker”, in production" after="Overstated" afterDetail="A local-development address, already refused in production. Removed anyway." />
+  <Case topic="Concatenated SQL (Gemini)" before="“Dynamic SQL”" after="Overstated" afterDetail="Constant fragments, the values bound as parameters: no injection, but the shape fools the scanner." />
   <Case topic="The empty infra (Gemini)" before="No .tf file" after="True when it read it" afterDetail="The first stack landed the same evening, with a read-only plan (krizaka-infra#8)." />
   <Case topic="The UTC day (Gemini)" before="8 repositories" after="True" afterDetail="Fixed in Yomizaka (#311), a rule now refuses the pattern; the other repositories follow." />
 </Compare>
@@ -202,9 +202,9 @@ Mostly the list of weaknesses. Compliments are nice, but they do not say what to
 
 First, the way of working. A good part of the code is written by agents. What holds the quality is not the agents: it is the checks that say no early, the rules, the types, the architecture tests. A sentence I wrote down a while ago sums it up:
 
-> « To build effectively with AI, you have to structure your automations to detect errors as early and as fast as possible. »
+> “To build effectively with AI, you have to structure your automations to detect errors as early and as fast as possible.”
 
-Then, where that idea stops. Our guardrails catch what we wrote a rule for, not the rest. The `TIMEOUT` line broke no rule. And a rule only looks where it is told to: in Yomizaka, a date computed in UTC instead of the Québec day slipped past `no-ambient-clock`, because the rule did not read that folder. We had to write [`no-utc-day-slice`](repo:verikora/blob/main/rules/no-utc-day-slice.yml) after the bug ([yomizaka#311](repo:verikora/pull/311)). Our own inventory, [`docs/quality-controls.md`](repo:.github/blob/main/docs/quality-controls.md) ([.github#232](repo:.github/pull/232)), says it in one sentence: « The rules do not look where the bug was. »
+Then, where that idea stops. Our guardrails catch what we wrote a rule for, not the rest. The `TIMEOUT` line broke no rule. And a rule only looks where it is told to: in Yomizaka, a date computed in UTC instead of the Québec day slipped past `no-ambient-clock`, because the rule did not read that folder. We had to write [`no-utc-day-slice`](repo:verikora/blob/main/rules/no-utc-day-slice.yml) after the bug ([yomizaka#311](repo:verikora/pull/311)). Our own inventory, [`docs/quality-controls.md`](repo:.github/blob/main/docs/quality-controls.md) ([.github#232](repo:.github/pull/232)), says it in one sentence: “The rules do not look where the bug was.”
 
 Last, review. The model is right: there is one person to review, and part of the approvals goes through an agent I delegated decisions to. The automated checks are real. A second pair of human eyes is still missing. That is the point I keep in mind, and another tool will not settle it.
 
