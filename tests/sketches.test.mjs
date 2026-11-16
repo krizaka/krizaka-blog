@@ -135,3 +135,30 @@ test("chapter 34 shows no real capture and no clip: every screen is a sketch", (
     assert.ok(sketchesOf(`five-ergonomics-choices-on-our-real-screens.${locale}.mdx`).length >= 5, locale);
   }
 });
+
+/* Chapter 35, the cockpit's ergonomics (krizaka-internal#4000): no capture and no clip, one drawing per view in the order of a
+   day (Today first, the folded Workshop last), the refresh gesture as a before / after pair, and the post stays `sensitive`. */
+test("chapter 35 draws the cockpit's views in the order of a day, with no capture, no clip and no amount", () => {
+  const order = [
+    "cockpit-today",
+    "cockpit-refresh",
+    "cockpit-machine",
+    "cockpit-alerts",
+    "cockpit-ships",
+    "cockpit-costs",
+  ];
+  for (const locale of ["fr", "en"]) {
+    const file = `one-local-cockpit-to-run-the-whole-company.${locale}.mdx`;
+    const mdx = readFileSync(`${root}content/chapters/${file}`, "utf8");
+    assert.doesNotMatch(mdx, /<Figure\b|<Clip\b|<Row\b|cockpit-(?:equipes|alertes|rafraichir)/, locale);
+    assert.match(mdx, /^sensitive: true$/m, locale);
+    const ids = sketchesOf(file).map((s) => s.id);
+    assert.deepEqual(
+      ids.filter((id) => order.includes(id)),
+      order,
+      locale,
+    );
+    assert.equal(ids.at(-1), "cockpit-secrets", locale);
+    assert.ok("before" in sketchOf("cockpit-refresh"), "the refresh gesture is a before / after pair");
+  }
+});
