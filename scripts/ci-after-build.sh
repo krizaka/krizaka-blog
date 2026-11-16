@@ -50,6 +50,8 @@ node_modules/.bin/playwright install --with-deps chromium
 node scripts/check-layout.mjs --base http://localhost:3000 --posts out
 # The top and the end of a post against their approved baselines (tests/visual/; a change to the template remakes them with --update).
 node scripts/check-visual.mjs --base http://localhost:3000
+# The console of the home and of a chapter: no CORS refusal on the CDN's AVIF covers, no unused preload (krizaka-internal#3975).
+node scripts/check-console.mjs --base http://localhost:3000 --out out
 echo "::endgroup::"
 
 echo "::group::Reading offline: every chapter is saveable and in the service worker's precache, and a saved chapter opens with no network"
