@@ -5,6 +5,7 @@
 
 import { modelLinkProblems } from "../lib/models.ts";
 import { confidentialityProblems } from "./content-confidentiality.mjs";
+import { frenchProblems } from "./content-french.mjs";
 import { writtenAddressProblems } from "./content-links.mjs";
 import { coverProblems, mediaTagProblems } from "./content-media.mjs";
 import { CDN, FILE, RESERVED_SLUGS, onBlogCdn } from "./content-names.mjs";
@@ -113,7 +114,7 @@ export function postProblems(file, data, body, ctx) {
       ...seriesProblems(file, data, ctx.series),
     );
   /* A model is named with a link to its official page the first time (lib/models.ts): the reader can see what it is. */
-  out.push(...modelLinkProblems(body).map((p) => `${file}: ${p}`), ...confidentialityProblems(file, data, body));
+  out.push(...modelLinkProblems(body).map((p) => `${file}: ${p}`), ...confidentialityProblems(file, data, body), ...frenchProblems(file, data, body));
   if (/```mermaid/.test(body)) out.push(`${file}: Mermaid is retired`);
   out.push(...fenceProblems(file, body), ...jsPropProblems(file, body), ...writtenAddressProblems(body, file));
   return out;
