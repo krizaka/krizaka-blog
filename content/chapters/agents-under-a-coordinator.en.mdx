@@ -37,7 +37,7 @@ Before, an agent session took a ticket, wrote the code, then found out, when it 
 
 We measured it from 26 October to 9 November, on 10 active repositories and 1,782 pull requests. 826 of them (46 %) shared a file with another PR open at the same time. 312 PR opens were refused for overlap, with the code already written. 109 PRs (6 %) were closed without merging.
 
-The most useful detail was elsewhere: among the pairs that overlapped, 65 % shared only « collector files ». Those are the files where everyone adds a line: translations, a package's exports, generated docs, workflows. Reserve them, and all the work queues. More on that below.
+The most useful detail was elsewhere: among the pairs that overlapped, 65 % shared only “collector files”. Those are the files where everyone adds a line: translations, a package's exports, generated docs, workflows. Reserve them, and all the work queues. More on that below.
 
 ## Three roles, and only one decides
 
@@ -47,14 +47,14 @@ The decision is an ADR, accepted on 9 November. Three roles:
 - **the coordinator** is code with no model in it, and there is exactly one. It assigns tasks, keeps the reservations and refuses what breaks the rules. It takes no architecture decision;
 - **a session**, any agent: it gets a lease on a task, makes one bounded change and delivers a diff that can be checked.
 
-Why not a model as the coordinator? Because at that point we need a transaction, and a model is not deterministic. Why not a free chat between sessions? It is not durable, not checkable, and it costs a lot of tokens. Messages between sessions are a closed list of six kinds (« already exists », « scope extension », « blocked »…), always attached to a task, and a message is never a decision.
+Why not a model as the coordinator? Because at that point we need a transaction, and a model is not deterministic. Why not a free chat between sessions? It is not durable, not checkable, and it costs a lot of tokens. Messages between sessions are a closed list of six kinds (“already exists”, “scope extension”, “blocked”…), always attached to a task, and a message is never a decision.
 
 The registry is a local SQLite database, on the Mac. It never holds code, only pointers to Git. When it and GitHub disagree on a fact, GitHub wins.
 
 <Pipeline label="A task's life: the CTO validates and sizes it, a session takes a lease, works in its worktree, every commit is checked against the scope, then tasks land one at a time on the local main.">
   <Stage title="The CTO validates" note="size S or M, turns" tone="gate">
-    A task is born « proposed ». It needs a size (S or M), a turn cap (at most 60 for S, 120 for M) and at least one
-    « done when » line. A task of size L is refused with this message: split it, one task per screen, component or
+    A task is born “proposed”. It needs a size (S or M), a turn cap (at most 60 for S, 120 for M) and at least one
+    “done when” line. A task of size L is refused with this message: split it, one task per screen, component or
     concern. Nobody can take it before the CTO validates it.
   </Stage>
   <Stage title="A lease" note="only one wins">
@@ -83,7 +83,7 @@ A task is not a ticket. The ticket follows the need; the task is what runs. One 
 
 A reservation that nothing enforces is only a wish. The coordinator's lock rests on three simple pieces.
 
-The **lease** has an expiry. During our last wave it ran for thirty minutes. The **heartbeat** extends it: every two minutes, the session's runner renews the lease. The **token** (a « fencing token ») is a number that goes up with every new lease. If a session falls asleep and its lease expires, the task is free again, another session can take it with a bigger token, and the old token can no longer deliver anything.
+The **lease** has an expiry. During our last wave it ran for thirty minutes. The **heartbeat** extends it: every two minutes, the session's runner renews the lease. The **token** (a “fencing token”) is a number that goes up with every new lease. If a session falls asleep and its lease expires, the task is free again, another session can take it with a bigger token, and the old token can no longer deliver anything.
 
 <Pipeline label="The lease, the heartbeat and the token: a session whose lease expired can no longer deliver, even if it wakes up with finished work.">
   <Stage title="Claim" note="only one wins">
@@ -108,7 +108,7 @@ The **lease** has an expiry. During our last wave it ran for thirty minutes. The
   </Stage>
 </Pipeline>
 
-This picture was not true the first time. On 9 November around 10:45 pm, the first wave (we call it `cockpit-1`) showed two defects. A task whose lease had expired stayed marked « in progress ». And the teams did not beat their lease: the instructions told them to, they did not. One session beat its lease once in 150 turns. The fix was to take the heartbeat out of the model and give it to the runner. A rule an agent has to remember is not a rule.
+This picture was not true the first time. On 9 November around 10:45 pm, the first wave (we call it `cockpit-1`) showed two defects. A task whose lease had expired stayed marked “in progress”. And the teams did not beat their lease: the instructions told them to, they did not. One session beat its lease once in 150 turns. The fix was to take the heartbeat out of the model and give it to the runner. A rule an agent has to remember is not a rule.
 
 ## The scope, held at four places
 
@@ -124,7 +124,7 @@ The lease says who works. The scope says on what. Every task gets a list of path
 
 An honest detail: today only one repository is under coordination, the cockpit's local tools. For it, the commit and the local landing do the work. The push hook and the required status on GitHub exist, but no GitHub repository is under coordination yet: we will switch them on one at a time.
 
-The collector-file rule is written in the ADR. It still broke on the first try: the coordinator refused two tasks because both touched the cockpit's translations folder. It answered « scope already held ». We saw it for real, during the wave, and fixed it the same day: the folder of a collector pattern is now granted to several live tasks.
+The collector-file rule is written in the ADR. It still broke on the first try: the coordinator refused two tasks because both touched the cockpit's translations folder. It answered “scope already held”. We saw it for real, during the wave, and fixed it the same day: the folder of a collector pattern is now granted to several live tasks.
 
 The same day, a team needed a file outside its scope. It did not touch it. It published a scope extension request, Mouloud settled it, and the need became a task of its own (task 5 of the wave). That is the intended behaviour: out-of-scope work is suspended, it does not spread.
 
@@ -173,10 +173,10 @@ Three defects of our own tooling came out during these tests too. Stopping a tea
 
 ## Crons: the clock against the event
 
-The Mac runs scheduled jobs: sync the ticket board, clean up worktrees, reindex the code, watch the rest. On 10 November we reread the last 20 runs of each. Most of them answered « nothing to do ».
+The Mac runs scheduled jobs: sync the ticket board, clean up worktrees, reindex the code, watch the rest. On 10 November we reread the last 20 runs of each. Most of them answered “nothing to do”.
 
 <Split label="The crons before and after the review of 10 November: on the left, what the clock started and what it found; on the right, what triggers each job now.">
-  <Side title="On the clock, before" tone="before" items="Worktree clean-up: every hour, 391 s, nearly always « kept » | Board sync: every hour, 270 s | Board cache: every 20 min, 120 s, 15 errors | Tools update: every 15 min, nearly always « already up to date » | Plugins update: every 30 min, « up to date » 99 % of the time | Architecture export: twice an hour, « tool not on main yet » | Trains export: every minute, nothing when no train runs | Code index: every 30 min, 21 repositories read again" />
+  <Side title="On the clock, before" tone="before" items="Worktree clean-up: every hour, 391 s, nearly always “kept” | Board sync: every hour, 270 s | Board cache: every 20 min, 120 s, 15 errors | Tools update: every 15 min, nearly always “already up to date” | Plugins update: every 30 min, “up to date” 99 % of the time | Architecture export: twice an hour, “tool not on main yet” | Trains export: every minute, nothing when no train runs | Code index: every 30 min, 21 repositories read again" />
   <Side title="On an event, after" tone="after" items="Worktree clean-up: once a night | Board sync: after each merge, at the end of a session, and once a night | Board cache: on demand, only what changed | Tools and plugins: after a merge of the tooling, and when a session starts | Trains export: when a train's state changes | Architecture export: out of the crons | Code index: every 2 hours | Watchdog: local checks every 15 min, GitHub at most once an hour" />
 </Split>
 
@@ -228,7 +228,7 @@ Public repositories get GitHub's CI at no cost. Private repositories use up minu
   <Side title="Not proven yet" tone="plain" items="That the billed minutes stop: to be shown before and after | An alert when the runner's version falls behind: in review | Three more private repositories, ready, wait for an organisation setting | An infrastructure workflow that carries secrets stays on GitHub, by decision" />
 </Split>
 
-The runner group allows repositories by name, never « all ». That rule is what protects the Mac.
+The runner group allows repositories by name, never “all”. That rule is what protects the Mac.
 
 ## The tool we give, and nobody uses
 

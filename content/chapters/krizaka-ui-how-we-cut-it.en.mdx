@@ -110,7 +110,7 @@ A shared library is only worth it if updating is fearless. Everything goes throu
 
 <Pipeline label="The path of a Krizaka UI release, from a pull request to the products">
   <Stage title="A changeset" note="in the pull request">A pull request that changes what a package ships adds a note.</Stage>
-  <Stage title="The version PR" note="opened by a bot">On main, a bot gathers the notes in a « version packages » pull request.</Stage>
+  <Stage title="The version PR" note="opened by a bot">On main, a bot gathers the notes in a “version packages” pull request.</Stage>
   <Stage title="npm" note="OIDC, provenance" tone="gate">Merging it publishes, with trusted publishing and provenance. No npm token in the secrets.</Stage>
   <Stage title="The install test" note="every day" tone="gate">The published packages, from npm, go into a real Next.js app, an Expo app and a Node script, and every example compiles.</Stage>
   <Stage title="The products" note="Renovate" tone="ship">One pull request per release in each product; fixes merge on their own when CI is green.</Stage>

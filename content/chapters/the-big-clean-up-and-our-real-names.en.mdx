@@ -30,7 +30,7 @@ stats:
     section: "Our real names"
 ---
 
-In [chapter 25](/story/why-we-slowed-down-and-how-we-work-now/) I told why we were slowing down, and what we changed on 5 November. The next day, 6 November, I wrote the CTO an even shorter sentence: « we stop everything now ».
+In [chapter 25](/story/why-we-slowed-down-and-how-we-work-now/) I told why we were slowing down, and what we changed on 5 November. The next day, 6 November, I wrote the CTO an even shorter sentence: “we stop everything now”.
 
 This time it was not about speed. It was about order. A first human contributor was joining us, and he had to be able to understand the organisation on his own, without asking me where things are. So nothing would move before everything was tidied and named.
 
@@ -48,15 +48,15 @@ The first finding was on the Mac. Every agent session cloned its own copy of the
   <Num value="45" label="paths typed by hand" hint="about, in our tools, to the old folder" />
 </Numbers>
 
-The second finding was about names. Our products had two names. A code name, which the repositories, the packages and the dev addresses still carried: Yomizaka, Akinaza, Orazaka, Kachizaka. And a commercial name, the one on the website: Verikora, Folioviv, Sovkora, Kridoc. A newcomer who reads « akinaza » in a repository and « Folioviv » on the home page cannot guess it is the same product.
+The second finding was about names. Our products had two names. A code name, which the repositories, the packages and the dev addresses still carried: Yomizaka, Akinaza, Orazaka, Kachizaka. And a commercial name, the one on the website: Verikora, Folioviv, Sovkora, Kridoc. A newcomer who reads “akinaza” in a repository and “Folioviv” on the home page cannot guess it is the same product.
 
 The third was code living twice. An audit looked for everything that lived in two places. It found a package published from two repositories at once, security code copied into a product when the library already existed, and registries that still listed deleted repositories.
 
-So I took the decision that is scary: « we change everything; we break everything and we fix where it breaks ». No compatibility alias. No transition symlink. We break, we look at what breaks, and we fix it at the source.
+So I took the decision that is scary: “we change everything; we break everything and we fix where it breaks”. No compatibility alias. No transition symlink. We break, we look at what breaks, and we fix it at the source.
 
 ## Check before deleting
 
-Break, yes. Lose, no. I gave one instruction for the clean-up: « check before you delete things we use ». The CTO turned it into a proof in four steps, run again for every folder, in this order. Otherwise we do not touch it.
+Break, yes. Lose, no. I gave one instruction for the clean-up: “check before you delete things we use”. The CTO turned it into a proof in four steps, run again for every folder, in this order. Otherwise we do not touch it.
 
 <Steps>
   <Step title="Do we use it?">
@@ -73,7 +73,7 @@ Break, yes. Lose, no. I gave one instruction for the clean-up: « check before y
   </Step>
 </Steps>
 
-The second step looks excessive. It is not. After a squash merge, git counts as « not pushed » commits that are already on main in another form. In the 13 copies of krizaka-ui it announced 151 unpushed commits, all the same. The counter lies. So we bundle everything, without asking its opinion.
+The second step looks excessive. It is not. After a squash merge, git counts as “not pushed” commits that are already on main in another form. In the 13 copies of krizaka-ui it announced 151 unpushed commits, all the same. The counter lies. So we bundle everything, without asking its opinion.
 
 And once, that caution saved real work. At the end of October we had folded several small repositories into the one of our Java libraries. One of them had kept moving after the fold, on 1 and 2 November. When we deleted it, three of its commits had never reached their new home, one of them a security feature. The only copy left was the local, read-only mirror that codegraph indexes. We got them back, ported them with their tests, and they shipped in krizaka-java 0.12.0, on Maven Central. The CTO made it a rule: before deleting a repository, compare every commit since the fold, make a verified bundle, and delete only after a proven restore.
 
@@ -147,14 +147,14 @@ The HQ holds two folders, side by side. The company folder first: our notes, our
   />
 </Layers>
 
-The base rule fits in one sentence I said that day: « every session clones: that is not allowed at all ». There is now one copy of each repository. Only the tool `workspace-sync` makes it, and a cron moves it forward on main every 30 minutes. A session never works in it. It asks for a worktree, a working branch set beside it, which shares the same git history without copying it:
+The base rule fits in one sentence I said that day: “every session clones: that is not allowed at all”. There is now one copy of each repository. Only the tool `workspace-sync` makes it, and a cron moves it forward on main every 30 minutes. A session never works in it. It asks for a worktree, a working branch set beside it, which shares the same git history without copying it:
 
 ```bash
 cd "$(wt-new krizaka-blog 2726)"   # a worktree for a ticket, from a fresh main
 wt-done --sweep                    # removes the merged worktrees that hold nothing unpushed
 ```
 
-This is not a convention we hope people follow. It is a guard. A Claude Code hook refuses `git clone`, `gh repo clone` and a worktree made anywhere else. It also refuses a write at the root of my home folder: logs and temporary files go to the workspace. A test fails if one of our agents' tools makes a clone. And a cron counts the clones lying around outside the reference copies, with an alert while any is left. The « Workspace » page of the cockpit shows me the same count.
+This is not a convention we hope people follow. It is a guard. A Claude Code hook refuses `git clone`, `gh repo clone` and a worktree made anywhere else. It also refuses a write at the root of my home folder: logs and temporary files go to the workspace. A test fails if one of our agents' tools makes a clone. And a cron counts the clones lying around outside the reference copies, with an alert while any is left. The “Workspace” page of the cockpit shows me the same count.
 
 As I write, about a hundred old clones are left in the old folder. They will go through the same four steps.
 
@@ -220,7 +220,7 @@ The CTO proved it works with a throwaway HQ, in a temporary folder: our tools' t
 
 Then we moved. The company folder and the workspace went into the HQ, with no link left to the old places. And it broke, as expected, but not where we expected.
 
-The install script of our tools had added the new hooks next to the old ones, instead of replacing them. The old hook called a guard at a path that no longer existed. It exited with code 2, and for Claude Code that code means « refused ». The result: every command, every write, every edit of every session on the Mac was refused. The agents could do nothing, not even repair themselves. I fixed it myself, with a `sed` in the Terminal.
+The install script of our tools had added the new hooks next to the old ones, instead of replacing them. The old hook called a guard at a path that no longer existed. It exited with code 2, and for Claude Code that code means “refused”. The result: every command, every write, every edit of every session on the Mac was refused. The agents could do nothing, not even repair themselves. I fixed it myself, with a `sed` in the Terminal.
 
 The fix took two rules, written in the code and tested:
 
@@ -231,7 +231,7 @@ The tests of the no-clone guard (11 out of 11) and those of the hooks pass. The 
 
 There was a second hitch, a quieter one. When it ran again, the install script switched the trains' line back on, while the organisation was frozen. The CTO commented it out again within the minute, and the cron had not run in between. A guard has been asked for so it does not happen again.
 
-Then we ran everything once, by hand. The cockpit was rebuilt, and its « Workspace » and « Organisation » pages answer. The scheduled jobs were each run once through `kz-run`: all 13 ended without error, and the trains, frozen, wait for the end of the freeze. The cockpit still has 22 layout overflows and two lint errors to fix.
+Then we ran everything once, by hand. The cockpit was rebuilt, and its “Workspace” and “Organisation” pages answer. The scheduled jobs were each run once through `kz-run`: all 13 ended without error, and the trains, frozen, wait for the end of the freeze. The cockpit still has 22 layout overflows and two lint errors to fix.
 
 ## Our real names
 
@@ -329,7 +329,7 @@ With the folder, the config, the names and the board in place, the path of a cha
 
 <Pipeline label="The life of a change: from the ticket to the check on the live platform. A session never clones and never merges; the train and the recette do the end.">
   <Stage title="The issue" note="done when">
-    Everything starts with a ticket in our private ticket repository, with its « done when » lines and the list of files it touches.
+    Everything starts with a ticket in our private ticket repository, with its “done when” lines and the list of files it touches.
   </Stage>
   <Stage title="Next" note="validated by the CTO">
     The card enters Next only when the CTO validates it, within its lane's cap.
@@ -338,7 +338,7 @@ With the folder, the config, the names and the board in place, the path of a cha
     A session takes the card and makes its worktree from a fresh main. It never clones.
   </Stage>
   <Stage title="The PR" note="pr-open">
-    pr-open opens the PR: the ticket, its « done when » lines mirrored with their proof, the code formatted.
+    pr-open opens the PR: the ticket, its “done when” lines mirrored with their proof, the code formatted.
   </Stage>
   <Stage title="The review" note="the ticket first" tone="gate">
     We check first that the PR does what the ticket asks, then the architecture, the tests and the guards.

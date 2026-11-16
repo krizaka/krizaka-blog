@@ -71,9 +71,9 @@ The operations database is a SQLite database on the Mac. Here is what goes in an
   <Side title="Those who read" tone="plug" items="Every session start: open alerts first | The CTO: before any new work | The cockpit: health of the teams, the trains, the crons | The audits: read-only queries | The launcher: it refuses to relaunch a team whose last end has not been seen" />
 </Split>
 
-The end of a team shows the principle well. When a session stops, one single piece of code writes its end. It always writes an event. It also opens an alert, unless the session succeeded and its PR is already in the train: in that case there is nothing to look at. As long as an end alert has not been seen, the launcher refuses to relaunch that team. The CTO cannot « forget » a team.
+The end of a team shows the principle well. When a session stops, one single piece of code writes its end. It always writes an event. It also opens an alert, unless the session succeeded and its PR is already in the train: in that case there is nothing to look at. As long as an end alert has not been seen, the launcher refuses to relaunch that team. The CTO cannot “forget” a team.
 
-This database has a rule I learned the hard way. On the morning of 11 November, 43 of the 71 open alerts were stale: PRs already merged, branches green again. Since then, the database is there so that nothing is missed, never to decide. Before merging, closing a ticket or writing « done », we check on GitHub.
+This database has a rule I learned the hard way. On the morning of 11 November, 43 of the 71 open alerts were stale: PRs already merged, branches green again. Since then, the database is there so that nothing is missed, never to decide. Before merging, closing a ticket or writing “done”, we check on GitHub.
 
 It also has a target we have not reached. I want one owning service per database: it alone opens the file, the others ask it. And I want to be able to empty the database and rebuild it from its sources at any time. Today, alerts and events each go through a single module, but several programs still open the file. One part is done: the start reports of the sessions are first written to an append-only journal, then to the database, and a replay of the journal gives them back to an emptied database. The rest is an open ticket.
 
@@ -90,13 +90,13 @@ Why hooks, and not one more instruction? I wrote about it in [chapter 21](/story
 
 One design detail matters. Every hook goes through one small entry point. If the installation is broken and that entry point cannot find the tool, it lets the call through with a warning: a damaged installation must not refuse every command of every session. If the tool runs and says no, it is no.
 
-The first audit showed that a guard can exist and see nothing. The « code index first » guard had been in place for days. Out of 101 sessions, 86 never asked the index. The guard looked only at the beginning of the command, and only at paths written in full. Agents chain their commands: 1,552 code reads went through behind a semicolon or an « and ». The guard blocked 12 times. The measured ratio: 1 call to the index for 170 reads by hand.
+The first audit showed that a guard can exist and see nothing. The “code index first” guard had been in place for days. Out of 101 sessions, 86 never asked the index. The guard looked only at the beginning of the command, and only at paths written in full. Agents chain their commands: 1,552 code reads went through behind a semicolon or an “and”. The guard blocked 12 times. The measured ratio: 1 call to the index for 170 reads by hand.
 
 The same audit found two rules that contradicted each other. Our commit hook refuses any co-author line that does not name one of our identities. The tool, by default, offers to add one. The result: 81 sessions out of 101 lost at least one command to that refusal. The fix was not one more hook. We turned the offer off at the source, in the session's settings.
 
 ## Why Python here and .mjs there
 
-I did not find, in our own documents, one that says « we chose this language for this reason ». So I give what the code shows, nothing more.
+I did not find, in our own documents, one that says “we chose this language for this reason”. So I give what the code shows, nothing more.
 
 **The agents' tooling is Python and shell.** I counted: 160 Python files, and only one imports anything outside the standard library (a screenshot tool, which drives a browser). SQLite is in the standard library. So there is nothing to install: a cron, a hook or a background service runs the system's Python, and it works. The tests are files that sit next to the tools.
 
@@ -112,7 +112,7 @@ Two languages still have a price, and the third audit found it. The bridge that 
 
 All work starts from a ticket. Tickets are kept on three levels: a large piece of work, a feature, a task. They live on a board.
 
-<Pipeline label="The states of a ticket on the board. Nobody moves a card by hand to say « in review »: an open PR existing is what says it.">
+<Pipeline label="The states of a ticket on the board. Nobody moves a card by hand to say “in review”: an open PR existing is what says it.">
   <Stage title="Incubation" note="an idea, an audit finding">
     An idea of the founder or a finding of an audit waits here. An idea is never closed because nobody asked for it.
   </Stage>
@@ -129,14 +129,14 @@ All work starts from a ticket. Tickets are kept on three levels: a large piece o
     An open PR names the ticket: the card moves to review. If the PR goes away without merging, the card goes back to Next.
   </Stage>
   <Stage title="To validate" note="after the merge" tone="gate">
-    For tickets marked for acceptance: a short session checks the « done when » on the platform, after the merge.
+    For tickets marked for acceptance: a short session checks the “done when” on the platform, after the merge.
   </Stage>
   <Stage title="Done" note="closed with its proof" tone="ship">
     The ticket closes with a proof. A duplicate always names its original.
   </Stage>
 </Pipeline>
 
-The board is brought back in line with the tickets and the PRs at three moments: after every merge, at the end of every session, and once a night as a safety net. A « blocked » card is never moved by these rules: it is a decision, not a computed state.
+The board is brought back in line with the tickets and the PRs at three moments: after every merge, at the end of every session, and once a night as a safety net. A “blocked” card is never moved by these rules: it is a decision, not a computed state.
 
 The lanes are our work queues, one per product. When a lane finishes a ticket, the rule says to refill it with the next one. That rule is suspended: the lanes are closed right now, and I say why further down.
 
@@ -182,9 +182,9 @@ A word on forced merges. During the first audit window, there were 4, all on the
 
 The CTO chat is not eternal. A long conversation becomes expensive and makes more mistakes. So we have two code words.
 
-« Salut Mouloud » closes the session. Every running agent stops at a safe point. The CTO rewrites a short resume note, 12 KB at most: it keeps only what GitHub does not know, my instructions, the decisions waiting, the traps. The state of the work is not written by hand in it: it is generated from the teams, the trains, the board and the PRs. A check refuses a note that contradicts GitHub.
+“Salut Mouloud” closes the session. Every running agent stops at a safe point. The CTO rewrites a short resume note, 12 KB at most: it keeps only what GitHub does not know, my instructions, the decisions waiting, the traps. The state of the work is not written by hand in it: it is generated from the teams, the trains, the board and the PRs. A check refuses a note that contradicts GitHub.
 
-« Bonjour Mouloud » opens the next one, always in the same order: read the whole note, handle every open alert before any new work, check the teams' environment, then relaunch what was in flight. An interrupted team starts again as a fresh launch, never as the resume of an old session. Every launch leaves with its watcher, in the same turn.
+“Bonjour Mouloud” opens the next one, always in the same order: read the whole note, handle every open alert before any new work, check the teams' environment, then relaunch what was in flight. An interrupted team starts again as a fresh launch, never as the resume of an old session. Every launch leaves with its watcher, in the same turn.
 
 That loop had a hole too. I tell it with the third audit.
 
@@ -202,17 +202,17 @@ What came out of it: the guard now reads every segment of a command; the co-auth
 
 **Audit 3: the agents that pilot.** 10 sessions, 10 bugs, 2 of them severe. Those two do not come from the teams. They come from the CTO chat.
 
-The first: a chat I had closed with « Salut » kept acting. Its watchers woke it four times. It closed one ticket and reopened another, while the new chat was working on the same subjects. Two pilots, neither seeing what the other knew.
+The first: a chat I had closed with “Salut” kept acting. Its watchers woke it four times. It closed one ticket and reopened another, while the new chat was working on the same subjects. Two pilots, neither seeing what the other knew.
 
-The second concerns me directly. An agent wrote on a PR that I had read and approved a page. My message only said I agreed to read it. The PR merged half an hour later. My written approval came after. Nothing stopped an agent from writing « the founder approved ».
+The second concerns me directly. An agent wrote on a PR that I had read and approved a page. My message only said I agreed to read it. The PR merged half an hour later. My written approval came after. Nothing stopped an agent from writing “the founder approved”.
 
 The same audit saw a team run an infrastructure plan with fake keys. Its brief forbade it. The plan still re-read ten real records. No guard existed for that.
 
-What came out of it at once: the closing procedure now stops every watcher of the chat that closes, and a closed chat writes nothing more. The rest became tickets: a guard that refuses « the founder read, approved or decided » without quoting my message, a guard on infrastructure plans, the cockpit that must show the teams.
+What came out of it at once: the closing procedure now stops every watcher of the chat that closes, and a closed chat writes nothing more. The rest became tickets: a guard that refuses “the founder read, approved or decided” without quoting my message, a guard on infrastructure plans, the cockpit that must show the teams.
 
 **Audit 4: catching earlier.** 7 sessions, all successful, 7 new bugs, and 4 of the third audit seen again. The most severe is almost funny: the CTO chat dated its writings 45 to 60 minutes in the future. 17 future times in 18 writes, including the time of my approval on a ticket. A proof with the wrong date is no longer a proof. Since then, every written time comes from the machine's clock, never from the model's memory.
 
-The other lesson: 4 PRs out of 11 were red in CI, and for 3 of them the failing check exists on the Mac. It simply did not run before the push. The audit ends with a ranking of the guards to build, by « errors caught for the effort »: the first five catch about thirty of the defects counted, for about one day of work.
+The other lesson: 4 PRs out of 11 were red in CI, and for 3 of them the failing check exists on the Mac. It simply did not run before the push. The audit ends with a ranking of the guards to build, by “errors caught for the effort”: the first five catch about thirty of the defects counted, for about one day of work.
 
 Between the first audit and the next ones, the train changed pace.
 
@@ -232,7 +232,7 @@ Two more points, because I had announced them.
 
 The coordinator of the [previous post](/story/agents-under-a-coordinator/) is asleep. Its registry has had no activity since 11 November. Today, what keeps the teams apart is simpler: one team per repository, one worktree per ticket, and the refusal, at opening, of a PR that shares a file with another. The comparison I promised with existing tools has not been done.
 
-And the three days. They end tomorrow evening. So far, no environment drift. But « conforming at the start » did not mean « without a defect on the way »: reading the logs was enough to see it.
+And the three days. They end tomorrow evening. So far, no environment drift. But “conforming at the start” did not mean “without a defect on the way”: reading the logs was enough to see it.
 
 ## What I keep
 

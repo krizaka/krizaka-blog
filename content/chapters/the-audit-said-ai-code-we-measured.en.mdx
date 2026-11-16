@@ -1,7 +1,7 @@
 ---
-title: "The audit said our agents write « AI code ». We measured."
+title: "The audit said our agents write “AI code”. We measured."
 description: "An external audit says our code looks written by AI: null checks everywhere, procedural services. What was true, what was overstated, and what the build now refuses."
-seoTitle: "« AI code »: we measured, then the build refused it"
+seoTitle: "“AI code”: we measured, then the build refused it"
 seoDescription: "An external audit accuses our agents' code. What we measured, the rules that fail the build, the half-done rollout lesson, and what it costs."
 date: 2026-10-28
 publishedAt: "2026-10-28T23:10:00-04:00"
@@ -15,7 +15,7 @@ period: "2026-10-28/2026-10-29"
 sources:
   - from-vibe-coding-to-agentic-engineering
 versus:
-  faced: "an external audit saying our agents write « AI code »"
+  faced: "an external audit saying our agents write “AI code”"
   built: "measurements, then rules that fail the build, everywhere"
 stats:
   - value: "34 of 35"
@@ -29,7 +29,7 @@ stats:
     section: "What it costs"
 ---
 
-On 28 October I received an external audit of our code, and it said, roughly, this: your agents write « AI code ». Cascades of `if (x != null)`, procedural services, `if/else` over sign-in providers, and a Java 21, a Spring and a TypeScript that we do not use to their full extent.
+On 28 October I received an external audit of our code, and it said, roughly, this: your agents write “AI code”. Cascades of `if (x != null)`, procedural services, `if/else` over sign-in providers, and a Java 21, a Spring and a TypeScript that we do not use to their full extent.
 
 My first reaction was to defend us. The second one was more useful: what if we looked? In chapter 9 I had already had the organisation audited by [Claude and Gemini](/story/what-claude-found-auditing-krizaka/), and I had seen that an opinion has to be checked. This chapter tells what we measured, what we decided, what went wrong on the way and what it costs. I only say what I could read in the code, in the pull requests and on GitHub's API.
 
@@ -58,9 +58,9 @@ What I keep from this: we had a style problem, and above all a contract problem,
 
 ## The plan: a tool that fails, not an instruction
 
-The audit had a premise that I think is right: an agent changes its style only when a deterministic tool fails the build. Writing « write clean code » in an instructions file does not hold from one session to the next. So we turned every requirement we keep into a blocking rule.
+The audit had a premise that I think is right: an agent changes its style only when a deterministic tool fails the build. Writing “write clean code” in an instructions file does not hold from one session to the next. So we turned every requirement we keep into a blocking rule.
 
-<Pipeline label="From style to rule: where each check stops « AI code », from the editor to the checkpoint">
+<Pipeline label="From style to rule: where each check stops “AI code”, from the editor to the checkpoint">
   <Stage title="Editor" note="10 seconds">After each edit, a hook checks that one file: ESLint for TypeScript, PMD for Java.</Stage>
   <Stage title="Compile" note="NullAway">Packages declared `@NullMarked` are checked at compile time. A useless null check becomes an error.</Stage>
   <Stage title="Tests" note="ArchUnit">The architecture rules: `@Valid` on request bodies, no Utils, no controller touching the database.</Stage>
@@ -87,7 +87,7 @@ An audit proposes, it does not decide. I refused several things, with the reason
 - Banning `*Manager` classes. We have 0, and the word is legitimate in Spring (`AuthenticationManager`). A rule that guards nothing is noise.
 - Cyclomatic complexity in JSX. It counts every `&&` in a render: 560 alerts, mostly components. Cognitive complexity, already at 15, measures what hurts.
 - Checkstyle. It repeats PMD's measures, and it is a second debt baseline to keep.
-- A rule that « requires a strategy ». No tool can decide that. Two PMD rules hold the line on string ladders, and review does the rest.
+- A rule that “requires a strategy”. No tool can decide that. Two PMD rules hold the line on string ladders, and review does the rest.
 - A `mvn verify` on every edit. PMD and SpotBugs alone take 30 to 60 seconds. That would stop the agent at every line.
 - Error Prone as a whole. It comes in only to host NullAway, with its own checks turned off. This corrects an older refusal, and I wrote it in the ADR.
 
@@ -123,7 +123,7 @@ The sessions write down, at the end, the number of tokens they used, and we have
 
 In total, 16.1 million tokens for 290 PRs, which is 55k per PR. The models: 274 sessions on Sonnet (one feature or fix per session), 9 on Opus (ADRs and design choices), 3 on Haiku.
 
-These figures come with three caveats, and I want to say them. They are estimates made by the sessions themselves, which cannot see their exact usage: I write « estimated », not « billed ». The log starts on 26 October, earlier work is not in it. And it is the size of the context when the session reported, not what was consumed: a session re-reads its context at every tool call, between 50 and 130 times, mostly from the cache. Multiplying these tokens by the public API price would therefore understate the cost by an order of magnitude. I do not print that as a price.
+These figures come with three caveats, and I want to say them. They are estimates made by the sessions themselves, which cannot see their exact usage: I write “estimated”, not “billed”. The log starts on 26 October, earlier work is not in it. And it is the size of the context when the session reported, not what was consumed: a session re-reads its context at every tool call, between 50 and 130 times, mostly from the cache. Multiplying these tokens by the public API price would therefore understate the cost by an order of magnitude. I do not print that as a price.
 
 The honest price is the subscription. I am on Claude Max (from $100/month for Max 5x, $200 for Max 20x). In October, the agents merged 1,568 PRs, read on GitHub's API. One hundred dollars divided by 1,568 is about 6 cents, two hundred dollars about 13 cents. So 6 to 13 cents per merged PR, depending on the plan.
 
@@ -131,7 +131,7 @@ That is an order of magnitude, not a quote. It leaves out my time, the time of w
 
 ## What is not done
 
-I would rather say it than let you guess. The Java rules are in the parent but not published yet, so no consumer repository applies them. The first proof in krizaka-users, the strict TypeScript layer and the hook are in review or in progress, and their issues are open. The matrix has 112 red cells. And I have not re-run the « after » measures: while the rules are not applied, they would show nothing. I will post them next to the first ones when they say something.
+I would rather say it than let you guess. The Java rules are in the parent but not published yet, so no consumer repository applies them. The first proof in krizaka-users, the strict TypeScript layer and the hook are in review or in progress, and their issues are open. The matrix has 112 red cells. And I have not re-run the “after” measures: while the rules are not applied, they would show nothing. I will post them next to the first ones when they say something.
 
 ## What I keep from it
 

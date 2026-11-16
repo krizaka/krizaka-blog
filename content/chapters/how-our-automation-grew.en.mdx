@@ -50,7 +50,7 @@ Here is what krizaka.com's CI does when a pull request opens. The site's file is
 <Pipeline label="The graph of krizaka.com's CI on a pull request, redrawn: what runs, in what order, and what is skipped when nothing concerns it.">
   <Stage title="Changed files" note="a few seconds">A first job looks at what the PR touches. A PR that only changes documentation skips all the heavy work.</Stage>
   <Stage title="Plan" note="the matrix">It reads the repository's scripts and turns them into a list of tasks to run in parallel.</Stage>
-  <Stage title="Verify" note="in parallel" tone="gate">Lint, types, tests and build, each in its own job. Alongside, two checks that wait for no one: « a fix needs a guard » and duplicate code.</Stage>
+  <Stage title="Verify" note="in parallel" tone="gate">Lint, types, tests and build, each in its own job. Alongside, two checks that wait for no one: “a fix needs a guard” and duplicate code.</Stage>
   <Stage title="Journeys" note="in shards">The end-to-end tests, cut into several pieces that run at the same time, only when the interface changes.</Stage>
   <Stage title="Image and analysis" note="after green">The container image is built and started, and SonarCloud analyses the code. Both wait for verify to be green: no point paying for the longest jobs on a PR that is already red.</Stage>
   <Stage title="CI gate" note="one check" tone="ship">A last job reads all the others and gives one answer. It is the only check required on main.</Stage>

@@ -1,0 +1,8 @@
+{
+  "excluded": {
+    "content/chapters/the-architecture-of-krizaka-agents": "in flight: krizaka-blog#364",
+    "content/chapters/design-choices-for-architects": "in flight: krizaka-blog#364",
+    "content/chapters/five-ergonomics-choices-on-our-real-screens": "in flight: krizaka-internal#3943"
+  },
+  "allowed": {}
+}

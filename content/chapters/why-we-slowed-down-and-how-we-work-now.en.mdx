@@ -30,7 +30,7 @@ stats:
     section: "Three indicators, and a date"
 ---
 
-In [chapter 23](/story/the-trains-second-version-rails-sidings-and-a-repair-train/) I told the story of the rails, the firefighter and the chouf. In [chapter 24](/story/how-we-stay-in-sync/), how we stay in sync. On the morning of 5 November I wrote the CTO a less proud sentence: « I have the feeling we are not moving at the speed we want ». I asked him to study our speed and how we work with the agents, and to give me a plan.
+In [chapter 23](/story/the-trains-second-version-rails-sidings-and-a-repair-train/) I told the story of the rails, the firefighter and the chouf. In [chapter 24](/story/how-we-stay-in-sync/), how we stay in sync. On the morning of 5 November I wrote the CTO a less proud sentence: “I have the feeling we are not moving at the speed we want”. I asked him to study our speed and how we work with the agents, and to give me a plan.
 
 This chapter tells what he found, what we decided the same day, and why. It ends without a result, because the first measure falls on 8 November.
 
@@ -54,7 +54,7 @@ The report puts it in one sentence I keep: the work no longer entered the machin
 
 ### Sessions no longer ran
 
-On 1 November, 51 sessions ran. On the 4th, 13. On the 5th, when the report was written, 3. A session only starts when someone launches it, and the rule « relaunch a lane as soon as it finishes » depended on me or on the CTO. And those that started often ended without a PR: 37 % since 31 October.
+On 1 November, 51 sessions ran. On the 4th, 13. On the 5th, when the report was written, 3. A session only starts when someone launches it, and the rule “relaunch a lane as soon as it finishes” depended on me or on the CTO. And those that started often ended without a PR: 37 % since 31 October.
 
 The case of Verikora, on the evening of the 4th, sums it up. The session built and tested two slices. It could not open their PRs: the repository already had its three PRs, and main stayed red for 886 minutes, because of a smoke test and an automatic dependency update. None of it came from the feature's code. The work stayed on a branch, and up to the report, no Verikora session was launched again.
 
@@ -76,7 +76,7 @@ Since 2 November, every incident had produced its rule. In 72 hours, about ten n
     Three open PRs per repository, all authors counted. At the limit, no more opening.
   </Stage>
   <Stage title="The proof" note="refused" tone="gate">
-    A PR that did not copy every « done when » line of its ticket, with its proof, was refused.
+    A PR that did not copy every “done when” line of its ticket, with its proof, was refused.
   </Stage>
   <Stage title="The freeze" note="red main" tone="gate">
     A red on main, whatever its cause, stopped every merge of the repository.
@@ -86,7 +86,7 @@ Since 2 November, every incident had produced its rule. In 72 hours, about ten n
   </Stage>
 </Pipeline>
 
-The freeze did the most damage. Of the reds on main from 2 to 5 November, most did not come from product code: 46 automatic dependency updates, 30 quality analyses, 19 releases. Each one froze the whole repository. The watchdog raised 96 « frozen » alerts in four days.
+The freeze did the most damage. Of the reds on main from 2 to 5 November, most did not come from product code: 46 automatic dependency updates, 30 quality analyses, 19 releases. Each one froze the whole repository. The watchdog raised 96 “frozen” alerts in four days.
 
 <Rails label="Before, from 2 to 5 November: a red that was not the product's froze the rails of Verikora and Sovkora, while the platform's rail kept rolling.">
   <Rail name="Verikora" state="frozen" wagons="PR 1:wait | PR 2:wait | PR 3:wait" />
@@ -106,19 +106,19 @@ The freeze did the most damage. Of the reds on main from 2 to 5 November, most d
 
 ### The factory ate the capacity
 
-I call « the factory » everything that serves to produce: the agents' tools, the rules, the CI, the robots that bump versions. From 2 to 5 November, 60 % of merges came from robots. In 14 days they had opened 748 pin PRs, one per version and per repository. And 52 % of the PRs written by agents went to the factory itself: 83 PRs in four days in the two repositories of rules and tools, roughly one new rule or tool an hour.
+I call “the factory” everything that serves to produce: the agents' tools, the rules, the CI, the robots that bump versions. From 2 to 5 November, 60 % of merges came from robots. In 14 days they had opened 748 pin PRs, one per version and per repository. And 52 % of the PRs written by agents went to the factory itself: 83 PRs in four days in the two repositories of rules and tools, roughly one new rule or tool an hour.
 
 The factory had become our agents' first customer. A factory delivers nothing to anyone.
 
 ### The board no longer guided
 
-There were 311 cards in « Next », the column of ready work, for a target of about sixty. The platform alone had 202. In 14 days we had created 1,749 issues and closed 950. 94 % were written by agents, often from audits: 179 on 2 November alone.
+There were 311 cards in “Next”, the column of ready work, for a target of about sixty. The platform alone had 202. In 14 days we had created 1,749 issues and closed 950. 94 % were written by agents, often from audits: 179 on 2 November alone.
 
 And the cards were not ready. Only 27 % had the list of files they touch, the one the session requires when it starts. So a session spent its budget redoing the slicing before writing a line.
 
 ### Reds we could catch at home
 
-In 14 days, about 2,000 CI runs failed, roughly two reds per branch. A note of 4 November had sorted them: 43 % would have been caught in a few seconds by a local check, 56 % with a common git hook. It was not « too many tests ». It was tests in the wrong place, in CI instead of on the machine, and checks outside the product that blocked the product.
+In 14 days, about 2,000 CI runs failed, roughly two reds per branch. A note of 4 November had sorted them: 43 % would have been caught in a few seconds by a local check, 56 % with a common git hook. It was not “too many tests”. It was tests in the wrong place, in CI instead of on the machine, and checks outside the product that blocked the product.
 
 ## The meeting on 87 rules
 
@@ -183,7 +183,7 @@ Two conditions came with it. First, every gate logs its refusals: it is not one 
 
 And a moratorium. The report proposed fourteen days without a new rule; I chose three, until 8 November. During those three days, a PR that adds a gate, a hook or a workflow step is refused by a check, unless it says why it is an exception. The one factory project allowed was the local check.
 
-To know whether a rule is really in place, the reference does not change: it is the conformance matrix. Every day a script crosses every repository with every rule and answers green, red or out of scope. Not an agent saying « done ». During the moratorium, the matrix's list of rules is frozen at 35, and only the security rules must still reach every repository the same day.
+To know whether a rule is really in place, the reference does not change: it is the conformance matrix. Every day a script crosses every repository with every rule and answers green, red or out of scope. Not an agent saying “done”. During the moratorium, the matrix's list of rules is frozen at 35, and only the security rules must still reach every repository the same day.
 
 ## The firefighter leaves, the crack arrives
 
@@ -303,4 +303,4 @@ The first measure is planned for 8 November, at the end of the moratorium. That 
 
 None of our rules was absurd. Each answered a real incident, and I had asked for many of them myself. It was their sum that stopped everything, and nobody looked at it, because no rule said what it cost.
 
-Since 30 October our motto has said: « The flow keeps running, the deadline is ours: it may move, the quality never does. » On 5 November I understood that we had protected quality by stopping the flow. That is not what the motto says. A rule that refuses must prove it protects something, and count what it refuses. Otherwise it is just one more stop on the line.
+Since 30 October our motto has said: “The flow keeps running, the deadline is ours: it may move, the quality never does.” On 5 November I understood that we had protected quality by stopping the flow. That is not what the motto says. A rule that refuses must prove it protects something, and count what it refuses. Otherwise it is just one more stop on the line.
