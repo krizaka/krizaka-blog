@@ -4,6 +4,14 @@
    tests/sketches.test.mjs: an unknown id is refused, the numbers run 1 to n across a before / after pair, every shape stays
    in its drawing, and every number has exactly one legend line and the reverse. */
 import type { SketchLegendItem, SketchShape, SketchSpec } from "@krizaka/ui/sketch";
+import cockpitToday from "../content/sketches/cockpit-today.ts";
+import cockpitRefresh from "../content/sketches/cockpit-refresh.ts";
+import cockpitMachine from "../content/sketches/cockpit-machine.ts";
+import cockpitAlerts from "../content/sketches/cockpit-alerts.ts";
+import cockpitShips from "../content/sketches/cockpit-ships.ts";
+import cockpitCosts from "../content/sketches/cockpit-costs.ts";
+import cockpitArchitecture from "../content/sketches/cockpit-architecture.ts";
+import cockpitSecrets from "../content/sketches/cockpit-secrets.ts";
 import ergoEmpty from "../content/sketches/ergo-empty.ts";
 import ergoError from "../content/sketches/ergo-error.ts";
 import ergoHome from "../content/sketches/ergo-home.ts";
@@ -25,6 +33,14 @@ export const SKETCHES: Readonly<Record<string, SketchEntry>> = {
   "ergo-empty": ergoEmpty,
   "ergo-error": ergoError,
   "ergo-themes": ergoThemes,
+  "cockpit-today": cockpitToday,
+  "cockpit-refresh": cockpitRefresh,
+  "cockpit-machine": cockpitMachine,
+  "cockpit-alerts": cockpitAlerts,
+  "cockpit-ships": cockpitShips,
+  "cockpit-costs": cockpitCosts,
+  "cockpit-architecture": cockpitArchitecture,
+  "cockpit-secrets": cockpitSecrets,
 };
 
 /** The drawing of an id; an unknown id fails the build. */

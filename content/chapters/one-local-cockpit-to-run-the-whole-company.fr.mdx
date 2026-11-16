@@ -1,8 +1,8 @@
 ---
-title: "Un seul écran pour diriger une entreprise d'agents"
-description: "Une application sur le Mac du fondateur : sessions, trains, alertes, tableau, valeurs sensibles masquées. Le soir qui l'a justifiée, ce qu'on a refusé, sa limite, ce que chaque rôle y lit."
-seoTitle: "Un seul écran pour diriger une entreprise d'agents"
-seoDescription: "Sessions, trains, alertes, tableau : l'application locale du fondateur, ses choix, sa limite, ce que chaque rôle y lit."
+title: "L'ergonomie d'un cockpit : un écran par question"
+description: "Je dirige une entreprise d'agents depuis un seul écran, sur mon Mac. Chaque vue répond à une question que je me pose dans la journée. Je les dessine au stylo, une par une, avec ce qui guide chacune."
+seoTitle: "L'ergonomie d'un cockpit : un écran par question"
+seoDescription: "Les vues du cockpit qui dirige une entreprise d'agents, dessinées une par une : la question de chaque écran et le choix d'ergonomie derrière."
 date: 2026-11-16
 tags: [ai, integration]
 author: oussama
@@ -17,114 +17,188 @@ period: "2026-11-15"
 sources:
   - one-local-cockpit-to-run-the-whole-company
 versus:
-  faced: "une release arrêtée pendant que dix sessions travaillaient, et aucun endroit unique où regarder"
-  built: "un seul écran local qui lit GitHub sans jamais y écrire, chaque chiffre avec son âge, les valeurs sensibles masquées"
+  faced: "des équipes d'agents qui travaillent en même temps, et aucun endroit unique où regarder"
+  built: "un cockpit local où chaque écran répond à une seule question, chaque chiffre avec son âge"
 stats:
-  - value: "196"
-    label: "pull requests mergées en 24 heures, ce soir-là"
-    section: "L'écran"
+  - value: "38"
+    label: "choses qui m'attendaient sur « Aujourd'hui », le 15 novembre au soir"
+    section: "Le matin : qu'est-ce qui m'attend ?"
   - value: "13"
     label: "sessions d'équipe au travail sur la page de santé"
-    section: "L'écran"
+    section: "La machine va-t-elle bien ?"
   - value: "86"
     label: "la charge du Mac qui a fait attendre un lancement d'équipe, au-dessus du frein de 60"
-    section: "Ce que chaque rôle y lit"
-  - value: "38"
-    label: "choses qui m'attendent sur « Aujourd'hui »"
-    section: "Ce que chaque rôle y lit"
+    section: "La machine va-t-elle bien ?"
+  - value: "196"
+    label: "pull requests mergées en 24 heures, ce soir-là"
+    section: "Qu'est-ce qui est cassé, et depuis quand ?"
 ---
 
-Dimanche 15 novembre, 13 h 24 à Montréal : la release de krizaka-ui s'arrête. L'étape qui lance les contrôles de tous les paquets est annulée après 3 minutes 35 secondes, avec 95 tâches finies sur 99. La release d'avant avait déjà échoué, à 12 h 52 ; la dernière qui avait passé datait de 11 h 49.
+Je dirige Krizaka avec des équipes d'agents. Elles ouvrent des tickets, écrivent du code, passent des pull requests dans des trains, et un watchdog les surveille. Moi, je regarde un seul écran : le cockpit, une application qui tourne sur mon Mac et nulle part ailleurs.
 
-Sur le cockpit, ça tient en une ligne : une alerte critique levée par le watchdog, dont le message commence par « main red: krizaka-ui release ». Elle est restée ouverte, comptée seize fois entre 14 h 15 et 18 h.
+Au début, j'y avais mis tout ce que je savais lire. Ça ne marchait pas. Je l'ai refait autour d'une idée simple : chaque écran répond à une seule question, celle que je me pose à ce moment de la journée. Si je ne sais pas dire la question d'un écran, l'écran n'a pas sa place dans la barre.
 
-La suite, ce n'est pas moi qui l'ai faite. C'est Mouloud, la session CTO, l'agent qui pilote nos équipes. Il a lu l'alerte, puis le log complet sur GitHub, qui en dit plus : le runner a reçu un signal d'arrêt (« The runner has received a shutdown signal ») pendant l'étape des contrôles. Ce n'était ni la limite de 45 minutes, ni deux releases qui se marchent dessus. Mouloud a écrit le ticket et lancé une équipe avec une consigne : elle travaille isolée, avec un plafond de tours, de dépense et de minutes, et le watchdog la surveille.
+Les écrans sont dessinés au stylo, d'après leur code, pas capturés. Chaque numéro d'un dessin renvoie à une ligne de la légende. Les chiffres viennent du soir du 15 novembre 2026.
 
-L'équipe a prouvé la cause. La release lançait en même temps le build, le lint, les tests et le typecheck du paquet ui, sans cache. Le build seul monte à environ 15 Go de mémoire, sur un runner qui en a 16. Le runner a été arrêté. Ce que les tests avaient affiché (le « Frame does not have a content window » d'axe-core, les avertissements du navigateur simulé sur les iframes) n'est sorti qu'après l'arrêt : l'objet `window` dans le log était un détail, pas la cause. La correction lance d'abord le lint et les types, puis les contrôles, deux tâches à la fois, et coupe ces avertissements à la source. Elle a été mergée à 18 h 34, la release suivante a passé, la version 4.9.0 est sortie et le ticket est fermé. La mémoire du build a son propre ticket.
+## Une question par écran
 
-Ma part : voir ça sur le cockpit, et laisser les agents faire. C'est le rôle de cet écran. Je supervise une entreprise d'agents ; je ne fais pas chaque étape.
+Je les range ici dans l'ordre où je les ouvre, pas dans l'ordre du menu.
 
-Ce chapitre décrit cet écran. C'est une application locale, sur mon Mac, qui me montre toute l'entreprise au même endroit. Je dis pourquoi elle existe, ce qu'on a refusé, ce qu'elle ne sait pas encore faire, puis ce que sept rôles y lisent. Les captures sont de vrais écrans, pris le soir du 15 novembre 2026 ; les valeurs sensibles sont masquées, et j'explique comment à la fin.
-
-## L'écran
-
-Une seule application, le cockpit, qui tourne sur 127.0.0.1 et nulle part ailleurs. C'est une application Next.js faite avec [nos composants](site:ui) ; elle lit nos données locales et GitHub. Ce n'est pas un tableau de bord pour des clients : il sert à une personne.
-
-La barre de gauche contient ce qu'il faut pour diriger : « Aujourd'hui », « La machine », « Ce qui sort » et les coûts. Plus bas, la société, puis l'architecture. « La machine » a six onglets : santé, livraison, qualité, règles, automatismes, alertes. Le soir du 15 novembre, la page de santé comptait 13 sessions d'équipe au travail, 4 pull requests rouges dans les trains, 14 tâches planifiées actives et 16 alertes ouvertes, dont 2 graves.
-
-Ce que l'entreprise fait en ce moment, c'est la section « Équipes, trains et arbre du travail, en détail », ouverte ci-dessous. Chaque ticket en cours y est rangé sous sa fonctionnalité et son épopée, avec son titre, son état au tableau et les pull requests qui le ferment. Une ligne dont l'épopée parle de sécurité est floutée en entier, comme tout bloc de ce genre.
-
-<Figure id="cockpit-equipes" alt="Le cockpit, section « De l'épopée à la PR » : les tickets en cours, chacun sous sa fonctionnalité et son épopée, avec son dépôt, son titre et son état au tableau (Backlog, Next, In progress, In review) ; une épopée et ses tickets sont floutés en entier." caption="Le cockpit, « La machine », section « Équipes, trains et arbre du travail » ouverte, thème clair. Le bloc qui parle de sécurité est flouté en entier. Valeurs sensibles masquées." />
-
-Le cockpit ne cache pas l'âge de ses chiffres. Quand un bloc est trop vieux, une pastille orange le dit (« Coûts cloud : vieux de 2 j »), et un bouton le rafraîchit. Ce soir-là, le bloc « Livraison » comptait 196 pull requests mergées en 24 heures. Personne ne lit 196 notifications ; une ligne qui passe au rouge, on la voit.
-
-<Clip id="cockpit-rafraichir" alt="Le cockpit, onglet Livraison : un clic sur « Rafraîchir », puis la date de collecte passe à l'heure courante et les pastilles des merge queues sont relues." caption="Le geste « Rafraîchir », 9 secondes sans son. La collecte a pris environ 16 secondes ; l'attente est coupée du film. Valeurs sensibles masquées." />
-
-C'est la même idée que notre film [« Montrer son travail »](site:www/fr/films/montrer-son-travail) : montrer le travail plutôt que le raconter.
-
-<Figure id="cockpit-alertes" alt="Le cockpit, onglet Alertes : un tableau d'alertes avec leur gravité, leur source, leur message, le nombre de fois où elles ont été levées et leur état." caption="Le cockpit, « La machine », onglet Alertes, thème clair. Les deux colonnes de dates, dont la mise en page se chevauche (un défaut du cockpit, que nous corrigeons), sont retirées de l'image. Valeurs sensibles masquées." />
-
-## Pourquoi il fallait cet écran
-
-Le moteur derrière, krizaka-agents, notre outillage d'équipes d'agents, tient en une phrase : on lance une équipe avec une consigne, elle travaille isolée avec un plafond de tours, de dépense et de minutes, le watchdog la surveille, un train ne merge que les pull requests vertes, et un bug devient une garde. [L'architecture de tout ça](/fr/story/the-architecture-of-krizaka-agents/) est décrite ailleurs. Ici, la question est plus simple : quand dix sessions travaillent en même temps, où regarde la personne qui décide ?
-
-Sans le cockpit, à plusieurs endroits : les sessions dans le terminal, les trains sur GitHub, les alertes dans une base, le tableau dans un navigateur. Le cockpit les met sur un seul écran, chacun avec sa date.
-
-## Ce qu'on a refusé
-
-| Écarté | Ce qu'on fait | Ce que ça coûte |
+| Écran | La question | Le choix d'ergonomie |
 | --- | --- | --- |
-| Un service en ligne pour nos propres opérations | l'application n'écoute que sur la machine, n'a aucun dépôt distant et n'envoie aucun document à personne ; aucun contenu du dossier de l'entreprise ne part vers un tiers | elle n'existe que sur ce Mac : je ne regarde pas l'entreprise depuis mon téléphone |
-| Une base locale qui décide | GitHub est la source (tickets, tableau, pull requests, contrôles requis, merge queue) ; le cockpit affiche une copie et n'écrit jamais sur GitHub | ce qui doit changer passe par les outils de GitHub, pas par l'écran |
-| Un modèle qui juge | les gardes, les trains et le watchdog sont du code ordinaire ; un modèle écrit un changement, il ne décide jamais s'il est mergé | chaque règle est du code à écrire et à tester |
-| Une machine qui décide de l'argent, du droit ou de l'irréversible | une équipe a un plafond de dépense et de temps ; au-delà, l'équipe écrit la question sous « Décisions » dans son rapport et continue le reste | ces décisions attendent une personne |
+| Aujourd'hui | qu'est-ce qui m'attend ? | une phrase en haut, et seulement ce qui demande mon geste |
+| L'âge des chiffres | puis-je croire ce que je lis ? | chaque bloc dit de quand date sa donnée |
+| La machine | est-ce que tout tourne ? | un verdict, puis six lignes à déplier |
+| Alertes | qu'est-ce qui est cassé, depuis quand ? | une ligne par problème, avec le nombre de fois où il revient |
+| Ce qui sort | qu'est-ce qui est vraiment sorti ? | une carte par produit, datée par sa source la plus vieille |
+| Coûts | combien ça coûte ? | un total qui dit « au moins » quand il manque un montant |
+| Architecture | le code ressemble-t-il au schéma ? | le schéma tiré des dépôts, et les écarts comptés |
+| L'atelier | où est tel outil ? | replié, parce que je n'y vais pas tous les jours |
 
-GitHub impose les contrôles requis à tous, nous compris ; une copie locale n'impose rien. C'est pour ça que le cockpit lit et n'écrit pas.
+Le cockpit lit GitHub, nos bases locales et nos fichiers. Il n'écrit jamais sur GitHub : un ticket, une pull request ou un contrôle requis se changent avec les outils de GitHub, qui imposent leurs règles à tout le monde, nous compris.
 
-## Sa limite
+## Le matin : qu'est-ce qui m'attend ?
 
-Le cockpit montre ses données ; il n'en explique pas la cause. L'alerte de la release dit que main est rouge, depuis quand et combien de fois. Le pourquoi est dans le log complet de GitHub, où la session CTO a trouvé la phrase sur le signal d'arrêt. Et un chiffre a un âge : ce soir-là, deux pastilles orange disaient « Coûts cloud : vieux de 2 j » et « Graphe de code : vieux de 2 j ». Les rafraîchir demande un clic, et une collecte complète prend une quinzaine de secondes.
+J'ouvre le cockpit sur « Aujourd'hui ». C'est l'écran que je voulais avoir avant tous les autres.
 
-## Ce que chaque rôle y lit
+<Sketch id="cockpit-today" title="L'écran « Aujourd'hui » du cockpit">
+  <Callout n="1" label="« Piloter »">le premier groupe de la barre : Aujourd'hui, La machine, Ce qui sort, Coûts. Ce que j'ouvre chaque jour.</Callout>
+  <Callout n="2" label="La phrase du haut">« 38 choses t'attendent. Le reste avance sans toi. »</Callout>
+  <Callout n="3" label="« Sources à surveiller »">la bande ne nomme que les sources vieilles ou en échec ; elle disparaît quand tout est à jour.</Callout>
+  <Callout n="4" label="Trois chiffres">mes actions, les décisions, la prochaine date à tenir.</Callout>
+  <Callout n="5" label="« Tes actions »">ma note de choses à faire, puis les tickets qui attendent mon geste ; chaque ligne a un seul bouton, « Ouvrir », et le bas de la carte dit quand le tableau a été lu.</Callout>
+  <Callout n="6" label="« Décisions à prendre »">ce que la session CTO me demande de trancher, du plus récent au plus ancien.</Callout>
+  <Callout n="7" label="« Atelier »">le groupe replié : il s'ouvre au clic, ou tout seul quand je suis sur un de ses écrans.</Callout>
+</Sketch>
 
-Un seul récit, puis une courte part par rôle : ce que cette personne lirait sur l'écran, et pourquoi ça compte pour elle. On n'a pas sept personnes ; c'est le même écran, lu avec sept questions.
+Le soir du 15 novembre, la phrase disait 38. Elle compte ce qui attend une personne, pas ce que les agents font. Quand rien ne m'attend, elle dit « Rien ne t'attend. Tout avance sans toi. » Les agents peuvent écrire des centaines de lignes par jour ; ce qui limite l'entreprise, c'est la file des décisions qu'ils ne peuvent pas prendre. Cette file est donc en haut, et le reste en dessous.
 
-**Fiabilité.** L'onglet « Alertes » : une ligne par sujet, avec sa gravité, sa source (le watchdog ou une session d'équipe), le nombre de fois où elle est revenue et son état. Une alerte critique revenue seize fois se lit plus vite qu'un message qui défile : on voit que le problème dure. Ensuite, c'est une boucle, celle que l'alerte de ce soir-là a suivie :
+« Tes actions » ne montre d'abord que l'urgent. Un bouton « Voir N de plus (pas urgentes) » ouvre le reste, et le chiffre du haut dit « urgentes, sur N au tableau ». Je ne fais pas le tri à la main chaque matin : l'écran le fait avec les étiquettes du tableau (fondateur, Bloqué, « À valider – fondateur »).
 
-<Pipeline label="De l'alerte au merge : le watchdog lève l'alerte, la session CTO écrit le ticket, une équipe le prend, le train fait passer sa pull request si elle est verte, et le merge ferme le ticket.">
-  <Stage title="Alerte" note="le watchdog">
-    Une ligne critique sur le cockpit : « main red: krizaka-ui release ».
-  </Stage>
-  <Stage title="Ticket" note="la session CTO">
-    La session CTO lit le log complet, écrit le ticket et la consigne.
-  </Stage>
-  <Stage title="Équipe" note="tours, dépense, minutes" tone="gate">
-    Une équipe isolée, avec ses plafonds, prouve la cause et ouvre sa pull request.
-  </Stage>
-  <Stage title="Train" note="seulement si c'est vert" tone="gate">
-    Le train attend les contrôles requis et passe la pull request dans la merge queue.
-  </Stage>
-  <Stage title="Merge" note="18 h 34" tone="ship">
-    La release suivante passe, la version 4.9.0 sort, le ticket est fermé.
-  </Stage>
-</Pipeline>
+La barre ne change jamais de forme. Quatre groupes : Piloter, Société, Système, et l'Atelier replié. Le reste est derrière une recherche (⌘K), qui trouve aussi les écrans pas encore rangés. C'est [la divulgation progressive](https://www.nngroup.com/articles/progressive-disclosure/) : ce qui sert tous les jours est visible, ce qui sert rarement est à un clic.
 
-Chaque maillon a un plafond : des tours, une dépense, des minutes, et un frein de charge. Ce soir-là, un lancement d'équipe par la session CTO a été refusé parce que la charge moyenne du Mac sur cinq minutes était de 86, au-dessus du frein de 60 ; le lancement a attendu que la charge redescende. La machine se limite elle-même.
+## Puis-je croire ce chiffre ?
 
-**Direction de projet.** « Ce qui sort » : par produit, le tableau, les pull requests ouvertes, l'état du train, la dernière version, le dernier deploy. Chaque carte porte la date de sa source la plus vieille. Un projet se juge à ce qui est vraiment sorti, pas à ce qui était prévu.
+Un tableau de bord qui affiche un chiffre vieux de deux jours sans le dire ment par omission. Dans le cockpit, chaque bloc porte l'âge de sa donnée, et un bouton « Rafraîchir » relit ce bloc à sa source.
 
-**Gestion de produit.** Le tableau, de l'épopée à la tâche, et « Aujourd'hui », qui sépare ce qui attend une décision humaine du reste. Ce que les agents ne peuvent pas trancher s'accumule là : c'est cette file qui limite tout le reste.
+<Sketch id="cockpit-refresh" title="Un bloc vieilli, puis rafraîchi">
+  <Callout n="1" label="« Vieux de 2 j »">la pastille, avec un mot et une icône, pas seulement une couleur.</Callout>
+  <Callout n="2" label="« Rafraîchir »">relit ce bloc à sa source, et rien d'autre.</Callout>
+  <Callout n="3" label="« À jour »">la même pastille, avec la date de la nouvelle collecte.</Callout>
+  <Callout n="4" label="La date de la donnée">elle reste écrite à côté, même quand tout va bien.</Callout>
+</Sketch>
 
-**Architecture.** L'écran « Architecture » dessine, en C1 et C2, ce que chaque dépôt déclare dans son dossier d'architecture, et compte les écarts avec ce que contient main. Un schéma qu'on ne compare pas au code finit par raconter autre chose.
+Les règles sont décidées à un seul endroit du code, pour tous les écrans. Chaque source a sa cadence de relevé : 15 minutes pour le tableau, 5 pour les équipes, une heure pour les versions. Un bloc devient « vieux » quand il a passé deux fois sa cadence. Si la dernière collecte a échoué, la pastille dit « Échec » avec la date de la donnée encore affichée, quel que soit son âge, et compte les échecs de suite. Les alertes et les tâches planifiées, elles, sont lues à chaque visite.
 
-**Marketing.** « Communauté » : qui nous suit, ce qui touche les gens, et si le calendrier de publication est tenu. Les chiffres viennent de l'API officielle de chaque réseau, rangés dans la base locale ; rien ne quitte le Mac. L'écran dit aussi quand une synchronisation n'a jamais eu lieu, et ce qui lui manque.
+C'est la première [heuristique de Nielsen](https://www.nngroup.com/articles/visibility-system-status/) : l'écran dit ce qui se passe. Et la pastille ne compte pas sur la couleur seule, comme le demande [le critère 1.4.1 de WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html) : le mot « Vieux » se lit aussi en noir et blanc.
 
-**Comptabilité.** Les écrans des coûts et de la société sont ceux qu'on ne montre pas, et ils resteront masqués. Ce qu'on y lit, sans aucun montant ici : on tient le livre nous-mêmes, dans l'ordre des dates. Une date le partage, le 8 octobre 2026 : avant, les dépenses sont des frais de démarrage, sans taxes de vente ; à partir de ce jour, ce sont des frais d'exploitation, avec crédits de taxe sur les intrants. Les reçus sont classés depuis la boîte de réception sous un seul format de nom, les doublons supprimés, et les documents privés restent verrouillés.
+Une collecte complète prend une quinzaine de secondes. J'ai préféré un clic et une attente visible à un écran qui se rafraîchirait tout seul pendant que je lis.
 
-**Direction de l'entreprise.** « Aujourd'hui » : ce qui m'attend, les décisions à prendre, la prochaine échéance. La première ligne dit « 38 choses t'attendent. Le reste avance sans toi. » C'est la phrase que je voulais, et le cockpit doit la prouver chaque jour.
+## La machine va-t-elle bien ?
 
-## Comment les captures sont faites
+« La machine » a six onglets : Santé, Livraison, Qualité, Règles, Automatismes, Alertes. Je n'ouvre presque jamais que le premier.
 
-Flouter une valeur n'est pas sûr : un flou ou une pixellisation se défont sur du texte. Alors on ne floute jamais une vraie valeur. Avant la capture, un script parcourt la page et remplace chaque valeur sensible (montants, adresses courriel, numéros, clés, chemins privés, tout bloc qui parle de finance ou de sécurité) par un texte neutre de la même longueur, et ne floute que ce texte neutre. Puis une garde relit tout le texte visible de la page, avec des filtres plus larges que ceux du masquage, et refuse d'écrire l'image s'il reste quoi que ce soit. Le film du rafraîchissement suit la même règle, image par image. Les métadonnées des fichiers sont retirées. Le script et ses tests sont dans le dépôt du blogue.
+<Sketch id="cockpit-machine" title="L'onglet Santé de « La machine »">
+  <Callout n="1" label="Les onglets">l'onglet ouvert est dans l'adresse, donc un lien ramène au même endroit.</Callout>
+  <Callout n="2" label="Le verdict">« La machine va bien », « demande un coup d'œil » ou « a une panne », avec le nombre de blocs à regarder.</Callout>
+  <Callout n="3" label="Une ligne par bloc">Équipes, Trains, Tâches planifiées, Alertes, Verrous, Rafraîchissements du cockpit, chacun avec son verdict en mots.</Callout>
+  <Callout n="4" label="La date de la source">sur chaque ligne, pas une seule fois en haut de la page.</Callout>
+  <Callout n="5" label="Le pli">la ligne s'ouvre sur son détail : la liste des sessions, la table des tâches.</Callout>
+</Sketch>
 
-Ce que les pixels d'une capture ne montrent pas, ils ne le contiennent pas : il n'y a rien dessous à retrouver. C'est pour ça que les légendes disent « valeurs sensibles masquées ».
+La question est fermée : oui ou non. Le verdict répond d'abord, en une phrase. Les six lignes ne viennent qu'après, et leur détail reste plié tant que je ne le demande pas. Le soir du 15 novembre, la page comptait 13 sessions d'équipe au travail, 4 pull requests rouges dans les trains, 14 tâches planifiées actives et 16 alertes ouvertes, dont 2 graves. Le verdict disait de regarder.
+
+La ligne « Verrous » montre les places de travail lourd prises et une session qui les garde trop longtemps. La machine se limite elle-même : ce soir-là, un lancement d'équipe a attendu parce que la charge moyenne du Mac sur cinq minutes était de 86, au-dessus du frein de 60. Je ne l'ai pas décidé ; je l'ai vu sur cette ligne.
+
+## Qu'est-ce qui est cassé, et depuis quand ?
+
+Le 15 novembre à 13 h 24, la release de krizaka-ui s'est arrêtée. Sur le cockpit, c'était une ligne de l'onglet Alertes : critique, levée par le watchdog, « main red: krizaka-ui release », comptée seize fois entre 14 h 15 et 18 h.
+
+<Sketch id="cockpit-alerts" title="L'onglet Alertes de « La machine »">
+  <Callout n="1" label="Les comptes">ouvertes, acquittées, résolues, en tête du tableau.</Callout>
+  <Callout n="2" label="« Gravité »">en mot et en couleur ; le tableau se trie dessus.</Callout>
+  <Callout n="3" label="« Message »">la première ligne de ce que le watchdog ou une session a écrit.</Callout>
+  <Callout n="4" label="« Nombre »">combien de fois l'alerte est revenue : une alerte comptée seize fois dit que le problème dure.</Callout>
+  <Callout n="5" label="« État »">ouverte, acquittée par quelqu'un, ou résolue, avec sa preuve.</Callout>
+  <Callout n="6" label="Les filtres et les pages">par source et par gravité, 25 lignes par page.</Callout>
+</Sketch>
+
+Ce soir-là, 196 pull requests avaient été mergées en 24 heures. Personne ne lit 196 notifications. Une alerte qui revient ne crée pas une deuxième ligne : elle fait monter le nombre de la première. C'est l'idée du livre de Google sur la fiabilité, [au chapitre de la surveillance](https://sre.google/sre-book/monitoring-distributed-systems/) : une alerte doit appeler un geste, et elle porte sur le symptôme (main est rouge), la cause se cherche ensuite.
+
+La cause, justement, l'écran ne la donne pas. Mouloud, la session CTO qui pilote nos équipes, a lu le log complet sur GitHub : le runner avait reçu un signal d'arrêt pendant les contrôles, faute de mémoire. Il a écrit le ticket et lancé une équipe ; la correction a été mergée à 18 h 34 et la release suivante a passé. Ma part a été de voir la ligne et de laisser faire.
+
+## Qu'est-ce qui est vraiment sorti ?
+
+« Ce qui sort » a trois onglets : Par produit, Versions, Tableau. Un projet se juge à ce qui est parti chez les gens, pas à ce qui était prévu.
+
+<Sketch id="cockpit-ships" title="L'écran « Ce qui sort », onglet Par produit">
+  <Callout n="1" label="Les onglets">par produit, les versions des 30 derniers jours, puis le tableau, de l'épopée à la tâche.</Callout>
+  <Callout n="2" label="Une carte par produit">les tickets en cours, en revue, à venir, et ceux qui sont bloqués.</Callout>
+  <Callout n="3" label="Le train">les pull requests ouvertes, et combien sont rouges.</Callout>
+  <Callout n="4" label="La dernière version et le dernier déploiement">ce qui est vraiment en ligne.</Callout>
+  <Callout n="5" label="La date de la carte">celle de sa source la plus vieille : une carte n'a pas l'air plus fraîche que sa pire donnée.</Callout>
+  <Callout n="6" label="Le lien">il ouvre GitHub ; le cockpit n'y écrit pas.</Callout>
+</Sketch>
+
+Une carte mélange plusieurs sources : le tableau, les trains, les versions. Si une seule est vieille, la carte entière prend sa date. Quand GitHub n'a pas répondu pour un dépôt, l'onglet Versions le nomme au lieu de faire comme s'il n'avait rien publié.
+
+## Combien ça coûte ?
+
+« Coûts » est un écran dont je ne montre aucun chiffre, ici ni ailleurs. Je le décris par ce qu'il fait.
+
+<Sketch id="cockpit-costs" title="L'écran « Coûts », sans ses montants">
+  <Callout n="1" label="« Rafraîchir »">en haut à droite, comme sur tous les écrans qui gardent une copie.</Callout>
+  <Callout n="2" label="Le total du mois">hachuré ici ; à l'écran, il dit « au moins » quand un montant manque.</Callout>
+  <Callout n="3" label="« N montants manquants »">la pastille qui dit pourquoi le total est un minimum.</Callout>
+  <Callout n="4" label="Le fixe">ce qui est écrit à la main ; ce qui reste à confirmer est listé, jamais deviné.</Callout>
+  <Callout n="5" label="Le bloc vieilli">sa source est un rapport lancé à la main : l'écran le dit au lieu de l'afficher comme frais.</Callout>
+  <Callout n="6" label="« Estimations »">ce qui est estimé est séparé de ce qui est connu, et écrit comme tel.</Callout>
+</Sketch>
+
+Partout, un chiffre incomplet le dit. Un total qui oublie une ligne sans prévenir, je le croirais.
+
+## Le code ressemble-t-il au schéma ?
+
+« Architecture » répond à une question que je ne me posais pas assez : le schéma que j'ai en tête est-il encore vrai ?
+
+<Sketch id="cockpit-architecture" title="L'écran « Architecture »">
+  <Callout n="1" label="Les faits du haut">combien de dépôts sont en phase avec main, combien d'écarts, et la date de lecture.</Callout>
+  <Callout n="2" label="Un onglet par système">Sovkora, Verikora, Folioviv, les bibliothèques, les sites, les dépendances, le graphe du code.</Callout>
+  <Callout n="3" label="Le dessin">les systèmes (C1), puis leurs conteneurs (C2), tirés de ce que chaque dépôt déclare.</Callout>
+  <Callout n="4" label="Un écart">un conteneur que le code et le schéma ne disent pas de la même façon.</Callout>
+  <Callout n="5" label="La version texte">le même dessin en phrases, sous le schéma, pour qui ne voit pas l'image.</Callout>
+</Sketch>
+
+Le schéma n'est pas dessiné à la main : il vient du dossier d'architecture de chaque dépôt, et l'écran compte où main ne lui ressemble plus. Sans cette comparaison, le schéma aurait vieilli sans que je le voie. [L'architecture de nos agents](/fr/story/the-architecture-of-krizaka-agents/) est racontée dans un autre chapitre.
+
+## La société, plus rarement
+
+Le groupe « Société » sert moins souvent, et je n'en dessine rien.
+
+« Entreprise » garde la fiche de la société, nos rôles et la marque. « Affaires & devis » sert à préparer une offre pour un client ; c'est le seul endroit où le cockpit écrit, et il écrit dans nos fichiers locaux, jamais sur GitHub. « Communauté » montre si le calendrier de publication est tenu, prévu contre publié, avec la date de la dernière lecture de chaque réseau. « Documents » liste nos notes et nos documents ; un document privé n'y montre que son nom.
+
+## L'atelier, replié
+
+L'Atelier est replié dans la barre parce que j'y vais quand j'ai un outil à prendre, pas pour savoir où en est l'entreprise. Il a cinq écrans : Workspace, Commandes, Secrets et comptes, Médiathèque et Coordination.
+
+<Sketch id="cockpit-secrets" title="L'écran « Secrets et comptes », dans l'Atelier">
+  <Callout n="1" label="« Local seulement »">la pastille de l'en-tête : rien de cet écran ne quitte le Mac.</Callout>
+  <Callout n="2" label="Les deux onglets">les comptes de test, par application, et les secrets du cloud.</Callout>
+  <Callout n="3" label="Un nom par ligne">l'écran ne tient que des noms ; la valeur n'est jamais lue dans la page.</Callout>
+  <Callout n="4" label="La place de la valeur">vide, hachurée ici comme à l'écran : il n'y a rien dessous.</Callout>
+  <Callout n="5" label="« Copier »">c'est le Mac qui met la valeur dans le presse-papiers ; la page apprend seulement « Copié », et le presse-papiers est vidé après 30 secondes.</Callout>
+</Sketch>
+
+Masquer une valeur affichée ne suffit pas : un flou se défait. Ici, la valeur n'arrive jamais dans la page, donc il n'y a rien à retrouver.
+
+« Commandes » est une liste fermée de 11 commandes locales (ranger la boîte de dépôt, ré-indexer le code, rafraîchir les indicateurs…). Chacune a un seul bouton, « Lancer », qui ouvre une confirmation ; celles qui ne se défont pas le disent avant le clic, et la sortie défile avec les secrets masqués. « Workspace » montre nos dossiers, la place libre sur le disque et la corbeille. « Coordination » montre les vagues de travail et les tâches que se partagent les agents. « Médiathèque » liste les images et les films que nous avons produits.
+
+## Ce que l'écran ne fait pas
+
+Le cockpit n'existe que sur ce Mac. Il n'écoute que sur la machine, n'envoie rien à personne, et je ne regarde pas l'entreprise depuis mon téléphone. C'est voulu : aucun contenu de nos dossiers ne part vers un tiers.
+
+Il montre, il n'explique pas. L'alerte de la release disait que main était rouge, depuis quand et combien de fois ; le pourquoi était dans le log de GitHub. Et les chiffres vieillissent : ce soir-là, deux pastilles disaient « vieux de 2 j ». Les rafraîchir demande un clic.
+
+## Comment ces dessins sont faits
+
+Les écrans sont dessinés d'après le code du cockpit, lu le 16 novembre 2026 : l'ordre des blocs, leurs noms et leurs boutons sont ceux du code. Ils ne sont pas à l'échelle et ne contiennent aucune donnée. Les chiffres (38, 13, 86, 196, seize fois) ont été lus sur le cockpit le 15 novembre au soir. Rien n'a été chronométré, et personne d'autre que moi n'utilise cet écran : c'est l'ergonomie d'un outil pour une personne, pas une étude.

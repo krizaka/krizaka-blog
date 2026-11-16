@@ -1,8 +1,8 @@
 ---
-title: "One screen to run a company of agents"
-description: "A founder, teams of agents, one app on his Mac: sessions, merge trains, alerts, the board, sensitive values masked. The moment that justified it, what we refused, one limit, and what each role reads there."
-seoTitle: "One screen to run a company of agents"
-seoDescription: "Sessions, merge trains, alerts, the board: the founder's local app, its choices, one limit, what each role reads there."
+title: "The ergonomics of a cockpit: one screen per question"
+description: "I run a company of agents from one screen on my Mac. Each view answers one question I ask during the day. I draw them by pen, one by one, with what guides each of them."
+seoTitle: "The ergonomics of a cockpit: one screen per question"
+seoDescription: "The views of the cockpit that runs a company of agents, drawn one by one: the question of each screen and the ergonomics choice behind it."
 date: 2026-11-16
 tags: [ai, integration]
 author: oussama
@@ -17,114 +17,188 @@ period: "2026-11-15"
 sources:
   - one-local-cockpit-to-run-the-whole-company
 versus:
-  faced: "a release stopped while ten sessions worked at once, and no single place to look"
-  built: "one local screen that reads GitHub and never writes to it, each figure with its age, sensitive values masked"
+  faced: "teams of agents working at the same time, and no single place to look"
+  built: "a local cockpit where each screen answers one question, each figure with its age"
 stats:
-  - value: "196"
-    label: "pull requests merged in 24 hours, that evening"
-    section: "The screen"
+  - value: "38"
+    label: "things waiting for me on “Today”, on the evening of 15 November"
+    section: "Morning: what is waiting for me?"
   - value: "13"
     label: "team sessions at work on the health page"
-    section: "The screen"
+    section: "Is the machine healthy?"
   - value: "86"
     label: "the Mac's load average that held a team launch back, above the brake of 60"
-    section: "What each role reads there"
-  - value: "38"
-    label: "things waiting for me on “Today”"
-    section: "What each role reads there"
+    section: "Is the machine healthy?"
+  - value: "196"
+    label: "pull requests merged in 24 hours, that evening"
+    section: "What is broken, and since when?"
 ---
 
-On Sunday 15 November, at 1:24 pm Montréal time, the release of a krizaka-ui version stopped. The step that runs the checks of every package was cancelled after 3 minutes 35 seconds, with 95 tasks out of 99 done. The release before it had failed too, at 12:52; the last one that worked was at 11:49.
+I run Krizaka with teams of agents. They open tickets, write code, send pull requests through merge trains, and a watchdog keeps an eye on them. I look at one screen: the cockpit, an app that runs on my Mac and nowhere else.
 
-The cockpit showed it on one line: a critical alert, raised by the watchdog, whose message starts with “main red: krizaka-ui release”. It stayed open, counted sixteen times between 2:15 pm and 6 pm.
+At first I put on it everything I knew how to read. It did not work. I rebuilt it around one simple idea: each screen answers one question, the one I ask at that moment of the day. If I cannot say a screen's question, the screen does not belong in the bar.
 
-I did not do the next steps; the agent that pilots our teams did, Mouloud, the CTO session. It read the alert, then opened the full log on GitHub, which says more than the alert: the runner received a shutdown signal (“The runner has received a shutdown signal”) during the checks step. It was not the 45-minute time limit, and not two releases stepping on each other. Mouloud wrote the ticket and launched a team on it, from a brief: the team works isolated, with a ceiling on turns, spend and minutes, and a watchdog keeps an eye on it.
+The screens are drawn by pen, from their code, not captured. Each number on a drawing points to a line of the legend. The figures come from the evening of 15 November 2026.
 
-The team proved the cause. The release ran the build, the lint, the tests and the typecheck of the ui package all at once, with no cache. The build alone peaks at about 15 GB of memory, on a runner that has 16. The runner was shut down, and what the tests had printed (axe-core's “Frame does not have a content window”, the notices of the simulated browser about iframes) was flushed only after the kill. The printed `window` object was a detail, not the cause. The fix runs the lint and the types first, then the checks, two tasks at a time, and silences those notices at the source; it was merged at 6:34 pm, the release that followed succeeded, version 4.9.0 is out, and the ticket is closed. The build's memory has its own follow-up ticket.
+## One question per screen
 
-My part was to see it, on the cockpit, and to leave the agents to it. That is the point of the screen: a founder supervises a company of agents, he does not do each step.
+I put them here in the order I open them, not in the order of the menu.
 
-This chapter describes the screen where I saw it. It is a local application, on my Mac, that shows me the whole company in one place. I say why it exists, what we refused to do, what it cannot do yet, then what seven different roles read there. The captures are real screens, taken on the evening of 15 November 2026; the sensitive values are masked, and I say how at the end.
-
-## The screen
-
-One application, the cockpit, that runs on 127.0.0.1 and nowhere else. It is a Next.js app built with [our components](site:ui); it reads our local data and GitHub. It is not a dashboard for customers, it serves one person.
-
-In the left bar, everything that matters to run the place: “Today”, “The machine”, “What ships” and the costs. Further down, the company, then the architecture. Inside “The machine”, six tabs: health, delivery, quality, rules, automations, alerts. On the evening of 15 November, the health page counted 13 team sessions at work, 4 red pull requests in the trains, 14 active scheduled tasks and 16 open alerts, 2 of them serious.
-
-The part that says what the company is doing right now is the section “Teams, trains and the work tree, in detail”, opened below. Each ticket in progress sits there under its feature and its epic, with its title, its state on the board and the pull requests that close it. A line whose epic is about security is blurred whole, like any block of that kind.
-
-<Figure id="cockpit-equipes" alt="The cockpit, the section “From the epic to the PR”: tickets in progress, each under its feature and its epic with its repository, its title and its state on the board (Backlog, Next, In progress, In review); one epic and its tickets are blurred whole." caption="The cockpit, “The machine”, the section “Teams, trains and the work tree” opened, light theme. The block about security is blurred whole. Sensitive values masked." />
-
-The cockpit does not lie to reassure. When a block is too old, it says so on an orange badge (“Cloud costs: 2 d old”), and refreshing it is a gesture, a button. That evening the “Delivery” block counted 196 pull requests merged in 24 hours. Nobody reads 196 notifications. One line turning red, you see.
-
-<Clip id="cockpit-rafraichir" alt="The cockpit, Delivery tab: a click on “Rafraîchir” (refresh), then the collection date moves to the current time and the merge-queue badges are read again." caption="The refresh gesture, 9 seconds, no sound. The collection took about 16 seconds; the wait is cut from the film. Sensitive values masked." />
-
-It is the same idea as our film [“Montrer son travail”](site:www/en/films/montrer-son-travail): show the work instead of telling it.
-
-<Figure id="cockpit-alertes" alt="The cockpit, Alerts tab: a table of alerts with their severity, source, message, how many times they were raised and their state." caption="The cockpit, “The machine”, Alerts tab, light theme. The two date columns, whose layout overlaps (a cockpit defect we are fixing), are left out of the image. Sensitive values masked." />
-
-## What made it necessary
-
-The engine behind it, krizaka-agents, our product for running teams of agents, fits in one sentence: you launch a team from a brief, it works isolated, it has a ceiling on turns, spend and minutes, a watchdog keeps an eye on it, a train lands only the green pull requests, and a bug becomes a guard. [The architecture of all this](/story/the-architecture-of-krizaka-agents/) is described elsewhere. Here the question is simpler: when ten sessions work at once, where does the person who decides look?
-
-Without the cockpit, the answer would be: in several places. The sessions in the terminal, the trains in GitHub, the alerts in a database, the board in a browser. The cockpit puts them on one screen, each with its date.
-
-## What we refused
-
-| Refused | What we do | What it costs |
+| Screen | The question | The ergonomics choice |
 | --- | --- | --- |
-| An online service for our own operations | the application listens only on the machine, has no remote repository and sends no document to anyone; no content of the company's folder goes to a third party | it exists only on this Mac: I do not look at the company from my phone |
-| A local database that decides | GitHub is the source (tickets, board, pull requests, required checks, merge queue); the cockpit shows a copy and never writes to GitHub | what must change goes through GitHub's tools, not through the screen |
-| A model that judges | the guards, the trains and the watchdog are ordinary code; a model writes a change, it never decides whether it merges | every rule is code to write and to test |
-| A machine that decides about money, law or what cannot be undone | a team has a ceiling on spend and time; beyond it, the team writes the question under “Decisions” in its report and carries on with the rest | those decisions wait for a person |
+| Today | what is waiting for me? | one sentence at the top, and only what needs my hand |
+| The age of figures | can I trust what I read? | every block says how old its data is |
+| The machine | is everything running? | a verdict, then six rows to unfold |
+| Alerts | what is broken, since when? | one row per problem, with how many times it came back |
+| What ships | what actually went out? | one card per product, dated by its oldest source |
+| Costs | what does it cost? | a total that says “at least” when an amount is missing |
+| Architecture | does the code still look like the diagram? | the diagram drawn from the repositories, the gaps counted |
+| The workshop | where is that tool? | folded, because I do not go there every day |
 
-GitHub enforces the required checks on every actor, us included; a local copy enforces nothing. That is why the cockpit reads and does not write.
+The cockpit reads GitHub, our local databases and our files. It never writes to GitHub: a ticket, a pull request or a required check is changed with GitHub's own tools, which enforce their rules on everyone, us included.
 
-## Its limit
+## Morning: what is waiting for me?
 
-The cockpit shows its data, it does not explain its cause. The release alert says main is red, since when and how many times; why is in GitHub's full log, where the CTO session found the sentence about the shutdown signal. And a figure has an age: that evening two orange badges said “Cloud costs: 2 d old” and “Code graph: 2 d old”. The cockpit says it; refreshing takes a gesture, and a whole collection takes something like fifteen seconds.
+I open the cockpit on “Today”. It is the screen I wanted before all the others.
 
-## What each role reads there
+<Sketch id="cockpit-today" title="The cockpit's “Today” screen">
+  <Callout n="1" label="“Steer”">the bar's first group: Today, The machine, What ships, Costs. What I open every day.</Callout>
+  <Callout n="2" label="The top sentence">“38 things are waiting for you. Everything else moves without you.”</Callout>
+  <Callout n="3" label="“Sources to watch”">the strip names only the sources that are old or failed; it is gone when everything is up to date.</Callout>
+  <Callout n="4" label="Three figures">my actions, the decisions, the next date to keep.</Callout>
+  <Callout n="5" label="“Your actions”">my to-do note, then the tickets waiting for my hand; each row has one button, “Open”, and the card's foot says when the board was read.</Callout>
+  <Callout n="6" label="“Decisions to take”">what the CTO session asks me to settle, newest first.</Callout>
+  <Callout n="7" label="“Workshop”">the folded group: it opens on a click, or by itself when I am on one of its screens.</Callout>
+</Sketch>
 
-One story for everyone, then a short part per role: what that person would read on the screen, and why it matters to them. We do not have seven people; it is the same screen, read with seven questions.
+On the evening of 15 November the sentence said 38. It counts what waits for a person, not what the agents are doing. When nothing waits, it says “Nothing is waiting for you. Everything moves without you.” The agents can write hundreds of lines a day; what limits the company is the queue of decisions they cannot take. So that queue is at the top, and the rest below.
 
-**Reliability.** The “Alerts” tab: one line per subject, with its severity, its source (the watchdog or a team session), how many times it came back and its state. A critical alert that returns sixteen times reads faster than a message that passes: you see that a problem lasts. The rest is a loop, which that evening's alert went through: the alert becomes a ticket, the ticket a team, the team a pull request that the train lands if it is green:
+“Your actions” shows only the urgent ones first. A “Show N more (not urgent)” button opens the rest, and the figure at the top says “urgent, out of N on the board”. I do not sort by hand every morning: the screen does it with the board's labels (founder, Blocked, “To validate – founder”).
 
-<Pipeline label="From the alert to the merge: the watchdog raises the alert, the CTO session writes the ticket, a team takes it, the train sends its pull request through if it is green, and the merge closes the ticket.">
-  <Stage title="Alert" note="the watchdog">
-    A critical line on the cockpit: “main red: krizaka-ui release”.
-  </Stage>
-  <Stage title="Ticket" note="the CTO session">
-    The CTO session reads the full log, writes the ticket and the brief.
-  </Stage>
-  <Stage title="Team" note="turns, spend, minutes" tone="gate">
-    An isolated team, with its caps, proves the cause and opens its pull request.
-  </Stage>
-  <Stage title="Train" note="only when green" tone="gate">
-    The train waits for the required checks and sends the pull request through the merge queue.
-  </Stage>
-  <Stage title="Merge" note="6:34 pm" tone="ship">
-    The next release passes, version 4.9.0 ships, the ticket is closed.
-  </Stage>
-</Pipeline>
+The bar never changes shape. Four groups: Steer, Company, System, and the folded Workshop. Everything else sits behind a search (⌘K), which also finds the screens not filed yet. That is [progressive disclosure](https://www.nngroup.com/articles/progressive-disclosure/): what serves every day is visible, what serves rarely is one click away.
 
-Each link has a ceiling: turns, spend, minutes, and a load brake. That evening, a launch of a team by the CTO session was refused because the Mac's five-minute load average was 86, above the brake of 60; the launch waited for the load to fall. It is a limit the machine puts on itself.
+## Can I trust this figure?
 
-**Project management.** “What ships”: per product, the board, the open pull requests, the train's state, the last version, the last deployment. Each card carries the date of its oldest source. A project is judged by what actually left, not by what was planned.
+A dashboard that shows a two-day-old figure without saying so lies by omission. In the cockpit every block carries the age of its data, and a “Refresh” button reads that block again from its source.
 
-**Product management.** The board, from epic to task, and “Today”, which separates what waits for a human decision from the rest. What the agents cannot settle piles up there: it is the queue that limits the rest.
+<Sketch id="cockpit-refresh" title="A block gone stale, then refreshed">
+  <Callout n="1" label="“2 d old”">the badge, with a word and an icon, not only a colour.</Callout>
+  <Callout n="2" label="“Refresh”">reads this block again from its source, and nothing else.</Callout>
+  <Callout n="3" label="“Up to date”">the same badge, with the date of the new gathering.</Callout>
+  <Callout n="4" label="The date of the data">it stays written next to it, even when all is well.</Callout>
+</Sketch>
 
-**Architecture.** The “Architecture” screen draws, in C1 and C2, what each repository declares in its own architecture folder, and counts the gaps with what main contains. A diagram that is not compared with the code ends up telling something else.
+The rules are decided in one place in the code, for every screen. Each source has its gathering cadence: 15 minutes for the board, 5 for the teams, one hour for the releases. A block turns “old” once it has gone past twice its cadence. If the last gathering failed, the badge says “Failed” with the date of the data still shown, whatever its age, and counts the failures in a row. Alerts and scheduled tasks are read at every visit.
 
-**Marketing.** “Community”: who follows us, what moves people, and whether the publishing calendar is kept. The figures come from each network's official interface, filed in the local database; nothing leaves the Mac. The screen also says when a sync has never happened and what it lacks.
+That is [Nielsen's first heuristic](https://www.nngroup.com/articles/visibility-system-status/): the screen says what is going on. And the badge does not rely on colour alone, as [WCAG 2.2 success criterion 1.4.1](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html) asks: the word “old” reads in black and white too.
 
-**Bookkeeping.** The cost and company screens are the ones we do not show, and they stay masked. What one reads there, with no amount here: the book is kept by us, in date order. One date rule splits it, 8 October 2026: before that day, spending is start-up cost, with no sales taxes; from that day, it is operating cost, with input tax credits. Receipts are filed from the inbox under one name pattern, duplicates are deleted, and private documents stay locked.
+A full gathering takes about fifteen seconds. I chose a click and a visible wait over a screen that would refresh itself while I read it.
 
-**Running the company.** “Today”: what waits for me, the decisions to make, the next deadline. The first line says “38 things are waiting for you. The rest moves without you.” It is the sentence I wanted, and it is what the cockpit has to prove every day.
+## Is the machine healthy?
 
-## How the captures are made
+“The machine” has six tabs: Health, Delivery, Quality, Rules, Automations, Alerts. I almost only ever open the first.
 
-Blurring a value is not safe: a blur and a pixelation can be undone on text. So we never blur a real value. Before the capture, a script walks the page and replaces each sensitive value (amounts, e-mail addresses, numbers, keys, private paths, any block that talks about finance or security) with a neutral text of the same length, and blurs only that neutral text. Then a guard reads all the visible text of the page again, with wider filters than the masking, and refuses to write the image if anything is left. The refresh film follows the same rule, frame by frame. The files are stripped of their metadata. The script and its tests are in the blog's repository.
+<Sketch id="cockpit-machine" title="The Health tab of “The machine”">
+  <Callout n="1" label="The tabs">the open tab is in the address, so a link brings me back to the same place.</Callout>
+  <Callout n="2" label="The verdict">“The machine is fine”, “needs a look” or “has a failure”, with the number of blocks to look at.</Callout>
+  <Callout n="3" label="One row per block">Teams, Trains, Scheduled tasks, Alerts, Locks, Cockpit refreshes, each with its verdict in words.</Callout>
+  <Callout n="4" label="The date of the source">on every row, not once at the top of the page.</Callout>
+  <Callout n="5" label="The fold">the row opens on its detail: the list of sessions, the table of tasks.</Callout>
+</Sketch>
 
-One gap remains: what the pixels of a capture do not show, they do not show. There is no underneath to recover. That is also why the captions say “sensitive values masked”.
+The question is closed: yes or no. The verdict answers first, in one sentence. The six rows come after, and their detail stays folded until I ask for it. On the evening of 15 November the page counted 13 team sessions at work, 4 red pull requests in the trains, 14 active scheduled tasks and 16 open alerts, 2 of them serious. The verdict said to take a look.
+
+The “Locks” row shows the heavy-work slots in use and a session that holds one too long. The machine limits itself: that evening a team launch waited because the Mac's five-minute load average was 86, above the brake of 60. I did not decide it; I saw it on that row.
+
+## What is broken, and since when?
+
+On 15 November at 1:24 p.m., the krizaka-ui release stopped. On the cockpit it was one row of the Alerts tab: critical, raised by the watchdog, “main red: krizaka-ui release”, counted sixteen times between 2:15 and 6 p.m.
+
+<Sketch id="cockpit-alerts" title="The Alerts tab of “The machine”">
+  <Callout n="1" label="The counts">open, acknowledged, resolved, at the head of the table.</Callout>
+  <Callout n="2" label="“Severity”">in a word and a colour; the table sorts on it.</Callout>
+  <Callout n="3" label="“Message”">the first line of what the watchdog or a session wrote.</Callout>
+  <Callout n="4" label="“Count”">how many times the alert came back: an alert counted sixteen times says the problem lasts.</Callout>
+  <Callout n="5" label="“State”">open, acknowledged by someone, or resolved, with its proof.</Callout>
+  <Callout n="6" label="The filters and the pages">by source and by severity, 25 rows a page.</Callout>
+</Sketch>
+
+That evening, 196 pull requests had been merged in 24 hours. Nobody reads 196 notifications. An alert that comes back does not add a second row: it raises the count of the first. It is the idea of Google's book on reliability, [in its chapter on monitoring](https://sre.google/sre-book/monitoring-distributed-systems/): an alert must call for an action, and it is about the symptom (main is red); the cause is looked for afterwards.
+
+The cause is exactly what the screen does not give. Mouloud, the CTO session that steers our teams, read the full log on GitHub: the runner had received a shutdown signal during the checks, out of memory. He wrote the ticket and launched a team; the fix was merged at 6:34 p.m. and the next release went through. My part was to see the row and let them work.
+
+## What actually went out?
+
+“What ships” has three tabs: By product, Releases, Board. A project is judged by what reached people, not by what was planned.
+
+<Sketch id="cockpit-ships" title="The “What ships” screen, By product tab">
+  <Callout n="1" label="The tabs">by product, the releases of the last 30 days, then the board, from epic to task.</Callout>
+  <Callout n="2" label="One card per product">the tickets in progress, in review, next, and those blocked.</Callout>
+  <Callout n="3" label="The train">the open pull requests, and how many are red.</Callout>
+  <Callout n="4" label="The last release and the last deploy">what is really live.</Callout>
+  <Callout n="5" label="The card's date">that of its oldest source: a card does not look fresher than its worst data.</Callout>
+  <Callout n="6" label="The link">it opens GitHub; the cockpit does not write there.</Callout>
+</Sketch>
+
+A card mixes several sources: the board, the trains, the releases. If one of them is old, the whole card takes its date. When GitHub did not answer for a repository, the Releases tab names it instead of acting as if it had shipped nothing.
+
+## What does it cost?
+
+“Costs” is a screen I show no figure of, here or anywhere. I describe it by what it does.
+
+<Sketch id="cockpit-costs" title="The “Costs” screen, without its amounts">
+  <Callout n="1" label="“Refresh”">top right, as on every screen that keeps a copy.</Callout>
+  <Callout n="2" label="The month's total">hatched here; on screen it says “at least” when an amount is missing.</Callout>
+  <Callout n="3" label="“N amounts missing”">the badge that says why the total is a minimum.</Callout>
+  <Callout n="4" label="The fixed part">what is written by hand; what is still to confirm is listed, never guessed.</Callout>
+  <Callout n="5" label="The stale block">its source is a report run by hand: the screen says so instead of showing it as fresh.</Callout>
+  <Callout n="6" label="“Estimates”">what is estimated is kept apart from what is known, and written as such.</Callout>
+</Sketch>
+
+Everywhere, an incomplete figure says so. A total that leaves out a line without warning, I would believe.
+
+## Does the code still look like the diagram?
+
+“Architecture” answers a question I did not ask often enough: is the diagram I have in my head still true?
+
+<Sketch id="cockpit-architecture" title="The “Architecture” screen">
+  <Callout n="1" label="The facts at the top">how many repositories are in step with main, how many gaps, and the date they were read.</Callout>
+  <Callout n="2" label="One tab per system">Sovkora, Verikora, Folioviv, the libraries, the sites, the dependencies, the code graph.</Callout>
+  <Callout n="3" label="The drawing">the systems (C1), then their containers (C2), drawn from what each repository declares.</Callout>
+  <Callout n="4" label="A gap">a container that the code and the diagram do not describe the same way.</Callout>
+  <Callout n="5" label="The text version">the same drawing in sentences, under the diagram, for whoever does not see the picture.</Callout>
+</Sketch>
+
+The diagram is not drawn by hand: it comes from each repository's architecture folder, and the screen counts where main no longer looks like it. Without that comparison, the diagram would have aged without my seeing it. [The architecture of our agents](/story/the-architecture-of-krizaka-agents/) is told in another chapter.
+
+## The company, less often
+
+The “Company” group serves less often, and I draw none of it.
+
+“Company” keeps the company's sheet, our roles and the brand. “Business & quotes” is where I prepare an offer for a client; it is the only place where the cockpit writes, and it writes to our local files, never to GitHub. “Community” shows whether the publishing calendar is kept, planned against published, with the date each network was last read. “Documents” lists our notes and documents; a private document shows only its name there.
+
+## The workshop, folded
+
+The Workshop is folded in the bar because I go there when I need a tool, not to know where the company stands. It has five screens: Workspace, Commands, Secrets & users, Media library and Coordination.
+
+<Sketch id="cockpit-secrets" title="The “Secrets & users” screen, in the Workshop">
+  <Callout n="1" label="“Local only”">the header's badge: nothing on this screen leaves the Mac.</Callout>
+  <Callout n="2" label="The two tabs">the test accounts, by app, and the cloud secrets.</Callout>
+  <Callout n="3" label="One name per row">the screen holds names only; the value is never read into the page.</Callout>
+  <Callout n="4" label="Where the value would be">empty, hatched here as on screen: there is nothing underneath.</Callout>
+  <Callout n="5" label="“Copy”">the Mac itself puts the value on the clipboard; the page only learns “Copied”, and the clipboard is cleared after 30 seconds.</Callout>
+</Sketch>
+
+Masking a value that is displayed is not enough: a blur can be undone. Here the value never reaches the page, so there is nothing to recover.
+
+“Commands” is a closed list of 11 local commands (file the inbox, re-index the code, refresh the indicators…). Each one has a single button, “Run”, which opens a confirmation; those that cannot be undone say so before the click, and the output scrolls with secrets masked. “Workspace” shows our folders, the free disk space and the bin. “Coordination” shows the waves of work and the tasks the agents share. “Media library” lists the pictures and films we made.
+
+## What the screen does not do
+
+The cockpit exists only on this Mac. It listens only on the machine, sends nothing to anyone, and I do not look at the company from my phone. That is on purpose: nothing from our folders goes to a third party.
+
+It shows; it does not explain. The release alert said main was red, since when and how many times; the why was in GitHub's log. And figures age: that evening two badges said “2 d old”. Refreshing them takes a click.
+
+## How these drawings are made
+
+The screens are drawn from the cockpit's code, read on 16 November 2026: the order of the blocks, their names and their buttons are the code's. They are not to scale and hold no data. The figures (38, 13, 86, 196, sixteen times) were read on the cockpit on the evening of 15 November. Nothing was timed, and nobody but me uses this screen: this is the ergonomics of a tool for one person, not a study.
