@@ -6,8 +6,8 @@ import { readFileSync } from "node:fs";
    The list of provider names lives here, once. */
 const PROVIDERS = ["digitalocean", "digital ocean"];
 const FILES = [
-  "content/posts/design-choices-for-architects.en.mdx",
-  "content/posts/design-choices-for-architects.fr.mdx",
+  "content/chapters/design-choices-for-architects.en.mdx",
+  "content/chapters/design-choices-for-architects.fr.mdx",
   "content/diagrams/design-choices-for-architects.c4",
   "content/diagrams/design-choices-for-architects.fr.json",
 ];

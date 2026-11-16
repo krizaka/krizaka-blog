@@ -20,7 +20,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
 /** A post of the founder's, new and old, and the shots taken of each. */
-export const POSTS = ["the-architecture-of-krizaka-agents", "understanding-ai-before-you-start"];
+export const POSTS = ["anatomy-of-an-ai-prompt", "understanding-ai-before-you-start"];
 export const THEMES = ["light", "dark"];
 export const WIDTHS = [390, 1440];
 export const PARTS = ["top", "end"];

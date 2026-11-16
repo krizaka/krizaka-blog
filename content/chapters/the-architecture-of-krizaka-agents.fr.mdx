@@ -12,11 +12,18 @@ cover: architecture-krizaka-agents
 coverAlt: "Planche au stylo bleu sur papier Seyès, marge rouge : le schéma des conteneurs de krizaka-agents, onze cases numérotées comme des figures et reliées par des flèches, sous le nom de l'outillage souligné de rouge et la légende « fig. 2 · C2 »"
 newsletter: hold
 sensitive: true
+chapter: 32
+period: "2026-11-15"
+sources:
+  - the-architecture-of-krizaka-agents
+versus:
+  faced: "comment une seule personne livre du logiciel avec des agents IA et le garde sous contrôle"
+  built: "l'outillage autour des modèles : un lanceur, des gardes, des trains, un chien de garde, une base d'exploitation et un cockpit, dessinés en vues C4 vérifiées"
 ---
 
 Ce billet s'adresse aux architectes d'entreprise et aux experts en TI qui posent une question légitime : comment une seule personne livre-t-elle du logiciel avec des agents IA, en gardant le contrôle ? Ma réponse n'est pas un modèle. C'est l'outillage autour des modèles, que nous appelons krizaka-agents. Il est privé : j'en montre les pièces et la façon dont elles se parlent, pas le code.
 
-Au [chapitre 29](/story/how-our-agent-teams-talk/), j'avais promis des schémas générés à partir d'un modèle plutôt que dessinés à la main. Les voici. Les vues ci-dessous viennent d'un seul modèle écrit en [LikeC4](https://likec4.dev), la notation du [modèle C4](https://c4model.com), sur la même base et avec la même vérification que tous les systèmes de notre organisation. Comment cela fonctionne, et ce que cela ne prouve pas, fait l'objet de la dernière partie.
+Au [chapitre 31](/story/how-our-agent-teams-talk/), j'avais promis des schémas générés à partir d'un modèle plutôt que dessinés à la main. Les voici. Les vues ci-dessous viennent d'un seul modèle écrit en [LikeC4](https://likec4.dev), la notation du [modèle C4](https://c4model.com), sur la même base et avec la même vérification que tous les systèmes de notre organisation. Comment cela fonctionne, et ce que cela ne prouve pas, fait l'objet de la dernière partie.
 
 ## D'abord, trois principes
 
@@ -60,7 +67,7 @@ Le pilote est un agent : une longue conversation entre le fondateur et une sessi
 
 Lancer n'est pas un geste de la session CTO. Elle remet le brief au **lanceur**, du code simple sans modèle, qui construit toutes les sessions sans interface de la même façon. Pourquoi du code : une session doit démarrer de la même façon à chaque fois, et un modèle chargé de la construire pourrait en décider autrement.
 
-Nous avons aussi construit un coordinateur plus riche, avec des baux, des jetons et un périmètre réservé par tâche ([le coordinateur](/basics/agents-under-a-coordinator/)). Il tourne, mais pour un seul dépôt local ; aucun dépôt GitHub n'est encore sous lui. Ce qui y sépare les équipes est plus simple : un worktree par ticket, et une pull request refusée à l'ouverture si elle modifie un fichier qu'une autre pull request ouverte modifie déjà. Pourquoi la règle simple : elle n'a besoin d'aucun service en marche pour que le travail commence. Ce qu'elle coûte : elle compare des chemins exacts, donc deux changements qui touchent le même comportement par des fichiers différents ne se rencontrent que dans les contrôles, une fois la seconde branche mise à jour avec main.
+Nous avons aussi construit un coordinateur plus riche, avec des baux, des jetons et un périmètre réservé par tâche ([le coordinateur](/story/agents-under-a-coordinator/)). Il tourne, mais pour un seul dépôt local ; aucun dépôt GitHub n'est encore sous lui. Ce qui y sépare les équipes est plus simple : un worktree par ticket, et une pull request refusée à l'ouverture si elle modifie un fichier qu'une autre pull request ouverte modifie déjà. Pourquoi la règle simple : elle n'a besoin d'aucun service en marche pour que le travail commence. Ce qu'elle coûte : elle compare des chemins exacts, donc deux changements qui touchent le même comportement par des fichiers différents ne se rencontrent que dans les contrôles, une fois la seconde branche mise à jour avec main.
 
 ### Les sessions d'équipe : isolées, épinglées, vérifiées au démarrage
 
@@ -205,7 +212,7 @@ Deux autres outils à nous méritent d'être nommés : pour nos films de marque,
   <Side title="Ce que cela nous donne" tone="after" items="La traçabilité : chaque changement va du ticket à la pull request, aux contrôles requis, à la file de fusion, à main | Des sessions reproductibles : le même environnement à chaque départ, prouvé, avec l'écart nommé | Aucun modèle dans la décision de fusionner | Des défauts attrapés sur la machine plutôt qu'en CI | Un fondateur seul voit tout l'état sur un écran, chaque chiffre daté" />
 </Split>
 
-Les chiffres dont nous disposons sont peu nombreux, mesurés, et publiés avec leur source. Le 13 novembre, quatre audits en lecture seule des journaux des sessions ont été menés ; les trois premiers ont lu 150 contrôles d'environnement au démarrage (118, 16 et 16) : aucun écart. Le même jour, le premier audit a montré ce que coûte une garde que personne ne mesure : 86 sessions sur 101 n'avaient jamais interrogé l'index du code, alors que la garde qui l'exigeait était en place. Les deux sont au [chapitre 29](/story/how-our-agent-teams-talk/), avec la méthode et les limites.
+Les chiffres dont nous disposons sont peu nombreux, mesurés, et publiés avec leur source. Le 13 novembre, quatre audits en lecture seule des journaux des sessions ont été menés ; les trois premiers ont lu 150 contrôles d'environnement au démarrage (118, 16 et 16) : aucun écart. Le même jour, le premier audit a montré ce que coûte une garde que personne ne mesure : 86 sessions sur 101 n'avaient jamais interrogé l'index du code, alors que la garde qui l'exigeait était en place. Les deux sont au [chapitre 31](/story/how-our-agent-teams-talk/), avec la méthode et les limites.
 
 <Numbers>
   <Num value="150" label="contrôles d'environnement lus au démarrage" hint="aucun écart, les trois premiers audits du 13 novembre" />

@@ -17,8 +17,8 @@ import { PRIVATE_REPOS } from "./content-links.mjs";
 
 /** The article's own files: the chapter in both languages, the figure components and their pure simulations. */
 export const ARTICLE_FILES = [
-  "content/posts/let-me-show-you-the-machine.en.mdx",
-  "content/posts/let-me-show-you-the-machine.fr.mdx",
+  "content/chapters/let-me-show-you-the-machine.en.mdx",
+  "content/chapters/let-me-show-you-the-machine.fr.mdx",
   "app/components/pages/Train.tsx",
   "app/components/pages/TeamBoard.tsx",
   "app/components/pages/MouloudPlate.tsx",
@@ -28,8 +28,8 @@ export const ARTICLE_FILES = [
   "lib/team-board.ts",
   "lib/cockpit-tour.ts",
   "lib/c4-zoom.ts",
-  "content/posts/the-architecture-of-krizaka-agents.en.mdx",
-  "content/posts/the-architecture-of-krizaka-agents.fr.mdx",
+  "content/chapters/the-architecture-of-krizaka-agents.en.mdx",
+  "content/chapters/the-architecture-of-krizaka-agents.fr.mdx",
   "content/diagrams/krizaka-agents.c4",
   "content/diagrams/krizaka-agents.fr.json",
   "app/components/pages/ArchitectureView.tsx",

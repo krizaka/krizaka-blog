@@ -8,7 +8,7 @@ import media from "../lib/media.json" with { type: "json" };
 // The posts (« the basics ») draw the same figures and owe the same pairing and captions (krizaka-internal#3024).
 const dir = "content/chapters";
 const POSTS = "content/posts";
-const pathOf = (f) => (f.startsWith(`${POSTS}/`) ? f : `${dir}/${f}`);
+const pathOf = (f) => (f.startsWith("content/") ? f : `${dir}/${f}`);
 const body = (f) => readFileSync(pathOf(f), "utf8").split(/^---$/m).slice(2).join("---");
 const files = [
   ...readdirSync(dir).filter((f) => f.endsWith(".mdx")),
@@ -71,7 +71,7 @@ const FIGURE_POSTS = ["agents-under-a-coordinator"];
 for (const slug of FIGURE_POSTS)
   for (const lang of ["en", "fr"])
     test(`${slug} (${lang}) carries at least two figures`, () => {
-      assert.ok(figuresOf(`${POSTS}/${slug}.${lang}.mdx`).length >= 2);
+      assert.ok(figuresOf(`${POSTS.replace("posts", "chapters")}/${slug}.${lang}.mdx`).length >= 2);
     });
 
 for (const f of files.filter((f) => f.endsWith(".en.mdx") && existsSync(pathOf(f.replace(".en.mdx", ".fr.mdx"))))) {

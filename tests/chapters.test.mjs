@@ -347,3 +347,31 @@ test("h2Text: the words of a `## ` line, trimmed; not an h3, not `##` glued to i
   assert.equal(h2Text("##   "), " ");
   assert.equal(h2Text("## "), null);
 });
+
+test("a published post outside the book is refused unless it is one of the four introductions (krizaka-internal#3941)", async () => {
+  const { mkdtempSync, writeFileSync, mkdirSync } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const { SHELF_INTRODUCTIONS, shelfProblems } = await import("../scripts/content-rules.mjs");
+  assert.equal(SHELF_INTRODUCTIONS.length, 4);
+  const dir = mkdtempSync(join(tmpdir(), "chapters-"));
+  const posts = join(dir, "posts");
+  mkdirSync(posts);
+  const chapters = join(dir, "chapters");
+  mkdirSync(chapters);
+  writeFileSync(join(posts, "a-new-piece.en.mdx"), "---\ntitle: T\ndraft: false\n---\n");
+  writeFileSync(join(posts, "a-draft.en.mdx"), "---\ntitle: T\ndraft: true\n---\n");
+  writeFileSync(join(posts, `${SHELF_INTRODUCTIONS[0]}.en.mdx`), "---\ntitle: T\ndraft: false\n---\n");
+  const { problems } = checkChapters(chapters, posts);
+  const shelf = problems.filter((p) => /outside the book/.test(p));
+  assert.equal(shelf.length, 1, shelf.join("\n"));
+  assert.match(shelf[0], /a-new-piece\.en\.mdx/);
+  assert.deepEqual(shelfProblems([]), []);
+});
+
+test("the real posts folder holds only the declared introductions", () => {
+  const { problems } = checkChapters(CHAPTERS, POSTS, readContext(root));
+  assert.deepEqual(
+    problems.filter((p) => /outside the book/.test(p)),
+    [],
+  );
+});
