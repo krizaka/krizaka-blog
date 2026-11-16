@@ -166,6 +166,24 @@ const bylineLanguageLink = () => {
   return out;
 };
 
+/* The share row (krizaka-internal#3907): every item is a discreet link — no border, no background — so « Partager… » and
+   « Copier le lien » read like the networks' links. */
+const shareRowQuiet = () => {
+  const out = [];
+  for (const e of document.querySelectorAll(".bl-share > :is(a, button)")) {
+    const cs = getComputedStyle(e);
+    if (!e.getBoundingClientRect().width) continue;
+    const name = (e.textContent || "").trim();
+    const border = ["Top", "Right", "Bottom", "Left"].some(
+      (side) => cs[`border${side}Style`] !== "none" && parseFloat(cs[`border${side}Width`]) > 0,
+    );
+    if (border) out.push(`the share row's « ${name} » has a border`);
+    if (!/^(transparent|rgba\(\d+, \d+, \d+, 0\))$/.test(cs.backgroundColor) || cs.backgroundImage !== "none")
+      out.push(`the share row's « ${name} » has a background`);
+  }
+  return out;
+};
+
 const LAYOUT_CHECKS = [
   sidewaysScroll,
   chromePastEdge,
@@ -175,6 +193,7 @@ const LAYOUT_CHECKS = [
   figureHead,
   bylineBeside,
   bylineLanguageLink,
+  shareRowQuiet,
 ];
 
 /* The basics' path (krizaka-internal#1869): at 1440×900 the whole ordered list fits one screen below the bar (so it reads in five
