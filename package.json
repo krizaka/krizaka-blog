@@ -10,6 +10,7 @@
     "dev": "npm run gen && next dev",
     "build": "npm run gen && node scripts/build.mjs",
     "lint": "tsc --noEmit && krizaka-server-client-boundary && krizaka-i18n check messages && krizaka-code-names messages && node scripts/check-content.mjs && node scripts/content-parity.mjs && node scripts/gen-architecture.mjs check && node scripts/gen-downloads.mjs check && npm run format:check",
+    "dev:check": "npm run lint",
     "test": "node --test tests/*.test.mjs",
     "test:browser": "node --test tests/browser/*.test.mjs",
     "links": "node scripts/check-links.mjs --base http://localhost:3000 --external",
