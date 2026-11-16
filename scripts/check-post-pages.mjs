@@ -6,7 +6,7 @@
      node scripts/check-post-pages.mjs [--out out]
 
    Every published post whose author signs (lib/author-picture.ts, SIGNING_AUTHORS) ends with the Signature block (`aside.bl-sign`,
-   after the article); the other-language action of its byline is a link (role link, `hreflang`, `lang`), never a button. */
+   after the article); every post and chapter page ends with the book's block (a chapter and the story index in one nav); the other-language action of its byline is a link (role link, `hreflang`, `lang`), never a button. */
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -36,6 +36,29 @@ export function postPageProblems(html, { signs, hasOther }) {
   return problems;
 }
 
+/** The book's block (krizaka-internal#3911, founder 2026-11-15: « c'est un livre »): a post page or a chapter page links, in one
+    navigation, at least one chapter (`/story/<slug>/`) and the story index (the home of its language). */
+export function bookProblems(html, { locale }) {
+  const page = readHtml(html);
+  const home = locale === "fr" ? "/fr/" : "/";
+  const chapter = new RegExp(`^${locale === "fr" ? "/fr" : ""}/story/[^/]+/$`);
+  const navs = page.tags("nav");
+  const links = (nav) => page.tags("a").filter((a) => a.startIndex > nav.startIndex && a.endIndex < nav.endIndex);
+  const book = navs.find(
+    (nav) =>
+      links(nav).some((a) => a.attribs.href === home) && links(nav).some((a) => chapter.test(a.attribs.href ?? "")),
+  );
+  if (book) return [];
+  const anywhere = page.tags("a");
+  const problems = [];
+  if (!anywhere.some((a) => chapter.test(a.attribs.href ?? "")))
+    problems.push("the page links no chapter of the story");
+  if (!anywhere.some((a) => a.attribs.href === home)) problems.push("the page links no story index");
+  return problems.length > 0
+    ? problems
+    : ["the chapters and the story index are not in one navigation (the book's block)"];
+}
+
 /** The author ids that sign, read from the one list the page uses. */
 const signingAuthors = (root) =>
   [
@@ -55,10 +78,22 @@ function builtPost(dir, out, file, signing) {
   if (!existsSync(page)) return null;
   return {
     id: `${locale}/${slug}`,
+    locale,
     html: readFileSync(page, "utf8"),
     signs: signing.includes(String(data.author)),
     hasOther: existsSync(join(dir, `${slug}.${locale === "en" ? "fr" : "en"}.mdx`)),
   };
+}
+
+/** The built page of a published chapter file under /story/. */
+function builtChapter(root, out, file) {
+  const m = file.match(/^(.+)\.(en|fr)\.mdx$/);
+  if (!m) return null;
+  const { data } = matter(readFileSync(join(root, "content/chapters", file), "utf8"));
+  const [, slug, locale] = m;
+  const page = join(out, locale === "en" ? "" : "fr", "story", slug, "index.html");
+  if (data.draft || !existsSync(page)) return null;
+  return { id: `${locale}/story/${slug}`, locale, html: readFileSync(page, "utf8") };
 }
 
 function main() {
@@ -70,13 +105,21 @@ function main() {
   const posts = readdirSync(dir)
     .map((file) => builtPost(dir, out, file, signing))
     .filter(Boolean);
-  const problems = posts.flatMap((post) => postPageProblems(post.html, post).map((p) => `${post.id}: ${p}`));
+  const chapters = readdirSync(join(root, "content/chapters"))
+    .map((file) => builtChapter(root, out, file))
+    .filter(Boolean);
+  const problems = [
+    ...posts.flatMap((post) => postPageProblems(post.html, post).map((p) => `${post.id}: ${p}`)),
+    ...[...posts, ...chapters].flatMap((page) => bookProblems(page.html, page).map((p) => `${page.id}: ${p}`)),
+  ];
   if (posts.length === 0) problems.push("no built post page was found under /basics/");
   if (problems.length > 0) {
     console.error(`check-post-pages:\n  ${problems.join("\n  ")}`);
     process.exit(1);
   }
-  console.log(`check-post-pages: ${posts.length} post pages, signature and other-language link as contracted`);
+  console.log(
+    `check-post-pages: ${posts.length} post pages, signature, other-language link and the book's block as contracted`,
+  );
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) main();

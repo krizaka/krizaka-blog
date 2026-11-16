@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
-import { postPageProblems } from "../scripts/check-post-pages.mjs";
+import { bookProblems, postPageProblems } from "../scripts/check-post-pages.mjs";
 
 const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
 const page = read("app/components/pages/PostPage.tsx");
@@ -65,4 +65,37 @@ test("the visual baselines cover the top and the end of two posts, light and dar
   assert.match(visualProblem("x", 0, false), /another size/);
   assert.match(read("scripts/ci-after-build.sh"), /check-visual\.mjs/);
   assert.match(read("scripts/ci-after-build.sh"), /check-post-pages\.mjs/);
+});
+
+test("the book contract: one navigation links a chapter and the story index, in each language", () => {
+  const nav = (en, fr) => `<nav><a href="${en}">a</a><a href="${fr}">b</a></nav>`;
+  assert.deepEqual(bookProblems(nav("/story/x/", "/"), { locale: "en" }), []);
+  assert.deepEqual(bookProblems(nav("/fr/story/x/", "/fr/"), { locale: "fr" }), []);
+  assert.match(bookProblems("<p>Related</p>", { locale: "en" }).join(), /no chapter.*no story index/);
+  assert.match(bookProblems(nav("/", "/"), { locale: "en" }).join(), /no chapter/);
+  assert.match(bookProblems(nav("/story/x/", "/story/y/"), { locale: "en" }).join(), /no story index/);
+  assert.match(bookProblems(nav("/story/x/", "/fr/"), { locale: "fr" }).join(), /no chapter/);
+  assert.match(
+    bookProblems(`<nav><a href="/story/x/">a</a></nav><nav><a href="/">b</a></nav>`, { locale: "en" }).join(),
+    /one navigation/,
+  );
+});
+
+test("a post page ends with the book's foot, before the related posts", () => {
+  assert.equal((page.match(/<BookNav\b/g) ?? []).length, 1);
+  assert.ok(page.indexOf("<BookNav") < page.indexOf("t.post.related"));
+  assert.ok(page.indexOf("<BookNav") > page.indexOf("<NewsletterSection"));
+});
+
+test("chaptersAround: the chapter just before and the one just after a post, by when they went out", async () => {
+  const { chaptersAround } = await import("../lib/book.ts");
+  const c = (chapter, publishedAt) => ({ chapter, publishedAt, date: publishedAt.slice(0, 10) });
+  const chapters = [c(1, "2026-10-01T10:00:00Z"), c(2, "2026-10-10T10:00:00Z"), c(3, "2026-10-20T10:00:00Z")];
+  const mid = chaptersAround({ publishedAt: "2026-10-15T09:00:00Z" }, chapters);
+  assert.equal(mid.before?.chapter, 2);
+  assert.equal(mid.after?.chapter, 3);
+  const last = chaptersAround({ publishedAt: "2026-11-01T09:00:00Z" }, chapters);
+  assert.equal(last.before?.chapter, 3);
+  assert.equal(last.after, undefined);
+  assert.equal(chaptersAround({ publishedAt: "2026-09-01T09:00:00Z" }, chapters).before, undefined);
 });
