@@ -17,9 +17,11 @@ const FORBIDDEN = /Oujda|Grenoble|Maroc|Morocco|Java and Spring|Java et Spring|l
 const BANKS =
   /\b(RBC|Royal Bank|Banque Royale|TD Bank|Banque TD|BMO|Bank of Montreal|Banque de Montréal|Scotiabank|CIBC|Banque Nationale|National Bank|Desjardins|Laurentienne|Laurentian)\b/i;
 const BIRTH = /\b(né le|née le|born on|date de naissance|date of birth)\b/i;
-const EDU = {
-  en: "I studied mathematics and computer science, then their use in cognitive science: how people read, and how they decide.",
-  fr: "J'ai étudié les mathématiques et l'informatique, puis leur usage en sciences cognitives : comment on lit, comment on décide.",
+// The About page goes straight to his story with AI, no studies sentence (Oussama, 2026-11-16, krizaka-internal#4007).
+const STUDIES = /\b(I studied|studied|j'ai étudié|étudié)\b/i;
+const STORY = {
+  en: /^My story with AI began in 2011, at the \{lab\}\.$/,
+  fr: /^Mon histoire avec l'IA a commencé en 2011, au \{lab\}\.$/,
 };
 const posts = readdirSync(new URL("../content/posts/", import.meta.url)).filter((f) => f.endsWith(".mdx"));
 
@@ -39,7 +41,8 @@ test("the About page and the home note tell the sourced path, and never the empl
       assert.ok(facts.places.includes(place), `${l}: ${place} is not sourced`);
     assert.doesNotMatch(text, FORBIDDEN, `${l}: forbidden in the bio`);
     assert.match(text, /Montréal/);
-    assert.ok(text.includes(EDU[l]), `${l}: the education is worded as he gave it`);
+    assert.doesNotMatch(text, STUDIES, `${l}: no studies sentence on the About page`);
+    assert.match(a.labNote, STORY[l], `${l}: the note opens on his story with AI, sober`);
     // His current job is never told, even unnamed (Oussama, 2026-10-17).
     assert.doesNotMatch(
       text,
