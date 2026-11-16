@@ -17,19 +17,23 @@ Le dimanche 15 novembre, à 13 h 24 heure de Montréal, la publication d'une ver
 
 Le cockpit l'a montrée sur une ligne : une alerte critique, levée par le chien de garde, dont le message commence par « main red: krizaka-ui release ». Elle est restée ouverte, comptée seize fois entre 14 h 15 et 18 h.
 
-Je l'ai lue, puis j'ai ouvert le journal complet sur GitHub. Il dit plus que l'alerte : le poste d'exécution a reçu un signal d'arrêt (« The runner has received a shutdown signal ») pendant l'étape des contrôles, juste après qu'un test eut imprimé tout un objet `window`. Ce n'était ni la limite de temps de 45 minutes, ni deux publications qui se marchent dessus. J'ai écrit un ticket et lancé une équipe dessus, depuis une consigne : elle travaille isolée, avec un plafond de tours, de dépense et de minutes, et un chien de garde la surveille. Sa correction, une pull request qui borne le contrôle de publication et fait taire ces affichages, a été fusionnée à 18 h 34 ; la publication qui l'a suivie a réussi, la version 4.9.0 est sortie, et le ticket est fermé.
+Je n'ai pas fait les étapes suivantes ; l'agent qui pilote nos équipes les a faites, Mouloud, la session CTO. Il a lu l'alerte, puis ouvert le journal complet sur GitHub, qui dit plus que l'alerte : le poste d'exécution a reçu un signal d'arrêt (« The runner has received a shutdown signal ») pendant l'étape des contrôles. Ce n'était ni la limite de temps de 45 minutes, ni deux publications qui se marchent dessus. Mouloud a écrit le ticket et lancé une équipe dessus, depuis une consigne : l'équipe travaille isolée, avec un plafond de tours, de dépense et de minutes, et un chien de garde la surveille.
 
-Ce billet décrit l'écran d'où j'ai vu tout cela. C'est une application locale, sur mon Mac, qui me montre l'entreprise entière au même endroit. Je dis pourquoi elle existe, ce que nous avons refusé de faire, ce qu'elle ne sait pas encore faire, puis ce que sept rôles différents y lisent. Les captures sont de vrais écrans, pris ce soir ; les valeurs sensibles y sont masquées, et je dis comment à la fin.
+L'équipe a prouvé la cause. La publication lançait en même temps la construction, le lint, les tests et la vérification de types du paquet ui, sans cache. La construction seule monte à environ 15 Go de mémoire, sur un poste qui en a 16. Le poste a été arrêté, et ce que les tests avaient affiché (le « Frame does not have a content window » d'axe-core, les avis du navigateur simulé sur les iframes) n'a été vidé qu'après l'arrêt. L'objet `window` affiché était un détail, pas la cause. La correction lance le lint en deux temps, plafonne la concurrence à 2 et fait taire ces avis à la source ; elle a été fusionnée à 18 h 34, la publication qui l'a suivie a réussi, la version 4.9.0 est sortie, et le ticket est fermé. La mémoire de la construction a son propre ticket de suite.
+
+Ma part : voir cela sur le cockpit, et laisser les agents faire. C'est le sens de cet écran : un fondateur supervise une entreprise d'agents, il ne fait pas chaque étape.
+
+Ce billet décrit l'écran d'où j'ai vu cela. C'est une application locale, sur mon Mac, qui me montre l'entreprise entière au même endroit. Je dis pourquoi elle existe, ce que nous avons refusé de faire, ce qu'elle ne sait pas encore faire, puis ce que sept rôles différents y lisent. Les captures sont de vrais écrans, pris le soir du 15 novembre 2026 ; les valeurs sensibles y sont masquées, et je dis comment à la fin.
 
 ## L'écran
 
 Une seule application, le cockpit, qui tourne sur 127.0.0.1 et nulle part ailleurs. C'est une application Next.js construite avec [nos composants](site:ui) ; elle lit nos données locales et GitHub. Elle ne sert pas de tableau de bord à des clients, elle sert à une personne.
 
-Dans la barre de gauche, tout ce qui compte pour diriger : « Aujourd'hui », « La machine », « Ce qui sort » et les coûts. Plus bas, la société, puis l'architecture. Dans « La machine », six onglets : la santé, la livraison, la qualité, les règles, les automatismes, les alertes. Ce soir, la page de santé comptait 13 sessions d'équipe au travail, 4 pull requests rouges dans les trains, 14 tâches planifiées actives et 16 alertes ouvertes, dont 2 graves.
+Dans la barre de gauche, tout ce qui compte pour diriger : « Aujourd'hui », « La machine », « Ce qui sort » et les coûts. Plus bas, la société, puis l'architecture. Dans « La machine », six onglets : la santé, la livraison, la qualité, les règles, les automatismes, les alertes. Le soir du 15 novembre, la page de santé comptait 13 sessions d'équipe au travail, 4 pull requests rouges dans les trains, 14 tâches planifiées actives et 16 alertes ouvertes, dont 2 graves.
 
 La couverture de ce billet est la partie qui dit ce que l'entreprise fait en ce moment : la section « Équipes, trains et arbre du travail, en détail », ouverte. Chaque ticket en cours y est rangé sous sa fonctionnalité et son épopée, avec son titre, son état au tableau et les pull requests qui le ferment. Une ligne dont l'épopée parle de sécurité est floutée en entier, comme tout bloc de ce genre.
 
-Le cockpit ne ment pas pour être rassurant. Quand un bloc est trop vieux, il l'écrit sur une pastille orange (« Coûts cloud : vieux de 2 j »), et le rafraîchir est un geste, un bouton.
+Le cockpit ne ment pas pour être rassurant. Quand un bloc est trop vieux, il l'écrit sur une pastille orange (« Coûts cloud : vieux de 2 j »), et le rafraîchir est un geste, un bouton. Ce soir-là, le bloc « Livraison » comptait 196 pull requests fusionnées en 24 heures. Personne ne lit 196 notifications. Une seule ligne qui devient rouge, on la voit.
 
 <Clip id="cockpit-rafraichir" alt="Le cockpit, onglet Livraison : un clic sur « Rafraîchir », puis la date de collecte passe à l'heure courante et les pastilles des files de fusion sont relues." caption="Le geste « Rafraîchir », 9 secondes sans son. La collecte a pris environ 16 secondes ; l'attente est coupée du film. Valeurs sensibles masquées." />
 
@@ -43,10 +47,6 @@ Le moteur derrière, krizaka-agents, notre produit de gestion d'équipes d'agent
 
 Sans le cockpit, la réponse serait : à plusieurs endroits. Les sessions dans le terminal, les trains dans GitHub, les alertes dans une base, le tableau dans un navigateur. Le cockpit les met sur un seul écran, chacun avec sa date.
 
-<Figure id="cockpit-livraison" alt="Le cockpit, onglet Livraison : une file de fusion par dépôt, puis les chiffres du jour : pull requests fusionnées, tokens par PR, portes de qualité, pull requests rouges." caption="Le cockpit, « La machine », onglet Livraison, thème clair, coupé sous la rangée des chiffres. Une file de fusion par dépôt (une seule en orange, krizaka-ts, avec 1), 196 pull requests fusionnées en 24 heures et 960 en 7 jours, 4 rouges sur 10 ouvertes. Un prénom est masqué." />
-
-Ce soir, le bloc « Livraison » comptait 196 pull requests fusionnées en 24 heures. Personne ne lit 196 notifications. Une seule ligne qui devient rouge, on la voit.
-
 ## Ce que nous avons refusé
 
 Un service en ligne pour nos propres opérations. L'application n'écoute que sur la machine, n'a aucun dépôt distant et n'envoie aucun document à personne. Elle lit le dossier de l'entreprise (décisions, notes, documents), qui n'est jamais poussé sur GitHub, et la règle écrite est qu'aucun contenu de document ne part vers un tiers. Ce que ça coûte : elle n'existe que sur ce Mac, et je ne regarde pas l'entreprise depuis mon téléphone.
@@ -59,13 +59,13 @@ Une machine qui décide de l'argent, du droit ou de ce qui ne se défait pas. Un
 
 ## Une limite, honnêtement
 
-Le cockpit montre ses données, il n'explique pas leur cause. L'alerte de la publication dit que main est rouge, depuis quand et combien de fois ; pourquoi, c'est dans le journal complet de GitHub, où j'ai trouvé la phrase sur le signal d'arrêt. Et un chiffre a un âge : ce soir, deux pastilles orange disaient « Coûts cloud : vieux de 2 j » et « Graphe de code : vieux de 2 j ». Le cockpit le dit ; le rafraîchir demande un geste, et une collecte entière prend de l'ordre de la quinzaine de secondes.
+Le cockpit montre ses données, il n'explique pas leur cause. L'alerte de la publication dit que main est rouge, depuis quand et combien de fois ; pourquoi, c'est dans le journal complet de GitHub, où la session CTO a trouvé la phrase sur le signal d'arrêt. Et un chiffre a un âge : ce soir-là, deux pastilles orange disaient « Coûts cloud : vieux de 2 j » et « Graphe de code : vieux de 2 j ». Le cockpit le dit ; le rafraîchir demande un geste, et une collecte entière prend de l'ordre de la quinzaine de secondes.
 
 ## Ce que chaque rôle y lit
 
 Un seul récit pour tout le monde, puis une courte part par rôle : ce que cette personne lirait sur l'écran, et pourquoi cela compte pour elle. Nous n'avons pas sept personnes ; c'est le même écran, lu avec sept questions.
 
-Pour la fiabilité, c'est l'onglet « Alertes » : une ligne par sujet, avec sa gravité, sa source (le chien de garde ou une session d'équipe), le nombre de fois où elle est revenue et son état. Une alerte critique qui revient seize fois se lit plus vite qu'un message qui passe : on voit qu'un problème dure. Le reste est une boucle, que l'alerte de ce soir a parcourue : l'alerte devient un ticket, le ticket une équipe, l'équipe une pull request que le train fait atterrir si elle est verte. Chaque maillon a un plafond : des tours, une dépense, des minutes, et un frein de charge. Ce soir, un lancement d'équipe a été refusé parce que la charge moyenne du Mac sur cinq minutes était de 86, au-dessus du frein de 60 ; le lancement a attendu que la charge redescende. C'est une limite que la machine s'impose à elle-même.
+Pour la fiabilité, c'est l'onglet « Alertes » : une ligne par sujet, avec sa gravité, sa source (le chien de garde ou une session d'équipe), le nombre de fois où elle est revenue et son état. Une alerte critique qui revient seize fois se lit plus vite qu'un message qui passe : on voit qu'un problème dure. Le reste est une boucle, que l'alerte de ce soir-là a parcourue : l'alerte devient un ticket, le ticket une équipe, l'équipe une pull request que le train fait atterrir si elle est verte. Chaque maillon a un plafond : des tours, une dépense, des minutes, et un frein de charge. Ce soir-là, un lancement d'équipe par la session CTO a été refusé parce que la charge moyenne du Mac sur cinq minutes était de 86, au-dessus du frein de 60 ; le lancement a attendu que la charge redescende. C'est une limite que la machine s'impose à elle-même.
 
 Pour la direction de projet, « Ce qui sort » : par produit, le tableau, les pull requests ouvertes, l'état du train, la dernière version, le dernier déploiement. Chaque carte porte la date de sa source la plus vieille. Un projet se juge à ce qui est réellement parti, pas à ce qui était prévu.
 

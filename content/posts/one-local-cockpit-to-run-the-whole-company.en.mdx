@@ -17,19 +17,23 @@ On Sunday 15 November, at 1:24 pm Montréal time, the release of a krizaka-ui ve
 
 The cockpit showed it on one line: a critical alert, raised by the watchdog, whose message starts with « main red: krizaka-ui release ». It stayed open, counted sixteen times between 2:15 pm and 6 pm.
 
-I read it, then opened the full log on GitHub. It says more than the alert: the runner received a shutdown signal (« The runner has received a shutdown signal ») during the checks step, right after a test printed a whole `window` object. It was not the 45-minute time limit, and not two releases stepping on each other. I wrote a ticket and launched a team on it, from a brief: it works isolated, with a ceiling on turns, spend and minutes, and a watchdog keeps an eye on it. Its fix, a pull request that bounds the release check and silences those prints, was merged at 6:34 pm; the release that followed it succeeded, version 4.9.0 is out, and the ticket is closed.
+I did not do the next steps; the agent that pilots our teams did, Mouloud, the CTO session. It read the alert, then opened the full log on GitHub, which says more than the alert: the runner received a shutdown signal (« The runner has received a shutdown signal ») during the checks step. It was not the 45-minute time limit, and not two releases stepping on each other. Mouloud wrote the ticket and launched a team on it, from a brief: the team works isolated, with a ceiling on turns, spend and minutes, and a watchdog keeps an eye on it.
 
-This post describes the screen where I saw all of it. It is a local application, on my Mac, that shows me the whole company in one place. I say why it exists, what we refused to do, what it cannot do yet, then what seven different roles read there. The captures are real screens, taken tonight; the sensitive values are masked, and I say how at the end.
+The team proved the cause. The release ran the build, the lint, the tests and the typecheck of the ui package all at once, with no cache. The build alone peaks at about 15 GB of memory, on a runner that has 16. The runner was shut down, and what the tests had printed (axe-core's « Frame does not have a content window », the notices of the simulated browser about iframes) was flushed only after the kill. The printed `window` object was a detail, not the cause. The fix runs the lint in two steps, caps the concurrency at 2 and silences those notices at the source; it was merged at 6:34 pm, the release that followed succeeded, version 4.9.0 is out, and the ticket is closed. The build's memory has its own follow-up ticket.
+
+My part was to see it, on the cockpit, and to leave the agents to it. That is the point of the screen: a founder supervises a company of agents, he does not do each step.
+
+This post describes the screen where I saw it. It is a local application, on my Mac, that shows me the whole company in one place. I say why it exists, what we refused to do, what it cannot do yet, then what seven different roles read there. The captures are real screens, taken on the evening of 15 November 2026; the sensitive values are masked, and I say how at the end.
 
 ## The screen
 
 One application, the cockpit, that runs on 127.0.0.1 and nowhere else. It is a Next.js app built with [our components](site:ui); it reads our local data and GitHub. It is not a dashboard for customers, it serves one person.
 
-In the left bar, everything that matters to run the place: « Today », « The machine », « What ships » and the costs. Further down, the company, then the architecture. Inside « The machine », six tabs: health, delivery, quality, rules, automations, alerts. Tonight the health page counted 13 team sessions at work, 4 red pull requests in the trains, 14 active scheduled tasks and 16 open alerts, 2 of them serious.
+In the left bar, everything that matters to run the place: « Today », « The machine », « What ships » and the costs. Further down, the company, then the architecture. Inside « The machine », six tabs: health, delivery, quality, rules, automations, alerts. On the evening of 15 November, the health page counted 13 team sessions at work, 4 red pull requests in the trains, 14 active scheduled tasks and 16 open alerts, 2 of them serious.
 
 The cover of this post is the part that says what the company is doing right now: the section « Teams, trains and the work tree, in detail », opened. Each ticket in progress sits there under its feature and its epic, with its title, its state on the board and the pull requests that close it. A line whose epic is about security is blurred whole, like any block of that kind.
 
-The cockpit does not lie to reassure. When a block is too old, it says so on an orange badge (« Cloud costs: 2 d old »), and refreshing it is a gesture, a button.
+The cockpit does not lie to reassure. When a block is too old, it says so on an orange badge (« Cloud costs: 2 d old »), and refreshing it is a gesture, a button. That evening the « Delivery » block counted 196 pull requests merged in 24 hours. Nobody reads 196 notifications. One line turning red, you see.
 
 <Clip id="cockpit-rafraichir" alt="The cockpit, Delivery tab: a click on « Rafraîchir » (refresh), then the collection date moves to the current time and the merge-queue badges are read again." caption="The refresh gesture, 9 seconds, no sound. The collection took about 16 seconds; the wait is cut from the film. Sensitive values masked." />
 
@@ -43,10 +47,6 @@ The engine behind it, krizaka-agents, our product for running teams of agents, f
 
 Without the cockpit, the answer would be: in several places. The sessions in the terminal, the trains in GitHub, the alerts in a database, the board in a browser. The cockpit puts them on one screen, each with its date.
 
-<Figure id="cockpit-livraison" alt="The cockpit, Delivery tab: one merge queue per repository, then the day's figures: merged pull requests, tokens per PR, quality gates, red pull requests." caption="The cockpit, « The machine », Delivery tab, light theme, cut under the row of figures. One merge queue per repository (only one in orange, krizaka-ts, with 1), 196 pull requests merged in 24 hours and 960 in 7 days, 4 red out of 10 open. A first name is masked." />
-
-Tonight the « Delivery » block counted 196 pull requests merged in 24 hours. Nobody reads 196 notifications. One line turning red, you see.
-
 ## What we refused
 
 An online service for our own operations. The application listens only on the machine, has no remote repository and sends no document to anyone. It reads the company's folder (decisions, notes, documents), which is never pushed to GitHub, and the written rule is that no document content goes to a third party. What it costs: it exists only on this Mac, and I do not look at the company from my phone.
@@ -59,13 +59,13 @@ A machine that decides about money, law or what cannot be undone. A team has a c
 
 ## One limit, honestly
 
-The cockpit shows its data, it does not explain its cause. The release alert says main is red, since when and how many times; why is in GitHub's full log, where I found the sentence about the shutdown signal. And a figure has an age: tonight two orange badges said « Cloud costs: 2 d old » and « Code graph: 2 d old ». The cockpit says it; refreshing takes a gesture, and a whole collection takes something like fifteen seconds.
+The cockpit shows its data, it does not explain its cause. The release alert says main is red, since when and how many times; why is in GitHub's full log, where the CTO session found the sentence about the shutdown signal. And a figure has an age: that evening two orange badges said « Cloud costs: 2 d old » and « Code graph: 2 d old ». The cockpit says it; refreshing takes a gesture, and a whole collection takes something like fifteen seconds.
 
 ## What each role reads there
 
 One story for everyone, then a short part per role: what that person would read on the screen, and why it matters to them. We do not have seven people; it is the same screen, read with seven questions.
 
-For reliability, it is the « Alerts » tab: one line per subject, with its severity, its source (the watchdog or a team session), how many times it came back and its state. A critical alert that returns sixteen times reads faster than a message that passes: you see that a problem lasts. The rest is a loop, which tonight's alert went through: the alert becomes a ticket, the ticket a team, the team a pull request that the train lands if it is green. Each link has a ceiling: turns, spend, minutes, and a load brake. Tonight a team launch was refused because the Mac's five-minute load average was 86, above the brake of 60; the launch waited for the load to fall. It is a limit the machine puts on itself.
+For reliability, it is the « Alerts » tab: one line per subject, with its severity, its source (the watchdog or a team session), how many times it came back and its state. A critical alert that returns sixteen times reads faster than a message that passes: you see that a problem lasts. The rest is a loop, which that evening's alert went through: the alert becomes a ticket, the ticket a team, the team a pull request that the train lands if it is green. Each link has a ceiling: turns, spend, minutes, and a load brake. That evening, a launch of a team by the CTO session was refused because the Mac's five-minute load average was 86, above the brake of 60; the launch waited for the load to fall. It is a limit the machine puts on itself.
 
 For project management, « What ships »: per product, the board, the open pull requests, the train's state, the last version, the last deployment. Each card carries the date of its oldest source. A project is judged by what actually left, not by what was planned.
 

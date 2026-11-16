@@ -41,12 +41,15 @@ export const MASK = [
   { name: "hex", re: /\b[0-9a-f]{24,}\b/gi },
   { name: "base64", re: /\b(?=\S*\d)(?=\S*[a-z])(?=\S*[A-Z])[\w+/-]{32,}={0,2}/g },
   { name: "secret-name", re: /\b[A-Z][A-Z0-9_]{0,40}(?:KEY|TOKEN|SECRET|PASSWORD|PASSPHRASE)[A-Z0-9_]{0,40}/g },
+  { name: "secret-name", re: /\b\w{1,40}_(?:key_id|key|token|secret)\b/gi },
+  { name: "production-path", re: /\bprod(?:uction)?-path\b/gi },
+  { name: "prod-key-name", re: /\bprod(?:uction)?-key-name\b/gi },
   { name: "private-path", re: /(?:\/Users\/|\/private\/|\/var\/folders\/|~\/\.)[^\s"')]*/g },
   { name: "person", re: /\b(?:M\.|Mme|Mr|Mrs|Ms|Dr|Me) [A-ZÉ][\p{L}'-]+(?: [A-ZÉ][\p{L}'-]+)?/gu },
   { name: "person", re: /\bAbid\b|oussamaabid/g },
 ];
 
-/* A line or a block that names one of these is a finance, tax, bank or security thing: the WHOLE block is replaced. */
+/* A line or a block that names one of these is a finance, tax, bank or security thing (a « production-path » or « prod-key-name » alert too: it names a guard's internals): the WHOLE block is replaced. */
 const WORDS = [
   ["ledger", "grand livre", "comptabilit[ée]", "accounting", "bank", "banque", "iban", "tps", "tvq", "gst", "qst"],
   ["imp[ôo]ts?", "taxes?", "factures?", "invoices?", "payroll", "salaire", "salary"],
@@ -61,6 +64,8 @@ const WORDS = [
     "credentials?",
     "mot de passe",
     "password",
+    "prod(?:uction)?-path",
+    "prod(?:uction)?-key-name",
   ],
 ];
 export const SENSITIVE_WORDS = new RegExp(`\\b(?:${WORDS.flat().join("|")})\\b`, "i");
@@ -318,15 +323,7 @@ export const SCREENS = [
     width: 1440,
     scale: 2,
     steps: [{ hide: "th:nth-child(5), td:nth-child(5), th:nth-child(6), td:nth-child(6)" }],
-    clip: { x: 300, y: 445, width: 840, height: 390 },
-  },
-  {
-    id: "cockpit-livraison",
-    path: "/fr/machine?tab=delivery",
-    note: "The cockpit, « La machine », Livraison: the merge queue of each repository, then what merged in 24 h and the red pull requests, cut under the figures' row.",
-    width: 1100,
-    scale: 2,
-    clip: { x: 255, y: 435, width: 845, height: 445 },
+    clip: { x: 300, y: 445, width: 840, height: 362 },
   },
 ];
 

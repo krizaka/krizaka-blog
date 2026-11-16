@@ -36,6 +36,10 @@ const FIXTURE = {
   hex: "empreinte 0123456789abcdef0123456789abcdef01234567",
   base64: "clé Zm9vQmFyQmF6MTIzNDU2Nzg5MFF3ZXJ0eVV",
   "secret-name": "MAIL_SEND_TOKEN",
+  "secret-name-lower": "auth_github_client_secret",
+  "key-id-name": "BUNNY_KEY_ID",
+  "production-path": "production-path: team kridoc's session touche",
+  "prod-key-name": "prod-key-name: un nom de clé cité",
   "private-path": "/Users/quelquun/krizaka/vault/x",
   person: "demande de Mme Tremblay",
   sensitive: "Grand livre — rapprochement bancaire",
@@ -252,11 +256,14 @@ test("the screens of the post: the opened sessions are the cover's, and the refr
   assert.match(LOOP.button, /Rafraîchir/);
 });
 
-test("the alerts screen leaves the two overlapping date columns out, and the delivery one stops above the half-cut row", () => {
+test("the alerts screen leaves the two overlapping date columns out, and Livraison is only the clip", () => {
   const alerts = SCREENS.find((x) => x.id === "cockpit-alertes");
   assert.ok(alerts.steps.some((x) => x.hide?.includes("nth-child(5)") && x.hide.includes("nth-child(6)")));
-  const delivery = SCREENS.find((x) => x.id === "cockpit-livraison");
-  assert.ok(delivery.clip.height <= 450);
+  assert.equal(
+    SCREENS.some((x) => x.id === "cockpit-livraison"),
+    false,
+    "Livraison is the clip's, not a figure",
+  );
 });
 
 test("a step hides a column and clicks a button; a missing button is an error, not a silent pass", async () => {
