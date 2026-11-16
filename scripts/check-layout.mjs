@@ -3,17 +3,20 @@
    stay inside the window (nothing cut at the right edge, no sideways scroll), and the bar's links show a focus ring only to
    the keyboard (:focus-visible): none on load, none after a click, one ring (no double ring) after Tab.
    Usage: node scripts/check-layout.mjs --base http://localhost:3000 [--path /posts/<slug>/ …] [--posts out] [--concurrency 6] */
-import { existsSync, readdirSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { chromium } from "playwright";
 
 import { mapPool } from "../lib/pool.mjs";
+import { isRedirectStub } from "../lib/retired-core.mjs";
 
 const args = process.argv.slice(2);
 const base = (args[args.indexOf("--base") + 1] || "http://localhost:3000").replace(/\/$/, "");
 const paths = ["/", "/fr/"];
 args.forEach((a, i) => a === "--path" && paths.push(args[i + 1]));
-/* --posts <out dir>: every post and every chapter the build wrote, in both languages (out/basics/<slug>/, out/fr/story/<slug>/…). */
+/* --posts <out dir>: every post and every chapter the build wrote, in both languages (out/basics/<slug>/, out/fr/story/<slug>/…),
+   minus the redirect stubs: they leave at once for another page (check-meta checks them), krizaka-internal#4029. */
+const isLayoutPage = (file) => existsSync(file) && !isRedirectStub(readFileSync(file, "utf8"));
 const postsDir = args.includes("--posts") ? args[args.indexOf("--posts") + 1] : undefined;
 if (postsDir) {
   for (const prefix of ["", "fr/"])
@@ -21,7 +24,7 @@ if (postsDir) {
       const dir = join(postsDir, prefix, section);
       if (existsSync(dir))
         for (const slug of readdirSync(dir))
-          if (existsSync(join(dir, slug, "index.html"))) paths.push(`/${prefix}${section}/${slug}/`);
+          if (isLayoutPage(join(dir, slug, "index.html"))) paths.push(`/${prefix}${section}/${slug}/`);
     }
 }
 const concurrencyArg = args.indexOf("--concurrency");
@@ -258,7 +261,7 @@ const browser = await chromium.launch();
 try {
   for (const path of ["/basics/", "/fr/basics/", "/", "/fr/"]) {
     const page = await browser.newPage({ viewport: { width: BASICS_FIT.width, height: BASICS_FIT.height } });
-    await page.goto(base + path, { waitUntil: "networkidle" });
+    await page.goto(base + path, { waitUntil: "load" });
     await page.evaluate(() => document.fonts.ready);
     for (const p of await page.evaluate(basicsPathFits, BASICS_FIT))
       problems.push(`${path} @${BASICS_FIT.width}: ${p}`);
@@ -267,7 +270,7 @@ try {
   for (const path of ["/", "/fr/"])
     for (const screen of FIRST_SCREENS) {
       const page = await browser.newPage({ viewport: screen });
-      await page.goto(base + path, { waitUntil: "networkidle" });
+      await page.goto(base + path, { waitUntil: "load" });
       await page.evaluate(() => document.fonts.ready);
       for (const p of await page.evaluate(startLinksInFirstScreen, screen))
         problems.push(`${path} @${screen.width}×${screen.height}: ${p}`);
@@ -277,7 +280,7 @@ try {
     const found = [];
     for (const width of WIDTHS) {
       const page = await browser.newPage({ viewport: { width, height: 900 } });
-      await page.goto(base + path, { waitUntil: "networkidle" });
+      await page.goto(base + path, { waitUntil: "load" });
       await page.evaluate(() => document.fonts.ready);
       for (const check of LAYOUT_CHECKS)
         for (const p of await page.evaluate(check)) found.push(`${path} @${width}: ${p}`);
@@ -292,7 +295,7 @@ try {
         const context = await browser.newContext({ viewport: { width, height: 900 }, colorScheme });
         await context.addInitScript((t) => localStorage.setItem("kz-theme", t), colorScheme);
         const themed = await context.newPage();
-        await themed.goto(base + path, { waitUntil: "networkidle" });
+        await themed.goto(base + path, { waitUntil: "load" });
         await themed.evaluate(() => document.fonts.ready);
         for (const p of await themed.evaluate(bylineLanguageLink)) found.push(`${path} @${width} ${colorScheme}: ${p}`);
         await context.close();
@@ -302,16 +305,16 @@ try {
   const focusProblems = async (path) => {
     const found = [];
     const page = await browser.newPage({ viewport: { width: 1366, height: 900 } });
-    await page.goto(base + path, { waitUntil: "networkidle" });
+    await page.goto(base + path, { waitUntil: "load" });
     const onLoad = await page.evaluate(ring);
     if (onLoad.inBar && (onLoad.outline || onLoad.shadow)) found.push(`${path}: a bar link wears a focus ring on load`);
     const brand = page.locator(".kz-site-bar a").first();
     await brand.click();
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("load");
     const clicked = await page.evaluate(ring);
     if (clicked.inBar && (clicked.outline || clicked.shadow))
       found.push(`${path}: the logo keeps a focus ring after a click`);
-    await page.goto(base + path, { waitUntil: "networkidle" });
+    await page.goto(base + path, { waitUntil: "load" });
     for (let i = 0; i < 4; i++) {
       await page.keyboard.press("Tab");
       const r = await page.evaluate(ring);
