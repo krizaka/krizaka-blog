@@ -97,7 +97,7 @@ The decision follows that logic: a GPU rented by the hour, which exists only whi
 | DigitalOcean GPU | 4 RTX 4000 Ada droplets, 4.26 h at $0.76 | $3.24 |
 | RunPod GPU | 1 H100 80 GB pod, 5.01 h at $3.99 | $19.99 |
 
-Of the $23.23 of rented GPU, the computing of the clips themselves accounts for $11.72. The other half went to start-up, downloading the weights, failed attempts and dead time. An hour of GPU is paid from the creation of the machine to its destruction, not only while it works.
+Of the $23.23 of rented GPU, the compute for the clips themselves accounts for $11.72. The other half went to start-up, downloading the weights, failed attempts and dead time. An hour of GPU is paid from the creation of the machine to its destruction, not only while it works.
 
 The failed attempts have their story. After the first successful clip, ten clips in a row failed in 17 seconds: the worker checked the free memory before each task, and counted the model already loaded (about 22 GB) as memory in use (orazaka-worker-media#22). Three clips were lost mid-computation, up to 9 minutes of GPU each, because a deployment of the dev site restarted the relay and cut the tunnel (#24).
 
@@ -115,7 +115,7 @@ Since then, the rule is simple. A watch loop runs for the whole batch, and the p
 
 ### Two prices, often confused
 
-A friend asked me the question that bothers: I measure the run, not whether the result matches what I wanted. He is right. In my table, the "Successful" column meant "the file came out", not "this is what I wanted".
+A friend asked me the awkward question: I measure the run, not whether the result matches what I wanted. He is right. In my table, the "Successful" column meant "the file came out", not "this is what I wanted".
 
 The first price is that of a run: what the API bills, or the GPU's time multiplied by its rate. It is the one in the tables above, and it is easy to read on a bill.
 

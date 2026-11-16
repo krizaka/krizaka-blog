@@ -46,7 +46,7 @@ La quantification, c'est arrondir chaque nombre pour qu'il prenne moins de place
 
 Dans un modèle **dense**, tous les paramètres travaillent pour chaque token. <Model id="llama31-405b">Llama 3.1 405B</Model> est dense : 405 milliards de nombres à lire pour chaque morceau de mot.
 
-Un modèle **MoE** (*mixture of experts*, un mélange d'experts) range ses paramètres en équipes de spécialistes, et un aiguilleur n'en réveille que quelques-uns à chaque token. <Model id="qwen3-235b">Qwen3 235B-A22B</Model> a 235 milliards de paramètres en tout, mais seulement 22 milliards actifs à la fois : c'est le « A22B ». <Model id="deepseek-v3">DeepSeek-V3</Model> en a 671 milliards, dont 37 milliards actifs. <Model id="kimi-k2">Kimi K2</Model> dépasse les mille milliards, avec 32 milliards actifs.
+Un modèle **MoE** (*mixture of experts*, un mélange d'experts) range ses paramètres en équipes de spécialistes, et un routeur n'en réveille que quelques-uns à chaque token. <Model id="qwen3-235b">Qwen3 235B-A22B</Model> a 235 milliards de paramètres en tout, mais seulement 22 milliards actifs à la fois : c'est le « A22B ». <Model id="deepseek-v3">DeepSeek-V3</Model> en a 671 milliards, dont 37 milliards actifs. <Model id="kimi-k2">Kimi K2</Model> dépasse les mille milliards, avec 32 milliards actifs.
 
 Le piège, c'est que le MoE va plus vite, mais ne prend pas moins de place. Tous les experts doivent être chargés en mémoire, même ceux qui dorment. Un DeepSeek-V3 demande la mémoire d'un modèle de 671 milliards, et la vitesse d'un modèle de 37 milliards.
 

@@ -112,7 +112,7 @@ The last case comes from a real loss. Before this rule, two stacked PRs closed o
 
 I work with agents. A pilot starts the sessions: one per product, one for the platform, one for security. Each session writes the code, runs the checks, opens its PR, writes its handoff and stops. Those two are models: they cost tokens.
 
-Everything else is a script. The queue and the conductor run as soon as a PR waits. The controller, which chases duplicate trains and heads stuck for an hour, and the watchdog, which reads and writes its alerts, pass every fifteen minutes. None of them costs a model token. Two GitHub Apps open, approve and enqueue. No human account works in the background.
+Everything else is a script. The queue and the conductor run as soon as a PR waits. The controller, which chases duplicate trains and heads stuck for an hour, and the watchdog, which reads and writes its alerts, run every fifteen minutes. None of them costs a model token. Two GitHub Apps open, approve and enqueue. No human account works in the background.
 
 <Rails label="Who does what: the models stop at the opened PR; the queue, the conductor, the watchdog and the two apps are scripts that cost no tokens.">
   <Rail name="Tokens" station="PR" wagons="session:model | pilot:model" />
@@ -166,7 +166,7 @@ Over the same 30 hours, 49 model sessions were recorded. Until 3 November their 
 
 The frozen rail says main is red, it does not repair it: a session still has to write the `fix(main)`. The cap of three PRs per repository sometimes holds a good PR behind two red ones, and the answer is still human: land them or close them. And the watchdog warns, it does not decide. That is on purpose: a script that costs nothing can watch all the time, but repairing is still somebody's job.
 
-And the repair train itself can be left at the platform. On the morning of 3 November, on Product A, the `fix(main)` PR stayed frozen with the others for about two hours: the conductor recognises the repair train by a label, and the opening tool had not set it. It had to be added by hand. The next guard: the tool sets the label as soon as the title starts with `fix(main)`, and a test checks it.
+And the repair train itself can be left standing at the station. On the morning of 3 November, on Product A, the `fix(main)` PR stayed frozen with the others for about two hours: the conductor recognises the repair train by a label, and the opening tool had not set it. It had to be added by hand. The next guard: the tool sets the label as soon as the title starts with `fix(main)`, and a test checks it.
 
 ## A firefighter, and the real bottleneck
 

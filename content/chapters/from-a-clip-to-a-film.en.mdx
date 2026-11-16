@@ -37,7 +37,7 @@ Update, October 2026: “l'aube” and “la tournée” are withdrawn. “Le re
 
 ## Two times I had no loop
 
-The first case is the first batch of clips for Orazaka's showcase. I had given Wan a portrait image cropped to 16:9, and a prompt that described a looping movement. The clips were bad. Each clip costs about $1.20 and 18 minutes of H100, so the five I had to redo come to roughly $6 and an hour and a half of GPU that produced nothing publishable. The fix holds in two lines: images made at the video's aspect ratio, and a prompt that describes only the movement.
+The first case is the first batch of clips for Orazaka's showcase. I had given Wan a portrait image cropped to 16:9, and a prompt that described a looping movement. The clips were bad. Each clip costs about $1.20 and 18 minutes of H100, so the five I had to redo come to roughly $6 and an hour and a half of GPU that produced nothing publishable. The fix comes down to two lines: images made at the video's aspect ratio, and a prompt that describes only the movement.
 
 Nobody was looking at the image before launching 18 minutes of GPU. Since then, the generation engine writes to its metrics `imageKept`, the share of the starting image that the frame kept (a portrait cropped to 16:9 keeps a third of it). That does not say whether the result is good, only that it starts with a handicap, but it warns before you pay.
 
@@ -100,11 +100,11 @@ Each take is checked afterwards: faithful to the bird's drawing, and alive and o
 <Clip id="relay-medina-scene" alt="In a medina courtyard, the owl raises a wing to say wait while the pigeon pleads, then the owl recognises the pigeon, laughs and signals it to pass" caption="The owl of “le relais”: it disputes, then recognises the pigeon. 5.4 seconds." />
 </Row>
 
-Keeping a bird faithful to its drawing took a detour. A free image editor had redrawn a brand bird (the falcon had lost its visor). The keyframe now starts from the rendering of the character itself, placed on an empty set, then retouched at a strength of 0.60 for a character and 0.80 for a group: a group of five was drifting at 0.60.
+Keeping a bird faithful to its drawing took a detour. A free-form image edit had redrawn a brand bird (the falcon had lost its visor). The keyframe now starts from the rendering of the character itself, placed on an empty set, then retouched at a strength of 0.60 for a character and 0.80 for a group: a group of five was drifting at 0.60.
 
 ### 4. A directed voice, chosen blind
 
-We put speech synthesis engines in competition, licence first, with the same synthetic reference voice (never a real person's voice). For each candidate, we measured the movement of the voice's pitch in semitones, the understanding of the words with <Model id="whisper">Whisper</Model>, and the respect of the requested pace.
+We pitted speech synthesis engines against each other, licence first, with the same synthetic reference voice (never a real person's voice). For each candidate, we measured the movement of the voice's pitch in semitones, how well the words were understood with <Model id="whisper">Whisper</Model>, and whether the requested pace was kept.
 
 - <Model id="kokoro">Kokoro</Model>, the voice of the first version: a single delivery, from 8.6 to 11 semitones.
 - <Model id="chatterbox">Chatterbox</Model>: very expressive in English (17 to 19 semitones), but it ignores a slow pace, and its French dropped words (an error of 0.67 on one sentence).
@@ -143,7 +143,7 @@ The shots are filmed at 720p with <Model id="wan22-i2v-a14b">Wan 2.2 I2V A14B</M
 <Num value="$35.27" label="“Le relais”, total GPU" hint="measured: 68 s in 4K, $31.12 a minute" />
 </Numbers>
 
-For “l'aube”: 23 takes, of which 4 were refused or shortened. The computing time of the runs themselves was 5.5 h ($29.00); the rest is set-up and waiting. The keyframes, the music and the narration were made on a Mac, at $0.
+For “l'aube”: 23 takes, of which 4 were refused or shortened. The compute time of the runs themselves was 5.5 h ($29.00); the rest is set-up and waiting. The keyframes, the music and the narration were made on a Mac, at $0.
 
 What we measured on an H200 with 141 GB: a Wan 2.2 shot of 81 frames in 720p, 40 steps, takes 1,567 seconds, about 26 minutes, 36 seconds per step. On an H100, it is of the order of 18 minutes per 5-second clip. LTX-Video makes a clip in 11 to 20 seconds. For 4K, SeedVR2 took about 17 minutes per shot with a batch of 5, and 290 seconds with a batch of 21: which makes it possible to run it alongside the generation instead of after it.
 
@@ -157,7 +157,7 @@ A 200 GB network disk, to keep the models at hand, costs about $14 a month doing
 
 ## The film
 
-“The World of Krizaka: le relais” is 68 seconds in 4K. A parcel, a question: will it arrive? The parcel passes from bird to bird, from city to city, and the music changes genre at each place. It is visible [on krizaka.com](site:www/en), in French and in English.
+“The World of Krizaka: le relais” is 68 seconds in 4K. A parcel, a question: will it arrive? The parcel passes from bird to bird, from city to city, and the music changes genre at each place. You can watch it [on krizaka.com](site:www/en), in French and in English.
 
 <Clip id="relay-film" alt="An excerpt of the film: Krizaka birds pass a parcel from place to place" caption="“Le relais”, 68 s, no subtitles, silent here. The full film has sound." />
 

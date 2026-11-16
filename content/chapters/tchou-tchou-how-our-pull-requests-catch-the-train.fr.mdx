@@ -77,7 +77,7 @@ Le train n'a pas marché du premier coup. Chaque panne est devenue une règle, e
   <Case topic="doublons" before="Le même train lancé quatre fois par des sessions différentes." after="Un seul train par PR" afterDetail="Le script refuse de démarrer si un train vivant porte déjà cette PR." />
   <Case topic="approbations" before="Une approbation toutes les 90 secondes : GitHub nous a limités." after="Approuver une fois par version" afterDetail="Le train retient la version déjà approuvée." />
   <Case topic="éjection" before="Une PR éjectée de la file a été remise en file sept fois." after="S'arrêter à la première éjection" afterDetail="Une éjection est un signal, pas un incident à rejouer." />
-  <Case topic="quota" before="Vingt-sept trains qui interrogeaient l'API toutes les 90 secondes ont vidé le quota partagé." after="REST, toutes les 3 minutes" afterDetail="Les lectures passent par l'API REST ; seul la mise en file reste une mutation." />
+  <Case topic="quota" before="Vingt-sept trains qui interrogeaient l'API toutes les 90 secondes ont vidé le quota partagé." after="REST, toutes les 3 minutes" afterDetail="Les lectures passent par l'API REST ; seule la mise en file reste une mutation." />
   <Case topic="silence" before="Une réécriture du script a fait tourner tous les trains à vide pendant une heure, sans erreur." after="Un test des fonctions de lecture" afterDetail="L'état d'une PR est maintenant testé avant chaque changement du script." />
   <Case topic="bot de versions" before="Un bot ouvrait une PR de mise à jour par fusion : 116 doublons." after="Une PR de versions par dépôt" afterDetail="Une règle d'organisation s'ajoute à la PR de masse ouverte, elle n'en ouvre pas une autre." />
   <Case topic="délai" before="Le délai de la merge queue était plus court que la CI : des éjections à tort." after="Un délai plus long que la CI" afterDetail="La file ne juge plus une CI saine trop lente." />
@@ -93,13 +93,13 @@ Le train a aussi changé nos règles de travail, qui comptent plus que le script
 - **Au plus 5 PR ouvertes par dépôt.** À la limite, personne n'en ouvre une nouvelle : on fusionne d'abord.
 - **Finir avant de commencer.** La première tâche d'une session, ce sont ses PR ouvertes, les plus anciennes d'abord : les faire passer, ou les fermer en disant pourquoi.
 - **Une seule PR de masse par dépôt à la fois.** Une nouvelle règle d'organisation rejoint la PR de masse ouverte au lieu d'en ouvrir une autre.
-- **Un ordre d'atterrissage.** On empile deux PR seulement quand la première est déjà dans la file.
+- **Un ordre de fusion.** On empile deux PR seulement quand la première est déjà dans la file.
 
 Une règle qui vit dans un document s'oublie, alors chacune est devenue une garde qui refuse, avec son test :
 
 <Layers label="Ce qui arrête un train, ou ne le laisse jamais partir : quatre gardes écrites cette semaine, chacune avec son test.">
   <Layer tag="Commit" title="Pas de ligne de co-auteur" note="Un commit ou une description de PR qui nomme une IA comme co-auteur est refusé avant de quitter la machine : notre application est le seul auteur." />
-  <Layer tag="Ouvrir" title="Cinq PR par dépôt" note="Ouvrir une sixième est refusé, bots de versions compris. À la limite, on fait atterrir d'abord." />
+  <Layer tag="Ouvrir" title="Cinq PR par dépôt" note="Ouvrir une sixième est refusé, bots de versions compris. À la limite, on fusionne d'abord." />
   <Layer tag="Ronde" title="Pas d'orpheline" note="Un script liste les PR ouvertes qu'aucun train ne porte : verte, elle reçoit un train ; rouge, elle retourne à sa lane, nommée." />
   <Layer tag="Rouge" title="Un rouge périmé est rafraîchi une fois" note="Un rouge sur une branche en retard sur main est souvent déjà corrigé là-bas : le train met la branche à jour une fois, puis juge le nouveau passage." />
 </Layers>
@@ -112,7 +112,7 @@ Les chiffres que je peux donner sont ceux que je peux relire. Je les ai comptés
 
 <Bars label="Les pull requests ouvertes dans l'organisation, toutes les six heures du jeudi matin au vendredi soir : la pile culmine à 140, puis les trains la font descendre." source="Compté depuis l'API de GitHub le 30 octobre : les pull requests créées avant chaque heure et pas encore fermées, dans les dépôts que l'organisation garde aujourd'hui ; heure de Montréal." format="integer" series="PR ouvertes:accent" data="Jeu. 8 h=119; Jeu. 14 h=89; Jeu. 20 h=107; Ven. 2 h=140; Ven. 8 h=77; Ven. 14 h=66; Ven. 20 h=66; Ven. 22 h 30=50" />
 
-Le pic de la nuit n'a rien de mystérieux : c'est le moment où les sessions finissent leur travail et ouvrent leurs PR, pendant que les trains attendent encore la CI. La baisse du matin, ce sont les trains, qui font atterrir une PR après l'autre.
+Le pic de la nuit n'a rien de mystérieux : c'est le moment où les sessions finissent leur travail et ouvrent leurs PR, pendant que les trains attendent encore la CI. La baisse du matin, ce sont les trains, qui fusionnent une PR après l'autre.
 
 Je ne donne pas de « temps gagné » : je ne l'ai pas mesuré, et je préfère me taire que d'inventer un chiffre. Ce que je vois, c'est que les sessions ne passent plus leur temps à attendre, et qu'on a arrêté de se marcher dessus.
 
@@ -138,4 +138,4 @@ Nous l'utilisons aussi. Le train couvre ce qu'elle ne fait pas : attendre la PR 
 
 ### Pourquoi 5 PR par dépôt ?
 
-Parce que 24 PR ouvertes sur un dépôt, c'est 24 branches qui se rebasent les unes sur les autres. Cinq, c'est ce qu'on arrive à faire atterrir dans une journée.
+Parce que 24 PR ouvertes sur un dépôt, c'est 24 branches qui se rebasent les unes sur les autres. Cinq, c'est ce qu'on arrive à fusionner dans une journée.

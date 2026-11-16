@@ -98,7 +98,7 @@ Each repository declares a profile (a library, a web application, a mobile appli
 
 ## What we got wrong
 
-I would rather say it, because these mistakes are what drew the rules.
+I would rather say it, because these mistakes are what shaped the rules.
 
 - **Computed job names.** The name of a verify job was an expression. When the job was skipped, GitHub showed the raw expression instead of the name, and a PR stayed blocked on a check that would never come. Names are now literal, and a test checks it.
 - **A queue timeout too short.** The merge queue gave up on a PR after thirty minutes, while some CI runs took longer. Healthy PRs were ejected. The timeout is now longer than the slowest CI.

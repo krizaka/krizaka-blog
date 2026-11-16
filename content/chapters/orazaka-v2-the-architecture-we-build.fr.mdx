@@ -35,7 +35,7 @@ stats:
 
 Quand on me demande ce qu'est Orazaka techniquement, je réponds souvent par une liste de dépôts. C'est une mauvaise réponse. Une liste ne dit pas ce qu'on construit, ni pourquoi.
 
-Le 26 octobre, j'ai fait relire l'architecture par un audit externe, un modèle de langage à qui on a donné le contexte. Il proposait une architecture hybride : garder certaines pièces, en remplacer d'autres par des cadres connus. Une partie était juste. Une autre décrivait comme existantes des choses qu'on n'a pas construites. On l'a vérifié dans le code, ligne par ligne, puis une contre-expertise a resserré ce qui restait. Il en est sorti une décision, l'ADR-092, et une phrase :
+Le 26 octobre, j'ai fait relire l'architecture par un audit externe, un modèle de langage à qui on a donné le contexte. Il proposait une architecture hybride : garder certaines pièces, en remplacer d'autres par des frameworks connus. Une partie était juste. Une autre décrivait comme existantes des choses qu'on n'a pas construites. On l'a vérifié dans le code, ligne par ligne, puis une contre-expertise a resserré ce qui restait. Il en est sorti une décision, l'ADR-092, et une phrase :
 
 > On possède le cœur, on branche les bords.
 
@@ -43,7 +43,7 @@ Ce chapitre explique cette phrase. Il dit aussi, sans arrondir, où on en est au
 
 ## Ce qu'on possède, ce qu'on branche
 
-Un moteur d'IA, c'est beaucoup de pièces. La plupart existent déjà ailleurs, bien faites : un protocole pour parler aux outils, un courtier de messages, des bibliothèques pour appeler un modèle. Les réécrire ne nous apprendrait rien et nous coûterait des années. Mais quelques pièces font qu'Orazaka est Orazaka. Celles-là, on les garde.
+Un moteur d'IA, c'est beaucoup de pièces. La plupart existent déjà ailleurs, bien faites : un protocole pour parler aux outils, un broker de messages, des bibliothèques pour appeler un modèle. Les réécrire ne nous apprendrait rien et nous coûterait des années. Mais quelques pièces font qu'Orazaka est Orazaka. Celles-là, on les garde.
 
 **Ce qu'on possède :**
 
@@ -109,7 +109,7 @@ Chaque jugement est un verdict typé : `Validated`, `DriftAdjustment` ou `HumanE
 
 Sur le Mac, et sur un serveur avec une seule carte, deux choses veulent la mémoire du GPU en même temps : Ollama, qui garde des modèles de texte chargés, et le worker média, qui charge un modèle vidéo de plusieurs dizaines de gigaoctets. Si les deux se battent, la machine rame ou un des deux tombe.
 
-La réponse visée est un bail par appareil. Celui qui veut le GPU demande un bail, avec une durée de vie et un battement de cœur. Un bail qui ne bat plus est repris. Il y a deux profils : `SHARED_LIGHT`, où plusieurs petits travaux partagent la carte, et `EXCLUSIVE_HEAVY`, pour un rendu lourd. Avant d'accorder un bail exclusif, l'arbitre demande à Ollama de libérer sa mémoire (`keep_alive: 0`) et vérifie sur `/api/ps` qu'elle est vraiment libérée. On ne fait pas confiance, on vérifie. Un petit modèle reste hors du verrou lourd, pour que l'interface continue de répondre.
+La réponse visée est un bail par appareil. Celui qui veut le GPU demande un bail, avec une durée de vie et un heartbeat. Un bail dont le heartbeat s'arrête est repris. Il y a deux profils : `SHARED_LIGHT`, où plusieurs petits travaux partagent la carte, et `EXCLUSIVE_HEAVY`, pour un rendu lourd. Avant d'accorder un bail exclusif, l'arbitre demande à Ollama de libérer sa mémoire (`keep_alive: 0`) et vérifie sur `/api/ps` qu'elle est vraiment libérée. On ne fait pas confiance, on vérifie. Un petit modèle reste hors du verrou lourd, pour que l'interface continue de répondre.
 
 ## Le pilotage en direct
 
@@ -162,7 +162,7 @@ Voilà la direction. Voici ce que le code dit le 26 octobre. L'audit et la contr
 Et ce que ça coûte, mesuré :
 
 - **Un run coûte cher en requêtes, pas en temps.** Un run d'une seule étape fait 37 requêtes SQL, dont environ 9 en trop. Le surcoût de la saga reste petit : un p95 de 19,2 ms après le passage par l'outbox, loin du seuil de 250 ms fixé avant de mesurer (ADR-067). Ce que l'envoi attend vraiment, c'est le relais de l'outbox : au plus 500 ms, 250 en moyenne.
-- **Le GPU loué coûte même quand il dort.** Le 16 octobre, un pod a tourné cinq heures avec le GPU à 0 %, pour environ 20 $. Une garde l'arrête maintenant (ADR-078).
+- **Le GPU loué coûte même quand il dort.** Le 16 octobre, un pod a tourné cinq heures avec le GPU à 0 %, pour environ 20 $. Un garde-fou l'arrête maintenant (ADR-078).
 - **Un composant ne se construit jamais seul.** Avec 20 dépôts, la CI clone le workspace et construit d'abord les dépendances. C'est la bonne façon d'attraper une rupture, et c'est lent.
 
 ## En incubation : les Recettes

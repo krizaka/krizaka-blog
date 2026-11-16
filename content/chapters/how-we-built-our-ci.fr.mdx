@@ -55,7 +55,7 @@ jobs:
       container-smoke: scripts/ci-container-smoke.sh
 ```
 
-Le workflow est épinglé par son SHA, pas par une étiquette. Une étiquette peut bouger, un SHA non. Le commentaire `# v1.5.0` dit quelle version c'est, et Dependabot propose la mise à jour, dans une PR qui passe par la même CI que le reste.
+Le workflow est épinglé par son SHA, pas par un tag. Un tag peut bouger, un SHA non. Le commentaire `# v1.5.0` dit quelle version c'est, et Dependabot propose la mise à jour, dans une PR qui passe par la même CI que le reste.
 
 Orazaka a son propre pipeline, `component.yml`, dans le dépôt [krizaka/orazaka](repo:sovkora). Un composant d'Orazaka ne se construit jamais seul : la CI clone tout le workspace, met le dépôt testé à sa place, et construit d'abord ses dépendances depuis leur source.
 
@@ -74,8 +74,8 @@ Voici ce qui se passe, pour krizaka.com, entre le moment où une PR s'ouvre et l
   <Stage title="SonarCloud" note="après les tests, dans le pipeline" tone="gate">Une analyse faite dans notre CI, après verify, avec la couverture des tests ; on attend son quality gate. C'est le cas de krizaka.com, Akinaza et Yomizaka. Les autres dépôts gardent l'analyse automatique pour l'instant.</Stage>
   <Stage title="CI gate" note="un seul verdict" tone="gate">Un job lit le résultat de verify, container, SonarCloud et des autres jobs du workflow, et rend un verdict. C'est lui qui est exigé sur main, avec CodeQL, qui reste une vérification à part.</Stage>
   <Stage title="Squash sur main" note="la protection décide">Quand tout est vert, GitHub fusionne. C'est la protection de branche qui décide, pas l'agent.</Stage>
-  <Stage title="release-please" note="PR de version">Un bot tient une PR de version à jour. Quand je la fusionne, il crée l'étiquette vX.Y.Z et la release.</Stage>
-  <Stage title="production" note="avance, déploie" tone="ship">La branche production avance jusqu'à l'étiquette, sans jamais forcer, et DigitalOcean déploie depuis production.</Stage>
+  <Stage title="release-please" note="PR de version">Un bot tient une PR de version à jour. Quand je la fusionne, il crée le tag vX.Y.Z et la release.</Stage>
+  <Stage title="production" note="avance, déploie" tone="ship">La branche production avance jusqu'au tag, sans jamais forcer, et DigitalOcean déploie depuis production.</Stage>
 </Pipeline>
 
 Une chose à lire dans ce schéma : après verify, l'image et SonarCloud tournent côte à côte, et CodeQL tourne depuis le début, en parallèle de tout. Les flèches disent l'ordre du récit, pas celui de l'exécution. La liste en dessous donne le détail.
@@ -254,7 +254,7 @@ Nos bibliothèques, Krizaka UI et Krizaka TypeScript, utilisent [changesets](htt
 
 Je dois être précis sur un point. La provenance est là, mais pas encore la publication de confiance d'npm, celle qui se passe de token. npm a refusé notre première tentative, parce que les paquets n'avaient pas encore d'éditeur de confiance déclaré. Pour l'instant, un token d'automatisation fait la publication.
 
-Pour krizaka.com, on a mis en place un train de versions le 25 octobre, dans [krizaka-com#390](repo:krizaka-com/pull/390). C'est la fin du premier schéma. release-please tient une PR de version. Quand je la fusionne, l'étiquette est créée, et un workflow avance la branche `production` jusqu'à elle. Dans `krizaka-com/scripts/promote-production.mjs` :
+Pour krizaka.com, on a mis en place un train de versions le 25 octobre, dans [krizaka-com#390](repo:krizaka-com/pull/390). C'est la fin du premier schéma. release-please tient une PR de version. Quand je la fusionne, le tag est créé, et un workflow avance la branche `production` jusqu'à elle. Dans `krizaka-com/scripts/promote-production.mjs` :
 
 ```js
   if (tagIsAncestor) return { action: "noop", reason: `${BRANCH} already contains ${tag}: never moved backwards` };
@@ -279,7 +279,7 @@ Fusionner sur main ne met donc rien en ligne. C'est la release qui le fait, et j
 
 Je ne veux pas donner l'impression que tout ça marche du premier coup. Voici ce qui a cassé, rien que cette semaine.
 
-**Une course dans turbo, dans krizaka-ts.** La publication a échoué avec `Failed to resolve entry for package "@krizaka/db"`. La vérification de chaque paquet finissait par un build, qui effaçait `dist/` pendant que les tests d'un autre paquet l'importaient. On a d'abord construit tout avant de vérifier ([krizaka-ts#79](repo:krizaka-ts/pull/79)), puis on a corrigé la cause dans `turbo.json` ([krizaka-ts#75](repo:krizaka-ts/pull/75)), avec un test qui garde la configuration :
+**Une race condition dans turbo, dans krizaka-ts.** La publication a échoué avec `Failed to resolve entry for package "@krizaka/db"`. La vérification de chaque paquet finissait par un build, qui effaçait `dist/` pendant que les tests d'un autre paquet l'importaient. On a d'abord construit tout avant de vérifier ([krizaka-ts#79](repo:krizaka-ts/pull/79)), puis on a corrigé la cause dans `turbo.json` ([krizaka-ts#75](repo:krizaka-ts/pull/75)), avec un test qui garde la configuration :
 
 ```json
 "check": { "dependsOn": ["^build", "^check"], "outputs": ["dist/**"] }
@@ -298,7 +298,7 @@ allowBuilds:
 
 **npm sur un projet pnpm.** Le déploiement lançait `npm install` sur l'arbre pnpm du client web. npm plantait, à chaque déploiement, avec un message qui ne disait rien d'utile. La commande de build est devenue `pnpm run build` ([orazaka#412](repo:sovkora/pull/412)).
 
-**Deux dépôts qui s'attendaient.** Pour passer à Krizaka UI 3.55, le workspace d'Orazaka devait régénérer son fichier de verrouillage. Sa CI échouait contre le client web, qui déclarait encore l'ancienne version. Et la PR du client web avait besoin du nouveau fichier de verrouillage. Chacun attendait l'autre. On s'en est sortis en rendant le client web autonome : il ne fait plus partie du workspace npm, il s'installe depuis son propre `pnpm-lock.yaml` ([orazaka#415](repo:sovkora/pull/415)). Le prix, c'est qu'il prend maintenant deux paquets partagés depuis le registre, et plus depuis leur source.
+**Deux dépôts qui s'attendaient.** Pour passer à Krizaka UI 3.55, le workspace d'Orazaka devait régénérer son lockfile. Sa CI échouait contre le client web, qui déclarait encore l'ancienne version. Et la PR du client web avait besoin du nouveau lockfile. Chacun attendait l'autre. On s'en est sortis en rendant le client web autonome : il ne fait plus partie du workspace npm, il s'installe depuis son propre `pnpm-lock.yaml` ([orazaka#415](repo:sovkora/pull/415)). Le prix, c'est qu'il prend maintenant deux paquets partagés depuis le registre, et plus depuis leur source.
 
 Aucune de ces pannes n'a été réglée en relançant la CI. Chacune a été corrigée là où elle naissait.
 

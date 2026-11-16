@@ -27,7 +27,7 @@ stats:
     section: "Ce que disent les journaux"
 ---
 
-Au [chapitre 19](/fr/story/tchou-tchou-how-our-pull-requests-catch-the-train/), j'ai raconté nos premiers trains : un petit script qui fait atterrir les pull requests une par une, sans token de modèle. Il a tenu une semaine. Du 1er au 3 novembre, il a cassé de quatre façons que je n'avais pas prévues, et je l'ai reconstruit. Ce chapitre montre la nouvelle version avec des dessins de trains, parce que c'est comme ça que je la vois dans ma tête.
+Au [chapitre 19](/fr/story/tchou-tchou-how-our-pull-requests-catch-the-train/), j'ai raconté nos premiers trains : un petit script qui fusionne les pull requests une par une, sans token de modèle. Il a tenu une semaine. Du 1er au 3 novembre, il a cassé de quatre façons que je n'avais pas prévues, et je l'ai reconstruit. Ce chapitre montre la nouvelle version avec des dessins de trains, parce que c'est comme ça que je la vois dans ma tête.
 
 Une précision avant de commencer. Nos produits portent ici des noms de code : Produit A, Produit B, Produit C, et la plateforme. Ce qui compte, c'est la mécanique, pas les noms.
 
@@ -167,15 +167,15 @@ Pendant ces mêmes 30 heures, 49 sessions de modèle ont été enregistrées. Le
 
 Le rail gelé dit que main est rouge, il ne le répare pas : il faut encore une session pour écrire le `fix(main)`. Le plafond de trois PR par dépôt bloque parfois une bonne PR derrière deux PR rouges, et la réponse reste humaine, faire passer ou fermer. Et le watchdog prévient, il ne décide pas. C'est voulu : un script qui ne coûte rien peut surveiller tout le temps, mais réparer reste le travail de quelqu'un.
 
-Et le train de réparation peut lui-même rester à quai. Le 3 novembre au matin, sur le Produit A, la PR `fix(main)` est restée gelée avec les autres pendant environ deux heures : le chef de train reconnaît le train de réparation à une étiquette, et l'outil d'ouverture ne l'avait pas posée. Il a fallu l'ajouter à la main. La prochaine garde : l'outil pose l'étiquette dès que le titre commence par `fix(main)`, et un test le vérifie.
+Et le train de réparation peut lui-même rester à quai. Le 3 novembre au matin, sur le Produit A, la PR `fix(main)` est restée gelée avec les autres pendant environ deux heures : le chef de train reconnaît le train de réparation à un label, et l'outil d'ouverture ne l'avait pas posé. Il a fallu l'ajouter à la main. La prochaine garde : l'outil pose le label dès que le titre commence par `fix(main)`, et un test le vérifie.
 
 ## Un pompier, et le vrai goulot
 
-Le 3 novembre au soir, j'ai ajouté un pompier. Sa règle est simple. Un dépôt qui a ses trois PR ouvertes, dont au moins une rouge, est en feu : plus personne ne peut y ouvrir de PR tant que la rouge est là. Toutes les cinq minutes, un script passe sur chaque dépôt. S'il trouve un feu, il pose une étiquette sur la PR rouge, laisse un commentaire, m'envoie une notification et écrit le brief de la session qui ira l'éteindre. Un feu passe avant tout nouveau travail. Si personne ne le prend en trente minutes, il devient urgent.
+Le 3 novembre au soir, j'ai ajouté un pompier. Sa règle est simple. Un dépôt qui a ses trois PR ouvertes, dont au moins une rouge, est en feu : plus personne ne peut y ouvrir de PR tant que la rouge est là. Toutes les cinq minutes, un script passe sur chaque dépôt. S'il trouve un feu, il pose un label sur la PR rouge, laisse un commentaire, m'envoie une notification et écrit le brief de la session qui ira l'éteindre. Un feu passe avant tout nouveau travail. Si personne ne le prend en trente minutes, il devient urgent.
 
 Avant de dire s'il sert à quelque chose, j'ai voulu savoir d'où on partait. J'ai relu dans GitHub les quatorze jours d'avant : 38 dépôts, 3 871 PR. Avec la règle de trois PR, nos dépôts ont passé 1 487 heures bloqués, soit 11,6 % de leur temps. 27 dépôts sur 38 l'ont été au moins une fois.
 
-Le premier soir, il a trouvé trois feux. Le premier est sorti de l'état de feu en deux minutes, et la vraie réparation a atterri une vingtaine de minutes après l'alarme. Le deuxième s'est éteint tout seul au bout de trente minutes, sans que personne le prenne. Le troisième a été pris au bout de vingt-cinq minutes, et une session y travaillait encore quand j'ai écrit ces lignes.
+Le premier soir, il a trouvé trois feux. Le premier est sorti de l'état de feu en deux minutes, et la vraie réparation a été fusionnée une vingtaine de minutes après l'alarme. Le deuxième s'est éteint tout seul au bout de trente minutes, sans que personne le prenne. Le troisième a été pris au bout de vingt-cinq minutes, et une session y travaillait encore quand j'ai écrit ces lignes.
 
 Ce qu'il nous a fait gagner, je ne le sais pas encore. Trois feux en une soirée, ce n'est pas une mesure. Je me suis fixé un minimum avant de comparer : sept jours et dix feux. Je n'ai qu'une anecdote, et elle est modeste : vingt minutes pour le premier feu, c'est à peu près la durée d'un blocage ordinaire d'avant. La moitié duraient déjà moins d'un quart d'heure.
 

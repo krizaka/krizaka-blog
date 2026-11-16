@@ -89,10 +89,10 @@ At the start, management looked like what many people do when they begin: one co
 I moved to scripts in small steps, always the same way: I do the task once by hand, the second time I write down the steps, the third time I write the script.
 
 <Steps>
-  <Step title="I write down what I do by hand">A list of gestures: open, copy, file, check.</Step>
+  <Step title="I write down what I do by hand">A list of actions: open, copy, file, check.</Step>
   <Step title="I write it as a small script">One file, one task, no dependency if possible.</Step>
   <Step title="I give it a short name">An npm command that is easy to remember and stays the same when the script changes.</Step>
-  <Step title="I make it check its own work">A test, a control, a clear message when a source is unavailable.</Step>
+  <Step title="I make it check its own work">A test, a check, a clear message when a source is unavailable.</Step>
   <Step title="I let GitHub run it for me">What must happen every day or every week becomes a scheduled automation.</Step>
 </Steps>
 
@@ -138,7 +138,7 @@ The script I use most is the inbox one. I drop any document in a folder, and the
 - The folder has only two zones: private and non-private. I do not sort by file type; the script recognises a PDF, an image, a table or a text by itself.
 - What is private is read-protected from the moment it arrives, and the sensitive information it holds is masked in everything the script prints.
 - A document dropped twice is kept only once. I do not want to accumulate duplicates.
-- The registers stay sorted and consistent, and a verification script refuses to finish in success if something is wrong.
+- The registers stay sorted and consistent, and a verification script refuses to report success if something is wrong.
 
 The last rule matters most. A verification script that ends in an error is a small reminder to fix things before moving on.
 
@@ -164,7 +164,7 @@ The fix was simple. The test now compares our icons with a versioned file of has
 
 ### A CI that never ran
 
-Other PRs had content and tests, and stayed blocked. They were not red, they were nothing: the mandatory check had never started. On GitHub, a push made by an agent waits for a human to approve the launch of the workflows. Nobody had done it, and nobody could see it.
+Other PRs had content and tests, and stayed blocked. They were not red, they were nothing: the required check had never started. On GitHub, a push made by an agent waits for a human to approve the launch of the workflows. Nobody had done it, and nobody could see it.
 
 While waiting for the right setting, our own GitHub app pushes an empty commit to the branch, and the CI starts. It is not elegant, but it is written down, and everyone knows why.
 
@@ -217,7 +217,7 @@ On 23 October, I wanted to finish everything. Not a small batch of tickets: the 
 
 It was not. But I learned things I want to write down, because they will help the next time.
 
-In the morning, things moved everywhere. Tickets closed, pull requests merged. In total, more than one hundred and sixty PRs were merged that day, across thirty-three repositories. But each step forward opened another thing to watch. A coding agent took issues and opened PRs, agent sessions worked on other branches. Each had its own context and its limits, and for the work to move, you had to know where each one stood. By late afternoon, I felt less like I was moving forward than managing a site: everything moves, and you have to decide what to look at first.
+In the morning, things moved everywhere. Tickets closed, pull requests merged. In total, more than one hundred and sixty PRs were merged that day, across thirty-three repositories. But each step forward opened another thing to watch. A coding agent took issues and opened PRs, agent sessions worked on other branches. Each had its own context and its limits, and for the work to move, you had to know where each one stood. By late afternoon, I felt less like I was moving forward than running a building site: everything moves, and you have to decide what to look at first.
 
 The quotas ran out twice. The review agent's quota gave out first: since the morning, every task had failed on the first round, with a usage-limit message. It ran out a second time in the middle of the day, right after a task. The agent sessions also hit their weekly limit, and several stopped. Forty-eight empty PRs were closed, each with an explanation. Their issues stayed open, queued. The sessions saved their work, and they will resume with a message.
 

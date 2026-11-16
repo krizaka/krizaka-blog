@@ -16,7 +16,7 @@ sources:
   - coding-agents-one-night
   - from-vibe-coding-to-agentic-engineering
 versus:
-  faced: "un tableau Sonar qui ne voyait ni la couverture ni la merge queue"
+  faced: "un dashboard Sonar qui ne voyait ni la couverture ni la merge queue"
   built: "une analyse lancée par la CI, des chiffres honnêtes, et un partage clair avec nos gardes"
 stats:
   - value: "37 à 0"
@@ -30,9 +30,9 @@ stats:
     section: "Qui fait quoi, Sonar ou nos gardes"
 ---
 
-Dans [le chapitre 14](/fr/story/ci-the-error-never-leaves-the-editor/), je vous ai parlé de tableau SonarCloud et de portes rouges. Il y avait une question que je n'avais pas posée tout haut : qu'est-ce qu'on a vraiment acheté ?
+Dans [le chapitre 14](/fr/story/ci-the-error-never-leaves-the-editor/), je vous ai parlé du dashboard SonarCloud et de portes rouges. Il y avait une question que je n'avais pas posée tout haut : qu'est-ce qu'on a vraiment acheté ?
 
-On est passé au plan payant de SonarCloud. Je l'ai décidé, parce que je voulais que Sonar fasse partie de la porte de fusion, pas seulement du tableau qu'on regarde de temps en temps. Ce chapitre raconte ce que ça a changé, ce qui a mal commencé, et les chiffres que je lis aujourd'hui, le 28 octobre. Je ne dis que ce que j'ai pu vérifier, dans le code, dans les PR fusionnées et sur l'API publique de SonarCloud.
+On est passé au plan payant de SonarCloud. Je l'ai décidé, parce que je voulais que Sonar fasse partie de la porte de fusion, pas seulement d'un dashboard qu'on regarde de temps en temps. Ce chapitre raconte ce que ça a changé, ce qui a mal commencé, et les chiffres que je lis aujourd'hui, le 28 octobre. Je ne dis que ce que j'ai pu vérifier, dans le code, dans les PR fusionnées et sur l'API publique de SonarCloud.
 
 ## Avant : une analyse qui tournait de son côté
 
@@ -46,7 +46,7 @@ Mais elle a deux limites que j'ai découvertes l'une après l'autre. Elle ne peu
   <Stage title="Tests" note="lcov, JaCoCo">Le job de tests dépose son rapport de couverture.</Stage>
   <Stage title="Analyse en CI" note="après les tests" tone="gate">Le job `sonar` du pipeline commun lance l'analyse, importe la couverture et attend le verdict de la porte.</Stage>
   <Stage title="CI gate" note="un seul verdict" tone="gate">Une seule vérification exigée résume le pipeline, Sonar compris.</Stage>
-  <Stage title="Merge queue" note="Sonar y répond aussi" tone="ship">L'analyse de la CI répond sur la branche temporaire de la file, puis GitHub fusionne.</Stage>
+  <Stage title="Merge queue" note="Sonar y répond aussi" tone="ship">L'analyse de la CI répond sur la branche temporaire de la merge queue, puis GitHub fusionne.</Stage>
 </Pipeline>
 
 ## Ce que le plan payant a changé
@@ -57,7 +57,7 @@ La première est que l'analyse est lancée par notre CI, après les tests, avec 
 
 La deuxième est la couverture. Le job de tests dépose son rapport, en lcov pour JavaScript et TypeScript, en JaCoCo pour Java, et le job Sonar l'importe. C'est la raison pour laquelle Sonar est « entré » dans le workflow : la couverture ne peut venir que d'une analyse lancée par la CI.
 
-La troisième est la merge queue. Une analyse de la CI répond sur n'importe quelle branche, y compris `gh-readonly-queue/main/...`. Je l'ai vu sur krizaka-ts : l'API publique de SonarCloud liste les branches de la file de ce dépôt, chacune avec le verdict de sa porte. Les autres dépôts y passent un par un, selon une recette écrite dans nos standards. Tant qu'un dépôt n'a pas fait le pas, il garde l'obligation d'être à jour avant la fusion.
+La troisième est la merge queue. Une analyse de la CI répond sur n'importe quelle branche, y compris `gh-readonly-queue/main/...`. Je l'ai vu sur krizaka-ts : l'API publique de SonarCloud liste les branches de la merge queue de ce dépôt, chacune avec le verdict de sa porte. Les autres dépôts y passent un par un, selon une recette écrite dans nos standards. Tant qu'un dépôt n'a pas fait le pas, il garde l'obligation d'être à jour avant la fusion.
 
 Et une petite chose en plus, parce qu'on y a pensé tard : une PR qui ne change que de la documentation a droit à une analyse légère, sans build, plutôt qu'à une vérification qui n'arrive jamais. C'est [.github#336](repo:.github/pull/336).
 
