@@ -316,7 +316,11 @@ export async function guardedShot(page, { names = [], area }) {
 /** Steps, masks, guards, shoots. Throws (and writes nothing) when the guard finds something. */
 export async function shoot(page, { out, clip, clipOf, clipBox, steps, names = [] }) {
   await runSteps(page, steps);
-  const measure = () => (clipOf ? clipOfHeading(page, clipOf) : clipBox ? clipOfBox(page, clipBox) : clip);
+  const measure = () => {
+    if (clipOf) return clipOfHeading(page, clipOf);
+    if (clipBox) return clipOfBox(page, clipBox);
+    return clip;
+  };
   if (clipOf && !(await measure())) throw new Error(`no heading « ${clipOf.text} » on the page, nothing written`);
   if (clipBox && !(await measure())) throw new Error(`no « ${clipBox.selector} » on the page, nothing written`);
   const { png, counts } = await guardedShot(page, { names, area: measure });
