@@ -74,7 +74,6 @@ export function PostCard({
         </p>
         <Card.Title as={titleAs ?? (feature ? "h2" : "h3")}>
           <Link
-            prefetch={false}
             href={
               href ?? localizedPath(locale, postPath(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(post.slug) ? post.slug : ""))
             }

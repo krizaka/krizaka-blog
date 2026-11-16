@@ -34,7 +34,6 @@ export function BasicsPath({ posts, locale, label }: { posts: Post[]; locale: Lo
               </p>
               <h3 className="bl-path-title">
                 <Link
-                  prefetch={false}
                   href={localizedPath(locale, postPath(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(p.slug) ? p.slug : ""))}
                   className="bl-path-link"
                 >

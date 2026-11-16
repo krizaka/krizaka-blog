@@ -46,12 +46,7 @@ export function Byline({
       <div className="bl-byline-text">
         <p className="bl-byline-name">
           {hasStory(post.author) ? (
-            <Link
-              prefetch={false}
-              href={localizedPath(post.locale, "/about/")}
-              className="bl-byline-story"
-              title={t.post.authorStory}
-            >
+            <Link href={localizedPath(post.locale, "/about/")} className="bl-byline-story" title={t.post.authorStory}>
               {author}
             </Link>
           ) : (
@@ -82,7 +77,6 @@ export function Byline({
         <div className="bl-byline-actions">
           {other && (
             <Link
-              prefetch={false}
               href={otherHref}
               hrefLang={otherLang}
               lang={otherLang}

@@ -25,9 +25,7 @@ export function OfflinePage({ locale }: Readonly<{ locale: Locale }>) {
         <SavedList chapters={chapters} />
         <p className="bl-offline-hint">{o.installHint}</p>
         <p>
-          <Link prefetch={false} href={localizedPath(locale, "/")}>
-            {o.toStory}
-          </Link>
+          <Link href={localizedPath(locale, "/")}>{o.toStory}</Link>
         </p>
       </Section>
     </>

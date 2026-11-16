@@ -79,15 +79,11 @@ export function NewsletterStatusPage({ locale, status }: { locale: Locale; statu
         <div className="bl-nl-actions">
           {status === "unsubscribed" && (
             <Button asChild variant="primary">
-              <Link prefetch={false} href={localizedPath(locale, "/newsletter")}>
-                {n.resubscribeButton}
-              </Link>
+              <Link href={localizedPath(locale, "/newsletter")}>{n.resubscribeButton}</Link>
             </Button>
           )}
           <Button asChild variant={status === "confirmed" ? "primary" : "secondary"}>
-            <Link prefetch={false} href={localizedPath(locale, "/")}>
-              {n.backToBlog}
-            </Link>
+            <Link href={localizedPath(locale, "/")}>{n.backToBlog}</Link>
           </Button>
         </div>
       </PageHero>

@@ -58,12 +58,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
         <p className="bl-home-byline">
           {/* The name is the way to his story, /about/ (lost with « Who writes » in krizaka-blog#126, restored 2026-10-31). */}
           {h.byline.split("{author}")[0]}
-          <Link
-            prefetch={false}
-            href={localizedPath(locale, "/about/")}
-            className="bl-home-story"
-            title={h.bylineStory}
-          >
+          <Link href={localizedPath(locale, "/about/")} className="bl-home-story" title={h.bylineStory}>
             {(t.authors as Record<string, string>).oussama}
           </Link>
           {h.byline.split("{author}")[1]}
@@ -71,7 +66,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
         {first && (
           <p className="bl-home-start">
             {h.startPre}
-            <Link prefetch={false} href={href(first.slug)} className="bl-home-story">
+            <Link href={href(first.slug)} className="bl-home-story">
               {h.startChapter}
             </Link>
             {h.startMid}
@@ -158,9 +153,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
               <ul>
                 {newestFirst.map((p) => (
                   <li key={p.slug}>
-                    <Link prefetch={false} href={localizedPath(locale, postPath(safe(p.slug)))}>
-                      {p.title}
-                    </Link>{" "}
+                    <Link href={localizedPath(locale, postPath(safe(p.slug)))}>{p.title}</Link>{" "}
                     <time dateTime={p.date}>{formatDate(p.date, locale)}</time>
                   </li>
                 ))}

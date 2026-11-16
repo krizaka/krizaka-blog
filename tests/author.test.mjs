@@ -103,14 +103,11 @@ test("the author is shown by his own picture, the Wu-sama mark, never a default 
 
 test("the link to Oussama's story (/about/) is there: the home's byline and every byline of his (founder 2026-10-31, lost in krizaka-blog#126)", () => {
   const home = read("app/components/pages/HomePage.tsx");
-  assert.match(
-    home,
-    /className="bl-home-byline"[\s\S]{0,260}<Link\s+(?:prefetch=\{false\}\s+)?href=\{localizedPath\(locale, "\/about\/"\)\}/,
-  );
+  assert.match(home, /className="bl-home-byline"[\s\S]{0,200}<Link href=\{localizedPath\(locale, "\/about\/"\)\}/);
   const byline = read("app/components/pages/Byline.tsx");
   assert.match(
     byline,
-    /hasStory\(post\.author\)[\s\S]{0,160}<Link\s+(?:prefetch=\{false\}\s+)?href=\{localizedPath\(post\.locale, "\/about\/"\)\}/,
+    /hasStory\(post\.author\)[\s\S]{0,120}<Link href=\{localizedPath\(post\.locale, "\/about\/"\)\}/,
   );
   assert.match(read("lib/author-picture.ts"), /STORY_AUTHORS = \["oussama"\]/);
   for (const l of ["en", "fr"]) {
