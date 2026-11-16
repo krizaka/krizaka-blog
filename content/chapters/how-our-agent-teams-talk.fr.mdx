@@ -48,10 +48,10 @@ Je suis seul dans l'entreprise. Le code est écrit par des agents, et le CTO, Mo
   <Layer tag="2" title="Le chat du CTO" note="Une conversation avec écran. Il valide chaque tâche, la découpe, écrit le brief, lance, lit les alertes." items="un ticket par tâche | un brief par session | un guetteur par lancement" />
   <Layer tag="3" title="Les sessions sans écran" note="Les équipes (une par dépôt), le crack qui débloque une PR coincée, la recette qui vérifie un ticket après la fusion. Toutes construites par la même pièce de code." items="plafond de tours, de budget et de minutes | personne ne répond pendant qu'elles tournent" level="1" />
   <Layer tag="4" title="Les worktrees" note="Une copie de référence par dépôt, jamais modifiée. Un espace de travail par ticket, retiré après la fusion." items="aucun clone fait par une session" level="1" />
-  <Layer tag="5" title="Le train" note="Une file par dépôt. Il fait monter les PR une à une vers la file de fusion de GitHub." items="les correctifs d'abord | une PR rouge est sautée, avec la raison" level="1" />
+  <Layer tag="5" title="Le train" note="Une file par dépôt. Il fait monter les PR une à une vers la merge queue de GitHub." items="les correctifs d'abord | une PR rouge est sautée, avec la raison" level="1" />
   <Layer tag="6" title="GitHub" note="Les tickets, le tableau, les PR, les contrôles exigés. Quand un fait diffère entre GitHub et notre base, GitHub gagne." items="la source" />
   <Layer tag="7" title="La base d'opérations" note="Une copie locale pour lister et afficher : alertes, évènements, trains, sessions vivantes, appels à GitHub." items="jamais une source | on lit ici, on vérifie là-haut avant de décider" />
-  <Layer tag="8" title="Le chien de garde et les crons" note="Sans modèle, donc sans jetons. Les contrôles locaux toutes les 15 minutes, les lectures de GitHub au plus une fois par heure." items="13 crons actifs | 6 en pause voulue" level="1" />
+  <Layer tag="8" title="Le watchdog et les crons" note="Sans modèle, donc sans tokens. Les contrôles locaux toutes les 15 minutes, les lectures de GitHub au plus une fois par heure." items="13 crons actifs | 6 en pause voulue" level="1" />
   <Layer tag="9" title="Le cockpit" note="Mon écran. Il lit, il n'écrit pas dans la machine." items="chaque donnée avec sa date" level="1" />
 </Layers>
 
@@ -59,14 +59,14 @@ Deux choix expliquent le reste.
 
 Le premier : les sessions ne se parlent pas. Une équipe ne sait pas qu'une autre existe. Ce qu'elle a à dire, elle l'écrit à un endroit durable : un commit, une PR, un fichier de statut, une ligne dans la base. Une discussion libre entre agents n'est ni vérifiable ni rejouable, et elle coûte cher.
 
-Le second : là où il faut une réponse sûre, il n'y a pas de modèle. Le train, le chien de garde, les hooks et le lanceur sont du code ordinaire. Un modèle décide quoi écrire. Il ne décide pas si une PR peut fusionner.
+Le second : là où il faut une réponse sûre, il n'y a pas de modèle. Le train, le watchdog, les hooks et le lanceur sont du code ordinaire. Un modèle décide quoi écrire. Il ne décide pas si une PR peut fusionner.
 
 ## Qui écrit, qui lit
 
 La base d'opérations est une base SQLite sur le Mac. Voici ce qui y entre et ce qui en sort.
 
 <Split label="La base d'opérations : à gauche ceux qui écrivent, au milieu ce qu'elle garde, à droite ceux qui lisent. Personne ne s'y parle directement : on écrit un fait, d'autres le lisent plus tard.">
-  <Side title="Ceux qui écrivent" tone="own" items="Le lanceur : démarrage conforme ou dérive, puis la fin d'une session avec ses tours, son modèle, son dépôt et sa PR | Le train : mise en file, saut avec la raison, fusion | Le chien de garde : cron en échec ou muet, branche principale rouge, PR sans propriétaire | Chaque appel à GitHub : un compteur par appelant et par heure | Une synchro toutes les 5 minutes : sessions vivantes, état des trains" />
+  <Side title="Ceux qui écrivent" tone="own" items="Le lanceur : démarrage conforme ou dérive, puis la fin d'une session avec ses tours, son modèle, son dépôt et sa PR | Le train : mise en file, saut avec la raison, fusion | Le watchdog : cron en échec ou muet, branche principale rouge, PR sans propriétaire | Chaque appel à GitHub : un compteur par appelant et par heure | Une synchro toutes les 5 minutes : sessions vivantes, état des trains" />
   <Side title="Ce qu'elle garde" tone="plain" items="Une alerte : une ligne par sujet tant qu'elle est active ; si elle revient, son compte monte | Trois états : ouverte, prise en charge, résolue avec une preuve | Purgée 7 jours après la prise en charge, jamais tant qu'elle est ouverte | Un évènement : gardé 30 jours, texte borné, secrets masqués avant l'écriture | Les ensembles fermés (états, gravités) vérifiés par la base elle-même" />
   <Side title="Ceux qui lisent" tone="plug" items="Chaque début de session : les alertes ouvertes d'abord | Le CTO : avant tout nouveau travail | Le cockpit : santé des équipes, des trains, des crons | Les audits : des requêtes en lecture seule | Le lanceur : il refuse de relancer une équipe dont la dernière fin n'a pas été vue" />
 </Split>
@@ -82,7 +82,7 @@ Elle a aussi une cible qui n'est pas atteinte. Je veux un seul service propriét
 Un agent travaille en appelant des outils : lancer une commande, lire un fichier, en modifier un. Notre harnais permet de brancher un programme avant chaque appel et un autre après. Celui d'avant peut refuser. Celui d'après peut corriger ou renvoyer un constat à l'agent.
 
 <Split label="Les hooks autour d'un appel d'outil : à gauche ce qui est refusé avant que la commande parte, à droite ce qui est fait après. À cela s'ajoutent les hooks de Git au commit et au push, qui font tourner la même porte que la CI.">
-  <Side title="Avant : ce qui est refusé" tone="refuse" items="Une commande ou une lecture qui afficherait un fichier de secrets, ou qui touche à mes dossiers personnels | Un commit ou un push dont le diff contient un secret : le fichier, la ligne et la règle sont nommés, jamais la valeur | Un clone : le travail se fait dans un worktree | Une écriture sur GitHub sans le jeton d'une app : elle partirait sous mon nom | Une lecture de code avant d'avoir interrogé l'index du code | Une commande qui échouera sur ce Mac, avec le correctif dans le message | Dans une session sans écran : ouvrir mon navigateur" />
+  <Side title="Avant : ce qui est refusé" tone="refuse" items="Une commande ou une lecture qui afficherait un fichier de secrets, ou qui touche à mes dossiers personnels | Un commit ou un push dont le diff contient un secret : le fichier, la ligne et la règle sont nommés, jamais la valeur | Un clone : le travail se fait dans un worktree | Une écriture sur GitHub sans le token d'une app : elle partirait sous mon nom | Une lecture de code avant d'avoir interrogé l'index du code | Une commande qui échouera sur ce Mac, avec le correctif dans le message | Dans une session sans écran : ouvrir mon navigateur" />
   <Side title="Après : ce qui est fait" tone="after" items="Les formes de secrets sont masquées dans la sortie avant que l'agent la lise | Le fichier modifié est formaté par l'outil du dépôt, sans bruit | Le fichier modifié est vérifié seul, en moins de 10 secondes : un défaut revient à l'agent tout de suite | Au début d'une session : la copie de travail est mise à jour | À la fin : les traces de la session sont retirées" />
 </Split>
 
@@ -100,7 +100,7 @@ Je n'ai pas trouvé chez nous de document qui dise « on a choisi ce langage pou
 
 **L'outillage des agents est en Python et en shell.** J'ai compté : 160 fichiers Python, et un seul importe autre chose que la bibliothèque standard (un outil de captures d'écran, qui pilote un navigateur). SQLite est dans la bibliothèque standard. Il n'y a donc rien à installer : un cron, un hook ou un service de fond lance le Python du système, et ça tourne. Les tests sont des fichiers posés à côté des outils.
 
-**Le point d'entrée est un script shell d'une page.** Les crons, les hooks et Git passent tous par lui. Il trouve les outils par la configuration locale : déplacer le dossier ne casse aucune ligne de cron. Et il écrit une ligne à chaque passage d'un cron, quel que soit le résultat : le nom, le code de sortie, la durée. C'est ce fichier que le chien de garde lit pour voir un cron qui échoue deux fois de suite ou qui se tait.
+**Le point d'entrée est un script shell d'une page.** Les crons, les hooks et Git passent tous par lui. Il trouve les outils par la configuration locale : déplacer le dossier ne casse aucune ligne de cron. Et il écrit une ligne à chaque passage d'un cron, quel que soit le résultat : le nom, le code de sortie, la durée. C'est ce fichier que le watchdog lit pour voir un cron qui échoue deux fois de suite ou qui se tait.
 
 **Le cockpit, les outils du dossier de l'entreprise et les contrôles de chaque dépôt sont en .mjs.** Un fichier .mjs est un module JavaScript que Node lance tel quel : pas de compilation, pas d'étape de build. Dans le cockpit, la logique pure de chaque écran vit dans un module de ce type : trier, compter, décider si une donnée est fraîche. La partie serveur, en TypeScript, lit le disque et appelle ce module. Les tests l'importent directement, avec le lanceur de tests intégré à Node. Le serveur et le test lisent donc le même fichier, sans rien entre les deux. La base locale est lue avec le module SQLite intégré à Node. Dans les dépôts, les contrôles que la CI lance sont aussi des .mjs : la CI fait `node`, le nom du script, et c'est tout. Le lint de ce blog est fait comme ça.
 
@@ -155,7 +155,7 @@ Les voies sont nos files de travail, une par produit. Quand une voie finit un ti
   <Stage title="Le train" note="une file par dépôt" tone="gate">
     Les correctifs d'abord, puis la plus ancienne ; une PR empilée après sa base ; les PR de release en dernier. Une PR rouge est sautée, avec la raison écrite.
   </Stage>
-  <Stage title="La file de fusion" note="rejouée sur le vrai mélange" tone="gate">
+  <Stage title="La merge queue" note="rejouée sur le vrai mélange" tone="gate">
     GitHub rejoue les contrôles sur la PR mélangée à la branche principale du moment. Si c'est rouge, la PR sort de la file.
   </Stage>
   <Stage title="Un seul commit" note="squash" tone="ship">
@@ -168,11 +168,11 @@ Les voies sont nos files de travail, une par produit. Quand une voie finit un ti
 
 J'ai raconté le train aux chapitres [19](/fr/story/tchou-tchou-how-our-pull-requests-catch-the-train/) et [23](/fr/story/the-trains-second-version-rails-sidings-and-a-repair-train/). J'ajoute ici quatre points sur GitHub.
 
-**Les identités.** Les agents écrivent sur GitHub par des apps : commenter, pousser, ouvrir une PR. Mon compte ne sert qu'à approuver et à fusionner. Un hook refuse toute écriture faite sans le jeton d'une app, parce qu'elle partirait sous mon nom sans que je l'aie voulue.
+**Les identités.** Les agents écrivent sur GitHub par des apps : commenter, pousser, ouvrir une PR. Mon compte ne sert qu'à approuver et à fusionner. Un hook refuse toute écriture faite sans le token d'une app, parce qu'elle partirait sous mon nom sans que je l'aie voulue.
 
-**La file de fusion.** Un contrôle exigé doit répondre aussi dans la file de fusion, pas seulement sur la PR. Sinon la PR attend un contrôle qui ne viendra jamais. Le deuxième audit cherchait ce cas, le troisième l'a vu une fois : l'outil a bien détecté le contrôle jamais démarré, mais sa relance a échoué.
+**La merge queue.** Un contrôle exigé doit répondre aussi dans la merge queue, pas seulement sur la PR. Sinon la PR attend un contrôle qui ne viendra jamais. Le deuxième audit cherchait ce cas, le troisième l'a vu une fois : l'outil a bien détecté le contrôle jamais démarré, mais sa relance a échoué.
 
-**Le quota.** Les sessions, les trains et le chien de garde partagent la même installation d'app, donc le même quota d'appels. Il s'est épuisé une fois, dans la nuit du 12 au 13, et une mise en file s'est arrêtée sans reprise. Depuis, chaque appel est compté par appelant et par heure dans la base. C'est aussi pour ce quota que le tableau a une copie locale, relue seulement pour ce qui a changé.
+**Le quota.** Les sessions, les trains et le watchdog partagent la même installation d'app, donc le même quota d'appels. Il s'est épuisé une fois, dans la nuit du 12 au 13, et une mise en file s'est arrêtée sans reprise. Depuis, chaque appel est compté par appelant et par heure dans la base. C'est aussi pour ce quota que le tableau a une copie locale, relue seulement pour ce qui a changé.
 
 **Les releases.** Dans les dépôts qui publient des versions, un outil (release-please, par exemple pour notre site) tient une PR de release à jour à partir des commits. La fusionner fait la version. Elle passe dans le même train que les autres, en dernier.
 

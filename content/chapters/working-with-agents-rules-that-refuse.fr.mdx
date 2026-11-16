@@ -77,12 +77,12 @@ Ce que ça a donné : trois refus, code de sortie 2, rien de créé, et chaque f
 
 Rien ne démarre sans une issue. Chaque issue appartient à une voie, et chaque voie a une seule session à la fois. Il y en a cinq aujourd'hui : Yomizaka, Akinaza, Orazaka, la Plateforme et la Sécurité, plus une file pour mes demandes ponctuelles, comme celle qui a donné ce chapitre. La voie Sécurité est arrivée cette semaine : avant, la sécurité se glissait dans la Plateforme et passait après le reste.
 
-<Pipeline label="Le chemin d'un changement chez nous. Les commandes refusent à l'entrée, le train ne juge rien, la file de fusion rejoue les contrôles, et personne ne fusionne à la main.">
+<Pipeline label="Le chemin d'un changement chez nous. Les commandes refusent à l'entrée, le train ne juge rien, la merge queue rejoue les contrôles, et personne ne fusionne à la main.">
   <Stage title="Issue" note="une commande" tone="gate">Titre standard, étiquettes, une carte sur le tableau. Un doublon est refusé.</Stage>
   <Stage title="Session de voie" note="une par voie">Un agent, un modèle choisi pour la tâche, un budget. Le test d'abord, puis le code.</Stage>
   <Stage title="Pull request" note="une commande" tone="gate">Le titre, l'issue, la limite de cinq PR par dépôt. La PR lance son train.</Stage>
-  <Stage title="Train" note="aucun jeton">Il attend la PR précédente, met la branche à jour, la met en file. Il s'arrête au premier rouge.</Stage>
-  <Stage title="File de fusion" note="CI encore">Les contrôles repassent, sur la PR mêlée à ce qui la précède.</Stage>
+  <Stage title="Train" note="aucun token">Il attend la PR précédente, met la branche à jour, la met en file. Il s'arrête au premier rouge.</Stage>
+  <Stage title="Merge queue" note="CI encore">Les contrôles repassent, sur la PR mêlée à ce qui la précède.</Stage>
   <Stage title="main" note="un commit" tone="ship">Un seul commit, la branche supprimée, puis le déploiement.</Stage>
 </Pipeline>
 
@@ -136,7 +136,7 @@ Parce qu'une instruction se lit une fois et s'oublie au milieu d'une longue tâc
 
 ### Est-ce que les agents fusionnent eux-mêmes ?
 
-Non, et personne ne fusionne à la main. La session relit son propre changement, puis le train met la PR dans la file de fusion de GitHub, qui rejoue les contrôles avant d'écrire sur main.
+Non, et personne ne fusionne à la main. La session relit son propre changement, puis le train met la PR dans la merge queue de GitHub, qui rejoue les contrôles avant d'écrire sur main.
 
 ### Qu'est-ce qui reste au fondateur ?
 

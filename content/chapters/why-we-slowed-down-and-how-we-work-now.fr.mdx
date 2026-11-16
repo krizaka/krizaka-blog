@@ -90,7 +90,7 @@ Depuis le 2 novembre, chaque incident avait produit sa règle. En 72 heures, une
   </Stage>
 </Pipeline>
 
-Le gel faisait le plus de dégâts. Sur les rouges de main du 2 au 5 novembre, la plupart ne venaient pas du code produit : 46 mises à jour automatiques de dépendances, 30 analyses de qualité, 19 releases. Chacun gelait le dépôt entier. Le veilleur a levé 96 alertes « gelé » en quatre jours.
+Le gel faisait le plus de dégâts. Sur les rouges de main du 2 au 5 novembre, la plupart ne venaient pas du code produit : 46 mises à jour automatiques de dépendances, 30 analyses de qualité, 19 releases. Chacun gelait le dépôt entier. Le watchdog a levé 96 alertes « gelé » en quatre jours.
 
 <Rails label="Avant, du 2 au 5 novembre : un rouge qui n'était pas du produit gelait le rail de Verikora et de Sovkora, pendant que le rail de la plateforme roulait.">
   <Rail name="Verikora" state="frozen" wagons="PR 1:wait | PR 2:wait | PR 3:wait" />
@@ -274,7 +274,7 @@ Le détail, dans l'ordre où ça compte :
 - **Le contrôle local.** Une seule commande lance, sur les fichiers changés, ce que le dépôt déclare déjà : lint, types, tests touchés, générateurs. Elle a pris 4,8 secondes sur sa propre branche, et le hook git commun la lance avant chaque push.
 - **Chaque refus est noté.** Une ligne par refus, avec l'outil, la règle, le dépôt et la PR. C'est ce qui permettra de juger chaque règle.
 
-<Split label="Ce qui regarde sans modèle, et à quoi ça sert. Aucun de ces trois ne coûte un jeton.">
+<Split label="Ce qui regarde sans modèle, et à quoi ça sert. Aucun de ces trois ne coûte un token.">
   <Side
     title="La copie du tableau"
     tone="own"
