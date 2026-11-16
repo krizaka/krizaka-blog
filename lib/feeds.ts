@@ -21,6 +21,8 @@ export const feedEntriesOf = (locale: Locale): FeedEntry[] =>
 
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const iso = (d: string) => `${d}T12:00:00Z`;
+/** When an entry went out: its `publishedAt`, the instant the feeds are ordered by (krizaka-internal#3906). */
+const published = (p: Post) => new Date(publishedTime(p)).toISOString();
 const prefix = (l: Locale) => (l === "en" ? "" : "/fr");
 
 export function rss(locale: Locale, entries: FeedEntry[]): string {
@@ -28,7 +30,7 @@ export function rss(locale: Locale, entries: FeedEntry[]): string {
   const items = entries
     .map(({ item: p, path }) => {
       const url = absoluteUrl(locale, path);
-      return `    <item>\n      <title>${esc(p.title)}</title>\n      <link>${url}</link>\n      <guid isPermaLink="true">${url}</guid>\n      <pubDate>${new Date(iso(p.date)).toUTCString()}</pubDate>\n      <description>${esc(p.description)}</description>\n${filesOf(
+      return `    <item>\n      <title>${esc(p.title)}</title>\n      <link>${url}</link>\n      <guid isPermaLink="true">${url}</guid>\n      <pubDate>${new Date(publishedTime(p)).toUTCString()}</pubDate>\n      <description>${esc(p.description)}</description>\n${filesOf(
         locale,
         p,
       )
@@ -47,7 +49,7 @@ export function atom(locale: Locale, feed: FeedEntry[]): string {
     .map(({ item: p, path }) => {
       const url = absoluteUrl(locale, path);
       const author = (t.authors as Record<string, string>)[p.author] ?? p.author;
-      return `  <entry>\n    <title>${esc(p.title)}</title>\n    <link href="${url}"/>\n    <id>${url}</id>\n    <published>${iso(p.date)}</published>\n    <updated>${iso(p.updated ?? p.date)}</updated>\n    <author><name>${esc(author)}</name></author>\n    <summary>${esc(p.description)}</summary>\n${filesOf(
+      return `  <entry>\n    <title>${esc(p.title)}</title>\n    <link href="${url}"/>\n    <id>${url}</id>\n    <published>${published(p)}</published>\n    <updated>${iso(p.updated ?? p.date)}</updated>\n    <author><name>${esc(author)}</name></author>\n    <summary>${esc(p.description)}</summary>\n${filesOf(
         locale,
         p,
       )
@@ -71,7 +73,7 @@ export function jsonFeed(locale: Locale, entries: FeedEntry[]): string {
       title: p.title,
       summary: p.description,
       content_text: plainText(p.body).slice(0, 600),
-      date_published: iso(p.date),
+      date_published: published(p),
       date_modified: iso(p.updated ?? p.date),
       tags: p.tags,
       language: locale,

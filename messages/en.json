@@ -15,8 +15,12 @@
   "footer": {
     "aria": "Footer",
     "status": {
+      "design": "In design",
+      "upcoming": "Soon",
+      "construction": "In construction",
       "development": "In development",
-      "paused": "Paused"
+      "paused": "Paused",
+      "devPreview": "Dev preview"
     },
     "products": "Products",
     "openSourceColumn": "Open source",
