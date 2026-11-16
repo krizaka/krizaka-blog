@@ -341,6 +341,12 @@
   "pipeline": {
     "textVersion": "Version texte du pipeline"
   },
+  "sketch": {
+    "legend": "Légende du dessin",
+    "before": "Avant",
+    "after": "Après",
+    "separator": " : "
+  },
   "rails": {
     "textVersion": "Version texte du schéma, dans l'ordre",
     "legend": "Légende",

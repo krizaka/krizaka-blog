@@ -1,8 +1,8 @@
 ---
-title: "Five ergonomics choices, shown on our real screens"
-description: "One primary action, a phone where nothing spills over, an empty screen that says what to do, an error that stays in place, two themes. For each choice: the screen, the reason, the cost."
-seoTitle: "Five ergonomics choices, on our real screens"
-seoDescription: "Five UI choices from Verikora, Folioviv and Sovkora, each on a real dev screen, with why we made it, what it costs and what we have not fixed."
+title: "Five ergonomics choices, drawn on our screens"
+description: "The primary action, the phone, the empty screen, the error, the themes: five choices from Verikora, Folioviv and Sovkora, drawn in pen, with the rule behind each and what it costs."
+seoTitle: "Five ergonomics choices, drawn on our screens"
+seoDescription: "Five UI choices from Verikora, Folioviv and Sovkora, drawn screen by screen: the rule, the measure, what they cost, what is not fixed yet."
 date: 2026-11-15
 publishedAt: "2026-11-15T17:00:00-05:00"
 tags: [ui, verikora, measurements]
@@ -15,106 +15,136 @@ period: "2026-11-15"
 sources:
   - five-ergonomics-choices-on-our-real-screens
 versus:
-  faced: "five ergonomics choices, each to be shown on a real screen"
-  built: "for each choice: the screen, the reason, the cost"
+  faced: "five ergonomics choices to explain without burying the screen in words"
+  built: "one drawing per screen, numbers, a legend, the rule and the measure"
 ---
 
-A tool is judged by what it leaves on the screen. Since October, in Verikora, Folioviv and Sovkora, we have been removing from our screens what did not serve the person looking at them. Each choice is written down in a decision record next to the code: the problem, the principle behind it, what we refused, what it costs, and what would tell us we are wrong.
+Since October, I have been removing from the screens of Verikora, Folioviv and Sovkora what does not serve the person looking at them. Each removal is written down in a decision record next to the code, with the principle behind it and what it costs.
 
-Here are five of those choices. Each one is shown on a real screen of our development builds, with an invented persona from our demo cast, never a customer and never an administrator. For each, the reason comes first, then the cost. When we have a measure, we give it. When a screen does not follow its own rule yet, we say so at the end.
+I show five of them here. The screens are drawn in pen, not captured: each number on a drawing points to one line of its legend. Éric Tremblay, the person in the examples, comes from our demo cast, not from our customers or our administrators.
 
-## One primary action when you arrive
+| Choice | Kept, rather than | Rule | Figure |
+| --- | --- | --- | --- |
+| Arrival | one filled button, rather than a drop zone in the middle | recognition rather than recall | 1 filled button on the home, measured on 15 November |
+| Phone | one row per document and a menu, rather than a table and five tabs | WCAG 2.2, criterion 1.4.10 | 0 px of overflow at 390 px, measured |
+| Empty screen | one sentence and one action, rather than a blank page | one action, two at most | 1 tap to the first file |
+| Error | the message in place of the result, rather than a notice that fades | WCAG 2.2, criterion 3.3.3 | the skeleton waits 300 ms |
+| Themes and motion | light, dark or system, and nothing moves under reduced motion | WCAG 2.2, criterion 2.3.3 | 0 animation under reduced motion, measured |
 
-Éric Tremblay opens Verikora with a lease in PDF. He wants to know what is questionable in it, and he does not want to look for where to drop it.
+## One primary action on arrival
 
-<Figure id="ergo-verikora-home" alt="Verikora home: one filled button, Check a document, in the header." caption="Verikora, the home, Éric Tremblay (demo), 1440 px, dark theme. One filled button: « Vérifier un document » (Check a document)." />
+Éric opens Verikora with a lease as a PDF. The point is to learn what is questionable in it, not to look for where to drop it.
 
-The home has one primary action, the one in the header. There is no dashed drop zone in the middle of the page any more: the whole window takes the file. Éric can drop his PDF anywhere and the check starts. Behind the primary action there is still a real file input, for the keyboard and for phones, where nobody drags a file. This is what [the drop overlay](site:ui/components/drop-overlay) of our component library does.
+The first version of the home had a drop zone and two checkboxes, repeated on three screens; what there was to do came fourth. On 4 November, I removed from the home the dotted zone, its second primary button and the « Ou essayez » (or try) suggestions.
 
-Measured on the home on 15 November: one filled button, the header's.
+<Sketch id="ergo-home" title="Verikora's home, before and after 4 November">
+  <Callout n="1" label="The dotted zone">in the middle of the page, it took the place of the answer.</Callout>
+  <Callout n="2" label="Its filled button">a second primary button, on top of the header's.</Callout>
+  <Callout n="3" label="« Ou essayez » (or try)">suggestions for someone who already has their document.</Callout>
+  <Callout n="4" label="« Vérifier un document » (check a document)">the only filled button on the screen; behind it, a real file field for the keyboard and for phones.</Callout>
+  <Callout n="5" label="The whole window">a PDF dropped anywhere starts the check.</Callout>
+</Sketch>
 
-**Why.** The first version of this home had a drop zone and two checkboxes that sat on three different screens, and the thing to do came fourth. The principle we wrote down is « the answer first; one drop zone per screen, the window itself elsewhere ». It is the same idea as [recognition rather than recall](https://www.nngroup.com/articles/ten-usability-heuristics/): the person should not have to hunt for the one thing the page is for. On 4 November we removed the dashed zone, its second primary button and the « Or try » suggestions from the home. Only the very first-day screen keeps them, because a person with nothing yet needs an example.
+The written rule fits on one line: the answer first, one drop zone per screen at most, the window itself elsewhere. It is [recognition rather than recall](https://www.nngroup.com/articles/ten-usability-heuristics/): nobody should have to look for the one thing the page exists for. The component is our library's [drop overlay](site:ui/components/drop-overlay). Only the very first day's screen keeps the suggestions, because someone who has nothing yet needs an example.
 
-What we refused:
+I refused a « Load the demo » button: no service did it. When Verikora does not know which document it has, it asks one question, « Which document? », rather than start an analysis that would cost anyway. In exchange, a file dropped on the page takes the owner's default options, since they only make sense once the file is known.
 
-- A « Load the demo » button, because no service did it. It would have promised something the product does not do.
-- Starting the analysis when we do not know which document it is, because a wrong file still costs an analysis. Verikora asks one question instead, « Which document? ».
+In Sovkora, the Studios screen is a list, and the same rule gives one action per row. Before, it was a grid of cards in two columns, three per screen, where nobody could tell an installed Studio from one that needs a pack.
 
-The cost: a dropped file takes the owner's default options, since the options only make sense once the files are known.
+<Sketch id="ergo-studios" title="Sovkora's Studios, the grid then the list">
+  <Callout n="1" label="The cards">three per screen, with no readable state.</Callout>
+  <Callout n="2" label="The filter « All 45 · Ready 29 · To get 16 »">it lives in the address, so the filtered list can be sent as a link.</Callout>
+  <Callout n="3" label="The state">written in words on every row.</Callout>
+  <Callout n="4" label="The action">one per row, « Run » if the Studio is ready, « Get the pack » if not.</Callout>
+</Sketch>
 
-In Sovkora the same idea takes another shape, because the screen is a list. Each Studio has one action on its row, « Run » when it is ready, « Get the pack » otherwise, and its state in words.
+I set aside two tabs, « Ready » and « To get »: the same Studio would have lived in two places depending on what you own. The description now fits on a single line, cut short.
 
-<Figure id="ergo-sovkora-studios" alt="Sovkora Studios list: each row has its state and one action, Run." caption="Sovkora, Studios, persona « Krizaka » (demo), 1440 px, dark theme. A filter « All 45 · Ready 29 · To get 16 », one action per row." />
+## On a phone, nothing spills over
 
-Before, it was a two-column grid of cards, three per screen, and nobody could tell an installed Studio from an available one, or one that needs a pack. We wanted each row to say what you get and what it costs. We refused two tabs, « Ready » and « To get »: the same Studio would have lived in two places depending on what you own. The filter lives in the address, so a filtered list can be sent as a link. The cost: the description is one truncated line per row.
+Éric rereads a check standing in a stairwell, phone in one hand.
 
-## On a phone, nothing spills over and everything is under the thumb
+Verikora's settings had five tabs in a row. On a 390 px screen, they pushed the page 167 px too far, and 197 px at 360 px. That breaks [WCAG 2.2's reflow rule](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html) (criterion 1.4.10, level AA): content must fit the width without scrolling in two directions. On a phone, those sections are now one menu.
 
-The same Éric reads a check standing in a building's stairwell, his phone in one hand.
+<Sketch id="ergo-phone-settings" title="Verikora's settings on a phone, before and after">
+  <Callout n="1" label="Five tabs in a row">the last ones leave the screen.</Callout>
+  <Callout n="2" label="The overflow">the whole page slides sideways.</Callout>
+  <Callout n="3" label="One menu">the open section is written out, the others are one tap away.</Callout>
+</Sketch>
 
-<Figure id="ergo-verikora-phone" alt="Verikora on a phone: the checks list as rows in dark theme, and the settings as one menu in light theme." caption="Verikora, 390 px, Éric Tremblay (demo). Left, « Vérifications » in dark: a title, one line of facts, the result at the end. Right, « Réglages » in light: the sections become a menu." />
+The lists followed. A row printed four « label: value » pairs per document: you had to read a form to find a title and a result. On a wide screen, the table stays.
 
-On a phone, a Verikora list is no longer a table. Each row carries a title, one line of facts (« Bail · 1 nov. 2026 », a lease and its day) and the result at the end. The rest waits in the detail, one tap away. On wider screens the table stays. The settings had five tabs in a row, which pushed the page 167 px past a 390 px screen, and 197 px at 360 px. On a phone those sections are now a single menu.
+<Sketch id="ergo-phone-list" title="One row of the checks list on a phone, before and after">
+  <Callout n="1" label="Four label: value pairs">for every document, before the result even shows.</Callout>
+  <Callout n="2" label="The title">what the person looks for first.</Callout>
+  <Callout n="3" label="One line of facts">the type and the date, « Bail · 1 nov. 2026 » (lease, 1 Nov 2026).</Callout>
+  <Callout n="4" label="The result">at the end of the row; the rest waits in the detail, one tap away.</Callout>
+</Sketch>
 
-Measured on 15 November: none of the nine screens we captured scrolls sideways at 390 px, in light or dark (0 px).
+The price: a phone shows two lines per document, not the whole file. Measured on 15 November, none of the nine screens scrolls sideways at 390 px, in light or dark.
 
-**Why.** Two reasons, one for each fix. A page that needs a sideways scroll at phone width breaks [the reflow rule of WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html): content should fit the width without scrolling in two directions. And a row that prints four « label: value » pairs per document makes the person read a form, when they came for a title and a result. So the row keeps a title, one line of facts and the result, and the rest is one tap away. The cost: a phone shows two lines per row, not the whole record.
+Sovkora's phone app followed the same reasoning for its navigation. For it I only have its decision record, no measure.
 
-The phone also changes the order of the blocks. On a computer, « To review » fills the right third of the home. On a phone it comes right after the applicant files. For Éric, who has none, it is the first block under the title.
+<Sketch id="ergo-sovkora-tabs" title="The navigation of Sovkora's phone app">
+  <Callout n="1" label="Four tabs at the bottom">within reach of the thumb.</Callout>
+  <Callout n="2" label="An icon and a word">the word is never cut.</Callout>
+  <Callout n="3" label="Nothing at the top">no hidden menu in the place hardest to reach with one hand.</Callout>
+</Sketch>
 
-The Sovkora phone app made the same call for navigation (we have no screenshot of it here, only its decision record): four tabs at the bottom, under the thumb, each with its icon and a word that is never cut. We refused the hidden menu at the top, because it made the most-used places the hardest to reach with one hand. The reasons we wrote down are that most people hold a phone in one hand and reach the lower half of the screen, that [a visible bar beats a hidden menu for discoverability](https://www.nngroup.com/articles/hamburger-menus/), and that [an icon with its label](https://www.nngroup.com/articles/icon-usability/) is clearer than an icon alone. The cost: the plan, the packs and the credits are not on the phone. Whoever wants them goes to the web.
+Most people hold their phone in one hand and reach the lower half of the screen. [A visible bar is found more easily than a hidden menu](https://www.nngroup.com/articles/hamburger-menus/), and [an icon with its word](https://www.nngroup.com/articles/icon-usability/) is understood better than an icon alone. The plan, the packs and the credits are not on the phone: whoever wants them goes to the web.
 
 ## An empty screen says what to do
 
 Éric creates a collection « À classer » (to sort) and opens it before putting anything in.
 
-<Figure id="ergo-verikora-empty" alt="Verikora, empty collection: the owl, one sentence and a drop zone; below, a screen offering Change role." caption="Verikora, Éric Tremblay (demo), 1440 px. Top, dark: the empty collection. Bottom, light: « Applicant files » seen by a tenant." />
+<Sketch id="ergo-empty" title="An empty collection in Verikora">
+  <Callout n="1" label="The owl">it goes with the sentence, it never replaces it.</Callout>
+  <Callout n="2" label="The sentence">« Rien ici pour l'instant. Déposez un document ou créez un dossier. » (nothing here yet; drop a document or create a folder)</Callout>
+  <Callout n="3" label="The only drop zone on the screen">with what it accepts: PDF, Word, OpenDocument, text or photo, up to 10 MB.</Callout>
+</Sketch>
 
-The empty screen does not stay blank. It shows the owl, one sentence (« Rien ici pour l'instant. Déposez un document ou créez un dossier. », nothing here yet, drop a document or create a folder) and the only drop zone on the screen, with what it accepts: PDF, Word, OpenDocument, text or photo, up to 10 MB. On the first day, the whole empty library adds two examples to try, a tenant's lease and a landlord's file.
+[An empty screen is the product's chance to explain](https://www.nngroup.com/articles/empty-state-interface-design/) what the place is for and what to do first. The rule lives in the library, so every product follows it: [the empty state](site:ui/components/empty-state) has a title that says what is empty, a description that says what will fill it, one action, two at most, and [the mascot state](site:ui/components/mascot-state) always surrounds words. It takes one tap to go from the empty screen to the first file, none if you drop the document on the page. On the first day, the whole empty library offers two examples to try, a tenant's lease and a landlord's file.
 
-When a page is not meant for you, it says so instead of looking broken: « Les dossiers de candidats sont pour les gestionnaires » (applicant files are for property managers), then one button, « Changer de rôle » (change role).
+A page that is not meant for you says so instead of looking broken: « Les dossiers de candidats sont pour les gestionnaires » (applicant files are for managers), then a single button, « Changer de rôle » (change role). Folioviv follows the same rule with its beaver: « Aucune réservation pour l'instant » (no bookings yet), then what will come here, your bookings, your invoices and your files.
 
-**Why.** [An empty state is the product's chance to teach](https://www.nngroup.com/articles/empty-state-interface-design/): it should say what the place is for and what to do first. The rules live in the library, so every product follows them: [the empty state](site:ui/components/empty-state) has a title that says what is empty and a description that says what will fill it, with one action, two at most. The mascot never carries the message alone ([the mascot state](site:ui/components/mascot-state) is decoration around words). The point is the number of gestures: one tap from the empty screen to the first file, or none if you drop the document on the page.
+## An error stays in its place
 
-<Figure id="ergo-folioviv-empty-phone" alt="Folioviv on a phone: My bookings is empty; the beaver and one sentence say what will show here." caption="Folioviv, « Mes réservations » (My bookings), Éric Tremblay (demo, client side), 390 px, dark theme." />
+Éric drops a maintenance contract. The PDF is made in a way Verikora cannot read.
 
-Folioviv follows the same rule with its beaver. « Aucune réservation pour l'instant » (no bookings yet), then what will come: your bookings, your invoices and your files.
+<Sketch id="ergo-error" title="A check that did not go through, in Verikora">
+  <Callout n="1" label="The message">where the report would have been: « Ce PDF n'est pas sous une forme que nous pouvons vérifier. Choisissez une autre copie du document, ou réessayez. » (this PDF is not in a form we can check; choose another copy of the document, or try again)</Callout>
+  <Callout n="2" label="« Réessayer » (try again)">the next move, on the same screen.</Callout>
+  <Callout n="3" label="« Choisir un autre fichier » (choose another file)">one tap leads to the upload page.</Callout>
+  <Callout n="4" label="The menu and the top bar">they stay usable.</Callout>
+  <Callout n="5" label="« Lancer la vérification » (run the check)">the filled button of the « Au regard de la loi » (under the law) card, a second one on the screen, not fixed yet.</Callout>
+</Sketch>
 
-## An error stays in place and offers the next move
+The message says what happened in our words, with no engine name; the technical message stays in our logs. When a PDF has no text, it also says what goes on: « L'examen du fichier, lui, a lieu. » (the file itself is still examined). [WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html) (criterion 3.3.3, level AA) asks that the fix be suggested when it is known. I go a little further: the error and its next move take the place of the result that did not come. [The alert](site:ui/components/alert) is the component that carries them.
 
-Éric has uploaded a maintenance contract. The PDF is built in a way Verikora cannot read.
+I set aside the notice that fades after a few seconds: for a failure that needs action, the person may not even be looking. I also set aside one loading screen shared by every page, which is only a centred spinner under another name. Each page has its own [skeleton](site:ui/components/skeleton), in its own shape, shown only after 300 ms so a fast page never flickers. The only spinner in Verikora belongs to a button that is working, and a test refuses every other one. That makes thirty-eight small files, two per page, and a new page has to bring its own or its test fails. If people retry a page that keeps failing because the cause is not theirs, the error will need a link to the service status.
 
-<Figure id="ergo-verikora-failed" alt="Verikora, failed check: the message in plain words, then Try again and Choose another file, on desktop and phone." caption="Verikora, a check that did not finish, Éric Tremblay (demo). Left at 1440 px in dark, right at 390 px in light." />
+## Two themes, and nothing moves if you asked
 
-The message sits where the report would have been. It says what happened in our words, with no engine name: « Ce PDF n'est pas sous une forme que nous pouvons vérifier. Choisissez une autre copie du document, ou réessayez. » (this PDF is not in a form we can check; choose another copy of the document, or try again). Two moves follow, « Réessayer » and « Choisir un autre fichier ». One tap leads to the upload page. The menu on the left and the bar at the top stay usable, and the technical message stays in our logs. When a PDF has no text, the message also says what still runs: « L'examen du fichier, lui, a lieu. » (the examination of the file itself does take place).
+<Sketch id="ergo-themes" title="Verikora's appearance settings">
+  <Callout n="1" label="« Système » (system)">follows the device, through prefers-color-scheme.</Callout>
+  <Callout n="2" label="« Clair » (light)">the same screen, the same tokens.</Callout>
+  <Callout n="3" label="« Sombre » (dark)">the default theme; the choice is kept in the browser.</Callout>
+</Sketch>
 
-**Why.** [WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html) asks that when an error is detected and we know how to fix it, the suggestion is given to the person. We went one step further and decided that the error and its next move belong on the same screen, in the place of the result that did not come. [Alert](site:ui/components/alert) is the component that carries it. That is why we refused two things:
+Every screen exists in light and dark. The colours come from [one set of tokens](site:ui/foundations/tokens) that both themes read, and [the theming page](site:ui/theming) says how a product wears its own colour. [prefers-color-scheme](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-color-scheme) is what lets « Système » follow the device.
 
-- The notification that fades after a few seconds, for a failure the person must act on. They may not even be looking.
-- A single loading screen shared by every page. It is only a centred spinner under another name. Each page has its own [skeleton](site:ui/components/skeleton), in its own shape, shown only after 300 ms so a fast page never flickers. The only spinner in Verikora belongs to a button that is working, and a test refuses every other one.
-
-The cost: thirty-eight small files, two per page, and a new page has to bring its two or its test fails. The signal that would tell us we are wrong is people retrying a page that keeps failing, because the cause is not theirs. Then the error needs a status link.
-
-## Two themes, and nothing moves if you asked for it
-
-<Figure id="ergo-verikora-themes" alt="Verikora appearance settings: System, Light and Dark, shown in dark then light." caption="Verikora, Settings, Appearance, Éric Tremblay (demo), 1440 px. Top, the dark theme selected; bottom, light." />
-
-Every screen exists in light and dark. The choice is in the settings: « Système » follows the device, « Clair », or « Sombre », which is the default. The choice is kept in the browser. The colours come from [one set of tokens](site:ui/foundations/tokens) that both themes read, and [the theming page](site:ui/theming) says how a product wears its own colour. [prefers-color-scheme](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-color-scheme) is what lets « System » follow the device.
-
-Motion follows the same logic. When your device asks for less motion, nothing moves. We measured it on the nine screens we captured: no running animation with reduced motion. With motion allowed, we count up to 11 on the settings and 6 on the Studios list.
-
-**Why.** [prefers-reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion) exists because motion can make some people ill, and [WCAG 2.2 asks](https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html) that motion triggered by an interaction can be switched off. Our rule is [one motion system](site:ui/foundations/motion): an animation is there because it shows something, never to decorate, and it stops under reduced motion. In the library, an empty screen's bird arrives once, then the words, then the action, and not at all under reduced motion. Every stage of a check is a word too, so reduced motion loses nothing.
+Motion follows the same logic. [prefers-reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion) exists because motion can make some people sick, and [WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html) (criterion 2.3.3, level AAA) asks that motion triggered by an interaction can be turned off. Our rule is [one motion system](site:ui/foundations/motion): an animation shows something, never decoration, and it stops under reduced motion. On the nine screens measured, no animation runs with reduced motion; with motion allowed, we count up to 11 on the settings and 6 on the Studios list. Every step of a check is also written in words, so reduced motion loses nothing.
 
 ## What we have not fixed yet
 
-On the failed-check screen, under « Réessayer », the « Au regard de la loi » card keeps a filled « Lancer la vérification » button. Two filled buttons on one screen: what we refuse elsewhere.
+On the failed check screen, the « Au regard de la loi » card keeps its filled button under « Réessayer » (number 5 on the drawing above). Two filled buttons on one screen is what I refuse everywhere else.
 
-Our rule also asks for targets of at least 44 px on a phone, and we do not hold it everywhere. That is stricter than [WCAG 2.2's minimum of 24 px](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html), and still short of what we ask. Measured at 390 px, « Réessayer » is 40 px tall and « Choisir des fichiers » 36 px. The buttons that expand a row of the checks list are 28 × 28 px, and their name for screen readers is still in English.
+Our rule asks for targets of at least 44 px on a phone. That is stricter than [WCAG 2.2's minimum of 24 px](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html) (criterion 2.5.8, level AA), and we do not hold it everywhere. Measured at 390 px, « Réessayer » is 40 px tall and « Choisir des fichiers » (choose files) 36 px. The buttons that expand a row of the checks list are 28 × 28 px, and their name for screen readers was left in English.
 
 In Folioviv, the empty bookings screen says to open a shop's page, but its only button opens *your own* shop.
 
-These gaps are logged. If a screen of ours makes you hesitate, write to us: most of these choices came from there.
+These gaps are noted. If a screen of our products makes you hesitate, write to me: that is where most of these choices come from.
 
 ## What we measured, and what we did not
 
-The screens were captured on 15 November, on our development builds, with Playwright, at 1440 and 390 px, in light and dark, with reduced motion, and a second pass with motion allowed. We counted horizontal overflow, controls under 44 px, running animations and filled buttons. The « before » figures (167 px, three screens, four pairs per row) are the ones written in our records on the day of each decision; we did not measure them again. We timed nothing and asked no real person: what a choice saves is counted in gestures and in gaps to a rule, never in minutes.
+The screens were measured on 15 November on our development builds, with Playwright, at 1440 and 390 px, in light and dark, with reduced motion and then with motion allowed. We counted horizontal overflow, controls under 44 px, running animations and filled buttons. The « before » figures (167 px, three screens, four pairs per row) are the ones written in our records on the day of each decision; we did not measure them again. The drawings are made from those screens and those records, and they are not to scale. Nothing was timed and nobody was interviewed: what a choice saves is counted in moves and in gaps to the rule, never in minutes.
