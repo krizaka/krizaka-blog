@@ -18,7 +18,7 @@ test("the layout checks keep every rule", () => {
 
 test("the language link is measured at 1280 and 360 px in both themes (krizaka-internal#3907)", () => {
   assert.match(src, /const bylineLanguageLink = /);
-  assert.match(src, /bylineBeside,\s*bylineLanguageLink,\s*\]/);
+  assert.match(src, /bylineBeside,\s*bylineLanguageLink,\s*shareRowQuiet,\s*\]/);
   assert.match(src, /BYLINE_LINK_WIDTHS = \[1280, 360\]/);
   assert.match(src, /BYLINE_THEMES = \["dark", "light"\]/);
   assert.match(src, /Math\.abs\(link\.right - lead\.right\) > 2/);
@@ -30,6 +30,20 @@ test("the byline fills the text column, so the link can sit at its right edge (k
   const rule = /\.bl-byline \{([^}]*)\}/.exec(css)?.[1] ?? "";
   assert.match(rule, /width: 100%/);
   assert.match(rule, /max-width: 42\.5rem/);
+});
+
+test("the share row's items have no border and no background (krizaka-internal#3907)", () => {
+  assert.match(src, /const shareRowQuiet = /);
+  assert.match(src, /bylineLanguageLink,\s*shareRowQuiet,\s*\]/);
+  assert.match(src, /\.bl-share > :is\(a, button\)/);
+  const css = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
+  const rule = /\.bl-share > :is\(a, button\) \{([^}]*)\}/.exec(css)?.[1] ?? "";
+  assert.match(rule, /border: 0/);
+  assert.match(rule, /background: none/);
+  assert.match(rule, /color: var\(--kz-text-secondary\)/);
+  assert.match(css, /\.bl-share > :is\(a, button\):hover \{[^}]*underline/);
+  const bar = readFileSync(new URL("../app/components/engage/ShareBar.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(bar, /variant="secondary"/);
 });
 
 test("the first screen links chapter 1 and the basics at 1440×900 and 360×780 (krizaka-internal#3600)", () => {
