@@ -36,7 +36,7 @@ stats:
 
 I run Krizaka with teams of agents. They open tickets, write code, send pull requests through merge trains, and a watchdog keeps an eye on them. I look at one screen: the cockpit, an app that runs on my Mac and nowhere else.
 
-At first I put on it everything I knew how to read. It did not work. I rebuilt it around one simple idea: each screen answers one question, the one I ask at that moment of the day. If I cannot say a screen's question, the screen does not belong in the bar.
+In mid-November I rethought it around one simple idea: each screen answers one question, the one I ask at that moment of the day. If I cannot say a screen's question, the screen does not belong in the bar.
 
 The screens are drawn by pen, from their code, not captured. Each number on a drawing points to a line of the legend. The figures come from the evening of 15 November 2026.
 
@@ -44,16 +44,16 @@ The screens are drawn by pen, from their code, not captured. Each number on a dr
 
 I put them here in the order I open them, not in the order of the menu.
 
-| Screen | The question | The ergonomics choice |
-| --- | --- | --- |
-| Today | what is waiting for me? | one sentence at the top, and only what needs my hand |
-| The age of figures | can I trust what I read? | every block says how old its data is |
-| The machine | is everything running? | a verdict, then six rows to unfold |
-| Alerts | what is broken, since when? | one row per problem, with how many times it came back |
-| What ships | what actually went out? | one card per product, dated by its oldest source |
-| Costs | what does it cost? | a total that says “at least” when an amount is missing |
-| Architecture | does the code still look like the diagram? | the diagram drawn from the repositories, the gaps counted |
-| The workshop | where is that tool? | folded, because I do not go there every day |
+| The screen and its question | The ergonomics choice |
+| --- | --- |
+| **Today**: what is waiting for me? | one sentence at the top, and only what needs my hand |
+| **The age of figures**: can I trust what I read? | every block says how old its data is |
+| **The machine**: is everything running? | a verdict, then six rows to unfold |
+| **Alerts**: what is broken, since when? | one row per problem, with how many times it came back |
+| **What ships**: what actually went out? | one card per product, dated by its oldest source |
+| **Costs**: what does it cost? | a total that says “at least” when an amount is missing |
+| **Architecture**: does the code still look like the diagram? | the diagram drawn from the repositories, the gaps counted |
+| **The workshop**: where is that tool? | folded, because I do not go there every day |
 
 The cockpit reads GitHub, our local databases and our files. It never writes to GitHub: a ticket, a pull request or a required check is changed with GitHub's own tools, which enforce their rules on everyone, us included.
 
@@ -101,14 +101,14 @@ A full gathering takes about fifteen seconds. I chose a click and a visible wait
 <Sketch id="cockpit-machine" title="The Health tab of “The machine”">
   <Callout n="1" label="The tabs">the open tab is in the address, so a link brings me back to the same place.</Callout>
   <Callout n="2" label="The verdict">“The machine is fine”, “needs a look” or “has a failure”, with the number of blocks to look at.</Callout>
-  <Callout n="3" label="One row per block">Teams, Trains, Scheduled tasks, Alerts, Locks, Cockpit refreshes, each with its verdict in words.</Callout>
+  <Callout n="3" label="One row per block">Teams, Trains, Crons (the scheduled tasks), Alerts, Locks, Cockpit refreshes, each with its verdict in words.</Callout>
   <Callout n="4" label="The date of the source">on every row, not once at the top of the page.</Callout>
   <Callout n="5" label="The fold">the row opens on its detail: the list of sessions, the table of tasks.</Callout>
 </Sketch>
 
 The question is closed: yes or no. The verdict answers first, in one sentence. The six rows come after, and their detail stays folded until I ask for it. On the evening of 15 November the page counted 13 team sessions at work, 4 red pull requests in the trains, 14 active scheduled tasks and 16 open alerts, 2 of them serious. The verdict said to take a look.
 
-The “Locks” row shows the heavy-work slots in use and a session that holds one too long. The machine limits itself: that evening a team launch waited because the Mac's five-minute load average was 86, above the brake of 60. I did not decide it; I saw it on that row.
+The “Locks” row shows the heavy-work slots in use and a session that holds one too long. The machine also limits itself: that evening a team launch waited because the Mac's five-minute load average was 86, above the brake of 60. I had nothing to decide.
 
 ## What is broken, and since when?
 
@@ -120,7 +120,7 @@ On 15 November at 1:24 p.m., the krizaka-ui release stopped. On the cockpit it w
   <Callout n="3" label="“Message”">the first line of what the watchdog or a session wrote.</Callout>
   <Callout n="4" label="“Count”">how many times the alert came back: an alert counted sixteen times says the problem lasts.</Callout>
   <Callout n="5" label="“State”">open, acknowledged by someone, or resolved, with its proof.</Callout>
-  <Callout n="6" label="The filters and the pages">by source and by severity, 25 rows a page.</Callout>
+  <Callout n="6" label="The filters and the pages">to narrow the list, and 25 rows a page.</Callout>
 </Sketch>
 
 That evening, 196 pull requests had been merged in 24 hours. Nobody reads 196 notifications. An alert that comes back does not add a second row: it raises the count of the first. It is the idea of Google's book on reliability, [in its chapter on monitoring](https://sre.google/sre-book/monitoring-distributed-systems/): an alert must call for an action, and it is about the symptom (main is red); the cause is looked for afterwards.
@@ -137,7 +137,7 @@ The cause is exactly what the screen does not give. Mouloud, the CTO session tha
   <Callout n="3" label="The train">the open pull requests, and how many are red.</Callout>
   <Callout n="4" label="The last release and the last deploy">what is really live.</Callout>
   <Callout n="5" label="The card's date">that of its oldest source: a card does not look fresher than its worst data.</Callout>
-  <Callout n="6" label="The link">it opens GitHub; the cockpit does not write there.</Callout>
+  <Callout n="6" label="The release link">it opens its page on GitHub; the cockpit does not write there.</Callout>
 </Sketch>
 
 A card mixes several sources: the board, the trains, the releases. If one of them is old, the whole card takes its date. When GitHub did not answer for a repository, the Releases tab names it instead of acting as if it had shipped nothing.
@@ -165,7 +165,7 @@ Everywhere, an incomplete figure says so. A total that leaves out a line without
   <Callout n="1" label="The facts at the top">how many repositories are in step with main, how many gaps, and the date they were read.</Callout>
   <Callout n="2" label="One tab per system">Sovkora, Verikora, Folioviv, the libraries, the sites, the dependencies, the code graph.</Callout>
   <Callout n="3" label="The drawing">the systems (C1), then their containers (C2), drawn from what each repository declares.</Callout>
-  <Callout n="4" label="A gap">a container that the code and the diagram do not describe the same way.</Callout>
+  <Callout n="4" label="A flagged box">for instance a library our repositories use at a version behind the latest.</Callout>
   <Callout n="5" label="The text version">the same drawing in sentences, under the diagram, for whoever does not see the picture.</Callout>
 </Sketch>
 
@@ -175,7 +175,7 @@ The diagram is not drawn by hand: it comes from each repository's architecture f
 
 The “Company” group serves less often, and I draw none of it.
 
-“Company” keeps the company's sheet, our roles and the brand. “Business & quotes” is where I prepare an offer for a client; it is the only place where the cockpit writes, and it writes to our local files, never to GitHub. “Community” shows whether the publishing calendar is kept, planned against published, with the date each network was last read. “Documents” lists our notes and documents; a private document shows only its name there.
+“Company” keeps the company's sheet, our roles and the brand. “Business & quotes” is where I prepare an offer for a client; what is saved there goes to our local files, never to GitHub. “Community” shows whether the publishing calendar is kept, planned against published, with the date each network was last read. “Documents” lists our notes and documents; a private document shows only its name there.
 
 ## The workshop, folded
 

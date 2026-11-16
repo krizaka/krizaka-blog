@@ -36,7 +36,7 @@ stats:
 
 Je dirige Krizaka avec des équipes d'agents. Elles ouvrent des tickets, écrivent du code, passent des pull requests dans des trains, et un watchdog les surveille. Moi, je regarde un seul écran : le cockpit, une application qui tourne sur mon Mac et nulle part ailleurs.
 
-Au début, j'y avais mis tout ce que je savais lire. Ça ne marchait pas. Je l'ai refait autour d'une idée simple : chaque écran répond à une seule question, celle que je me pose à ce moment de la journée. Si je ne sais pas dire la question d'un écran, l'écran n'a pas sa place dans la barre.
+À la mi-novembre, je l'ai repensé autour d'une idée simple : chaque écran répond à une seule question, celle que je me pose à ce moment de la journée. Si je ne sais pas dire la question d'un écran, l'écran n'a pas sa place dans la barre.
 
 Les écrans sont dessinés au stylo, d'après leur code, pas capturés. Chaque numéro d'un dessin renvoie à une ligne de la légende. Les chiffres viennent du soir du 15 novembre 2026.
 
@@ -44,16 +44,16 @@ Les écrans sont dessinés au stylo, d'après leur code, pas capturés. Chaque n
 
 Je les range ici dans l'ordre où je les ouvre, pas dans l'ordre du menu.
 
-| Écran | La question | Le choix d'ergonomie |
-| --- | --- | --- |
-| Aujourd'hui | qu'est-ce qui m'attend ? | une phrase en haut, et seulement ce qui demande mon geste |
-| L'âge des chiffres | puis-je croire ce que je lis ? | chaque bloc dit de quand date sa donnée |
-| La machine | est-ce que tout tourne ? | un verdict, puis six lignes à déplier |
-| Alertes | qu'est-ce qui est cassé, depuis quand ? | une ligne par problème, avec le nombre de fois où il revient |
-| Ce qui sort | qu'est-ce qui est vraiment sorti ? | une carte par produit, datée par sa source la plus vieille |
-| Coûts | combien ça coûte ? | un total qui dit « au moins » quand il manque un montant |
-| Architecture | le code ressemble-t-il au schéma ? | le schéma tiré des dépôts, et les écarts comptés |
-| L'atelier | où est tel outil ? | replié, parce que je n'y vais pas tous les jours |
+| L'écran et sa question | Le choix d'ergonomie |
+| --- | --- |
+| **Aujourd'hui** : qu'est-ce qui m'attend ? | une phrase en haut, et seulement ce qui demande mon geste |
+| **L'âge des chiffres** : puis-je croire ce que je lis ? | chaque bloc dit de quand date sa donnée |
+| **La machine** : est-ce que tout tourne ? | un verdict, puis six lignes à déplier |
+| **Alertes** : qu'est-ce qui est cassé, depuis quand ? | une ligne par problème, avec le nombre de fois où il revient |
+| **Ce qui sort** : qu'est-ce qui est vraiment sorti ? | une carte par produit, datée par sa source la plus vieille |
+| **Coûts** : combien ça coûte ? | un total qui dit « au moins » quand il manque un montant |
+| **Architecture** : le code ressemble-t-il au schéma ? | le schéma tiré des dépôts, et les écarts comptés |
+| **L'atelier** : où est tel outil ? | replié, parce que je n'y vais pas tous les jours |
 
 Le cockpit lit GitHub, nos bases locales et nos fichiers. Il n'écrit jamais sur GitHub : un ticket, une pull request ou un contrôle requis se changent avec les outils de GitHub, qui imposent leurs règles à tout le monde, nous compris.
 
@@ -101,14 +101,14 @@ Une collecte complète prend une quinzaine de secondes. J'ai préféré un clic 
 <Sketch id="cockpit-machine" title="L'onglet Santé de « La machine »">
   <Callout n="1" label="Les onglets">l'onglet ouvert est dans l'adresse, donc un lien ramène au même endroit.</Callout>
   <Callout n="2" label="Le verdict">« La machine va bien », « demande un coup d'œil » ou « a une panne », avec le nombre de blocs à regarder.</Callout>
-  <Callout n="3" label="Une ligne par bloc">Équipes, Trains, Tâches planifiées, Alertes, Verrous, Rafraîchissements du cockpit, chacun avec son verdict en mots.</Callout>
+  <Callout n="3" label="Une ligne par bloc">Équipes, Trains, Crons (les tâches planifiées), Alertes, Verrous, Rafraîchissements du cockpit, chacun avec son verdict en mots.</Callout>
   <Callout n="4" label="La date de la source">sur chaque ligne, pas une seule fois en haut de la page.</Callout>
   <Callout n="5" label="Le pli">la ligne s'ouvre sur son détail : la liste des sessions, la table des tâches.</Callout>
 </Sketch>
 
 La question est fermée : oui ou non. Le verdict répond d'abord, en une phrase. Les six lignes ne viennent qu'après, et leur détail reste plié tant que je ne le demande pas. Le soir du 15 novembre, la page comptait 13 sessions d'équipe au travail, 4 pull requests rouges dans les trains, 14 tâches planifiées actives et 16 alertes ouvertes, dont 2 graves. Le verdict disait de regarder.
 
-La ligne « Verrous » montre les places de travail lourd prises et une session qui les garde trop longtemps. La machine se limite elle-même : ce soir-là, un lancement d'équipe a attendu parce que la charge moyenne du Mac sur cinq minutes était de 86, au-dessus du frein de 60. Je ne l'ai pas décidé ; je l'ai vu sur cette ligne.
+La ligne « Verrous » montre les places de travail lourd prises et une session qui les garde trop longtemps. La machine se limite aussi elle-même : ce soir-là, un lancement d'équipe a attendu parce que la charge moyenne du Mac sur cinq minutes était de 86, au-dessus du frein de 60. Je n'ai rien eu à décider.
 
 ## Qu'est-ce qui est cassé, et depuis quand ?
 
@@ -120,7 +120,7 @@ Le 15 novembre à 13 h 24, la release de krizaka-ui s'est arrêtée. Sur le cock
   <Callout n="3" label="« Message »">la première ligne de ce que le watchdog ou une session a écrit.</Callout>
   <Callout n="4" label="« Nombre »">combien de fois l'alerte est revenue : une alerte comptée seize fois dit que le problème dure.</Callout>
   <Callout n="5" label="« État »">ouverte, acquittée par quelqu'un, ou résolue, avec sa preuve.</Callout>
-  <Callout n="6" label="Les filtres et les pages">par source et par gravité, 25 lignes par page.</Callout>
+  <Callout n="6" label="Les filtres et les pages">pour réduire la liste, et 25 lignes par page.</Callout>
 </Sketch>
 
 Ce soir-là, 196 pull requests avaient été mergées en 24 heures. Personne ne lit 196 notifications. Une alerte qui revient ne crée pas une deuxième ligne : elle fait monter le nombre de la première. C'est l'idée du livre de Google sur la fiabilité, [au chapitre de la surveillance](https://sre.google/sre-book/monitoring-distributed-systems/) : une alerte doit appeler un geste, et elle porte sur le symptôme (main est rouge), la cause se cherche ensuite.
@@ -137,7 +137,7 @@ La cause, justement, l'écran ne la donne pas. Mouloud, la session CTO qui pilot
   <Callout n="3" label="Le train">les pull requests ouvertes, et combien sont rouges.</Callout>
   <Callout n="4" label="La dernière version et le dernier déploiement">ce qui est vraiment en ligne.</Callout>
   <Callout n="5" label="La date de la carte">celle de sa source la plus vieille : une carte n'a pas l'air plus fraîche que sa pire donnée.</Callout>
-  <Callout n="6" label="Le lien">il ouvre GitHub ; le cockpit n'y écrit pas.</Callout>
+  <Callout n="6" label="Le lien de la version">il ouvre sa page sur GitHub ; le cockpit n'y écrit pas.</Callout>
 </Sketch>
 
 Une carte mélange plusieurs sources : le tableau, les trains, les versions. Si une seule est vieille, la carte entière prend sa date. Quand GitHub n'a pas répondu pour un dépôt, l'onglet Versions le nomme au lieu de faire comme s'il n'avait rien publié.
@@ -165,7 +165,7 @@ Partout, un chiffre incomplet le dit. Un total qui oublie une ligne sans préven
   <Callout n="1" label="Les faits du haut">combien de dépôts sont en phase avec main, combien d'écarts, et la date de lecture.</Callout>
   <Callout n="2" label="Un onglet par système">Sovkora, Verikora, Folioviv, les bibliothèques, les sites, les dépendances, le graphe du code.</Callout>
   <Callout n="3" label="Le dessin">les systèmes (C1), puis leurs conteneurs (C2), tirés de ce que chaque dépôt déclare.</Callout>
-  <Callout n="4" label="Un écart">un conteneur que le code et le schéma ne disent pas de la même façon.</Callout>
+  <Callout n="4" label="Une boîte signalée">par exemple une bibliothèque dont nos dépôts utilisent une version en retard.</Callout>
   <Callout n="5" label="La version texte">le même dessin en phrases, sous le schéma, pour qui ne voit pas l'image.</Callout>
 </Sketch>
 
@@ -175,7 +175,7 @@ Le schéma n'est pas dessiné à la main : il vient du dossier d'architecture de
 
 Le groupe « Société » sert moins souvent, et je n'en dessine rien.
 
-« Entreprise » garde la fiche de la société, nos rôles et la marque. « Affaires & devis » sert à préparer une offre pour un client ; c'est le seul endroit où le cockpit écrit, et il écrit dans nos fichiers locaux, jamais sur GitHub. « Communauté » montre si le calendrier de publication est tenu, prévu contre publié, avec la date de la dernière lecture de chaque réseau. « Documents » liste nos notes et nos documents ; un document privé n'y montre que son nom.
+« Entreprise » garde la fiche de la société, nos rôles et la marque. « Affaires & devis » sert à préparer une offre pour un client ; ce qu'on y enregistre va dans nos fichiers locaux, jamais sur GitHub. « Communauté » montre si le calendrier de publication est tenu, prévu contre publié, avec la date de la dernière lecture de chaque réseau. « Documents » liste nos notes et nos documents ; un document privé n'y montre que son nom.
 
 ## L'atelier, replié
 

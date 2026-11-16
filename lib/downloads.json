@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "22be7640bf83",
+      "source": "29a288de0171",
       "files": {
         "epub": {
-          "hash": "c73fa4da96",
-          "bytes": 8677029
+          "hash": "6346b96383",
+          "bytes": 8677011
         },
         "pdf": {
-          "hash": "55dccec0a6",
-          "bytes": 13028300
+          "hash": "6cc0e77f1d",
+          "bytes": 13038966
         }
       }
     },
@@ -287,15 +287,15 @@
       }
     },
     "fr/story": {
-      "source": "4aefaf777a72",
+      "source": "164f80e9954b",
       "files": {
         "epub": {
-          "hash": "3da36c1ec7",
-          "bytes": 8714112
+          "hash": "09a4786c21",
+          "bytes": 8714090
         },
         "pdf": {
-          "hash": "51a2d32c26",
-          "bytes": 13237256
+          "hash": "79f5ba63f7",
+          "bytes": 13249435
         }
       }
     },
@@ -911,28 +911,28 @@
       }
     },
     "en/one-local-cockpit-to-run-the-whole-company": {
-      "source": "363b093e94aa",
+      "source": "a52ca2b7dfcd",
       "files": {
         "epub": {
-          "hash": "f41ce1cb2f",
-          "bytes": 687367
+          "hash": "b0aa912e4d",
+          "bytes": 687349
         },
         "pdf": {
-          "hash": "357e0591f9",
-          "bytes": 1015913
+          "hash": "11b65f3ad8",
+          "bytes": 1025786
         }
       }
     },
     "fr/one-local-cockpit-to-run-the-whole-company": {
-      "source": "bfe169a0415a",
+      "source": "b0ee4010033f",
       "files": {
         "epub": {
-          "hash": "854aec2e95",
-          "bytes": 690703
+          "hash": "7370cf7145",
+          "bytes": 690681
         },
         "pdf": {
-          "hash": "53250d2a79",
-          "bytes": 1040491
+          "hash": "bdc0e94912",
+          "bytes": 1050471
         }
       }
     }
