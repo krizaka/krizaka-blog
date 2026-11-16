@@ -227,6 +227,12 @@
       "seed": 3955,
       "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
       "beat": "Not rendered by the series' renderer: the cover this piece was published with, when it was a post (prompt and seed in lib/media.json). It became a chapter of the story on 16 November 2026."
+    },
+    {
+      "post": "one-local-cockpit-to-run-the-whole-company",
+      "seed": 3549,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "Not rendered by the series' renderer: drawn as its own text-to-image picture with the media worker's engine (mflux, FLUX.2 [klein] 4B) in the series' ink-and-watercolor look (prompt and seed in lib/media.json). The signal box of the station of chapters 23 to 31 at dusk: one empty chair at one desk, one wide window over the whole yard, a long panel of small lamps above it, the kestrel on the desk watching the tracks."
     }
   ],
   "sprites": {

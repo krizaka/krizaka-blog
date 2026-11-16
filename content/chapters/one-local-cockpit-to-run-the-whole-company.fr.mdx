@@ -7,10 +7,30 @@ date: 2026-11-15
 tags: [ai, integration]
 author: oussama
 draft: true
-cover: cockpit-equipes
-coverAlt: "Le cockpit, section « Équipes, trains et arbre du travail » ouverte : les tickets en cours, chacun avec son titre sous sa fonctionnalité et son épopée, et son état ; les lignes de sécurité sont floutées"
+cover: series-35-one-local-cockpit-to-run-the-whole-company
+coverAlt: "Encre et aquarelle : une chaise vide devant un petit bureau en bois et sa lampe en laiton, dans un poste d'aiguillage, une large fenêtre sur les voies d'une gare et un train qui attend, un long panneau de petites lampes vertes et rouges au-dessus, un faucon crécerelle sur le bureau qui regarde dehors"
 newsletter: hold
 sensitive: true
+chapter: 35
+period: "2026-11-15"
+sources:
+  - one-local-cockpit-to-run-the-whole-company
+versus:
+  faced: "une release arrêtée pendant que dix sessions travaillaient, et aucun endroit unique où regarder"
+  built: "un seul écran local qui lit GitHub sans jamais y écrire, chaque chiffre avec son âge, les valeurs sensibles masquées"
+stats:
+  - value: "196"
+    label: "pull requests mergées en 24 heures, ce soir-là"
+    section: "L'écran"
+  - value: "13"
+    label: "sessions d'équipe au travail sur la page de santé"
+    section: "L'écran"
+  - value: "86"
+    label: "la charge du Mac qui a fait attendre un lancement d'équipe, au-dessus du frein de 60"
+    section: "Ce que chaque rôle y lit"
+  - value: "38"
+    label: "choses qui m'attendent sur « Aujourd'hui »"
+    section: "Ce que chaque rôle y lit"
 ---
 
 Dimanche 15 novembre, 13 h 24 à Montréal : la release de krizaka-ui s'arrête. L'étape qui lance les contrôles de tous les paquets est annulée après 3 minutes 35 secondes, avec 95 tâches finies sur 99. La release d'avant avait déjà échoué, à 12 h 52 ; la dernière qui avait passé datait de 11 h 49.
@@ -23,7 +43,7 @@ L'équipe a prouvé la cause. La release lançait en même temps le build, le li
 
 Ma part : voir ça sur le cockpit, et laisser les agents faire. C'est le rôle de cet écran. Je supervise une entreprise d'agents ; je ne fais pas chaque étape.
 
-Ce billet décrit cet écran. C'est une application locale, sur mon Mac, qui me montre toute l'entreprise au même endroit. Je dis pourquoi elle existe, ce qu'on a refusé, ce qu'elle ne sait pas encore faire, puis ce que sept rôles y lisent. Les captures sont de vrais écrans, pris le soir du 15 novembre 2026 ; les valeurs sensibles sont masquées, et j'explique comment à la fin.
+Ce chapitre décrit cet écran. C'est une application locale, sur mon Mac, qui me montre toute l'entreprise au même endroit. Je dis pourquoi elle existe, ce qu'on a refusé, ce qu'elle ne sait pas encore faire, puis ce que sept rôles y lisent. Les captures sont de vrais écrans, pris le soir du 15 novembre 2026 ; les valeurs sensibles sont masquées, et j'explique comment à la fin.
 
 ## L'écran
 
@@ -31,7 +51,9 @@ Une seule application, le cockpit, qui tourne sur 127.0.0.1 et nulle part ailleu
 
 La barre de gauche contient ce qu'il faut pour diriger : « Aujourd'hui », « La machine », « Ce qui sort » et les coûts. Plus bas, la société, puis l'architecture. « La machine » a six onglets : santé, livraison, qualité, règles, automatismes, alertes. Le soir du 15 novembre, la page de santé comptait 13 sessions d'équipe au travail, 4 pull requests rouges dans les trains, 14 tâches planifiées actives et 16 alertes ouvertes, dont 2 graves.
 
-La couverture de ce billet montre ce que l'entreprise fait en ce moment : la section « Équipes, trains et arbre du travail, en détail », ouverte. Chaque ticket en cours y est rangé sous sa fonctionnalité et son épopée, avec son titre, son état au tableau et les pull requests qui le ferment. Une ligne dont l'épopée parle de sécurité est floutée en entier, comme tout bloc de ce genre.
+Ce que l'entreprise fait en ce moment, c'est la section « Équipes, trains et arbre du travail, en détail », ouverte ci-dessous. Chaque ticket en cours y est rangé sous sa fonctionnalité et son épopée, avec son titre, son état au tableau et les pull requests qui le ferment. Une ligne dont l'épopée parle de sécurité est floutée en entier, comme tout bloc de ce genre.
+
+<Figure id="cockpit-equipes" alt="Le cockpit, section « De l'épopée à la PR » : les tickets en cours, chacun sous sa fonctionnalité et son épopée, avec son dépôt, son titre et son état au tableau (Backlog, Next, In progress, In review) ; une épopée et ses tickets sont floutés en entier." caption="Le cockpit, « La machine », section « Équipes, trains et arbre du travail » ouverte, thème clair. Le bloc qui parle de sécurité est flouté en entier. Valeurs sensibles masquées." />
 
 Le cockpit ne cache pas l'âge de ses chiffres. Quand un bloc est trop vieux, une pastille orange le dit (« Coûts cloud : vieux de 2 j »), et un bouton le rafraîchit. Ce soir-là, le bloc « Livraison » comptait 196 pull requests mergées en 24 heures. Personne ne lit 196 notifications ; une ligne qui passe au rouge, on la voit.
 
@@ -43,7 +65,7 @@ C'est la même idée que notre film [« Montrer son travail »](site:www/fr/film
 
 ## Pourquoi il fallait cet écran
 
-Le moteur derrière, krizaka-agents, notre outillage d'équipes d'agents, tient en une phrase : on lance une équipe avec une consigne, elle travaille isolée avec un plafond de tours, de dépense et de minutes, le watchdog la surveille, un train ne merge que les pull requests vertes, et un bug devient une garde. [L'architecture de tout ça](/basics/the-architecture-of-krizaka-agents/) est décrite ailleurs. Ici, la question est plus simple : quand dix sessions travaillent en même temps, où regarde la personne qui décide ?
+Le moteur derrière, krizaka-agents, notre outillage d'équipes d'agents, tient en une phrase : on lance une équipe avec une consigne, elle travaille isolée avec un plafond de tours, de dépense et de minutes, le watchdog la surveille, un train ne merge que les pull requests vertes, et un bug devient une garde. [L'architecture de tout ça](/fr/story/the-architecture-of-krizaka-agents/) est décrite ailleurs. Ici, la question est plus simple : quand dix sessions travaillent en même temps, où regarde la personne qui décide ?
 
 Sans le cockpit, à plusieurs endroits : les sessions dans le terminal, les trains sur GitHub, les alertes dans une base, le tableau dans un navigateur. Le cockpit les met sur un seul écran, chacun avec sa date.
 

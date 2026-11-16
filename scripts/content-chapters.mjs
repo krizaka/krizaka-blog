@@ -88,11 +88,13 @@ function draftCoverProblems(file, data) {
   return [];
 }
 
-function sourceProblems(file, data, locale, postSlugs) {
+/* A piece written directly as a chapter (every new piece is one, krizaka-internal#3941) was never a post: its source is its own
+   slug (krizaka-internal#3905). */
+function sourceProblems(file, data, locale, postSlugs, slug) {
   if (!Array.isArray(data.sources) || data.sources.length === 0)
     return [`${file}: "sources" must list the slugs of the posts it is written from`];
   return data.sources
-    .filter((s) => !postSlugs.has(`${locale}:${s}`))
+    .filter((s) => s !== slug && !postSlugs.has(`${locale}:${s}`))
     .map((s) => `${file}: source "${s}" is not a post of content/posts in this language`);
 }
 
@@ -129,7 +131,8 @@ function statsProblems(file, data, body) {
 }
 
 /** The problems of one chapter: a post's rules (cover, publishedAt, confidentiality, <Model>, media…), plus the story's
-    fields. `postSlugs` is the set of `<locale>:<slug>` of content/posts, which every source must be in. */
+    fields. `postSlugs` is the set of `<locale>:<slug>` of content/posts, which every source must be in, unless it is the chapter's own
+    slug (a piece written as a chapter from the start). */
 export function chapterProblems(file, data, body, ctx, postSlugs) {
   const out = postProblems(file, data, body, ctx);
   const m = file.match(FILE);
@@ -141,7 +144,7 @@ export function chapterProblems(file, data, body, ctx, postSlugs) {
     ...periodProblems(file, data),
     ...placeProblems(file, data),
     ...draftCoverProblems(file, data),
-    ...sourceProblems(file, data, locale, postSlugs),
+    ...sourceProblems(file, data, locale, postSlugs, m[1]),
     ...versusProblems(file, data),
     ...statsProblems(file, data, body),
   ];

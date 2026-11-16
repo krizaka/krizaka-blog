@@ -224,12 +224,14 @@ export function stripPng(buf) {
   return Buffer.concat(out);
 }
 
-/** What a screen does before the shot: open a section, press a button, wait, hide a column. Nothing here reads or writes data. */
+/** What a screen does before the shot: open a section, press a button, wait, hide a column, restyle (a table's width, never its
+    words). Nothing here reads or writes data. */
 export async function runSteps(page, steps = []) {
   for (const st of steps) {
     if (st.click) await page.click(st.click, { timeout: 8000 });
     if (st.wait) await page.waitForTimeout(st.wait);
     if (st.hide) await page.addStyleTag({ content: `${st.hide}{display:none !important}` });
+    if (st.style) await page.addStyleTag({ content: st.style });
   }
 }
 
@@ -252,6 +254,29 @@ export async function clipOfHeading(page, { text, height, pad = 12 }) {
   );
 }
 
+/** The rectangle of the first element that matches `selector`, in page coordinates, cut to what its scrolling parent shows (a wide
+    table is cropped to its visible columns), at most `height` tall. */
+export async function clipOfBox(page, { selector, height, pad = 8 }) {
+  return page.evaluate(
+    ({ selector, height, pad }) => {
+      const el = document.querySelector(selector);
+      if (!el) return null;
+      let box = el.parentElement;
+      while (box && getComputedStyle(box).overflowX === "visible") box = box.parentElement;
+      const a = el.getBoundingClientRect();
+      const b = (box ?? el).getBoundingClientRect();
+      const left = Math.max(a.left, b.left);
+      return {
+        x: Math.max(0, left - pad),
+        y: Math.max(0, a.top + window.scrollY - pad),
+        width: Math.min(a.right, b.right) - left + 2 * pad,
+        height: Math.min(a.height, height) + pad,
+      };
+    },
+    { selector, height, pad },
+  );
+}
+
 /** Masks the page, then reads it again with the guard: throws, naming the kinds only, when anything is left. */
 export async function maskAndGuard(page, names = []) {
   const counts = await page.evaluate(maskScript({ mask: MASK, words: SENSITIVE_WORDS, names }));
@@ -269,13 +294,15 @@ export async function maskAndGuard(page, names = []) {
 }
 
 /** Masks, guards, shoots, and guards again: the cockpit re-renders by itself, so a frame counts only when the page is clean before AND
-    after the shot; else it is tried again (4 times), then the last refusal is thrown and nothing is written. */
+    after the shot; else it is tried again (4 times), then the last refusal is thrown and nothing is written. `area` may be a function:
+    it is measured after the masking, which changes the height of the blocks above it. */
 export async function guardedShot(page, { names = [], area }) {
   let last;
   for (let attempt = 0; attempt < 4; attempt++) {
     try {
       const counts = await maskAndGuard(page, names);
-      const png = stripPng(await page.screenshot({ fullPage: true, clip: area, animations: "disabled" }));
+      const clip = typeof area === "function" ? await area() : area;
+      const png = stripPng(await page.screenshot({ fullPage: true, clip, animations: "disabled" }));
       const after = findings(await page.evaluate(visibleText), GUARD);
       if (after.length === 0) return { png, counts };
       last = new Error(`guard: ${after.join(", ")} appeared during the shot, nothing written`);
@@ -287,11 +314,12 @@ export async function guardedShot(page, { names = [], area }) {
 }
 
 /** Steps, masks, guards, shoots. Throws (and writes nothing) when the guard finds something. */
-export async function shoot(page, { out, clip, clipOf, steps, names = [] }) {
+export async function shoot(page, { out, clip, clipOf, clipBox, steps, names = [] }) {
   await runSteps(page, steps);
-  const area = clipOf ? await clipOfHeading(page, clipOf) : clip;
-  if (clipOf && !area) throw new Error(`no heading « ${clipOf.text} » on the page, nothing written`);
-  const { png, counts } = await guardedShot(page, { names, area });
+  const measure = () => (clipOf ? clipOfHeading(page, clipOf) : clipBox ? clipOfBox(page, clipBox) : clip);
+  if (clipOf && !(await measure())) throw new Error(`no heading « ${clipOf.text} » on the page, nothing written`);
+  if (clipBox && !(await measure())) throw new Error(`no « ${clipBox.selector} » on the page, nothing written`);
+  const { png, counts } = await guardedShot(page, { names, area: measure });
   mkdirSync(dirname(out), { recursive: true });
   writeFileSync(out, png);
   return { counts, bytes: png.length };
@@ -299,31 +327,36 @@ export async function shoot(page, { out, clip, clipOf, steps, names = [] }) {
 
 /* The screens of the post: id, address (French, light), the part of the page kept. Public: session titles, repositories, PR numbers,
    train and alert states. Not here: Coûts, Affaires, Entreprise, Documents, Secrets. A security-labelled title is masked as a whole
-   block by the words rule. `width` is the window's: narrower than the cockpit's 1440, so the text stays readable once the figure is
-   shown at phone width; `scale` is the pixel ratio. */
+   block by the words rule. `width` is the window's: 720, so the kept part is about 600 px wide and its text is still read at a phone's
+   390 px (krizaka-internal#3905); `scale` is the pixel ratio. */
 const OPEN_TEAMS = [
   { click: "summary:has-text('Équipes, trains')" },
   { click: "button:has-text('Rafraîchir')" },
   { wait: 1500 },
 ];
+/* The alerts table fits the window: its columns size to their words, the message column is kept narrow (it wraps on two lines). */
+const ALERTS_FIT =
+  "table{table-layout:auto!important;width:100%!important;min-width:0!important}" +
+  "th,td,col{width:auto!important;min-width:0!important}" +
+  "th:nth-child(3),td:nth-child(3){width:215px!important;max-width:215px!important}";
 export const SCREENS = [
   {
     id: "cockpit-equipes",
     path: "/fr/machine",
     note: "The cockpit, « La machine », the opened section « Équipes, trains et arbre du travail, en détail » after a refresh: every ticket in progress under its feature and its epic, with its title and the pull requests that close it.",
-    width: 1280,
+    width: 720,
     scale: 2,
     steps: OPEN_TEAMS,
-    clipOf: { text: "De l'épopée à la PR", height: 585 },
+    clipOf: { text: "De l'épopée à la PR", height: 418 },
   },
   {
     id: "cockpit-alertes",
     path: "/fr/machine?tab=alerts",
     note: "The cockpit, « La machine », Alertes: the watchdog's and the team sessions' open alerts, with severity, source, message, count and state (the two date columns are hidden: their layout overlaps, krizaka-internal#3894).",
-    width: 1440,
+    width: 720,
     scale: 2,
-    steps: [{ hide: "th:nth-child(5), td:nth-child(5), th:nth-child(6), td:nth-child(6)" }],
-    clip: { x: 300, y: 445, width: 840, height: 362 },
+    steps: [{ hide: "th:nth-child(5), td:nth-child(5), th:nth-child(6), td:nth-child(6)" }, { style: ALERTS_FIT }],
+    clipBox: { selector: "table", height: 420 },
   },
 ];
 
@@ -502,7 +535,14 @@ async function captureStill(browser, s, o) {
   await page.goto(o.base + s.path, { waitUntil: "networkidle" });
   try {
     const out = join(o.out, `${s.id}.png`);
-    const r = await shoot(page, { out, clip: s.clip, clipOf: s.clipOf, steps: s.steps, names: o.names });
+    const r = await shoot(page, {
+      out,
+      clip: s.clip,
+      clipOf: s.clipOf,
+      clipBox: s.clipBox,
+      steps: s.steps,
+      names: o.names,
+    });
     console.log(`${s.id}: ${r.bytes} bytes, masked ${JSON.stringify(r.counts)}`);
     if (o.record)
       record(

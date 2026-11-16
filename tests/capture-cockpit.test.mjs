@@ -18,6 +18,8 @@ import {
   clipEntry,
   loopFrames,
   runSteps,
+  clipOfBox,
+  guardedShot,
   SCREENS,
   LOOP,
   GUARD,
@@ -194,21 +196,24 @@ async function withServer(html, fn) {
 
 test("the command writes the image of a page once masked, and exits 0", async () => {
   const dir = tmp();
-  await withServer("<!doctype html><body><p>Total 12 $ pour a@b.com</p><p>krizaka-ui#1</p></body>", async (base) => {
-    const { stdout } = await run("node", [SCRIPT, "--out", dir, "--base", base, "--only", STILL.id]);
-    assert.match(stdout, new RegExp(`${STILL.id}: \\d+ bytes, masked`));
-    assert.ok(existsSync(join(dir, `${STILL.id}.png`)));
-  });
+  await withServer(
+    "<!doctype html><body><table><tr><td>Total 12 $ pour a@b.com</td><td>krizaka-ui#1</td></tr></table></body>",
+    async (base) => {
+      const { stdout } = await run("node", [SCRIPT, "--out", dir, "--base", base, "--only", STILL.id]);
+      assert.match(stdout, new RegExp(`${STILL.id}: \\d+ bytes, masked`));
+      assert.ok(existsSync(join(dir, `${STILL.id}.png`)));
+    },
+  );
 });
 
 test("the command exits 1 and writes nothing when the guard refuses", async () => {
   const dir = tmp();
   const late =
-    "<!doctype html><body><p>ok</p><script>new MutationObserver(()=>setTimeout(()=>document.body.append('4374296412845'),50)).observe(document.head,{childList:true})</script></body>";
+    "<!doctype html><body><table><tr><td>ok</td></tr></table><script>new MutationObserver(()=>setTimeout(()=>document.body.append('4374296412845'),50)).observe(document.head,{childList:true})</script></body>";
   await withServer(late, async (base) => {
     await assert.rejects(run("node", [SCRIPT, "--out", dir, "--base", base, "--only", STILL.id]), (e) => {
       assert.equal(e.code, 1);
-      assert.match(e.stderr, /REFUSED/);
+      assert.match(e.stderr, /REFUSED — guard/);
       return true;
     });
     assert.equal(existsSync(join(dir, `${STILL.id}.png`)), false);
@@ -264,6 +269,36 @@ test("the alerts screen leaves the two overlapping date columns out, and Livrais
     false,
     "Livraison is the clip's, not a figure",
   );
+});
+
+test("the figures are taken at 720 px so their text is read at a phone's 390 px (krizaka-internal#3905)", () => {
+  for (const s of SCREENS) assert.equal(s.width, 720, s.id);
+});
+
+test("a style step restyles, and a box is cropped to what its scrolling parent shows", async () => {
+  await withPage(
+    '<style>body{margin:0}</style><div id="s" style="overflow-x:auto;width:200px;margin:20px"><table id="t" style="width:600px"><tr><td>a</td></tr></table></div>',
+    async (page) => {
+      await runSteps(page, [{ style: "#t{height:300px}" }]);
+      const area = await clipOfBox(page, { selector: "#t", height: 100, pad: 0 });
+      assert.deepEqual(area, { x: 20, y: 20, width: 200, height: 100 });
+      assert.equal(await clipOfBox(page, { selector: "#nope", height: 100 }), null);
+    },
+  );
+});
+
+test("the crop is measured after the masking, which changes the height of the blocks above it", async () => {
+  await withPage('<style>body{margin:0}</style><p id="a">écrire à fondateur@exemple.com</p>', async (page) => {
+    let seen;
+    await guardedShot(page, {
+      area: async () => {
+        seen = await page.evaluate(() => document.getElementById("a").textContent);
+        return { x: 0, y: 0, width: 50, height: 20 };
+      },
+    });
+    assert.ok(seen.startsWith("écrire à "), seen);
+    assert.doesNotMatch(seen, /@/, "the crop is measured on the masked page");
+  });
 });
 
 test("a step hides a column and clicks a button; a missing button is an error, not a silent pass", async () => {
