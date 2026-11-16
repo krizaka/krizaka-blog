@@ -22,6 +22,8 @@ const LOCAL_FREE = {
     "the cover drawn for the post on the Mac with the media worker's model, kept when the post became chapter 28, no paid run",
   "series-29-how-our-agent-teams-talk":
     "free local render on the Mac with the media worker's model when the post became chapter 29, no paid run",
+  "series-35-one-local-cockpit-to-run-the-whole-company":
+    "free local render on the Mac with the media worker's model when the cockpit post became chapter 35, no paid run",
 };
 /* The covers redrawn with GPT Image 2.5 Sunburst through Runway (content/image-series/runway.json: prompt, references, takes, credits). */
 const RUNWAY = JSON.parse(readFileSync(new URL("../content/image-series/runway.json", import.meta.url), "utf8")).images;
@@ -64,7 +66,7 @@ export function coverProvenance(id, made) {
     typeof LOCAL_FREE[id] === "string" &&
     LOCAL_FREE[id].length > 20 &&
     /^FLUX\.2 \[klein\]/.test(made.model) &&
-    /outside an Orazaka Studio run/.test(made.note)
+    /outside an? (Orazaka|Sovkora) Studio run/.test(made.note)
   );
 }
 
@@ -74,6 +76,7 @@ test("a cover without a Studio run id passes only as a listed local-free excepti
   const listed = "series-21-working-with-agents-rules-that-refuse";
   assert.ok(coverProvenance("series-01-x", studio));
   assert.ok(coverProvenance(listed, local));
+  assert.ok(coverProvenance(listed, { ...local, note: "made outside a Sovkora Studio run" }), "the commercial name");
   assert.ok(!coverProvenance(listed, { ...local, note: "rendered on the Mac" }), "no provenance note");
   assert.ok(!coverProvenance(listed, { model: local.model, via: "local" }), "no note at all");
   assert.ok(!coverProvenance("series-22-unlisted", local), "unlisted id");
