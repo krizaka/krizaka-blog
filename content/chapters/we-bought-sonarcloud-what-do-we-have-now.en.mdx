@@ -2,7 +2,7 @@
 title: "We bought SonarCloud, what do we have now?"
 description: "We moved to SonarCloud's paid plan. What it changed in our CI, why the gates first turned red, what the figures say today, and what Sonar does that our own guards do not."
 seoTitle: "Paid SonarCloud: what it changed in our CI"
-seoDescription: "CI analysis, coverage, the merge queue, the « previous version » period: what SonarCloud's paid plan changed at Krizaka, with figures read on the API."
+seoDescription: "CI analysis, coverage, the merge queue, the “previous version” period: what SonarCloud's paid plan changed at Krizaka, with figures read on the API."
 date: 2026-10-28
 publishedAt: "2026-10-28T00:50:00-04:00"
 tags: [integration, security]
@@ -38,7 +38,7 @@ We moved to SonarCloud's paid plan. I decided it, because I wanted Sonar to be p
 
 At first we used SonarCloud's automatic analysis. You switch it on with a click, Sonar reads the repository without asking our CI for anything, and it answers on pull requests. It is handy, and we got by with it for a long time.
 
-But it has two limits that I found one after the other. It cannot import test coverage, because the tests run on our side, not at Sonar. And it does not answer on the temporary branches of GitHub's merge queue. That is why I had written in the previous chapter that Sonar « only answered on PRs ». That was true of the automatic analysis, not of Sonar.
+But it has two limits that I found one after the other. It cannot import test coverage, because the tests run on our side, not at Sonar. And it does not answer on the temporary branches of GitHub's merge queue. That is why I had written in the previous chapter that Sonar “only answered on PRs”. That was true of the automatic analysis, not of Sonar.
 
 <Pipeline label="Before and now: where Sonar looks">
   <Stage title="Before" note="automatic analysis">Sonar reads the repository on its own and answers on the pull request. No coverage, nothing on the merge queue.</Stage>
@@ -55,7 +55,7 @@ Concretely, three things, and they live in the organisation's shared pipeline, n
 
 The first is that the analysis is started by our CI, after the tests, with `sonar: true` in the shared workflow. It waits for the quality gate's answer before giving its verdict. A project's automatic analysis is switched off only once this job is green, so a repository is never left without an analysis.
 
-The second is coverage. The test job drops its report, lcov for JavaScript and TypeScript, JaCoCo for Java, and the Sonar job imports it. That is why Sonar « moved into » the workflow: coverage can only come from an analysis run by the CI.
+The second is coverage. The test job drops its report, lcov for JavaScript and TypeScript, JaCoCo for Java, and the Sonar job imports it. That is why Sonar “moved into” the workflow: coverage can only come from an analysis run by the CI.
 
 The third is the merge queue. A CI analysis answers on any branch, `gh-readonly-queue/main/...` included. I saw it on krizaka-ts: SonarCloud's public API lists that repository's queue branches, each with its gate's verdict. The other repositories move over one by one, following a recipe written in our standards. Until a repository has taken the step, it keeps the rule that a branch must be up to date before merging.
 
@@ -65,12 +65,12 @@ And one small extra, because we thought of it late: a PR that only changes docum
 
 I expected everything to go green. It did the opposite.
 
-At the first CI analysis, Sonar had no reference version for the project. It showed « not provided », so it counted the whole history as new code. Every old defect became the fault of the latest change, and the gates turned red all at once, in repositories that had done nothing new.
+At the first CI analysis, Sonar had no reference version for the project. It showed “not provided”, so it counted the whole history as new code. Every old defect became the fault of the latest change, and the gates turned red all at once, in repositories that had done nothing new.
 
-Our new-code period is « previous version »: Sonar judges what changed since the last known version. With no version, there is no previous one. The fix is small. [.github#354](repo:.github/pull/354) gives each CI analysis a version, `ci-` followed by the run number, so the period is the change since the analysis before. Old defects stay visible. They no longer turn the gate red on every PR. In krizaka-ui's analysis history you can see the « not provided » analyses, then the version event, a few hours later.
+Our new-code period is “previous version”: Sonar judges what changed since the last known version. With no version, there is no previous one. The fix is small. [.github#354](repo:.github/pull/354) gives each CI analysis a version, `ci-` followed by the run number, so the period is the change since the analysis before. Old defects stay visible. They no longer turn the gate red on every PR. In krizaka-ui's analysis history you can see the “not provided” analyses, then the version event, a few hours later.
 
 <Split label="Why the gates turned red, and the small fix (.github#354): Sonar judges new code since the previous version, so it needs a version.">
-  <Side title="No version" tone="before" items="Sonar shows « not provided » | The whole history counts as new code | Every old defect is blamed on the latest change | Gates red everywhere at once" />
+  <Side title="No version" tone="before" items="Sonar shows “not provided” | The whole history counts as new code | Every old defect is blamed on the latest change | Gates red everywhere at once" />
   <Side title="A version per analysis" tone="after" items="Each CI analysis is versioned: ci- and the run number | New code is what changed since the analysis before | Old defects stay visible | The gate judges the change" />
 </Split>
 
@@ -96,13 +96,13 @@ A question I asked myself when paying: are we doing the same work twice?
 
 My answer is: we try not to. An error should be stopped as early as possible, and Sonar arrives late, after the PR. So whenever a Sonar rule can run in the editor, we run it there. `@krizaka/config` turns on the `eslint-plugin-sonarjs` set, and the cognitive complexity threshold is the same as at the gate, 15. For Java, PMD and SpotBugs play that role in `mvn verify`, and ArchUnit holds the architecture. The ratchets freeze each rule's debt and refuse any increase.
 
-What Sonar keeps for itself, because our guards do not see it: the rules that follow data from end to end, the ones that read our GitHub workflows (injection, permissions), a few Java rules with no local twin, coverage, history and the overview of every repository. Our guards table marks those rows « Sonar only », without dressing them up.
+What Sonar keeps for itself, because our guards do not see it: the rules that follow data from end to end, the ones that read our GitHub workflows (injection, permissions), a few Java rules with no local twin, coverage, history and the overview of every repository. Our guards table marks those rows “Sonar only”, without dressing them up.
 
-And there is what Sonar does not replace: secrets, which must be stopped before they enter the history, the rule « a fix brings its guard », and the tests that tell whether the product does what we promise.
+And there is what Sonar does not replace: secrets, which must be stopped before they enter the history, the rule “a fix brings its guard”, and the tests that tell whether the product does what we promise.
 
 ## What is planned, not done
 
-There is one SonarCloud feature I would like to try: the Architecture view. It lets you declare the intended architecture, for example « Spring AI only in its adapter » or « no database access in services », and see the deviations as issues, next to the rest. I wrote the idea down in an issue, after looking at a capture of a « current architecture » view.
+There is one SonarCloud feature I would like to try: the Architecture view. It lets you declare the intended architecture, for example “Spring AI only in its adapter” or “no database access in services”, and see the deviations as issues, next to the rest. I wrote the idea down in an issue, after looking at a capture of a “current architecture” view.
 
 Since then, I have settled the order. First a C4 diagram generated from the code: the overview, from the system down to the files. It will also run locally, so I see the code on my machine and not only what is deployed. Only then Sonar's Architecture view, with the intended architecture and its deviations. Nothing is switched on yet. The principle stays simple: never put the same rule in two places. Sonar would give the overview and the history, the build would keep the fast stop.
 

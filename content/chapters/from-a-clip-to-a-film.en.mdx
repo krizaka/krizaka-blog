@@ -19,17 +19,17 @@ versus:
   faced: "a film that looked good and was bad"
   built: "a chain that asks questions before it shoots"
 stats:
-  - value: "34.42 $"
+  - value: "$34.42"
     label: "“L'aube”, GPU billed"
     section: "What I saw, and heard"
-  - value: "31.12 $"
+  - value: "$31.12"
     label: "per finished minute, “Le relais”"
     section: "The numbers, in context"
 ---
 
 On 20 October, I watched our film “The World of Krizaka: l'aube” for the second time, 62 seconds in 4K, made with our birds. My verdict was short: horrible. The voices, the captions, the way the birds interact, all of it was too ugly.
 
-It was not a sloppy film, though. The image and the light were beautiful, I said so myself. It had cost 6.5 hours of an H200 GPU, that is 34.42 $ at the rental company. But a beautiful image does not make a film, and what I had just watched was not a film.
+It was not a sloppy film, though. The image and the light were beautiful, I said so myself. It had cost 6.5 hours of an H200 GPU, that is $34.42 at the rental company. But a beautiful image does not make a film, and what I had just watched was not a film.
 
 Here is what was wrong, what we changed, what it cost, and what I learned about the difference between improving a prompt and improving a production chain.
 
@@ -37,13 +37,13 @@ Update, October 2026: “l'aube” and “la tournée” are withdrawn. “Le re
 
 ## Two times I had no loop
 
-The first case is the first batch of clips for Orazaka's showcase. I had given Wan a portrait image cropped to 16:9, and a prompt that described a looping movement. The clips were bad. Each clip costs about 1.20 $ and 18 minutes of H100, so the five I had to redo come to roughly 6 $ and an hour and a half of GPU that produced nothing publishable. The fix holds in two lines: images made at the video's aspect ratio, and a prompt that describes only the movement.
+The first case is the first batch of clips for Orazaka's showcase. I had given Wan a portrait image cropped to 16:9, and a prompt that described a looping movement. The clips were bad. Each clip costs about $1.20 and 18 minutes of H100, so the five I had to redo come to roughly $6 and an hour and a half of GPU that produced nothing publishable. The fix comes down to two lines: images made at the video's aspect ratio, and a prompt that describes only the movement.
 
 Nobody was looking at the image before launching 18 minutes of GPU. Since then, the generation engine writes to its metrics `imageKept`, the share of the starting image that the frame kept (a portrait cropped to 16:9 keeps a third of it). That does not say whether the result is good, only that it starts with a handicap, but it warns before you pay.
 
 Here is the same shot before and after, at the middle frame of each clip:
 
-<Figure id="bakeoff-before-after" alt="Three images of a cable car in the Alps at dawn. Left, before: a portrait image cropped to 16:9, Wan 2.2 A14B, a blurred clip. Middle, after: an image made in 16:9, LTX-Video in 14 seconds, sharp. Right, after: the same image with Wan 2.2 I2V A14B in 40 steps, 18 minutes." caption="Before: 18 minutes of H100 for an unusable clip. After: 14 seconds for LTX-Video (roughly 0.01 $), 18 minutes and 1.20 $ for Wan." />
+<Figure id="bakeoff-before-after" alt="Three images of a cable car in the Alps at dawn. Left, before: a portrait image cropped to 16:9, Wan 2.2 A14B, a blurred clip. Middle, after: an image made in 16:9, LTX-Video in 14 seconds, sharp. Right, after: the same image with Wan 2.2 I2V A14B in 40 steps, 18 minutes." caption="Before: 18 minutes of H100 for an unusable clip. After: 14 seconds for LTX-Video (roughly $0.01), 18 minutes and $1.20 for Wan." />
 
 The second case is the birds. For “Le monde de Krizaka: la tournée”, each keyframe is compared to the drawing of the bird made in the code. Some images were refused: a falcon, an owl and a duck duplicated, an audience of humans, one ghost bird too many.
 
@@ -51,19 +51,19 @@ The second case is the birds. For “Le monde de Krizaka: la tournée”, each k
 
 The vertical keyframe at the end was refused three times. I did not insist: the vertical version shows the horizontal shot on its own blurred background. It is the retry ceiling of my loop, held by hand.
 
-I have a real case for what follows. To test a production chain, I made a short demonstration film of 40 seconds, 10 shots, with [Orazaka](site:sovkora), my AI engine. The production file gives the time of each step. At the H100's 3.99 $ an hour, that comes to roughly:
+I have a real case for what follows. To test a production chain, I made a short demonstration film of 40 seconds, 10 shots, with [Orazaka](site:sovkora), my AI engine. The production file gives the time of each step. At the H100's $3.99 an hour, that comes to roughly:
 
 <Numbers>
-<Num value="≈ 0.01 $" label="A keyframe" hint="9 s, FLUX.2 klein" />
-<Num value="≈ 0.36 $" label="A video shot" hint="328 s, Wan 2.2 in 4 steps" />
-<Num value="≈ 1.57 $" label="One editing pass" hint="1,420 s, two passes made" />
+<Num value="≈ $0.01" label="A keyframe" hint="9 s, FLUX.2 klein" />
+<Num value="≈ $0.36" label="A video shot" hint="328 s, Wan 2.2 in 4 steps" />
+<Num value="≈ $1.57" label="One editing pass" hint="1,420 s, two passes made" />
 </Numbers>
 
 An error found on the keyframe costs one cent. Found in the shot, 36 cents. Found in the edit, 157 times the image. So the loop has to check early, not only at the end.
 
-On this film, 12 shots were filmed for 10 kept. At 0.36 $ a shot, that gives 0.44 $ per kept shot, 1.2 times the price of one run: exactly 1 ÷ p, with p = 10 out of 12. For the film's 35 runs, 5 of them failed, the GPU computation comes to about 7.89 $. I cannot give a cost per film: the pod bill, 23.62 $, mixes several jobs, and I do not put it on one film to get a clean figure.
+On this film, 12 shots were filmed for 10 kept. At $0.36 a shot, that gives $0.44 per kept shot, 1.2 times the price of one run: exactly 1 ÷ p, with p = 10 out of 12. For the film's 35 runs, 5 of them failed, the GPU computation comes to about $7.89. I cannot give a cost per film: the pod bill, $23.62, mixes several jobs, and I do not put it on one film to get a clean figure.
 
-<Clip id="nova-ardent-short" alt="A 40-second vertical demonstration short film, 10 shots" caption="The 40-second film, 10 shots kept out of 12 filmed. The GPU computation of its runs: 7,115 s, 7.89 $." />
+<Clip id="nova-ardent-short" alt="A 40-second vertical demonstration short film, 10 shots" caption="The 40-second film, 10 shots kept out of 12 filmed. The GPU computation of its runs: 7,115 s, $7.89." />
 
 ## What I saw, and heard
 
@@ -100,11 +100,11 @@ Each take is checked afterwards: faithful to the bird's drawing, and alive and o
 <Clip id="relay-medina-scene" alt="In a medina courtyard, the owl raises a wing to say wait while the pigeon pleads, then the owl recognises the pigeon, laughs and signals it to pass" caption="The owl of “le relais”: it disputes, then recognises the pigeon. 5.4 seconds." />
 </Row>
 
-Keeping a bird faithful to its drawing took a detour. A free image editor had redrawn a brand bird (the falcon had lost its visor). The keyframe now starts from the rendering of the character itself, placed on an empty set, then retouched at a strength of 0.60 for a character and 0.80 for a group: a group of five was drifting at 0.60.
+Keeping a bird faithful to its drawing took a detour. A free-form image edit had redrawn a brand bird (the falcon had lost its visor). The keyframe now starts from the rendering of the character itself, placed on an empty set, then retouched at a strength of 0.60 for a character and 0.80 for a group: a group of five was drifting at 0.60.
 
 ### 4. A directed voice, chosen blind
 
-We put speech synthesis engines in competition, licence first, with the same synthetic reference voice (never a real person's voice). For each candidate, we measured the movement of the voice's pitch in semitones, the understanding of the words with <Model id="whisper">Whisper</Model>, and the respect of the requested pace.
+We pitted speech synthesis engines against each other, licence first, with the same synthetic reference voice (never a real person's voice). For each candidate, we measured the movement of the voice's pitch in semitones, how well the words were understood with <Model id="whisper">Whisper</Model>, and whether the requested pace was kept.
 
 - <Model id="kokoro">Kokoro</Model>, the voice of the first version: a single delivery, from 8.6 to 11 semitones.
 - <Model id="chatterbox">Chatterbox</Model>: very expressive in English (17 to 19 semitones), but it ignores a slow pace, and its French dropped words (an error of 0.67 on one sentence).
@@ -138,26 +138,26 @@ The shots are filmed at 720p with <Model id="wan22-i2v-a14b">Wan 2.2 I2V A14B</M
 ## The numbers, in context
 
 <Numbers>
-<Num value="34,42 $" label="“L'aube”, GPU billed" hint="6.5 h of an H200 at 5.29 $/h, one retry included" />
-<Num value="33,09 $" label="Per minute of finished film" hint="62.5 s in 4K, 19 shots planned, 18 kept" />
-<Num value="35,27 $" label="“Le relais”, total GPU" hint="measured: 68 s in 4K, 31.12 $ a minute" />
+<Num value="$34.42" label="“L'aube”, GPU billed" hint="6.5 h of an H200 at $5.29/h, one retry included" />
+<Num value="$33.09" label="Per minute of finished film" hint="62.5 s in 4K, 19 shots planned, 18 kept" />
+<Num value="$35.27" label="“Le relais”, total GPU" hint="measured: 68 s in 4K, $31.12 a minute" />
 </Numbers>
 
-For “l'aube”: 23 takes, of which 4 were refused or shortened. The computing time of the runs themselves was 5.5 h (29.00 $); the rest is set-up and waiting. The keyframes, the music and the narration were made on a Mac, at 0 $.
+For “l'aube”: 23 takes, of which 4 were refused or shortened. The compute time of the runs themselves was 5.5 h ($29.00); the rest is set-up and waiting. The keyframes, the music and the narration were made on a Mac, at $0.
 
 What we measured on an H200 with 141 GB: a Wan 2.2 shot of 81 frames in 720p, 40 steps, takes 1,567 seconds, about 26 minutes, 36 seconds per step. On an H100, it is of the order of 18 minutes per 5-second clip. LTX-Video makes a clip in 11 to 20 seconds. For 4K, SeedVR2 took about 17 minutes per shot with a batch of 5, and 290 seconds with a batch of 21: which makes it possible to run it alongside the generation instead of after it.
 
-For “le relais”, the GPU cost 35.27 $ in total (measured), under a 40 $ ceiling, for 68 seconds of 4K film: 31.12 $ per finished minute, on an H200. About 4.1 $ of that total was lost to set-up, on two servers that the guard stopped. The tests alone (two sessions: the voice, the titles, one full scene) had cost 6.01 $ before the full render. “L'aube” had cost 34.42 $.
+For “le relais”, the GPU cost $35.27 in total (measured), under a $40 ceiling, for 68 seconds of 4K film: $31.12 per finished minute, on an H200. About $4.1 of that total was lost to set-up, on two servers that the guard stopped. The tests alone (two sessions: the voice, the titles, one full scene) had cost $6.01 before the full render. “L'aube” had cost $34.42.
 
 ### What the GPU taught us about money
 
 A GPU you forget costs as much as a GPU that works. So the machine stops by itself: after 20 minutes without work, or after 6 hours at most. It was this guard that cut “l'aube” at the sixth hour, and the same server had to be picked up once more, for about 30 minutes, for one shot retake and three 4K upscales.
 
-A 200 GB network disk, to keep the models at hand, costs about 14 $ a month doing nothing. We decided to delete it after the last films and to recreate it on demand: redoing the downloads takes a few minutes of GPU, which costs less than keeping it. And on a 94 GB GPU, generation and 4K together ran out of memory: they run one after the other.
+A 200 GB network disk, to keep the models at hand, costs about $14 a month doing nothing. We decided to delete it after the last films and to recreate it on demand: redoing the downloads takes a few minutes of GPU, which costs less than keeping it. And on a 94 GB GPU, generation and 4K together ran out of memory: they run one after the other.
 
 ## The film
 
-“The World of Krizaka: le relais” is 68 seconds in 4K. A parcel, a question: will it arrive? The parcel passes from bird to bird, from city to city, and the music changes genre at each place. It is visible [on krizaka.com](site:www/en), in French and in English.
+“The World of Krizaka: le relais” is 68 seconds in 4K. A parcel, a question: will it arrive? The parcel passes from bird to bird, from city to city, and the music changes genre at each place. You can watch it [on krizaka.com](site:www/en), in French and in English.
 
 <Clip id="relay-film" alt="An excerpt of the film: Krizaka birds pass a parcel from place to place" caption="“Le relais”, 68 s, no subtitles, silent here. The full film has sound." />
 

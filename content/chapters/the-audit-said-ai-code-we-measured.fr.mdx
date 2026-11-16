@@ -107,11 +107,11 @@ Ce que les cases rouges étaient vraiment m'a surpris : rarement le template, pr
 
 ## Deux gardes apprises le même jour
 
-Deux incidents, et pour chacun la même question : pourquoi aucun garde ne l'a vu avant ?
+Deux incidents, et pour chacun la même question : pourquoi aucune garde ne l'a vu avant ?
 
-Le premier, une session a ouvert une PR avec mon compte personnel au lieu de celui des agents. Ça brouille qui a fait quoi, et ce n'est pas à moi d'ouvrir ce que les agents écrivent. Un hook, avant l'appel de l'outil, refuse maintenant de créer une PR, une issue ou un commentaire avec mon compte. Il me laisse approuver et fusionner, qui sont les seules choses que je dois faire moi-même.
+Dans le premier, une session a ouvert une PR avec mon compte personnel au lieu de celui des agents. Ça brouille qui a fait quoi, et ce n'est pas à moi d'ouvrir ce que les agents écrivent. Un hook, avant l'appel de l'outil, refuse maintenant de créer une PR, une issue ou un commentaire avec mon compte. Il me laisse approuver et fusionner, qui sont les seules choses que je dois faire moi-même.
 
-Le second, c'est nous qui l'avons causé. Notre propre règle NullAway, ajoutée au parent Java, a cassé la construction du kit de plateforme, dans chaque dépôt Java. Le parent était vert, ses consommateurs rouges. Depuis, un changement du parent construit ses consommateurs dans sa propre PR, et ne peut pas être fusionné avant.
+Dans le second, c'est nous qui avons causé la panne. Notre propre règle NullAway, ajoutée au parent Java, a cassé la construction du kit de plateforme, dans chaque dépôt Java. Le parent était vert, ses consommateurs rouges. Depuis, un changement du parent construit ses consommateurs dans sa propre PR, et ne peut pas être fusionné avant.
 
 ## Ce que ça coûte
 

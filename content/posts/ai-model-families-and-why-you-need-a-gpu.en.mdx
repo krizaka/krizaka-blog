@@ -40,7 +40,7 @@ The number in a model's name is its count of parameters. 7B is 7 billion. Each p
 
 The arithmetic is simple. In 16 bits (FP16), a parameter weighs 2 bytes. In 8 bits (FP8 or Q8), 1 byte. In 4 bits (INT4, or GGUF files in Q4), half a byte. So Qwen 2.5 7B weighs about 15 GB in 16 bits, and the file I use, quantized to Q4_K_M, is 4.7 GB.
 
-Quantization means rounding each number so it takes less room. Like going from a RAW photo to a JPEG: you lose a little detail, you gain a lot of space. The GGUF format, the one of llama.cpp and Ollama, is made for this, which is why you see names like `Q4_K_M` or `Q8_0` at the end of the files.
+Quantization means rounding each number so it takes less room. Like going from a RAW photo to a JPEG: you lose a little detail, you gain a lot of space. The GGUF format, used by llama.cpp and Ollama, is made for this, which is why you see names like `Q4_K_M` or `Q8_0` at the end of the files.
 
 ## Dense or MoE: why "A14B" and "A22B"
 
@@ -76,7 +76,7 @@ An AI model is exactly that kind of work: billions of identical multiplications,
 
 There is a second reason, less known: the speed of memory. To write a single token, an LLM has to read all its active parameters, once. The 4.7 GB of Qwen 2.5 7B, for every piece of a word. What limits speed is often how fast the memory can be read, more than the arithmetic. An H100's memory reads at 3.35 TB per second. My M1 Max's, at 400 GB per second.
 
-I measured the difference on my Mac, same model, same question. Qwen 2.5 7B on the Mac's GPU (Metal) writes 34 tokens per second, the median of three tries. Forced onto the CPU alone, 18. For writing, the CPU is only twice as slow: on a Mac it draws on the same memory as the GPU, and writing is mostly limited by memory. For reading the question, where everything is arithmetic, the gap widens: 425 tokens per second on the GPU, 80 on the CPU. Five times more. On a long document to summarise, that reading is what counts. (The Mac was not idle during the measurement; other programs were running.)
+I measured the difference on my Mac, same model, same question. Qwen 2.5 7B on the Mac's GPU (Metal) writes 34 tokens per second, the median of three tries. Forced onto the CPU alone, 18. For writing, the CPU is only twice as slow: on a Mac it draws on the same memory as the GPU, and writing is mostly limited by memory. For reading the question, where everything is arithmetic, the gap widens: 425 tokens per second on the GPU, 80 on the CPU. Five times faster. On a long document to summarise, that reading is what counts. (The Mac was not idle during the measurement; other programs were running.)
 
 ## Apple Silicon, the special case
 
@@ -84,7 +84,7 @@ On a PC, the computer's memory and the GPU's are two separate worlds, joined by 
 
 That is why a Mac runs models that no 24 GB consumer graphics card would take. FLUX.2 [klein] 4B uses 8.3 GB there and makes a 1024×1024 image in 62 seconds. <Model id="z-image-turbo">Z-Image Turbo</Model> fits with 10.5 GB.
 
-But unified memory is not magic. A Mac's GPU is much slower than an H100, and the memory is shared with everything else: the system, the browser, other programs. The day I tried to make video locally with Wan 2.2 TI2V 5B, 62 GiB were already taken, it asked for 26 more to decode the frames, and everything stopped. I told that evening in [the post about the Mac](/story/an-engine-on-a-laptop/), and what came next, when Orazaka learned to send video to GPUs rented by the hour, in [the post about portability](/story/an-engine-on-a-laptop/#from-a-monolith-to-services).
+But unified memory is not magic. A Mac's GPU is much slower than an H100, and the memory is shared with everything else: the system, the browser, other programs. The day I tried to make video locally with Wan 2.2 TI2V 5B, 62 GiB were already taken, it asked for 26 more to decode the frames, and everything stopped. I told the story of that evening in [the post about the Mac](/story/an-engine-on-a-laptop/), and what came next, when Orazaka learned to send video to GPUs rented by the hour, in [the post about portability](/story/an-engine-on-a-laptop/#from-a-monolith-to-services).
 
 ## Our measured times: which GPU for which model
 

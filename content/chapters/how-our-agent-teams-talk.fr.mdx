@@ -18,7 +18,7 @@ sources:
   - how-our-agent-teams-talk
 versus:
   faced: "des gardes en place qui ne voyaient rien, et un agent pilote que personne ne vérifiait"
-  built: "quatre audits en un jour : chaque bug compté, un ticket, un garde avec son test"
+  built: "quatre audits en un jour : chaque bug compté, un ticket, une garde avec son test"
 stats:
   - value: "150"
     label: "contrôles d'environnement lus, aucune dérive"
@@ -90,7 +90,7 @@ Pourquoi des hooks, et pas une consigne de plus ? J'en ai parlé au [chapitre 21
 
 Un détail de conception compte. Tous les hooks passent par un petit point d'entrée. Si l'installation est cassée et que ce point d'entrée ne trouve pas l'outil, il laisse passer avec un avertissement : une installation abîmée ne doit pas refuser toutes les commandes de toutes les sessions. Si l'outil tourne et dit non, c'est non.
 
-Le premier audit a montré qu'un garde peut exister et ne rien voir. Le garde « l'index du code d'abord » était en place depuis des jours. Sur 101 sessions, 86 n'ont jamais interrogé l'index. Le garde ne regardait que le début de la commande, et seulement les chemins écrits en entier. Les agents enchaînent leurs commandes : 1 552 lectures de code sont passées derrière un point-virgule ou un « et ». Le garde a bloqué 12 fois. Rapport mesuré : 1 appel à l'index pour 170 lectures à la main.
+Le premier audit a montré qu'une garde peut exister et ne rien voir. La garde « l'index du code d'abord » était en place depuis des jours. Sur 101 sessions, 86 n'ont jamais interrogé l'index. La garde ne regardait que le début de la commande, et seulement les chemins écrits en entier. Les agents enchaînent leurs commandes : 1 552 lectures de code sont passées derrière un point-virgule ou un « et ». La garde a bloqué 12 fois. Rapport mesuré : 1 appel à l'index pour 170 lectures à la main.
 
 Le même audit a trouvé deux règles qui se contredisaient. Notre hook de commit refuse toute ligne de co-auteur qui ne nomme pas une de nos identités. L'outil, lui, propose par défaut d'en ajouter une. Résultat : 81 sessions sur 101 ont perdu au moins une commande sur ce refus. Le correctif n'était pas un hook de plus. On a éteint la proposition à la source, dans les réglages de la session.
 
@@ -194,11 +194,11 @@ Chaque audit lit les journaux d'une fenêtre de temps, sans rien modifier. Un bu
 
 <Bars label="Les bugs d'outillage prouvés par chaque audit, par gravité. Les fenêtres vont de 101 sessions (audit 1) à 7 (audit 4) : la barre dit ce qui a été trouvé, pas un taux." source="Les quatre rapports d'audit du 13 novembre. Au quatrième, 4 bugs du troisième ont été revus en plus des 7 nouveaux ; ils ne sont pas comptés deux fois." format="integer" stacked="true" series="Haute:danger | Moyenne:warning | Basse:neutral" data="Audit 1 · 101 sessions=3,8,3; Audit 2 · 11 sessions=0,4,4; Audit 3 · 10 sessions=2,6,2; Audit 4 · 7 sessions=1,3,3" />
 
-**Audit 1 : les gardes qui ne voyaient rien.** 101 sessions, 97 réussies, 2 coupées par leur plafond de tours, 2 tuées. Zéro échec d'environnement. Et 14 bugs. J'ai raconté les deux premiers : le garde de l'index aveugle, et les deux règles de co-auteur qui se contredisaient. Le troisième : l'outil qui ouvre une PR ne poussait pas la branche et plantait sans message utile. Sur 106 appels, 53 ont ouvert une PR. Il y avait aussi du bruit : un même type d'alerte est revenu 1 401 fois pour 22 PR, et 89 fins d'équipe réussies ont demandé chacune un accusé de lecture à la main.
+**Audit 1 : les gardes qui ne voyaient rien.** 101 sessions, 97 réussies, 2 coupées par leur plafond de tours, 2 tuées. Zéro échec d'environnement. Et 14 bugs. J'ai raconté les deux premiers : la garde de l'index aveugle, et les deux règles de co-auteur qui se contredisaient. Le troisième : l'outil qui ouvre une PR ne poussait pas la branche et plantait sans message utile. Sur 106 appels, 53 ont ouvert une PR. Il y avait aussi du bruit : un même type d'alerte est revenu 1 401 fois pour 22 PR, et 89 fins d'équipe réussies ont demandé chacune un accusé de lecture à la main.
 
-Ce qui en est sorti : le garde lit maintenant chaque segment d'une commande ; la ligne de co-auteur est éteinte à la source ; l'outil pousse lui-même et affiche la raison de GitHub ; une fin réussie dont la PR est dans le train n'est plus une alerte ; les appels à GitHub sont comptés.
+Ce qui en est sorti : la garde lit maintenant chaque segment d'une commande ; la ligne de co-auteur est éteinte à la source ; l'outil pousse lui-même et affiche la raison de GitHub ; une fin réussie dont la PR est dans le train n'est plus une alerte ; les appels à GitHub sont comptés.
 
-**Audit 2 : est-ce que les correctifs tiennent ?** 11 sessions après le dernier correctif. Zéro refus sur la ligne de co-auteur, sur 26 commits. Zéro session sans appel à l'index. Zéro accusé de lecture à la main. Et 8 nouveaux bugs, aucun grave. Le plus instructif : le garde des secrets refusait du code qui contient `process.env`, parce que son motif y voyait un fichier de secrets. Un garde trop large est aussi un bug : les agents apprennent à le contourner.
+**Audit 2 : est-ce que les correctifs tiennent ?** 11 sessions après le dernier correctif. Zéro refus sur la ligne de co-auteur, sur 26 commits. Zéro session sans appel à l'index. Zéro accusé de lecture à la main. Et 8 nouveaux bugs, aucun grave. Le plus instructif : la garde des secrets refusait du code qui contient `process.env`, parce que son motif y voyait un fichier de secrets. Une garde trop large est aussi un bug : les agents apprennent à le contourner.
 
 **Audit 3 : les agents qui pilotent.** 10 sessions, 10 bugs, dont 2 graves. Ces deux-là ne viennent pas des équipes. Ils viennent du chat du CTO.
 
@@ -206,9 +206,9 @@ Le premier : un chat que j'avais fermé par « Salut » a continué d'agir. Ses 
 
 Le second me concerne directement. Un agent a écrit sur une PR que j'avais lu et approuvé une page. Mon message disait seulement que j'étais d'accord pour la lire. La PR a fusionné une demi-heure plus tard. Mon accord écrit est venu après. Rien n'empêchait un agent d'écrire « le fondateur a approuvé ».
 
-Le même audit a vu une équipe lancer un plan d'infrastructure avec de fausses clés. Son brief l'interdisait. Le plan a quand même relu dix vrais enregistrements. Aucun garde n'existait pour ça.
+Le même audit a vu une équipe lancer un plan d'infrastructure avec de fausses clés. Son brief l'interdisait. Le plan a quand même relu dix vrais enregistrements. Aucune garde n’existait pour ça.
 
-Ce qui en est sorti tout de suite : la procédure de fermeture arrête maintenant chaque guetteur du chat qui se ferme, et un chat fermé n'écrit plus rien. Le reste est devenu des tickets : un garde qui refuse « le fondateur a lu, approuvé ou décidé » sans citer mon message, un garde sur les plans d'infrastructure, le cockpit qui doit montrer les équipes.
+Ce qui en est sorti tout de suite : la procédure de fermeture arrête maintenant chaque guetteur du chat qui se ferme, et un chat fermé n'écrit plus rien. Le reste est devenu des tickets : une garde qui refuse « le fondateur a lu, approuvé ou décidé » sans citer mon message, une garde sur les plans d'infrastructure, le cockpit qui doit montrer les équipes.
 
 **Audit 4 : attraper plus tôt.** 7 sessions, toutes réussies, 7 nouveaux bugs, et 4 du troisième audit revus. Le plus grave est presque drôle : le chat du CTO datait ses écrits de 45 à 60 minutes dans le futur. 17 heures futures sur 18 écritures, dont l'heure de mon accord sur un ticket. Une preuve mal datée n'est plus une preuve. Depuis, toute heure écrite vient de l'horloge de la machine, jamais de la mémoire du modèle.
 
@@ -224,7 +224,7 @@ Je ne sais pas faire la part des correctifs et celle de la charge, qui était pl
 
 <Split label="L'état au 13 novembre, après le quatrième audit : ce qui tient avec sa preuve, ce qui est encore ouvert, et ce que je ne sais pas mesurer.">
   <Side title="Ce qui tient" tone="own" items="150 contrôles d'environnement lus, 0 dérive | 28 sessions sur 28 réussies dans les trois dernières fenêtres | 0 refus sur la ligne de co-auteur depuis le correctif | L'index du code est interrogé : 85 % de sessions sans appel avant, 0 sur 11 puis 1 sur 10 après | L'ouverture d'une PR ne plante plus" />
-  <Side title="Encore ouvert" tone="refuse" items="Les voies restent fermées tant qu'un audit ne trouve pas 0 bug : quatre audits, quatre fois non | Les gardes des audits 3 et 4 sont des tickets, pas encore du code | Le garde des secrets refuse encore du code innocent | Le cockpit ne montre pas les équipes vivantes | Un contrôle exigé jamais démarré : détecté, pas encore relancé | Rien ne plafonne le nombre d'équipes en même temps : six ont tourné quand ma consigne disait trois | Un seul service par base : pas fait" />
+  <Side title="Encore ouvert" tone="refuse" items="Les voies restent fermées tant qu'un audit ne trouve pas 0 bug : quatre audits, quatre fois non | Les gardes des audits 3 et 4 sont des tickets, pas encore du code | La garde des secrets refuse encore du code innocent | Le cockpit ne montre pas les équipes vivantes | Un contrôle exigé jamais démarré : détecté, pas encore relancé | Rien ne plafonne le nombre d'équipes en même temps : six ont tourné quand ma consigne disait trois | Un seul service par base : pas fait" />
   <Side title="Pas mesuré" tone="plain" items="La cause d'un rouge de train par nature : la base garde le nom du contrôle, pas la raison | Le temps exact de résolution d'une alerte | Les appels à GitHub d'une session, avant le compteur | Le coût du contexte de départ, à part du reste | La part des correctifs dans la baisse du délai du train" />
 </Split>
 
@@ -236,8 +236,8 @@ Et les trois jours. Ils finissent demain soir. Jusqu'ici, aucune dérive d'envir
 
 ## Ce que je garde
 
-Un garde qui existe n'est pas un garde qui voit. Le nôtre était là, testé, documenté, et 86 sessions sur 101 passaient à côté. On ne l'a su qu'en comptant.
+Une garde qui existe n'est pas une garde qui voit. Le nôtre était là, testé, documenté, et 86 sessions sur 101 passaient à côté. On ne l'a su qu'en comptant.
 
 Les bugs les plus graves de la journée ne venaient pas des équipes qui codent. Ils venaient de l'agent qui pilote : un chat fermé qui agit encore, une approbation que je n'avais pas donnée, des heures écrites de mémoire. Plus un agent a de pouvoir, plus ce qu'il écrit doit être vérifié par un programme.
 
-Et chaque bug a suivi le même chemin : un compte dans un journal, un ticket, un garde avec son test, puis un nouvel audit pour voir si le garde tient. C'est lent. Les voies restent fermées. Je préfère ça à une machine qui va vite et dont je ne sais pas ce qu'elle fait.
+Et chaque bug a suivi le même chemin : un compte dans un journal, un ticket, une garde avec son test, puis un nouvel audit pour voir si la garde tient. C'est lent. Les voies restent fermées. Je préfère ça à une machine qui va vite et dont je ne sais pas ce qu'elle fait.

@@ -54,7 +54,7 @@ Le job tourne en [environ 2 minutes](repo:folioviv/actions/workflows/visual.yml)
 
 La configuration dit une chose qui m'importe plus que le reste, et qui tient en une ligne : [`retries: 0`](repo:folioviv/blob/main/apps/web/e2e/visual/playwright.config.mjs). Pas de rejeu. Un test qui échoue puis réussit au deuxième essai ne passe pas pour moi, il cache un bogue.
 
-Le noyau commun de ces parcours (se connecter une fois par processus, les masques, les hooks de vidéo, la quarantaine plafonnée) est dans `@krizaka/page-audit/journey`, écrit dans [krizaka-ts#277](repo:krizaka-ts/pull/277) puis publié par [la PR de version #278](repo:krizaka-ts/pull/278). Le premier produit à s'en servir est Yomizaka, avec [yomizaka#623](repo:verikora/pull/623) : un catalogue de parcours dans un fichier, et un premier parcours, la section G du bail. Au moment où j'écris, cette PR est encore dans la merge queue. Akinaza n'a pas encore son catalogue.
+Le noyau commun de ces parcours (se connecter une fois par processus, les masques, les hooks vidéo, la quarantaine plafonnée) est dans `@krizaka/page-audit/journey`, écrit dans [krizaka-ts#277](repo:krizaka-ts/pull/277) puis publié par [la PR de version #278](repo:krizaka-ts/pull/278). Le premier produit à s'en servir est Yomizaka, avec [yomizaka#623](repo:verikora/pull/623) : un catalogue de parcours dans un fichier, et un premier parcours, la section G du bail. Au moment où j'écris, cette PR est encore dans la merge queue. Akinaza n'a pas encore son catalogue.
 
 ## Le téléphone : Maestro
 
@@ -100,7 +100,7 @@ Et iOS ? Les mêmes parcours Maestro pourraient tourner sur un simulateur, mais 
 
 ## Le Mac : ce qui n'est pas testé
 
-L'application Mac d'Akinaza est faite avec Tauri. La CI ([`desktop.yml`](repo:folioviv/blob/main/.github/workflows/desktop.yml), qui appelle [le workflow partagé](repo:.github/blob/main/.github/workflows/tauri-macos.yml)) lance les tests Rust de l'application et construit un `.dmg` non signé à chaque PR qui touche l'application. La version signée n'est produite que sur une étiquette.
+L'application Mac d'Akinaza est faite avec Tauri. La CI ([`desktop.yml`](repo:folioviv/blob/main/.github/workflows/desktop.yml), qui appelle [le workflow partagé](repo:.github/blob/main/.github/workflows/tauri-macos.yml)) lance les tests Rust de l'application et construit un `.dmg` non signé à chaque PR qui touche l'application. La version signée n'est produite que sur un tag.
 
 Il n'y a aucun parcours d'interface sur le Mac. Personne n'ouvre l'application construite pour y cliquer. L'interface web qu'elle affiche est testée par les parcours web, ce qui couvre une partie du risque, mais la coque native (menus, fenêtre, signature) ne l'est pas. C'est un vrai trou.
 
@@ -222,7 +222,7 @@ Deux prises du web, de la même exécution verte :
 Le workflow [`download-videos.yml`](repo:folioviv/blob/main/.github/workflows/download-videos.yml) tourne chaque nuit sur `main` et n'est jamais obligatoire, donc il ne peut bloquer aucune fusion. Le workflow partagé [`app-videos.yml`](repo:.github/blob/main/.github/workflows/app-videos.yml) encode en webm et mp4 avec une affiche (30 secondes au plus, sans son, 720 pixels de large au plus), envoie le tout sur notre stockage de médias sous un nom qui contient son empreinte, et ouvre une PR. Un test unitaire échoue si la page nomme une vidéo absente du manifeste ou plus vieille que 14 jours.
 
 <Pipeline label="Quand chaque test tourne, et quand il filme">
-  <Stage title="Pull request" note="chaque changement">Lint, tests unitaires, build ; les parcours Playwright sur le web, ceux de Maestro sur un émulateur Android. La porte mobile est un contrôle requis.</Stage>
+  <Stage title="Pull request" note="chaque changement">Lint, tests unitaires, build ; les parcours Playwright sur le web, ceux de Maestro sur un émulateur Android. Le contrôle mobile est requis.</Stage>
   <Stage title="Merge queue" note="merge_group" tone="gate">Les mêmes contrôles, sur la branche de la file : le changement avec le dernier main fusionné.</Stage>
   <Stage title="main vert" note="après la fusion">Les parcours mobiles tournent encore une fois sur main.</Stage>
   <Stage title="Chaque nuit" note="download-videos">Sur main, Playwright et Maestro filment les parcours : 30 secondes au plus, sans son, 720 pixels de large au plus.</Stage>
@@ -243,7 +243,7 @@ Un test instable est un bogue. Cette règle est écrite dans l'ADR, avec une qua
 
 **L'import à froid.** Le test « répond 401 à quelqu'un qui n'est pas connecté » durait 5 007 ms, pile la limite de 5 secondes, et faisait échouer le pre-push. Le 401 lui-même prend environ 30 ms. La seconde perdue était le premier import dynamique des modules de routes dans le test. Dans [akinaza#561](repo:folioviv/pull/561), l'import se fait une fois avant les tests, le test affirme que chaque refus dure moins d'une seconde, et la limite n'a pas bougé.
 
-**RetroTv.** Dans Krizaka UI, le composant de télévision rétro échouait à 11 % sur une machine chargée. Deux causes : ses exemples chargeaient une affiche et un clip depuis le réseau, que le lanceur refusait sans bruit, et l'écran paresseux était photographié avant d'avoir monté ses couches. [krizaka-ui#875](repo:krizaka-ui/pull/875) met des fichiers de test dans le dépôt, fait échouer toute requête sortante qui n'est pas l'un d'eux, et [krizaka-ui#893](repo:krizaka-ui/pull/893) attend les couches.
+**RetroTv.** Dans Krizaka UI, le composant de télévision rétro échouait à 11 % sur une machine chargée. Deux causes : ses exemples chargeaient une affiche et un clip depuis le réseau, que le runner refusait sans bruit, et l'écran paresseux était photographié avant d'avoir monté ses couches. [krizaka-ui#875](repo:krizaka-ui/pull/875) met des fichiers de test dans le dépôt, fait échouer toute requête sortante qui n'est pas l'un d'eux, et [krizaka-ui#893](repo:krizaka-ui/pull/893) attend les couches.
 
 **La colonne de date à un pixel.** Dans Yomizaka, une capture échouait pour 956 pixels de différence. La date du jour est écrite par le serveur, dont l'horloge n'est pas figée : « vendredi 30 octobre 2026 » (24 lettres) contre « jeudi 29 octobre 2026 » (21), donc 181 pixels de large contre 152. Le test échouait selon le jour de la semaine. Le test avait été relancé sans lire le journal et il avait passé après minuit, ce qui est exactement la mauvaise habitude : on a lu le journal ensuite. Le détail est dans [yomizaka#611](repo:verikora/pull/611), et la vraie correction, l'horloge du serveur injectée, dans [yomizaka#615](repo:verikora/pull/615), encore ouverte.
 

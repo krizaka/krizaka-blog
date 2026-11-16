@@ -38,7 +38,7 @@ I answer it here, once, with the real files. Everything I show is in public repo
 
 At first, each repository had its own CI file. We copied the neighbour's and adapted it a little. A fix in one repository never reached the others.
 
-In [the chapter on agents](/story/building-with-agents/), I talked about a « build pack » for the CI, not shipped yet. Part of it has shipped. The [krizaka/.github](repo:.github) repository holds reusable workflows, one per kind of project: `node-ci.yml`, `java-ci.yml`, `python-ci.yml`, `expo-ci.yml`, `maven.yml`, `mobile-e2e.yml`. Each repository calls one, and says only what is its own.
+In [the chapter on agents](/story/building-with-agents/), I talked about a “build pack” for the CI, not shipped yet. Part of it has shipped. The [krizaka/.github](repo:.github) repository holds reusable workflows, one per kind of project: `node-ci.yml`, `java-ci.yml`, `python-ci.yml`, `expo-ci.yml`, `maven.yml`, `mobile-e2e.yml`. Each repository calls one, and says only what is its own.
 
 Here is krizaka.com's, in `krizaka-com/.github/workflows/ci.yml` (shortened):
 
@@ -100,7 +100,7 @@ if [ "$CODE" != "false" ]; then
 fi
 ```
 
-A skipped job is accepted only if the first job said, exactly, « nothing to do ». The rest of the time, skipping is failing.
+A skipped job is accepted only if the first job said, exactly, “nothing to do”. The rest of the time, skipping is failing.
 
 ## What main requires
 
@@ -112,7 +112,7 @@ On the main branch of our repositories, GitHub refuses a merge until some checks
 
 CodeQL goes through another door: code scanning is on by default on GitHub's side, and an organisation rule enforces it. It is a separate check, required to merge, and it runs in parallel with the rest. It blocks a PR that brings an error, or a security alert of high or critical level.
 
-SonarCloud has been on the Team plan since 26 October. We keep the default quality gate, which mostly judges new code. For krizaka.com, Akinaza and Yomizaka, the analysis now runs in our CI, after the tests, with coverage: it is a job of the workflow, and its result goes into the `CI gate`. The GitHub app still posts the `SonarCloud Code Analysis` check, the same as before. For the other repositories it is still automatic analysis, which does not read coverage: the « 80 % on new code » condition is not evaluated there.
+SonarCloud has been on the Team plan since 26 October. We keep the default quality gate, which mostly judges new code. For krizaka.com, Akinaza and Yomizaka, the analysis now runs in our CI, after the tests, with coverage: it is a job of the workflow, and its result goes into the `CI gate`. The GitHub app still posts the `SonarCloud Code Analysis` check, the same as before. For the other repositories it is still automatic analysis, which does not read coverage: the “80 % on new code” condition is not evaluated there.
 
 OpenSSF Scorecard runs too, every week and when a branch's protection changes. It is not required, on purpose: it never runs on a PR, so it could not be. It tells us whether our practices hold, it blocks nothing.
 
@@ -154,7 +154,7 @@ On krizaka.com, the count of hand-written tables and forms shows it well. When t
 
 This is the habit that changed our way of working the most. When we find a bug, we ask whether it is alone, or part of a family. If it is a family, we write a rule that refuses it, with its tests.
 
-The first example comes from Akinaza. A privacy test checked that a webhook did not leak a client's phone number. It searched the payload for « 514 ». But that payload holds random ids, and about one time in ten, a UUID contains « 514 ». The test failed at random. We saw it in Akinaza: five failures in a single CI run, which passed when run again.
+The first example comes from Akinaza. A privacy test checked that a webhook did not leak a client's phone number. It searched the payload for “514”. But that payload holds random ids, and about one time in ten, a UUID contains “514”. The test failed at random. We saw it in Akinaza: five failures in a single CI run, which passed when run again.
 
 We could have run it again and moved on. We wrote `rules/no-bare-digits-on-serialized.yml`:
 
@@ -182,11 +182,11 @@ invalid:
 
 The first case passes: the pattern looks for words, not a run of digits. The second is refused.
 
-A few days later, the same mistake came back in another form: a test looked for « 4821 » in an encrypted text, and an encrypted text is random bytes too. The issue for it says: fix the class, not the instance. The tests now check the whole plain text, and a second rule, `no-bare-digits-on-random-bytes`, refuses the pattern.
+A few days later, the same mistake came back in another form: a test looked for “4821” in an encrypted text, and an encrypted text is random bytes too. The issue for it says: fix the class, not the instance. The tests now check the whole plain text, and a second rule, `no-bare-digits-on-random-bytes`, refuses the pattern.
 
 <Compare label="Three bugs, three rules" topic="Repository" before="The bug" after="The rule">
-  <Case topic="akinaza" before="« 514 » found by chance in a UUID." after="no-bare-digits-on-serialized" afterDetail="An ast-grep rule, with its valid and refused cases." />
-  <Case topic="akinaza" before="A server page read a value from a client module: an invoice's state chip had lost its colour." after="The client boundary test" afterDetail="A server file imports only components and types from a « use client » module." />
+  <Case topic="akinaza" before="“514” found by chance in a UUID." after="no-bare-digits-on-serialized" afterDetail="An ast-grep rule, with its valid and refused cases." />
+  <Case topic="akinaza" before="A server page read a value from a client module: an invoice's state chip had lost its colour." after="The client boundary test" afterDetail="A server file imports only components and types from a “use client” module." />
   <Case topic="krizaka-ui" before="The build grouped files, and each group had its own router: some components ignored the app's." after="A guard in tsup, and its test" afterDetail="The router is always the package's entry, never a copy." />
 </Compare>
 
@@ -207,12 +207,12 @@ A test checks that this plugin is plugged in. If someone removes it one day, the
 
 A fixed bug is one bug less. A rule is its whole family less, in every repository that shares the rule.
 
-<Pipeline label="A bug becomes a rule: the « 514 » found by chance in a UUID, from a random failure to a family refused everywhere">
-  <Stage title="A random failure" note="akinaza#341">A privacy test looks for « 514 » in a payload full of random ids: five failures in one CI run.</Stage>
+<Pipeline label="A bug becomes a rule: the “514” found by chance in a UUID, from a random failure to a family refused everywhere">
+  <Stage title="A random failure" note="akinaza#341">A privacy test looks for “514” in a payload full of random ids: five failures in one CI run.</Stage>
   <Stage title="Alone, or a family?" note="the question">Searching a run of digits in random text fails by chance. That is a family, not one test.</Stage>
   <Stage title="A rule" note="ast-grep" tone="gate">no-bare-digits-on-serialized refuses the pattern, with its valid and refused cases.</Stage>
   <Stage title="The ratchet" note="a count recorded">A rule without a recorded count fails the CI: it cannot be slipped in quietly.</Stage>
-  <Stage title="The family comes back" note="akinaza#358" tone="ship">« 4821 » in an encrypted text: a second rule, no-bare-digits-on-random-bytes. The class is fixed, not the instance.</Stage>
+  <Stage title="The family comes back" note="akinaza#358" tone="ship">“4821” in an encrypted text: a second rule, no-bare-digits-on-random-bytes. The class is fixed, not the instance.</Stage>
 </Pipeline>
 
 ## Mobile: Maestro in CI
@@ -250,7 +250,7 @@ In krizaka-ui, the components' captures are compared pixel by pixel, inside the 
 
 ## Releases and production
 
-Our libraries, Krizaka UI and Krizaka TypeScript, use [changesets](https://github.com/changesets/changesets). Each PR that changes a package adds a small file that says what changed, and at which level: patch, minor or major. On main, an action keeps a « chore: version packages » PR up to date. When we merge it, the packages go to npm, with their provenance.
+Our libraries, Krizaka UI and Krizaka TypeScript, use [changesets](https://github.com/changesets/changesets). Each PR that changes a package adds a small file that says what changed, and at which level: patch, minor or major. On main, an action keeps a “chore: version packages” PR up to date. When we merge it, the packages go to npm, with their provenance.
 
 I have to be precise on one point. Provenance is there, but npm's trusted publishing, the kind that needs no token, is not yet. npm refused our first attempt, because the packages had no trusted publisher declared yet. For now, an automation token does the publishing.
 
@@ -327,7 +327,7 @@ We also stopped using Copilot's coding agent, after a cost spike. I give no figu
 I got this wrong in the first version of this chapter: I drew a queue, verify, container, Sonar, CodeQL. It was not true. verify and container ran at the same time, and so did CodeQL and SonarCloud. Here is what I changed, and why.
 
 - **CodeQL stayed in parallel, and required.** It reads the source. It needs neither the build nor the tests, so it gives the fastest answer. Putting it behind verify would have made it wait for nothing. The only thing to do was to check that it is required: it is, by a rule, in Akinaza, Orazaka and Yomizaka.
-- **Sonar moved into the pipeline, after the tests.** It is the only way to read coverage: automatic analysis cannot import it, so the « 80 % on new code » condition was never evaluated. The `sonar` job waits for verify, takes the coverage reports from the tests, and we wait for SonarCloud's verdict. It is the issue we opened for it. It runs on krizaka.com, Akinaza and Yomizaka. For each repository I switched automatic analysis off (the two cannot run together), then re-ran the CI at once, ready to switch it back on if the CI was red. It was green, and all three stayed. The other repositories will follow one by one. Orazaka first needs Java coverage added to the shared parent.
+- **Sonar moved into the pipeline, after the tests.** It is the only way to read coverage: automatic analysis cannot import it, so the “80 % on new code” condition was never evaluated. The `sonar` job waits for verify, takes the coverage reports from the tests, and we wait for SonarCloud's verdict. It is the issue we opened for it. It runs on krizaka.com, Akinaza and Yomizaka. For each repository I switched automatic analysis off (the two cannot run together), then re-ran the CI at once, ready to switch it back on if the CI was red. It was green, and all three stayed. The other repositories will follow one by one. Orazaka first needs Java coverage added to the shared parent.
 - **The image waits for verify, and it is scanned.** Before, it was built even when lint failed, which cost time for nothing. Now it comes after verify. Trivy looks for vulnerabilities and the job fails on a fixable high or critical finding; an accepted exception is written in a file, with its reason and an end date. An SBOM is kept on every run.
 - **Images are published only from main, after the merge.** That did not change: a PR's image is never published, and the deploy builds from the `production` branch. Only code that passed every required check ships.
 

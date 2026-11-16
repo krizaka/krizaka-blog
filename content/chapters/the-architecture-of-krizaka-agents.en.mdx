@@ -41,7 +41,7 @@ Two kinds of actors. Me: I write the issues, give my instructions to the CTO ses
 
 For the work, the tooling talks to GitHub only: it opens pull requests, sends them through the merge queue and reads the checks. Deploying is not its job: when main moves, the repository's pipeline deploys.
 
-The other dependency is the model. The CTO session and the team sessions run in Claude Code, on Anthropic's hosted models. It is the one piece we cannot replace with plain code. So it is the piece we cap (below, « The budget »).
+The other dependency is the model. The CTO session and the team sessions run in Claude Code, on Anthropic's hosted models. It is the one piece we cannot replace with plain code. So it is the piece we cap (below, “The budget”).
 
 ## The containers
 
@@ -96,7 +96,7 @@ Every refusal of a gate (opening a pull request, creating an issue, starting a s
 
 ### The train and the merge queue
 
-A session never merges. It opens its pull request with one tool, which carries the issue's « Done when » lines and refuses beyond five open pull requests per lane in the repository. Then it puts the pull request in the repository's train.
+A session never merges. It opens its pull request with one tool, which carries the issue's “Done when” lines and refuses beyond five open pull requests per lane in the repository. Then it puts the pull request in the repository's train.
 
 The train is a queue per repository and a script that empties it. `fix` pull requests go first, then the oldest. The script takes the head, rebases it on main, waits for the required checks and sends it into GitHub's merge queue, which runs the checks again on the real mix with main. A red head is skipped with its reason, and the next one goes. A red main freezes the repository's merges, not the opening of pull requests, until a `fix` lands.
 
@@ -160,7 +160,7 @@ The crack is the repair session that starts by itself when a call (a repository 
 
 <Architecture view="pr_life" label="The life of a pull request in twelve numbered steps" description="From the issue the founder writes to the merge the cockpit shows." />
 
-Follow the numbers. The one moment an agent is taken at its word is when it reads its own diff, and that reading decides nothing alone. The rest is checked: the issue says what « done » means, the session works in its worktree, the guards refuse early, the pull request carries the issue's lines with their proofs, the train only moves what is green, GitHub runs the checks again before the merge, and the merge is written to the database.
+Follow the numbers. The one moment an agent is taken at its word is when it reads its own diff, and that reading decides nothing alone. The rest is checked: the issue says what “done” means, the session works in its worktree, the guards refuse early, the pull request carries the issue's lines with their proofs, the train only moves what is green, GitHub runs the checks again before the merge, and the merge is written to the database.
 
 The review GitHub requires is given by a second app of ours, once per head commit, after the session has read its diff. Nobody reads a diff before the merge: what stands between a change and main is the checks, run again by the merge queue. A check can be tested and counted; that is why we chose it.
 
@@ -246,9 +246,9 @@ For our brand films, we also use two hosted generation services, one for picture
 
 ## How these diagrams are made
 
-The model is a LikeC4 file in this blog's repository, written on the organisation's base (the kinds of elements, the people, GitHub, the cloud, the platform). It adds nothing at the top level: it only details the « Agents tooling » container.
+The model is a LikeC4 file in this blog's repository, written on the organisation's base (the kinds of elements, the people, GitHub, the cloud, the platform). It adds nothing at the top level: it only details the “Agents tooling” container.
 
-A script runs `layoutViews` of `@krizaka/architecture` on it, the same check as for every repository's model: the file reads with the base, has no specification of its own, and every element it adds lives inside the one system it details. Verdict: « ok », 9 elements added, the five views covered. The script keeps the layout with the model's hash, and the blog's tests fail if the model changes without it. The page draws it with `ArchitectureDiagram` of `@krizaka/ui`, in both themes, with the text version below.
+A script runs `layoutViews` of `@krizaka/architecture` on it, the same check as for every repository's model: the file reads with the base, has no specification of its own, and every element it adds lives inside the one system it details. Verdict: “ok”, 9 elements added, the five views covered. The script keeps the layout with the model's hash, and the blog's tests fail if the model changes without it. The page draws it with `ArchitectureDiagram` of `@krizaka/ui`, in both themes, with the text version below.
 
 The check proves that every box exists in the organisation's model. The arrows come from our documentation: we read them one by one, without measuring them.
 

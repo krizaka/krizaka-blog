@@ -49,7 +49,7 @@ The CTO agent decides the rest, as long as it can be reversed. It picks an order
 
 Every 3 hours it writes me a report: what is finished, what is under way, what is blocked, and a forecast. Not a promise of a date, a forecast, with the gap from the last one. I banned "tonight" and "tomorrow": we say what is done, and what comes next, in order.
 
-This split is written down, so each session finds it again: what is mine on one side, what the agent can settle alone on the other. Without it I would be asked every time, or worse, guessed at.
+This split is written down, so each session finds it again: what is mine on one side, what the agent can settle alone on the other. Without it I would be asked every time, or worse, the agent would guess.
 
 ## Four lanes, no more
 
@@ -108,7 +108,7 @@ The most frequent one goes like this: I am testing one of our apps on my phone a
 
 A recent example, on the blog you are reading. A subscription confirmation link told me "link expired" when it was not. Reading the code, we saw that every error, a missing configuration, an unreachable database, a damaged token, a real expiry, sent the reader to the same "expired" page. A reader with a valid link could be told a lie because our list was down. The fix now separates the cases: confirmed, truly expired, invalid link, and "try again" with a trace in the logs when the problem is ours. Each has its test, and one test follows the link from the e-mail to the confirmation. We then reproduced the cases on a real local database before believing the result.
 
-We let go of nothing on five things: quality, architecture, cost, the experience and design of the interface, and security. That is our own phrase, and it is not a slogan: each one is a column of the cockpit.
+We never let up on five things: quality, architecture, cost, the experience and design of the interface, and security. That is our own phrase, and it is not a slogan: each one is a column of the cockpit.
 
 ## What it costs, and what is still hard
 

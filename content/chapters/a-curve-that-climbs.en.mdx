@@ -180,9 +180,9 @@ Backlog, finally, is the real pile. That is the one that has to come down.
 
 ### The board updates itself
 
-I swept the board. 45 cards were still in In progress or In review although their issue or PR was already closed or merged. 25 others sat in In review with no activity since October 20 to 23. The cause is simple: a session moves the card to In review, and nobody moves it again after the merge. I fixed all 70: the closed ones to Done, the sleeping ones back to Next.
+I swept the board. 45 cards were still in In progress or In review although their issue or PR was already closed or merged. 25 others sat in In review with no activity since October 20 or 23. The cause is simple: a session moves the card to In review, and nobody moves it again after the merge. I fixed all 70: the closed ones to Done, the sleeping ones back to Next.
 
-I did not want to do that sweep by hand again. So I turned on GitHub Projects' built-in workflows, in the board's settings. Before that, several were broken: they pointed to a « Todo » column that no longer existed.
+I did not want to do that sweep by hand again. So I turned on GitHub Projects' built-in workflows, in the board's settings. Before that, several were broken: they pointed to a “Todo” column that no longer existed.
 
 <Pipeline label="The board updates itself: GitHub Projects' built-in workflows move a card through its life, and a check every three hours catches the rest">
   <Stage title="Added to the project" note="→ Backlog">
