@@ -91,7 +91,7 @@ test("the stub page is a 0-second refresh with a canonical, noindex, and a visib
   assert.match(read("lib/retired.ts"), /retiredTarget/);
   assert.match(stub, /robots: \{ index: false/);
   assert.match(stub, /canonical: `\$\{SITE_URL\}\$\{target\.href\}`/);
-  assert.match(stub, /<Link href=\{target\.href\}>/);
+  assert.match(stub, /<Link\s+(?:prefetch=\{false\}\s+)?href=\{target\.href\}>/);
 });
 
 test("the posts routes build a stub for each retired slug (no live post); the shelf route builds the live posts", () => {

@@ -41,7 +41,9 @@ export function BasicsPage({ locale }: { locale: Locale }) {
           <p className="bl-status">{t.tags.none}</p>
         )}
         <p className="bl-story-link">
-          <Link href={localizedPath(locale, "/")}>{t.basics.story}</Link>
+          <Link prefetch={false} href={localizedPath(locale, "/")}>
+            {t.basics.story}
+          </Link>
         </p>
       </Section>
     </>

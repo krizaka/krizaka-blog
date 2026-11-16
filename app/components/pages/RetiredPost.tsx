@@ -39,7 +39,9 @@ export default function RetiredPost({ locale, slug }: { locale: Locale; slug: st
       <Section reveal={false}>
         <p>{lead}</p>
         <p>
-          <Link href={target.href}>{label}</Link>
+          <Link prefetch={false} href={target.href}>
+            {label}
+          </Link>
         </p>
       </Section>
     </>

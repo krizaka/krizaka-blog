@@ -129,7 +129,10 @@ export function SubscribeForm({ id = "nl" }: { id?: string }) {
       <CaptchaWidget key={captchaKey} onToken={onToken} label={n.captcha} language={locale} />
       {status === "error" && error && <Alert tone="danger">{error}</Alert>}
       <p id={`${id}-notice`} className="bl-nl-notice">
-        {n.compactConsent} <Link href={localizedPath(locale, "/newsletter")}>{n.privacyShort}</Link>
+        {n.compactConsent}{" "}
+        <Link prefetch={false} href={localizedPath(locale, "/newsletter")}>
+          {n.privacyShort}
+        </Link>
       </p>
     </form>
   );

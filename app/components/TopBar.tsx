@@ -35,7 +35,7 @@ export default function TopBar({ translated }: { translated: readonly string[] }
     <div className="kz-site-bar-wrap pointer-events-none fixed inset-x-0 top-3 z-50">
       <NavBar.Root label={b.aria} className="kz-site-bar pointer-events-auto">
         <NavBar.Brand asChild>
-          <Link href={home}>
+          <Link prefetch={false} href={home}>
             <KrizakaLogo size={26} />
             {t.site.name}
           </Link>
