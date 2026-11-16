@@ -8,13 +8,16 @@ import matter from "gray-matter";
 const map = JSON.parse(readFileSync(new URL("../lib/redirects.json", import.meta.url), "utf8"));
 const chapters = readdirSync(new URL("../content/chapters/", import.meta.url)).filter((f) => f.endsWith(".mdx"));
 
-test("every source of a chapter is either a live post or a retired post with a stub", () => {
+test("every source of a chapter is a live post, a retired post with a stub, or the chapter itself (written as a chapter)", () => {
   for (const f of chapters) {
     const locale = f.match(/\.(en|fr)\.mdx$/)[1];
     const { sources } = matter(readFileSync(new URL(`../content/chapters/${f}`, import.meta.url), "utf8")).data;
     for (const s of sources) {
       const live = existsSync(new URL(`../content/posts/${s}.${locale}.mdx`, import.meta.url));
-      assert.ok(live || map[s]?.[locale], `${f}: source ${s} is a post or has a stub in ${locale}`);
+      assert.ok(
+        live || map[s]?.[locale] || f.startsWith(`${s}.`),
+        `${f}: source ${s} is a post or has a stub in ${locale}`,
+      );
     }
   }
 });
