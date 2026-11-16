@@ -37,7 +37,7 @@ C'est la suite directe de [Tchou-tchou](/fr/story/tchou-tchou-how-our-pull-reque
 
 ## Une CI qui grossit
 
-Au début, krizaka.com avait sa propre CI : un fichier, quelques étapes, lint, tests, build. Puis, le 21 octobre, le site est passé sur le workflow commun de l'organisation, celui que partagent nos applications Node. Le 22, un contrôle de code dupliqué avec un cliquet. Le 26, l'analyse de SonarCloud avec la couverture des tests. Le 28, la file de fusion. Chacun de ces ajouts avait une raison, et chacun a coûté des minutes.
+Au début, krizaka.com avait sa propre CI : un fichier, quelques étapes, lint, tests, build. Puis, le 21 octobre, le site est passé sur le workflow commun de l'organisation, celui que partagent nos applications Node. Le 22, un contrôle de code dupliqué avec un cliquet. Le 26, l'analyse de SonarCloud avec la couverture des tests. Le 28, la merge queue. Chacun de ces ajouts avait une raison, et chacun a coûté des minutes.
 
 <Bars label="La durée médiane d'une CI réussie sur une pull request de krizaka.com, par semaine : elle grandit à mesure qu'on ajoute des contrôles." source="Compté depuis l'API de GitHub le 31 octobre : les 1 000 dernières exécutions du workflow CI de krizaka.com depuis le 9 octobre, seulement les pull requests terminées en succès ; semaines du lundi au dimanche, la dernière jusqu'au 31 octobre." format="number" series="Minutes:accent" data="Sem. du 6 oct.=1.4; Sem. du 13 oct.=2.1; Sem. du 20 oct.=6.1; Sem. du 27 oct.=10.6" />
 
@@ -75,7 +75,7 @@ Chacune de ces gardes a son test. C'est ce qui les distingue d'une règle écrit
 
 ## Mesurer avant de couper
 
-Le 30 octobre, j'ai demandé qu'on arrête d'ajouter et qu'on mesure. Une semaine complète, lue depuis l'API de GitHub, pour les quarante dépôts actifs de l'organisation : 16 003 exécutions de workflows en sept jours. On s'est donné un budget simple : au 90ᵉ centile, une PR doit avoir sa réponse en 10 minutes, la file de fusion en 15. Résultat : 23 couples dépôt et événement sur 41 étaient au-dessus.
+Le 30 octobre, j'ai demandé qu'on arrête d'ajouter et qu'on mesure. Une semaine complète, lue depuis l'API de GitHub, pour les quarante dépôts actifs de l'organisation : 16 003 exécutions de workflows en sept jours. On s'est donné un budget simple : au 90ᵉ centile, une PR doit avoir sa réponse en 10 minutes, la merge queue en 15. Résultat : 23 couples dépôt et événement sur 41 étaient au-dessus.
 
 <Numbers>
   <Num value="16003" label="exécutions de workflows" hint="en sept jours, quarante dépôts" />
@@ -101,7 +101,7 @@ Chaque dépôt déclare un profil (une bibliothèque, une application web, une a
 Je préfère le dire, parce que ce sont ces erreurs qui ont dessiné les règles.
 
 - **Des noms de jobs calculés.** Le nom d'un job de vérification était une expression. Quand le job était sauté, GitHub affichait l'expression brute au lieu du nom, et une PR restait bloquée sur un check qui n'arriverait jamais. Les noms sont maintenant littéraux, et un test le vérifie.
-- **Un délai de file trop court.** La file de fusion abandonnait une PR au bout de trente minutes, alors que certaines CI duraient plus longtemps. Des PR saines étaient éjectées. Le délai est maintenant plus long que la CI la plus lente.
+- **Un délai de file trop court.** La merge queue abandonnait une PR au bout de trente minutes, alors que certaines CI duraient plus longtemps. Des PR saines étaient éjectées. Le délai est maintenant plus long que la CI la plus lente.
 - **Des rouges périmés.** Un check rouge sur une branche en retard sur main était souvent déjà réparé sur main. On relançait à la main. Le train met maintenant la branche à jour une fois avant de juger.
 - **Une reconstruction par version.** Chaque version d'un produit forçait une reconstruction complète de krizaka.com : 287 en une semaine, plus de trente heures de machines qui attendaient.
 - **La CI de krizaka.com est trop lente.** Au 90ᵉ centile, une PR attend encore près de dix-sept minutes, au-dessus de notre propre budget. L'image du conteneur, avec son test de démarrage, en prend presque huit. Ce n'est pas réglé.

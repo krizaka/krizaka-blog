@@ -78,7 +78,7 @@ Une correction d'abord, parce que je le disais mal. Le « moteur d'IA » n'est p
 Voici le chemin d'une demande, dans l'ordre.
 
 <Pipeline label="Le chemin d'une demande dans Orazaka">
-  <Stage title="Le client" note="web, mobile ou un produit">Le web passe par son serveur intermédiaire (BFF), le mobile par un jeton, un produit comme Yomizaka par une clé de service. Personne n'appelle un service directement.</Stage>
+  <Stage title="Le client" note="web, mobile ou un produit">Le web passe par son serveur intermédiaire (BFF), le mobile par un token, un produit comme Yomizaka par une clé de service. Personne n'appelle un service directement.</Stage>
   <Stage title="L'edge" note="la porte unique">Il échange une clé d'API contre une session, applique CORS et la traçabilité, et envoie la route au bon service.</Stage>
   <Stage title="Le Studio" note="le graphe d'étapes">Il tient les packs, les installations et les runs. Il fait avancer le plan d'un Studio étape par étape, avec compensation si une étape échoue.</Stage>
   <Stage title="RabbitMQ et l'outbox" note="interactif ou batch" tone="gate">Le travail est écrit dans la même transaction que l'état du run, puis publié dans une file. Une ligne de la base dit laquelle.</Stage>
@@ -95,7 +95,7 @@ C'est la pièce qui compte le plus pour moi, et celle qui a le plus de travail d
 L'idée est simple. Un modèle produit une sortie. Avant de la donner à quelqu'un, on la juge. Et on ne demande pas à un modèle ce qu'une règle peut vérifier. Voici l'ordre visé, pour chaque étape :
 
 <Pipeline label="La boucle de contrôle visée pour une étape : les règles avant les modèles, une personne en dernier">
-  <Stage title="Vérifications déterministes" note="d'abord, sans modèle">Le schéma est respecté, le fichier existe et se lit, la durée et les proportions sont bonnes. Pas de jeton. Cible : moins de 10 ms.</Stage>
+  <Stage title="Vérifications déterministes" note="d'abord, sans modèle">Le schéma est respecté, le fichier existe et se lit, la durée et les proportions sont bonnes. Pas de token. Cible : moins de 10 ms.</Stage>
   <Stage title="Un juge sémantique" note="un score de dérive">Un modèle lit la sortie et dit à quel point elle s'écarte de ce qui était demandé. Il ne tourne jamais sur une sortie que les vérifications ont rejetée.</Stage>
   <Stage title="Une correction" note="au plus K essais" tone="gate">Au-dessus du seuil, on régénère en disant au modèle ce qui ne va pas. Une mémoire des erreurs refuse une correction qui répète un échec déjà vu.</Stage>
   <Stage title="Un humain" note="en dernier" tone="ship">Après K essais, ou dès le départ quand la politique le dit, la décision revient à une personne.</Stage>
@@ -131,7 +131,7 @@ Il y a deux façons de se tromper. Croire que le modèle fera attention : il ne 
 
 L'ADR-091 pose trois règles :
 
-- **Celui qui demande voyage.** L'identité vérifiée (l'organisation, la personne, ses rôles, ses groupes) part avec chaque recherche et chaque appel d'outil, dans un jeton signé. Jamais dans le corps d'une requête.
+- **Celui qui demande voyage.** L'identité vérifiée (l'organisation, la personne, ses rôles, ses groupes) part avec chaque recherche et chaque appel d'outil, dans un token signé. Jamais dans le corps d'une requête.
 - **Le droit est dans la requête.** Chaque passage indexé porte les droits de sa source. Le filtre fait partie de la recherche elle-même, avant le classement. Un passage qu'on n'a pas le droit de lire n'est jamais lu, donc il ne peut fuir ni par un extrait, ni par un compte, ni par un cache.
 - **Chaque outil déclare ses rôles.** Un outil qui ne déclare rien est réservé aux administrateurs. Sans identité, rien ne s'exécute.
 

@@ -67,7 +67,7 @@ Deux vues d'un même modèle écrit en [LikeC4](https://likec4.dev/), la notatio
 
 ## 6. La CI écrite une fois, dans GitHub
 
-- **Choix.** Le [dépôt `.github`](repo:.github) de notre organisation porte 36 [workflows réutilisables](https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows) (`on: workflow_call`) : Node, Java, Python, Rust, bout en bout mobile, parcours, analyses de sécurité. Chaque produit les appelle, [épinglés à un SHA de commit complet](https://docs.github.com/en/actions/reference/security/secure-use), et atterrit par une [file de fusion](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue).
+- **Choix.** Le [dépôt `.github`](repo:.github) de notre organisation porte 36 [workflows réutilisables](https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows) (`on: workflow_call`) : Node, Java, Python, Rust, bout en bout mobile, parcours, analyses de sécurité. Chaque produit les appelle, [épinglés à un SHA de commit complet](https://docs.github.com/en/actions/reference/security/secure-use), et atterrit par une [merge queue](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue).
 - **Refusé.** Une copie de la CI dans chaque dépôt.
 - **Pourquoi.** Une correction d'un check arrive partout par une montée d'épingle, et chaque dépôt répond aux mêmes checks requis, agents compris.
 - **Coût.** Changer un workflow partagé, c'est changer chaque dépôt : il est donc testé seul et déployé par montées d'épingle. Un appelant ne peut changer que ce que le workflow expose en entrées.

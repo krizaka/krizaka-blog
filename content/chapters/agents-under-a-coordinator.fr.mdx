@@ -2,7 +2,7 @@
 title: "Des agents sous un coordinateur : ce qui a cassé, et comment on l'a vu"
 description: "Un coordinateur sans modèle, des baux qui expirent, un périmètre tenu à quatre endroits, des crons qui attendent un événement, des alertes dans une base. Trois tests ratés, puis une vague qui atterrit."
 seoTitle: "Des agents sous un coordinateur, avec les mesures"
-seoDescription: "Baux, jetons, périmètre tenu à quatre endroits, crons sur événement, alertes en base : ce qui a cassé pendant nos tests, et ce qui le tient maintenant."
+seoDescription: "Baux, tokens, périmètre tenu à quatre endroits, crons sur événement, alertes en base : ce qui a cassé pendant nos tests, et ce qui le tient maintenant."
 date: 2026-11-10
 tags: [ai, integration, measurements]
 author: oussama
@@ -59,7 +59,7 @@ Le registre est une base SQLite locale, sur le Mac. Elle ne contient jamais de c
   </Stage>
   <Stage title="Un bail" note="un seul gagne">
     La session réclame la tâche. La réclamation est atomique : sur plusieurs demandes simultanées, une seule gagne. Elle
-    reçoit un bail, avec une échéance et un jeton.
+    reçoit un bail, avec une échéance et un token.
   </Stage>
   <Stage title="Un worktree" note="refusé sans bail" tone="gate">
     L'outil qui crée l'espace de travail refuse s'il n'y a pas de bail actif sur la tâche.
@@ -68,7 +68,7 @@ Le registre est une base SQLite locale, sur le Mac. Elle ne contient jamais de c
     Chaque commit est comparé au périmètre accordé. Un fichier hors périmètre est refusé au commit, pas après la PR.
   </Stage>
   <Stage title="L'atterrissage" note="un à la fois" tone="gate">
-    Il refuse un bail expiré, un jeton périmé, un diff hors périmètre, un rebase raté, des contrôles rouges. Il ne lance
+    Il refuse un bail expiré, un token périmé, un diff hors périmètre, un rebase raté, des contrôles rouges. Il ne lance
     que les contrôles rapides : typage, lint, tests.
   </Stage>
   <Stage title="Fait" note="preuve visuelle par vague" tone="ship">
@@ -79,18 +79,18 @@ Le registre est une base SQLite locale, sur le Mac. Elle ne contient jamais de c
 
 Une tâche n'est pas un ticket. Le ticket suit le besoin ; la tâche, c'est ce qui tourne. Un ticket peut donner plusieurs tâches, et une tâche peut servir plusieurs tickets.
 
-## Le verrou : un bail, un battement, un jeton
+## Le verrou : un bail, un battement, un token
 
 Une réservation que rien ne fait respecter n'est qu'un souhait. Le verrou du coordinateur repose sur trois pièces simples.
 
-Le **bail** a une échéance. Pendant notre dernière vague, il courait trente minutes. Le **battement** le prolonge : toutes les deux minutes, le lanceur de la session renouvelle le bail. Le **jeton** (on dit « fencing token ») est un numéro qui augmente à chaque nouveau bail. Si une session s'endort et que son bail expire, la tâche revient libre, une autre session peut la prendre avec un jeton plus grand, et l'ancien jeton ne peut plus rien livrer.
+Le **bail** a une échéance. Pendant notre dernière vague, il courait trente minutes. Le **battement** le prolonge : toutes les deux minutes, le lanceur de la session renouvelle le bail. Le **token** (on dit « fencing token ») est un numéro qui augmente à chaque nouveau bail. Si une session s'endort et que son bail expire, la tâche revient libre, une autre session peut la prendre avec un token plus grand, et l'ancien token ne peut plus rien livrer.
 
-<Pipeline label="Le bail, le battement et le jeton : une session dont le bail a expiré ne peut plus livrer, même si elle se réveille avec un travail fini.">
+<Pipeline label="Le bail, le battement et le token : une session dont le bail a expiré ne peut plus livrer, même si elle se réveille avec un travail fini.">
   <Stage title="Réclamer" note="une seule gagne">
     Plusieurs sessions demandent la même tâche au même moment. La base la donne à une seule, dans une transaction.
   </Stage>
-  <Stage title="Bail et jeton n" note="échéance à 30 min">
-    La session reçoit le bail et le jeton n. Elle travaille dans son worktree.
+  <Stage title="Bail et token n" note="échéance à 30 min">
+    La session reçoit le bail et le token n. Elle travaille dans son worktree.
   </Stage>
   <Stage title="Battement" note="le lanceur, hors du modèle">
     Toutes les deux minutes, le programme qui fait tourner la session renouvelle le bail. Ce n'est pas l'agent qui s'en
@@ -100,11 +100,11 @@ Le **bail** a une échéance. Pendant notre dernière vague, il courait trente m
     Plus de battement : à l'échéance, le service marque le bail expiré et remet la tâche à prendre. Il vérifie toutes les
     30 secondes et à chaque requête.
   </Stage>
-  <Stage title="Bail et jeton n+1" note="une autre session">
-    Une nouvelle session reprend la tâche, avec un jeton plus grand.
+  <Stage title="Bail et token n+1" note="une autre session">
+    Une nouvelle session reprend la tâche, avec un token plus grand.
   </Stage>
   <Stage title="Livrer avec n" note="refusé" tone="gate">
-    L'ancienne session se réveille et veut livrer avec le jeton n. Refusé : ce jeton n'est plus le bon.
+    L'ancienne session se réveille et veut livrer avec le token n. Refusé : ce token n'est plus le bon.
   </Stage>
 </Pipeline>
 
@@ -188,15 +188,15 @@ Le principe est simple : la base locale d'abord. On lit GitHub seulement pour ce
 
 Le 9 novembre à 18 h 20, Mouloud a remis la ligne du cron `sync-db` (il synchronise nos bases locales, et les copies de sauvegarde se font pendant son passage) dans le bloc géré de la crontab. Mais le script n'avait pas le droit d'exécution dans Git. Tous les passages ont échoué avec le code de sortie 126, pendant environ six heures et demie.
 
-Le chien de garde l'a vu. À 18 h 30, il a levé une alerte CRITIQUE, sous la forme d'une notification sur le bureau du Mac. Personne ne l'a lue. À 0 h 45, Mouloud a rétabli le cron avec l'ancienne ligne, a lancé une synchro à la main (sortie 0), puis a ajouté le bit d'exécution et une garde : tout outil lancé par un cron doit être exécutable.
+Le watchdog l'a vu. À 18 h 30, il a levé une alerte CRITIQUE, sous la forme d'une notification sur le bureau du Mac. Personne ne l'a lue. À 0 h 45, Mouloud a rétabli le cron avec l'ancienne ligne, a lancé une synchro à la main (sortie 0), puis a ajouté le bit d'exécution et une garde : tout outil lancé par un cron doit être exécutable.
 
 C'était notre erreur, et l'outil l'avait attrapée. Ce qui a manqué, c'est un endroit où l'alerte reste jusqu'à ce que quelqu'un s'en occupe. Une notification, ça passe et ça disparaît.
 
 Depuis le 10 novembre, toutes les alertes vont dans une seule table de notre base d'opérations, et plus aucune notification n'est envoyée, quelle que soit la gravité. Un test refuse le retour d'une notification. Les sessions lisent les alertes ouvertes en premier au démarrage, Mouloud à chaque point d'étape, et le cockpit les montre avec ce qui a été fait pour chacune.
 
 <Pipeline label="La vie d'une alerte : levée, ouverte, prise en charge avec une note, résolue avec une preuve, puis purgée sept jours après la prise en charge, jamais tant qu'elle est ouverte.">
-  <Stage title="Levée" note="chien de garde, trains">
-    Le chien de garde, le contrôleur des trains et l'automate qui débloque les PR écrivent une ligne dans la table.
+  <Stage title="Levée" note="watchdog, trains">
+    Le watchdog, le contrôleur des trains et l'automate qui débloque les PR écrivent une ligne dans la table.
   </Stage>
   <Stage title="Ouverte" note="lue au démarrage">
     La même alerte qui revient ne fait pas une nouvelle ligne : son compte monte, avec l'heure du dernier passage. Elle
