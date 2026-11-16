@@ -47,9 +47,6 @@ for _ in $(seq 1 30); do curl -sf http://localhost:3000/robots.txt >/dev/null &&
 node scripts/check-seo-family.mjs --base http://localhost:3000 --host https://blog.krizaka.com --index on --limit 60
 node scripts/check-links.mjs --base http://localhost:3000 --host https://blog.krizaka.com --external
 node_modules/.bin/playwright install --with-deps chromium
-node scripts/check-visual.mjs --base http://localhost:3000 --update
-for f in tests/visual/*.top.*.1440.png; do echo "B64START $f"; base64 -w0 "$f"; echo; echo "B64END"; done
-exit 1
 node scripts/check-layout.mjs --base http://localhost:3000 --posts out
 # The top and the end of a post against their approved baselines (tests/visual/; a change to the template remakes them with --update).
 node scripts/check-visual.mjs --base http://localhost:3000
