@@ -17,8 +17,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const NUM = String.raw`\d[\d   .,]{0,12}`;
 export const MASK = [
   { name: "money", re: new RegExp(`${NUM}[$€£]`, "g") },
-  { name: "money", re: new RegExp(`${NUM}(?:CAD|USD|EUR)\\b`, "g") },
-  { name: "money", re: new RegExp(`(?:CAD|USD|EUR|US\\$|[$€£])\\s?${NUM}`, "g") },
+  { name: "money", re: new RegExp(String.raw`${NUM}(?:CAD|USD|EUR)\b`, "g") },
+  { name: "money", re: new RegExp(String.raw`(?:CAD|USD|EUR|US\$|[$€£])\s?${NUM}`, "g") },
   { name: "email", re: /[\w.%+-]{1,64}@[\w-]{1,63}(?:\.[\w-]{1,63}){1,4}/g },
   { name: "phone", re: /\(?\b\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}\b/g },
   { name: "postal", re: /\b[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z]\b/g },
@@ -68,7 +68,7 @@ const WORDS = [
     "prod(?:uction)?-key-name",
   ],
 ];
-export const SENSITIVE_WORDS = new RegExp(`\\b(?:${WORDS.flat().join("|")})\\b`, "i");
+export const SENSITIVE_WORDS = new RegExp(String.raw`\b(?:${WORDS.flat().join("|")})\b`, "i");
 
 /* The guard's net is WIDER than the masking: any long digit run, any address-like at-sign, any currency next to a digit, any long
    hex, any private path. A pattern here that masking missed is a refusal, never a silent pass. */
@@ -106,7 +106,7 @@ function wrapText(node, start, end, why, ctx) {
   const before = node.splitText(start);
   const rest = before.splitText(end - start);
   const span = document.createElement("span");
-  span.setAttribute("data-kz-masked", why);
+  span.dataset.kzMasked = why;
   span.textContent = placeholderOf(before.data);
   before.replaceWith(span);
   ctx.count[why] = (ctx.count[why] ?? 0) + 1;
