@@ -19,7 +19,20 @@ const REFUSED = FR_TERMS.refuse.map(({ pattern, use }) => ({
 }));
 
 /** The prose of a post: code fences and inline code are left out (a command or an identifier is not French). */
-const prose = (body) => body.replace(/^\s*(```|~~~)[\s\S]*?^\s*\1\s*$/gm, "").replace(/`[^`\n]*`/g, "");
+function prose(body) {
+  const kept = [];
+  let fence = null;
+  for (const line of body.split("\n")) {
+    const opener = line.trimStart().slice(0, 3);
+    if (opener === "```" || opener === "~~~") {
+      if (fence === null) fence = opener;
+      else if (fence === opener) fence = null;
+      continue;
+    }
+    if (fence === null) kept.push(line.replace(/`[^`\n]*`/g, ""));
+  }
+  return kept.join("\n");
+}
 
 /** Every refused calque of one French text, once per word, with the word to use. */
 export function frenchProblems(file, data, body) {
