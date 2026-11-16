@@ -220,7 +220,7 @@ The model is a LikeC4 file in this blog's repository. It is written against the 
 
 A script runs `layoutViews` of the organisation's architecture package (`@krizaka/architecture`) on it, with the organisation's base: the same check the organisation applies to every repository's model. The check is the package's own: the file parses with the base, writes no specification of its own, and every element it adds lives inside the one system it details. Its verdict on this model is « ok », with 9 elements added, and it covers the five views. The same call lays the views out with LikeC4, and the script records the layout with the hash of the model; the blog's tests fail when the model changes and the layout does not. The page draws that layout with the organisation's shared diagram component (`ArchitectureDiagram` of `@krizaka/ui`), in the page's colours, so both themes follow, with each view's text version under it. The blog has no drawing code of its own.
 
-One limit matters to an architect. The organisation's tool proves the containers it can bind to code against the main branch of each repository. It does not prove runtime relationships: those are drawn, not checked. The arrows in this post are what the documentation and the published chapters say, not a trace of calls. Before publication, each component and each arrow was read against the code by a reviewer who had not written the post; that is a reading, not a proof.
+One limit, though. Our tool checks that every box in the diagram really exists in the code. The arrows don't get that check: they come from our docs. We read them one by one, but we didn't measure them.
 
 ## Frequently asked questions
 
