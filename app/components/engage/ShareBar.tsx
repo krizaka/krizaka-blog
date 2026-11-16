@@ -44,12 +44,12 @@ export function ShareBar({ url, title }: { url: string; title: string }) {
   return (
     <div className="bl-share" role="group" aria-label={e.shareAria}>
       {native && (
-        <button type="button" onClick={share}>
+        <button type="button" onClick={() => void share()}>
           <Share90Icon size={15} />
           {e.shareNative}
         </button>
       )}
-      <button type="button" onClick={copy}>
+      <button type="button" onClick={() => void copy()}>
         {copied ? <CheckIcon size={15} /> : <CopyIcon size={15} />}
         {copied ? e.copied : e.copy}
       </button>
