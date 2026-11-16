@@ -1,7 +1,7 @@
 /* Chapter 34: a check that did not go through in Verikora, the message where the report would have been, « Retry »
    (filled) and « Choose another file », the menu and the top bar still usable; below, the « Under the law » card that keeps
    a second filled button (not fixed yet, measured on 15 November). Not to scale. */
-import type { SketchEntry } from "./api.ts";
+import type { SketchEntry } from "../../lib/sketches.ts";
 
 export default {
   spec: {

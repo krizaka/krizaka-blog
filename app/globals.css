@@ -982,44 +982,11 @@ picture {
   display: block;
   color: var(--kz-text-secondary);
 }
-/* Sketches (lib/sketches.ts, content/sketches/): a screen drawn as with a pen, then its legend in real text, one line per
-   circled number, the number in the margin's red. The drawing itself is @krizaka/ui/sketch (krizaka-internal#4006). */
+/* Sketches (lib/sketches.ts, content/sketches/): drawn by @krizaka/ui/sketch (krizaka-internal#4006); the blog only spaces
+   them in the reading column. */
 .bl-sketch {
   margin: 2.25rem 0;
-  display: grid;
-  gap: 0.75rem;
   min-width: 0;
-}
-.bl-sketch > figcaption {
-  font-family: var(--kz-font-mono);
-  font-size: 0.8125rem;
-  color: var(--kz-text-secondary);
-}
-.bl-sketch-legend {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: 0.5rem;
-  font-size: 0.9375rem;
-}
-.bl-sketch-legend li {
-  display: grid;
-  grid-template-columns: 1.75rem minmax(0, 1fr);
-  gap: 0.5rem;
-  align-items: baseline;
-}
-.bl-sketch-n {
-  display: inline-grid;
-  place-items: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  border: 1.5px solid var(--kz-paper-rule-margin, var(--kz-accent));
-  border-radius: 50%;
-  color: var(--kz-paper-rule-margin, var(--kz-accent-text));
-  font-family: var(--kz-font-mono);
-  font-size: 0.8125rem;
-  line-height: 1;
 }
 /* Trains (Rails, lib/rails.ts): rails drawn from the tokens on a plate, the station a post with its name, wagons on wheels,
    a red wagon on its siding, a frozen rail dashed. A name column on a wide screen, the name above its rail on a phone; then

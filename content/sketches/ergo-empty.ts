@@ -1,6 +1,6 @@
 /* Chapter 34: an empty collection in Verikora, the owl, one sentence and the screen's only drop zone with what it
    accepts. The owl is a soft box until @krizaka/ui/sketch can draw a mascot (krizaka-internal#4006). Not to scale. */
-import type { SketchEntry } from "./api.ts";
+import type { SketchEntry } from "../../lib/sketches.ts";
 
 export default {
   spec: {

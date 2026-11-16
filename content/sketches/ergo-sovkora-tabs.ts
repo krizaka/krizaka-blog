@@ -1,6 +1,7 @@
 /* Chapter 34: the navigation of Sovkora's phone app, four tabs at the bottom, each an icon and a word, nothing hidden at
    the top (decision record only: no capture, no measure). The tabs are drawn as places, not named. Not to scale. */
-import type { SketchEntry, SketchShape } from "./api.ts";
+import type { SketchShape } from "@krizaka/ui/sketch";
+import type { SketchEntry } from "../../lib/sketches.ts";
 
 const tab = (x: number): SketchShape[] => [
   { kind: "box", x: x + 5, y: 266, w: 14, h: 14 },

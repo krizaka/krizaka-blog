@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import * as glyphs from "@krizaka/icons/glyphs";
-import { SKETCHES, legendProblems, numbersOf, sketchOf, sketchProblems, specsOf } from "../lib/sketches.ts";
+import { SKETCHES, drawingProblems, legendFor, legendProblems, numbersOf, sketchOf, specsOf } from "../lib/sketches.ts";
 
 /* The chapters' pen drawings (krizaka-internal#3943): typed specs in content/sketches/, words in the chapter, the block
    that draws them in @krizaka/ui (krizaka-internal#4006). */
@@ -24,7 +24,7 @@ const sketchesOf = (file) =>
 const used = chapters.flatMap((file) => sketchesOf(file).map((s) => ({ ...s, file })));
 
 test("every drawing is valid: numbers 1 to n in reading order, shapes and callouts inside, no words inside", () => {
-  for (const [id, entry] of Object.entries(SKETCHES)) assert.deepEqual(sketchProblems(id, entry), [], id);
+  for (const [id, entry] of Object.entries(SKETCHES)) assert.deepEqual(drawingProblems(id, entry), [], id);
 });
 
 test("every icon of a drawing is an @krizaka/icons glyph", () => {
@@ -82,10 +82,10 @@ test("the legend check catches a missing line, a line without a number and a num
 test("the drawing check catches a shape outside, a repeated number and words inside the drawing", () => {
   const spec = (shapes, callouts) => ({ spec: { width: 100, height: 100, shapes, callouts } });
   const box = { kind: "box", x: 10, y: 10, w: 20, h: 20 };
-  assert.deepEqual(sketchProblems("x", spec([box], [{ n: 1, at: [10, 10] }])), []);
-  assert.match(sketchProblems("x", spec([{ ...box, w: 200 }], [{ n: 1, at: [10, 10] }])).join(), /shape 1 leaves it/);
+  assert.deepEqual(drawingProblems("x", spec([box], [{ n: 1, at: [10, 10] }])), []);
+  assert.match(drawingProblems("x", spec([{ ...box, w: 200 }], [{ n: 1, at: [10, 10] }])).join(), /shape 1 leaves it/);
   assert.match(
-    sketchProblems(
+    drawingProblems(
       "x",
       spec(
         [box],
@@ -98,10 +98,31 @@ test("the drawing check catches a shape outside, a repeated number and words ins
     /each once/,
   );
   assert.match(
-    sketchProblems("x", spec([{ kind: "text", x: 1, y: 1, text: "Hi" }], [{ n: 1, at: [5, 5] }])).join(),
+    drawingProblems("x", spec([{ kind: "text", x: 1, y: 1, text: "Hi" }], [{ n: 1, at: [5, 5] }])).join(),
     /no words/,
   );
-  assert.match(sketchProblems("x", spec([box], [{ n: 1, at: [10, 10], from: [-5, 10] }])).join(), /callout 1 leaves/);
+  assert.match(drawingProblems("x", spec([box], [{ n: 1, at: [10, 10], from: [-5, 10] }])).join(), /callout 1 leaves/);
+});
+
+test("a pair's legend is split by side: each drawing gets the lines of its own numbers", () => {
+  const entry = sketchOf("ergo-studios");
+  assert.ok("before" in entry);
+  const legend = [1, 2, 3, 4].map((n) => ({ n, label: `L${n}`, text: "t" }));
+  assert.deepEqual(
+    legendFor(entry.before, legend).map((l) => l.n),
+    [1],
+  );
+  assert.deepEqual(
+    legendFor(entry.after, legend).map((l) => l.n),
+    [2, 3, 4],
+  );
+});
+
+test("each side of every drawing passes @krizaka/ui's own legend check", async () => {
+  const ui = await import("@krizaka/ui/sketch");
+  for (const { id, legend } of used)
+    for (const spec of specsOf(sketchOf(id)))
+      assert.deepEqual(ui.sketchProblems(spec, legendFor(spec, legend)), [], id);
 });
 
 test("chapter 34 shows no real capture and no clip: every screen is a sketch", () => {

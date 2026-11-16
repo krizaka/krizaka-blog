@@ -19,7 +19,7 @@ versus:
   built: "un dessin par écran, des numéros, une légende, la règle et la mesure"
 ---
 
-Depuis octobre, je retire des écrans de Verikora, Folioviv et Sovkora ce qui ne sert pas la personne qui les regarde. Chaque retrait est écrit dans un registre de décisions, à côté du code, avec le principe qui le justifie et ce qu'il coûte.
+Depuis octobre, je retire des écrans de Verikora, Folioviv et Sovkora ce qui ne sert pas la personne qui les regarde. Je note chaque retrait dans un registre de décisions, à côté du code, avec le principe qui le justifie et ce qu'il coûte.
 
 J'en montre cinq ici. Les écrans sont dessinés au stylo, pas capturés : chaque numéro du dessin renvoie à une ligne de la légende. Éric Tremblay, la personne des exemples, vient de notre distribution de démonstration ; ce n'est ni un client ni un administrateur.
 
@@ -45,7 +45,7 @@ La première version de l'accueil avait une zone de dépôt et deux cases à coc
   <Callout n="5" label="La fenêtre entière">un PDF lâché n'importe où lance la vérification.</Callout>
 </Sketch>
 
-La règle écrite tient en une ligne : la réponse d'abord, une zone de dépôt par écran au plus, la fenêtre elle-même ailleurs. C'est [la reconnaissance plutôt que le rappel](https://www.nngroup.com/articles/ten-usability-heuristics/) : on ne cherche pas la seule chose pour laquelle la page existe. Le composant est [la superposition de dépôt](site:ui/fr/components/drop-overlay) de notre bibliothèque. Seul l'écran du tout premier jour garde les suggestions, parce que quelqu'un qui n'a encore rien a besoin d'un exemple.
+J'ai écrit la règle en une ligne : la réponse d'abord, au plus une zone de dépôt par écran, et ailleurs c'est la fenêtre entière qui reçoit le fichier. C'est [la reconnaissance plutôt que le rappel](https://www.nngroup.com/articles/ten-usability-heuristics/) : personne ne devrait chercher la seule chose pour laquelle la page existe. Dans notre bibliothèque, c'est [la superposition de dépôt](site:ui/fr/components/drop-overlay). Seul l'écran du tout premier jour garde les suggestions, parce que quelqu'un qui n'a encore rien a besoin d'un exemple.
 
 J'ai refusé un bouton « Charger la démo » : aucun service ne le faisait. Quand Verikora ne sait pas de quel document il s'agit, il pose une seule question, « Quel document ? », plutôt que de lancer une analyse qui coûterait quand même. En échange, un fichier lâché sur la page prend les options par défaut du propriétaire, puisqu'elles n'ont de sens qu'une fois le fichier connu.
 
@@ -81,7 +81,7 @@ Les listes ont suivi. Une ligne imprimait quatre paires « libellé : valeur » 
   <Callout n="4" label="Le résultat">au bout de la ligne ; le reste attend dans le détail, à un toucher.</Callout>
 </Sketch>
 
-Le prix : un téléphone montre deux lignes par document, pas tout le dossier. Mesuré le 15 novembre, aucun des neuf écrans ne déborde sur le côté à 390 px, ni en clair ni en sombre.
+Ce que ça coûte : sur un téléphone, on voit deux lignes par document, pas tout le dossier. Mesuré le 15 novembre, aucun des neuf écrans ne déborde sur le côté à 390 px, ni en clair ni en sombre.
 
 L'application Sovkora pour téléphone a suivi le même raisonnement pour la navigation. Je n'ai pour elle que son registre de décisions, pas de mesure.
 
@@ -103,7 +103,7 @@ La plupart des gens tiennent leur téléphone d'une main et atteignent la moiti�
   <Callout n="3" label="La seule zone de dépôt de l'écran">avec ce qu'elle accepte : PDF, Word, OpenDocument, texte ou photo, jusqu'à 10 Mo.</Callout>
 </Sketch>
 
-[Un écran vide est l'occasion d'expliquer](https://www.nngroup.com/articles/empty-state-interface-design/) à quoi sert l'endroit et quoi faire en premier. La règle vit dans la bibliothèque, donc chaque produit la suit : [l'état vide](site:ui/fr/components/empty-state) a un titre qui dit ce qui est vide, une description qui dit ce qui viendra le remplir, une action, deux au plus, et [l'état à mascotte](site:ui/fr/components/mascot-state) entoure toujours des mots. Il faut un toucher pour passer de l'écran vide au premier fichier, aucun si on lâche le document sur la page. Le premier jour, la bibliothèque entière vide propose deux exemples à essayer, un bail de locataire et un dossier de propriétaire.
+[Un écran vide est l'occasion d'expliquer](https://www.nngroup.com/articles/empty-state-interface-design/) à quoi sert l'endroit et quoi faire en premier. J'ai mis la règle dans la bibliothèque, pour que chaque produit la suive : [l'état vide](site:ui/fr/components/empty-state) a un titre qui dit ce qui est vide, une description qui dit ce qui viendra le remplir, une action, deux au plus, et [l'état à mascotte](site:ui/fr/components/mascot-state) entoure toujours des mots. Il faut un toucher pour passer de l'écran vide au premier fichier, aucun si on lâche le document sur la page. Le premier jour, la bibliothèque entière vide propose deux exemples à essayer, un bail de locataire et un dossier de propriétaire.
 
 Une page qui ne s'adresse pas à vous le dit au lieu de paraître cassée : « Les dossiers de candidats sont pour les gestionnaires », puis un seul bouton, « Changer de rôle ». Folioviv suit la même règle avec son castor : « Aucune réservation pour l'instant », puis ce qui viendra ici, vos réservations, vos factures et vos dossiers.
 
@@ -119,7 +119,7 @@ Une page qui ne s'adresse pas à vous le dit au lieu de paraître cassée : « L
   <Callout n="5" label="« Lancer la vérification »">le bouton plein de la carte « Au regard de la loi », un deuxième sur l'écran, pas encore réglé.</Callout>
 </Sketch>
 
-Le message dit ce qui s'est passé avec nos mots, sans le nom d'un moteur ; le message technique reste dans nos journaux. Quand un PDF n'a pas de texte, il dit aussi ce qui continue : « L'examen du fichier, lui, a lieu. » [WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html) (critère 3.3.3, niveau AA) demande de proposer la correction quand on la connaît. Je vais un peu plus loin : l'erreur et son geste suivant prennent la place du résultat qui n'est pas venu. C'est [l'alerte](site:ui/fr/components/alert) qui les porte.
+Le message dit ce qui s'est passé avec nos mots, sans le nom d'un moteur ; le message technique reste dans nos journaux. Quand un PDF n'a pas de texte, il dit aussi ce qui continue : « L'examen du fichier, lui, a lieu. » [WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html) (critère 3.3.3, niveau AA) demande de proposer la correction quand on la connaît. Je vais un peu plus loin : l'erreur et son geste suivant prennent la place du résultat qui n'est pas venu. Dans la bibliothèque, c'est [l'alerte](site:ui/fr/components/alert).
 
 J'ai écarté la notification qui s'efface en quelques secondes : pour un échec sur lequel il faut agir, la personne ne regarde peut-être même pas. J'ai aussi écarté un chargement commun à toutes les pages, qui n'est qu'une roue centrée sous un autre nom. Chaque page a son [squelette](site:ui/fr/components/skeleton), à sa forme, affiché après 300 ms seulement pour qu'une page rapide ne clignote pas. La seule roue de Verikora est celle d'un bouton qui travaille, et un test refuse toutes les autres. Cela fait trente-huit petits fichiers, deux par page, et une nouvelle page doit apporter les siens ou son test échoue. Si des gens réessaient une page qui échoue encore parce que la cause n'est pas la leur, il faudra un lien vers l'état du service.
 
@@ -133,17 +133,17 @@ J'ai écarté la notification qui s'efface en quelques secondes : pour un échec
 
 Chaque écran existe en clair et en sombre. Les couleurs viennent d'[un seul jeu de tokens](site:ui/fr/foundations/tokens) que les deux thèmes lisent, et [la page de thématisation](site:ui/fr/theming) dit comment un produit porte sa propre couleur. [prefers-color-scheme](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-color-scheme) est ce qui permet à « Système » de suivre l'appareil.
 
-Le mouvement suit la même logique. [prefers-reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion) existe parce que le mouvement peut rendre certaines personnes malades, et [WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html) (critère 2.3.3, niveau AAA) demande qu'un mouvement déclenché par une interaction puisse être désactivé. Notre règle est [un seul système de mouvement](site:ui/fr/foundations/motion) : une animation montre quelque chose, jamais pour décorer, et elle s'arrête sous le mouvement réduit. Sur les neuf écrans mesurés, aucune animation ne tourne avec le mouvement réduit ; avec le mouvement permis, on en compte jusqu'à 11 sur les réglages et 6 sur la liste des Studios. Chaque étape d'une vérification est aussi écrite en mots, donc le mouvement réduit ne fait rien perdre.
+Le mouvement suit la même logique. [prefers-reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion) existe parce que le mouvement peut rendre certaines personnes malades, et [WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html) (critère 2.3.3, niveau AAA) demande qu'un mouvement déclenché par une interaction puisse être désactivé. Je n'ai gardé qu'[un seul système de mouvement](site:ui/fr/foundations/motion) : une animation sert à montrer quelque chose, jamais à décorer, et elle s'arrête sous le mouvement réduit. Sur les neuf écrans mesurés, aucune animation ne tourne avec le mouvement réduit ; avec le mouvement permis, on en compte jusqu'à 11 sur les réglages et 6 sur la liste des Studios. Chaque étape d'une vérification est aussi écrite en mots, donc le mouvement réduit ne fait rien perdre.
 
 ## Ce que nous n'avons pas encore réglé
 
 Sur l'écran de la vérification échouée, la carte « Au regard de la loi » garde son bouton plein sous « Réessayer » (le 5 du dessin plus haut). Deux boutons pleins sur un même écran, c'est ce que je refuse ailleurs.
 
-Notre règle veut des cibles d'au moins 44 px sur un téléphone. C'est plus strict que [le minimum de 24 px de WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html) (critère 2.5.8, niveau AA), et nous ne la tenons pas partout. Mesuré à 390 px, « Réessayer » fait 40 px de haut et « Choisir des fichiers » 36 px. Les boutons qui déplient une ligne des vérifications font 28 × 28 px, et leur nom pour les lecteurs d'écran est resté en anglais.
+Je me suis fixé des cibles d'au moins 44 px sur un téléphone. C'est plus strict que [le minimum de 24 px de WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html) (critère 2.5.8, niveau AA), et je ne m'y tiens pas partout. Mesuré à 390 px, « Réessayer » fait 40 px de haut et « Choisir des fichiers » 36 px. Les boutons qui déplient une ligne des vérifications font 28 × 28 px, et leur nom pour les lecteurs d'écran est resté en anglais.
 
 Dans Folioviv, l'écran vide des réservations dit d'ouvrir la page d'une boutique, mais son seul bouton ouvre *sa* boutique.
 
-Ces écarts sont notés. Si un écran de nos produits vous fait hésiter, écrivez-moi : c'est de là que viennent la plupart de ces choix.
+Je les ai notés. Si un écran de nos produits vous fait hésiter, écrivez-moi : c'est de là que viennent la plupart de ces choix.
 
 ## Ce que nous avons mesuré, et ce que nous n'avons pas mesuré
 

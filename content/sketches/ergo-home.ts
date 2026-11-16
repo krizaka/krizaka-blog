@@ -1,6 +1,7 @@
 /* Chapter 34: Verikora's home, before and after 4 November 2026 (decision record: one primary action, the window as the
    drop target). Drawn from the record and the screen measured on 15 November; not to scale. */
-import type { SketchEntry, SketchShape } from "./api.ts";
+import type { SketchShape } from "@krizaka/ui/sketch";
+import type { SketchEntry } from "../../lib/sketches.ts";
 
 const header: SketchShape[] = [
   { kind: "box", x: 0, y: 0, w: 400, h: 28, fill: "soft" },

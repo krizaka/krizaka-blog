@@ -1,6 +1,7 @@
 /* Chapter 34: Verikora's settings at 390 px, five tabs in a row that pushed the page 167 px past the screen (decision
    record), then one menu (measured on 15 November: 0 px of sideways scroll). Not to scale. */
-import type { SketchEntry, SketchShape } from "./api.ts";
+import type { SketchShape } from "@krizaka/ui/sketch";
+import type { SketchEntry } from "../../lib/sketches.ts";
 
 const top: SketchShape[] = [
   { kind: "box", x: 0, y: 0, w: 150, h: 24, fill: "soft" },
@@ -46,6 +47,6 @@ export default {
       { kind: "box", x: 8, y: 164, w: 134, h: 70 },
       { kind: "lines", x: 16, y: 178, w: 110, count: 3 },
     ],
-    callouts: [{ n: 3, from: [75, 262], at: [75, 72] }],
+    callouts: [{ n: 3, from: [120, 32], at: [110, 50] }],
   },
 } satisfies SketchEntry;

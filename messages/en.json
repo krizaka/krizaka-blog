@@ -342,7 +342,6 @@
     "textVersion": "Text version of the pipeline"
   },
   "sketch": {
-    "legend": "Legend of the drawing",
     "before": "Before",
     "after": "After",
     "separator": ": "

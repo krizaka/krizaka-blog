@@ -1,6 +1,6 @@
 /* Chapter 34: Verikora's appearance settings, System, Light and Dark (the default), the choice kept in the browser.
    Not to scale. */
-import type { SketchEntry } from "./api.ts";
+import type { SketchEntry } from "../../lib/sketches.ts";
 
 export default {
   spec: {

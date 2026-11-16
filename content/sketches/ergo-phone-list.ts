@@ -1,6 +1,7 @@
 /* Chapter 34: one row of Verikora's list of checks on a phone, four « label: value » pairs per document (decision record),
    then a title, one line of facts and the result at the end. Not to scale. */
-import type { SketchEntry, SketchShape } from "./api.ts";
+import type { SketchShape } from "@krizaka/ui/sketch";
+import type { SketchEntry } from "../../lib/sketches.ts";
 
 const top: SketchShape[] = [
   { kind: "box", x: 0, y: 0, w: 150, h: 24, fill: "soft" },

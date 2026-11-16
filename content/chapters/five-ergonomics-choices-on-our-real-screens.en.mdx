@@ -19,7 +19,7 @@ versus:
   built: "one drawing per screen, numbers, a legend, the rule and the measure"
 ---
 
-Since October, I have been removing from the screens of Verikora, Folioviv and Sovkora what does not serve the person looking at them. Each removal is written down in a decision record next to the code, with the principle behind it and what it costs.
+Since October, I have been removing from the screens of Verikora, Folioviv and Sovkora what does not serve the person looking at them. I write each removal down in a decision record next to the code, with the principle behind it and what it costs.
 
 I show five of them here. The screens are drawn in pen, not captured: each number on a drawing points to one line of its legend. Éric Tremblay, the person in the examples, comes from our demo cast, not from our customers or our administrators.
 
@@ -45,7 +45,7 @@ The first version of the home had a drop zone and two checkboxes, repeated on th
   <Callout n="5" label="The whole window">a PDF dropped anywhere starts the check.</Callout>
 </Sketch>
 
-The written rule fits on one line: the answer first, one drop zone per screen at most, the window itself elsewhere. It is [recognition rather than recall](https://www.nngroup.com/articles/ten-usability-heuristics/): nobody should have to look for the one thing the page exists for. The component is our library's [drop overlay](site:ui/components/drop-overlay). Only the very first day's screen keeps the suggestions, because someone who has nothing yet needs an example.
+I wrote the rule in one line: the answer first, at most one drop zone per screen, and everywhere else the whole window takes the file. It is [recognition rather than recall](https://www.nngroup.com/articles/ten-usability-heuristics/): nobody should have to look for the one thing the page exists for. In our library, that is the [drop overlay](site:ui/components/drop-overlay). Only the very first day's screen keeps the suggestions, because someone who has nothing yet needs an example.
 
 I refused a « Load the demo » button: no service did it. When Verikora does not know which document it has, it asks one question, « Which document? », rather than start an analysis that would cost anyway. In exchange, a file dropped on the page takes the owner's default options, since they only make sense once the file is known.
 
@@ -81,7 +81,7 @@ The lists followed. A row printed four « label: value » pairs per document: yo
   <Callout n="4" label="The result">at the end of the row; the rest waits in the detail, one tap away.</Callout>
 </Sketch>
 
-The price: a phone shows two lines per document, not the whole file. Measured on 15 November, none of the nine screens scrolls sideways at 390 px, in light or dark.
+What it costs: on a phone, you see two lines per document, not the whole file. Measured on 15 November, none of the nine screens scrolls sideways at 390 px, in light or dark.
 
 Sovkora's phone app followed the same reasoning for its navigation. For it I only have its decision record, no measure.
 
@@ -103,7 +103,7 @@ Most people hold their phone in one hand and reach the lower half of the screen.
   <Callout n="3" label="The only drop zone on the screen">with what it accepts: PDF, Word, OpenDocument, text or photo, up to 10 MB.</Callout>
 </Sketch>
 
-[An empty screen is the product's chance to explain](https://www.nngroup.com/articles/empty-state-interface-design/) what the place is for and what to do first. The rule lives in the library, so every product follows it: [the empty state](site:ui/components/empty-state) has a title that says what is empty, a description that says what will fill it, one action, two at most, and [the mascot state](site:ui/components/mascot-state) always surrounds words. It takes one tap to go from the empty screen to the first file, none if you drop the document on the page. On the first day, the whole empty library offers two examples to try, a tenant's lease and a landlord's file.
+[An empty screen is the product's chance to explain](https://www.nngroup.com/articles/empty-state-interface-design/) what the place is for and what to do first. I put the rule in the library, so that every product follows it: [the empty state](site:ui/components/empty-state) has a title that says what is empty, a description that says what will fill it, one action, two at most, and [the mascot state](site:ui/components/mascot-state) always surrounds words. It takes one tap to go from the empty screen to the first file, none if you drop the document on the page. On the first day, the whole empty library offers two examples to try, a tenant's lease and a landlord's file.
 
 A page that is not meant for you says so instead of looking broken: « Les dossiers de candidats sont pour les gestionnaires » (applicant files are for managers), then a single button, « Changer de rôle » (change role). Folioviv follows the same rule with its beaver: « Aucune réservation pour l'instant » (no bookings yet), then what will come here, your bookings, your invoices and your files.
 
@@ -119,7 +119,7 @@ A page that is not meant for you says so instead of looking broken: « Les dossi
   <Callout n="5" label="« Lancer la vérification » (run the check)">the filled button of the « Au regard de la loi » (under the law) card, a second one on the screen, not fixed yet.</Callout>
 </Sketch>
 
-The message says what happened in our words, with no engine name; the technical message stays in our logs. When a PDF has no text, it also says what goes on: « L'examen du fichier, lui, a lieu. » (the file itself is still examined). [WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html) (criterion 3.3.3, level AA) asks that the fix be suggested when it is known. I go a little further: the error and its next move take the place of the result that did not come. [The alert](site:ui/components/alert) is the component that carries them.
+The message says what happened in our words, with no engine name; the technical message stays in our logs. When a PDF has no text, it also says what goes on: « L'examen du fichier, lui, a lieu. » (the file itself is still examined). [WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html) (criterion 3.3.3, level AA) asks that the fix be suggested when it is known. I go a little further: the error and its next move take the place of the result that did not come. In the library, that is [the alert](site:ui/components/alert).
 
 I set aside the notice that fades after a few seconds: for a failure that needs action, the person may not even be looking. I also set aside one loading screen shared by every page, which is only a centred spinner under another name. Each page has its own [skeleton](site:ui/components/skeleton), in its own shape, shown only after 300 ms so a fast page never flickers. The only spinner in Verikora belongs to a button that is working, and a test refuses every other one. That makes thirty-eight small files, two per page, and a new page has to bring its own or its test fails. If people retry a page that keeps failing because the cause is not theirs, the error will need a link to the service status.
 
@@ -133,17 +133,17 @@ I set aside the notice that fades after a few seconds: for a failure that needs 
 
 Every screen exists in light and dark. The colours come from [one set of tokens](site:ui/foundations/tokens) that both themes read, and [the theming page](site:ui/theming) says how a product wears its own colour. [prefers-color-scheme](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-color-scheme) is what lets « Système » follow the device.
 
-Motion follows the same logic. [prefers-reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion) exists because motion can make some people sick, and [WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html) (criterion 2.3.3, level AAA) asks that motion triggered by an interaction can be turned off. Our rule is [one motion system](site:ui/foundations/motion): an animation shows something, never decoration, and it stops under reduced motion. On the nine screens measured, no animation runs with reduced motion; with motion allowed, we count up to 11 on the settings and 6 on the Studios list. Every step of a check is also written in words, so reduced motion loses nothing.
+Motion follows the same logic. [prefers-reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion) exists because motion can make some people sick, and [WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html) (criterion 2.3.3, level AAA) asks that motion triggered by an interaction can be turned off. I kept [one motion system](site:ui/foundations/motion) only: an animation is there to show something, never to decorate, and it stops under reduced motion. On the nine screens measured, no animation runs with reduced motion; with motion allowed, we count up to 11 on the settings and 6 on the Studios list. Every step of a check is also written in words, so reduced motion loses nothing.
 
 ## What we have not fixed yet
 
 On the failed check screen, the « Au regard de la loi » card keeps its filled button under « Réessayer » (number 5 on the drawing above). Two filled buttons on one screen is what I refuse everywhere else.
 
-Our rule asks for targets of at least 44 px on a phone. That is stricter than [WCAG 2.2's minimum of 24 px](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html) (criterion 2.5.8, level AA), and we do not hold it everywhere. Measured at 390 px, « Réessayer » is 40 px tall and « Choisir des fichiers » (choose files) 36 px. The buttons that expand a row of the checks list are 28 × 28 px, and their name for screen readers was left in English.
+I set myself targets of at least 44 px on a phone. That is stricter than [WCAG 2.2's minimum of 24 px](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html) (criterion 2.5.8, level AA), and I do not keep to it everywhere. Measured at 390 px, « Réessayer » is 40 px tall and « Choisir des fichiers » (choose files) 36 px. The buttons that expand a row of the checks list are 28 × 28 px, and their name for screen readers was left in English.
 
 In Folioviv, the empty bookings screen says to open a shop's page, but its only button opens *your own* shop.
 
-These gaps are noted. If a screen of our products makes you hesitate, write to me: that is where most of these choices come from.
+I have noted them. If a screen of our products makes you hesitate, write to me: that is where most of these choices come from.
 
 ## What we measured, and what we did not
 

@@ -1,6 +1,7 @@
 /* Chapter 34: Sovkora's Studios, the two-column card grid (three per screen) then the list (one state in words and one
    action per row, the filter in the address). Drawn from the decision record and the screen of 15 November; not to scale. */
-import type { SketchEntry, SketchShape } from "./api.ts";
+import type { SketchShape } from "@krizaka/ui/sketch";
+import type { SketchEntry } from "../../lib/sketches.ts";
 
 const header: SketchShape[] = [
   { kind: "box", x: 0, y: 0, w: 400, h: 28, fill: "soft" },

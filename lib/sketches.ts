@@ -1,9 +1,9 @@
 /* The chapters' pen drawings by id (krizaka-internal#3943): a chapter writes <Sketch id title><Callout n label>…</Callout></Sketch>,
    the drawing is a typed spec in content/sketches/<id>.ts (no SVG by hand), the words are the chapter's own. The block that
-   draws them is @krizaka/ui/sketch (krizaka-internal#4006). Checked here and in tests/sketches.test.mjs: an unknown id is
-   refused, the numbers run 1 to n across a before / after pair, every shape stays in its drawing, and every number has
-   exactly one legend line and the reverse. */
-import type { SketchEntry, SketchShape, SketchSpec } from "../content/sketches/api.ts";
+   draws them is @krizaka/ui/sketch (krizaka-internal#4006); its types are the only ones. Checked here and in
+   tests/sketches.test.mjs: an unknown id is refused, the numbers run 1 to n across a before / after pair, every shape stays
+   in its drawing, and every number has exactly one legend line and the reverse. */
+import type { SketchLegendItem, SketchShape, SketchSpec } from "@krizaka/ui/sketch";
 import ergoEmpty from "../content/sketches/ergo-empty.ts";
 import ergoError from "../content/sketches/ergo-error.ts";
 import ergoHome from "../content/sketches/ergo-home.ts";
@@ -12,6 +12,9 @@ import ergoPhoneSettings from "../content/sketches/ergo-phone-settings.ts";
 import ergoSovkoraTabs from "../content/sketches/ergo-sovkora-tabs.ts";
 import ergoStudios from "../content/sketches/ergo-studios.ts";
 import ergoThemes from "../content/sketches/ergo-themes.ts";
+
+/** One drawing of a chapter: one screen, or a before / after pair whose callouts are numbered 1 to n across both. */
+export type SketchEntry = { spec: SketchSpec } | { before: SketchSpec; after: SketchSpec };
 
 export const SKETCHES: Readonly<Record<string, SketchEntry>> = {
   "ergo-home": ergoHome,
@@ -49,7 +52,7 @@ const pointsOf = (shape: SketchShape): [number, number][] => {
 const inside = (spec: SketchSpec, [x, y]: [number, number]) => x >= 0 && y >= 0 && x <= spec.width && y <= spec.height;
 
 /** Every problem of a drawing: numbers 1..n each once, shapes and callouts inside their drawing. */
-export function sketchProblems(id: string, entry: SketchEntry): string[] {
+export function drawingProblems(id: string, entry: SketchEntry): string[] {
   const out: string[] = [];
   const numbers = numbersOf(entry);
   if (numbers.length === 0) out.push(`${id}: a sketch explains at least one item`);
@@ -82,3 +85,9 @@ export function legendProblems(id: string, entry: SketchEntry, legend: readonly 
   if (said.size !== legend.length) out.push(`${id}: a legend number is given twice`);
   return out;
 }
+
+/** The legend lines of one drawing of an entry: those whose number is one of its callouts, in the legend's order. */
+export const legendFor = (spec: SketchSpec, legend: readonly SketchLegendItem[]): SketchLegendItem[] => {
+  const drawn = new Set((spec.callouts ?? []).map((c) => c.n));
+  return legend.filter((l) => drawn.has(l.n));
+};
