@@ -601,13 +601,5 @@
     "elements": "Éléments",
     "relations": "Relations",
     "steps": "Étapes, dans l'ordre"
-  },
-  "palette": {
-    "dark": "Sombre",
-    "light": "Clair",
-    "fill": "Bouton",
-    "text": "Lien",
-    "fillRatio": "texte du bouton",
-    "textRatio": "sur la page"
   }
 }

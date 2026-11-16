@@ -103,7 +103,7 @@ Chaque produit a un accent : le bleu acier de Krizaka (teinte 208), l'indigo de 
 
 Les pastilles ci-dessous ne sont pas des images : le composant lit les couleurs dans `@krizaka/tokens` à la construction de la page et calcule les rapports avec la formule WCAG 2. Chaque moitié est peinte avec le fond de page de son thème, donc vous voyez la vraie paire, quel que soit votre thème.
 
-<Palette label="L'accent de chaque produit sur le fond de page de son thème. Sous chaque moitié : le rapport du texte du bouton, puis celui de l'accent utilisé comme texte. @krizaka/tokens 4.10.0." />
+<Palette dark="Sombre" light="Clair" fill="Bouton" text="Lien" fillRatio="texte du bouton" textRatio="sur la page" label="L'accent de chaque produit sur le fond de page de son thème. Sous chaque moitié : le rapport du texte du bouton, puis celui de l'accent utilisé comme texte. @krizaka/tokens 4.10.0." />
 
 Tous les rapports dépassent 4,5:1, le seuil WCAG AA du texte courant. Les plus serrés sont le bouton de Krizaka en sombre, à 4,8:1 (un bleu acier peu saturé sous du texte blanc), et celui de Sovkora en clair, à 5,0:1 (un orange qui reste orange sous du texte blanc). Un test de ce blog vérifie que chaque paire affichée ici passe ce seuil, et la bibliothèque fait la même vérification sur toutes les surfaces, pas seulement sur le fond de page.
 

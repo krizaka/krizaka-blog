@@ -102,7 +102,7 @@ Each product has one accent: Krizaka's steel blue (hue 208), Verikora's indigo (
 
 The swatches below are not pictures: the component reads the colours from `@krizaka/tokens` when the page is built and computes the ratios with the WCAG 2 formula. Each half is painted with its theme's page background, so you see the real pair, whatever your theme.
 
-<Palette label="Each product's accent on its theme's page colour. Under each half: the button text ratio, then the accent-as-text ratio. @krizaka/tokens 4.10.0." />
+<Palette dark="Dark" light="Light" fill="Button" text="Link" fillRatio="button text" textRatio="on the page" label="Each product's accent on its theme's page colour. Under each half: the button text ratio, then the accent-as-text ratio. @krizaka/tokens 4.10.0." />
 
 Every ratio is above 4.5:1, the WCAG AA threshold for body text. The tightest are Krizaka's button in dark, at 4.8:1 (a low-saturation steel blue under white text), and Sovkora's in light, at 5.0:1 (an orange that stays orange under white text). A test of this blog checks that every pair shown here passes that threshold, and the library runs the same check on every surface, not only the page background.
 

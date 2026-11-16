@@ -32,12 +32,13 @@ test("paletteSwatches: every pair the post shows passes WCAG AA for text (4.5:1)
   }
 });
 
-test("<Palette> is mapped for the posts and its words exist in both languages", () => {
+test("<Palette> is mapped for the posts and every post that draws it gives its words", () => {
   const mdx = readFileSync(`${root}app/components/pages/mdx.tsx`, "utf8");
-  assert.match(mdx, /Palette: \(\{ label \}/);
+  assert.match(mdx, /Palette: \(\{ label, \.\.\.words \}/);
   for (const locale of ["en", "fr"]) {
-    const words = JSON.parse(readFileSync(`${root}messages/${locale}.json`, "utf8")).palette;
-    for (const key of ["dark", "light", "fill", "text", "fillRatio", "textRatio"])
-      assert.ok(words[key], `${locale}: palette.${key}`);
+    const post = readFileSync(`${root}content/posts/how-the-interface-is-built.${locale}.mdx`, "utf8");
+    const tag = post.match(/<Palette[^>]*\/>/)?.[0] ?? "";
+    for (const key of ["label", "dark", "light", "fill", "text", "fillRatio", "textRatio"])
+      assert.match(tag, new RegExp(`\\s${key}="[^"]+"`), `${locale}: <Palette ${key}>`);
   }
 });

@@ -1,11 +1,23 @@
+import "./palette.css";
+
 import type { CSSProperties } from "react";
 
-import { getDictionary, type Locale } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import { PALETTE_BRANDS, PALETTE_THEMES, type PaletteSwatch, paletteSwatches } from "@/lib/palette";
 
 /* <Palette label/> in a post: each product's accent, dark and light, as the tokens resolve it (lib/palette.ts). Each half
    is painted with the theme's own page colour, so the swatch is the real pair, whatever the reader's theme; the hex values
    and the WCAG ratios are written under it as text. The colours are data from @krizaka/tokens, never typed here. */
+
+/** The words of the figure, given by the post (MDX props are strings). */
+export type PaletteWords = {
+  dark: string;
+  light: string;
+  fill: string;
+  text: string;
+  fillRatio: string;
+  textRatio: string;
+};
 
 const NAMES: Record<(typeof PALETTE_BRANDS)[number], string> = {
   krizaka: "Krizaka",
@@ -14,11 +26,7 @@ const NAMES: Record<(typeof PALETTE_BRANDS)[number], string> = {
   sovkora: "Sovkora",
 };
 
-function Half({
-  s,
-  words,
-  ratio,
-}: Readonly<{ s: PaletteSwatch; words: ReturnType<typeof getDictionary>["palette"]; ratio: (n: number) => string }>) {
+function Half({ s, words, ratio }: Readonly<{ s: PaletteSwatch; words: PaletteWords; ratio: (n: number) => string }>) {
   const page: CSSProperties = { background: s.page };
   const fill: CSSProperties = { background: s.accent, color: s.onAccent };
   const text: CSSProperties = { color: s.accentText };
@@ -51,8 +59,7 @@ function Half({
   );
 }
 
-export function Palette({ label, locale }: Readonly<{ label: string; locale: Locale }>) {
-  const words = getDictionary(locale).palette;
+export function Palette({ label, locale, words }: Readonly<{ label: string; locale: Locale; words: PaletteWords }>) {
   const swatches = paletteSwatches();
   const number = new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   const ratio = (n: number) => number.format(n);
