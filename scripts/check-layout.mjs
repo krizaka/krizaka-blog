@@ -2,10 +2,12 @@
 /* The layout the reader sees, in a real browser (Playwright, Chromium): at 1750, 1366, 390 and 360 px the bar and the page's h1
    stay inside the window (nothing cut at the right edge, no sideways scroll), and the bar's links show a focus ring only to
    the keyboard (:focus-visible): none on load, none after a click, one ring (no double ring) after Tab.
-   Usage: node scripts/check-layout.mjs --base http://localhost:3000 [--path /posts/<slug>/ …] [--posts out] */
+   Usage: node scripts/check-layout.mjs --base http://localhost:3000 [--path /posts/<slug>/ …] [--posts out] [--concurrency 6] */
 import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { chromium } from "playwright";
+
+import { mapPool } from "../lib/pool.mjs";
 
 const args = process.argv.slice(2);
 const base = (args[args.indexOf("--base") + 1] || "http://localhost:3000").replace(/\/$/, "");
@@ -22,6 +24,9 @@ if (postsDir) {
           if (existsSync(join(dir, slug, "index.html"))) paths.push(`/${prefix}${section}/${slug}/`);
     }
 }
+const concurrencyArg = args.indexOf("--concurrency");
+const concurrency = concurrencyArg >= 0 ? Number(args[concurrencyArg + 1]) : 6;
+if (!Number.isInteger(concurrency) || concurrency < 1) throw new Error("--concurrency must be a positive integer");
 const WIDTHS = [1750, 1366, 390, 360];
 
 /* The problems of one page as laid out, in small checks: each runs in the browser by itself (page.evaluate serialises one function),
@@ -268,15 +273,20 @@ try {
         problems.push(`${path} @${screen.width}×${screen.height}: ${p}`);
       await page.close();
     }
-  for (const path of paths) {
+  const widthProblems = async (path) => {
+    const found = [];
     for (const width of WIDTHS) {
       const page = await browser.newPage({ viewport: { width, height: 900 } });
       await page.goto(base + path, { waitUntil: "networkidle" });
       await page.evaluate(() => document.fonts.ready);
       for (const check of LAYOUT_CHECKS)
-        for (const p of await page.evaluate(check)) problems.push(`${path} @${width}: ${p}`);
+        for (const p of await page.evaluate(check)) found.push(`${path} @${width}: ${p}`);
       await page.close();
     }
+    return found;
+  };
+  const bylineProblems = async (path) => {
+    const found = [];
     for (const colorScheme of themedSample(path) ? BYLINE_THEMES : [])
       for (const width of BYLINE_LINK_WIDTHS) {
         const context = await browser.newContext({ viewport: { width, height: 900 }, colorScheme });
@@ -284,32 +294,50 @@ try {
         const themed = await context.newPage();
         await themed.goto(base + path, { waitUntil: "networkidle" });
         await themed.evaluate(() => document.fonts.ready);
-        for (const p of await themed.evaluate(bylineLanguageLink))
-          problems.push(`${path} @${width} ${colorScheme}: ${p}`);
+        for (const p of await themed.evaluate(bylineLanguageLink)) found.push(`${path} @${width} ${colorScheme}: ${p}`);
         await context.close();
       }
+    return found;
+  };
+  const focusProblems = async (path) => {
+    const found = [];
     const page = await browser.newPage({ viewport: { width: 1366, height: 900 } });
     await page.goto(base + path, { waitUntil: "networkidle" });
     const onLoad = await page.evaluate(ring);
-    if (onLoad.inBar && (onLoad.outline || onLoad.shadow))
-      problems.push(`${path}: a bar link wears a focus ring on load`);
+    if (onLoad.inBar && (onLoad.outline || onLoad.shadow)) found.push(`${path}: a bar link wears a focus ring on load`);
     const brand = page.locator(".kz-site-bar a").first();
     await brand.click();
     await page.waitForLoadState("networkidle");
     const clicked = await page.evaluate(ring);
     if (clicked.inBar && (clicked.outline || clicked.shadow))
-      problems.push(`${path}: the logo keeps a focus ring after a click`);
+      found.push(`${path}: the logo keeps a focus ring after a click`);
     await page.goto(base + path, { waitUntil: "networkidle" });
     for (let i = 0; i < 4; i++) {
       await page.keyboard.press("Tab");
       const r = await page.evaluate(ring);
       if (!r.inBar) continue;
-      if (!r.outline) problems.push(`${path}: a bar link has no focus ring for the keyboard`);
-      if (r.outline && r.shadow) problems.push(`${path}: a bar link wears two focus rings (outline and shadow)`);
+      if (!r.outline) found.push(`${path}: a bar link has no focus ring for the keyboard`);
+      if (r.outline && r.shadow) found.push(`${path}: a bar link wears two focus rings (outline and shadow)`);
       break;
     }
     await page.close();
-  }
+    return found;
+  };
+  const checkPath = async (path) => [
+    ...(await widthProblems(path)),
+    ...(await bylineProblems(path)),
+    ...(await focusProblems(path)),
+  ];
+  const started = Date.now();
+  const total = paths.length;
+  const perPath = await mapPool(paths, concurrency, checkPath, (n) => {
+    if (n % 25 === 0 || n === total)
+      console.log(`check-layout: ${n}/${total} pages, ${Math.round((Date.now() - started) / 1000)} s`);
+  });
+  for (const found of perPath) problems.push(...found);
+  console.log(
+    `check-layout: ${total} pages in ${Math.round((Date.now() - started) / 1000)} s (${concurrency} at a time)`,
+  );
 } finally {
   await browser.close();
 }
