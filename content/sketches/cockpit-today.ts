@@ -1,0 +1,57 @@
+/* Chapter 35: the cockpit's « Aujourd'hui » (Today), drawn from its code (TodayView.tsx, Shell.tsx, nav-core.mjs of
+   cockpit-next, read on 16 November 2026): the bar in four groups with the workshop folded, the lead sentence, the strip
+   of sources to watch, three figures, « Tes actions » and « Décisions à prendre ». Not to scale, no capture. */
+import type { SketchEntry } from "../../lib/sketches.ts";
+
+export default {
+  spec: {
+    width: 400,
+    height: 260,
+    frame: "desktop",
+    seed: 35101,
+    shapes: [
+      { kind: "box", x: 0, y: 0, w: 80, h: 260, fill: "soft" },
+      { kind: "lines", x: 10, y: 14, w: 46, count: 1 },
+      { kind: "box", x: 6, y: 32, w: 68, h: 14, fill: "accent" },
+      { kind: "lines", x: 12, y: 52, w: 52, count: 3 },
+      { kind: "lines", x: 12, y: 96, w: 52, count: 4 },
+      { kind: "lines", x: 12, y: 150, w: 52, count: 1 },
+      { kind: "box", x: 6, y: 170, w: 68, h: 16, dashed: true },
+      { kind: "icon", x: 58, y: 172, name: "chevronDown", size: 12 },
+      { kind: "box", x: 80, y: 0, w: 320, h: 24 },
+      { kind: "icon", x: 330, y: 6, name: "search", size: 12 },
+      { kind: "icon", x: 350, y: 6, name: "globe", size: 12 },
+      { kind: "icon", x: 370, y: 6, name: "theme", size: 12 },
+      { kind: "lines", x: 96, y: 38, w: 90, count: 1 },
+      { kind: "lines", x: 96, y: 54, w: 200, count: 1 },
+      { kind: "button", x: 304, y: 34, w: 80, h: 16, variant: "secondary" },
+      { kind: "box", x: 96, y: 72, w: 288, h: 16, fill: "soft" },
+      { kind: "icon", x: 100, y: 74, name: "clock", size: 12 },
+      { kind: "box", x: 96, y: 96, w: 92, h: 32 },
+      { kind: "box", x: 194, y: 96, w: 92, h: 32 },
+      { kind: "box", x: 292, y: 96, w: 92, h: 32 },
+      { kind: "box", x: 96, y: 136, w: 172, h: 116 },
+      { kind: "lines", x: 104, y: 148, w: 80, count: 1 },
+      { kind: "lines", x: 104, y: 168, w: 116, count: 1 },
+      { kind: "lines", x: 104, y: 186, w: 116, count: 1 },
+      { kind: "lines", x: 104, y: 204, w: 116, count: 1 },
+      { kind: "button", x: 226, y: 162, w: 34, h: 12, variant: "secondary" },
+      { kind: "button", x: 226, y: 180, w: 34, h: 12, variant: "secondary" },
+      { kind: "button", x: 226, y: 198, w: 34, h: 12, variant: "secondary" },
+      { kind: "lines", x: 104, y: 236, w: 90, count: 1 },
+      { kind: "box", x: 274, y: 136, w: 110, h: 116 },
+      { kind: "lines", x: 282, y: 148, w: 70, count: 1 },
+      { kind: "box", x: 282, y: 160, w: 94, h: 56 },
+      { kind: "lines", x: 288, y: 172, w: 82, count: 3 },
+    ],
+    callouts: [
+      { n: 1, from: [40, 112], at: [64, 40] },
+      { n: 2, from: [250, 44], at: [230, 54] },
+      { n: 3, from: [372, 62], at: [360, 80] },
+      { n: 4, from: [190, 140], at: [190, 112] },
+      { n: 5, from: [160, 226], at: [180, 196] },
+      { n: 6, from: [364, 236], at: [330, 200] },
+      { n: 7, from: [40, 214], at: [40, 186] },
+    ],
+  },
+} satisfies SketchEntry;
