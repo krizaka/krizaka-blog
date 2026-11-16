@@ -25,6 +25,7 @@ export const SOFT_HOSTS = [
   "usa.visa.com",
   "www.visa.ca",
   "www.paypal.com",
+  "opensource.org",
 ];
 /** Schemes and targets that are not fetched: other schemes, fragments, and the paths the CDN's edge injects on the live
     site (Cloudflare's e-mail obfuscation rewrites a mailto: into /cdn-cgi/l/email-protection#…, decoded by its script). */
