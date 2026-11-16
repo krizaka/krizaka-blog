@@ -2499,3 +2499,80 @@ picture {
     width: calc(100% + 16rem);
   }
 }
+
+/* <Palette>: each product's accent painted on its theme's own page (inline values from @krizaka/tokens), the facts in text. */
+.bl-palette {
+  margin: 2rem 0;
+}
+.bl-palette .bl-palette-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  align-items: start;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bl-palette .bl-palette-grid > .bl-palette-brand {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--kz-border-default);
+  background: var(--kz-surface-1);
+}
+.bl-palette .bl-palette-name {
+  margin: 0;
+  font-family: var(--kz-font-display);
+  font-size: 1.125rem;
+  font-weight: 400;
+  color: var(--kz-text-primary);
+}
+.bl-palette-half {
+  display: grid;
+  gap: 0.375rem;
+}
+.bl-palette-paint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--kz-border-default);
+}
+.bl-palette-fill {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+}
+.bl-palette-text {
+  font-size: 0.875rem;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.bl-palette .bl-palette-facts {
+  display: grid;
+  gap: 0.125rem;
+  margin: 0;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--kz-text-muted);
+}
+.bl-palette .bl-palette-facts dt {
+  font-weight: 400;
+  color: var(--kz-text-secondary);
+}
+.bl-palette .bl-palette-facts dd {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.75rem;
+  margin: 0;
+}
+.bl-palette .bl-palette-facts code {
+  font-size: 0.8125rem;
+  color: var(--kz-text-primary);
+}
+.bl-palette figcaption {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--kz-text-secondary);
+}

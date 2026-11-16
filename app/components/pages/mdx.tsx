@@ -9,6 +9,7 @@ import { modelUrl } from "@/lib/models";
 import { Clip } from "./Clip";
 import { Figure } from "./Figure";
 import { IssueCurve } from "./IssueCurve";
+import { Palette } from "./Palette";
 import { Pipeline } from "./Pipeline";
 import { Rails } from "./Rails";
 import { Split } from "./Split";
@@ -202,6 +203,8 @@ export function mdxComponentsFor(locale: Locale) {
     ),
     /* The issue curve of chapter 10 (lib/issue-curve.json), with its text version: a table of the days named in `dates`. */
     IssueCurve: (props: { dates?: string }) => <IssueCurve {...props} locale={locale} />,
+    /* Each product's accent, dark and light, read from @krizaka/tokens with its WCAG ratios (lib/palette.ts): <Palette label/>. */
+    Palette: ({ label }: { label: string }) => <Palette label={label} locale={locale} />,
     /* A pipeline drawn from the tokens (chapter 11), with its text version: <Pipeline label><Stage title note? tone?>…</Stage></Pipeline>. */
     Pipeline: ({ label, children }: { label: string; children: ReactNode }) => (
       <Pipeline

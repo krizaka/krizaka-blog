@@ -1,0 +1,194 @@
+---
+title: "How the interface is built: tokens, the Tailwind preset, palettes, components, the Mac app"
+description: "One source for every colour, a Tailwind preset that refuses typed colours, components with a written contract, a Mac app that reads only the folders it is given. For each choice: the diagram, the reason, the cost."
+seoTitle: "How Krizaka's interface is built"
+seoDescription: "Tokens, a Tailwind v4 preset, palettes with WCAG contrast, the @krizaka/ui component contract and the Tauri Mac app: our choices and their costs."
+date: 2026-11-16
+tags: [ui, verikora]
+author: oussama
+draft: true
+---
+
+[The piece on ergonomics](/basics/five-ergonomics-choices-on-our-real-screens/) shows our screens. This one shows what is under them: where a colour comes from, how Tailwind is wired, how a component is made and how the Mac app reuses the same components. It is written for people who design systems or interfaces: diagrams first, then one trade-off table per choice.
+
+Everything below can be read in public code: [krizaka-ui](repo:krizaka-ui) for the tokens, the preset and the components, [krizaka-rust](repo:krizaka-rust) for the native side, [verikora](repo:verikora) for the Mac app. The figures are from 16 November, `@krizaka/tokens` 4.10.0.
+
+## A colour starts in one file
+
+A colour of Verikora, Folioviv or Sovkora is written once, in a brand file in the DTCG format (the design tokens format of the W3C Community Group). Everything else is compiled from it.
+
+<Pipeline label="The path of a colour: a brand file, a tested build, CSS variables, the Tailwind preset, then the web, mobile and Mac apps.">
+  <Stage title="The sources" note="DTCG, in JSON">
+    `src/tokens/*.tokens.json` for the shared roles (surfaces, text, statuses, radii, shadows, motion) and
+    `src/brands/<brand>.brand.json` for each product's accent. Every value carries its dark and its light version.
+  </Stage>
+  <Stage title="The build" note="contrast tested" tone="gate">
+    `scripts/build.mjs` resolves the references and writes `dist/`. The tests refuse an accent whose button text falls under
+    4.5:1, an accent text under 4.5:1 on a surface, or a product hue less than 20° from another.
+  </Stage>
+  <Stage title="The outputs" note="one per platform">
+    `tokens.css` (the `--kz-*` variables), `brands/<brand>.css`, `index.js` for JavaScript, `native.js` for React Native (the
+    colours resolved to hex), and `brands.json`, the one file another tool reads for a product's colours.
+  </Stage>
+  <Stage title="The Tailwind preset" note="@theme inline">
+    `@krizaka/tailwind` turns each role into a utility: `bg-surface-1`, `text-fg-secondary`, `text-accent`. The class reads its
+    variable at the moment it applies.
+  </Stage>
+  <Stage title="The apps" note="no typed colour" tone="ship">
+    The web, mobile and Mac apps import the same roles. A product theme overrides roles, never a palette.
+  </Stage>
+</Pipeline>
+
+The point that matters to an architect: the colour is not in the class. `bg-surface-1` is slate in the dark theme, paper in the light theme, and something else again inside a `.theme-dark` island (a video player that stays dark). Switching themes recompiles nothing; it changes variables.
+
+| Option | Verdict | Why | Cost |
+| :-- | :-- | :-- | :-- |
+| A palette per app, in its CSS | **Refused** | Four copies that drift apart; nobody sees when a contrast breaks | — |
+| Tailwind's own colours (`zinc-900`, `blue-500`) | **Refused** | One class per theme (`bg-zinc-950 light:bg-white`) in every component | — |
+| DTCG files, compiled and tested | **Chosen** | One source, a contrast check at every build, one output per platform | A build script to maintain; a colour change is a new version every app adopts |
+
+## How Tailwind is configured
+
+An app wires the system in four lines, in this order. The preset brings the utilities, the variants and the motion; the product's theme only redefines roles.
+
+<CodeTabs>
+<Tab label="An app's globals.css">
+
+```css
+@import "tailwindcss";
+@import "@krizaka/tailwind"; /* tokens + utilities + variants + motion */
+@import "@krizaka/ui/tailwind.css"; /* Tailwind reads the components' classes */
+@import "@krizaka/myapp-design-system/theme.css"; /* the product's identity */
+```
+
+</Tab>
+<Tab label="A product's theme">
+
+```css
+/* roles, never a palette */
+:root,
+.theme-dark {
+  --kz-surface-0: #060709;
+  --kz-accent: #8b5cf6;
+  --kz-accent-hover: #7c3aed;
+}
+```
+
+</Tab>
+<Tab label="What lint refuses">
+
+```tsx
+// refused: a colour that changes with the theme, written by hand
+<div className="bg-zinc-950/70 light:bg-white" />
+
+// accepted: the role, the same in both themes
+<div className="bg-surface-1/70" />
+```
+
+</Tab>
+</CodeTabs>
+
+The rule is one sentence, the one in [the preset's README](repo:krizaka-ui/tree/main/packages/tailwind): `light:` and `dark:` are for illustrations, a theme is a set of tokens. A component never switches classes with the theme. In the products, lint refuses both variants; they stay allowed for a picture that really exists in two versions.
+
+| Option | Verdict | Why | Cost |
+| :-- | :-- | :-- | :-- |
+| A `tailwind.config.js` copied into each app | **Refused** | Four configurations, four ways to write the same thing | — |
+| `dark:` variants everywhere | **Refused** | Twice the classes, and a third theme (a dark island) becomes impossible | — |
+| A Tailwind v4 preset in CSS, `@theme inline` | **Chosen** | One vocabulary; the theme changes through variables, without recompiling | Tailwind's default classes (`zinc-*`) are out: you have to know the roles |
+
+## The palettes, from the real tokens
+
+Each product has one accent: Krizaka's steel blue (hue 208), Verikora's indigo (240), Folioviv's green (130), Sovkora's orange (26). The blue of information messages stays Krizaka's in every product, and Sovkora's orange is not at 38, the hue of a warning: a primary button must never read as an alert.
+
+The swatches below are not pictures: the component reads the colours from `@krizaka/tokens` when the page is built and computes the ratios with the WCAG 2 formula. Each half is painted with its theme's page background, so you see the real pair, whatever your theme.
+
+<Palette label="Each product's accent on its theme's page colour. Under each half: the button text ratio, then the accent-as-text ratio. @krizaka/tokens 4.10.0." />
+
+Every ratio is above 4.5:1, the WCAG AA threshold for body text. The tightest are Krizaka's button in dark, at 4.8:1 (a low-saturation steel blue under white text), and Sovkora's in light, at 5.0:1 (an orange that stays orange under white text). A test of this blog checks that every pair shown here passes that threshold, and the library runs the same check on every surface, not only the page background.
+
+| Option | Verdict | Why | Cost |
+| :-- | :-- | :-- | :-- |
+| Pick colours by eye, check later | **Refused** | A failed contrast is seen in production, on a customer's screen | — |
+| One accent colour, no light version | **Refused** | A pale indigo that reads on slate is unreadable on paper | — |
+| One pair per theme, tested at every build | **Chosen** | Contrast is a condition of the build, not a review | Two values to tune per role; some hues (the orange) have little room |
+
+## How a component is made
+
+`@krizaka/ui` has 245 entry points: primitives (`button`, `dialog`, `data-table`), page blocks, layouts and templates. Each follows the same twelve-point contract, written in [the library's README](repo:krizaka-ui/tree/main/packages/ui). Here is a component's path, from the interaction to the test.
+
+<Steps>
+  <Step title="A headless primitive underneath">
+    A non-trivial interaction is never written by hand: Radix UI for dialogs, menus and tooltips, cmdk for the command palette,
+    sonner for toasts, TanStack Table, Virtual and Form for tables, long lists and forms, pinned to an exact version. Nobody
+    writes a focus trap.
+  </Step>
+  <Step title="Variants with tailwind-variants">
+    The variants are exported next to the component (`buttonVariants`): a link or a Server Component takes a button's style
+    without importing the button. Colours are roles of the preset; the product's `className` is merged last and wins.
+  </Step>
+  <Step title="An API without surprises">
+    Composed when there is structure (`Card.*`, `Dialog.*`), flat for an atom (`Button`, `Badge`). `asChild` rather than
+    `as`. Controlled and uncontrolled (`value` / `defaultValue` + `onValueChange`). State is exposed as `data-*`
+    (`data-loading`, `data-invalid`). Words are props: the library has no `t()`, each app passes its own.
+  </Step>
+  <Step title="One import per component">
+    `@krizaka/ui/button`, `@krizaka/ui/dialog`: one subpath per entry, no barrel. A page loads only what it imports, and
+    `"use client"` is set only on the entries that hold a hook or a portal: the rest renders on the server.
+  </Step>
+  <Step title="A story, a test, a capture">
+    Every primitive ships its types, a story per variant, a test with Testing Library and axe. Storybook renders each story in
+    dark then light, runs an axe audit and compares the capture with its baseline: more than 0.1 % of different pixels and
+    the build fails. On 16 November the repository held 3,184 baseline captures (macOS and Linux).
+  </Step>
+</Steps>
+
+Every component, its variants and both themes can be seen on [ui.krizaka.com](site:ui).
+
+| Option | Verdict | Why | Cost |
+| :-- | :-- | :-- | :-- |
+| A complete library (MUI, Chakra) | **Refused** | Its style to undo in every screen, and its own colours | — |
+| Write everything by hand, focus included | **Refused** | A dialog's accessibility is a craft; we do not reinvent it | — |
+| Radix and TanStack underneath, our style on top, a written contract | **Chosen** | The proven accessibility of the primitives, our look, the same API everywhere | Dependencies to follow; 3,184 captures to update when a rendering changes on purpose |
+
+## The Mac app: the same interface, a narrow native side
+
+Verikora for the Mac is a Tauri 2 app. The window is a web page built with Vite from the same `@krizaka/ui` components, in Verikora's indigo, light and dark. What the page cannot do on its own (open a folder, read a file, the Keychain, the menu bar, deep links) goes through a shared Rust plugin, [`tauri-plugin-krizaka`](repo:krizaka-rust).
+
+<Pipeline label="How the Mac app reads a document: the page asks, the Rust plugin checks the path with ScopeStore, then only what the check needs goes to the server.">
+  <Stage title="The page" note="@krizaka/ui in the webview">
+    The same interface as the web. Its Tauri capability is only `core:default`, `krizaka:default`, the title bar's drag and
+    HTTP to Verikora's own addresses. No `fs`, no shell, no opener.
+  </Stage>
+  <Stage title="The granted folder" note="through the native picker">
+    The person picks a folder in the Mac's picker. The home folder, `/`, `~/.ssh`, `/System` or `/Applications` cannot be
+    granted.
+  </Stage>
+  <Stage title="ScopeStore::resolve" note="the one gate" tone="gate">
+    Every read goes through this function. It returns the canonical path if it lies in a granted folder and not in a
+    sensitive place; otherwise a typed error with a stable code (`scope_forbidden`, `scope_outside`…). A path through `..` or a
+    symbolic link that leaves the folder is refused.
+  </Stage>
+  <Stage title="The check" note="only what it needs">
+    The document is sent for this one check, then erased. The signed PDF report is saved next to the document, in its
+    folder.
+  </Stage>
+  <Stage title="The filmed journey" note="WebDriver" tone="ship">
+    A script launches the built app with WebDriver: the persona opens a folder of leases, one lease is checked by the real
+    engine, the result is shown, and a relaunch keeps the folder and the session. The window's captures make the film of the
+    journey.
+  </Stage>
+</Pipeline>
+
+The native folder picker cannot be driven by WebDriver. So the journey grants the folder the way the picker would, by writing the plugin's scope file before the launch. On load, `ScopeStore` checks every folder again: a folder the plugin refuses is refused there too. The WebDriver driver is compiled only into a test build (a Cargo feature), never into the app people download.
+
+| Option | Verdict | Why | Cost |
+| :-- | :-- | :-- | :-- |
+| Electron | **Refused** | A Chromium and a Node embedded in every app, for a page the Mac's webview can already show | — |
+| SwiftUI, a separate native app | **Refused** | A second interface to write and keep up to date, alone on its platform | — |
+| Tauri 2, the shared page, a narrow Rust plugin | **Chosen** | The same components as the web; every file read goes through one tested function | The system webview (WebKit) sometimes renders differently from Chrome; until the Developer ID certificate exists, the app is unsigned and opens with a right-click |
+
+## What is not solved
+
+- Contrast is checked on the colours; a capture in context is still needed for the rest (a picture behind text, a gradient).
+- The Mac app's webview is WebKit: the library's baseline captures are made in a browser, not in the app. The app's journey covers one path, not every component.
+- The Mac app is not signed or notarised yet: the first launch needs a right-click, then Open.
