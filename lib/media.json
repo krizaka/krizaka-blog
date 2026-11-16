@@ -7037,28 +7037,29 @@
   "ergo-verikora-home": {
     "kind": "image",
     "width": 1440,
-    "height": 560,
-    "blur": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAAAwAwCdASoYAAkAPu1iqU2ppaOiMAgBMB2JZwAAg/svWZIAAP7v5NTlEdvlB6LgP9nW25uo9JEuVv0AAAA=",
+    "height": 1195,
+    "blur": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAADQAwCdASoYABQAPu1qq1EppaOiqAqpMB2JaWi2WB2JThkfzY/stAAA/u/FXmxew57qpsBqJORe6qjmqhR9KC3xJHZxgwunHtgHwFsfSWNOA/YPXLuAAA==",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/five-ergonomics-choices-on-our-real-screens/ergo-verikora-home-480.dff427bd75.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/five-ergonomics-choices-on-our-real-screens/ergo-verikora-home-480.d8ec76bc0f.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/five-ergonomics-choices-on-our-real-screens/ergo-verikora-home-960.a4a4906752.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/five-ergonomics-choices-on-our-real-screens/ergo-verikora-home-960.dbee3a8539.webp"
       },
       {
         "w": 1440,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/five-ergonomics-choices-on-our-real-screens/ergo-verikora-home-1440.6badbfa32f.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/five-ergonomics-choices-on-our-real-screens/ergo-verikora-home-1440.11d2864054.webp"
       }
     ],
     "made": {
-      "model": "none: a screenshot of a dev build",
-      "engine": "Playwright (Chromium), prefers-reduced-motion set to reduce",
-      "machine": "MacBook Pro, Apple M1 Max",
+      "model": "none: a screenshot of a dev build and a capture of the Mac app",
+      "engine": "Playwright (Chromium), prefers-reduced-motion set to reduce (web); the embedded WebDriver of the Tauri app (Mac)",
+      "machine": "MacBook Pro, Apple M1 Max (web); GitHub Actions macos-latest (Mac)",
       "costUsd": 0,
-      "note": "A screenshot of dev, persona Verikora, the home, demo persona Éric Tremblay, 1440 px wide, dark theme, taken on 2026-11-15. A demo persona of the cast, never an administrator; no e-mail address is visible. Not a generated picture, not a Sovkora run."
+      "note": "The web side: a screenshot of dev, persona Verikora, the home, demo persona Éric Tremblay, 1440 px wide, dark theme, taken on 2026-11-15. A demo persona of the cast, never an administrator; no e-mail address is visible. Not a generated picture, not a Sovkora run. The Mac side: a capture of the Mac app (Verikora 0.1.0 built from main at 8681ccb, 1024 px window, dark theme, in English, the demo persona Éric Tremblay, development banner visible), step 5-theme-dark of the Mac journey, CI run 43778317930 of krizaka/verikora Desktop, cut to its top 440 px and set under the web screen by scripts/compose-web-mac.py of the blog. Made again with scripts/desktop-journey.mjs of verikora.",
+      "script": "scripts/desktop-journey.mjs"
     }
   },
   "ergo-sovkora-studios": {
@@ -7114,28 +7115,29 @@
   "ergo-verikora-empty": {
     "kind": "image",
     "width": 1336,
-    "height": 924,
-    "blur": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAABQAwCdASoYABEAPu1kqU2ppaOiMAgBMB2JaQAAUp8cybXEAAD+7sNKeuZ4EL7OsXs2tEbuBPxyNtkiyLm9vKQIC+xQ2JeL763AAAAA",
+    "height": 1514,
+    "blur": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAABwBACdASoYABsAPu1mqE2ppaOiMBgMATAdiWkAAC51gBEEgbPCk1fm4lFuAAD+7sB48kOv1qito/0uj9fvhCzSzVdFSyDJ83ROgu+g7PIWsR2iT8BF8lXwgQwA7t4AAAA=",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/five-ergonomics-choices-on-our-real-screens/ergo-verikora-empty-480.8f949968b6.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/five-ergonomics-choices-on-our-real-screens/ergo-verikora-empty-480.0e065063c4.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/five-ergonomics-choices-on-our-real-screens/ergo-verikora-empty-960.c083af7266.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/five-ergonomics-choices-on-our-real-screens/ergo-verikora-empty-960.869e2237c2.webp"
       },
       {
         "w": 1336,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/five-ergonomics-choices-on-our-real-screens/ergo-verikora-empty-1336.c74e2cafdb.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/five-ergonomics-choices-on-our-real-screens/ergo-verikora-empty-1336.8a2beea302.webp"
       }
     ],
     "made": {
-      "model": "none: a screenshot of a dev build",
-      "engine": "Playwright (Chromium), prefers-reduced-motion set to reduce",
-      "machine": "MacBook Pro, Apple M1 Max",
+      "model": "none: a screenshot of a dev build and a capture of the Mac app",
+      "engine": "Playwright (Chromium), prefers-reduced-motion set to reduce (web); the embedded WebDriver of the Tauri app (Mac)",
+      "machine": "MacBook Pro, Apple M1 Max (web); GitHub Actions macos-latest (Mac)",
       "costUsd": 0,
-      "note": "A screenshot of dev, persona Verikora at 1440 px wide, demo persona Éric Tremblay: an empty collection in dark theme (top), « Applicant files » seen by a tenant in light theme (bottom), taken on 2026-11-15. A demo persona of the cast, never an administrator; no e-mail address is visible. Not a generated picture, not a Sovkora run."
+      "note": "The web side: a screenshot of dev, persona Verikora at 1440 px wide, demo persona Éric Tremblay: an empty collection in dark theme (top), « Applicant files » seen by a tenant in light theme (bottom), taken on 2026-11-15. A demo persona of the cast, never an administrator; no e-mail address is visible. Not a generated picture, not a Sovkora run. The Mac side: a capture of the Mac app (Verikora 0.1.0 built from main at a5d3b55, 1024 px window, light theme, in English, the demo persona Éric Tremblay, development banner visible, no folder granted), step 6-empty-library of the Mac journey, CI run 43781814784 of krizaka/verikora Desktop, cut to its top 440 px and set under the web screens by scripts/compose-web-mac.py of the blog. Made again with scripts/desktop-journey.mjs of verikora.",
+      "script": "scripts/desktop-journey.mjs"
     }
   },
   "ergo-folioviv-empty-phone": {
@@ -7186,29 +7188,30 @@
   },
   "ergo-verikora-themes": {
     "kind": "image",
-    "width": 970,
+    "width": 1836,
     "height": 744,
-    "blur": "data:image/webp;base64,UklGRnAAAABXRUJQVlA4IGQAAADwAwCdASoYABIAPu1kqU2ppaQiMAgBMB2JaQAAW+pno1ynwe5DAZAAAP7uhu9HNWa9Af4fm589bBMlwoiEorF2RDLUDFEG8/Fyi+VqY9La6Yf+RdQKglZPysPdKI3kvISmAAAA",
+    "blur": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAACwAwCdASoYAAoAPu1kqU2ppaQiMAgBMB2JaQAAXBn3y4Zz7NJgAAD+7ovF9znAJTZC1Oaekv6lxoK9jlPGnfKjlzMXvWfzbX3Tmn/T4BtmRgX8zFwBwAAA",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/five-ergonomics-choices-on-our-real-screens/ergo-verikora-themes-480.76fd83197c.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/five-ergonomics-choices-on-our-real-screens/ergo-verikora-themes-480.367fd634bc.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/five-ergonomics-choices-on-our-real-screens/ergo-verikora-themes-960.3b07dd1a2f.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/five-ergonomics-choices-on-our-real-screens/ergo-verikora-themes-960.777e35de00.webp"
       },
       {
-        "w": 970,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/five-ergonomics-choices-on-our-real-screens/ergo-verikora-themes-970.ab3b37b3d4.webp"
+        "w": 1836,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/five-ergonomics-choices-on-our-real-screens/ergo-verikora-themes-1836.b8fea64f53.webp"
       }
     ],
     "made": {
-      "model": "none: a screenshot of a dev build",
-      "engine": "Playwright (Chromium), prefers-reduced-motion set to reduce",
-      "machine": "MacBook Pro, Apple M1 Max",
+      "model": "none: a screenshot of a dev build and a capture of the Mac app",
+      "engine": "Playwright (Chromium), prefers-reduced-motion set to reduce (web); the embedded WebDriver of the Tauri app (Mac)",
+      "machine": "MacBook Pro, Apple M1 Max (web); GitHub Actions macos-latest (Mac)",
       "costUsd": 0,
-      "note": "A screenshot of dev, persona Verikora, Settings, Appearance, demo persona Éric Tremblay, 1440 px wide: dark theme selected (top), light (bottom), taken on 2026-11-15. A demo persona of the cast, never an administrator; no e-mail address is visible. Not a generated picture, not a Sovkora run."
+      "note": "The web side: a screenshot of dev, persona Verikora, Settings, Appearance, demo persona Éric Tremblay, 1440 px wide: dark theme selected (top), light (bottom), taken on 2026-11-15. A demo persona of the cast, never an administrator; no e-mail address is visible. Not a generated picture, not a Sovkora run. The Mac side: a capture of the Mac app (Verikora 0.1.0 built from main at 8681ccb, 1024 px window, in English, the demo persona Éric Tremblay, development banner visible), steps 5-theme-dark (top) and 5-theme-light (bottom) of the Mac journey, CI run 43778317930 of krizaka/verikora Desktop, each cut to its top 440 px and set to the right of the web screen by scripts/compose-web-mac.py of the blog. Made again with scripts/desktop-journey.mjs of verikora.",
+      "script": "scripts/desktop-journey.mjs"
     }
   },
   "ergo-cover-three-windows": {

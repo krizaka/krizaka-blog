@@ -20,11 +20,13 @@ Here are five of those choices. Each one is shown on a real screen of our develo
 
 Éric Tremblay opens Verikora with a lease in PDF. He wants to know what is questionable in it, and he does not want to look for where to drop it.
 
-<Figure id="ergo-verikora-home" alt="Verikora home: one filled button, Check a document, in the header." caption="Verikora, the home, Éric Tremblay (demo), 1440 px, dark theme. One filled button: « Vérifier un document » (Check a document)." />
+<Figure id="ergo-verikora-home" alt="Verikora home: one filled button, Check a document, in the header." caption="Verikora, the home, Éric Tremblay (demo), dark theme. Above, web · 1440 px: one filled button, « Vérifier un document » (Check a document). Below, Mac · the app of the same day, in English: another screen, with « Add a folder » and a drop area." />
 
 The home has one primary action, the one in the header. There is no dashed drop zone in the middle of the page any more: the whole window takes the file. Éric can drop his PDF anywhere and the check starts. Behind the primary action there is still a real file input, for the keyboard and for phones, where nobody drags a file. This is what [the drop overlay](site:ui/components/drop-overlay) of our component library does.
 
 Measured on the home on 15 November: one filled button, the header's.
+
+On the Mac the home is not the same screen. Verikora for Mac lists the folders you gave it, with « Add a folder » as a plain button, and it keeps a dashed area to drop a file from Finder. It does not follow this rule yet (see the end).
 
 **Why.** The first version of this home had a drop zone and two checkboxes that sat on three different screens, and the thing to do came fourth. The principle we wrote down is « the answer first; one drop zone per screen, the window itself elsewhere ». It is the same idea as [recognition rather than recall](https://www.nngroup.com/articles/ten-usability-heuristics/): the person should not have to hunt for the one thing the page is for. On 4 November we removed the dashed zone, its second primary button and the « Or try » suggestions from the home. Only the very first-day screen keeps them, because a person with nothing yet needs an example.
 
@@ -40,6 +42,8 @@ In Sovkora the same idea takes another shape, because the screen is a list. Each
 <Figure id="ergo-sovkora-studios" alt="Sovkora Studios list: each row has its state and one action, Run." caption="Sovkora, Studios, persona « Krizaka » (demo), 1440 px, dark theme. A filter « All 45 · Ready 29 · To get 16 », one action per row." />
 
 Before, it was a two-column grid of cards, three per screen, and nobody could tell an installed Studio from an available one, or one that needs a pack. We wanted each row to say what you get and what it costs. We refused two tabs, « Ready » and « To get »: the same Studio would have lived in two places depending on what you own. The filter lives in the address, so a filtered list can be sent as a link. The cost: the description is one truncated line per row.
+
+On a Mac, Sovkora's window opens this same Studios page, hosted, so there is no separate Mac screen to show here.
 
 ## On a phone, nothing spills over and everything is under the thumb
 
@@ -61,7 +65,7 @@ The Sovkora phone app made the same call for navigation (we have no screenshot o
 
 Éric creates a collection « À classer » (to sort) and opens it before putting anything in.
 
-<Figure id="ergo-verikora-empty" alt="Verikora, empty collection: the owl, one sentence and a drop zone; below, a screen offering Change role." caption="Verikora, Éric Tremblay (demo), 1440 px. Top, dark: the empty collection. Bottom, light: « Applicant files » seen by a tenant." />
+<Figure id="ergo-verikora-empty" alt="Verikora, empty collection: the owl, one sentence and a drop zone; below, a screen offering Change role." caption="Verikora, Éric Tremblay (demo). Above, web · 1440 px: in dark the empty collection, in light « Applicant files » seen by a tenant. Below, Mac · the app with no folder granted, in light and in English." />
 
 The empty screen does not stay blank. It shows the owl, one sentence (« Rien ici pour l'instant. Déposez un document ou créez un dossier. », nothing here yet, drop a document or create a folder) and the only drop zone on the screen, with what it accepts: PDF, Word, OpenDocument, text or photo, up to 10 MB. On the first day, the whole empty library adds two examples to try, a tenant's lease and a landlord's file.
 
@@ -69,9 +73,11 @@ When a page is not meant for you, it says so instead of looking broken: « Les d
 
 **Why.** [An empty state is the product's chance to teach](https://www.nngroup.com/articles/empty-state-interface-design/): it should say what the place is for and what to do first. The rules live in the library, so every product follows them: [the empty state](site:ui/components/empty-state) has a title that says what is empty and a description that says what will fill it, with one action, two at most. The mascot never carries the message alone ([the mascot state](site:ui/components/mascot-state) is decoration around words). The point is the number of gestures: one tap from the empty screen to the first file, or none if you drop the document on the page.
 
+The Mac app follows the same rule in its own words: with no folder granted, the library says « No folder yet. Pick the one where you keep your leases and contracts. » and « Add a folder » is the first button. It has no owl there.
+
 <Figure id="ergo-folioviv-empty-phone" alt="Folioviv on a phone: My bookings is empty; the beaver and one sentence say what will show here." caption="Folioviv, « Mes réservations » (My bookings), Éric Tremblay (demo, client side), 390 px, dark theme." />
 
-Folioviv follows the same rule with its beaver. « Aucune réservation pour l'instant » (no bookings yet), then what will come: your bookings, your invoices and your files.
+Folioviv follows the same rule with its beaver. « Aucune réservation pour l'instant » (no bookings yet), then what will come: your bookings, your invoices and your files. On a Mac, Folioviv opens the same page in its window.
 
 ## An error stays in place and offers the next move
 
@@ -90,9 +96,9 @@ The cost: thirty-eight small files, two per page, and a new page has to bring it
 
 ## Two themes, and nothing moves if you asked for it
 
-<Figure id="ergo-verikora-themes" alt="Verikora appearance settings: System, Light and Dark, shown in dark then light." caption="Verikora, Settings, Appearance, Éric Tremblay (demo), 1440 px. Top, the dark theme selected; bottom, light." />
+<Figure id="ergo-verikora-themes" alt="Verikora appearance settings: System, Light and Dark, shown in dark then light." caption="Verikora, Éric Tremblay (demo). Left, web · Settings, Appearance, 1440 px: dark theme selected on top, light below. Right, Mac · the app's home in dark on top, light below." />
 
-Every screen exists in light and dark. The choice is in the settings: « Système » follows the device, « Clair », or « Sombre », which is the default. The choice is kept in the browser. The colours come from [one set of tokens](site:ui/foundations/tokens) that both themes read, and [the theming page](site:ui/theming) says how a product wears its own colour. [prefers-color-scheme](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-color-scheme) is what lets « System » follow the device.
+Every screen exists in light and dark. The choice is in the settings: « Système » follows the device, « Clair », or « Sombre », which is the default. The choice is kept in the browser. The colours come from [one set of tokens](site:ui/foundations/tokens) that both themes read, and [the theming page](site:ui/theming) says how a product wears its own colour. [prefers-color-scheme](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-color-scheme) is what lets « System » follow the device. The Mac app wears the same two themes (the toggle is in its account menu), as the right-hand side of the figure shows.
 
 Motion follows the same logic. When your device asks for less motion, nothing moves. We measured it on the nine screens we captured: no running animation with reduced motion. With motion allowed, we count up to 11 on the settings and 6 on the Studios list.
 
@@ -100,7 +106,7 @@ Motion follows the same logic. When your device asks for less motion, nothing mo
 
 ## What we have not fixed yet
 
-On the failed-check screen, under « Réessayer », the « Au regard de la loi » card keeps a filled « Lancer la vérification » button. Two filled buttons on one screen: what we refuse elsewhere.
+On the failed-check screen, under « Réessayer », the « Au regard de la loi » card keeps a filled « Lancer la vérification » button. Two filled buttons on one screen: what we refuse elsewhere. And the home of Verikora for Mac still has its dashed drop area.
 
 Our rule also asks for targets of at least 44 px on a phone, and we do not hold it everywhere. That is stricter than [WCAG 2.2's minimum of 24 px](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html), and still short of what we ask. Measured at 390 px, « Réessayer » is 40 px tall and « Choisir des fichiers » 36 px. The buttons that expand a row of the checks list are 28 × 28 px, and their name for screen readers is still in English.
 
@@ -110,4 +116,4 @@ These gaps are logged. If a screen of ours makes you hesitate, write to us: most
 
 ## What we measured, and what we did not
 
-The screens were captured on 15 November, on our development builds, with Playwright, at 1440 and 390 px, in light and dark, with reduced motion, and a second pass with motion allowed. We counted horizontal overflow, controls under 44 px, running animations and filled buttons. The « before » figures (167 px, three screens, four pairs per row) are the ones written in our records on the day of each decision; we did not measure them again. We timed nothing and asked no real person: what a choice saves is counted in gestures and in gaps to a rule, never in minutes.
+The screens were captured on 15 November, on our development builds, with Playwright, at 1440 and 390 px, in light and dark, with reduced motion, and a second pass with motion allowed. We counted horizontal overflow, controls under 44 px, running animations and filled buttons. The « before » figures (167 px, three screens, four pairs per row) are the ones written in our records on the day of each decision; we did not measure them again. The Mac captures come from the Mac journey of Verikora's own CI (runs 43778317930 and 43781814784, on builds of main, in English, with the same demo persona), a script that can be run again. We timed nothing and asked no real person: what a choice saves is counted in gestures and in gaps to a rule, never in minutes.

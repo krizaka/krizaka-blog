@@ -20,11 +20,13 @@ Voici cinq de ces choix. Chacun est montré sur un écran réel de nos versions 
 
 Éric Tremblay ouvre Verikora avec un bail en PDF. Il veut savoir ce que le bail contient de douteux, et il ne veut pas chercher où le déposer.
 
-<Figure id="ergo-verikora-home" alt="Accueil de Verikora : un seul bouton plein, Vérifier un document, dans l'en-tête." caption="Verikora, l'accueil, Éric Tremblay (démo), 1440 px, thème sombre. Un seul bouton plein : « Vérifier un document »." />
+<Figure id="ergo-verikora-home" alt="Accueil de Verikora : un seul bouton plein, Vérifier un document, dans l'en-tête." caption="Verikora, l'accueil, Éric Tremblay (démo), thème sombre. En haut, web · 1440 px : un seul bouton plein, « Vérifier un document ». En bas, Mac · l'application du même jour, en anglais : un autre écran, avec « Add a folder » et une zone de dépôt." />
 
 L'accueil n'a qu'une action principale, celle de l'en-tête. Il n'y a plus de zone de dépôt en pointillés au milieu de la page : la fenêtre entière accepte le fichier. Éric peut lâcher son PDF n'importe où, et la vérification part. Derrière l'action principale, il reste un vrai champ de fichier, pour le clavier et pour les téléphones, où l'on ne glisse pas de fichier. C'est ce que fait [la superposition de dépôt](site:ui/fr/components/drop-overlay) de notre bibliothèque de composants.
 
 Mesuré sur l'accueil le 15 novembre : un seul bouton plein, celui de l'en-tête.
+
+Sur Mac, l'accueil n'est pas le même écran. Verikora pour Mac liste les dossiers que vous lui avez donnés, avec « Add a folder » en bouton simple, et garde une zone en pointillés pour y déposer un fichier depuis le Finder. Il ne suit pas encore cette règle (voir la fin).
 
 **Pourquoi.** La première version de cet accueil avait une zone de dépôt et deux cases à cocher qui se retrouvaient sur trois écrans, et ce qu'il y avait à faire venait en quatrième. Le principe écrit est « la réponse d'abord ; une zone de dépôt par écran, la fenêtre elle-même ailleurs ». C'est l'idée de [la reconnaissance plutôt que le rappel](https://www.nngroup.com/articles/ten-usability-heuristics/) : la personne ne devrait pas avoir à chercher la seule chose pour laquelle la page existe. Le 4 novembre, nous avons retiré de l'accueil la zone en pointillés, son deuxième bouton principal et les suggestions « Ou essayez ». Seul l'écran du tout premier jour les garde, parce que quelqu'un qui n'a encore rien a besoin d'un exemple.
 
@@ -40,6 +42,8 @@ Dans Sovkora, la même idée prend une autre forme, parce que l'écran est une l
 <Figure id="ergo-sovkora-studios" alt="Liste des Studios de Sovkora : chaque ligne a son état et une seule action, Lancer." caption="Sovkora, Studios, persona « Krizaka » (démo), 1440 px, thème sombre. Un filtre « Tous 45 · Prêts 29 · À obtenir 16 », une action par ligne." />
 
 Avant, c'était une grille de cartes sur deux colonnes, trois par écran, et personne ne distinguait un Studio installé d'un Studio disponible, ou qui demande un pack. Nous voulions que chaque ligne dise ce qu'on obtient et ce que ça coûte. Nous avons refusé deux onglets « Prêts » et « À obtenir » : le même Studio aurait vécu à deux endroits selon ce qu'on possède. Le filtre vit dans l'adresse, ce qui permet d'envoyer la liste filtrée par un lien. Le coût : la description tient sur une ligne tronquée par ligne.
+
+Sur Mac, la fenêtre de Sovkora ouvre cette même page Studios, hébergée : il n'y a donc pas d'écran Mac distinct à montrer ici.
 
 ## Sur un téléphone, rien ne dépasse et tout est au pouce
 
@@ -61,17 +65,19 @@ L'application Sovkora pour téléphone a fait le même raisonnement pour la navi
 
 Éric crée une collection « À classer » et l'ouvre avant d'y avoir mis quoi que ce soit.
 
-<Figure id="ergo-verikora-empty" alt="Verikora, collection vide : le hibou, une phrase et une zone de dépôt ; en dessous, un écran qui propose Changer de rôle." caption="Verikora, Éric Tremblay (démo), 1440 px. En haut, en sombre : la collection vide. En bas, en clair : « Dossiers de candidats » vu par un locataire." />
+<Figure id="ergo-verikora-empty" alt="Verikora, collection vide : le hibou, une phrase et une zone de dépôt ; en dessous, un écran qui propose Changer de rôle." caption="Verikora, Éric Tremblay (démo). En haut, web · 1440 px : en sombre la collection vide, en clair « Dossiers de candidats » vu par un locataire. En bas, Mac · l'application sans dossier accordé, en clair et en anglais." />
 
 L'écran vide ne reste pas blanc. Il montre le hibou, une phrase (« Rien ici pour l'instant. Déposez un document ou créez un dossier. ») et la seule zone de dépôt de l'écran, avec ce qu'elle accepte : PDF, Word, OpenDocument, texte ou photo, jusqu'à 10 Mo. Le premier jour, la bibliothèque entière vide ajoute deux exemples à essayer, un bail de locataire et un dossier de propriétaire.
 
 Quand une page ne s'adresse pas à vous, elle le dit au lieu de paraître cassée : « Les dossiers de candidats sont pour les gestionnaires », puis un seul bouton, « Changer de rôle ».
 
+L'application Mac suit la même règle avec ses propres mots : sans dossier accordé, la bibliothèque dit « No folder yet. Pick the one where you keep your leases and contracts. » (capture en anglais) et « Add a folder » est le premier bouton. Elle n'y montre pas de hibou.
+
 **Pourquoi.** [Un écran vide est l'occasion pour le produit d'expliquer](https://www.nngroup.com/articles/empty-state-interface-design/) : il doit dire à quoi sert l'endroit et quoi faire en premier. Les règles vivent dans la bibliothèque, donc chaque produit les suit : [l'état vide](site:ui/fr/components/empty-state) a un titre qui dit ce qui est vide et une description qui dit ce qui viendra le remplir, avec une action, deux au plus. La mascotte ne porte jamais le message seule ([l'état à mascotte](site:ui/fr/components/mascot-state) entoure des mots). Ce qui compte, c'est le nombre de gestes : un toucher pour passer de l'écran vide au premier fichier, ou aucun si on lâche le document sur la page.
 
 <Figure id="ergo-folioviv-empty-phone" alt="Folioviv sur téléphone : Mes réservations est vide, le castor et une phrase disent ce qui s'affichera ici." caption="Folioviv, « Mes réservations », Éric Tremblay (démo, côté client), 390 px, thème sombre." />
 
-Folioviv suit la même règle avec son castor. « Aucune réservation pour l'instant », puis ce qui viendra : vos réservations, vos factures et vos dossiers.
+Folioviv suit la même règle avec son castor. « Aucune réservation pour l'instant », puis ce qui viendra : vos réservations, vos factures et vos dossiers. Sur Mac, Folioviv ouvre la même page dans sa fenêtre.
 
 ## Une erreur reste à sa place et propose la suite
 
@@ -90,9 +96,9 @@ Le coût : trente-huit petits fichiers, deux par page, et une nouvelle page doit
 
 ## Deux thèmes, et rien ne bouge si vous l'avez demandé
 
-<Figure id="ergo-verikora-themes" alt="Réglages d'apparence de Verikora : Système, Clair et Sombre, montrés en sombre puis en clair." caption="Verikora, Réglages, Apparence, Éric Tremblay (démo), 1440 px. En haut le thème sombre choisi, en bas le clair." />
+<Figure id="ergo-verikora-themes" alt="Réglages d'apparence de Verikora : Système, Clair et Sombre, montrés en sombre puis en clair." caption="Verikora, Éric Tremblay (démo). À gauche, web · Réglages, Apparence, 1440 px : thème sombre choisi en haut, clair en bas. À droite, Mac · l'accueil de l'application en sombre en haut, en clair en bas." />
 
-Chaque écran existe en clair et en sombre. Le choix est dans les réglages : « Système » suit l'appareil, « Clair », ou « Sombre », qui est le thème par défaut. Le choix est gardé dans le navigateur. Les couleurs viennent d'[un seul jeu de jetons](site:ui/fr/foundations/tokens) que les deux thèmes lisent, et [la page de thématisation](site:ui/fr/theming) dit comment un produit porte sa propre couleur. [prefers-color-scheme](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-color-scheme) est ce qui permet à « Système » de suivre l'appareil.
+Chaque écran existe en clair et en sombre. Le choix est dans les réglages : « Système » suit l'appareil, « Clair », ou « Sombre », qui est le thème par défaut. Le choix est gardé dans le navigateur. Les couleurs viennent d'[un seul jeu de jetons](site:ui/fr/foundations/tokens) que les deux thèmes lisent, et [la page de thématisation](site:ui/fr/theming) dit comment un produit porte sa propre couleur. [prefers-color-scheme](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-color-scheme) est ce qui permet à « Système » de suivre l'appareil. L'application Mac porte les mêmes deux thèmes (la bascule est dans son menu de compte), comme le montre la moitié droite de la figure.
 
 Le mouvement suit la même logique. Quand votre appareil demande moins de mouvement, rien ne bouge. Nous l'avons mesuré sur les neuf écrans capturés : aucune animation en cours avec le mouvement réduit. Avec le mouvement permis, on en compte jusqu'à 11 sur les réglages et 6 sur la liste des Studios.
 
@@ -100,7 +106,7 @@ Le mouvement suit la même logique. Quand votre appareil demande moins de mouvem
 
 ## Ce que nous n'avons pas encore réglé
 
-Sur l'écran de la vérification échouée, sous « Réessayer », la carte « Au regard de la loi » garde un bouton plein « Lancer la vérification ». Deux boutons pleins sur le même écran : ce que nous refusons ailleurs.
+Sur l'écran de la vérification échouée, sous « Réessayer », la carte « Au regard de la loi » garde un bouton plein « Lancer la vérification ». Deux boutons pleins sur le même écran : ce que nous refusons ailleurs. Et l'accueil de Verikora pour Mac garde encore sa zone de dépôt en pointillés.
 
 Notre règle veut aussi des cibles d'au moins 44 px sur un téléphone, et nous ne la tenons pas partout. C'est plus strict que [le minimum de 24 px de WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html), et pourtant nous ne l'atteignons pas partout. Mesuré à 390 px, « Réessayer » fait 40 px de haut, « Choisir des fichiers » 36 px. Les boutons qui déplient une ligne des vérifications font 28 × 28 px, et leur nom pour les lecteurs d'écran est resté en anglais.
 
@@ -110,4 +116,4 @@ Ces écarts sont notés. Si un écran de nos produits vous fait hésiter, écriv
 
 ## Ce que nous avons mesuré, et ce que nous n'avons pas mesuré
 
-Les écrans ont été capturés le 15 novembre, sur nos versions de développement, avec Playwright, à 1440 et 390 px, en clair et en sombre, avec le mouvement réduit, puis une seconde fois avec le mouvement permis. Nous avons compté le débordement horizontal, les contrôles de moins de 44 px, les animations en cours et les boutons à fond plein. Les chiffres « avant » (167 px, trois écrans, quatre paires par ligne) sont ceux écrits dans nos registres le jour de chaque décision ; nous ne les avons pas remesurés. Nous n'avons chronométré rien et interrogé personne : ce qu'un choix économise est compté en gestes et en écarts à la règle, jamais en minutes.
+Les écrans ont été capturés le 15 novembre, sur nos versions de développement, avec Playwright, à 1440 et 390 px, en clair et en sombre, avec le mouvement réduit, puis une seconde fois avec le mouvement permis. Nous avons compté le débordement horizontal, les contrôles de moins de 44 px, les animations en cours et les boutons à fond plein. Les chiffres « avant » (167 px, trois écrans, quatre paires par ligne) sont ceux écrits dans nos registres le jour de chaque décision ; nous ne les avons pas remesurés. Les captures Mac viennent du parcours Mac de la CI de Verikora (exécutions 43778317930 et 43781814784, sur des versions de main, en anglais, avec le même persona de démonstration), un script qui peut être relancé. Nous n'avons chronométré rien et interrogé personne : ce qu'un choix économise est compté en gestes et en écarts à la règle, jamais en minutes.
