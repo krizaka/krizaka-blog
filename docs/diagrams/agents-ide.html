@@ -430,7 +430,7 @@
           const first = document.querySelector(".row.on").getBoundingClientRect();
           const n = document.createElement("div");
           n.className = "note-hand blue";
-          n.innerHTML = esc(f.hand).replace("\n", "<br>");
+          n.innerHTML = esc(f.hand).replaceAll("\n", "<br>");
           hang(n, first.top - 12);
         } else {
           const rows = document.querySelectorAll(".line");
@@ -438,7 +438,7 @@
             const r = rows[i].getBoundingClientRect();
             const n = document.createElement("div");
             n.className = `note-hand ${tone}`;
-            n.innerHTML = esc(words).replace("\n", "<br>");
+            n.innerHTML = esc(words).replaceAll("\n", "<br>");
             hang(n, r.top - (words.includes("\n") ? 18 : 0));
           }
         }
