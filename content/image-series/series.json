@@ -242,9 +242,9 @@
     },
     {
       "post": "what-grafana-sees-from-outside",
-      "seed": 4165,
+      "seed": 3717,
       "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
-      "beat": "Not rendered by the series' renderer: a Cahier plate drawn from the chapter's own architecture model, its context view (scripts/gen-architecture-cover.mjs, provenance in lib/media.json under architecture-observability); no model, no seed used. A series picture may replace it once the media worker is available."
+      "beat": "Not rendered by the series' renderer: drawn as its own text-to-image picture with the media worker's engine (mflux, FLUX.2 [klein] 4B) in the series' ink-and-watercolor look (prompt and seed in lib/media.json), no bird in it. The station of chapters 23 to 31 at dusk, seen from outside: a brass telescope on a tripod on the near hill with a small teal signal lamp, the station's windows lit orange, a second telescope on the far hill."
     }
   ],
   "sprites": {

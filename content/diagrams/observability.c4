@@ -4,6 +4,11 @@
 // observability stack. Nothing sensitive: no host, address, account, stack, threshold or path. Checked and laid out by
 // `node scripts/gen-architecture.mjs --base <krizaka/.github checkout>/docs/architecture`.
 model {
+  // The founder as this post needs him: his role only. The org's description says how pull requests are approved, which a
+  // public page has no reason to tell; this person stands for the org's founder in the two views below.
+  owner = person 'Founder' {
+    description 'Sets the strategy and approves.'
+  }
   sites = system 'Public sites' {
     description 'The company site, the blog, the library sites and the products sites.'
   }
@@ -25,7 +30,7 @@ model {
   observability = system 'Observability' {
     description 'A hosted Grafana stack in a Canadian region: what a visitor gets, what the engine does, who is told.'
     probes = container 'Synthetic probes' {
-      description 'One HTTP check per public page or health route, from two Canadian locations, no header, no secret.'
+      description 'One HTTP check per public page or health route, from two Canadian locations, no added header, no secret.'
       technology 'Synthetic Monitoring'
     }
     metrics = datastore 'Metrics' {
@@ -33,11 +38,11 @@ model {
       technology 'Prometheus'
     }
     rules = container 'Alert rules' {
-      description 'Unreachable site, six engine measures, the bill. No data is not an alert.'
+      description 'Unreachable site, six engine measures, the bill. No data fires no alert.'
       technology 'Grafana Alerting'
     }
     contact = container 'Contact point' {
-      description 'One for everything that pages, grouped by alert and check.'
+      description 'One for everything urgent, grouped by alert and check.'
       technology 'E-mail'
     }
     surfaces = app 'Reading surfaces' {
@@ -65,12 +70,12 @@ model {
   visitor -> sites 'reads'
   cloud -> sites 'hosts'
   cloud -> devapps 'hosts'
-  cloud -> founder 'e-mails deploy, domain, restart and memory alerts'
+  cloud -> owner 'e-mails deploy, domain, restart and memory alerts'
   platform.infra -> observability 'two scripts beside it, plan then apply: probes, rules, dashboards'
   observability -> sites 'probes from outside'
   observability -> devapps 'probes from outside'
-  observability -> founder 'e-mails what pages'
-  founder -> observability 'reads the surfaces'
+  observability -> owner 'e-mails what is urgent'
+  owner -> observability 'reads the surfaces'
 
   observability.probes -> sites 'GET, as a visitor would'
   observability.probes -> devapps.health 'GET'
@@ -79,9 +84,9 @@ model {
   devapps.engine -> observability.metrics 'OTLP, no tenant label'
   observability.rules -> observability.metrics 'evaluates'
   observability.rules -> observability.contact 'severity page'
-  observability.contact -> founder 'e-mails'
+  observability.contact -> owner 'e-mails'
   observability.surfaces -> observability.metrics 'reads'
-  founder -> observability.surfaces 'reads'
+  observability.surfaces -> owner 'shows the sites and the engine'
   observability.surfaces -> observability.signals 'will read, once they arrive'
   observability.load -> devapps.health 'gentle load, dev only'
 }
@@ -89,7 +94,8 @@ model {
 views {
   view obs_context {
     title 'What we watch · context'
-    include visitor, founder, sites, devapps, observability, cloud, platform.infra
+    include visitor, sites, devapps, observability, cloud, platform.infra
+    include owner
     style * {
       size xsmall
     }
@@ -98,11 +104,13 @@ views {
 
   view obs_containers of observability {
     title 'Observability · containers'
-    include observability.*, devapps.*, sites, founder
-    // the hosting and the infrastructure as code are drawn in the context view; here they would widen the view past a page
+    include observability.*, devapps.*, sites
+    include owner
+    // the hosting and the infrastructure as code are drawn in the context view; here they would widen the view past a page.
+    // Left to right, with the surfaces showing the founder what they read: the view stays as wide as the text column.
     style * {
       size xsmall
     }
-    autoLayout TopBottom 40 30
+    autoLayout LeftRight 30 20
   }
 }
