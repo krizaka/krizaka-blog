@@ -60,7 +60,11 @@ const SETTINGS: LinkSettings = {
      sovkora-* names: every address of theirs is a 404 for a reader. The one public repository is krizaka/sovkora. */
   retiredRepo: /^(orazaka|sovkora)-/,
   sites: {
-    ...Object.fromEntries(org.sites.map((s: { id: string; url: string }) => [s.id, s.url])),
+    ...Object.fromEntries(
+      org.sites.flatMap((s: { id: string; url: string; aliases?: string[] }) =>
+        [s.id, ...(s.aliases ?? [])].map((id) => [id, s.url]),
+      ),
+    ),
     /* What @krizaka/org does not list under its current name. */
     github: GITHUB_ORG,
     folioviv: "https://www.folioviv.com",

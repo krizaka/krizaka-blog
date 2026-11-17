@@ -3,18 +3,12 @@ import { publicRepoUrl, siteUrl } from "./links.ts";
 
 export const SITE_URL = siteUrl("blog");
 export const KRIZAKA_URL = siteUrl("www");
-export const UI_URL = siteUrl("ui");
-export const JAVA_URL = siteUrl("java");
-export const OPEN_SOURCE_URL = `${KRIZAKA_URL}/docs`;
-export const TS_URL = siteUrl("ts");
-export const LAB_URL = siteUrl("motion");
 /** The publisher, as the law asks it (the same as krizaka.com's `COMPANY`). */
 export const COMPANY = {
   legalName: "Technologies Krizaka Inc.",
   neq: "1182652231",
   city: "Montréal (Québec)",
 } as const;
-export const GITHUB_ORG_URL = siteUrl("github");
 export const REPOSITORY_URL = publicRepoUrl("krizaka-blog");
 export const ORGANIZATION_ID = `${KRIZAKA_URL}/#organization`;
 /** The media CDN: post images live here (Bunny `krizaka-assets`, prefix `blog/`), never in this repository. */
