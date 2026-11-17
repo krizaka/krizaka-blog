@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "10b6e188884d",
+      "source": "7e3ba10b3147",
       "files": {
         "epub": {
-          "hash": "4005bf8e69",
-          "bytes": 9022156
+          "hash": "fb35e7a2d0",
+          "bytes": 9360116
         },
         "pdf": {
-          "hash": "cbc2b7db19",
-          "bytes": 13452714
+          "hash": "abf672fce7",
+          "bytes": 14166662
         }
       }
     },
@@ -287,15 +287,15 @@
       }
     },
     "fr/story": {
-      "source": "4a21b151f984",
+      "source": "54900165e3df",
       "files": {
         "epub": {
-          "hash": "8ae069ef59",
-          "bytes": 9085458
+          "hash": "ff07674692",
+          "bytes": 9425583
         },
         "pdf": {
-          "hash": "bc855f36a4",
-          "bytes": 13690689
+          "hash": "669aba4984",
+          "bytes": 14420139
         }
       }
     },
@@ -933,6 +933,84 @@
         "pdf": {
           "hash": "bdc0e94912",
           "bytes": 1050471
+        }
+      }
+    },
+    "en/how-the-interface-is-built": {
+      "source": "cd87dc04002a",
+      "files": {
+        "epub": {
+          "hash": "ad747d4350",
+          "bytes": 721757
+        },
+        "pdf": {
+          "hash": "6ba50157ff",
+          "bytes": 1056100
+        }
+      }
+    },
+    "en/what-grafana-sees-from-outside": {
+      "source": "e5f65fea3740",
+      "files": {
+        "epub": {
+          "hash": "94b50be03f",
+          "bytes": 605143
+        },
+        "pdf": {
+          "hash": "1c68286f80",
+          "bytes": 972801
+        }
+      }
+    },
+    "en/our-posts-are-planned-as-data": {
+      "source": "9eb2eab28d64",
+      "files": {
+        "epub": {
+          "hash": "955b8b2b41",
+          "bytes": 665734
+        },
+        "pdf": {
+          "hash": "ec3890c358",
+          "bytes": 984810
+        }
+      }
+    },
+    "fr/how-the-interface-is-built": {
+      "source": "75399be3a9f4",
+      "files": {
+        "epub": {
+          "hash": "b4d0b5a1a5",
+          "bytes": 720308
+        },
+        "pdf": {
+          "hash": "e9c984f62f",
+          "bytes": 1077606
+        }
+      }
+    },
+    "fr/what-grafana-sees-from-outside": {
+      "source": "4cdaaa37293d",
+      "files": {
+        "epub": {
+          "hash": "42e29b52e6",
+          "bytes": 613479
+        },
+        "pdf": {
+          "hash": "6788703902",
+          "bytes": 1000403
+        }
+      }
+    },
+    "fr/our-posts-are-planned-as-data": {
+      "source": "c4b77a5bb5dc",
+      "files": {
+        "epub": {
+          "hash": "d2fd4d9c3c",
+          "bytes": 668674
+        },
+        "pdf": {
+          "hash": "4e80f1d4f5",
+          "bytes": 1008980
         }
       }
     }

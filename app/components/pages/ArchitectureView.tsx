@@ -18,7 +18,9 @@ type Labels = {
 };
 
 /** Every laid-out model (scripts/gen-architecture.mjs `MODELS`); a view id is unique across them. */
-const LAYOUTS = [agents, designChoices, observability, social].map((d) => d.views as unknown as Record<Locale, ArchView[]>);
+const LAYOUTS = [agents, designChoices, observability, social].map(
+  (d) => d.views as unknown as Record<Locale, ArchView[]>,
+);
 const VIEWS: Record<Locale, ArchView[]> = {
   en: LAYOUTS.flatMap((l) => l.en),
   fr: LAYOUTS.flatMap((l) => l.fr),
