@@ -43,6 +43,7 @@
     "@krizaka/config": "^0.10.0",
     "@krizaka/email": "^1.2.2",
     "@krizaka/rate-limit": "0.2.0",
+    "@krizaka/visits": "0.1.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^26",
     "@types/react": "^19",

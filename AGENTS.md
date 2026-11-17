@@ -114,6 +114,15 @@ caption?/>` (a light native player: muted loop while on screen, poster first, co
   sign-in is the small function in `functions/` (`AUTH_GITHUB_CLIENT_ID` / `AUTH_GITHUB_CLIENT_SECRET`, DO secrets, from a
   GitHub OAuth App whose callback is `https://blog.krizaka.com/api/oauth/callback`). No password database exists.
 
+## 3.0 Visit count (cookieless)
+
+- The blog counts the pages read, without a cookie (founder, 2026-11-17, krizaka-internal#4122): `VisitCount` (mounted once in `SiteRoot`, `lib/visit-beacon.ts`)
+  sends one `POST /api/visits/count` per page (path and referring host, `credentials: "omit"`, `keepalive`, the answer ignored and an error swallowed), the
+  function `functions/packages/visits/count` adds one to a row of `visits.visit_counts` (database `krizaka_visits`, the production cluster, runtime role through its pool:
+  `DATABASE_VISITS_URL` + `DATABASE_VISITS_CA_CERT`, set on the app, never here). One row per (site `blog`, page, UTC day, referrer domain), capped per day; robots refused;
+  nothing about the person stored (no cookie, identifier, address, agent, query). It answers 204 whatever happens. The library is `@krizaka/visits`, copied next to the
+  action by `npm run functions:bundle` (`visits.mjs`, generated). `tests/visits.test.mjs`. The privacy page that says so is krizaka.com's (`/privacy`, the footer's link).
+
 ## 3.1 Newsletter
 
 - A subscribe form (`app/components/newsletter/`: e-mail + language, Turnstile, honeypot) on the home (its one newsletter line),

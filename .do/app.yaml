@@ -67,6 +67,9 @@ functions:
       - { key: DATABASE_URL, scope: RUN_AND_BUILD_TIME, type: SECRET, value: unset }
       - { key: DATABASE_CA_CERT, scope: RUN_AND_BUILD_TIME, type: SECRET, value: unset }
       - { key: MAIL_SENDER_ADDRESS, scope: RUN_AND_BUILD_TIME, value: "Montréal (Québec), Canada" }
+      # The cookieless visit count: the runtime role of krizaka_visits (production cluster, through its pool) and its CA.
+      - { key: DATABASE_VISITS_URL, scope: RUN_AND_BUILD_TIME, type: SECRET, value: unset }
+      - { key: DATABASE_VISITS_CA_CERT, scope: RUN_AND_BUILD_TIME, type: SECRET, value: unset }
       - { key: ABUSE_CAPTCHA_PROVIDER, scope: RUN_AND_BUILD_TIME, value: turnstile }
       - { key: ABUSE_CAPTCHA_SECRET_KEY, scope: RUN_AND_BUILD_TIME, type: SECRET, value: unset }
 # Who answers which path: the sign-in functions under /api, the static site everywhere else. The posts merged into a

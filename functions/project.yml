@@ -10,6 +10,18 @@ packages:
       - name: callback
         runtime: "nodejs:default"
         web: true
+  # The cookieless visit count (functions/packages/visits/count): POST /api/visits/count adds one to a (site, page, day, referrer
+  # domain) row of the krizaka_visits database (krizaka-internal#4122). Nothing about the person is stored.
+  - name: visits
+    environment:
+      DATABASE_VISITS_URL: ${DATABASE_VISITS_URL}
+      DATABASE_VISITS_CA_CERT: ${DATABASE_VISITS_CA_CERT}
+    actions:
+      - name: count
+        runtime: "nodejs:18"
+        web: true
+        limits:
+          timeout: 10000
   # The newsletter (double opt-in): /api/newsletter/subscribe, /confirm, /unsubscribe, /send. Signed links, a small
   # table on the Postgres cluster, Mailgun to send; nothing stored before the confirmation
   # (functions/packages/newsletter/subscribe/newsletter.js).

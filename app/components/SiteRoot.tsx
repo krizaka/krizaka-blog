@@ -12,6 +12,7 @@ import { displayFace, monoFace, textFace } from "../fonts";
 import { I18nProvider } from "./I18nProvider";
 import SiteFooter from "./SiteFooter";
 import { ThemeSync } from "./SiteTheme";
+import { VisitCount } from "./VisitCount";
 import TopBar from "./TopBar";
 import "@krizaka/ui/blocks.css";
 import "../globals.css";
@@ -40,6 +41,7 @@ export default function SiteRoot({ locale, children }: { locale: Locale; childre
       <body className="flex min-h-dvh flex-col antialiased">
         <ThemeProvider defaultMode="dark">
           <ThemeSync />
+          {!process.env.APP_PREVIEW_PATH && <VisitCount />}
           <MotionObserver />
           <I18nProvider locale={locale} messages={clientMessages(t)}>
             <SkipLink href="#main">{t.bar.skip}</SkipLink>
