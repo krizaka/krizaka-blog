@@ -2,6 +2,7 @@ import { ArchitectureDiagram, type ArchView } from "@krizaka/ui/architecture-dia
 import agents from "@/lib/architecture.json";
 import designChoices from "@/lib/architecture-design-choices.json";
 import observability from "@/lib/architecture-observability.json";
+import social from "@/lib/architecture-social.json";
 import type { Locale } from "@/lib/i18n";
 
 /* <Architecture view="agents_containers" label="short title" description="the long sentence"/> in a post: one view of a checked architecture model, laid out at build time
@@ -17,7 +18,7 @@ type Labels = {
 };
 
 /** Every laid-out model (scripts/gen-architecture.mjs `MODELS`); a view id is unique across them. */
-const LAYOUTS = [agents, designChoices, observability].map((d) => d.views as unknown as Record<Locale, ArchView[]>);
+const LAYOUTS = [agents, designChoices, observability, social].map((d) => d.views as unknown as Record<Locale, ArchView[]>);
 const VIEWS: Record<Locale, ArchView[]> = {
   en: LAYOUTS.flatMap((l) => l.en),
   fr: LAYOUTS.flatMap((l) => l.fr),

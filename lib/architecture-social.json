@@ -1,0 +1,1862 @@
+{
+  "generatedBy": "scripts/gen-architecture.mjs",
+  "tool": { "name": "@krizaka/architecture", "likec4": "1.60.0" },
+  "source": {
+    "path": "content/diagrams/krizaka-social.c4",
+    "sha256": "c859025e4748532fece6555656f971bb5efa9462e0b31c561e73c518f78deb57"
+  },
+  "base": [
+    { "path": "org.c4", "sha256": "93b98888f7251d64840003fc883671ce9a891dbf5f2a5f4ae386033524981cd8" },
+    { "path": "specification.c4", "sha256": "3e02a37911f2dcd67a88304b5342e8fa7d1ff7e9d57cd204fe94365a9db01764" }
+  ],
+  "translations": {
+    "path": "content/diagrams/krizaka-social.fr.json",
+    "sha256": "7c4cc0f58f635d4a9758e7dd725fad1be0e8c2929569ff22ad2165001148aff0"
+  },
+  "check": {
+    "status": "ok",
+    "system": null,
+    "errors": [],
+    "elements": [
+      "agents",
+      "aiAgents",
+      "cdn",
+      "cloud",
+      "contributor",
+      "cto",
+      "customer",
+      "founder",
+      "github",
+      "linkedin",
+      "meta",
+      "models",
+      "platform",
+      "platform.infra",
+      "platform.standards",
+      "platform.template",
+      "registries",
+      "social",
+      "social.calendar",
+      "social.facebookAdapter",
+      "social.gate",
+      "social.instagramAdapter",
+      "social.linkedinAdapter",
+      "social.media",
+      "social.publisher",
+      "social.record",
+      "social.youtubeAdapter",
+      "visitor",
+      "youtube"
+    ]
+  },
+  "views": {
+    "en": [
+      {
+        "id": "social_context",
+        "title": "Scheduled publishing · context",
+        "dynamic": false,
+        "bounds": { "x": 0, "y": 0, "width": 753, "height": 588 },
+        "nodes": [
+          {
+            "id": "founder",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "Founder",
+            "technology": null,
+            "description": "Decides the direction and the money. A second app approves pull requests and the train merges them.",
+            "compound": false,
+            "x": 0,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "aiAgents",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "AI agents",
+            "technology": null,
+            "description": "One session per lane, one pull request per issue, under the agents rules.",
+            "compound": false,
+            "x": 210,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "github",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "GitHub",
+            "technology": null,
+            "description": "Code, issues, pull requests, CI, the merge queue and the tags.",
+            "compound": false,
+            "x": 470,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "cto",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "CTO",
+            "technology": null,
+            "description": "An AI agent in conversation with the founder. Reads every row before it may go out, and validates it.",
+            "compound": false,
+            "x": 30,
+            "y": 163,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Krizaka Social",
+            "technology": null,
+            "description": "The scheduled publishing: a calendar as data, a publisher run by GitHub Actions, a record of what went out.",
+            "compound": false,
+            "x": 210,
+            "y": 326,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "linkedin",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "LinkedIn",
+            "technology": null,
+            "description": "The company Page.",
+            "compound": false,
+            "x": 0,
+            "y": 488,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "meta",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "Facebook and Instagram",
+            "technology": null,
+            "description": "The Page and the account, through the Graph API.",
+            "compound": false,
+            "x": 210,
+            "y": 488,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "youtube",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "YouTube",
+            "technology": null,
+            "description": "The channel, through the Data API.",
+            "compound": false,
+            "x": 467,
+            "y": 488,
+            "width": 180,
+            "height": 100
+          }
+        ],
+        "edges": [
+          {
+            "id": "103hhar",
+            "source": "founder",
+            "target": "cto",
+            "label": "sets the strategy, decides",
+            "points": [
+              [99, 100],
+              [102, 116],
+              [106, 135],
+              [109, 153]
+            ],
+            "labelBBox": { "x": 108, "y": 121, "width": 163, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "e10hmx",
+            "source": "cto",
+            "target": "social",
+            "label": "validates each row",
+            "points": [
+              [131, 262],
+              [136, 278],
+              [144, 294],
+              [155, 306],
+              [168, 320],
+              [184, 331],
+              [201, 340]
+            ],
+            "labelBBox": { "x": 156, "y": 284, "width": 120, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "pe7p4j",
+            "source": "aiAgents",
+            "target": "social",
+            "label": "write the rows, make the media",
+            "points": [
+              [300, 100],
+              [300, 157],
+              [300, 253],
+              [300, 315]
+            ],
+            "labelBBox": { "x": 301, "y": 202, "width": 198, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "r53u6s",
+            "source": "github",
+            "target": "social",
+            "label": "starts the publisher on schedule",
+            "points": [
+              [559, 100],
+              [555, 146],
+              [544, 216],
+              [507, 263],
+              [480, 298],
+              [438, 324],
+              [399, 341]
+            ],
+            "labelBBox": { "x": 550, "y": 202, "width": 202, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "maofbr",
+            "source": "social",
+            "target": "linkedin",
+            "label": "text posts",
+            "points": [
+              [236, 426],
+              [213, 443],
+              [186, 464],
+              [162, 482]
+            ],
+            "labelBBox": { "x": 209, "y": 447, "width": 64, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "mmsh9o",
+            "source": "social",
+            "target": "meta",
+            "label": "Page text posts, Instagram images",
+            "points": [
+              [299, 426],
+              [299, 432],
+              [299, 439],
+              [298, 446],
+              [298, 456],
+              [298, 468],
+              [299, 479]
+            ],
+            "labelBBox": { "x": 299, "y": 447, "width": 220, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1ngti44",
+            "source": "social",
+            "target": "youtube",
+            "label": "private uploads, later",
+            "points": [
+              [390, 386],
+              [435, 394],
+              [487, 412],
+              [523, 446],
+              [533, 455],
+              [539, 467],
+              [544, 479]
+            ],
+            "labelBBox": { "x": 540, "y": 447, "width": 134, "height": 18 },
+            "step": null,
+            "back": false
+          }
+        ]
+      },
+      {
+        "id": "social_containers",
+        "title": "Scheduled publishing · containers",
+        "dynamic": false,
+        "bounds": { "x": 0, "y": 0, "width": 1477, "height": 1080 },
+        "nodes": [
+          {
+            "id": "github",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "GitHub",
+            "technology": null,
+            "description": "Code, issues, pull requests, CI, the merge queue and the tags.",
+            "compound": false,
+            "x": 0,
+            "y": 486,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Krizaka Social",
+            "technology": null,
+            "description": "The scheduled publishing: a calendar as data, a publisher run by GitHub Actions, a record of what went out.",
+            "compound": true,
+            "x": 442,
+            "y": 8,
+            "width": 1027,
+            "height": 1064
+          },
+          {
+            "id": "social.publisher",
+            "parent": "social",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Publisher",
+            "technology": "Node, GitHub Actions",
+            "description": "Takes the rows due at this Montréal hour, claims each one, sends it, records the answer. One run at a time.",
+            "compound": false,
+            "x": 482,
+            "y": 486,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.media",
+            "parent": "social",
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Media",
+            "technology": "Files, versioned",
+            "description": "The pictures and carousels of the posts, made ahead, at the path the row names. Videos are not here yet.",
+            "compound": false,
+            "x": 857,
+            "y": 932,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.gate",
+            "parent": "social",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Pre-publication gate",
+            "technology": "Node",
+            "description": "The content rules: a language, a source, no price, no address, a story says it is invented. Runs in CI and again at the hour.",
+            "compound": false,
+            "x": 857,
+            "y": 802,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.record",
+            "parent": "social",
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Published record",
+            "technology": "JSON lines, git",
+            "description": "One line per event on a branch of its own: claim, published, failed, release. The claim is pushed before the network call.",
+            "compound": false,
+            "x": 857,
+            "y": 672,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.linkedinAdapter",
+            "parent": "social",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "LinkedIn adapter",
+            "technology": "Node",
+            "description": "Text posts on the Page, with images or a link card.",
+            "compound": false,
+            "x": 857,
+            "y": 542,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.facebookAdapter",
+            "parent": "social",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Facebook adapter",
+            "technology": "Node",
+            "description": "Text posts on the Page. Videos and carousels are still posted by hand.",
+            "compound": false,
+            "x": 857,
+            "y": 412,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.instagramAdapter",
+            "parent": "social",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Instagram adapter",
+            "technology": "Node",
+            "description": "Images and carousels.",
+            "compound": false,
+            "x": 857,
+            "y": 282,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.youtubeAdapter",
+            "parent": "social",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "YouTube adapter",
+            "technology": "Node",
+            "description": "Uploads a Short as private; the founder publishes it in Studio until the API audit. Not connected yet.",
+            "compound": false,
+            "x": 857,
+            "y": 152,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.calendar",
+            "parent": "social",
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Calendar",
+            "technology": "CSV, versioned",
+            "description": "One row per post: day, hour, network, language, text, source, media, status. Only « valide-cto » goes out.",
+            "compound": false,
+            "x": 1249,
+            "y": 69,
+            "width": 180,
+            "height": 100
+          }
+        ],
+        "edges": [
+          {
+            "id": "1rbrino",
+            "source": "github",
+            "target": "social.publisher",
+            "label": "starts it at 9, 12 and 18 h, or by hand",
+            "points": [
+              [180, 536],
+              [263, 536],
+              [386, 536],
+              [472, 536]
+            ],
+            "labelBBox": { "x": 201, "y": 514, "width": 232, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "esko33",
+            "source": "social.gate",
+            "target": "social.calendar",
+            "label": "checks every live row in CI",
+            "points": [
+              [1023, 802],
+              [1028, 797],
+              [1033, 792],
+              [1037, 787],
+              [1194, 593],
+              [1287, 305],
+              [1322, 180]
+            ],
+            "labelBBox": { "x": 1058, "y": 438, "width": 170, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1c5agc6",
+            "source": "social.publisher",
+            "target": "social.calendar",
+            "label": "reads the rows due now",
+            "points": [
+              [578, 486],
+              [587, 417],
+              [612, 293],
+              [682, 216],
+              [822, 62],
+              [1092, 77],
+              [1238, 99]
+            ],
+            "labelBBox": { "x": 871, "y": 64, "width": 153, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1dujrcw",
+            "source": "social.publisher",
+            "target": "social.media",
+            "label": "reads the files of a row",
+            "points": [
+              [580, 586],
+              [591, 650],
+              [619, 762],
+              [682, 836],
+              [726, 887],
+              [792, 923],
+              [847, 947]
+            ],
+            "labelBBox": { "x": 687, "y": 814, "width": 145, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1rxhq6r",
+            "source": "social.publisher",
+            "target": "social.gate",
+            "label": "checks each row again",
+            "points": [
+              [595, 586],
+              [614, 623],
+              [644, 675],
+              [682, 710],
+              [730, 755],
+              [795, 790],
+              [848, 814]
+            ],
+            "labelBBox": { "x": 687, "y": 688, "width": 146, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "na4sqx",
+            "source": "social.publisher",
+            "target": "social.record",
+            "label": "claims, then records",
+            "points": [
+              [644, 586],
+              [656, 594],
+              [669, 602],
+              [682, 609],
+              [735, 637],
+              [797, 664],
+              [847, 685]
+            ],
+            "labelBBox": { "x": 695, "y": 587, "width": 129, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "11r1oet",
+            "source": "social.publisher",
+            "target": "social.linkedinAdapter",
+            "label": "sends a LinkedIn row",
+            "points": [
+              [662, 554],
+              [669, 556],
+              [675, 557],
+              [682, 558],
+              [736, 567],
+              [797, 575],
+              [847, 581]
+            ],
+            "labelBBox": { "x": 692, "y": 536, "width": 136, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1kvma1n",
+            "source": "social.publisher",
+            "target": "social.facebookAdapter",
+            "label": "sends a Facebook row",
+            "points": [
+              [662, 518],
+              [718, 507],
+              [790, 493],
+              [847, 482]
+            ],
+            "labelBBox": { "x": 687, "y": 462, "width": 145, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "7yflrf",
+            "source": "social.publisher",
+            "target": "social.instagramAdapter",
+            "label": "sends an Instagram row",
+            "points": [
+              [635, 486],
+              [650, 475],
+              [666, 464],
+              [682, 454],
+              [735, 422],
+              [797, 393],
+              [848, 371]
+            ],
+            "labelBBox": { "x": 683, "y": 355, "width": 153, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1qdmp9y",
+            "source": "social.publisher",
+            "target": "social.youtubeAdapter",
+            "label": "uploads a YouTube row",
+            "points": [
+              [593, 486],
+              [611, 445],
+              [641, 387],
+              [682, 347],
+              [729, 301],
+              [794, 265],
+              [848, 240]
+            ],
+            "labelBBox": { "x": 684, "y": 224, "width": 152, "height": 18 },
+            "step": null,
+            "back": false
+          }
+        ]
+      },
+      {
+        "id": "row_life",
+        "title": "A row, from draft to published",
+        "dynamic": true,
+        "bounds": { "x": 0, "y": 0, "width": 1129, "height": 836 },
+        "nodes": [
+          {
+            "id": "aiAgents",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "AI agents",
+            "technology": null,
+            "description": "One session per lane, one pull request per issue, under the agents rules.",
+            "compound": false,
+            "x": 0,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.gate",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Pre-publication gate",
+            "technology": "Node",
+            "description": "The content rules: a language, a source, no price, no address, a story says it is invented. Runs in CI and again at the hour.",
+            "compound": false,
+            "x": 833,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "cto",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "CTO",
+            "technology": null,
+            "description": "An AI agent in conversation with the founder. Reads every row before it may go out, and validates it.",
+            "compound": false,
+            "x": 587,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.calendar",
+            "parent": null,
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Calendar",
+            "technology": "CSV, versioned",
+            "description": "One row per post: day, hour, network, language, text, source, media, status. Only « valide-cto » goes out.",
+            "compound": false,
+            "x": 425,
+            "y": 186,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "github",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "GitHub",
+            "technology": null,
+            "description": "Code, issues, pull requests, CI, the merge queue and the tags.",
+            "compound": false,
+            "x": 168,
+            "y": 186,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.publisher",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Publisher",
+            "technology": "Node, GitHub Actions",
+            "description": "Takes the rows due at this Montréal hour, claims each one, sends it, records the answer. One run at a time.",
+            "compound": false,
+            "x": 472,
+            "y": 371,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.record",
+            "parent": null,
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Published record",
+            "technology": "JSON lines, git",
+            "description": "One line per event on a branch of its own: claim, published, failed, release. The claim is pushed before the network call.",
+            "compound": false,
+            "x": 333,
+            "y": 557,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.linkedinAdapter",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "LinkedIn adapter",
+            "technology": "Node",
+            "description": "Text posts on the Page, with images or a link card.",
+            "compound": false,
+            "x": 768,
+            "y": 557,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "linkedin",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "LinkedIn",
+            "technology": null,
+            "description": "The company Page.",
+            "compound": false,
+            "x": 768,
+            "y": 736,
+            "width": 180,
+            "height": 100
+          }
+        ],
+        "edges": [
+          {
+            "id": "step-01",
+            "source": "aiAgents",
+            "target": "social.calendar",
+            "label": "a team adds the row: propose, then a-valider-cto",
+            "points": [
+              [82, 100],
+              [82, 123],
+              [86, 149],
+              [103, 166],
+              [124, 186],
+              [335, 180],
+              [363, 186],
+              [380, 189],
+              [397, 193],
+              [414, 199]
+            ],
+            "labelBBox": { "x": 112, "y": 124, "width": 246, "height": 35 },
+            "step": 1,
+            "back": false
+          },
+          {
+            "id": "step-02",
+            "source": "social.gate",
+            "target": "social.calendar",
+            "label": "CI checks the row on every change",
+            "points": [
+              [833, 87],
+              [816, 92],
+              [799, 97],
+              [782, 100],
+              [738, 109],
+              [409, 87],
+              [378, 120],
+              [364, 135],
+              [368, 148],
+              [378, 166],
+              [387, 180],
+              [401, 192],
+              [415, 201]
+            ],
+            "labelBBox": { "x": 387, "y": 130, "width": 245, "height": 20 },
+            "step": 2,
+            "back": false
+          },
+          {
+            "id": "step-03",
+            "source": "cto",
+            "target": "social.calendar",
+            "label": "the CTO reads it and sets valide-cto",
+            "points": [
+              [671, 100],
+              [667, 122],
+              [658, 147],
+              [643, 166],
+              [635, 176],
+              [625, 184],
+              [614, 192]
+            ],
+            "labelBBox": { "x": 674, "y": 130, "width": 249, "height": 20 },
+            "step": 3,
+            "back": false
+          },
+          {
+            "id": "step-04",
+            "source": "github",
+            "target": "social.publisher",
+            "label": "the schedule starts the run at the row hour",
+            "points": [
+              [244, 285],
+              [241, 308],
+              [242, 333],
+              [257, 351],
+              [282, 383],
+              [383, 401],
+              [462, 411]
+            ],
+            "labelBBox": { "x": 266, "y": 310, "width": 256, "height": 34 },
+            "step": 4,
+            "back": false
+          },
+          {
+            "id": "step-05",
+            "source": "social.publisher",
+            "target": "social.calendar",
+            "label": "reads the rows of today, due now",
+            "points": [
+              [530, 296],
+              [537, 321],
+              [544, 348],
+              [550, 371]
+            ],
+            "labelBBox": { "x": 553, "y": 316, "width": 232, "height": 20 },
+            "step": 5,
+            "back": true
+          },
+          {
+            "id": "step-06",
+            "source": "social.publisher",
+            "target": "social.gate",
+            "label": "checks the row once more",
+            "points": [
+              [938, 110],
+              [940, 128],
+              [940, 148],
+              [934, 166],
+              [902, 263],
+              [880, 292],
+              [796, 351],
+              [753, 381],
+              [698, 398],
+              [652, 408]
+            ],
+            "labelBBox": { "x": 936, "y": 223, "width": 189, "height": 20 },
+            "step": 6,
+            "back": true
+          },
+          {
+            "id": "step-07",
+            "source": "social.publisher",
+            "target": "social.record",
+            "label": "pushes the claim, before any call",
+            "points": [
+              [472, 432],
+              [400, 443],
+              [306, 461],
+              [282, 491],
+              [270, 507],
+              [271, 520],
+              [282, 537],
+              [292, 553],
+              [307, 565],
+              [323, 575]
+            ],
+            "labelBBox": { "x": 291, "y": 501, "width": 230, "height": 21 },
+            "step": 7,
+            "back": false
+          },
+          {
+            "id": "step-08",
+            "source": "social.publisher",
+            "target": "social.linkedinAdapter",
+            "label": "sends the post",
+            "points": [
+              [652, 426],
+              [706, 433],
+              [772, 450],
+              [817, 491],
+              [833, 506],
+              [842, 527],
+              [848, 547]
+            ],
+            "labelBBox": { "x": 854, "y": 501, "width": 117, "height": 21 },
+            "step": 8,
+            "back": false
+          },
+          {
+            "id": "step-09",
+            "source": "social.linkedinAdapter",
+            "target": "linkedin",
+            "label": "publishes on the Page",
+            "points": [
+              [858, 657],
+              [858, 678],
+              [858, 703],
+              [858, 725]
+            ],
+            "labelBBox": { "x": 867, "y": 683, "width": 165, "height": 21 },
+            "step": 9,
+            "back": false
+          },
+          {
+            "id": "step-10",
+            "source": "social.publisher",
+            "target": "social.record",
+            "label": "writes published: the id, the link, the run",
+            "points": [
+              [555, 471],
+              [550, 493],
+              [542, 518],
+              [528, 537],
+              [524, 542],
+              [519, 548],
+              [514, 552]
+            ],
+            "labelBBox": { "x": 558, "y": 495, "width": 248, "height": 35 },
+            "step": 10,
+            "back": false
+          }
+        ]
+      }
+    ],
+    "fr": [
+      {
+        "id": "social_context",
+        "title": "La publication planifiée · contexte",
+        "dynamic": false,
+        "bounds": { "x": 0, "y": 0, "width": 753, "height": 588 },
+        "nodes": [
+          {
+            "id": "founder",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "Fondateur",
+            "technology": null,
+            "description": "Décide de la direction et de l'argent. Une deuxième application approuve les pull requests et le train les fusionne.",
+            "compound": false,
+            "x": 0,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "aiAgents",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "Agents IA",
+            "technology": null,
+            "description": "Une session par voie, une pull request par ticket, sous les règles des agents.",
+            "compound": false,
+            "x": 210,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "github",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "GitHub",
+            "technology": null,
+            "description": "Le code, les tickets, les pull requests, la CI, la file de fusion et les étiquettes.",
+            "compound": false,
+            "x": 470,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "cto",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "CTO",
+            "technology": null,
+            "description": "Un agent IA en conversation avec le fondateur. Lit chaque ligne avant qu'elle puisse sortir, et la valide.",
+            "compound": false,
+            "x": 30,
+            "y": 163,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Krizaka Social",
+            "technology": null,
+            "description": "La publication planifiée : un calendrier en données, un publieur lancé par GitHub Actions, un registre de ce qui est sorti.",
+            "compound": false,
+            "x": 210,
+            "y": 326,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "linkedin",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "LinkedIn",
+            "technology": null,
+            "description": "La page de l'entreprise.",
+            "compound": false,
+            "x": 0,
+            "y": 488,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "meta",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "Facebook et Instagram",
+            "technology": null,
+            "description": "La page et le compte, par l'API Graph.",
+            "compound": false,
+            "x": 210,
+            "y": 488,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "youtube",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "YouTube",
+            "technology": null,
+            "description": "La chaîne, par l'API Data.",
+            "compound": false,
+            "x": 467,
+            "y": 488,
+            "width": 180,
+            "height": 100
+          }
+        ],
+        "edges": [
+          {
+            "id": "103hhar",
+            "source": "founder",
+            "target": "cto",
+            "label": "fixe la stratégie, décide",
+            "points": [
+              [99, 100],
+              [102, 116],
+              [106, 135],
+              [109, 153]
+            ],
+            "labelBBox": { "x": 108, "y": 121, "width": 163, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "e10hmx",
+            "source": "cto",
+            "target": "social",
+            "label": "valide chaque ligne",
+            "points": [
+              [131, 262],
+              [136, 278],
+              [144, 294],
+              [155, 306],
+              [168, 320],
+              [184, 331],
+              [201, 340]
+            ],
+            "labelBBox": { "x": 156, "y": 284, "width": 120, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "pe7p4j",
+            "source": "aiAgents",
+            "target": "social",
+            "label": "écrivent les lignes, font les médias",
+            "points": [
+              [300, 100],
+              [300, 157],
+              [300, 253],
+              [300, 315]
+            ],
+            "labelBBox": { "x": 301, "y": 202, "width": 198, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "r53u6s",
+            "source": "github",
+            "target": "social",
+            "label": "lance le publieur à l'heure",
+            "points": [
+              [559, 100],
+              [555, 146],
+              [544, 216],
+              [507, 263],
+              [480, 298],
+              [438, 324],
+              [399, 341]
+            ],
+            "labelBBox": { "x": 550, "y": 202, "width": 202, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "maofbr",
+            "source": "social",
+            "target": "linkedin",
+            "label": "publications texte",
+            "points": [
+              [236, 426],
+              [213, 443],
+              [186, 464],
+              [162, 482]
+            ],
+            "labelBBox": { "x": 209, "y": 447, "width": 64, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "mmsh9o",
+            "source": "social",
+            "target": "meta",
+            "label": "textes sur la page, images Instagram",
+            "points": [
+              [299, 426],
+              [299, 432],
+              [299, 439],
+              [298, 446],
+              [298, 456],
+              [298, 468],
+              [299, 479]
+            ],
+            "labelBBox": { "x": 299, "y": 447, "width": 220, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1ngti44",
+            "source": "social",
+            "target": "youtube",
+            "label": "envois privés, plus tard",
+            "points": [
+              [390, 386],
+              [435, 394],
+              [487, 412],
+              [523, 446],
+              [533, 455],
+              [539, 467],
+              [544, 479]
+            ],
+            "labelBBox": { "x": 540, "y": 447, "width": 134, "height": 18 },
+            "step": null,
+            "back": false
+          }
+        ]
+      },
+      {
+        "id": "social_containers",
+        "title": "La publication planifiée · conteneurs",
+        "dynamic": false,
+        "bounds": { "x": 0, "y": 0, "width": 1477, "height": 1080 },
+        "nodes": [
+          {
+            "id": "github",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "GitHub",
+            "technology": null,
+            "description": "Le code, les tickets, les pull requests, la CI, la file de fusion et les étiquettes.",
+            "compound": false,
+            "x": 0,
+            "y": 486,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Krizaka Social",
+            "technology": null,
+            "description": "La publication planifiée : un calendrier en données, un publieur lancé par GitHub Actions, un registre de ce qui est sorti.",
+            "compound": true,
+            "x": 442,
+            "y": 8,
+            "width": 1027,
+            "height": 1064
+          },
+          {
+            "id": "social.publisher",
+            "parent": "social",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Publieur",
+            "technology": "Node, GitHub Actions",
+            "description": "Prend les lignes dues à cette heure de Montréal, réserve chacune, l'envoie, inscrit la réponse. Une exécution à la fois.",
+            "compound": false,
+            "x": 482,
+            "y": 486,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.media",
+            "parent": "social",
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Médias",
+            "technology": "Fichiers, versionnés",
+            "description": "Les images et les carrousels des publications, faits à l'avance, au chemin que nomme la ligne. Les vidéos n'y sont pas encore.",
+            "compound": false,
+            "x": 857,
+            "y": 932,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.gate",
+            "parent": "social",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Barrière de prépublication",
+            "technology": "Node",
+            "description": "Les règles de contenu : une langue, une source, pas de prix, pas d'adresse, une histoire inventée le dit. Tourne en CI et de nouveau à l'heure dite.",
+            "compound": false,
+            "x": 857,
+            "y": 802,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.record",
+            "parent": "social",
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Registre de publication",
+            "technology": "Lignes JSON, git",
+            "description": "Une ligne par événement, sur une branche à part : réservation, publié, échec, libération. La réservation est poussée avant l'appel au réseau.",
+            "compound": false,
+            "x": 857,
+            "y": 672,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.linkedinAdapter",
+            "parent": "social",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Adaptateur LinkedIn",
+            "technology": "Node",
+            "description": "Publications texte sur la page, avec images ou carte de lien.",
+            "compound": false,
+            "x": 857,
+            "y": 542,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.facebookAdapter",
+            "parent": "social",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Adaptateur Facebook",
+            "technology": "Node",
+            "description": "Publications texte sur la page. Les vidéos et les carrousels se publient encore à la main.",
+            "compound": false,
+            "x": 857,
+            "y": 412,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.instagramAdapter",
+            "parent": "social",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Adaptateur Instagram",
+            "technology": "Node",
+            "description": "Images et carrousels.",
+            "compound": false,
+            "x": 857,
+            "y": 282,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.youtubeAdapter",
+            "parent": "social",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Adaptateur YouTube",
+            "technology": "Node",
+            "description": "Envoie un Short en privé ; le fondateur le publie dans Studio jusqu'à l'audit de l'API. Pas encore branché.",
+            "compound": false,
+            "x": 857,
+            "y": 152,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.calendar",
+            "parent": "social",
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Calendrier",
+            "technology": "CSV, versionné",
+            "description": "Une ligne par publication : jour, heure, réseau, langue, texte, source, média, statut. Seul « valide-cto » sort.",
+            "compound": false,
+            "x": 1249,
+            "y": 69,
+            "width": 180,
+            "height": 100
+          }
+        ],
+        "edges": [
+          {
+            "id": "1rbrino",
+            "source": "github",
+            "target": "social.publisher",
+            "label": "le lance à 9 h, 12 h et 18 h, ou à la main",
+            "points": [
+              [180, 536],
+              [263, 536],
+              [386, 536],
+              [472, 536]
+            ],
+            "labelBBox": { "x": 201, "y": 514, "width": 232, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "esko33",
+            "source": "social.gate",
+            "target": "social.calendar",
+            "label": "vérifie chaque ligne vivante en CI",
+            "points": [
+              [1023, 802],
+              [1028, 797],
+              [1033, 792],
+              [1037, 787],
+              [1194, 593],
+              [1287, 305],
+              [1322, 180]
+            ],
+            "labelBBox": { "x": 1058, "y": 438, "width": 170, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1c5agc6",
+            "source": "social.publisher",
+            "target": "social.calendar",
+            "label": "lit les lignes dues maintenant",
+            "points": [
+              [578, 486],
+              [587, 417],
+              [612, 293],
+              [682, 216],
+              [822, 62],
+              [1092, 77],
+              [1238, 99]
+            ],
+            "labelBBox": { "x": 871, "y": 64, "width": 153, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1dujrcw",
+            "source": "social.publisher",
+            "target": "social.media",
+            "label": "lit les fichiers d'une ligne",
+            "points": [
+              [580, 586],
+              [591, 650],
+              [619, 762],
+              [682, 836],
+              [726, 887],
+              [792, 923],
+              [847, 947]
+            ],
+            "labelBBox": { "x": 687, "y": 814, "width": 145, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1rxhq6r",
+            "source": "social.publisher",
+            "target": "social.gate",
+            "label": "revérifie chaque ligne",
+            "points": [
+              [595, 586],
+              [614, 623],
+              [644, 675],
+              [682, 710],
+              [730, 755],
+              [795, 790],
+              [848, 814]
+            ],
+            "labelBBox": { "x": 687, "y": 688, "width": 146, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "na4sqx",
+            "source": "social.publisher",
+            "target": "social.record",
+            "label": "réserve, puis inscrit",
+            "points": [
+              [644, 586],
+              [656, 594],
+              [669, 602],
+              [682, 609],
+              [735, 637],
+              [797, 664],
+              [847, 685]
+            ],
+            "labelBBox": { "x": 695, "y": 587, "width": 129, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "11r1oet",
+            "source": "social.publisher",
+            "target": "social.linkedinAdapter",
+            "label": "envoie une ligne LinkedIn",
+            "points": [
+              [662, 554],
+              [669, 556],
+              [675, 557],
+              [682, 558],
+              [736, 567],
+              [797, 575],
+              [847, 581]
+            ],
+            "labelBBox": { "x": 692, "y": 536, "width": 136, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1kvma1n",
+            "source": "social.publisher",
+            "target": "social.facebookAdapter",
+            "label": "envoie une ligne Facebook",
+            "points": [
+              [662, 518],
+              [718, 507],
+              [790, 493],
+              [847, 482]
+            ],
+            "labelBBox": { "x": 687, "y": 462, "width": 145, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "7yflrf",
+            "source": "social.publisher",
+            "target": "social.instagramAdapter",
+            "label": "envoie une ligne Instagram",
+            "points": [
+              [635, 486],
+              [650, 475],
+              [666, 464],
+              [682, 454],
+              [735, 422],
+              [797, 393],
+              [848, 371]
+            ],
+            "labelBBox": { "x": 683, "y": 355, "width": 153, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1qdmp9y",
+            "source": "social.publisher",
+            "target": "social.youtubeAdapter",
+            "label": "envoie une ligne YouTube",
+            "points": [
+              [593, 486],
+              [611, 445],
+              [641, 387],
+              [682, 347],
+              [729, 301],
+              [794, 265],
+              [848, 240]
+            ],
+            "labelBBox": { "x": 684, "y": 224, "width": 152, "height": 18 },
+            "step": null,
+            "back": false
+          }
+        ]
+      },
+      {
+        "id": "row_life",
+        "title": "Une ligne, du brouillon à la publication",
+        "dynamic": true,
+        "bounds": { "x": 0, "y": 0, "width": 1129, "height": 836 },
+        "nodes": [
+          {
+            "id": "aiAgents",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "Agents IA",
+            "technology": null,
+            "description": "Une session par voie, une pull request par ticket, sous les règles des agents.",
+            "compound": false,
+            "x": 0,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.gate",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Barrière de prépublication",
+            "technology": "Node",
+            "description": "Les règles de contenu : une langue, une source, pas de prix, pas d'adresse, une histoire inventée le dit. Tourne en CI et de nouveau à l'heure dite.",
+            "compound": false,
+            "x": 833,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "cto",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "CTO",
+            "technology": null,
+            "description": "Un agent IA en conversation avec le fondateur. Lit chaque ligne avant qu'elle puisse sortir, et la valide.",
+            "compound": false,
+            "x": 587,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.calendar",
+            "parent": null,
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Calendrier",
+            "technology": "CSV, versionné",
+            "description": "Une ligne par publication : jour, heure, réseau, langue, texte, source, média, statut. Seul « valide-cto » sort.",
+            "compound": false,
+            "x": 425,
+            "y": 186,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "github",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "GitHub",
+            "technology": null,
+            "description": "Le code, les tickets, les pull requests, la CI, la file de fusion et les étiquettes.",
+            "compound": false,
+            "x": 168,
+            "y": 186,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.publisher",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Publieur",
+            "technology": "Node, GitHub Actions",
+            "description": "Prend les lignes dues à cette heure de Montréal, réserve chacune, l'envoie, inscrit la réponse. Une exécution à la fois.",
+            "compound": false,
+            "x": 472,
+            "y": 371,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.record",
+            "parent": null,
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Registre de publication",
+            "technology": "Lignes JSON, git",
+            "description": "Une ligne par événement, sur une branche à part : réservation, publié, échec, libération. La réservation est poussée avant l'appel au réseau.",
+            "compound": false,
+            "x": 333,
+            "y": 557,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "social.linkedinAdapter",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Adaptateur LinkedIn",
+            "technology": "Node",
+            "description": "Publications texte sur la page, avec images ou carte de lien.",
+            "compound": false,
+            "x": 768,
+            "y": 557,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "linkedin",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "LinkedIn",
+            "technology": null,
+            "description": "La page de l'entreprise.",
+            "compound": false,
+            "x": 768,
+            "y": 736,
+            "width": 180,
+            "height": 100
+          }
+        ],
+        "edges": [
+          {
+            "id": "step-01",
+            "source": "aiAgents",
+            "target": "social.calendar",
+            "label": "une équipe ajoute la ligne : propose, puis a-valider-cto",
+            "points": [
+              [82, 100],
+              [82, 123],
+              [86, 149],
+              [103, 166],
+              [124, 186],
+              [335, 180],
+              [363, 186],
+              [380, 189],
+              [397, 193],
+              [414, 199]
+            ],
+            "labelBBox": { "x": 112, "y": 124, "width": 246, "height": 35 },
+            "step": 1,
+            "back": false
+          },
+          {
+            "id": "step-02",
+            "source": "social.gate",
+            "target": "social.calendar",
+            "label": "la CI vérifie la ligne à chaque changement",
+            "points": [
+              [833, 87],
+              [816, 92],
+              [799, 97],
+              [782, 100],
+              [738, 109],
+              [409, 87],
+              [378, 120],
+              [364, 135],
+              [368, 148],
+              [378, 166],
+              [387, 180],
+              [401, 192],
+              [415, 201]
+            ],
+            "labelBBox": { "x": 387, "y": 130, "width": 245, "height": 20 },
+            "step": 2,
+            "back": false
+          },
+          {
+            "id": "step-03",
+            "source": "cto",
+            "target": "social.calendar",
+            "label": "le CTO la lit et met valide-cto",
+            "points": [
+              [671, 100],
+              [667, 122],
+              [658, 147],
+              [643, 166],
+              [635, 176],
+              [625, 184],
+              [614, 192]
+            ],
+            "labelBBox": { "x": 674, "y": 130, "width": 249, "height": 20 },
+            "step": 3,
+            "back": false
+          },
+          {
+            "id": "step-04",
+            "source": "github",
+            "target": "social.publisher",
+            "label": "le planificateur lance l'exécution à l'heure de la ligne",
+            "points": [
+              [244, 285],
+              [241, 308],
+              [242, 333],
+              [257, 351],
+              [282, 383],
+              [383, 401],
+              [462, 411]
+            ],
+            "labelBBox": { "x": 266, "y": 310, "width": 256, "height": 34 },
+            "step": 4,
+            "back": false
+          },
+          {
+            "id": "step-05",
+            "source": "social.publisher",
+            "target": "social.calendar",
+            "label": "lit les lignes du jour, dues maintenant",
+            "points": [
+              [530, 296],
+              [537, 321],
+              [544, 348],
+              [550, 371]
+            ],
+            "labelBBox": { "x": 553, "y": 316, "width": 232, "height": 20 },
+            "step": 5,
+            "back": true
+          },
+          {
+            "id": "step-06",
+            "source": "social.publisher",
+            "target": "social.gate",
+            "label": "vérifie la ligne une fois de plus",
+            "points": [
+              [938, 110],
+              [940, 128],
+              [940, 148],
+              [934, 166],
+              [902, 263],
+              [880, 292],
+              [796, 351],
+              [753, 381],
+              [698, 398],
+              [652, 408]
+            ],
+            "labelBBox": { "x": 936, "y": 223, "width": 189, "height": 20 },
+            "step": 6,
+            "back": true
+          },
+          {
+            "id": "step-07",
+            "source": "social.publisher",
+            "target": "social.record",
+            "label": "pousse la réservation, avant tout appel",
+            "points": [
+              [472, 432],
+              [400, 443],
+              [306, 461],
+              [282, 491],
+              [270, 507],
+              [271, 520],
+              [282, 537],
+              [292, 553],
+              [307, 565],
+              [323, 575]
+            ],
+            "labelBBox": { "x": 291, "y": 501, "width": 230, "height": 21 },
+            "step": 7,
+            "back": false
+          },
+          {
+            "id": "step-08",
+            "source": "social.publisher",
+            "target": "social.linkedinAdapter",
+            "label": "envoie la publication",
+            "points": [
+              [652, 426],
+              [706, 433],
+              [772, 450],
+              [817, 491],
+              [833, 506],
+              [842, 527],
+              [848, 547]
+            ],
+            "labelBBox": { "x": 854, "y": 501, "width": 117, "height": 21 },
+            "step": 8,
+            "back": false
+          },
+          {
+            "id": "step-09",
+            "source": "social.linkedinAdapter",
+            "target": "linkedin",
+            "label": "publie sur la page",
+            "points": [
+              [858, 657],
+              [858, 678],
+              [858, 703],
+              [858, 725]
+            ],
+            "labelBBox": { "x": 867, "y": 683, "width": 165, "height": 21 },
+            "step": 9,
+            "back": false
+          },
+          {
+            "id": "step-10",
+            "source": "social.publisher",
+            "target": "social.record",
+            "label": "inscrit publié : l'identifiant, le lien, l'exécution",
+            "points": [
+              [555, 471],
+              [550, 493],
+              [542, 518],
+              [528, 537],
+              [524, 542],
+              [519, 548],
+              [514, 552]
+            ],
+            "labelBBox": { "x": 558, "y": 495, "width": 248, "height": 35 },
+            "step": 10,
+            "back": false
+          }
+        ]
+      }
+    ]
+  }
+}

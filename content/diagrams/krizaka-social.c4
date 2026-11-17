@@ -1,0 +1,137 @@
+// The scheduled social publishing, for the chapter « our-posts-are-planned-as-data ». Written against the org's base
+// (krizaka/.github docs/architecture: specification.c4, org.c4): it uses the org's founder, AI agents and GitHub, writes no
+// specification, and declares the publishing service and the networks at the level the chapter needs. Nothing sensitive: no
+// host, account, credential name or path. Checked and laid out by
+// `node scripts/gen-architecture.mjs --base <krizaka/.github checkout>/docs/architecture`.
+model {
+  cto = person 'CTO' {
+    description 'An AI agent in conversation with the founder. Reads every row before it may go out, and validates it.'
+  }
+
+  social = system 'Krizaka Social' {
+    description 'The scheduled publishing: a calendar as data, a publisher run by GitHub Actions, a record of what went out.'
+    calendar = datastore 'Calendar' {
+      description 'One row per post: day, hour, network, language, text, source, media, status. Only « valide-cto » goes out.'
+      technology 'CSV, versioned'
+    }
+    media = datastore 'Media' {
+      description 'The pictures and carousels of the posts, made ahead, at the path the row names. Videos are not here yet.'
+      technology 'Files, versioned'
+    }
+    gate = container 'Pre-publication gate' {
+      description 'The content rules: a language, a source, no price, no address, a story says it is invented. Runs in CI and again at the hour.'
+      technology 'Node'
+    }
+    publisher = container 'Publisher' {
+      description 'Takes the rows due at this Montréal hour, claims each one, sends it, records the answer. One run at a time.'
+      technology 'Node, GitHub Actions'
+    }
+    record = datastore 'Published record' {
+      description 'One line per event on a branch of its own: claim, published, failed, release. The claim is pushed before the network call.'
+      technology 'JSON lines, git'
+    }
+    linkedinAdapter = container 'LinkedIn adapter' {
+      description 'Text posts on the Page, with images or a link card.'
+      technology 'Node'
+    }
+    facebookAdapter = container 'Facebook adapter' {
+      description 'Text posts on the Page. Videos and carousels are still posted by hand.'
+      technology 'Node'
+    }
+    instagramAdapter = container 'Instagram adapter' {
+      description 'Images and carousels.'
+      technology 'Node'
+    }
+    youtubeAdapter = container 'YouTube adapter' {
+      description 'Uploads a Short as private; the founder publishes it in Studio until the API audit. Not connected yet.'
+      technology 'Node'
+    }
+  }
+
+  linkedin = external 'LinkedIn' {
+    description 'The company Page.'
+  }
+  meta = external 'Facebook and Instagram' {
+    description 'The Page and the account, through the Graph API.'
+  }
+  youtube = external 'YouTube' {
+    description 'The channel, through the Data API.'
+  }
+
+  founder -> cto 'sets the strategy, decides'
+  aiAgents -> social.calendar 'write the rows, make the media'
+  aiAgents -> social.media 'add the pictures and the carousels'
+  cto -> social.calendar 'validates a row: valide-cto'
+  github -> social.publisher 'starts it at 9, 12 and 18 h, or by hand'
+  social.publisher -> social.calendar 'reads the rows due now'
+  social.publisher -> social.media 'reads the files of a row'
+  social.publisher -> social.gate 'checks each row again'
+  social.publisher -> social.record 'claims, then records'
+  social.gate -> social.calendar 'checks every live row in CI'
+  social.publisher -> social.linkedinAdapter 'sends a LinkedIn row'
+  social.publisher -> social.facebookAdapter 'sends a Facebook row'
+  social.publisher -> social.instagramAdapter 'sends an Instagram row'
+  social.publisher -> social.youtubeAdapter 'uploads a YouTube row'
+  social.linkedinAdapter -> linkedin 'publishes'
+  social.facebookAdapter -> meta 'publishes on the Page'
+  social.instagramAdapter -> meta 'publishes'
+  social.youtubeAdapter -> youtube 'uploads, private'
+}
+
+views {
+  view social_context {
+    title 'Scheduled publishing · context'
+    include founder, cto, aiAgents, social, github, linkedin, meta, youtube
+    include aiAgents -> social with {
+      title 'write the rows, make the media'
+    }
+    include cto -> social with {
+      title 'validates each row'
+    }
+    include github -> social with {
+      title 'starts the publisher on schedule'
+    }
+    include social -> linkedin with {
+      title 'text posts'
+    }
+    include social -> meta with {
+      title 'Page text posts, Instagram images'
+    }
+    include social -> youtube with {
+      title 'private uploads, later'
+    }
+    style * {
+      size xsmall
+    }
+    autoLayout TopBottom 40 30
+  }
+
+  view social_containers of social {
+    title 'Scheduled publishing · containers'
+    include *
+    // the people and the networks are drawn in the context view; here they would widen the view past a desktop page
+    exclude founder, cto, aiAgents, linkedin, meta, youtube
+    style * {
+      size xsmall
+    }
+    autoLayout LeftRight 40 30
+  }
+
+  dynamic view row_life {
+    title 'A row, from draft to published'
+    aiAgents -> social.calendar 'a team adds the row: propose, then a-valider-cto'
+    social.gate -> social.calendar 'CI checks the row on every change'
+    cto -> social.calendar 'the CTO reads it and sets valide-cto'
+    github -> social.publisher 'the schedule starts the run at the row hour'
+    social.publisher -> social.calendar 'reads the rows of today, due now'
+    social.publisher -> social.gate 'checks the row once more'
+    social.publisher -> social.record 'pushes the claim, before any call'
+    social.publisher -> social.linkedinAdapter 'sends the post'
+    social.linkedinAdapter -> linkedin 'publishes on the Page'
+    social.publisher -> social.record 'writes published: the id, the link, the run'
+    style * {
+      size xsmall
+    }
+    autoLayout TopBottom 40 30
+  }
+}

@@ -245,6 +245,12 @@
       "seed": 3717,
       "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
       "beat": "Not rendered by the series' renderer: drawn as its own text-to-image picture with the media worker's engine (mflux, FLUX.2 [klein] 4B) in the series' ink-and-watercolor look (prompt and seed in lib/media.json), no bird in it. The station of chapters 23 to 31 at dusk, seen from outside: a brass telescope on a tripod on the near hill with a small teal signal lamp, the station's windows lit orange, a second telescope on the far hill."
+    },
+    {
+      "post": "our-posts-are-planned-as-data",
+      "seed": 3817,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "Not rendered by the series' renderer: drawn as its own text-to-image picture with the media worker's engine (mflux, FLUX.2 [klein] 4B) in the series' ink-and-watercolor look (prompt and seed in lib/media.json). The mail room of the station of chapters 23 to 36 at dusk: a wooden rack of pigeonholes, one sealed envelope in each, in rows by the hour, a few with an orange tag; a mail train waiting at the platform outside; the pigeon, the messenger of the five birds, on the counter by a small bell."
     }
   ],
   "sprites": {

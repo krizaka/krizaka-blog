@@ -1,0 +1,114 @@
+---
+title: "Our posts are data, and a service publishes them"
+description: "One calendar row per post, a status the CTO sets after reading the row, a publisher that claims each post before it calls the network. What runs by itself on 17 November, and what is still done by hand."
+seoTitle: "Publishing to social networks from a calendar of data"
+seoDescription: "A CSV calendar, a CTO who validates each row, a GitHub Actions publisher that claims before it sends: how Krizaka publishes and never posts twice."
+date: 2026-11-17
+tags: [integration, ai]
+author: oussama
+draft: false
+newsletter: hold
+publishedAt: "2026-11-17T18:00:00-05:00"
+cover: series-38-our-posts-are-planned-as-data
+coverAlt: "Ink and watercolor: the small mail room of a railway station at dusk, a wooden rack of pigeonholes each holding one sealed envelope, a few orange tags, a grey pigeon on the counter by a small bell, and through the window a mail train waiting at the platform"
+sensitive: true
+chapter: 38
+period: "2026-11-17"
+sources:
+  - our-posts-are-planned-as-data
+versus:
+  faced: "posts on four networks, at set hours, with nobody to press “Publish”"
+  built: "a calendar as data, a status the CTO validates, a publisher that claims before it sends"
+---
+
+On 17 November at 14:25:25 UTC (9:25 in Montréal), our publisher wrote a claim to its record, in plain words: “I am publishing this one”. 2.6 seconds later it wrote the second: LinkedIn had answered with the post's id and its link. In between, the call to LinkedIn.
+
+This chapter is how we got there. It is written for people who do marketing with technical tools: how a calendar becomes a data file, who may say “this can go out”, how a service publishes on time and never sends the same thing twice, and what is still done by hand. I will say it up front: that morning, the CTO started the 9 am run by hand, because GitHub's scheduler did not fire. I come back to it at the end.
+
+## I decide, the teams do, the service publishes
+
+On 17 November I summed up how we work in one sentence: “we do nothing by hand; we plan the strategy and we delegated the doing”. In practice, I choose what we talk about and to whom. The CTO, an agent I talk with all day, reads every post before it may go out. The agent teams write the texts, draw the pictures and put the rows in the calendar. The service decides nothing: it publishes what was validated, at its scheduled time. That is the aim; the last part says what is still done by hand.
+
+<Architecture view="social_context" label="The context" description="The founder sets the strategy, the CTO validates each row, the agent teams write the rows and make the media; GitHub starts the publisher, which posts to LinkedIn, to the Facebook Page and the Instagram account, and, later, will upload privately to YouTube." />
+
+The publisher used to run on my Mac, started by a scheduled job at 9 am, noon and 6 pm. On 17 November we took it off my machine: “so no longer dependent on my machine”. It now lives in a private repository of its own, and GitHub Actions runs it.
+
+## The calendar is a file
+
+The calendar is a versioned CSV file, one row per post. Each row carries the day and the hour, the network, the language, the format (a text, a carousel, a short video, a story), the text itself, two hooks to try, the link and its title, the first comment, the path of the media, the source of the facts it states, whether the story is invented, and its status. Around noon on 17 November it holds 108 rows.
+
+A file rather than an online scheduling tool, for a simple reason: we put every change through a pull request. Adding a row, fixing a text or cancelling a post is a commit someone reads and whose history we keep. Cancelling means setting the row to “annule” and committing it; the publisher reads the main branch, so the cancel counts as soon as it is there.
+
+<Sketch id="social-row" title="One calendar row, from its status to the record">
+  <Callout n="1" label="The row">the day and the hour, the network, the text, the source, the media: what a post needs, nothing more.</Callout>
+  <Callout n="2" label="“propose”">a team wrote the row; nobody has reviewed it yet.</Callout>
+  <Callout n="3" label="“a-valider-cto”">the row waits for the CTO; CI already runs it through the gate.</Callout>
+  <Callout n="4" label="“valide-cto”">the only status the publisher sends.</Callout>
+  <Callout n="5" label="The side exit">“retire” keeps the row and why it was withdrawn; “manuel-fondateur” marks what I post myself.</Callout>
+  <Callout n="6" label="The hour and the gate">at its hour, or within the two hours after, the row goes through the content rules again.</Callout>
+  <Callout n="7" label="The claim">written and pushed to the record before any call to the network.</Callout>
+  <Callout n="8" label="The network call">one attempt, through the network's adapter.</Callout>
+  <Callout n="9" label="“published”">the network's answer, recorded with the id, the link and the run that made it.</Callout>
+</Sketch>
+
+## The status says who decided
+
+A row is born “propose”. When the team thinks it is ready, it moves to “a-valider-cto”. The CTO reads it and moves it to “valide-cto”. The publisher looks at that status only. A row without it is skipped when its hour comes, and the run's log says why: “statut=a-valider-cto”.
+
+We do not delete a row we withdraw. It moves to “retire” and its source column keeps the reason, for example “RETIRÉ le 2026-11-15”, with the issue that decided it. Stories, which are posted in the app, are “manuel-fondateur”: the service does not touch them.
+
+Around noon on 17 November the calendar holds 21 rows “valide-cto”, 25 “a-valider-cto”, 28 “propose”, 25 “retire” and 9 “manuel-fondateur”.
+
+<Numbers>
+  <Num value="108" label="calendar rows" hint="around noon on 17 November" />
+  <Num value="21" label="validated by the CTO" hint="the only ones the service publishes" />
+  <Num value="25" label="waiting for the CTO" hint="CI checks the ones still ahead" />
+</Numbers>
+
+## A gate before publishing
+
+The text of a post goes through rules written in code before it goes out. It declares a language and must read in it. Three hashtags at most. No price, no e-mail address, no postal address, no phone number. No “available” or “soon” for a product that is not: we write “in development”. A carousel or a video declares its source. An invented story says so in the text, and a fictional persona named without that label stops the row. The media path must be a real file, not a production note.
+
+The gate runs twice. First in the calendar's CI, on every live row from today on, “valide-cto” and “a-valider-cto” alike: a row that fails is fixed before it reaches the CTO, and the image it names must exist in the repository. Then at the hour, right before sending, on the row as it is on the main branch.
+
+## The publisher, at set hours
+
+The workflow asks GitHub Actions to start the publisher six times a day, seven minutes past six UTC hours. Those six hours cover 9 am, noon and 6 pm in Montréal, in standard time and in daylight saving time. The script works out the Montréal hour and keeps the slots only; in winter, the 8 am and 5 pm runs do nothing. Minute seven, because GitHub delays or drops scheduled runs more readily right on the hour.
+
+A row goes out at its hour, or up to two hours later if the run was late or missed. Never before. Started by hand, the publisher does a dry run by default: it prints what would go out and writes nothing. A real run has to be asked for.
+
+A few security choices live in the workflow file. No pull request triggers the publisher: the networks' tokens only ever serve code from the main branch. One publisher runs at a time, and a run in progress is never cancelled. The credentials live in a dedicated GitHub environment, are given only to the step that publishes, and each one is read only when a post of its network is due.
+
+<Architecture view="social_containers" label="The containers of scheduled publishing" description="The calendar and the media are versioned files; the gate checks the rows; the publisher, started by GitHub, reads the rows due, claims in the record, then goes through each network's adapter." />
+
+## Never twice: claim before you send
+
+This is the part we took the most care over. A service that publishes at set hours will be run again one day: a late run, a manual rerun, a machine that dies in the middle of a call. It must never publish the same thing twice.
+
+The record is a file of one JSON line per event, on a branch of its own in the repository. For each post, the publisher first writes a claim, commits it and pushes it. Only then does it call the network. When the network answers, it writes “published” with the id, the link and the link to the run. If the push of the claim is refused, nothing goes out and the run stops.
+
+If the call fails after the claim, the row is held, and never retried by itself: the network may have taken the post before answering with an error. A person goes and looks on the network, then releases the row with a command that writes “release” to the record; the row goes out at its next slot. A claim with no answer, because the machine died during the call, holds the row the same way. An unreadable line of the record stops the run instead of being skipped, because a skipped line could be a post that already went out.
+
+Why a branch of its own and not the main branch: the publisher's write waits for no merge and never races a calendar pull request. And why not simply read the network back to know whether a post already went out: it is slower, rate-limited, and LinkedIn's read needs a permission our access to the Page does not have. It may become a second check, not the only one.
+
+Tests prove it with no network and no secret: two successive runs on the same record publish once; a refused claim publishes nothing; an error after the claim holds the row until a person releases it; a dry run writes nothing; a run outside the workflow is refused at the claim.
+
+<Architecture view="row_life" label="A row, from draft to published, in ten numbered steps" description="A team adds the row, CI checks it, the CTO validates it; at the hour, the publisher reads it, checks it again, pushes the claim, sends, then records the answer." />
+
+## The media are made ahead
+
+A row names its media by a path; for an image or a carousel, the file exists before the row reaches the CTO. Images and carousels are in the repository, at the exact path the row names. Our carousels are drawn in the same notebook as this blog: a screen redrawn by pen, circled numbers, one legend line per number, and at the foot of each slide where the drawing comes from, for example “drawn after the screen · development version”. The drawing in this chapter starts from a typed description of what to draw, never an SVG made by hand.
+
+Our product videos come from the end-to-end tests. Every night, a workflow in Verikora and one in Folioviv replay the demo journeys on the main branch, records them, transcodes them and opens a pull request that points to the videos, reviewed like any other. So a video shows what the product really does that day.
+
+## The chapters are born from the work
+
+This chapter took the same road. My request is in an issue, in my exact words. The CTO turned it into a brief: what to read in the code, what is true today, what must not be written. A team read the publisher's code, the day's runs and the record, then wrote the chapter in French, then in English, as a draft. A business review comes next, then a review by a dedicated agent team. When the chapter is published, its posts enter the calendar as “a-valider-cto”, with what proves each figure in their source column. The CTO validates, the service publishes.
+
+## What is still done by hand, on 17 November
+
+On 17 November, no scheduled run started on this brand-new repository: not at 9 am, not at noon. The CTO started the 9 am slot by hand, with the same workflow: a dry run at 8:57, which listed one LinkedIn post to send, then the real run at 9:25. The record did its job: one claim, one “published”, one post.
+
+On Facebook, the service can publish the Page's text posts, though none had gone out from GitHub by 17 November; videos and carousels are still posted by hand. The publisher has no online store for videos yet: a short-video row for Instagram or YouTube ends as “missing media”, written in the log, and is done by hand. The service already has the code to upload a video to YouTube, always as private, but it is not connected yet; and even then, until YouTube has audited our access to its API, I am the one who publishes it in Studio. And the stories stay mine.
+
+None of this is hidden in the service: every row that does not go out says why in the run's log, and every row that goes out leaves its trace in the record.
