@@ -4,6 +4,7 @@ description: "The CTO chat, the headless sessions, the train, the operations dat
 seoTitle: "How our agent teams talk to each other, piece by piece"
 seoDescription: "Headless sessions, the train, the operations database, hooks around every command, a ticket's life, and four audits in one day with their numbers."
 date: 2026-11-13
+updated: 2026-11-16
 tags: [ai, integration, measurements]
 author: oussama
 draft: false
@@ -187,6 +188,14 @@ The CTO chat is not eternal. A long conversation becomes expensive and makes mor
 “Bonjour Mouloud” opens the next one, always in the same order: read the whole note, handle every open alert before any new work, check the teams' environment, then relaunch what was in flight. An interrupted team starts again as a fresh launch, never as the resume of an old session. Every launch leaves with its watcher, in the same turn.
 
 That loop had a hole too. I tell it with the third audit.
+
+## In the IDE
+
+The agents' log is read where we code. In the editor, I run a task, and every message and every tool of a team scrolls by in plain words, next to the code it touches. Other tasks follow the trains, the guards' refusals, the alerts and what each session costs. The principle fits in one sentence: an agent you cannot reread is an agent you cannot trust, and the review starts before the pull request. The two figures are a simulation of the concept, not our code: the tasks, the ticket, the PR and the times are made up. Krizaka Agents is our own technology, and it is not for sale.
+
+<Figure id="agents-ide-tasks-en" alt="Simulation drawn in ink on Seyès paper: the editor's “Select the task to run” menu, with seven tasks. Team, readable log (the most recent); Trains, merge queue; Guards, today's refusals; Alerts, with an owner; Costs, per session; Review, PRs waiting for a human; Replay, yesterday's session. A pen note in the margin: one click, it scrolls." caption="Simulation. The editor's task menu: one task per question, from the team at work to yesterday's session replayed." />
+
+<Figure id="agents-ide-log-en" alt="Simulation drawn in ink on Seyès paper: a team's readable log in a terminal. 09:02 coord to team: ticket 412, this one only. 09:03 agent says: reading the rules before writing. 09:07 agent tool: tests, 41 green. 09:11 guard, refused before push: secret in the diff, circled in red with “phew!” in the margin. 09:12 agent says: fixed, running again. 09:15 PR 87 opened, proof attached. 09:24 train: 87 boards, car 2 of 3. 09:31 train: merged. 09:32 alert: slow build, owner platform. 09:33 session closed: 31 minutes, 58 turns, cost logged." caption="Simulation. A team's readable log: the instruction, the messages, the tools, a guard's refusal before the push, the PR, the train, the alert and the end of the session." />
 
 ## Four audits in one day
 

@@ -7243,5 +7243,105 @@
         }
       ]
     }
+  },
+  "agents-ide-tasks-fr": {
+    "kind": "image",
+    "style": "diagram",
+    "width": 1600,
+    "height": 1199,
+    "blur": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAABQBACdASoYABIAPu1wsVIppiSnqAgBMB2JaQAAL3iPHC3IjI5LBaqWruoAAP7rFzRZVWQnHr0noHxbSFAsRR55SmpqPiuKrcIa7meX9gAAAA==",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-our-agent-teams-talk/agents-ide-tasks-fr-480.3dd66a5ec5.webp"
+      },
+      {
+        "w": 768,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-our-agent-teams-talk/agents-ide-tasks-fr-768.e60bbee02a.webp"
+      },
+      {
+        "w": 1200,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-our-agent-teams-talk/agents-ide-tasks-fr-1200.3682cd5129.webp"
+      },
+      {
+        "w": 1600,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-our-agent-teams-talk/agents-ide-tasks-fr-1600.4796439c60.webp"
+      }
+    ]
+  },
+  "agents-ide-tasks-en": {
+    "kind": "image",
+    "style": "diagram",
+    "width": 1600,
+    "height": 1199,
+    "blur": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAADwAwCdASoYABIAPu1wr1KppiQiqAgBMB2JZwAAL3p/MEFl1cIiyQYAAP7rFzRZVWPS9q90uFnDaBOSPi2lwi7s5rgaTOXvsFE42eT0tIAAAA==",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-our-agent-teams-talk/agents-ide-tasks-en-480.e7f874714e.webp"
+      },
+      {
+        "w": 768,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-our-agent-teams-talk/agents-ide-tasks-en-768.3286f952c0.webp"
+      },
+      {
+        "w": 1200,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-our-agent-teams-talk/agents-ide-tasks-en-1200.96683f0142.webp"
+      },
+      {
+        "w": 1600,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-our-agent-teams-talk/agents-ide-tasks-en-1600.bc023620d5.webp"
+      }
+    ]
+  },
+  "agents-ide-log-fr": {
+    "kind": "image",
+    "style": "diagram",
+    "width": 1600,
+    "height": 1562,
+    "blur": "data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAACwAwCdASoYABcAPu1qrVCppaQiqAqpMB2JaQAALnfaGAAWGEffMAD+6xdgz8c5CLKOEIaEjZNn6PPMdXGJZ96k6o7ndnOLM2iscOErdQ4h9g3JPacIKoXC+qqVHtInU6FoeQ83AAA=",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-our-agent-teams-talk/agents-ide-log-fr-480.28505af365.webp"
+      },
+      {
+        "w": 768,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-our-agent-teams-talk/agents-ide-log-fr-768.51ebab1bb6.webp"
+      },
+      {
+        "w": 1200,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-our-agent-teams-talk/agents-ide-log-fr-1200.ec039a0858.webp"
+      },
+      {
+        "w": 1600,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-our-agent-teams-talk/agents-ide-log-fr-1600.06f033f5c0.webp"
+      }
+    ]
+  },
+  "agents-ide-log-en": {
+    "kind": "image",
+    "style": "diagram",
+    "width": 1600,
+    "height": 1432,
+    "blur": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAADwAwCdASoYABUAPu1wsFKppiSiqAgBMB2JaQAALo32Ejz7RG4JJcHgAP7twkcIFVLcnPDPbAoEnHlR6yOwF5eEmfCxyKjaOaWLXHfgdK6n0Cj6jLGJQIAA",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-our-agent-teams-talk/agents-ide-log-en-480.af7381a23d.webp"
+      },
+      {
+        "w": 768,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-our-agent-teams-talk/agents-ide-log-en-768.a11591ace0.webp"
+      },
+      {
+        "w": 1200,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-our-agent-teams-talk/agents-ide-log-en-1200.579a93e4b7.webp"
+      },
+      {
+        "w": 1600,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/how-our-agent-teams-talk/agents-ide-log-en-1600.d85a3fc471.webp"
+      }
+    ]
   }
 }
