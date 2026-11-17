@@ -8,9 +8,11 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { ArchitectureDiagram } from "@krizaka/ui/architecture-diagram";
 import {
   MODEL,
+  MODELS,
   OUT,
   TRANSLATIONS,
   VIEWS,
+  modelsOf,
   sha256,
   staleProblems,
   translateView,
@@ -126,4 +128,21 @@ test("the design-choices model is stale when it changes after its layout", async
   );
   assert.equal(problems.length, 1);
   assert.match(problems[0], /design-choices-for-architects\.c4/);
+});
+
+test("--only lays out the one model it names, and refuses a model that is not in MODELS", () => {
+  assert.deepEqual(modelsOf(["--base", "x"]), MODELS);
+  assert.deepEqual(
+    modelsOf(["--base", "x", "--only", "content/diagrams/observability.c4"]).map((e) => e.out),
+    ["lib/architecture-observability.json"],
+  );
+  assert.throws(() => modelsOf(["--only", "content/diagrams/nope.c4"]), /not a model of MODELS/);
+});
+
+test("every model's layout is current, checked by the org's tool, with both languages", () => {
+  for (const entry of MODELS) {
+    const layout = JSON.parse(read(entry.out));
+    const problems = staleProblems(layout, { model: read(entry.model), translations: read(entry.translations) }, entry);
+    assert.deepEqual(problems, [], entry.model);
+  }
 });

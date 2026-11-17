@@ -1,0 +1,162 @@
+---
+title: "What Grafana sees of us, from the outside"
+description: "Sixteen probes, one rule that pages, six measures of the Sovkora engine, DigitalOcean for the rest and nothing twice: how we watch Krizaka with Grafana Cloud, and why not Datadog."
+seoTitle: "Grafana Cloud at Krizaka: probes, alerts, SLOs"
+seoDescription: "Synthetic probes as code, alert rules, the split with DigitalOcean, SLOs and burn rate to come, and why Grafana Cloud rather than Datadog."
+date: 2026-11-17
+publishedAt: "2026-11-17T17:00:00-05:00"
+tags: [measurements, integration]
+author: oussama
+draft: true
+newsletter: hold
+cover: architecture-observability
+coverAlt: "A blue pen plate on Seyès paper with a red margin: the context diagram of our monitoring, seven boxes numbered like figures and joined by arrows, under “Grafana Cloud” underlined in red and the mark “fig. 1 · C1”"
+chapter: 37
+period: "2026-11-17"
+sources:
+  - what-grafana-sees-from-outside
+versus:
+  faced: "sites and an engine to watch, with no customer, no on-call team and no budget"
+  built: "probes from outside, rules as code, one address told and no alert twice"
+stats:
+  - value: "16"
+    label: "HTTP probes, all green on 17 November"
+    section: "First, what a visitor gets"
+  - value: "6"
+    label: "alert rules for the Sovkora engine pilot"
+    section: "The probes and the rules, written as code"
+---
+
+On 17 November, the sixteen probes Grafana runs against our sites and our dev apps were all answering. This chapter is about how they are written, what happens when one of them fails, and what we left to DigitalOcean. It is written for people who run production: there are queries, windows and rules in it, but no stack name, no internal address and no exact threshold. What matters here is the mechanism.
+
+Krizaka has no customer yet. Nobody is on call at night except me. So the monitoring had to fit in a free tier, read in a minute, and wake me only for a real outage.
+
+## First, what a visitor gets
+
+The host's console tells me a container is running. It does not tell me that the domain name, the certificate, the CDN and the page all answer together for someone arriving from outside. The first signal I wanted was a visitor's: a request that leaves from somewhere else, and its result, `probe_success`.
+
+The probes are Synthetic Monitoring's, the probe service of Grafana Cloud. There are 16: eleven public pages and health routes (the company site and its health route, its French home, the services discovery file, the blog, the library sites and the product sites), the health routes of the three dev apps, and the payment webhooks of two of them. Each one leaves from two Canadian locations, Montreal and Calgary. It is a plain GET, with no header, no cookie and no secret: the probe sees what an anonymous visitor sees, and it carries nothing worth stealing.
+
+The payment webhooks needed something else. A healthy webhook refuses a call that is not signed. So the probe sends it an empty POST with no signature, and the only accepted status is 400. A 200 would mean the webhook takes anything, a 5xx that it is down. The same probe checks that it answers and that it refuses.
+
+## The probes and the rules, written as code
+
+The list of probes is a file of our infrastructure as code, not a configuration clicked together in the screen. The script has two commands. `plan`, the default, reads the stack and says what would change, writing nothing. `apply` creates or updates the checks, the contact point, the rule and the routing; a second `apply` changes nothing. Only the checks whose name starts with our prefix are ours, the others are never touched.
+
+`plan` earned its keep on day one. On 7 November, the code declared eleven checks and the stack was running thirteen: two health routes under old code names, retired since, were still being probed. A configuration made in the screen drifts silently; a configuration as code drifts too, but `plan` says so.
+
+The frequency is not a comfort setting. The free tier counts executions: [100,000 API tests a month](https://grafana.com/pricing/) (Grafana's pricing page, read on 17 November 2026). Checks × locations × runs a month has to stay under it, and a test fails if a new probe would push us over.
+
+<Sketch id="grafana-alert-flow" title="How an alert reaches me, drawn from the code">
+  <Callout n="1" label="Two locations">Montreal and Calgary, public probes of Grafana Cloud, outside our host.</Callout>
+  <Callout n="2" label="The sites and the dev apps">a GET for the pages and the health routes, an unsigned POST for the webhooks.</Callout>
+  <Callout n="3" label="The Sovkora engine">it pushes its six pilot measures over OTLP, with no label that names a customer.</Callout>
+  <Callout n="4" label="The metrics">the probe results and the engine measures, in the stack's Prometheus.</Callout>
+  <Callout n="5" label="The rules">they read the metrics; no data is not an alert.</Callout>
+  <Callout n="6" label="One contact point">an e-mail, grouped by alert and by check.</Callout>
+  <Callout n="7" label="DigitalOcean's alerts">deployment, domain, restarts and memory, written in each app's spec.</Callout>
+  <Callout n="8" label="Me">two sources of alerts, never the same alert twice.</Callout>
+</Sketch>
+
+The rule “Site public injoignable” (public site unreachable) is the only one about the sites. For each check and each location it takes the maximum of `probe_success` over a window that covers two runs, then keeps the highest value. It fires when that value is below 1, which means every location failed two runs in a row. A single location failing is usually the network between a probe and us, not a site down. No data leaves the rule in its normal state, an evaluation error puts it in error. It carries the label `severity=page`.
+
+The routing is as simple as it gets. The root policy sends everything without a route to the contact point, grouped by alert name and by check, with spaced reminders. The contact point is an e-mail. The script creates it without marking its provenance, which leaves it editable in the screen, and `apply` never rewrites an existing address: I can change who is told without a pull request. While setting it up, we found that Grafana Cloud only e-mails members of the stack's organisation.
+
+The Sovkora engine has rules of its own, six, written by a second script. It reuses the first script's client, folder and routing without ever changing them: each object of the stack has one owning script. The engine exports its measures over OTLP: a histogram of the delay before a run's first step, a counter of ended runs by outcome, a histogram of durations, a gauge of stuck runs, and two counters, tokens and provider cost. No label names a customer.
+
+| Rule | What it reads | Why it is written this way |
+| --- | --- | --- |
+| Slow run start | the p95 of the delay before the first step | a histogram quantile, not a mean that one fast run reassures |
+| Failed runs | the share of ended runs that failed | only counted above a small number of runs: below, a share is noise |
+| Runs too long | the p95 of the duration | same reason as the start |
+| A run stuck | the gauge of runs in progress for too long | one is enough; this group is evaluated more often than the probes |
+| Tokens running away | the tokens of the last hour | an agent loop shows here before it shows on the bill |
+| Cost of the day | the provider cost over 24 hours | compared with the dev's daily budget, the one in the app's spec |
+
+All six carry `severity=page` and the same team, so the root policy sends them to the same contact point as the probes. Their thresholds are marked in the code as starting values, to be tuned from what dev shows. For the engine too, no data is not an alert: an idle dev has no runs. Next to them, one last alert watches the Grafana bill itself.
+
+## DigitalOcean on one side, Grafana on the other, nothing twice
+
+On 17 November, I set the rule in one sentence: monitoring lives in DigitalOcean and in Grafana, nowhere else, with no duplicate.
+
+DigitalOcean keeps what the host knows better than anyone. Each app spec carries its alerts, as code: a failed deployment and a failed domain, and for the services, on top, the restart count and memory use. The spec is applied by our deploy tool, and a read-only check must report no difference between the file and what runs. Grafana keeps what the outside sees and what the engine does.
+
+Before this rule, two other things did the same job: a scheduled GitHub workflow and a probe running on my Mac. We are removing them. Two alerts for one fact teach you to ignore both, and a probe on a laptop sleeps when the laptop sleeps.
+
+<Architecture view="obs_context" label="What we watch, at the context level" description="The Grafana stack's probes query the public sites and the dev apps from outside and receive the engine's measures; the stack e-mails me what must wake me; the host e-mails me its own deployment, domain, restart and memory alerts; two scripts of the infrastructure repository declare the probes, the rules and the dashboards, outside OpenTofu." />
+
+At the container level, every arrow has its direction. The probes write to the metrics, the rules and the reading surfaces read them, and only the rules talk to the contact point. Logs, traces and load tests are drawn as planned, not as done.
+
+<Architecture view="obs_containers" label="Observability, at the container level" description="The synthetic probes query the public sites, the health routes and the webhooks; they write success, duration, status and certificate into the metrics, where the Sovkora engine also pushes its measures over OTLP; the rules evaluate the metrics and send severity page to the contact point, which e-mails me; the reading surfaces read the metrics; logs and traces and load tests are planned." />
+
+## The screens
+
+I first built “krizaka.com · Seen from outside” with [Grafana's Pages](https://grafana.com/docs/grafana-cloud/platform/grafana-assistant/configure/pages/), the new editorial form Grafana [announced on 19 October 2026](https://grafana.com/whats-new/2026-10-19-introducing-grafana-pages--build-anything-on-your-data--right-inside-grafana/). A page reads like a text, with a sentence and a table, and I prefer it to a grid of panels. But a Page cannot be kept as code today. The feature is in public preview, its API is an alpha version that holds only the catalogue, no export or schema is documented, and on 7 November the stack's service account could see none of them.
+
+So the reading surface is a Grafana dashboard, written in the Page's register.
+
+<Sketch id="grafana-seen-from-outside" title="“krizaka.com · Seen from outside”, drawn from the screen's register">
+  <Callout n="1" label="The title and its sentence">what a visitor gets, in one line.</Callout>
+  <Callout n="2" label="The source line">the signal read and the repository file the dashboard comes from; the rule is that a change made in the screen is overwritten by the next apply, and the line says so.</Callout>
+  <Callout n="3" label="“Right now”">one sentence, every probe answering or a probe failing, see the table.</Callout>
+  <Callout n="4" label="One row per probe">the check's name, selected by the app and environment labels rather than a list of names.</Callout>
+  <Callout n="5" label="The columns">up now, availability against its target, failed runs, HTTP status, days before the certificate expires.</Callout>
+  <Callout n="6" label="The band">up or not, run after run.</Callout>
+  <Callout n="7" label="The footnote legend">what each column means, and what to do when it turns red.</Callout>
+</Sketch>
+
+Its data source is a variable picked by name, never by an id, and on 7 November it passed Grafana's linter in strict mode with no finding. The engine's dashboard, “Sovkora — engine pilot measures”, has six panels two by two, one per measure: the delay before the first step, ended runs by outcome, the duration, stuck runs, tokens per hour in and out, the cost over 24 hours. It comes from the same script as its rules: a renamed metric breaks the panel and the rule in the same change.
+
+## Where we are going
+
+The sites' rule compares a raw value with a threshold. That is what [Google's SRE workbook](https://sre.google/workbook/alerting-on-slos/) advises against, and what we are going to replace.
+
+Service level objectives become data: one file per app, with the availability target and its 28-day window, the p95 latency target on a route, and the source signal. krizaka.com starts at 99.9 % over 28 days. The reading surface, the load tests' thresholds, the alert rules and the cockpit will all read that one file.
+
+Alerts will burn an error budget. The plan follows the workbook: two multi-window rules per objective, a page at 14.4 times the budget rate over one hour and over five minutes, and a ticket at 6 times over six hours and over thirty minutes. The workbook makes the second one a page as well; we make it a ticket, because one person reads the alerts. One question is still open. On sites that still have few visitors, the error rate is made of probe runs, few per hour, and a single missed run weighs a lot in a five-minute window. The workbook has a section on low-traffic services; we will read it with our own numbers before writing the first rule.
+
+The load tests are written with [k6](https://github.com/grafana/k6), in each app's repository, and aim at dev only: the script refuses any other origin. The scenarios stay gentle, at most 5 virtual users for at most two minutes, because the dev database is shared. The first run, on 7 November, against Sovkora dev's health route: 7,767 requests, none failed, a p95 of 62 ms. Pointed at production, the same script stopped before sending a request. A load test on production is a paid decision, and it has not been taken.
+
+The service map will come from OpenTelemetry traces, with the W3C context propagated over HTTP and over the message broker. The links observed over seven days will sit next to the architecture generated from the code. A link observed but not modelled, or modelled but never observed, will be reported as drift.
+
+In the cockpit, all of this will fit in one “Observabilité” block. It does not exist yet: the drawing comes from the plan, not from a screen.
+
+<Sketch id="grafana-cockpit-block" title="The cockpit's “Observabilité” block, drawn from the plan">
+  <Callout n="1" label="Every link">Grafana's home, the reading surfaces, the k6 project, the probes, the alert rules.</Callout>
+  <Callout n="2" label="Dev and prod">production shows “à créer” (to create) as long as it does not exist.</Callout>
+  <Callout n="3" label="One row per app">read live from the stack, server-side, with a read-only token.</Callout>
+  <Callout n="4" label="The headline numbers">up, availability against the target, p95 latency, error budget left, open alerts, the last load-test verdict; each one leads to its page.</Callout>
+  <Callout n="5" label="“indisponible”">an unreachable stack shows as unavailable, never as a made-up 100 %.</Callout>
+</Sketch>
+
+## Why Grafana and not Datadog, and why the cloud
+
+There is no written decision for this choice. What follows is our reasoning, rebuilt from what our code needs, and the facts read on the two vendors' official pages on 17 November 2026. I keep the two apart.
+
+The facts first. Grafana Cloud offers [a region in Canada](https://grafana.com/docs/grafana-cloud/platform/security-and-account-management/account-management/regional-availability/), and our stack is there. [Datadog's list of sites](https://docs.datadoghq.com/getting_started/site/) has sites in the United States, Germany, Japan, Australia and the United Kingdom, none in Canada. Grafana, Loki, Tempo, Mimir, Pyroscope and k6 are published [under AGPLv3](https://grafana.com/licensing/), and [Prometheus](https://github.com/prometheus/prometheus) under Apache 2.0. Datadog is [a hosted service](https://docs.datadoghq.com/getting_started/agent/): its agent is open source, under Apache 2.0, but the platform does not install on your own machines.
+
+The free tiers next. [Grafana Cloud's](https://grafana.com/pricing/) includes 10,000 active series, 50 GB of logs and 50 GB of traces, kept 14 days, 50 GB of profiles, 100,000 Synthetic Monitoring API tests and 500 k6 virtual-user hours a month, and 3 active users; above that, the paid tier is billed by usage. [Datadog's](https://www.datadoghq.com/pricing/) covers up to 5 hosts, with one day of metric retention.
+
+One last fact, which is not a reason. Both accept OTLP [straight from an application's SDK](https://grafana.com/docs/grafana-cloud/send-data/otlp/send-data-otlp/), and both [recommend a collector or an agent in production](https://docs.datadoghq.com/opentelemetry/setup/intake_endpoint/). “No agent to run” holds for dev with either, and does not tell them apart.
+
+Now our reasoning. We are a Quebec company; when our logs leave, redacted, they will stay in Canada, and that option exists with one and not the other. What we write, PromQL queries, dashboards as JSON, a list of probes, works outside Grafana Labs: if we leave, Prometheus and Grafana run anywhere. With a platform that only exists hosted, leaving would mean rewriting everything. And the free tier fits our size, a company with no customer, where the probes are what consumes, which the code knows and checks.
+
+Why the cloud, when all of it is open source? Because a monitoring tool must not fall with what it watches. Installed at our host, it would go down with it. It would also be one more server to pay for, patch, back up and watch, so a monitor for the monitor. The hosted stack is outside our host, in Canada, and free at our size.
+
+This choice has a cost. The free tier allows [only one stack per account](https://grafana.com/docs/grafana-cloud/security-and-account-management/cloud-stacks/stack-pricing-tiers/), and ours is the dev one. A separate production stack needs the paid tier or another account, and that decision is mine. Until it is taken, no production application data goes to Grafana; only the probes, which carry no customer data, already measure the public sites.
+
+## What we have not done yet
+
+Grafana is not in our OpenTofu. The probes, the rules and the dashboards go through the API, from two scripts run by hand, `plan` then `apply`; neither runs in CI.
+
+The apps send no logs and no traces yet. The engine is the first to send metrics. The logs wait for the shared redaction of personal data, which must run before any export, and for the processor agreement with Grafana Labs, which must be signed before the first log.
+
+The alert arrives by e-mail at one address. There is no on-call rotation and no paging on a phone, and the sites' only rule is still a raw threshold.
+
+The engine's thresholds have never seen real traffic. On 7 November, k6's results did not reach Grafana, for lack of the token they need. The cockpit block is a plan.
+
+If you do this for a living and one of these choices makes you wince, burn rate on low-traffic sites above all, write to me.
+
+## What we measured, and what we did not
+
+The state of the sixteen probes, the list of rules and the dashboards' names were read in Grafana on 17 November. The rest, the probes, the windows, the rules, the labels, the routing, comes from the code of the two scripts and the alerts of the specs, read the same day. The drift count and the k6 run date from 7 November. The facts about Grafana Cloud and Datadog come from their official pages, read on 17 November 2026; prices change, and those links are the reference. I give no availability figure: no 28-day window has been measured against a written objective yet. The drawings are made from the screen's register, the code and the plan, and are not to scale; the cockpit block exists only on paper.
