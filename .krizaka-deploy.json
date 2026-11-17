@@ -1,0 +1,9 @@
+{
+  "app": "krizaka-blog",
+  "url": "https://blog.krizaka.com",
+  "health": "/",
+  "indexing": "on",
+  "indexingVariable": false,
+  "spec": ".do/app.yaml",
+  "waitMinutes": 25
+}
