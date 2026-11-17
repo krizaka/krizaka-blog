@@ -8,7 +8,8 @@ import type { FooterSettings } from "@krizaka/ui/site-footer";
 import { org, type ProductStatus } from "@krizaka/org";
 
 import { localizedPath, type Locale } from "./locale.ts";
-import { COMPANY, GITHUB_ORG_URL, JAVA_URL, KRIZAKA_URL, LAB_URL, OPEN_SOURCE_URL, TS_URL, UI_URL } from "./site.ts";
+import { footerLinks } from "./family-footer.ts";
+import { COMPANY, KRIZAKA_URL } from "./site.ts";
 
 const www = (path: string) => `${KRIZAKA_URL}${path}`;
 
@@ -45,14 +46,7 @@ export const footerSettings = {
     {
       id: "open-source",
       titleKey: "footer.openSourceColumn",
-      links: [
-        { labelKey: "footer.allOpenSource", href: OPEN_SOURCE_URL, external: true },
-        { label: "Krizaka UI", href: UI_URL, external: true },
-        { label: "Krizaka Lab", href: LAB_URL, external: true },
-        { label: "Krizaka Java", href: JAVA_URL, external: true },
-        { label: "Krizaka TypeScript", href: TS_URL, external: true },
-        { label: "GitHub", href: GITHUB_ORG_URL, external: true },
-      ],
+      links: [...footerLinks("open-source"), ...footerLinks("github")],
     },
     {
       id: "company",

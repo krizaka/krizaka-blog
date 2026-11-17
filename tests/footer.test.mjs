@@ -111,3 +111,40 @@ test("no founder name in the site chrome (footer and bar)", () => {
   for (const l of ["en", "fr"]) chrome.push(JSON.stringify(messages(l).footer), JSON.stringify(messages(l).bar));
   for (const text of chrome) assert.doesNotMatch(text, /Oussama|Abid|oussamaABID/i);
 });
+
+/* « Open source » is the family's (krizaka-internal#4120): the public open-source members (Rust first,
+   then the family's order), GitHub — read from @krizaka/org, never typed. */
+test("the open-source column equals the family's, Rust first, and types no library address", async () => {
+  const { footerSettings } = await import("../lib/footer.ts");
+  const { footerLinks, membersOf } = await import("../lib/family-footer.ts");
+  const { org } = await import("@krizaka/org");
+  const column = footerSettings.columns.find((c) => c.id === "open-source");
+  const rest = column.links;
+  const members = membersOf("open-source");
+  assert.equal(members[0].id, "rust");
+  assert.deepEqual(
+    members.slice(1).map((m) => m.id),
+    org.members
+      .filter((m) => m.group === "open-source" && m.id !== "rust")
+      .toSorted((a, b) => a.order - b.order)
+      .map((m) => m.id),
+  );
+  assert.deepEqual(rest, [...footerLinks("open-source"), ...footerLinks("github")]);
+  assert.deepEqual(
+    rest.map((l) => l.label),
+    [...members.map((m) => m.name), "GitHub"],
+  );
+  assert.equal(rest.at(-1).href, "https://github.com/krizaka");
+  // Rust has no live site: it links to its repository.
+  assert.equal(rest[0].href, "https://github.com/krizaka/krizaka-rust");
+});
+
+test("a typed library address in lib/ fails", () => {
+  for (const file of walk("lib").filter((f) => /\.(ts|tsx|mjs)$/.test(f) && !f.endsWith("links.ts"))) {
+    assert.doesNotMatch(
+      read(file),
+      /\b(UI|JAVA|TS|LAB|RUST)_URL\b|https:\/\/(ui|java|ts|lab|motion)\.krizaka\.com/,
+      file,
+    );
+  }
+});
