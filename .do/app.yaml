@@ -6,6 +6,11 @@
 # The site is open to search engines since the first posts were published (2026-10-16): APP_INDEXING_ENABLED is "true".
 name: krizaka-blog
 region: tor
+# Alerts as krizaka-com's (krizaka-internal#4151): DigitalOcean mails the team owners. App-level only: the app has no
+# service component (a static site and functions), so there is no restart or memory rule to declare.
+alerts:
+  - rule: DEPLOYMENT_FAILED
+  - rule: DOMAIN_FAILED
 static_sites:
   - name: site
     github:
