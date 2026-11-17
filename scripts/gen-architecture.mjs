@@ -41,6 +41,13 @@ export const MODELS = [
     system: null,
     views: ["obs_context", "obs_containers"],
   },
+  {
+    model: "content/diagrams/krizaka-social.c4",
+    translations: "content/diagrams/krizaka-social.fr.json",
+    out: "lib/architecture-social.json",
+    system: null,
+    views: ["social_context", "social_containers", "row_life"],
+  },
 ];
 export const BASE_FILES = ["specification.c4", "org.c4"];
 

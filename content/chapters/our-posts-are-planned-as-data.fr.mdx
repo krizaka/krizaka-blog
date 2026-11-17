@@ -1,0 +1,114 @@
+---
+title: "Nos publications sont des données, un service les publie"
+description: "Une ligne de calendrier par publication, un statut que le CTO pose après relecture, un publieur qui réserve chaque envoi avant d'appeler le réseau. Ce qui tourne seul le 17 novembre, et ce qui reste à la main."
+seoTitle: "Publier sur les réseaux depuis un calendrier en données"
+seoDescription: "Un calendrier en CSV, une validation par le CTO, un publieur GitHub Actions qui réserve avant d'envoyer : comment Krizaka publie sans double envoi."
+date: 2026-11-17
+tags: [integration, ai]
+author: oussama
+draft: false
+newsletter: hold
+publishedAt: "2026-11-17T18:00:00-05:00"
+cover: series-38-our-posts-are-planned-as-data
+coverAlt: "Encre et aquarelle : la petite salle du courrier d'une gare au crépuscule, un casier en bois dont chaque case tient une enveloppe scellée, quelques étiquettes orange, un pigeon gris sur le comptoir près d'une clochette, et par la fenêtre un train postal qui attend à quai"
+sensitive: true
+chapter: 38
+period: "2026-11-17"
+sources:
+  - our-posts-are-planned-as-data
+versus:
+  faced: "des publications sur quatre réseaux, à heure fixe, sans personne pour appuyer sur « Publier »"
+  built: "un calendrier en données, un statut validé par le CTO, un publieur qui réserve avant d'envoyer"
+---
+
+Le 17 novembre à 14 h 25 min 25 s (heure UTC, 9 h 25 à Montréal), notre publieur a écrit une réservation dans son registre, en clair : « je publie celle-ci ». 2,6 secondes plus tard, il a écrit la seconde : LinkedIn avait répondu avec l'identifiant de la publication et son lien. Entre les deux, l'appel à LinkedIn.
+
+Ce texte raconte comment on en est arrivés là. Il s'adresse à celles et ceux qui font du marketing avec des outils techniques : comment un calendrier devient un fichier de données, qui a le droit de dire « ça peut sortir », comment un service publie à l'heure sans jamais envoyer deux fois la même chose, et ce qui se fait encore à la main. Je le dis tout de suite : ce matin-là, c'est le CTO qui a lancé l'exécution de 9 h, parce que le planificateur de GitHub ne s'est pas déclenché. J'y reviens à la fin.
+
+## Je décide, les équipes font, le service publie
+
+Le 17 novembre, j'ai résumé notre façon de travailler en une phrase : « On fait rien à la main, on planifie la stratégie et on a délégué la réalisation. » Concrètement, je choisis ce dont on parle et pour qui. Le CTO, un agent avec qui je discute toute la journée, lit chaque publication avant qu'elle puisse sortir. Les équipes d'agents écrivent les textes, dessinent les images et posent les lignes dans le calendrier. Le service, lui, ne décide rien : il publie ce qui a été validé, à l'heure dite. C'est le cap ; la dernière partie dit ce qui se fait encore à la main.
+
+<Architecture view="social_context" label="Le contexte" description="Le fondateur fixe la stratégie, le CTO valide chaque ligne, les équipes d'agents écrivent les lignes et font les médias ; GitHub lance le publieur, qui publie sur LinkedIn, sur la page Facebook et le compte Instagram, et, plus tard, enverra en privé sur YouTube." />
+
+Avant, le publieur tournait sur mon Mac, lancé par une tâche planifiée à 9 h, à midi et à 18 h. Le 17 novembre, on l'a sorti de ma machine : « donc plus dépendant de ma machine ». Il vit maintenant dans un dépôt privé à lui, et GitHub Actions le lance.
+
+## Le calendrier est un fichier
+
+Le calendrier est un fichier CSV versionné, une ligne par publication. Chaque ligne porte le jour et l'heure, le réseau, la langue, le format (un texte, un carrousel, une vidéo courte, une story), le texte lui-même, deux accroches à essayer, le lien et son titre, le premier commentaire, le chemin du média, la source des faits qu'elle avance, si l'histoire est inventée, et son statut. Le 17 novembre vers midi, il compte 108 lignes.
+
+Un fichier plutôt qu'un outil de planification en ligne, pour une raison simple : on fait passer chaque changement par une pull request. Ajouter une ligne, corriger un texte ou annuler une publication, c'est un commit qu'on relit et dont on garde l'histoire. Annuler, c'est passer la ligne à « annule » et committer ; le publieur lit la branche principale, donc l'annulation compte dès qu'elle y est.
+
+<Sketch id="social-row" title="Une ligne du calendrier, de son statut jusqu'au registre">
+  <Callout n="1" label="La ligne">le jour et l'heure, le réseau, le texte, la source, le média : tout ce qu'il faut pour publier, rien d'autre.</Callout>
+  <Callout n="2" label="« propose »">une équipe a écrit la ligne ; elle n'est pas encore relue.</Callout>
+  <Callout n="3" label="« a-valider-cto »">la ligne attend le CTO ; la CI la passe déjà à la barrière.</Callout>
+  <Callout n="4" label="« valide-cto »">le seul statut que le publieur envoie.</Callout>
+  <Callout n="5" label="La sortie de côté">« retire » garde la ligne et la raison du retrait ; « manuel-fondateur » marque ce que je publie moi-même.</Callout>
+  <Callout n="6" label="L'heure et la barrière">à son heure, ou dans les deux heures qui suivent, la ligne repasse les règles de contenu.</Callout>
+  <Callout n="7" label="La réservation">écrite et poussée dans le registre avant tout appel au réseau.</Callout>
+  <Callout n="8" label="L'appel au réseau">une seule tentative, par l'adaptateur du réseau.</Callout>
+  <Callout n="9" label="« publié »">la réponse du réseau, inscrite avec l'identifiant, le lien et l'exécution qui l'a faite.</Callout>
+</Sketch>
+
+## Le statut dit qui a décidé
+
+Une ligne naît « propose ». Quand l'équipe la juge prête, elle passe à « a-valider-cto ». Le CTO la lit et la passe à « valide-cto ». Le publieur ne regarde que ce dernier statut. À son heure, une ligne qui n'a pas ce statut est sautée, et le journal de l'exécution dit pourquoi : « statut=a-valider-cto ».
+
+On ne supprime pas une ligne qu'on retire. Elle passe à « retire » et sa colonne source garde la raison, par exemple « RETIRÉ le 2026-11-15 », avec le ticket qui l'a décidé. Les stories, qui se publient dans l'application, sont « manuel-fondateur » : le service ne les touche pas.
+
+Le 17 novembre vers midi, le calendrier compte 21 lignes « valide-cto », 25 « a-valider-cto », 28 « propose », 25 « retire » et 9 « manuel-fondateur ».
+
+<Numbers>
+  <Num value="108" label="lignes au calendrier" hint="le 17 novembre vers midi" />
+  <Num value="21" label="validées par le CTO" hint="les seules que le service publie" />
+  <Num value="25" label="en attente du CTO" hint="la CI vérifie celles à venir" />
+</Numbers>
+
+## Une barrière avant de publier
+
+Le texte d'une publication passe des règles écrites en code avant de sortir. Une langue déclarée, et le texte doit la parler. Trois mots-clics au plus. Aucun prix, aucune adresse courriel, aucune adresse postale, aucun numéro de téléphone. Pas de « disponible » ni de « bientôt » pour un produit qui ne l'est pas : on écrit « en développement ». Un carrousel ou une vidéo déclare sa source. Une histoire inventée le dit dans le texte, et un personnage de fiction nommé sans cette mention bloque la ligne. Le chemin du média doit être un vrai fichier, pas une note de production.
+
+Cette barrière tourne deux fois. D'abord dans la CI du calendrier, sur chaque ligne vivante à partir d'aujourd'hui, « valide-cto » comme « a-valider-cto » : une ligne qui échoue est corrigée avant d'arriver devant le CTO, et l'image qu'elle nomme doit exister dans le dépôt. Puis à l'heure, juste avant l'envoi, sur la ligne telle qu'elle est sur la branche principale.
+
+## Le publieur, à heure fixe
+
+Le workflow demande à GitHub Actions de lancer le publieur six fois par jour, sept minutes après l'heure, à six heures UTC. Ces six heures couvrent 9 h, midi et 18 h à Montréal, en heure d'hiver comme en heure d'été. Le script calcule l'heure de Montréal et ne garde que les créneaux utiles ; en hiver, les exécutions de 8 h et de 17 h ne font rien. La septième minute, parce que GitHub retarde ou abandonne plus volontiers les exécutions planifiées pile à l'heure.
+
+Une ligne part à son heure, ou jusqu'à deux heures après si l'exécution a été retardée ou manquée. Jamais avant. Lancé à la main, le publieur fait par défaut un essai à blanc : il imprime ce qui partirait et n'écrit rien. Il faut demander explicitement une vraie exécution.
+
+Quelques choix de sécurité tiennent dans le fichier du workflow. Aucune pull request ne déclenche le publieur : les tokens des réseaux ne servent qu'au code de la branche principale. Un seul publieur tourne à la fois, et une exécution en cours n'est jamais coupée. Les identifiants vivent dans un environnement GitHub dédié, ne sont donnés qu'à l'étape qui publie, et chacun n'est lu que si une publication de son réseau est due.
+
+<Architecture view="social_containers" label="Les conteneurs de la publication planifiée" description="Le calendrier et les médias sont des fichiers versionnés ; la barrière vérifie les lignes ; le publieur, lancé par GitHub, lit les lignes dues, réserve dans le registre, puis passe par l'adaptateur de chaque réseau." />
+
+## Jamais deux fois : réserver avant d'envoyer
+
+C'est la partie où on a mis le plus de soin. Un service qui publie à heure fixe sera relancé un jour : une exécution en retard, une relance à la main, un serveur qui tombe au milieu d'un appel. Il ne doit jamais publier deux fois la même chose.
+
+Le registre est un fichier d'une ligne JSON par événement, sur une branche à part du dépôt. Pour chaque publication, le publieur écrit d'abord une réservation, la committe et la pousse. Seulement ensuite, il appelle le réseau. Quand le réseau répond, il écrit « publié » avec l'identifiant, le lien et le lien de l'exécution. Si la poussée de la réservation est refusée, rien ne part et l'exécution s'arrête.
+
+Si l'appel échoue après la réservation, la ligne est retenue, et jamais réessayée d'elle-même : le réseau a peut-être pris la publication avant de répondre par une erreur. Une personne va voir sur le réseau, puis libère la ligne avec une commande qui écrit « libéré » dans le registre ; la ligne repart à son prochain créneau. Une réservation sans réponse, parce que la machine est morte pendant l'appel, retient la ligne de la même façon. Une ligne du registre illisible arrête l'exécution plutôt que d'être sautée, parce qu'une ligne sautée pourrait être une publication déjà partie.
+
+Pourquoi une branche à part et pas la branche principale : l'écriture du publieur n'attend aucune fusion et ne croise jamais une pull request du calendrier. Et pourquoi ne pas simplement relire le réseau pour savoir si c'est déjà parti : c'est plus lent, limité en nombre d'appels, et la lecture de LinkedIn demande un droit que notre accès à la page n'a pas. Ce peut devenir une seconde vérification, pas la seule.
+
+Des tests le prouvent sans réseau ni secret : deux exécutions successives sur le même registre publient une fois ; une réservation refusée ne publie rien ; une erreur après la réservation retient la ligne jusqu'à ce qu'une personne la libère ; un essai à blanc n'écrit rien ; une exécution hors du workflow est refusée à la réservation.
+
+<Architecture view="row_life" label="Une ligne, du brouillon à la publication, en dix étapes numérotées" description="Une équipe ajoute la ligne, la CI la vérifie, le CTO la valide ; à l'heure, le publieur la relit, la revérifie, pousse la réservation, envoie, puis inscrit la réponse." />
+
+## Les médias sont faits avant
+
+Une ligne nomme son média par un chemin ; pour une image ou un carrousel, le fichier existe avant que la ligne passe au CTO. Les images et les carrousels sont dans le dépôt, au chemin exact que la ligne nomme. Nos carrousels sont dessinés dans le même cahier que ce blogue : un écran redessiné à la plume, des numéros cerclés, une légende par numéro, et en pied de chaque diapositive d'où vient le dessin, par exemple « dessiné d'après l'écran · version de développement ». Le dessin de ce chapitre part d'une description typée de ce qu'on dessine, jamais d'un SVG fait à la main.
+
+Les films de nos produits viennent des tests de bout en bout. Chaque nuit, un workflow de Verikora et un de Folioviv rejouent les parcours de démonstration sur la branche principale, les enregistre, les transcode et ouvre une pull request qui les référence, relue comme une autre. Une vidéo montre donc ce que le produit fait vraiment ce jour-là.
+
+## Les chapitres naissent du travail
+
+Ce chapitre suit le même chemin. Ma demande est dans un ticket, avec mes mots exacts. Le CTO en a fait une consigne : ce qu'il faut lire dans le code, ce qui est vrai aujourd'hui, ce qu'il ne faut pas écrire. Une équipe a lu le code du publieur, les exécutions du jour et le registre, puis a écrit le chapitre en français, puis en anglais, en brouillon. Viennent ensuite une revue d'affaires et une revue par une équipe d'agents dédiée. Quand le chapitre est publié, ses publications entrent au calendrier en « a-valider-cto », avec dans leur colonne source ce qui prouve chaque chiffre. Le CTO valide, le service publie.
+
+## Ce qui se fait encore à la main, le 17 novembre
+
+Le 17 novembre, aucune exécution planifiée n'a démarré sur ce dépôt tout neuf : ni à 9 h, ni à midi. Le CTO a lancé le créneau de 9 h à la main, avec le même workflow : un essai à blanc à 8 h 57, qui listait une publication LinkedIn à envoyer, puis la vraie exécution à 9 h 25. Le registre a fait son travail : une réservation, un « publié », une seule publication.
+
+Sur Facebook, le service sait publier les textes de la page, mais aucun n'est encore sorti depuis GitHub au 17 novembre ; les vidéos et les carrousels se publient encore à la main. Le publieur n'a pas encore d'espace de stockage en ligne pour les vidéos : une ligne de vidéo courte pour Instagram ou YouTube finit en « média manquant », inscrite au journal, et se fait à la main. Le service a déjà le code pour envoyer une vidéo sur YouTube, toujours en privé, mais il n'est pas encore branché ; et même branché, tant que YouTube n'a pas audité notre accès à son API, c'est moi qui la publie dans Studio. Et les stories restent les miennes.
+
+Rien de tout ça n'est caché dans le service : chaque ligne qui ne part pas dit pourquoi dans le journal de l'exécution, et chaque ligne qui part laisse sa trace dans le registre.

@@ -24,6 +24,13 @@ const LOCAL_FREE = {
     "free local render on the Mac with the media worker's model when the post became chapter 29, no paid run",
   "series-35-one-local-cockpit-to-run-the-whole-company":
     "free local render on the Mac with the media worker's model when the cockpit post became chapter 35, no paid run",
+  /* Chapters 36 to 38: covers made with the media worker's engine on the Mac, three seeds each, one kept; no Studio run, no paid run. */
+  "series-36-how-the-interface-is-built":
+    "free local render on the Mac with the media worker's model, three seeds, one kept, no paid run",
+  "series-37-what-grafana-sees-from-outside":
+    "free local render on the Mac with the media worker's model, three seeds, one kept, no paid run",
+  "series-38-our-posts-are-planned-as-data":
+    "free local render on the Mac with the media worker's model, three seeds, one kept, no paid run",
 };
 /* The covers redrawn with GPT Image 2.5 Sunburst through Runway (content/image-series/runway.json: prompt, references, takes, credits). */
 const RUNWAY = JSON.parse(readFileSync(new URL("../content/image-series/runway.json", import.meta.url), "utf8")).images;

@@ -23,6 +23,7 @@ import ergoThemes from "../content/sketches/ergo-themes.ts";
 import grafanaSeenFromOutside from "../content/sketches/grafana-seen-from-outside.ts";
 import grafanaAlertFlow from "../content/sketches/grafana-alert-flow.ts";
 import grafanaCockpitBlock from "../content/sketches/grafana-cockpit-block.ts";
+import socialRow from "../content/sketches/social-row.ts";
 
 /** One drawing of a chapter: one screen, or a before / after pair whose callouts are numbered 1 to n across both. */
 export type SketchEntry = { spec: SketchSpec } | { before: SketchSpec; after: SketchSpec };
@@ -47,6 +48,7 @@ export const SKETCHES: Readonly<Record<string, SketchEntry>> = {
   "grafana-seen-from-outside": grafanaSeenFromOutside,
   "grafana-alert-flow": grafanaAlertFlow,
   "grafana-cockpit-block": grafanaCockpitBlock,
+  "social-row": socialRow,
 };
 
 /** The drawing of an id; an unknown id fails the build. */

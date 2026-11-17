@@ -7413,5 +7413,75 @@
         }
       ]
     }
+  },
+  "series-38-our-posts-are-planned-as-data": {
+    "kind": "image",
+    "width": 1280,
+    "height": 720,
+    "blur": "data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAADwAQCdASoQAAkABABoJZQCdAEN4BTUIgAA/vKEJvtWYqq83iAJ4WljKioXD8HPAoKS9KnEacSFzo0ldF0MYbWAAAA=",
+    "srcs": [
+      {
+        "w": 480,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-38-our-posts-are-planned-as-data-480.0d5a38fc90.webp"
+      },
+      {
+        "w": 960,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-38-our-posts-are-planned-as-data-960.d40cf0a48f.webp"
+      },
+      {
+        "w": 1280,
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-38-our-posts-are-planned-as-data-1280.1cf035b9a5.webp"
+      }
+    ],
+    "made": {
+      "model": "FLUX.2 [klein] 4B",
+      "licence": "Apache-2.0",
+      "engine": "mflux (mflux-generate-flux2), the media worker's engine, on the Mac's Metal GPU: 4 steps, 1280×720, text to image",
+      "machine": "MacBook Pro, Apple M1 Max, 64 GB (Metal)",
+      "via": "local",
+      "prompt": "Hand-drawn ink and watercolor illustration on white paper, light and airy, a lot of unpainted white paper around and inside the scene, soft pale transparent watercolor washes in a palette of indigo, teal, warm orange and cream, delicate thin pen-and-ink linework of varying weight with some broken lines, gentle muted colour. Absolutely not a cartoon: no big eyes, no cel shading, no flat vector fills, no glossy gradients, no photographic detail. The small mail room of a railway station at dusk, the same soft dusk light as the signal box of the earlier pictures: a tall wooden rack of pigeonholes against the wall, each holding one sealed envelope, arranged in neat rows by the hour; a few envelopes carry a small orange tag, one row is empty. On a wooden counter, one open envelope and a stamp, a small brass bell. Through a wide window, a mail train waits at the platform under the evening sky. One grey pigeon stands on the window sill, looking at the train. Calm and ordered, nothing cluttered. No people, no other birds, no text, no letters, no numbers, no logos, no watermark.",
+      "seed": "3817",
+      "size": "1280×720",
+      "costUsd": 0,
+      "note": "Chapter 38 of the image series (cover): the mail room of the station of chapters 23 to 36 at dusk, a rack of pigeonholes with one sealed envelope each in rows by the hour, a few with an orange tag, a mail train waiting outside, the pigeon (the messenger of the five birds) on the counter. Made with the media worker's engine on the Mac, outside a Sovkora Studio run: there is no run id. Two seeds were made (3801, 3817); 3817 was kept after a review at full size: more white paper, the train and the counter clear (3801 showed scribbles like writing on an envelope). The small tags carry pen marks, not letters. No person, no text, no logo."
+    },
+    "renditions": {
+      "avif": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-38-our-posts-are-planned-as-data-480.dc56837077.avif"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-38-our-posts-are-planned-as-data-768.8ab6f4fcba.avif"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-38-our-posts-are-planned-as-data-1200.873925abdd.avif"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-38-our-posts-are-planned-as-data-1280.0ef74a659d.avif"
+        }
+      ],
+      "webp": [
+        {
+          "w": 480,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-38-our-posts-are-planned-as-data-480.9159e782b0.webp"
+        },
+        {
+          "w": 768,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-38-our-posts-are-planned-as-data-768.833da8a375.webp"
+        },
+        {
+          "w": 1200,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-38-our-posts-are-planned-as-data-1200.d0becdd35c.webp"
+        },
+        {
+          "w": 1280,
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-38-our-posts-are-planned-as-data-1280.6a8ead42d3.webp"
+        }
+      ]
+    }
   }
 }
