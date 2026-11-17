@@ -2,18 +2,19 @@
 /* Renders the two « In the IDE » figures of the agents chapter (krizaka-internal#4125) from agents-ide.html, FR and EN, with
    Playwright's pinned Chromium: <out>/agents-ide-<fig>-<lang>.png at 1600 px wide (the full figure, for a social post), then the
    blog's sizes <out>/<id>-<w>.webp (480/768/1200/1600) and the blur placeholder printed as JSON for lib/media.json.
-     node docs/diagrams/render-agents-ide.mjs <out-dir>
-   Then, from krizaka-com: node scripts/cdn-assets.mjs upload <out-dir>/webp --to blog/posts/how-our-agent-teams-talk */
+     node docs/diagrams/render-agents-ide.mjs            (writes to <system temp>/krizaka-agents-ide/ and prints it)
+   Then, from krizaka-com: node scripts/cdn-assets.mjs upload <that folder>/webp --to blog/how-our-agent-teams-talk */
 import { createHash } from "node:crypto";
 import { mkdirSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { chromium } from "playwright";
 import sharp from "sharp";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const out = resolve(process.argv[2] ?? "");
-if (!process.argv[2]) throw new Error("usage: render-agents-ide.mjs <out-dir>");
+/* A fixed folder, not an argument: the script only ever writes under the system's temporary directory. */
+const out = join(tmpdir(), "krizaka-agents-ide");
 const WIDTHS = [480, 768, 1200, 1600];
 const FIGS = ["tasks", "log"];
 const LANGS = ["fr", "en"];
@@ -52,6 +53,7 @@ for (const fig of FIGS) {
 }
 await browser.close();
 writeFileSync(join(out, "media-entries.json"), `${JSON.stringify(entries, null, 2)}\n`);
+console.log(out);
 console.log(
   Object.entries(entries)
     .map(([k, v]) => `${k} ${v.width}x${v.height}`)

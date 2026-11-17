@@ -386,7 +386,7 @@
       const w = WORDS[lang];
       const f = w[fig];
       document.documentElement.lang = lang;
-      const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+      const esc = (s) => s.replaceAll("&", "&amp;").replaceAll("<", "&lt;");
       const part = (p) => (Array.isArray(p) ? `<span class="${p[0]}">${esc(p[1])}</span>` : esc(p));
 
       let body = "";
