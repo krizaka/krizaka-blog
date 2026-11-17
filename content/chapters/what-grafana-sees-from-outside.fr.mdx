@@ -1,0 +1,161 @@
+---
+title: "Ce que Grafana voit de nous, depuis l'extérieur"
+description: "Seize sondes, une règle qui prévient, six mesures du moteur Sovkora, DigitalOcean pour le reste et rien en double : comment nous surveillons Krizaka avec Grafana Cloud, et pourquoi pas Datadog."
+seoTitle: "Grafana Cloud chez Krizaka : sondes, alertes, SLO"
+seoDescription: "Sondes synthétiques en code, règles d'alerte, partage avec DigitalOcean, SLO et burn rate à venir, et pourquoi Grafana Cloud plutôt que Datadog."
+date: 2026-11-17
+publishedAt: "2026-11-17T17:00:00-05:00"
+tags: [measurements, integration]
+author: oussama
+draft: true
+cover: series-37-what-grafana-sees-from-outside
+coverAlt: "Aquarelle et encre sur papier, au crépuscule : sur une colline, une lunette de laiton sur son trépied et une petite lanterne de signal bleu-vert regardent une vieille gare aux fenêtres orangées ; sur la colline d'en face, une seconde lunette regarde la même gare."
+chapter: 37
+period: "2026-11-17"
+sources:
+  - what-grafana-sees-from-outside
+versus:
+  faced: "des sites et un moteur à surveiller, sans client, sans équipe de garde et sans budget"
+  built: "des sondes depuis l'extérieur, des règles en code, une seule adresse prévenue et aucune alerte en double"
+stats:
+  - value: "16"
+    label: "sondes HTTP, toutes vertes le 17 novembre"
+    section: "D'abord, ce que voit un visiteur"
+  - value: "6"
+    label: "règles d'alerte pour le pilote du moteur Sovkora"
+    section: "Les sondes et les règles, écrites en code"
+---
+
+Le 17 novembre, les seize sondes que Grafana lance sur nos sites et nos applications de dev répondaient toutes. Ce chapitre raconte comment elles sont écrites, ce qui se passe quand l'une d'elles échoue, et ce que nous avons laissé à DigitalOcean. Il est écrit pour les personnes qui font de l'exploitation : on y parle de règles et de fenêtres, mais aucun nom de pile, aucune adresse interne et aucun seuil exact.
+
+Krizaka n'a pas encore de client. Il n'y a pas d'équipe de garde : les alertes arrivent chez moi. La surveillance devait donc tenir dans un forfait gratuit et ne me déranger que pour une vraie panne.
+
+## D'abord, ce que voit un visiteur
+
+La console de l'hébergeur me dit qu'un conteneur tourne. Elle ne me dit pas que le nom de domaine, le certificat, le CDN et la page répondent ensemble à quelqu'un qui arrive de l'extérieur. Le premier signal que j'ai voulu, c'est donc celui d'un visiteur : une requête qui part d'ailleurs, et son résultat, `probe_success`.
+
+Les sondes sont celles de Synthetic Monitoring, le service de sondes de Grafana Cloud. Il y en a 16 : onze pages publiques et routes de santé (le site de l'entreprise et sa route de santé, son accueil en français, un fichier de données public, le blog, les sites des bibliothèques et ceux des produits), les routes de santé des trois applications de développement, et les webhooks de paiement de deux d'entre elles. Chacune part de deux emplacements canadiens, Montréal et Calgary. C'est un simple GET, sans en-tête ajouté, sans cookie et sans secret : la sonde voit ce que voit un visiteur anonyme, et elle ne porte rien qui vaille d'être volé.
+
+Les webhooks de paiement demandaient autre chose. Un webhook en bonne santé refuse un appel qui n'est pas signé. La sonde lui envoie donc un POST vide, sans signature, et le seul code accepté est 400. Un 200 voudrait dire qu'il a accepté une requête sans signature, un 5xx qu'il est tombé. La même sonde vérifie qu'il répond et qu'il refuse un appel non signé. Elle ne prouve pas qu'il accepte un vrai événement : avec un secret de signature erroné, le webhook refuse tout, et la sonde reste verte.
+
+## Les sondes et les règles, écrites en code
+
+La liste des sondes est un fichier de notre infrastructure en code, pas une configuration faite à la main dans l'écran. Le script a deux commandes. `plan`, la commande par défaut, lit la pile et dit ce qui changerait, sans rien écrire. `apply` crée ou met à jour les vérifications, le point de contact, la règle et le routage ; un deuxième `apply` ne change plus rien. Seules les vérifications dont le nom commence par notre préfixe sont à nous, les autres ne sont jamais touchées.
+
+Le `plan` a servi dès le premier jour. Le 7 novembre, le code déclarait onze vérifications et la pile en faisait tourner treize : deux routes de santé sous d'anciens noms de code, retirées depuis, sondaient encore. Une configuration faite dans l'écran dérive sans bruit ; une configuration en code dérive aussi, mais `plan` le dit.
+
+La fréquence a un plafond. Le forfait gratuit compte les exécutions : [100 000 tests d'API par mois](https://grafana.com/pricing/) (page des tarifs de Grafana, lue le 17 novembre 2026). Vérifications × emplacements × passages par mois doit rester dessous, et un test échoue si une nouvelle sonde nous faisait passer au-dessus.
+
+<Sketch id="grafana-alert-flow" title="Comment une alerte arrive jusqu'à moi, dessiné d'après le code">
+  <Callout n="1" label="Deux emplacements">Montréal et Calgary, des sondes publiques de Grafana Cloud, hors de chez notre hébergeur.</Callout>
+  <Callout n="2" label="Les sites et les applications de dev">un GET pour les pages et les routes de santé, un POST non signé pour les webhooks.</Callout>
+  <Callout n="3" label="Le moteur Sovkora">il pousse ses six mesures de pilote en OTLP, sans étiquette qui nomme un client.</Callout>
+  <Callout n="4" label="Les métriques">les résultats des sondes et les mesures du moteur, dans le Prometheus de la pile.</Callout>
+  <Callout n="5" label="Les règles">elles lisent les métriques ; l'absence de données ne déclenche pas d'alerte.</Callout>
+  <Callout n="6" label="Un seul point de contact">un courriel, groupé par alerte et par vérification.</Callout>
+  <Callout n="7" label="Les alertes de DigitalOcean">déploiement, domaine, redémarrages et mémoire, écrites dans la spécification de chaque application.</Callout>
+  <Callout n="8" label="Moi">deux sources d'alerte, jamais la même règle aux deux endroits.</Callout>
+</Sketch>
+
+La règle « Site public injoignable » est la seule qui concerne les sites. Elle prend, pour chaque vérification et chaque emplacement, le maximum de `probe_success` sur une fenêtre glissante, puis garde la plus haute valeur. Elle se déclenche quand cette valeur est sous 1, c'est-à-dire quand tous les emplacements échouent. Nous partons du principe qu'un seul emplacement en échec, c'est le réseau entre une sonde et nous, pas un site en panne. L'absence de données laisse la règle à l'état normal, une erreur d'évaluation la met en erreur. Le revers : si les sondes cessent d'écrire, la règle reste verte, et aucune autre règle ne le dit encore. Elle porte l'étiquette `severity=page`.
+
+Le routage est aussi simple que possible. La politique racine envoie tout ce qui n'a pas de route au point de contact, groupé par nom d'alerte et par vérification, avec des rappels espacés. Le point de contact est un courriel. Le script le crée sans marquer sa provenance, ce qui le laisse modifiable dans l'écran, et `apply` ne réécrit jamais une adresse existante : je peux changer qui est prévenu sans pull request. En le mettant en place, nous avons vu que notre pile n'envoyait ses courriels qu'aux membres de son organisation.
+
+Le moteur Sovkora a ses propres règles, six, écrites par un deuxième script. Celui-ci reprend le client, le dossier et le routage du premier sans jamais les modifier : chaque objet de la pile a un seul script propriétaire. Le moteur exporte ses mesures en OTLP : un histogramme du délai avant la première étape d'un run, un compteur des runs terminés par issue, un histogramme des durées, une jauge des runs bloqués, et deux compteurs, les tokens et le coût fournisseur. Aucune étiquette ne nomme un client.
+
+| Règle | Ce qu'elle lit | Pourquoi elle est écrite ainsi |
+| --- | --- | --- |
+| Démarrage des runs lent | le p95 du délai avant la première étape | un quantile d'histogramme : il montre la queue lente que la moyenne dilue |
+| Runs en échec | la part des runs terminés qui ont échoué | elle n'est comptée qu'au-delà d'un petit nombre de runs : en dessous, une part n'est que du bruit |
+| Durée des runs trop longue | le p95 de la durée | même raison que le démarrage |
+| Run bloqué | la jauge des runs en cours depuis trop longtemps | un seul suffit ; ce groupe est évalué plus souvent que la règle des sites |
+| Tokens en emballement | les tokens de la dernière heure | une boucle d'agent se voit ici avant de se voir sur la facture |
+| Coût du jour | le coût fournisseur sur 24 heures | comparé au budget quotidien du dev, celui de la spécification de l'application |
+
+Les six portent `severity=page` et la même équipe ; la politique racine les envoie donc au même point de contact que les sondes. Leurs seuils sont marqués dans le code comme des valeurs de départ, à régler sur ce que montre le dev. Pour le moteur aussi, l'absence de données ne déclenche pas d'alerte : un dev au repos n'a pas de run. À côté, une dernière alerte surveille la facture de Grafana elle-même.
+
+## DigitalOcean d'un côté, Grafana de l'autre, rien en double
+
+Le 17 novembre, j'ai fixé la règle en une phrase : la surveillance vit dans DigitalOcean et dans Grafana, et nulle part ailleurs, sans doublon.
+
+DigitalOcean garde ce que l'hébergeur sait mieux que personne. Chaque spécification d'application porte ses alertes, en code : un déploiement échoué et un domaine en échec, et pour les services, en plus, le nombre de redémarrages et l'usage de la mémoire. La spécification est appliquée par notre outil de déploiement, et une vérification en lecture seule doit dire qu'il n'y a aucune différence entre le fichier et ce qui tourne. Grafana garde ce que voit l'extérieur et ce que fait le moteur.
+
+Avant cette règle, deux autres choses faisaient le même travail : un workflow GitHub planifié et une sonde qui tournait sur mon Mac. Nous les retirons. Deux alertes pour un même fait apprennent à ignorer les deux, et une sonde sur un portable dort quand le portable dort. Une même panne peut tout de même arriver des deux côtés : un domaine en échec chez DigitalOcean fait aussi échouer les sondes. L'une dit la cause, l'autre ce que voit le visiteur.
+
+<Architecture view="obs_context" label="Ce que nous surveillons, au niveau du contexte" description="Les sondes de la pile Grafana interrogent les sites publics et les applications de dev depuis l'extérieur et reçoivent les mesures du moteur ; la pile m'envoie ce qui est urgent ; l'hébergeur m'envoie ses propres alertes de déploiement, de domaine, de redémarrage et de mémoire ; deux scripts du dépôt d'infrastructure déclarent les sondes, les règles et les tableaux, hors d'OpenTofu." />
+
+Au niveau des conteneurs, chaque flèche a son sens. Les sondes écrivent dans les métriques, les règles et les pages de lecture les lisent, et seules les règles parlent au point de contact. Les journaux, les traces et les tests de charge y sont dessinés comme prévus, pas comme faits.
+
+<Architecture view="obs_containers" label="L'observabilité, au niveau des conteneurs" description="Les sondes synthétiques interrogent les sites publics, les routes de santé et les webhooks ; elles écrivent succès, durée, code et certificat dans les métriques, où le moteur Sovkora pousse aussi ses mesures en OTLP ; les règles évaluent les métriques et envoient la sévérité page au point de contact, qui m'écrit ; les pages de lecture lisent les métriques ; les journaux et traces et les tests de charge sont prévus." />
+
+## Les écrans
+
+J'avais d'abord construit « krizaka.com · Seen from outside » avec les [Pages de Grafana](https://grafana.com/docs/grafana-cloud/platform/grafana-assistant/configure/pages/), la nouvelle forme éditoriale que Grafana a [annoncée le 19 octobre 2026](https://grafana.com/whats-new/2026-10-19-introducing-grafana-pages--build-anything-on-your-data--right-inside-grafana/). Une page s'y lit comme un texte, avec une phrase et un tableau, et je la préfère à une grille de panneaux. Mais une Page ne se garde pas en code aujourd'hui. La fonction est en préversion publique, son API est une version alpha qui ne contient que le catalogue, aucun export ni schéma n'est documenté, et le 7 novembre le compte de service de la pile n'en voyait aucune.
+
+La page de lecture est donc un tableau de bord Grafana, écrit dans le style de la Page.
+
+<Sketch id="grafana-seen-from-outside" title="« krizaka.com · Seen from outside », dessiné d'après la description de l'écran">
+  <Callout n="1" label="Le titre et sa phrase">ce que reçoit un visiteur, en une ligne.</Callout>
+  <Callout n="2" label="La ligne de source">le signal lu et le fichier du dépôt d'où vient le tableau ; la règle veut qu'une modification faite dans l'écran soit écrasée au prochain apply, et la ligne le dit.</Callout>
+  <Callout n="3" label="« En ce moment »">une seule phrase, toutes les sondes répondent ou une sonde échoue, voir le tableau.</Callout>
+  <Callout n="4" label="Une ligne par sonde">le nom de la vérification, filtrée par les étiquettes de l'application et de l'environnement plutôt que par une liste de noms.</Callout>
+  <Callout n="5" label="Les colonnes">en ligne maintenant, disponibilité face à son objectif, passages en échec, code HTTP, jours avant l'expiration du certificat.</Callout>
+  <Callout n="6" label="La bande">en ligne ou non, passage après passage.</Callout>
+  <Callout n="7" label="La légende en pied">ce que veut dire chaque colonne, et quoi faire quand elle rougit.</Callout>
+</Sketch>
+
+Sa source de données est une variable choisie par son nom, jamais par un identifiant, et le 7 novembre il passait le linter de Grafana en mode strict sans aucune remarque. Le tableau du moteur, « Sovkora — engine pilot measures », a six panneaux deux par deux, un par mesure : le délai avant la première étape, les runs terminés par issue, la durée, les runs bloqués, les tokens par heure en entrée et en sortie, le coût sur 24 heures. Il vient du même script que ses règles : une métrique renommée casse le panneau et la règle dans le même changement.
+
+## Où nous allons
+
+La règle des sites voit une panne franche, pas une lente dégradation, et ne dit rien d'un objectif. [Le classeur SRE de Google](https://sre.google/workbook/alerting-on-slos/) propose mieux : alerter sur la vitesse à laquelle on consomme un budget d'erreur.
+
+Les objectifs de service deviendront des données : un fichier par application, avec la cible de disponibilité et sa fenêtre de 28 jours, la cible de latence au p95 sur une route, et le signal source. krizaka.com commencera à 99,9 % sur 28 jours. La page de lecture, les seuils des tests de charge, les règles d'alerte et le cockpit liront tous ce même fichier.
+
+Les alertes brûleront un budget d'erreur. Le plan suit le classeur : deux règles multi-fenêtres par objectif, une alerte urgente à 14,4 fois le rythme du budget sur une heure et sur cinq minutes, et un ticket à 6 fois sur six heures et sur trente minutes. Le classeur fait de la seconde une alerte urgente aussi ; nous en faisons un ticket, parce qu'une seule personne lit les alertes. Il reste une question que nous n'avons pas tranchée. Sur des sites qui ont encore peu de visiteurs, le taux d'erreur est fait des passages de sondes, peu nombreux par heure, et un seul passage manqué dépasse déjà, sur une heure, 14,4 fois le rythme du budget : tel quel, le burn rate préviendrait plus souvent que la règle d'aujourd'hui, et une fenêtre courte contient trop peu de passages pour dire quelque chose. Le classeur a une section sur les services à faible trafic ; nous la lirons avec nos propres chiffres avant d'écrire la première règle.
+
+Les tests de charge sont écrits avec [k6](https://github.com/grafana/k6), dans le dépôt de l'application, et ne visent que le dev : le script refuse toute autre origine. Les scénarios restent doux, au plus 5 utilisateurs virtuels pendant au plus deux minutes, parce que le dev est partagé. Le premier essai, le 7 novembre, sur la route de santé du dev de Sovkora : 7 767 requêtes, aucune en échec, un p95 de 62 ms. Pointé vers la production, le même script s'est arrêté avant d'envoyer une requête. Un test de charge en production est une décision payante, et elle n'est pas prise.
+
+La carte des services viendra des traces OpenTelemetry, avec le contexte W3C propagé sur HTTP et sur la file de messages. Les liens observés sur sept jours seront posés à côté de l'architecture générée depuis le code. Un lien observé mais pas modélisé, ou modélisé mais jamais observé, sera une dérive signalée.
+
+Dans le cockpit, tout ceci tiendra dans un seul bloc « Observabilité ». Il n'existe pas encore : le dessin vient du plan, pas d'un écran.
+
+<Sketch id="grafana-cockpit-block" title="Le bloc « Observabilité » du cockpit, dessiné d'après le plan">
+  <Callout n="1" label="Tous les liens">l'accueil de Grafana, les pages de lecture, le projet k6, les sondes, les règles d'alerte.</Callout>
+  <Callout n="2" label="Dev et prod">la production affiche « à créer » tant qu'elle n'existe pas.</Callout>
+  <Callout n="3" label="Une ligne par application">lue en direct dans la pile, côté serveur, avec un token en lecture seule.</Callout>
+  <Callout n="4" label="Les chiffres de tête">en ligne, disponibilité face à l'objectif, latence p95, budget d'erreur restant, alertes ouvertes, dernier verdict de test de charge ; chacun mène à sa page.</Callout>
+  <Callout n="5" label="« indisponible »">une pile injoignable s'affiche ainsi, jamais comme un 100 % inventé.</Callout>
+</Sketch>
+
+## Pourquoi Grafana et pas Datadog, et pourquoi le cloud
+
+Il n'y a pas de décision écrite pour ce choix. Ce qui suit est notre raisonnement, reconstruit à partir de ce dont notre code a besoin, et des faits lus sur les pages officielles des deux éditeurs le 17 novembre 2026. Je sépare les deux.
+
+Les faits d'abord. Grafana Cloud propose [une région au Canada](https://grafana.com/docs/grafana-cloud/platform/security-and-account-management/account-management/regional-availability/), et notre pile y est. [La liste des sites de Datadog](https://docs.datadoghq.com/getting_started/site/) compte des sites aux États-Unis, en Allemagne, au Japon, en Australie et au Royaume-Uni, aucun au Canada. Grafana, Loki, Tempo, Mimir, Pyroscope et k6 sont publiés [sous AGPLv3](https://grafana.com/licensing/), et [Prometheus](https://github.com/prometheus/prometheus) sous Apache 2.0. Datadog est [un service hébergé](https://docs.datadoghq.com/getting_started/agent/) : son agent est libre, sous Apache 2.0, mais la plateforme ne s'installe pas chez soi.
+
+Les forfaits gratuits ensuite. Celui de [Grafana Cloud](https://grafana.com/pricing/) comprend 10 000 séries actives, 50 Go de journaux et 50 Go de traces, gardés 14 jours, 50 Go de profils, 100 000 tests d'API de Synthetic Monitoring et 500 heures d'utilisateur virtuel k6 par mois, et 3 utilisateurs actifs ; au-delà, le forfait payant se paie à l'usage. Celui de [Datadog](https://www.datadoghq.com/pricing/) couvre jusqu'à 5 hôtes, avec une rétention des métriques d'un jour.
+
+Un fait enfin, qui n'est pas une raison. Les deux acceptent l'OTLP [directement depuis le SDK d'une application](https://grafana.com/docs/grafana-cloud/send-data/otlp/send-data-otlp/), et les deux [recommandent un collecteur ou un agent en production](https://docs.datadoghq.com/opentelemetry/setup/intake_endpoint/). « Pas d'agent à faire tourner » vaut pour le dev chez l'un comme chez l'autre, et ne les départage pas.
+
+Notre raisonnement maintenant. Nous sommes une entreprise du Québec ; quand nos journaux partiront, masqués, ils resteront au Canada, et ce choix existe chez l'un et pas chez l'autre. La région dit où les données sont stockées, pas qui peut y accéder : Grafana Labs reste une entreprise américaine, et c'est [l'entente de sous-traitance](https://grafana.com/legal/data-processing-agreement/) qui fixera le reste. Nos requêtes PromQL et nos tableaux en JSON fonctionnent ailleurs que chez Grafana Labs : si nous partons, Prometheus et Grafana tournent n'importe où. La liste de sondes, elle, est écrite pour l'API de Synthetic Monitoring et serait à traduire. Avec une plateforme qui n'existe qu'hébergée, partir voudrait dire réécrire les tableaux, les règles et les sondes ; l'instrumentation OTLP, elle, partirait telle quelle. Et le forfait gratuit tient à notre taille, une entreprise sans client, où ce sont les sondes qui consomment, ce que le code sait et vérifie.
+
+Pourquoi le cloud, alors que tout est libre ? Parce qu'un outil de surveillance ne doit pas tomber avec ce qu'il surveille. Installé chez notre hébergeur, il tomberait avec lui. Ce serait aussi un serveur de plus à payer, à mettre à jour, à sauvegarder et à surveiller, donc une surveillance de la surveillance. La pile hébergée est hors de chez notre hébergeur, au Canada, et gratuite à notre taille.
+
+Le revers, c'est la production. Le forfait gratuit n'autorise [qu'une pile par compte](https://grafana.com/docs/grafana-cloud/security-and-account-management/cloud-stacks/stack-pricing-tiers/), et la nôtre est celle du dev. Une pile de production à part demande le forfait payant ou un autre compte, et c'est une décision qui me revient. Tant qu'elle n'est pas prise, aucune donnée d'application de production ne va dans Grafana ; seules les sondes, qui ne portent aucune donnée de client, mesurent déjà les sites publics.
+
+## Ce que nous n'avons pas encore fait
+
+Grafana n'est pas dans notre OpenTofu. Les sondes, les règles et les tableaux passent par l'API, depuis deux scripts lancés à la main, avec `plan` puis `apply` ; ni l'un ni l'autre ne tourne dans la CI.
+
+Les applications n'envoient encore ni journaux ni traces. Le moteur est le premier dont le code exporte des métriques. Les journaux attendent le masquage commun des données personnelles, qui doit passer avant tout export, et l'entente de sous-traitance avec Grafana Labs, qui doit être signée avant le premier journal.
+
+L'alerte arrive par courriel à une seule adresse. Il n'y a ni garde tournante ni réveil sur un téléphone, et la seule règle des sites est encore un seuil brut.
+
+Les seuils du moteur n'ont jamais vu de vrai trafic. Le 7 novembre, les résultats de k6 n'arrivaient pas dans Grafana, faute du token qu'il leur faut. Le bloc du cockpit est un plan.
+
+Si vous faites ce métier et que l'un de ces choix vous fait tiquer, en particulier le burn rate sur des sites à faible trafic, écrivez-moi par [le formulaire de contact du site](site:www/fr/contact).
+
+## Ce que nous avons mesuré, et ce que nous n'avons pas mesuré
+
+L'état des seize sondes, la liste des règles et le nom des tableaux ont été lus dans Grafana le 17 novembre. Le reste, les sondes, les fenêtres, les règles, les étiquettes, le routage, vient du code des deux scripts et des alertes des spécifications, lus le même jour. Le décompte de la dérive et l'essai de k6 datent du 7 novembre. Les faits sur Grafana Cloud et Datadog viennent de leurs pages officielles, lues le 17 novembre 2026 ; les tarifs changent, et ces liens font foi. Je ne donne aucun chiffre de disponibilité : aucune fenêtre de 28 jours n'a encore été mesurée contre un objectif écrit. Les dessins sont faits d'après la description de l'écran, le code et le plan, et ne sont pas à l'échelle ; le bloc du cockpit n'existe que sur le papier.

@@ -1,0 +1,1492 @@
+{
+  "generatedBy": "scripts/gen-architecture.mjs",
+  "tool": { "name": "@krizaka/architecture", "likec4": "1.60.0" },
+  "source": {
+    "path": "content/diagrams/observability.c4",
+    "sha256": "fe26d1c075032ac3e5f8c76a6eeb3ebdf15652e5515a785d4f90c9cc512bca35"
+  },
+  "base": [
+    { "path": "org.c4", "sha256": "93b98888f7251d64840003fc883671ce9a891dbf5f2a5f4ae386033524981cd8" },
+    { "path": "specification.c4", "sha256": "3e02a37911f2dcd67a88304b5342e8fa7d1ff7e9d57cd204fe94365a9db01764" }
+  ],
+  "translations": {
+    "path": "content/diagrams/observability.fr.json",
+    "sha256": "f2e9f5edb6602dd524688db174698cdc111a9c48bf9d6e39d3358ca6eee33a90"
+  },
+  "check": {
+    "status": "ok",
+    "system": null,
+    "errors": [],
+    "elements": [
+      "agents",
+      "aiAgents",
+      "cdn",
+      "cloud",
+      "contributor",
+      "customer",
+      "devapps",
+      "devapps.engine",
+      "devapps.health",
+      "devapps.webhooks",
+      "founder",
+      "github",
+      "models",
+      "observability",
+      "observability.contact",
+      "observability.load",
+      "observability.metrics",
+      "observability.probes",
+      "observability.rules",
+      "observability.signals",
+      "observability.surfaces",
+      "owner",
+      "platform",
+      "platform.infra",
+      "platform.standards",
+      "platform.template",
+      "registries",
+      "sites",
+      "visitor"
+    ]
+  },
+  "views": {
+    "en": [
+      {
+        "id": "obs_context",
+        "title": "What we watch · context",
+        "dynamic": false,
+        "bounds": { "x": 0, "y": 0, "width": 943, "height": 866 },
+        "nodes": [
+          {
+            "id": "visitor",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "Visitor",
+            "technology": null,
+            "description": "Reads the company site, the blog and the library sites.",
+            "compound": false,
+            "x": 49,
+            "y": 603,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "platform",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Krizaka platform",
+            "technology": null,
+            "description": "How the org works: shared CI and standards, the infrastructure as code, the templates.",
+            "compound": true,
+            "x": 8,
+            "y": 8,
+            "width": 244,
+            "height": 185
+          },
+          {
+            "id": "platform.infra",
+            "parent": "platform",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Infrastructure as code",
+            "technology": "OpenTofu",
+            "description": "One OpenTofu stack for every environment (ADR-023).",
+            "compound": false,
+            "x": 40,
+            "y": 61,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "cloud",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "Cloud hosting",
+            "technology": null,
+            "description": "The app and static site hosting, the managed databases.",
+            "compound": false,
+            "x": 321,
+            "y": 244,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "devapps",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Dev apps",
+            "technology": null,
+            "description": "The products in their development environment, on the same host.",
+            "compound": false,
+            "x": 321,
+            "y": 424,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "observability",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Observability",
+            "technology": null,
+            "description": "A hosted Grafana stack in a Canadian region: what a visitor gets, what the engine does, who is told.",
+            "compound": false,
+            "x": 321,
+            "y": 603,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "sites",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Public sites",
+            "technology": null,
+            "description": "The company site, the blog, the library sites and the products sites.",
+            "compound": false,
+            "x": 185,
+            "y": 766,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "owner",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "Founder",
+            "technology": null,
+            "description": "Sets the strategy and approves.",
+            "compound": false,
+            "x": 649,
+            "y": 766,
+            "width": 180,
+            "height": 100
+          }
+        ],
+        "edges": [
+          {
+            "id": "35wj7i",
+            "source": "visitor",
+            "target": "sites",
+            "label": "reads",
+            "points": [
+              [176, 703],
+              [187, 717],
+              [199, 732],
+              [211, 746],
+              [214, 750],
+              [218, 754],
+              [222, 759]
+            ],
+            "labelBBox": { "x": 212, "y": 724, "width": 39, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "r1ad4i",
+            "source": "devapps",
+            "target": "observability",
+            "label": "OTLP, no tenant label",
+            "points": [
+              [384, 523],
+              [382, 530],
+              [379, 537],
+              [378, 544],
+              [374, 561],
+              [374, 566],
+              [378, 583],
+              [379, 587],
+              [380, 590],
+              [381, 594]
+            ],
+            "labelBBox": { "x": 379, "y": 553, "width": 140, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "3q3aun",
+            "source": "observability",
+            "target": "sites",
+            "label": "probes from outside",
+            "points": [
+              [344, 703],
+              [337, 710],
+              [330, 716],
+              [324, 723],
+              [316, 734],
+              [308, 746],
+              [301, 757]
+            ],
+            "labelBBox": { "x": 325, "y": 724, "width": 128, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "c2vesy",
+            "source": "observability",
+            "target": "devapps",
+            "label": "probes from outside",
+            "points": [
+              [501, 610],
+              [510, 602],
+              [517, 593],
+              [523, 583],
+              [532, 568],
+              [532, 559],
+              [523, 544],
+              [519, 537],
+              [514, 530],
+              [508, 524]
+            ],
+            "labelBBox": { "x": 530, "y": 553, "width": 128, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "3t7so3",
+            "source": "cloud",
+            "target": "sites",
+            "label": "hosts",
+            "points": [
+              [359, 344],
+              [339, 366],
+              [318, 394],
+              [306, 424],
+              [261, 535],
+              [263, 677],
+              [269, 756]
+            ],
+            "labelBBox": { "x": 276, "y": 553, "width": 37, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1sp25fi",
+            "source": "cloud",
+            "target": "devapps",
+            "label": "hosts",
+            "points": [
+              [411, 344],
+              [411, 365],
+              [411, 391],
+              [411, 413]
+            ],
+            "labelBBox": { "x": 412, "y": 373, "width": 37, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1mcesvo",
+            "source": "platform.infra",
+            "target": "observability",
+            "label": "two scripts beside it, plan then apply: probes, rules, dashboards",
+            "points": [
+              [104, 161],
+              [76, 220],
+              [39, 323],
+              [74, 404],
+              [118, 505],
+              [229, 574],
+              [312, 613]
+            ],
+            "labelBBox": { "x": 75, "y": 365, "width": 233, "height": 35 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "u9vvy0",
+            "source": "platform.infra",
+            "target": "cloud",
+            "label": "provisions",
+            "points": [
+              [206, 161],
+              [243, 185],
+              [288, 214],
+              [326, 239]
+            ],
+            "labelBBox": { "x": 297, "y": 202, "width": 67, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "43w3jq",
+            "source": "observability",
+            "target": "owner",
+            "label": "e-mails what is urgent",
+            "points": [
+              [443, 703],
+              [456, 719],
+              [471, 735],
+              [489, 746],
+              [534, 775],
+              [591, 792],
+              [639, 802]
+            ],
+            "labelBBox": { "x": 490, "y": 724, "width": 140, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "41dzcq",
+            "source": "cloud",
+            "target": "owner",
+            "label": "e-mails deploy, domain, restart and memory alerts",
+            "points": [
+              [482, 344],
+              [576, 415],
+              [738, 555],
+              [790, 723],
+              [794, 735],
+              [792, 746],
+              [788, 757]
+            ],
+            "labelBBox": { "x": 719, "y": 545, "width": 223, "height": 34 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "pis1ti",
+            "source": "owner",
+            "target": "observability",
+            "label": "reads the surfaces",
+            "points": [
+              [687, 766],
+              [667, 748],
+              [646, 730],
+              [634, 723],
+              [596, 702],
+              [551, 686],
+              [511, 676]
+            ],
+            "labelBBox": { "x": 664, "y": 724, "width": 119, "height": 18 },
+            "step": null,
+            "back": false
+          }
+        ]
+      },
+      {
+        "id": "obs_containers",
+        "title": "Observability · containers",
+        "dynamic": false,
+        "bounds": { "x": 0, "y": 0, "width": 897, "height": 763 },
+        "nodes": [
+          {
+            "id": "observability.probes",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Synthetic probes",
+            "technology": "Synthetic Monitoring",
+            "description": "One HTTP check per public page or health route, from two Canadian locations, no added header, no secret.",
+            "compound": false,
+            "x": 0,
+            "y": 214,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "observability.rules",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Alert rules",
+            "technology": "Grafana Alerting",
+            "description": "Unreachable site, six engine measures, the bill. No data fires no alert.",
+            "compound": false,
+            "x": 0,
+            "y": 454,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "observability.surfaces",
+            "parent": null,
+            "kind": "app",
+            "shape": "browser",
+            "title": "Reading surfaces",
+            "technology": "Grafana dashboards",
+            "description": "Seen from outside, the engine pilot measures: one row per probe, a legend under it.",
+            "compound": false,
+            "x": 0,
+            "y": 574,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "observability.load",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Load tests",
+            "technology": "k6",
+            "description": "On dev only, thresholds taken from the SLOs.",
+            "compound": false,
+            "x": 0,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "devapps.engine",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Sovkora engine",
+            "technology": "Java, OpenTelemetry",
+            "description": "Exports its pilot measures: run start, ended runs, duration, stuck runs, tokens, cost.",
+            "compound": false,
+            "x": 0,
+            "y": 334,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "devapps.webhooks",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Payment webhooks",
+            "technology": "HTTPS",
+            "description": "Refuse an unsigned call: 400 is the healthy answer.",
+            "compound": false,
+            "x": 447,
+            "y": 240,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "sites",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Public sites",
+            "technology": null,
+            "description": "The company site, the blog, the library sites and the products sites.",
+            "compound": false,
+            "x": 447,
+            "y": 120,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "observability.contact",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Contact point",
+            "technology": "E-mail",
+            "description": "One for everything urgent, grouped by alert and check.",
+            "compound": false,
+            "x": 447,
+            "y": 480,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "observability.signals",
+            "parent": null,
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Logs and traces",
+            "technology": "Loki, Tempo",
+            "description": "Waiting for the shared redaction and the processor agreement.",
+            "compound": false,
+            "x": 447,
+            "y": 663,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "devapps.health",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Health routes",
+            "technology": "HTTPS",
+            "description": "One per web app: answers when the app and what it needs answer.",
+            "compound": false,
+            "x": 447,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "observability.metrics",
+            "parent": null,
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Metrics",
+            "technology": "Prometheus",
+            "description": "Probe results and the engine measures.",
+            "compound": false,
+            "x": 447,
+            "y": 360,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "owner",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "Founder",
+            "technology": null,
+            "description": "Sets the strategy and approves.",
+            "compound": false,
+            "x": 717,
+            "y": 555,
+            "width": 180,
+            "height": 100
+          }
+        ],
+        "edges": [
+          {
+            "id": "k2t0n8",
+            "source": "observability.probes",
+            "target": "observability.metrics",
+            "label": "success, duration, status, certificate",
+            "points": [
+              [180, 305],
+              [185, 307],
+              [190, 309],
+              [195, 311],
+              [293, 344],
+              [324, 330],
+              [423, 362],
+              [427, 363],
+              [432, 365],
+              [436, 367]
+            ],
+            "labelBBox": { "x": 196, "y": 289, "width": 226, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "e0m680",
+            "source": "observability.rules",
+            "target": "observability.metrics",
+            "label": "evaluates",
+            "points": [
+              [180, 462],
+              [185, 460],
+              [190, 458],
+              [195, 457],
+              [293, 430],
+              [322, 446],
+              [423, 431],
+              [427, 430],
+              [431, 429],
+              [436, 429]
+            ],
+            "labelBBox": { "x": 277, "y": 409, "width": 64, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1w0zncr",
+            "source": "observability.surfaces",
+            "target": "observability.metrics",
+            "label": "reads",
+            "points": [
+              [172, 574],
+              [175, 571],
+              [178, 568],
+              [180, 564],
+              [196, 542],
+              [174, 523],
+              [195, 505],
+              [234, 472],
+              [377, 506],
+              [423, 485],
+              [431, 481],
+              [430, 476],
+              [438, 470],
+              [440, 468],
+              [443, 466],
+              [446, 464]
+            ],
+            "labelBBox": { "x": 289, "y": 463, "width": 39, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "k686qf",
+            "source": "observability.rules",
+            "target": "observability.contact",
+            "label": "severity page",
+            "points": [
+              [180, 527],
+              [185, 527],
+              [190, 528],
+              [195, 529],
+              [276, 538],
+              [368, 538],
+              [437, 536]
+            ],
+            "labelBBox": { "x": 265, "y": 507, "width": 87, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "25zv9d",
+            "source": "observability.surfaces",
+            "target": "observability.signals",
+            "label": "will read, once they arrive",
+            "points": [
+              [180, 658],
+              [185, 659],
+              [190, 661],
+              [195, 662],
+              [275, 682],
+              [367, 695],
+              [436, 703]
+            ],
+            "labelBBox": { "x": 228, "y": 640, "width": 163, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1xvofyv",
+            "source": "observability.probes",
+            "target": "devapps.health",
+            "label": "GET",
+            "points": [
+              [135, 214],
+              [153, 197],
+              [173, 179],
+              [195, 166],
+              [236, 141],
+              [352, 104],
+              [437, 79]
+            ],
+            "labelBBox": { "x": 292, "y": 62, "width": 33, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "cuytzf",
+            "source": "observability.probes",
+            "target": "devapps.webhooks",
+            "label": "unsigned POST, expects 400",
+            "points": [
+              [180, 269],
+              [254, 274],
+              [360, 280],
+              [437, 284]
+            ],
+            "labelBBox": { "x": 216, "y": 248, "width": 186, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "12n3snc",
+            "source": "observability.load",
+            "target": "devapps.health",
+            "label": "gentle load, dev only",
+            "points": [
+              [180, 50],
+              [254, 50],
+              [360, 50],
+              [437, 50]
+            ],
+            "labelBBox": { "x": 243, "y": 28, "width": 132, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "yc8iwb",
+            "source": "devapps.engine",
+            "target": "observability.metrics",
+            "label": "OTLP, no tenant label",
+            "points": [
+              [180, 389],
+              [254, 394],
+              [359, 400],
+              [436, 404]
+            ],
+            "labelBBox": { "x": 239, "y": 368, "width": 140, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "oxf2rc",
+            "source": "observability.probes",
+            "target": "sites",
+            "label": "GET, as a visitor would",
+            "points": [
+              [180, 245],
+              [185, 244],
+              [190, 243],
+              [195, 242],
+              [276, 225],
+              [369, 205],
+              [437, 191]
+            ],
+            "labelBBox": { "x": 235, "y": 172, "width": 148, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1ddvigo",
+            "source": "observability.contact",
+            "target": "owner",
+            "label": "e-mails",
+            "points": [
+              [627, 555],
+              [653, 562],
+              [681, 570],
+              [707, 577]
+            ],
+            "labelBBox": { "x": 652, "y": 541, "width": 49, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "k60bry",
+            "source": "observability.surfaces",
+            "target": "owner",
+            "label": "shows the sites and the engine",
+            "points": [
+              [180, 623],
+              [288, 621],
+              [475, 618],
+              [636, 613],
+              [659, 612],
+              [684, 611],
+              [707, 610]
+            ],
+            "labelBBox": { "x": 439, "y": 591, "width": 196, "height": 18 },
+            "step": null,
+            "back": false
+          }
+        ]
+      }
+    ],
+    "fr": [
+      {
+        "id": "obs_context",
+        "title": "Ce que nous surveillons · contexte",
+        "dynamic": false,
+        "bounds": { "x": 0, "y": 0, "width": 943, "height": 866 },
+        "nodes": [
+          {
+            "id": "visitor",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "Visiteur",
+            "technology": null,
+            "description": "Lit le site de l'entreprise, le blog et les sites des bibliothèques.",
+            "compound": false,
+            "x": 49,
+            "y": 603,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "platform",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Plateforme Krizaka",
+            "technology": null,
+            "description": "Comment l'organisation travaille : la CI et les standards partagés, l'infrastructure en code, les gabarits.",
+            "compound": true,
+            "x": 8,
+            "y": 8,
+            "width": 244,
+            "height": 185
+          },
+          {
+            "id": "platform.infra",
+            "parent": "platform",
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Infrastructure en code",
+            "technology": "OpenTofu",
+            "description": "Une pile OpenTofu pour chaque environnement (ADR-023).",
+            "compound": false,
+            "x": 40,
+            "y": 61,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "cloud",
+            "parent": null,
+            "kind": "external",
+            "shape": "rectangle",
+            "title": "Hébergement cloud",
+            "technology": null,
+            "description": "L'hébergement des applications et des sites statiques, les bases de données gérées.",
+            "compound": false,
+            "x": 321,
+            "y": 244,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "devapps",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Applications de dev",
+            "technology": null,
+            "description": "Les produits dans leur environnement de développement, chez le même hébergeur.",
+            "compound": false,
+            "x": 321,
+            "y": 424,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "observability",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Observabilité",
+            "technology": null,
+            "description": "Une pile Grafana hébergée dans une région canadienne : ce que reçoit un visiteur, ce que fait le moteur, qui est prévenu.",
+            "compound": false,
+            "x": 321,
+            "y": 603,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "sites",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Sites publics",
+            "technology": null,
+            "description": "Le site de l'entreprise, le blog, les sites des bibliothèques et ceux des produits.",
+            "compound": false,
+            "x": 185,
+            "y": 766,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "owner",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "Fondateur",
+            "technology": null,
+            "description": "Fixe la stratégie et valide.",
+            "compound": false,
+            "x": 649,
+            "y": 766,
+            "width": 180,
+            "height": 100
+          }
+        ],
+        "edges": [
+          {
+            "id": "35wj7i",
+            "source": "visitor",
+            "target": "sites",
+            "label": "lit",
+            "points": [
+              [176, 703],
+              [187, 717],
+              [199, 732],
+              [211, 746],
+              [214, 750],
+              [218, 754],
+              [222, 759]
+            ],
+            "labelBBox": { "x": 212, "y": 724, "width": 39, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "r1ad4i",
+            "source": "devapps",
+            "target": "observability",
+            "label": "OTLP, sans étiquette de client",
+            "points": [
+              [384, 523],
+              [382, 530],
+              [379, 537],
+              [378, 544],
+              [374, 561],
+              [374, 566],
+              [378, 583],
+              [379, 587],
+              [380, 590],
+              [381, 594]
+            ],
+            "labelBBox": { "x": 379, "y": 553, "width": 140, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "3q3aun",
+            "source": "observability",
+            "target": "sites",
+            "label": "sonde depuis l'extérieur",
+            "points": [
+              [344, 703],
+              [337, 710],
+              [330, 716],
+              [324, 723],
+              [316, 734],
+              [308, 746],
+              [301, 757]
+            ],
+            "labelBBox": { "x": 325, "y": 724, "width": 128, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "c2vesy",
+            "source": "observability",
+            "target": "devapps",
+            "label": "sonde depuis l'extérieur",
+            "points": [
+              [501, 610],
+              [510, 602],
+              [517, 593],
+              [523, 583],
+              [532, 568],
+              [532, 559],
+              [523, 544],
+              [519, 537],
+              [514, 530],
+              [508, 524]
+            ],
+            "labelBBox": { "x": 530, "y": 553, "width": 128, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "3t7so3",
+            "source": "cloud",
+            "target": "sites",
+            "label": "héberge",
+            "points": [
+              [359, 344],
+              [339, 366],
+              [318, 394],
+              [306, 424],
+              [261, 535],
+              [263, 677],
+              [269, 756]
+            ],
+            "labelBBox": { "x": 276, "y": 553, "width": 37, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1sp25fi",
+            "source": "cloud",
+            "target": "devapps",
+            "label": "héberge",
+            "points": [
+              [411, 344],
+              [411, 365],
+              [411, 391],
+              [411, 413]
+            ],
+            "labelBBox": { "x": 412, "y": 373, "width": 37, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1mcesvo",
+            "source": "platform.infra",
+            "target": "observability",
+            "label": "deux scripts à côté, plan puis apply : sondes, règles, tableaux",
+            "points": [
+              [104, 161],
+              [76, 220],
+              [39, 323],
+              [74, 404],
+              [118, 505],
+              [229, 574],
+              [312, 613]
+            ],
+            "labelBBox": { "x": 75, "y": 365, "width": 233, "height": 35 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "u9vvy0",
+            "source": "platform.infra",
+            "target": "cloud",
+            "label": "provisionne",
+            "points": [
+              [206, 161],
+              [243, 185],
+              [288, 214],
+              [326, 239]
+            ],
+            "labelBBox": { "x": 297, "y": 202, "width": 67, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "43w3jq",
+            "source": "observability",
+            "target": "owner",
+            "label": "envoie par courriel ce qui est urgent",
+            "points": [
+              [443, 703],
+              [456, 719],
+              [471, 735],
+              [489, 746],
+              [534, 775],
+              [591, 792],
+              [639, 802]
+            ],
+            "labelBBox": { "x": 490, "y": 724, "width": 140, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "41dzcq",
+            "source": "cloud",
+            "target": "owner",
+            "label": "envoie par courriel les alertes de déploiement, de domaine, de redémarrage et de mémoire",
+            "points": [
+              [482, 344],
+              [576, 415],
+              [738, 555],
+              [790, 723],
+              [794, 735],
+              [792, 746],
+              [788, 757]
+            ],
+            "labelBBox": { "x": 719, "y": 545, "width": 223, "height": 34 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "pis1ti",
+            "source": "owner",
+            "target": "observability",
+            "label": "lit les pages de lecture",
+            "points": [
+              [687, 766],
+              [667, 748],
+              [646, 730],
+              [634, 723],
+              [596, 702],
+              [551, 686],
+              [511, 676]
+            ],
+            "labelBBox": { "x": 664, "y": 724, "width": 119, "height": 18 },
+            "step": null,
+            "back": false
+          }
+        ]
+      },
+      {
+        "id": "obs_containers",
+        "title": "Observabilité · conteneurs",
+        "dynamic": false,
+        "bounds": { "x": 0, "y": 0, "width": 897, "height": 763 },
+        "nodes": [
+          {
+            "id": "observability.probes",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Sondes synthétiques",
+            "technology": "Synthetic Monitoring",
+            "description": "Une vérification HTTP par page publique ou route de santé, depuis deux emplacements canadiens, sans en-tête ajouté, sans secret.",
+            "compound": false,
+            "x": 0,
+            "y": 214,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "observability.rules",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Règles d'alerte",
+            "technology": "Grafana Alerting",
+            "description": "Site injoignable, six mesures du moteur, la facture. L'absence de données ne déclenche pas d'alerte.",
+            "compound": false,
+            "x": 0,
+            "y": 454,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "observability.surfaces",
+            "parent": null,
+            "kind": "app",
+            "shape": "browser",
+            "title": "Pages de lecture",
+            "technology": "Tableaux Grafana",
+            "description": "Vu de l'extérieur, les mesures du pilote du moteur : une ligne par sonde, une légende dessous.",
+            "compound": false,
+            "x": 0,
+            "y": 574,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "observability.load",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Tests de charge",
+            "technology": "k6",
+            "description": "Sur le dev seulement, seuils tirés des SLO.",
+            "compound": false,
+            "x": 0,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "devapps.engine",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Moteur Sovkora",
+            "technology": "Java, OpenTelemetry",
+            "description": "Exporte ses mesures de pilote : démarrage des runs, runs terminés, durée, runs bloqués, tokens, coût.",
+            "compound": false,
+            "x": 0,
+            "y": 334,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "devapps.webhooks",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Webhooks de paiement",
+            "technology": "HTTPS",
+            "description": "Refusent un appel non signé : 400 est la réponse saine.",
+            "compound": false,
+            "x": 447,
+            "y": 240,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "sites",
+            "parent": null,
+            "kind": "system",
+            "shape": "rectangle",
+            "title": "Sites publics",
+            "technology": null,
+            "description": "Le site de l'entreprise, le blog, les sites des bibliothèques et ceux des produits.",
+            "compound": false,
+            "x": 447,
+            "y": 120,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "observability.contact",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Point de contact",
+            "technology": "Courriel",
+            "description": "Un seul pour tout ce qui est urgent, groupé par alerte et par vérification.",
+            "compound": false,
+            "x": 447,
+            "y": 480,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "observability.signals",
+            "parent": null,
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Journaux et traces",
+            "technology": "Loki, Tempo",
+            "description": "En attente du masquage commun et de l'entente de sous-traitance.",
+            "compound": false,
+            "x": 447,
+            "y": 663,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "devapps.health",
+            "parent": null,
+            "kind": "container",
+            "shape": "rectangle",
+            "title": "Routes de santé",
+            "technology": "HTTPS",
+            "description": "Une par application web : répond quand l'application et ce dont elle dépend répondent.",
+            "compound": false,
+            "x": 447,
+            "y": 0,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "observability.metrics",
+            "parent": null,
+            "kind": "datastore",
+            "shape": "storage",
+            "title": "Métriques",
+            "technology": "Prometheus",
+            "description": "Les résultats des sondes et les mesures du moteur.",
+            "compound": false,
+            "x": 447,
+            "y": 360,
+            "width": 180,
+            "height": 100
+          },
+          {
+            "id": "owner",
+            "parent": null,
+            "kind": "person",
+            "shape": "person",
+            "title": "Fondateur",
+            "technology": null,
+            "description": "Fixe la stratégie et valide.",
+            "compound": false,
+            "x": 717,
+            "y": 555,
+            "width": 180,
+            "height": 100
+          }
+        ],
+        "edges": [
+          {
+            "id": "k2t0n8",
+            "source": "observability.probes",
+            "target": "observability.metrics",
+            "label": "succès, durée, code, certificat",
+            "points": [
+              [180, 305],
+              [185, 307],
+              [190, 309],
+              [195, 311],
+              [293, 344],
+              [324, 330],
+              [423, 362],
+              [427, 363],
+              [432, 365],
+              [436, 367]
+            ],
+            "labelBBox": { "x": 196, "y": 289, "width": 226, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "e0m680",
+            "source": "observability.rules",
+            "target": "observability.metrics",
+            "label": "évalue",
+            "points": [
+              [180, 462],
+              [185, 460],
+              [190, 458],
+              [195, 457],
+              [293, 430],
+              [322, 446],
+              [423, 431],
+              [427, 430],
+              [431, 429],
+              [436, 429]
+            ],
+            "labelBBox": { "x": 277, "y": 409, "width": 64, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1w0zncr",
+            "source": "observability.surfaces",
+            "target": "observability.metrics",
+            "label": "lit",
+            "points": [
+              [172, 574],
+              [175, 571],
+              [178, 568],
+              [180, 564],
+              [196, 542],
+              [174, 523],
+              [195, 505],
+              [234, 472],
+              [377, 506],
+              [423, 485],
+              [431, 481],
+              [430, 476],
+              [438, 470],
+              [440, 468],
+              [443, 466],
+              [446, 464]
+            ],
+            "labelBBox": { "x": 289, "y": 463, "width": 39, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "k686qf",
+            "source": "observability.rules",
+            "target": "observability.contact",
+            "label": "sévérité page",
+            "points": [
+              [180, 527],
+              [185, 527],
+              [190, 528],
+              [195, 529],
+              [276, 538],
+              [368, 538],
+              [437, 536]
+            ],
+            "labelBBox": { "x": 265, "y": 507, "width": 87, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "25zv9d",
+            "source": "observability.surfaces",
+            "target": "observability.signals",
+            "label": "lira, quand ils arriveront",
+            "points": [
+              [180, 658],
+              [185, 659],
+              [190, 661],
+              [195, 662],
+              [275, 682],
+              [367, 695],
+              [436, 703]
+            ],
+            "labelBBox": { "x": 228, "y": 640, "width": 163, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1xvofyv",
+            "source": "observability.probes",
+            "target": "devapps.health",
+            "label": "GET",
+            "points": [
+              [135, 214],
+              [153, 197],
+              [173, 179],
+              [195, 166],
+              [236, 141],
+              [352, 104],
+              [437, 79]
+            ],
+            "labelBBox": { "x": 292, "y": 62, "width": 33, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "cuytzf",
+            "source": "observability.probes",
+            "target": "devapps.webhooks",
+            "label": "POST non signé, attend 400",
+            "points": [
+              [180, 269],
+              [254, 274],
+              [360, 280],
+              [437, 284]
+            ],
+            "labelBBox": { "x": 216, "y": 248, "width": 186, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "12n3snc",
+            "source": "observability.load",
+            "target": "devapps.health",
+            "label": "charge douce, dev seulement",
+            "points": [
+              [180, 50],
+              [254, 50],
+              [360, 50],
+              [437, 50]
+            ],
+            "labelBBox": { "x": 243, "y": 28, "width": 132, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "yc8iwb",
+            "source": "devapps.engine",
+            "target": "observability.metrics",
+            "label": "OTLP, sans étiquette de client",
+            "points": [
+              [180, 389],
+              [254, 394],
+              [359, 400],
+              [436, 404]
+            ],
+            "labelBBox": { "x": 239, "y": 368, "width": 140, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "oxf2rc",
+            "source": "observability.probes",
+            "target": "sites",
+            "label": "GET, comme un visiteur",
+            "points": [
+              [180, 245],
+              [185, 244],
+              [190, 243],
+              [195, 242],
+              [276, 225],
+              [369, 205],
+              [437, 191]
+            ],
+            "labelBBox": { "x": 235, "y": 172, "width": 148, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "1ddvigo",
+            "source": "observability.contact",
+            "target": "owner",
+            "label": "envoie un courriel",
+            "points": [
+              [627, 555],
+              [653, 562],
+              [681, 570],
+              [707, 577]
+            ],
+            "labelBBox": { "x": 652, "y": 541, "width": 49, "height": 18 },
+            "step": null,
+            "back": false
+          },
+          {
+            "id": "k60bry",
+            "source": "observability.surfaces",
+            "target": "owner",
+            "label": "montre les sites et le moteur",
+            "points": [
+              [180, 623],
+              [288, 621],
+              [475, 618],
+              [636, 613],
+              [659, 612],
+              [684, 611],
+              [707, 610]
+            ],
+            "labelBBox": { "x": 439, "y": 591, "width": 196, "height": 18 },
+            "step": null,
+            "back": false
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,116 @@
+// What we watch and who is told, for the post « what-grafana-sees-from-outside » (krizaka-internal#4165). Written against
+// the org's base (krizaka/.github docs/architecture: specification.c4, org.c4): it uses the org's people, the cloud hosting
+// and the platform's infrastructure as code, and declares at the level of the post the sites, the dev apps and the
+// observability stack. Nothing sensitive: no host, address, account, stack, threshold or path. Checked and laid out by
+// `node scripts/gen-architecture.mjs --base <krizaka/.github checkout>/docs/architecture`.
+model {
+  // The founder as this post needs him: his role only. The org's description says how pull requests are approved, which a
+  // public page has no reason to tell; this person stands for the org's founder in the two views below.
+  owner = person 'Founder' {
+    description 'Sets the strategy and approves.'
+  }
+  sites = system 'Public sites' {
+    description 'The company site, the blog, the library sites and the products sites.'
+  }
+  devapps = system 'Dev apps' {
+    description 'The products in their development environment, on the same host.'
+    health = container 'Health routes' {
+      description 'One per web app: answers when the app and what it needs answer.'
+      technology 'HTTPS'
+    }
+    webhooks = container 'Payment webhooks' {
+      description 'Refuse an unsigned call: 400 is the healthy answer.'
+      technology 'HTTPS'
+    }
+    engine = container 'Sovkora engine' {
+      description 'Exports its pilot measures: run start, ended runs, duration, stuck runs, tokens, cost.'
+      technology 'Java, OpenTelemetry'
+    }
+  }
+  observability = system 'Observability' {
+    description 'A hosted Grafana stack in a Canadian region: what a visitor gets, what the engine does, who is told.'
+    probes = container 'Synthetic probes' {
+      description 'One HTTP check per public page or health route, from two Canadian locations, no added header, no secret.'
+      technology 'Synthetic Monitoring'
+    }
+    metrics = datastore 'Metrics' {
+      description 'Probe results and the engine measures.'
+      technology 'Prometheus'
+    }
+    rules = container 'Alert rules' {
+      description 'Unreachable site, six engine measures, the bill. No data fires no alert.'
+      technology 'Grafana Alerting'
+    }
+    contact = container 'Contact point' {
+      description 'One for everything urgent, grouped by alert and check.'
+      technology 'E-mail'
+    }
+    surfaces = app 'Reading surfaces' {
+      description 'Seen from outside, the engine pilot measures: one row per probe, a legend under it.'
+      technology 'Grafana dashboards'
+    }
+    signals = datastore 'Logs and traces' {
+      #planned
+      description 'Waiting for the shared redaction and the processor agreement.'
+      technology 'Loki, Tempo'
+      metadata {
+        adr 'ADR-028'
+      }
+    }
+    load = container 'Load tests' {
+      #planned
+      description 'On dev only, thresholds taken from the SLOs.'
+      technology 'k6'
+      metadata {
+        adr 'ADR-028'
+      }
+    }
+  }
+
+  visitor -> sites 'reads'
+  cloud -> sites 'hosts'
+  cloud -> devapps 'hosts'
+  cloud -> owner 'e-mails deploy, domain, restart and memory alerts'
+  platform.infra -> observability 'two scripts beside it, plan then apply: probes, rules, dashboards'
+  observability -> sites 'probes from outside'
+  observability -> devapps 'probes from outside'
+  observability -> owner 'e-mails what is urgent'
+  owner -> observability 'reads the surfaces'
+
+  observability.probes -> sites 'GET, as a visitor would'
+  observability.probes -> devapps.health 'GET'
+  observability.probes -> devapps.webhooks 'unsigned POST, expects 400'
+  observability.probes -> observability.metrics 'success, duration, status, certificate'
+  devapps.engine -> observability.metrics 'OTLP, no tenant label'
+  observability.rules -> observability.metrics 'evaluates'
+  observability.rules -> observability.contact 'severity page'
+  observability.contact -> owner 'e-mails'
+  observability.surfaces -> observability.metrics 'reads'
+  observability.surfaces -> owner 'shows the sites and the engine'
+  observability.surfaces -> observability.signals 'will read, once they arrive'
+  observability.load -> devapps.health 'gentle load, dev only'
+}
+
+views {
+  view obs_context {
+    title 'What we watch · context'
+    include visitor, sites, devapps, observability, cloud, platform.infra
+    include owner
+    style * {
+      size xsmall
+    }
+    autoLayout TopBottom 40 30
+  }
+
+  view obs_containers of observability {
+    title 'Observability · containers'
+    include observability.*, devapps.*, sites
+    include owner
+    // the hosting and the infrastructure as code are drawn in the context view; here they would widen the view past a page.
+    // Left to right, with the surfaces showing the founder what they read: the view stays as wide as the text column.
+    style * {
+      size xsmall
+    }
+    autoLayout LeftRight 30 20
+  }
+}

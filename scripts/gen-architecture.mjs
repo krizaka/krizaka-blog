@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /* The architecture diagrams of a post, from a checked model (krizaka-internal#3643).
 
-     node scripts/gen-architecture.mjs --base <dir>   check the model with `layoutViews` of @krizaka/architecture against the org's base
+     node scripts/gen-architecture.mjs --base <dir> [--only <model>]
+                                                     check the model with `layoutViews` of @krizaka/architecture against the org's base
                                                      (<dir> = krizaka/.github docs/architecture: specification.c4, org.c4),
                                                      lay it out, write lib/architecture.json
      node scripts/gen-architecture.mjs check          the layout was made from the model and the translations as they are now
@@ -32,6 +33,13 @@ export const MODELS = [
     out: "lib/architecture-design-choices.json",
     system: null,
     views: ["org_context", "org_containers"],
+  },
+  {
+    model: "content/diagrams/observability.c4",
+    translations: "content/diagrams/observability.fr.json",
+    out: "lib/architecture-observability.json",
+    system: null,
+    views: ["obs_context", "obs_containers"],
   },
 ];
 export const BASE_FILES = ["specification.c4", "org.c4"];
@@ -87,10 +95,21 @@ export function staleProblems(data, sources, entry = MODELS[0]) {
   return out;
 }
 
+/** The models a run lays out: every one, or only the one `--only <model>` names (a new post's model can be laid out while an
+    older model waits for its own update against a newer base). An unknown model is refused. */
+export function modelsOf(argv) {
+  const only = flag(argv, "--only");
+  if (only === null) return MODELS;
+  const picked = MODELS.filter((entry) => entry.model === only);
+  if (picked.length === 0)
+    throw new Error(`--only ${only}: not a model of MODELS (${MODELS.map((e) => e.model).join(", ")})`);
+  return picked;
+}
+
 async function generate(argv) {
   const baseDir = resolve(flag(argv, "--base"));
   const base = BASE_FILES.map((name) => ({ path: name, text: readFileSync(join(baseDir, name), "utf8") }));
-  for (const entry of MODELS) await generateOne(entry, base);
+  for (const entry of modelsOf(argv)) await generateOne(entry, base);
 }
 
 async function generateOne(entry, base) {
@@ -163,7 +182,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   if (argv[0] === "check") check();
   else if (flag(argv, "--base")) await generate(argv);
   else {
-    console.error("usage: gen-architecture.mjs --base <krizaka/.github docs/architecture> | check");
+    console.error("usage: gen-architecture.mjs --base <krizaka/.github docs/architecture> [--only <model>] | check");
     process.exit(2);
   }
 }
