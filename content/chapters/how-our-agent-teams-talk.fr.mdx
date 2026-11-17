@@ -4,6 +4,7 @@ description: "Le chat du CTO, les sessions sans écran, le train, la base d'opé
 seoTitle: "Comment nos équipes d'agents se parlent, pièce par pièce"
 seoDescription: "Sessions sans écran, train, base d'opérations, hooks avant et après chaque commande, vie d'un ticket, et quatre audits en un jour avec leurs chiffres."
 date: 2026-11-13
+updated: 2026-11-16
 tags: [ai, integration, measurements]
 author: oussama
 draft: false
@@ -187,6 +188,14 @@ Le chat du CTO n'est pas éternel. Une conversation longue devient chère et se 
 « Bonjour Mouloud » ouvre la suivante, toujours dans le même ordre : lire la note en entier, traiter chaque alerte ouverte avant tout nouveau travail, vérifier l'environnement des équipes, puis relancer ce qui était en vol. Une équipe interrompue repart en lancement neuf, jamais en reprise d'une vieille session. Chaque lancement part avec son guetteur, dans le même tour.
 
 Cette boucle aussi avait un trou. Je le raconte avec le troisième audit.
+
+## Dans l'IDE
+
+Le journal des agents se lit là où on code. Dans l'éditeur, je lance une tâche, et chaque message et chaque outil d'une équipe défilent en mots simples, à côté du code qu'elle touche. D'autres tâches suivent les trains, les refus des gardes, les alertes et ce que coûte chaque session. Le principe tient en une phrase : un agent qu'on ne peut pas relire est un agent à qui on ne peut pas faire confiance, et la revue commence avant la pull request. Les deux figures sont une simulation du concept, pas notre code : les tâches, le ticket, la PR et les heures sont inventés. Krizaka Agents est notre propre technologie, et elle n'est pas à vendre.
+
+<Figure id="agents-ide-tasks-fr" alt="Simulation dessinée à l'encre sur papier Seyès : le menu « Choisir la tâche à lancer » de l'éditeur, avec sept tâches. Équipe, journal lisible (la plus récente) ; Trains, file de merge ; Gardes, refus du jour ; Alertes, avec propriétaire ; Coûts, par session ; Revue, PR en attente d'un humain ; Rejouer, session d'hier. Une note à la plume dans la marge : un clic, ça défile." caption="Simulation. Le menu des tâches de l'éditeur : une tâche par question, de l'équipe qui travaille à la session d'hier qu'on rejoue." />
+
+<Figure id="agents-ide-log-fr" alt="Simulation dessinée à l'encre sur papier Seyès : le journal lisible d'une équipe dans un terminal. 09:02 coord vers équipe : ticket 412, et lui seul. 09:03 agent dit : je lis les règles avant d'écrire. 09:07 agent outil : tests, 41 verts. 09:11 garde, refus avant push : secret dans le diff, entouré en rouge avec « ouf ! » dans la marge. 09:12 agent dit : corrigé, je relance. 09:15 PR 87 ouverte, preuve jointe. 09:24 train : 87 embarque, wagon 2 sur 3. 09:31 train : fusionné. 09:32 alerte : build lent, propriétaire plateforme. 09:33 session close : 31 minutes, 58 tours, coût noté." caption="Simulation. Le journal lisible d'une équipe : la consigne, les messages, les outils, le refus d'une garde avant le push, la PR, le train, l'alerte et la fin de la session." />
 
 ## Quatre audits en une journée
 

@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "29a288de0171",
+      "source": "10b6e188884d",
       "files": {
         "epub": {
-          "hash": "6346b96383",
-          "bytes": 8677011
+          "hash": "4005bf8e69",
+          "bytes": 9022156
         },
         "pdf": {
-          "hash": "6cc0e77f1d",
-          "bytes": 13038966
+          "hash": "cbc2b7db19",
+          "bytes": 13452714
         }
       }
     },
@@ -287,15 +287,15 @@
       }
     },
     "fr/story": {
-      "source": "164f80e9954b",
+      "source": "4a21b151f984",
       "files": {
         "epub": {
-          "hash": "09a4786c21",
-          "bytes": 8714090
+          "hash": "8ae069ef59",
+          "bytes": 9085458
         },
         "pdf": {
-          "hash": "79f5ba63f7",
-          "bytes": 13249435
+          "hash": "bc855f36a4",
+          "bytes": 13690689
         }
       }
     },
@@ -742,15 +742,15 @@
       }
     },
     "en/how-our-agent-teams-talk": {
-      "source": "027caf145843",
+      "source": "831d7946d26f",
       "files": {
         "epub": {
-          "hash": "ec69a6208b",
-          "bytes": 754094
+          "hash": "d7beacc726",
+          "bytes": 1099242
         },
         "pdf": {
-          "hash": "994286d984",
-          "bytes": 1099171
+          "hash": "b539677ad0",
+          "bytes": 1513898
         }
       }
     },
@@ -768,15 +768,15 @@
       }
     },
     "fr/how-our-agent-teams-talk": {
-      "source": "a8444de9c5e8",
+      "source": "57b70c9bd040",
       "files": {
         "epub": {
-          "hash": "403f0d7640",
-          "bytes": 767698
+          "hash": "3e2afde18a",
+          "bytes": 1139069
         },
         "pdf": {
-          "hash": "c047c5be57",
-          "bytes": 1131019
+          "hash": "404571c459",
+          "bytes": 1573615
         }
       }
     },
