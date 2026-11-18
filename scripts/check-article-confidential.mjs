@@ -39,7 +39,7 @@ export const ARTICLE_FILES = [
 /** The message subtrees the figures draw their words from (scanned as text). */
 export const FIGURE_MESSAGE_KEYS = ["train", "board", "mouloud", "cockpitTour", "c4Zoom", "architecture"];
 
-const privateRepoLink = new RegExp(`github\\.com/krizaka/(${PRIVATE_REPOS.join("|")})\\b`);
+const privateRepoLink = new RegExp(String.raw`github\.com/krizaka/(${PRIVATE_REPOS.join("|")})\b`);
 
 /** A real pull-request or issue reference: `#1234`, `PR 1234`, `issue 1234`, or a `/pull/1234` URL. The simulation uses one
     or two digits (« PR 1 »), so three digits or more in this shape is a real number that must not reach a public figure. */
