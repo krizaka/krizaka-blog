@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@krizaka/config": "^0.10.0",
-    "@krizaka/email": "^1.2.2",
+    "@krizaka/email": "^1.2.3",
     "@krizaka/rate-limit": "0.2.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^26",
