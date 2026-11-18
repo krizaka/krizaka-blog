@@ -24,3 +24,25 @@ test("OfflineButton is the quiet link: ghost, small, bl-offline-quiet, keyboard 
   assert.match(b, /className="bl-offline-quiet"/);
   assert.doesNotMatch(b, /outline/);
 });
+
+// krizaka-internal#4181 (founder, 2026-11-18): the « Read offline » buttons floated between the scope's two lines and one wore a box.
+const css = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
+const rule = (selector) => {
+  const i = css.indexOf(`${selector} {`);
+  assert.ok(i >= 0, selector);
+  return css.slice(i, css.indexOf("}", i));
+};
+
+test("a scope puts its button on the group's last line (the EPUB · PDF line), not centred between the two", () => {
+  const r = rule(".bl-take-scope");
+  assert.match(r, /align-items:\s*last baseline/);
+  assert.doesNotMatch(r, /align-items:\s*center/);
+});
+
+test("the quiet link has no box in any state: no fill on hover, no 32 px height, ring only for the keyboard", () => {
+  const r = rule(".bl-offline-quiet");
+  assert.match(r, /height:\s*auto/);
+  assert.match(r, /background:\s*transparent/);
+  assert.match(css, /\.bl-offline-quiet:hover:not\(:disabled\)[^{]*\{[^}]*background:\s*transparent/s);
+  assert.match(css, /\.bl-offline-quiet:focus:not\(:focus-visible\)\s*\{[^}]*outline:\s*none[^}]*box-shadow:\s*none/s);
+});
