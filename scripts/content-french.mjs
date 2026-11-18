@@ -12,7 +12,7 @@ import { readFileSync } from "node:fs";
 export const FR_TERMS = JSON.parse(readFileSync(new URL("../content/glossary/fr-terms.json", import.meta.url), "utf8"));
 
 /** Letters of a French word, so a pattern only matches whole words (« invite » in « invités » does not count). */
-const LETTER = "\\p{L}\\p{N}_";
+const LETTER = String.raw`\p{L}\p{N}_`;
 const REFUSED = FR_TERMS.refuse.map(({ pattern, use }) => ({
   re: new RegExp(`(?<![${LETTER}])${pattern}(?![${LETTER}])`, "giu"),
   use,
