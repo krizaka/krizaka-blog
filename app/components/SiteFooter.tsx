@@ -15,8 +15,10 @@ const footer = footerFor("blog");
 
 export default function SiteFooter() {
   const { locale, t } = useI18n();
-  const own = (path: string) =>
-    /\.[a-z]+$/.test(path) ? `${locale === "en" ? "" : "/fr"}${path}` : localizedPath(locale, path);
+  const own = (path: string) => {
+    if (/\.[a-z]+$/.test(path)) return `${locale === "en" ? "" : "/fr"}${path}`; // a feed file: no trailing slash
+    return localizedPath(locale, path);
+  };
   const f = t.footer;
   return (
     <FamilyFooter
