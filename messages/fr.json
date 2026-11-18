@@ -13,31 +13,13 @@
     "language": "Langue"
   },
   "footer": {
-    "aria": "Pied de page",
-    "status": {
-      "design": "En conception",
-      "upcoming": "Bientôt",
-      "construction": "En construction",
-      "development": "En développement",
-      "paused": "En pause",
-      "devPreview": "Préversion dev"
-    },
-    "products": "Produits",
-    "openSourceColumn": "Open source",
-    "companyColumn": "Krizaka",
-    "services": "Nos services",
-    "companyStory": "Notre histoire",
-    "changelog": "Journal des changements",
-    "contact": "Nous joindre",
     "blogColumn": "Le blogue",
     "readStory": "L’histoire",
     "basics": "Les bases",
     "newsletter": "Infolettre",
     "rss": "RSS",
     "atom": "Atom",
-    "about": "À propos",
-    "privacy": "Confidentialité",
-    "terms": "Conditions"
+    "about": "À propos"
   },
   "home": {
     "eyebrow": "Blogue",
