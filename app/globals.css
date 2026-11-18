@@ -1814,13 +1814,34 @@ picture {
 .bl-take .bl-offline {
   margin: 0;
 }
+/* The ONE « Read offline » control (krizaka-internal#4181): the quiet link of the EPUB · PDF row — same size, weight and colour as
+   .bl-take-link, no box in any state (the ghost Button's hover fill and its 32 px height are what floated and boxed it). The keyboard
+   ring (:focus-visible, from the Button) stays; a mouse click leaves none. */
 .bl-offline-quiet {
+  height: auto;
+  min-height: 1.5rem;
+  padding-block: 0;
+  padding-inline: 0;
+  background: transparent;
+  color: var(--kz-text-primary);
+  font-size: inherit;
+  font-weight: 550;
   text-decoration: underline;
   text-decoration-color: var(--kz-border-strong);
   text-underline-offset: 4px;
 }
-.bl-offline-quiet:hover {
+.bl-offline-quiet:hover:not(:disabled),
+.bl-offline-quiet[aria-pressed="true"]:hover {
+  background: transparent;
+  color: var(--kz-accent-text);
   text-decoration-color: var(--kz-accent-text);
+}
+.bl-offline-quiet:disabled {
+  color: var(--kz-text-secondary);
+}
+.bl-offline-quiet:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
 }
 /* The chapter's ONE end block (krizaka-internal#2002): two scopes in plain text, each with its « Read offline » button and its EPUB · PDF links, « This chapter » and « The whole story · N chapters » (no drawn book, founder 2026-10-31). */
 .bl-take-line {
@@ -1845,7 +1866,9 @@ picture {
 .bl-take-scope {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  /* The button sits on the EPUB · PDF line, the group's last one (not centred between its two lines). */
+  align-items: flex-end;
+  align-items: last baseline;
   gap: 0.5rem 0.75rem;
 }
 .bl-take-group {
