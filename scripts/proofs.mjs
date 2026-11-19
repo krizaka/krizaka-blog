@@ -15,6 +15,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 export const PROOFS_DIR = "content/proofs";
 const SOURCES = join(PROOFS_DIR, "sources.json");
+// An absolute path, not a lookup in PATH: /usr/bin/git is where the CI runner and macOS both keep it (as newsletter-send.mjs).
+const GIT = "/usr/bin/git";
 
 export const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 
@@ -50,7 +52,7 @@ export function proofProblems(root = ROOT, sources = readSources(root)) {
 
 /** The source's bytes at its commit, read from a local checkout of its repository. */
 export const sourceBytes = (checkout, commit, path) =>
-  execFileSync("git", ["-C", checkout, "show", `${commit}:${path}`], { maxBuffer: 16 * 1024 * 1024 });
+  execFileSync(GIT, ["-C", checkout, "show", `${commit}:${path}`], { maxBuffer: 16 * 1024 * 1024 });
 
 function sync(id, args) {
   const arg = (name) => {
@@ -64,7 +66,7 @@ function sync(id, args) {
   if (!proof) throw new Error(`no proof ${id} in ${SOURCES}`);
   const path = arg("path") ?? proof.path;
   if (!path) throw new Error(`proof ${id} names no path yet: pass --path docs/proofs/…`);
-  const commit = execFileSync("git", ["-C", from, "rev-parse", arg("commit") ?? "origin/main"], {
+  const commit = execFileSync(GIT, ["-C", from, "rev-parse", arg("commit") ?? "origin/main"], {
     encoding: "utf8",
   }).trim();
   const bytes = sourceBytes(from, commit, path);
