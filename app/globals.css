@@ -2557,3 +2557,79 @@ picture {
     width: calc(100% + 16rem);
   }
 }
+
+/* A real run from its proof (RunProof.tsx, the story of two agent teams on the same files): the stamp above the console, the legend under it (icons of
+   @krizaka/icons with the log's own counts), the cases' table and the « in progress » line. Tokens only; both themes. */
+.bl-run {
+  margin-block: 2rem;
+  min-width: 0;
+}
+.bl-run-stamp {
+  margin: 0 0 0.5rem;
+}
+/* The log's lines are long: they wrap inside the screen instead of scrolling sideways (a phone reads them whole). */
+.bl-run .kz-replay-screen .whitespace-pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.bl-run-legend {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--kz-fg-secondary);
+}
+.bl-run-legend ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bl-run-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  line-height: 1.25;
+}
+.bl-run-count {
+  font-family: var(--kz-font-mono);
+  color: var(--kz-fg);
+}
+.bl-run-note {
+  margin: 0.5rem 0 0;
+}
+.bl-run-cases {
+  margin-block: 1.5rem;
+  overflow-x: auto;
+}
+.bl-run-cases table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+.bl-run-cases caption {
+  margin-bottom: 0.5rem;
+  text-align: start;
+  color: var(--kz-fg-secondary);
+  font-size: 0.875rem;
+}
+.bl-run-cases th,
+.bl-run-cases td {
+  padding: 0.5rem 0.625rem;
+  border-bottom: 1px solid var(--kz-border-subtle);
+  text-align: start;
+  vertical-align: top;
+}
+.bl-run-cases td {
+  font-family: var(--kz-font-mono);
+}
+.bl-run-stack {
+  display: block;
+  font-weight: 400;
+  font-size: 0.8125rem;
+  color: var(--kz-fg-secondary);
+}
+.bl-run-pending {
+  margin-block: 1rem;
+  color: var(--kz-fg-secondary);
+}

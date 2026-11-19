@@ -18,3 +18,7 @@ functions/packages
 
 # the chapters and posts are prose: their text is hashed into the books, and the lint (format:check) never covered MDX
 *.mdx
+
+# copies of the run proofs, byte for byte their source (scripts/proofs.mjs): formatting one would break its hash
+content/proofs/*.log.json
+content/proofs/*.cases.json

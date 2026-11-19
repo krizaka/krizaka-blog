@@ -1,0 +1,100 @@
+---
+title: "Deux équipes d'agents sur les mêmes fichiers : le chevauchement vu avant la collision"
+description: "Le 19 novembre, deux équipes d'agents ont modifié les mêmes cinq fichiers de Verikora. La porte l'a vu avant la seconde pull request, le train les a posées sans conflit. Puis une pull request empilée a échoué."
+seoTitle: "Deux équipes d'agents, mêmes fichiers : une exécution réelle"
+seoDescription: "Deux équipes d'agents sur cinq fichiers communs, un chevauchement vu avant la pull request, zéro conflit, puis un échec raconté tel quel et son correctif."
+date: 2026-11-20
+tags: [ai, integration, measurements]
+author: oussama
+draft: true
+sensitive: true
+newsletter: hold
+publishedAt: "2026-11-20T09:00:00-05:00"
+cover: console-39-two-agent-teams-on-the-same-files
+coverAlt: "La console de l'exécution réelle du 19 novembre, au repos sur 16 h 44 : sous le titre « verikora — the run's log (UTC) », les lignes horodatées où la porte voit la branche de l'équipe B partager cinq fichiers avec la pull request #889, puis l'équipe B ouvre la #890, et le train passe à la #890"
+chapter: 39
+period: "2026-11-19"
+sources:
+  - two-agent-teams-on-the-same-files
+versus:
+  faced: "deux équipes d'agents qui modifient les mêmes fichiers sans le savoir"
+  built: "une porte qui voit le chevauchement avant la pull request, un train qui fait atterrir l'une après l'autre"
+stats:
+  - value: "5"
+    label: "fichiers modifiés par les deux équipes en même temps"
+    section: "S1 : deux équipes, les mêmes fichiers"
+  - value: "0"
+    label: "conflit et poussée de reprise pour les deux premières pull requests"
+    section: "S1 : deux équipes, les mêmes fichiers"
+  - value: "1"
+    label: "fusion à la main pour la pull request empilée"
+    section: "S2 : la pull request empilée, et l'échec"
+---
+
+Il y a quelques jours, on a publié sur LinkedIn le journal lisible d'une équipe d'agents au travail. L'image portait une mention claire : c'est une simulation, on montre l'idée, pas notre code. Cette fois, ce n'est pas une simulation. C'est la même console, mais elle rejoue le journal d'une vraie exécution, le 19 novembre, sur Verikora, notre produit dont le code est public. Chaque pull request dont je parle ici s'ouvre et se vérifie par n'importe qui.
+
+La question de départ est simple. Quand plusieurs équipes d'agents travaillent en même temps sur le même produit, que se passe-t-il quand deux d'entre elles touchent au même fichier sans le savoir ? Chez les humains, on appelle ça marcher sur les pieds de l'autre : deux changements qui se percutent, un conflit à démêler, du travail à refaire. On a voulu voir, sur un cas réel et mesuré, si notre façon de faire l'évite.
+
+## L'idée, en grandes lignes
+
+Ça reste une technologie à nous, mais l'idée se partage en quatre phrases.
+
+Plusieurs équipes d'agents travaillent en même temps, chacune sur son ticket, sans se parler. Avant qu'une équipe ouvre sa pull request, une porte compare ses fichiers avec ceux des pull requests déjà ouvertes : si deux équipes touchent la même chose, elle le voit avant que ça se percute. Ensuite, un train fait atterrir les pull requests sur la branche principale, une par une, chacune sur la dernière version. Et quand une pull request repose sur une autre (on dit qu'elle est empilée), le train attend que la première atterrisse, puis rejoue la seconde par-dessus.
+
+Personne ne dit aux équipes de s'éviter. Le but est justement de voir si le système suffit.
+
+## Le 19 novembre, tel que le journal l'a écrit
+
+On a lancé deux équipes d'agents, séparément, sur deux vrais tickets de Verikora. L'équipe A corrigeait un libellé : un problème bloquant dans un dossier doit se lire « À corriger » partout, dans l'en-tête, la bibliothèque et l'accueil. L'équipe B corrigeait un envoi : une photo de téléphone de 24 mégapixels échouait sans raison. Deux sujets sans rapport, mais les deux touchaient le fichier du site qui décrit les documents, et les quatre fichiers de textes de l'interface. Personne ne l'avait prévu.
+
+La console ci-dessous rejoue le journal de l'exécution, ligne par ligne, à l'heure UTC. Il est produit par l'outil qui a observé l'exécution, et copié tel quel dans ce blogue.
+
+<RunConsole proof="overlap-live-2026-11-19-log" />
+
+## S1 : deux équipes, les mêmes fichiers
+
+À 16 h 38, l'équipe A ouvre sa pull request, [#889](repo:verikora/pull/889). Le train la prend en tête.
+
+À 16 h 44, l'équipe B s'apprête à ouvrir la sienne. Avant qu'elle existe, la porte compare : la branche de B partage 5 fichiers avec #889. Elle le note dans le journal. Comme les deux sont des correctifs, elle ne retient pas B : un correctif passe d'abord, c'est notre règle. Deux secondes plus tard, B ouvre [#890](repo:verikora/pull/890).
+
+À 16 h 49, la vérification de #889 est rouge, pour une raison à elle : une ligne de mise en forme et un vieux test qui encodait justement le bogue. Le train ne bloque pas la file pour autant : il passe à #890. L'équipe A corrige son rouge à 17 h 01, sans toucher aux fichiers de B.
+
+À 17 h 31, le train fait atterrir #890. À 17 h 52, #889 atterrit par-dessus. Résultat : 0 conflit avec la branche principale, 0 poussée de reprise, sur l'une comme sur l'autre. #890 est restée ouverte 47 minutes, #889 74 minutes.
+
+C'est ce qu'on voulait voir : le chevauchement repéré avant la seconde pull request, puis les deux posées l'une après l'autre sur les mêmes fichiers, sans que personne ait à refaire quoi que ce soit.
+
+## S2 : la pull request empilée, et l'échec
+
+Le second scénario était plus délicat. À 16 h 54, l'équipe A ouvre une deuxième pull request, [#891](repo:verikora/pull/891), pour la suite de son ticket. Elle a besoin du nouveau statut de #889, alors elle l'empile dessus. La porte l'enregistre : le train fera atterrir #891 après sa base.
+
+Sauf qu'entre-temps, #889 a bougé. À 17 h 01, l'équipe A y a poussé la correction de son rouge, et cette correction avait remis en forme un fichier de l'application mobile. #891 avait été empilée sur l'état d'avant.
+
+À 17 h 54, quand #889 a atterri, le train a voulu rejouer #891 par-dessus. Il a refusé : #891 n'était pas construite sur la dernière version de sa base, il n'avait donc rien à rejouer. #891 s'est retrouvée en conflit avec la branche principale, sur un fichier qu'elle n'avait jamais modifié. À 18 h 04, l'équipe A a dû fusionner la branche principale à la main pour la débloquer. #891 a fini par atterrir à 19 h 05, après une sortie de la merge queue qui n'était pas de son fait (la vérification mobile n'arrivait pas à décompresser le kit de développement Android qu'elle télécharge).
+
+Je le dis tel que c'est : S2 a échoué. Une fusion à la main, c'est exactement ce que le système doit éviter. On a arrêté l'exécution là, sans relancer le cas jusqu'à obtenir un succès.
+
+Voici les trois pull requests, avec leurs chiffres, lus dans le fichier de preuve de l'exécution :
+
+<RunCases proof="overlap-live-2026-11-19-cases" />
+
+## Le correctif
+
+La cause était précise. Le rejeu d'une pull request empilée ne couvrait qu'un cas : une pile construite sur la dernière version de sa base. Or le cas courant, c'est l'inverse : la base reçoit encore une poussée après l'empilement, parce qu'on corrige un rouge ou qu'on répond à une relecture. Ce cas-là n'était pas couvert.
+
+On a ouvert un ticket le jour même, avec une règle : le rejeu de S2 serait sa preuve. Le correctif a été fusionné à 20 h 01 UTC : une pull request empilée est maintenant rejouée même quand sa base a bougé après l'empilement.
+
+## La reprise de S2
+
+La reprise reproduit exactement l'échec, sur deux nouveaux tickets de Verikora. L'équipe A ouvre une pull request de base, [#893](repo:verikora/pull/893). Une équipe B empile la sienne dessus, [#894](repo:verikora/pull/894). Puis l'équipe A pousse encore un commit sur sa base avant qu'elle atterrisse : la base bouge après l'empilement, comme le 19 novembre. Ce qu'on attend : quand la base atterrit, le train rejoue la pile, et #894 atterrit sans conflit et sans fusion à la main.
+
+Les chiffres ci-dessous viennent du fichier de preuve de la reprise, dès qu'il existe :
+
+<RunCases proof="overlap-live-s2-rerun-cases" />
+
+## Ce que ça prouve, et ce que ça ne prouve pas
+
+Ce que ça prouve : le mécanisme, sur un cas. La porte voit le chevauchement entre deux équipes avant que la seconde pull request existe, et le train fait atterrir les deux sur les mêmes fichiers sans conflit ni reprise. Et quand une pile échoue, on le voit dans le journal, on sait pourquoi, et le correctif a sa propre preuve.
+
+Ce que ça ne prouve pas : un taux. Un cas ne borne rien. Avec 0 échec sur n cas, la borne haute à 95 % du taux d'échec vaut à peu près 3 divisé par n : avec 2 cas, ça ne dit rien d'utile, il en faudrait 10 pour descendre à 30 %. Dans S1, les deux équipes ont modifié des fonctions différentes du fichier partagé, donc git a fusionné tout seul ; le cas où deux équipes modifient les mêmes lignes n'est pas couvert ici. Et les deux pull requests de S1 étaient des correctifs, que la porte laisse passer : une nouvelle fonctionnalité aurait été retenue, puis regroupée ou empilée, et cette branche-là se mesure ailleurs.
+
+La mesure sur toute notre production, c'est l'étude de 14 jours qu'on relance sur tout ce que nos équipes ont fait, attendue le 3 décembre. C'est elle qui dira si les chevauchements nous coûtent encore du travail refait. D'ici là, je ne dis pas « nos équipes ne se marchent plus dessus ». Je dis : sur ce cas réel, on l'a vu venir, et on l'a évité.
