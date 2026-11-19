@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@krizaka/architecture": "^0.3.0",
-    "@krizaka/charts": "^1.0.2",
+    "@krizaka/charts": "^1.0.3",
     "@krizaka/fonts": "^0.5.4",
     "@krizaka/i18n": "^0.2.9",
     "@krizaka/icons": "^0.11.0",
