@@ -1,6 +1,6 @@
 // « Take the story with you » (krizaka-blog#225) and the covers of the image series (krizaka-blog#193).
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import test from "node:test";
 import matter from "gray-matter";
 
@@ -126,16 +126,22 @@ const OWN_COVERS = [
   "five-ergonomics-choices-on-our-real-screens",
 ];
 
-/* A chapter told from a real run wears the capture of its own console (`console-NN-<post>`) instead of a series render: the
-   founder asked that nothing of it be a simulation (krizaka-blog#405); its media entry says it is a capture, made by no model. */
-const CONSOLE_COVERS = ["two-agent-teams-on-the-same-files"];
-const isCapture = (made) =>
-  /^none: a screen capture/.test(made?.model ?? "") && made.costUsd === 0 && made.note?.length > 40;
+/* A cover drawn in code in the series' look (krizaka-internal#4502): no model, no cost, made by a script of this repository that the
+   entry names, seeded so it draws the same picture again. Chapter 39 first wore a capture of its console, which broke the series. */
+const DRAWN = { "series-39-two-agent-teams-on-the-same-files": "scripts/gen-junction-cover.mjs" };
+export const isDrawn = (id, made) =>
+  typeof DRAWN[id] === "string" &&
+  /^none: drawn in code/.test(made?.model ?? "") &&
+  made.costUsd === 0 &&
+  made.via === "local" &&
+  (made.engine ?? "").startsWith(`${DRAWN[id]}: hand-drawn ink and watercolor`) &&
+  /seed \d+/.test(made.engine) &&
+  made.note?.length > 40;
 
 test("every chapter of the series but the 10th wears its series cover, and each cover is a media entry sold in every size", () => {
   const picked = series.chapters.map((c, i) => {
     const n = String(i + 1).padStart(2, "0");
-    return { ...c, id: CONSOLE_COVERS.includes(c.post) ? `console-${n}-${c.post}` : `series-${n}-${c.post}` };
+    return { ...c, id: `series-${n}-${c.post}` };
   });
   for (const c of picked) {
     if (c.post === KEEPS || OWN_COVERS.includes(c.post)) continue;
@@ -154,18 +160,29 @@ test("every chapter of the series but the 10th wears its series cover, and each 
     );
     assert.ok(m.renditions.avif.length > 0 && m.renditions.webp.length > 0, `${c.id} has renditions`);
     for (const u of [...m.srcs, ...m.renditions.avif, ...m.renditions.webp]) assert.match(u.url, CDN_HOSTS);
-    if (CONSOLE_COVERS.includes(c.post))
-      assert.ok(isCapture(m.made), `${c.id} says it is a capture of the run's console`);
-    else assert.ok(coverProvenance(c.id, m.made), `${c.id} says how it was made`);
+    assert.ok(coverProvenance(c.id, m.made) || isDrawn(c.id, m.made), `${c.id} says how it was made`);
   }
 });
 
-test("a console cover is a capture: a generated picture or a series id there is refused", () => {
-  const made = media["console-39-two-agent-teams-on-the-same-files"].made;
-  assert.ok(isCapture(made));
-  assert.ok(!isCapture({ ...made, model: "FLUX.2 [klein] 4B" }), "a model made it");
-  assert.ok(!isCapture({ ...made, costUsd: 0.02 }), "it cost a run");
-  assert.ok(!isCapture({ ...made, note: "" }), "it does not say what it shows");
+test("a cover drawn in code names its script, its seed, and that no model or money made it", () => {
+  const id = "series-39-two-agent-teams-on-the-same-files";
+  const made = media[id].made;
+  assert.ok(isDrawn(id, made));
+  assert.ok(existsSync(new URL(`../${made.engine.split(":")[0]}`, import.meta.url)), "the script is in the repository");
+  assert.ok(!isDrawn("series-40-unlisted", made), "an unlisted id");
+  assert.ok(!isDrawn(id, { ...made, model: "FLUX.2 [klein] 4B" }), "a model made it");
+  assert.ok(!isDrawn(id, { ...made, costUsd: 0.02 }), "it cost a run");
+  assert.ok(!isDrawn(id, { ...made, engine: made.engine.replace(/seed \d+/, "") }), "no seed");
+  assert.ok(!isDrawn(id, { ...made, note: "" }), "it does not say what it shows");
+});
+
+test("the chapter 39 cover is not the console capture any more (it broke the series)", () => {
+  for (const l of ["en", "fr"])
+    assert.equal(
+      matter(read(`content/chapters/two-agent-teams-on-the-same-files.${l}.mdx`)).data.cover,
+      "series-39-two-agent-teams-on-the-same-files",
+    );
+  assert.ok(!("console-39-two-agent-teams-on-the-same-files" in media));
 });
 
 test("chapter 10 keeps its current cover", () => {
