@@ -586,5 +586,57 @@
     "elements": "Éléments",
     "relations": "Relations",
     "steps": "Étapes, dans l'ordre"
+  },
+  "runProof": {
+    "stamp": "exécution réelle, 2026-11-19",
+    "title": "verikora — le journal de l’exécution (heure UTC)",
+    "label": "Console : le journal de l’exécution réelle du 19 novembre 2026, rejoué ligne par ligne",
+    "play": "Lire le journal",
+    "pause": "Mettre en pause",
+    "replay": "Rejouer le journal",
+    "note": "Les lignes sont celles du journal, telles que l’outil les a écrites, en anglais. Trois retouches seulement : nos noms d’outils internes sont dits en mots publics, une branche s’appelle « the branch », et le coût d’une session est retiré.",
+    "legend": "Ce que contient le journal, par type de ligne",
+    "segments": {
+      "start": "deux équipes démarrent, chacune son ticket",
+      "overlap": "la porte voit le chevauchement",
+      "stack": "une pull request empilée sur la première",
+      "land": "le train fait atterrir les deux premières",
+      "conflict": "l’empilée rencontre un conflit"
+    },
+    "kinds": {
+      "session": "session d’équipe",
+      "guard": "garde",
+      "tool": "commit",
+      "pr": "pull request ouverte",
+      "train": "train",
+      "overlap": "chevauchement vu",
+      "alert": "alerte",
+      "push": "poussée",
+      "merged": "fusion",
+      "conflict": "conflit"
+    },
+    "cases": {
+      "caption": "Chaque pull request, depuis le fichier de preuve de l’exécution",
+      "pendingBadge": "en cours",
+      "pending": "l’exécution n’est pas terminée ; ses chiffres viendront de son fichier de preuve.",
+      "columns": {
+        "pr": "pull request",
+        "team": "équipe",
+        "conflicts": "conflits",
+        "rework": "poussées de reprise",
+        "minutes": "minutes, de l’ouverture à la fusion",
+        "verdict": "verdict"
+      },
+      "teams": {
+        "team A": "équipe A",
+        "team B": "équipe B"
+      },
+      "verdicts": {
+        "pass": "réussi",
+        "replayed": "réussi, rejoué par le train",
+        "fail": "échoué"
+      },
+      "stackedOn": "empilée sur {pr}"
+    }
   }
 }

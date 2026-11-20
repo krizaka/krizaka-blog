@@ -1,0 +1,29 @@
+{
+  "about": "The run proofs the story shows, copied byte for byte from their source by `node scripts/proofs.mjs sync <id> --from <checkout>`, never typed. A proof without a commit is a run that is not over: the chapter says « en cours » until it is synced.",
+  "proofs": [
+    {
+      "id": "overlap-live-2026-11-19-log",
+      "repo": "krizaka-agents",
+      "path": "docs/proofs/overlap-live-2026-11-19.log.json",
+      "commit": "fc0fa38db9e6ecc3c8a73e26278eef28fe06c792",
+      "file": "overlap-live-2026-11-19.log.json",
+      "sha256": "dff7a3b2c07b0b6acc5f3124dd750b3d2611eb76b2954809bedfda3741b39646"
+    },
+    {
+      "id": "overlap-live-2026-11-19-cases",
+      "repo": "krizaka-agents",
+      "path": "docs/proofs/overlap-live-2026-11-19.cases.json",
+      "commit": "fc0fa38db9e6ecc3c8a73e26278eef28fe06c792",
+      "file": "overlap-live-2026-11-19.cases.json",
+      "sha256": "788187749db232942fe2169d05beff5d4eaa3cbb005ea624a5649cb2ac601040"
+    },
+    {
+      "id": "overlap-live-s2-rerun-cases",
+      "repo": "krizaka-agents",
+      "path": "docs/proofs/overlap-live-s2-rerun.cases.json",
+      "commit": "fc0fa38db9e6ecc3c8a73e26278eef28fe06c792",
+      "file": "overlap-live-s2-rerun.cases.json",
+      "sha256": "52a3059f90e2afe63988bd5104c8d6bc18c9e01f34ba0be6e408de761297d127"
+    }
+  ]
+}

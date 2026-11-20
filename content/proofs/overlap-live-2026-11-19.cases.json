@@ -1,0 +1,71 @@
+[
+ {
+  "pr": 889,
+  "url": "https://github.com/krizaka/verikora/pull/889",
+  "team": "team A",
+  "title": "fix(report): a blocking finding reads « À corriger » on the header, the library and the home",
+  "opened": "2026-11-19T16:38:03Z",
+  "merged": "2026-11-19T17:52:32Z",
+  "minutes": 74,
+  "conflicts": 0,
+  "pushes_after_open": 1,
+  "rework_pushes": 0,
+  "force_pushes": 0,
+  "update_merges": 0,
+  "shared": [
+   "apps/web/lib/documents.ts",
+   "apps/web/messages/console/en.json",
+   "apps/web/messages/console/fr.json",
+   "apps/web/messages/en.json",
+   "apps/web/messages/fr.json"
+  ],
+  "gate": null,
+  "stacked_on": null,
+  "replayed": false,
+  "verdict": "pass"
+ },
+ {
+  "pr": 890,
+  "url": "https://github.com/krizaka/verikora/pull/890",
+  "team": "team B",
+  "title": "fix(upload): a large phone photo is accepted within the upload's time, never a 504 with no reason",
+  "opened": "2026-11-19T16:44:40Z",
+  "merged": "2026-11-19T17:31:26Z",
+  "minutes": 47,
+  "conflicts": 0,
+  "pushes_after_open": 0,
+  "rework_pushes": 0,
+  "force_pushes": 0,
+  "update_merges": 0,
+  "shared": [
+   "apps/web/lib/documents.ts",
+   "apps/web/messages/console/en.json",
+   "apps/web/messages/console/fr.json",
+   "apps/web/messages/en.json",
+   "apps/web/messages/fr.json"
+  ],
+  "gate": "overlap-noted",
+  "stacked_on": null,
+  "replayed": false,
+  "verdict": "pass"
+ },
+ {
+  "pr": 891,
+  "url": "https://github.com/krizaka/verikora/pull/891",
+  "team": "team A",
+  "title": "fix(report): the home's binders read « À corriger » for a blocking finding",
+  "opened": "2026-11-19T16:54:44Z",
+  "merged": "2026-11-19T19:05:56Z",
+  "minutes": 131,
+  "conflicts": 1,
+  "pushes_after_open": 1,
+  "rework_pushes": 1,
+  "force_pushes": 0,
+  "update_merges": 1,
+  "shared": [],
+  "gate": null,
+  "stacked_on": 889,
+  "replayed": false,
+  "verdict": "fail"
+ }
+]

@@ -251,6 +251,12 @@
       "seed": 3817,
       "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
       "beat": "Not rendered by the series' renderer: drawn as its own text-to-image picture with the media worker's engine (mflux, FLUX.2 [klein] 4B) in the series' ink-and-watercolor look (prompt and seed in lib/media.json). The mail room of the station of chapters 23 to 36 at dusk: a wooden rack of pigeonholes, one sealed envelope in each, in rows by the hour, a few with an orange tag; a mail train waiting at the platform outside; the pigeon, the messenger of the five birds, on the counter by a small bell."
+    },
+    {
+      "post": "two-agent-teams-on-the-same-files",
+      "seed": 3901,
+      "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
+      "beat": "Not rendered by the series' renderer, and no picture made with this seed: the cover is a capture of the chapter's own console at rest (the real run's log of 2026-11-19, drawn by the page in the light theme), since the founder asked that this time nothing be a simulation. A redraw in the series' ink-and-watercolor look (two trains on one track at a junction, a signal box) is the founder's call."
     }
   ],
   "sprites": {

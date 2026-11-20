@@ -22,6 +22,7 @@ import { MouloudPlate } from "./MouloudPlate";
 import { CockpitTour } from "./CockpitTour";
 import { C4Zoom } from "./C4Zoom";
 import { ArchitectureView } from "./ArchitectureView";
+import { RunCases, RunConsole } from "./RunProof";
 import { trainFrames } from "@/lib/train-sim";
 import { BOARD } from "@/lib/team-board";
 import { Sketch, SketchPair, type SketchLegendItem } from "@krizaka/ui/sketch";
@@ -84,6 +85,10 @@ export function mdxComponentsFor(locale: Locale) {
     Architecture: ({ view, label, description }: { view: string; label: string; description?: string }) => (
       <ArchitectureView view={view} label={label} description={description} locale={locale} labels={d.architecture} />
     ),
+    /* A real run from its proof (content/proofs, scripts/proofs.mjs): <RunConsole proof/> replays its log, <RunCases proof/> gives
+       each PR's figures, or « in progress » while the run's proof is not synced. */
+    RunConsole: ({ proof }: { proof: string }) => <RunConsole proof={proof} labels={d.runProof} />,
+    RunCases: ({ proof }: { proof: string }) => <RunCases proof={proof} labels={d.runProof} />,
     pre: ({ children, ...rest }: ComponentProps<"pre">) => {
       const block = fenced(children);
       return block ? (

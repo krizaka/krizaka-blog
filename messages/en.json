@@ -586,5 +586,57 @@
     "elements": "Elements",
     "relations": "Relations",
     "steps": "Steps, in order"
+  },
+  "runProof": {
+    "stamp": "real run, 2026-11-19",
+    "title": "verikora — the run’s log (UTC)",
+    "label": "Console: the log of the real run of 19 November 2026, replayed line by line",
+    "play": "Play the log",
+    "pause": "Pause",
+    "replay": "Replay the log",
+    "note": "The lines are the log’s, as the tool wrote them. Three touches only: the names of our internal tools are said in public words, a branch is called “the branch”, and the cost of a session is taken out.",
+    "legend": "What the log holds, by kind of line",
+    "segments": {
+      "start": "two teams start, each on its own ticket",
+      "overlap": "the gate sees the overlap",
+      "stack": "a pull request stacked on the first",
+      "land": "the train lands the first two",
+      "conflict": "the stacked one meets a conflict"
+    },
+    "kinds": {
+      "session": "team session",
+      "guard": "guard",
+      "tool": "commit",
+      "pr": "pull request opened",
+      "train": "train",
+      "overlap": "overlap seen",
+      "alert": "alert",
+      "push": "push",
+      "merged": "merge",
+      "conflict": "conflict"
+    },
+    "cases": {
+      "caption": "Each pull request, from the run’s proof file",
+      "pendingBadge": "in progress",
+      "pending": "the run is not over; its figures will come from its proof file.",
+      "columns": {
+        "pr": "pull request",
+        "team": "team",
+        "conflicts": "conflicts",
+        "rework": "rework pushes",
+        "minutes": "minutes, opened to merged",
+        "verdict": "verdict"
+      },
+      "teams": {
+        "team A": "team A",
+        "team B": "team B"
+      },
+      "verdicts": {
+        "pass": "passed",
+        "replayed": "passed, replayed by the train",
+        "fail": "failed"
+      },
+      "stackedOn": "stacked on {pr}"
+    }
   }
 }

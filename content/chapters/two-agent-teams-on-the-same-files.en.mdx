@@ -1,0 +1,128 @@
+---
+title: "Two agent teams, the same files: a merge train lands both, no collision"
+description: "Two agent teams on the same five files of Verikora: the gate saw it before the second pull request, the merge train landed both with no conflict. A stacked PR failed; its rerun passed."
+seoTitle: "Two agent teams, the same files: a real run"
+seoDescription: "Two agent teams on five shared files, an overlap seen before the pull request, zero conflict, then a failure told as it happened, and its fix."
+date: 2026-11-20
+tags: [ai, integration, measurements]
+author: oussama
+draft: false
+sensitive: true
+newsletter: hold
+publishedAt: "2026-11-20T07:30:00-05:00"
+cover: console-39-two-agent-teams-on-the-same-files
+coverAlt: "The console of the real run of 19 November, at rest on 16:44: under the title “verikora — the run’s log (UTC)”, the timed lines where the gate sees team B’s branch share five files with pull request #889, then team B opens #890, and the train moves on to #890"
+chapter: 39
+period: "2026-11-19"
+sources:
+  - two-agent-teams-on-the-same-files
+versus:
+  faced: "two agent teams changing the same files without knowing it"
+  built: "a gate that sees the overlap before the pull request, a train that lands one after the other"
+stats:
+  - value: "5"
+    label: "files changed by both teams at the same time"
+    section: "S1: two teams, the same files"
+  - value: "0"
+    label: "conflict and rework push for the first two pull requests"
+    section: "S1: two teams, the same files"
+  - value: "1"
+    label: "merge by hand for the stacked pull request"
+    section: "S2: the stacked pull request, and the failure"
+  - value: "0"
+    label: "merge by hand for the S2 rerun"
+    section: "The rerun's verdict"
+---
+
+A few days ago, we posted on LinkedIn the readable log of an agent team at work. The picture carried a plain note: it is a simulation, we show the idea, not our code. This time it is not a simulation. It is the same console, but it replays the log of a real run, on 19 November, on Verikora, our product whose code is public. Anyone can open and check every pull request I name here.
+
+The question is simple. When several agent teams work at the same time on the same product, what happens when two of them touch the same file without knowing it? Among people, it is stepping on each other's toes: two changes that collide, a conflict to untangle, work to redo. We wanted to see, on a real and measured case, whether our way of working avoids it.
+
+## The idea, in broad strokes
+
+It stays a technology of our own, but the idea fits in four sentences.
+
+Several agent teams work at the same time, each in its own lane, on its own ticket, without talking to each other. Before a team opens its pull request, a gate compares its files with those of the pull requests already open: if two teams touch the same thing, it sees it before they collide. Then a merge train lands the pull requests on the main branch, one at a time, each on the latest version. And when a pull request rests on another (a stacked PR), the train waits for the first to land, then replays the second on top: the replay.
+
+Nobody tells the teams to avoid each other. The point is to see whether the system is enough.
+
+## 19 November, as the log wrote it
+
+We launched two agent teams, separately, on two real Verikora tickets. Team A was fixing a label: a blocking finding in a file must read “À corriger” (to fix) everywhere, in the header, the library and the home. Team B was fixing an upload: a 24-megapixel phone photo failed with no reason. Two unrelated subjects, but both touched the site's file that describes documents, and the four files of the interface's words. Nobody had planned it.
+
+The console below replays the run's log, line by line, in UTC. It is written by the tool that watched the run, and copied as it is into this blog.
+
+<RunConsole proof="overlap-live-2026-11-19-log" />
+
+## S1: two teams, the same files
+
+At 16:38, team A opens its pull request, [#889](repo:verikora/pull/889). The train takes it at the head.
+
+At 16:44, team B is about to open its own. Before it exists, the gate compares: B's branch shares 5 files with #889. It notes it in the log. As both are fixes, it does not hold B back: a fix goes first, that is our rule. Two seconds later, B opens [#890](repo:verikora/pull/890).
+
+At 16:49, #889's check is red, for a reason of its own: a formatting line and an old test that encoded the very bug. The train does not block the line for it: it moves on to #890. Team A fixes its red at 17:01, without touching B's files.
+
+At 17:31, the train lands #890. At 17:52, #889 lands on top. The result: 0 conflict with the main branch, 0 rework push, on either one. #890 stayed open 47 minutes, #889 74 minutes.
+
+That is what we wanted to see: the overlap spotted before the second pull request, then both set down one after the other on the same files, with nobody redoing anything.
+
+## S2: the stacked pull request, and the failure
+
+The second scenario was harder. At 16:54, team A opens a second pull request, [#891](repo:verikora/pull/891), for the rest of its ticket. It needs #889's new status, so it stacks it on top. The gate records it: the train will land #891 after its base.
+
+Except that in the meantime, #889 moved. At 17:01, team A pushed the fix of its red to it, and that fix had reformatted a file of the mobile app. #891 had been stacked on the state before.
+
+At 17:54, when #889 landed, the train tried to replay #891 on top. It refused: #891 was not built on the latest version of its base, so it had nothing to replay. #891 found itself in conflict with the main branch, on a file it had never changed. At 18:04, team A had to merge the main branch by hand to clear it. #891 finally landed at 19:05, after one exit from the merge queue that was not its own doing (the mobile check could not unpack the Android development kit it downloads).
+
+I say it as it is: S2 failed. A merge by hand is exactly what the system must avoid. We stopped the run there, without retrying the case until it passed.
+
+Here are the three pull requests, with their figures, read from the run's proof file:
+
+<RunCases proof="overlap-live-2026-11-19-cases" />
+
+## The fix
+
+The cause was precise. The replay of a stacked pull request covered one case only: a stack built on its base's latest version. But the usual case is the other one: the base still takes a push after the stack, because a red is fixed or a review is answered. That case was not covered.
+
+We opened a ticket the same day, with one rule: S2's rerun would be its proof. The fix merged at 20:01 UTC: a stacked pull request is now replayed even when its base moved after it was stacked.
+
+## The S2 rerun
+
+The rerun reproduces the failure exactly, on two new Verikora tickets. Team A opens a base pull request, [#893](repo:verikora/pull/893), at 20:26. A team B stacks its own on it at 20:45, [#894](repo:verikora/pull/894). Then, at 21:31, team A pushes one more commit to its base: the base moves after the stack, as it did in the afternoon. What we expect: when the base lands, the train replays the stacked PR, and #894 lands with no conflict and no merge by hand.
+
+## The rerun's verdict
+
+It passed. Not at the first try, and that is the part I care about.
+
+At 22:11, #893 lands as a squash merge: its three commits become one new commit on the main branch. #894 still carries the three old ones, so for git it conflicts with the main branch. That is exactly the case the replay is there for. It did not handle it: the train skipped #894, and at 23:30 the system flagged it as stuck on its own. Nobody had to watch it. What was left was to understand why.
+
+Two gaps, in our tooling, not in Verikora's code:
+
+- The replay rebuilds the stacked PR in a separate folder, and that folder had none of the project's dependencies. Verikora's guard, which checks every push before it leaves, could not run, so it refused the push. It was right to. The folder was incomplete.
+- A stacked PR whose base landed as a squash merge is retargeted to the main branch. In that case the train's entrance no longer saw it as stacked: it refused it, and the replay never started.
+
+Both were fixed during the night, the second with a test that walks the whole path end to end. At 4:15, #894 goes back into the train with not one line changed. The train sees the conflict the squash merge left, then at 4:20 the replay rebuilds the stacked PR on the main branch (eb2d135 becomes 78c07ed) and pushes it itself. At 4:39, #894 enters the merge queue. At 4:54, it lands.
+
+The verdict: 0 merges by hand, 0 human pushes. The only push to #894 after its base landed is the replay's. That is what S2 had to show. But I will not round it up: the tool needed two fixes before it worked, and #894 waited a little over six hours between its base landing and its replay.
+
+One more thing, because it is part of the true story: our own proof tool first marked #894 “fail”. Its rule predated the replay, so it counted the train's replay push as a manual rescue. We changed the rule (written down, dated, with a test) so that it tells the bot's replay from a human push, and the raw counts stay next to the verdict.
+
+The figures below come from the rerun's proof file:
+
+<RunCases proof="overlap-live-s2-rerun-cases" />
+
+## What it proves, and what it does not
+
+What it proves: the mechanism, on one case. The gate sees the overlap between two teams before the second pull request exists, and the train lands both on the same files with no conflict and no rework. And when a stacked PR fails, we see it in the log, we know why, and the fix has its own proof: the rerun, passed with no merge by hand, after two gaps in the tooling found on the way.
+
+What it does not prove: a rate. One case bounds nothing. With 0 failures in n cases, the 95 % upper bound of the failure rate is about 3 divided by n: with 2 cases it says nothing useful, it would take 10 to bring it down to 30 %. In S1, the two teams changed different functions of the shared file, so git merged it by itself; the case where two teams change the same lines is not covered here. And both S1 pull requests were fixes, which the gate lets through: a new feature would have been held back, then folded or stacked, and that branch is measured elsewhere.
+
+The measure across all our work is the 14-day study we run again on everything our teams did, due on 3 December. It will say whether overlaps still cost us redone work. Until then, I do not say “our teams no longer step on each other”. I say: on this real case, we saw it coming, and we avoided it.
+
+## Our real goal
+
+This case is one step. Our real goal fits in one sentence: we want to do one thing only, prioritise the backlog. Everything else will be automated, all the way to production.
+
+So one human decision: the order. What goes first this week, and why. Everything after it, writing the code, checking it, seeing that another lane touches the same files, landing the pull requests in order, replaying a stacked PR when its base moves, has to run without us.
+
+Where we stand, without rounding. This chapter shows the part that already runs: from the ticket to the main branch, agent teams in parallel, the guard, the gate, the merge train, the replay, and a system that flags a stuck pull request on its own. What does not run by itself yet: when the tooling has a gap, someone still has to find it and close it, and last night there were two. What speaks in our name, like this text, is still read by a person before it goes out. And the last step, from the main branch to production, I will tell when I can prove it the way I proved this one: with a log, and pull requests anyone can open.
