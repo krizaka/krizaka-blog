@@ -55,8 +55,8 @@ export function rng(seed) {
 }
 
 const f1 = (n) => Math.round(n * 10) / 10;
-const pts = (list) => list.map(([x, y]) => `${f1(x)},${f1(y)}`).join(" ");
-const lineD = (list) => `M${list.map(([x, y]) => `${f1(x)} ${f1(y)}`).join(" L")}`;
+const point = ([x, y]) => `${f1(x)} ${f1(y)}`;
+const lineD = (list) => "M" + list.map(point).join(" L");
 const polyD = (list) => `${lineD(list)} Z`;
 
 /** A point and the unit tangent of a cubic Bézier at t. */
