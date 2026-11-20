@@ -256,7 +256,7 @@
       "post": "two-agent-teams-on-the-same-files",
       "seed": 3901,
       "birds": ["falcon", "owl", "duck", "flamingo", "pigeon"],
-      "beat": "Not rendered by the series' renderer, and no picture made with this seed: the cover is a capture of the chapter's own console at rest (the real run's log of 2026-11-19, drawn by the page in the light theme), since the founder asked that this time nothing be a simulation. A redraw in the series' ink-and-watercolor look (two trains on one track at a junction, a signal box) is the founder's call."
+      "beat": "Not rendered by the series renderer: drawn in code by scripts/gen-junction-cover.mjs with this seed, in the series ink-and-watercolor look (SVG washes and pen lines, provenance in lib/media.json), since the first cover, a capture of the chapter console, broke the series (krizaka-internal#4502). The station of chapters 23 to 38 at dusk: two sidings meet at one switch, a flat wagon on each with the same stack of papers and the same orange tags; the engine takes the first wagon towards the station, the second waits at a red signal; the falcon on the signal."
     }
   ],
   "sprites": {

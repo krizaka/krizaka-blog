@@ -9,7 +9,7 @@ import { values } from "@krizaka/tokens";
 import { getDictionary, type Locale } from "./i18n";
 import { hslToCss } from "./color.ts";
 import { mediaOf, hasMedia } from "./media";
-import { OG_HEIGHT, OG_WIDTH, widestSource } from "./og-cover.ts";
+import { OG_HEIGHT, OG_WIDTH, WORD_BANDS, brightEnd, veilFor, veilGradient, widestSource } from "./og-cover.ts";
 
 const font = (name: string) => readFileSync(join(process.cwd(), "node_modules/@krizaka/fonts/files/native", name));
 
@@ -29,19 +29,26 @@ const c = {
 const markDataUrl = () =>
   `data:image/svg+xml;base64,${readFileSync(join(process.cwd(), ".cache/og-mark.svg")).toString("base64")}`;
 
-/** The post's cover, cropped to the card (1200×630) and turned into a JPEG data URL the renderer reads (it does not read WebP).
+/** The post's cover, cropped to the card (1200×630) and turned into a JPEG data URL the renderer reads (it does not read WebP),
+    with the veil its words need: each band that carries words is measured (krizaka-internal#4502).
     Null when the post has no cover or the file cannot be fetched: the card then keeps its plain ink background. */
-async function coverDataUrl(coverId?: string): Promise<string | null> {
+async function coverOf(coverId?: string): Promise<{ url: string; veil: string } | null> {
   if (!coverId || !hasMedia(coverId)) return null;
   try {
     const res = await fetch(widestSource(mediaOf(coverId)));
     if (!res.ok) return null;
     const sharp = (await import("sharp")).default;
-    const jpeg = await sharp(Buffer.from(await res.arrayBuffer()))
+    const card = await sharp(Buffer.from(await res.arrayBuffer()))
       .resize(OG_WIDTH, OG_HEIGHT, { fit: "cover", position: "centre" })
-      .jpeg({ quality: 82 })
+      .removeAlpha()
       .toBuffer();
-    return `data:image/jpeg;base64,${jpeg.toString("base64")}`;
+    const band = async (b: (typeof WORD_BANDS)[keyof typeof WORD_BANDS]) =>
+      veilFor(brightEnd(new Uint8Array(await sharp(card).extract(b).raw().toBuffer()), 3));
+    const jpeg = await sharp(card).jpeg({ quality: 82 }).toBuffer();
+    return {
+      url: `data:image/jpeg;base64,${jpeg.toString("base64")}`,
+      veil: veilGradient(await band(WORD_BANDS.head), await band(WORD_BANDS.title)),
+    };
   } catch {
     return null;
   }
@@ -49,7 +56,7 @@ async function coverDataUrl(coverId?: string): Promise<string | null> {
 
 export async function ogImage(locale: Locale, title?: string, tags: string[] = [], coverId?: string) {
   const t = getDictionary(locale);
-  const picture = await coverDataUrl(coverId);
+  const picture = await coverOf(coverId);
   const heading = title ?? t.site.tagline;
   const size = heading.length > 90 ? 54 : heading.length > 60 ? 62 : 72;
   const names = t.tags.names as Record<string, string>;
@@ -73,7 +80,7 @@ export async function ogImage(locale: Locale, title?: string, tags: string[] = [
         {picture ? (
           <>
             <img
-              src={picture}
+              src={picture.url}
               width={1160}
               height={590}
               alt=""
@@ -87,14 +94,24 @@ export async function ogImage(locale: Locale, title?: string, tags: string[] = [
                 width: 1160,
                 height: 590,
                 display: "flex",
-                background: `linear-gradient(180deg, rgba(8, 12, 20, 0.35) 0%, rgba(8, 12, 20, 0.2) 35%, rgba(8, 12, 20, 0.88) 100%)`,
+                background: picture.veil,
               }}
             />
           </>
         ) : null}
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
           <img src={markDataUrl()} width={72} height={72} alt="" />
-          <div style={{ display: "flex", fontSize: 32, fontWeight: 700, color: c.text }}>{t.site.name}</div>
+          <div
+            style={{
+              display: "flex",
+              fontSize: 32,
+              fontWeight: 700,
+              color: c.text,
+              textShadow: "0 2px 10px rgba(8, 12, 20, 0.55)",
+            }}
+          >
+            {t.site.name}
+          </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
           <div style={{ width: 96, height: 6, borderRadius: 3, background: c.accent }} />
@@ -106,6 +123,7 @@ export async function ogImage(locale: Locale, title?: string, tags: string[] = [
               fontWeight: 800,
               letterSpacing: -2,
               maxWidth: 1000,
+              textShadow: "0 2px 14px rgba(8, 12, 20, 0.55)",
             }}
           >
             {heading}

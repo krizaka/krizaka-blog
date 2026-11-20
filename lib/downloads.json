@@ -1,15 +1,15 @@
 {
   "books": {
     "en/story": {
-      "source": "906c6b6d6993",
+      "source": "0ce557e05386",
       "files": {
         "epub": {
-          "hash": "b6d977350b",
-          "bytes": 9467919
+          "hash": "18c39d4740",
+          "bytes": 9427359
         },
         "pdf": {
-          "hash": "ba37b42c9d",
-          "bytes": 14375860
+          "hash": "a94fd88d1b",
+          "bytes": 14329497
         }
       }
     },
@@ -287,15 +287,15 @@
       }
     },
     "fr/story": {
-      "source": "199a7d438b3f",
+      "source": "a2819963ac35",
       "files": {
         "epub": {
-          "hash": "af63913b29",
-          "bytes": 9534134
+          "hash": "0667d83b39",
+          "bytes": 9493570
         },
         "pdf": {
-          "hash": "f0dd52b5a9",
-          "bytes": 14633022
+          "hash": "dfc5eab905",
+          "bytes": 14587593
         }
       }
     },
@@ -1015,28 +1015,28 @@
       }
     },
     "en/two-agent-teams-on-the-same-files": {
-      "source": "bc1abf2db920",
+      "source": "485ae647839b",
       "files": {
         "epub": {
-          "hash": "7d37dacfed",
-          "bytes": 594735
+          "hash": "a06da78278",
+          "bytes": 491311
         },
         "pdf": {
-          "hash": "c54bcabfba",
-          "bytes": 759795
+          "hash": "320b26d180",
+          "bytes": 704484
         }
       }
     },
     "fr/two-agent-teams-on-the-same-files": {
-      "source": "cff5ee2aad85",
+      "source": "dfbf5f50e3b1",
       "files": {
         "epub": {
-          "hash": "2b3cafb297",
-          "bytes": 614965
+          "hash": "1bb583f6fc",
+          "bytes": 511349
         },
         "pdf": {
-          "hash": "3b6671e75d",
-          "bytes": 786780
+          "hash": "5806d7c23d",
+          "bytes": 732075
         }
       }
     }

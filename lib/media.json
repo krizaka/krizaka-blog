@@ -7484,69 +7484,69 @@
       ]
     }
   },
-  "console-39-two-agent-teams-on-the-same-files": {
+  "series-39-two-agent-teams-on-the-same-files": {
     "kind": "image",
     "width": 1280,
     "height": 720,
-    "blur": "data:image/webp;base64,UklGRiYAAABXRUJQVlA4IBoAAAAwAQCdASoQAAkABABoJZwAA3AA/vDSHAAAAA==",
+    "blur": "data:image/webp;base64,UklGRj4AAABXRUJQVlA4IDIAAADwAQCdASoQAAkABABoJZQAAxZhXVe8fBAA/vOVPtiv7vsuVCt8VtGJcrISZzXRvFwAAA==",
     "srcs": [
       {
         "w": 480,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/console-39-two-agent-teams-on-the-same-files-480.d0d95723d7.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-39-two-agent-teams-on-the-same-files-480.018ce23aa9.webp"
       },
       {
         "w": 960,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/console-39-two-agent-teams-on-the-same-files-960.ee402401f9.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-39-two-agent-teams-on-the-same-files-960.7b140775f6.webp"
       },
       {
         "w": 1280,
-        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/console-39-two-agent-teams-on-the-same-files-1280.7db3a97329.webp"
+        "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-39-two-agent-teams-on-the-same-files-1280.c658507801.webp"
       }
     ],
     "made": {
-      "model": "none: a screen capture, no model",
-      "engine": "Chromium through Chrome DevTools: the chapter's own page (English) at 1440 px, device pixel ratio 2, light theme, the console at rest after its replay, scrolled to 16:44; cropped to 16:9",
+      "model": "none: drawn in code, no model",
+      "engine": "scripts/gen-junction-cover.mjs: hand-drawn ink and watercolor look made of SVG (washes roughened by turbulence, pooled rims, paper grain; pen lines with a small wobble), seed 3901, rendered by Chromium (Playwright) at 2560×1440",
       "machine": "MacBook Pro, Apple M1 Max, 64 GB",
       "via": "local",
-      "size": "1480×832",
+      "size": "2560×1440",
       "costUsd": 0,
-      "note": "Chapter 39's cover is its own console, the real run's log of 2026-11-19 drawn by the page (TerminalReplay of @krizaka/ui): the moment the gate sees the two teams share five files, before the second pull request exists. A capture, not a generated picture: the founder asked that this time nothing be a simulation. No person, no logo."
+      "note": "Chapter 39 of the image series (cover): the station of chapters 23 to 38 at dusk. Two sidings meet at one switch; on each a flat wagon carries the same stack of papers with the same orange tags (the two teams' same files). The engine has taken team A's wagon towards the station; team B's waits at a red signal, its turn next, and the falcon, the gate's bird, watches from the signal. Drawn in code, outside a Sovkora Studio run: no model, no run id (krizaka-internal#4502 replaced the console capture, which broke the series). No person, no text, no logo."
     },
     "renditions": {
       "avif": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/console-39-two-agent-teams-on-the-same-files-480.13c7cf7110.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-39-two-agent-teams-on-the-same-files-480.b9bbf5ba2f.avif"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/console-39-two-agent-teams-on-the-same-files-768.71e19b1a22.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-39-two-agent-teams-on-the-same-files-768.5725e268be.avif"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/console-39-two-agent-teams-on-the-same-files-1200.615be2d9ed.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-39-two-agent-teams-on-the-same-files-1200.bcaa81a912.avif"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/console-39-two-agent-teams-on-the-same-files-1280.2989a7d33b.avif"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-39-two-agent-teams-on-the-same-files-1280.f507148e2f.avif"
         }
       ],
       "webp": [
         {
           "w": 480,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/console-39-two-agent-teams-on-the-same-files-480.d0d95723d7.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-39-two-agent-teams-on-the-same-files-480.5b13947c89.webp"
         },
         {
           "w": 768,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/console-39-two-agent-teams-on-the-same-files-768.d034263abb.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-39-two-agent-teams-on-the-same-files-768.571b902394.webp"
         },
         {
           "w": 1200,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/console-39-two-agent-teams-on-the-same-files-1200.26541ae098.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-39-two-agent-teams-on-the-same-files-1200.3b654e1ba9.webp"
         },
         {
           "w": 1280,
-          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/console-39-two-agent-teams-on-the-same-files-1280.7db3a97329.webp"
+          "url": "https://krizaka-assets.b-cdn.net/sites/blog/posts/series/series-39-two-agent-teams-on-the-same-files-1280.361486b92d.webp"
         }
       ]
     }
