@@ -126,8 +126,17 @@ const OWN_COVERS = [
   "five-ergonomics-choices-on-our-real-screens",
 ];
 
+/* A chapter told from a real run wears the capture of its own console (`console-NN-<post>`) instead of a series render: the
+   founder asked that nothing of it be a simulation (krizaka-blog#405); its media entry says it is a capture, made by no model. */
+const CONSOLE_COVERS = ["two-agent-teams-on-the-same-files"];
+const isCapture = (made) =>
+  /^none: a screen capture/.test(made?.model ?? "") && made.costUsd === 0 && made.note?.length > 40;
+
 test("every chapter of the series but the 10th wears its series cover, and each cover is a media entry sold in every size", () => {
-  const picked = series.chapters.map((c, i) => ({ ...c, id: `series-${String(i + 1).padStart(2, "0")}-${c.post}` }));
+  const picked = series.chapters.map((c, i) => {
+    const n = String(i + 1).padStart(2, "0");
+    return { ...c, id: CONSOLE_COVERS.includes(c.post) ? `console-${n}-${c.post}` : `series-${n}-${c.post}` };
+  });
   for (const c of picked) {
     if (c.post === KEEPS || OWN_COVERS.includes(c.post)) continue;
     // a draft owes no cover yet (content-rules: only a published chapter does); its cover is made before it is published
@@ -145,8 +154,18 @@ test("every chapter of the series but the 10th wears its series cover, and each 
     );
     assert.ok(m.renditions.avif.length > 0 && m.renditions.webp.length > 0, `${c.id} has renditions`);
     for (const u of [...m.srcs, ...m.renditions.avif, ...m.renditions.webp]) assert.match(u.url, CDN_HOSTS);
-    assert.ok(coverProvenance(c.id, m.made), `${c.id} says how it was made`);
+    if (CONSOLE_COVERS.includes(c.post))
+      assert.ok(isCapture(m.made), `${c.id} says it is a capture of the run's console`);
+    else assert.ok(coverProvenance(c.id, m.made), `${c.id} says how it was made`);
   }
+});
+
+test("a console cover is a capture: a generated picture or a series id there is refused", () => {
+  const made = media["console-39-two-agent-teams-on-the-same-files"].made;
+  assert.ok(isCapture(made));
+  assert.ok(!isCapture({ ...made, model: "FLUX.2 [klein] 4B" }), "a model made it");
+  assert.ok(!isCapture({ ...made, costUsd: 0.02 }), "it cost a run");
+  assert.ok(!isCapture({ ...made, note: "" }), "it does not say what it shows");
 });
 
 test("chapter 10 keeps its current cover", () => {

@@ -1,15 +1,15 @@
 ---
-title: "Deux équipes d'agents sur les mêmes fichiers : le chevauchement vu avant la collision"
-description: "Le 19 novembre, deux équipes d'agents ont modifié les mêmes cinq fichiers de Verikora. La porte l'a vu avant la seconde pull request, le train les a posées sans conflit. Puis une pull request empilée a échoué."
+title: "Deux équipes d'agents sur les mêmes fichiers : le merge train les fait passer sans collision"
+description: "Deux équipes d'agents sur les mêmes cinq fichiers de Verikora : la porte l'a vu avant la seconde pull request, le merge train les a posées sans conflit. Une stacked PR a échoué, sa reprise est passée."
 seoTitle: "Deux équipes d'agents, mêmes fichiers : une exécution réelle"
 seoDescription: "Deux équipes d'agents sur cinq fichiers communs, un chevauchement vu avant la pull request, zéro conflit, puis un échec raconté tel quel et son correctif."
 date: 2026-11-20
 tags: [ai, integration, measurements]
 author: oussama
-draft: true
+draft: false
 sensitive: true
 newsletter: hold
-publishedAt: "2026-11-20T09:00:00-05:00"
+publishedAt: "2026-11-20T07:30:00-05:00"
 cover: console-39-two-agent-teams-on-the-same-files
 coverAlt: "La console de l'exécution réelle du 19 novembre, au repos sur 16 h 44 : sous le titre « verikora — the run's log (UTC) », les lignes horodatées où la porte voit la branche de l'équipe B partager cinq fichiers avec la pull request #889, puis l'équipe B ouvre la #890, et le train passe à la #890"
 chapter: 39
@@ -29,6 +29,9 @@ stats:
   - value: "1"
     label: "fusion à la main pour la pull request empilée"
     section: "S2 : la pull request empilée, et l'échec"
+  - value: "0"
+    label: "fusion à la main pour la reprise de S2"
+    section: "Le verdict de la reprise"
 ---
 
 Il y a quelques jours, on a publié sur LinkedIn le journal lisible d'une équipe d'agents au travail. L'image portait une mention claire : c'est une simulation, on montre l'idée, pas notre code. Cette fois, ce n'est pas une simulation. C'est la même console, mais elle rejoue le journal d'une vraie exécution, le 19 novembre, sur Verikora, notre produit dont le code est public. Chaque pull request dont je parle ici s'ouvre et se vérifie par n'importe qui.
@@ -39,7 +42,7 @@ La question de départ est simple. Quand plusieurs équipes d'agents travaillent
 
 Ça reste une technologie à nous, mais l'idée se partage en quatre phrases.
 
-Plusieurs équipes d'agents travaillent en même temps, chacune sur son ticket, sans se parler. Avant qu'une équipe ouvre sa pull request, une porte compare ses fichiers avec ceux des pull requests déjà ouvertes : si deux équipes touchent la même chose, elle le voit avant que ça se percute. Ensuite, un train fait atterrir les pull requests sur la branche principale, une par une, chacune sur la dernière version. Et quand une pull request repose sur une autre (on dit qu'elle est empilée), le train attend que la première atterrisse, puis rejoue la seconde par-dessus.
+Plusieurs équipes d'agents travaillent en même temps, chacune dans sa lane, sur son ticket, sans se parler. Avant qu'une équipe ouvre sa pull request, une porte compare ses fichiers avec ceux des pull requests déjà ouvertes : si deux équipes touchent la même chose, elle le voit avant que ça se percute. Ensuite, un merge train fait atterrir les pull requests sur la branche principale, une par une, chacune sur la dernière version. Et quand une pull request repose sur une autre (on dit qu'elle est empilée : une stacked PR), le train attend que la première atterrisse, puis rejoue la seconde par-dessus. C'est le replay.
 
 Personne ne dit aux équipes de s'éviter. Le but est justement de voir si le système suffit.
 
@@ -85,7 +88,22 @@ On a ouvert un ticket le jour même, avec une règle : le rejeu de S2 serait sa 
 
 ## La reprise de S2
 
-La reprise reproduit exactement l'échec, sur deux nouveaux tickets de Verikora. L'équipe A ouvre une pull request de base, [#893](repo:verikora/pull/893). Une équipe B empile la sienne dessus, [#894](repo:verikora/pull/894). Puis l'équipe A pousse encore un commit sur sa base avant qu'elle atterrisse : la base bouge après l'empilement, comme le 19 novembre. Ce qu'on attend : quand la base atterrit, le train rejoue la pile, et #894 atterrit sans conflit et sans fusion à la main.
+La reprise reproduit exactement l'échec, sur deux nouveaux tickets de Verikora. L'équipe A ouvre une pull request de base, [#893](repo:verikora/pull/893), à 20 h 26. Une équipe B empile la sienne dessus à 20 h 45, [#894](repo:verikora/pull/894). Puis, à 21 h 31, l'équipe A pousse encore un commit sur sa base : la base bouge après l'empilement, comme l'après-midi. Ce qu'on attend : quand la base atterrit, le train fait le replay de la stacked PR, et #894 atterrit sans conflit et sans fusion à la main.
+
+## Le verdict de la reprise
+
+Elle est passée. Pas du premier coup, et c'est la partie qui m'intéresse.
+
+À 22 h 11, #893 atterrit en squash merge : ses trois commits deviennent un seul commit neuf sur la branche principale. #894, elle, porte encore les trois anciens. Pour git, elle est donc en conflit avec la branche principale. C'est précisément le cas que le replay doit régler. Il ne l'a pas réglé : le train a sauté #894, puis, à 23 h 30, le système l'a signalée lui-même comme bloquée. Personne n'avait eu à la surveiller. Restait à comprendre pourquoi.
+
+Deux trous, dans notre outillage, pas dans le code de Verikora :
+
+- Le replay reconstruit la stacked PR dans un dossier à part, et ce dossier n'avait pas les dépendances du projet. Le guard de Verikora, qui vérifie chaque poussée avant qu'elle parte, ne pouvait donc pas tourner, et il a refusé la poussée. Il avait raison. C'est le dossier qui était incomplet.
+- Une stacked PR dont la base a atterri en squash merge est repointée sur la branche principale. Dans ce cas, l'entrée du train ne la reconnaissait plus comme empilée : elle la refusait, et le replay ne se lançait jamais.
+
+Les deux ont été corrigés dans la nuit, le second avec un test qui refait le parcours de bout en bout. À 4 h 15, #894 est remise dans le train, sans une ligne changée. Le train constate le conflit laissé par le squash merge, puis, à 4 h 20, le replay reconstruit la stacked PR sur la branche principale (eb2d135 devient 78c07ed) et la pousse lui-même. À 4 h 39, #894 entre dans la merge queue. À 4 h 54, elle atterrit.
+
+Le verdict : 0 fusion à la main, 0 poussée humaine. La seule poussée sur #894 après l'atterrissage de sa base est celle du replay. C'est ce que S2 devait montrer. Mais je ne l'arrondis pas : il a fallu deux corrections de l'outil avant que ça marche, et #894 a attendu un peu plus de six heures entre l'atterrissage de sa base et son replay.
 
 Les chiffres ci-dessous viennent du fichier de preuve de la reprise, dès qu'il existe :
 
@@ -93,8 +111,16 @@ Les chiffres ci-dessous viennent du fichier de preuve de la reprise, dès qu'il 
 
 ## Ce que ça prouve, et ce que ça ne prouve pas
 
-Ce que ça prouve : le mécanisme, sur un cas. La porte voit le chevauchement entre deux équipes avant que la seconde pull request existe, et le train fait atterrir les deux sur les mêmes fichiers sans conflit ni reprise. Et quand une pile échoue, on le voit dans le journal, on sait pourquoi, et le correctif a sa propre preuve.
+Ce que ça prouve : le mécanisme, sur un cas. La porte voit le chevauchement entre deux équipes avant que la seconde pull request existe, et le train fait atterrir les deux sur les mêmes fichiers sans conflit ni reprise. Et quand une stacked PR échoue, on le voit dans le journal, on sait pourquoi, et le correctif a sa propre preuve : la reprise, passée sans fusion à la main, après deux trous de l'outil trouvés en chemin.
 
 Ce que ça ne prouve pas : un taux. Un cas ne borne rien. Avec 0 échec sur n cas, la borne haute à 95 % du taux d'échec vaut à peu près 3 divisé par n : avec 2 cas, ça ne dit rien d'utile, il en faudrait 10 pour descendre à 30 %. Dans S1, les deux équipes ont modifié des fonctions différentes du fichier partagé, donc git a fusionné tout seul ; le cas où deux équipes modifient les mêmes lignes n'est pas couvert ici. Et les deux pull requests de S1 étaient des correctifs, que la porte laisse passer : une nouvelle fonctionnalité aurait été retenue, puis regroupée ou empilée, et cette branche-là se mesure ailleurs.
 
 La mesure sur toute notre production, c'est l'étude de 14 jours qu'on relance sur tout ce que nos équipes ont fait, attendue le 3 décembre. C'est elle qui dira si les chevauchements nous coûtent encore du travail refait. D'ici là, je ne dis pas « nos équipes ne se marchent plus dessus ». Je dis : sur ce cas réel, on l'a vu venir, et on l'a évité.
+
+## Notre vrai goal
+
+Ce cas n'est qu'une marche. Notre vrai goal tient en une phrase : on veut s'occuper juste de prioriser le backlog. Le reste sera automatisé, jusqu'à la prod.
+
+Une seule décision humaine, donc : l'ordre. Ce qui passe en premier cette semaine, et pourquoi. Tout ce qui vient après, écrire le code, le vérifier, voir qu'une autre lane touche les mêmes fichiers, faire atterrir les pull requests dans l'ordre, rejouer une stacked PR quand sa base bouge, ça doit tourner sans nous.
+
+Où on en est, sans arrondir. Ce chapitre montre la partie qui tourne déjà : du ticket à la branche principale, des équipes d'agents en parallèle, le guard, la porte, le merge train, le replay, et un système qui signale lui-même une pull request bloquée. Ce qui ne tourne pas encore tout seul : quand l'outil a un trou, il faut encore le trouver et le boucher, et cette nuit, il y en avait deux. Ce qui parle en notre nom, comme ce texte, est encore relu par un humain avant de partir. Et la dernière marche, de la branche principale jusqu'à la prod, je la raconterai quand je pourrai la prouver comme celle-ci : avec un journal, et des pull requests que tout le monde peut ouvrir.
