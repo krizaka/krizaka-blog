@@ -22,6 +22,10 @@ export type RunTone = (typeof RUN_TONES)[number];
 
 export type RunEvent = { at: string; kind: RunKind; actor: string; text: string; href: string | null; tone: RunTone };
 
+/** The tool's verdict words: « pass (replayed by the train) » is a pass whose only push after the base landed is the train's replay. */
+export const RUN_VERDICTS = { pass: "pass", fail: "fail", "pass (replayed by the train)": "replayed" } as const;
+export type RunVerdict = (typeof RUN_VERDICTS)[keyof typeof RUN_VERDICTS];
+
 export type RunCase = {
   pr: number;
   team: string;
@@ -31,7 +35,7 @@ export type RunCase = {
   pushes_after_open: number;
   stacked_on: number | null;
   replayed: boolean;
-  verdict: "pass" | "fail";
+  verdict: RunVerdict;
 };
 
 export class RunLogError extends Error {
@@ -67,8 +71,8 @@ export function parseRunLog(ndjson: string): RunEvent[] {
 export function parseRunCases(json: string): RunCase[] {
   const rows = JSON.parse(json) as Record<string, unknown>[];
   return rows.map((r) => {
-    if (typeof r.pr !== "number" || (r.verdict !== "pass" && r.verdict !== "fail"))
-      throw new RunLogError(`case without a PR or a verdict`);
+    const verdict = typeof r.verdict === "string" ? (RUN_VERDICTS as Record<string, RunVerdict>)[r.verdict] : undefined;
+    if (typeof r.pr !== "number" || verdict === undefined) throw new RunLogError(`case without a PR or a verdict`);
     return {
       pr: r.pr,
       team: String(r.team),
@@ -78,7 +82,7 @@ export function parseRunCases(json: string): RunCase[] {
       pushes_after_open: Number(r.pushes_after_open),
       stacked_on: typeof r.stacked_on === "number" ? r.stacked_on : null,
       replayed: r.replayed === true,
-      verdict: r.verdict,
+      verdict,
     };
   });
 }

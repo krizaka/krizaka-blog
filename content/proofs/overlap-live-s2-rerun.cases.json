@@ -1,0 +1,46 @@
+[
+ {
+  "pr": 893,
+  "url": "https://github.com/krizaka/verikora/pull/893",
+  "team": "team A",
+  "title": "refactor(files): one file-format table in @verikora/core instead of eleven that disagree",
+  "opened": "2026-11-19T20:26:38Z",
+  "merged": "2026-11-19T22:11:23Z",
+  "minutes": 105,
+  "conflicts": 0,
+  "pushes_after_open": 2,
+  "rework_pushes": 0,
+  "force_pushes": 0,
+  "force_pushers": [],
+  "update_merges": 0,
+  "shared": [],
+  "gate": null,
+  "stacked_on": null,
+  "replayed": false,
+  "manual_force_pushes": 0,
+  "verdict": "pass"
+ },
+ {
+  "pr": 894,
+  "url": "https://github.com/krizaka/verikora/pull/894",
+  "team": "team B",
+  "title": "feat(capture): a phone screenshot is cropped to its page and read without AI; WebP accepted",
+  "opened": "2026-11-19T20:45:09Z",
+  "merged": "2026-11-20T04:54:15Z",
+  "minutes": 489,
+  "conflicts": 2,
+  "pushes_after_open": 1,
+  "rework_pushes": 0,
+  "force_pushes": 1,
+  "force_pushers": [
+   "krizaka-agents"
+  ],
+  "update_merges": 0,
+  "shared": [],
+  "gate": null,
+  "stacked_on": 893,
+  "replayed": true,
+  "manual_force_pushes": 0,
+  "verdict": "pass (replayed by the train)"
+ }
+]

@@ -633,6 +633,7 @@
       },
       "verdicts": {
         "pass": "passed",
+        "replayed": "passed, replayed by the train",
         "fail": "failed"
       },
       "stackedOn": "stacked on {pr}"

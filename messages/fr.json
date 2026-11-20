@@ -633,6 +633,7 @@
       },
       "verdicts": {
         "pass": "réussi",
+        "replayed": "réussi, rejoué par le train",
         "fail": "échoué"
       },
       "stackedOn": "empilée sur {pr}"

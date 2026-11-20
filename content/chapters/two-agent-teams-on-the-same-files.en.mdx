@@ -105,7 +105,9 @@ Both were fixed during the night, the second with a test that walks the whole pa
 
 The verdict: 0 merges by hand, 0 human pushes. The only push to #894 after its base landed is the replay's. That is what S2 had to show. But I will not round it up: the tool needed two fixes before it worked, and #894 waited a little over six hours between its base landing and its replay.
 
-The figures below come from the rerun's proof file, as soon as it exists:
+One more thing, because it is part of the true story: our own proof tool first marked #894 “fail”. Its rule predated the replay, so it counted the train's replay push as a manual rescue. We changed the rule (written down, dated, with a test) so that it tells the bot's replay from a human push, and the raw counts stay next to the verdict.
+
+The figures below come from the rerun's proof file:
 
 <RunCases proof="overlap-live-s2-rerun-cases" />
 

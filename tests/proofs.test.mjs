@@ -106,3 +106,11 @@ test("the figures the chapter tells are the cases' own: S1 passed with 0 conflic
   assert.equal(counts.merged, 3);
   assert.equal(counts.conflict, 3);
 });
+
+test("the S2 rerun's verdict « pass (replayed by the train) » is a pass the page names, with the raw counts kept", () => {
+  const cases = parseRunCases(copy("overlap-live-s2-rerun-cases"));
+  const b = cases.find((c) => c.pr === 894);
+  assert.equal(b.verdict, "replayed");
+  assert.equal(b.replayed, true);
+  assert.throws(() => parseRunCases('[{"pr":1,"verdict":"maybe"}]'));
+});

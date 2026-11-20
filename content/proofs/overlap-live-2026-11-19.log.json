@@ -1,7 +1,7 @@
 {"at": "2026-11-19T16:18:00Z", "kind": "session", "actor": "team A", "text": "team A starts (headless opus session)", "href": null, "tone": "muted"}
-{"at": "2026-11-19T16:18:11Z", "kind": "guard", "actor": "guard", "text": "refuses a command of team A: codegraph must be called before reading code paths directly (krizaka-internal#3152)", "href": null, "tone": "danger"}
+{"at": "2026-11-19T16:18:11Z", "kind": "guard", "actor": "guard", "text": "refuses a command of team A: codegraph must be called before reading code paths directly (ticket interne)", "href": null, "tone": "danger"}
 {"at": "2026-11-19T16:21:11Z", "kind": "session", "actor": "team B", "text": "team B starts (headless sonnet session)", "href": null, "tone": "muted"}
-{"at": "2026-11-19T16:21:26Z", "kind": "guard", "actor": "guard", "text": "refuses a command of team B: codegraph must be called before reading code paths directly (krizaka-internal#3152)", "href": null, "tone": "danger"}
+{"at": "2026-11-19T16:21:26Z", "kind": "guard", "actor": "guard", "text": "refuses a command of team B: codegraph must be called before reading code paths directly (ticket interne)", "href": null, "tone": "danger"}
 {"at": "2026-11-19T16:25:30Z", "kind": "tool", "actor": "team A", "text": "commits « fix(report): a blocking finding makes the header, the library and the… »", "href": "https://github.com/krizaka/verikora/commit/23f06d7e205bbd954caf2ccee6d269551341861d", "tone": "muted"}
 {"at": "2026-11-19T16:25:41Z", "kind": "tool", "actor": "team A", "text": "commits « chore(quality): lock the no-enum-string-compare gain (9 to 8) »", "href": "https://github.com/krizaka/verikora/commit/d9d624c5dd3467f4807cf0fe9024095a28bd4899", "tone": "muted"}
 {"at": "2026-11-19T16:30:56Z", "kind": "tool", "actor": "team A", "text": "commits « fix(report): the mobile row and the shared client say « À corriger » … »", "href": "https://github.com/krizaka/verikora/commit/178348030ffaea6178242dc4641a2a6f49dbd0b4", "tone": "muted"}
@@ -19,7 +19,7 @@
 {"at": "2026-11-19T17:01:08Z", "kind": "push", "actor": "team A", "text": "pushes a fix of its own PR #889, no shared file: « fix(report): the database test reads « À corriger » for its blocking … »", "href": "https://github.com/krizaka/verikora/commit/56e302bc593a34d2acb1f634b01209c12e474bba", "tone": "muted"}
 {"at": "2026-11-19T17:31:26Z", "kind": "train", "actor": "train", "text": "lands #890", "href": null, "tone": "success"}
 {"at": "2026-11-19T17:31:26Z", "kind": "merged", "actor": "train", "text": "verikora#890 merged into main", "href": "https://github.com/krizaka/verikora/pull/890", "tone": "success"}
-{"at": "2026-11-19T17:31:50Z", "kind": "session", "actor": "team B", "text": "team B closes: success, 71 min, 81 turns, 1.50 USD", "href": null, "tone": "muted"}
+{"at": "2026-11-19T17:31:50Z", "kind": "session", "actor": "team B", "text": "team B closes: success, 71 min, 81 turns", "href": null, "tone": "muted"}
 {"at": "2026-11-19T17:32:09Z", "kind": "train", "actor": "train", "text": "boards #889: it is the head of the train", "href": null, "tone": "muted"}
 {"at": "2026-11-19T17:45:41Z", "kind": "train", "actor": "train", "text": "merges main into #891 (update before landing)", "href": "https://github.com/krizaka/verikora/commit/460fe9242ca0baf524c911d8d599b434b955bdec", "tone": "muted"}
 {"at": "2026-11-19T17:52:32Z", "kind": "merged", "actor": "train", "text": "verikora#889 merged into main", "href": "https://github.com/krizaka/verikora/pull/889", "tone": "success"}

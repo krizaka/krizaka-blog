@@ -183,7 +183,7 @@ export function RunCases({ proof, labels }: Readonly<{ proof: string; labels: Ru
               <td>{r.rework_pushes}</td>
               <td>{r.minutes}</td>
               <td>
-                <Badge tone={r.verdict === "pass" ? "success" : "danger"} size="sm">
+                <Badge tone={r.verdict === "fail" ? "danger" : "success"} size="sm">
                   {c.verdicts[r.verdict]}
                 </Badge>
               </td>
