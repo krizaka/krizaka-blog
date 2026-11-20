@@ -147,7 +147,7 @@ export function RunCases({ proof, labels }: Readonly<{ proof: string; labels: Ru
   const c = labels.cases;
   if (!text)
     return (
-      <p className="bl-run-pending" role="status">
+      <p className="bl-run-pending">
         <Badge tone="warning" size="md">
           {c.pendingBadge}
         </Badge>{" "}
