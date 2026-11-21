@@ -7,6 +7,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { chromium } from "playwright";
 
+import { iconOffsets, iconProblems } from "../lib/icon-centre.mjs";
 import { mapPool } from "../lib/pool.mjs";
 import { isRedirectStub } from "../lib/retired-core.mjs";
 
@@ -30,7 +31,7 @@ if (postsDir) {
 const concurrencyArg = args.indexOf("--concurrency");
 const concurrency = concurrencyArg >= 0 ? Number(args[concurrencyArg + 1]) : 6;
 if (!Number.isInteger(concurrency) || concurrency < 1) throw new Error("--concurrency must be a positive integer");
-const WIDTHS = [1750, 1366, 390, 360];
+const WIDTHS = [1750, 1440, 1366, 390, 360];
 
 /* The problems of one page as laid out, in small checks: each runs in the browser by itself (page.evaluate serialises one function),
    so none reads another. */
@@ -284,6 +285,8 @@ try {
       await page.evaluate(() => document.fonts.ready);
       for (const check of LAYOUT_CHECKS)
         for (const p of await page.evaluate(check)) found.push(`${path} @${width}: ${p}`);
+      /* every icon centred on its text line, within 1 px (krizaka-internal#4001) */
+      for (const p of iconProblems(await page.evaluate(iconOffsets))) found.push(`${path} @${width}: ${p}`);
       await page.close();
     }
     return found;
