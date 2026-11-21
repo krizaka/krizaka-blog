@@ -22,7 +22,7 @@
 
 ## Architecture & conventions
 
-- Follow the [krizaka-engineering skill](https://github.com/krizaka/krizaka-skills/blob/main/skills/krizaka-engineering/SKILL.md); search its [packages reference](https://github.com/krizaka/krizaka-skills/blob/main/skills/krizaka-engineering/references/packages.md) before writing anything generic.
+- Follow the [krizaka-engineering skill](https://github.com/krizaka/krizaka-agents/blob/main/plugins/krizaka-engineering/skills/krizaka-engineering/SKILL.md); search its [packages reference](https://github.com/krizaka/krizaka-agents/blob/main/plugins/krizaka-engineering/skills/krizaka-engineering/references/packages.md) before writing anything generic.
 - Take libraries first: a missing function goes into the `@krizaka/*` package first, never a local copy.
 - Pages are `@krizaka/ui` blocks (`Page`, `PageHero`, `Section`, `CardGrid`, `LinkCard`…), tokens from `@krizaka/tailwind`, faces `@krizaka/fonts`. A missing block is an issue in krizaka-ui, not a local component. Dark and light are both first-class: check every view in both and at phone width.
 - No hard-coded colour (`var(--kz-*)`), no page-local button class. Every user-facing string is in `messages/{en,fr}.json`; no `locale === "fr" ?`.
@@ -64,4 +64,4 @@
 - [docs/agents.md](docs/agents.md): the full former contract (content, newsletter, downloads, offline, indexing, commercial names), read by section.
 - [docs/image-series.md](docs/image-series.md): the chapter cover series; [docs/refonte.md](docs/refonte.md): the story redesign.
 - [Org standards](https://github.com/krizaka/.github/tree/main/docs/standards) of krizaka/.github; the [engineering charter](https://github.com/krizaka/.github/blob/main/AGENTS.template.md).
-- [krizaka-engineering skill](https://github.com/krizaka/krizaka-skills/blob/main/skills/krizaka-engineering/SKILL.md).
+- [krizaka-engineering skill](https://github.com/krizaka/krizaka-agents/blob/main/plugins/krizaka-engineering/skills/krizaka-engineering/SKILL.md).
