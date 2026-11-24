@@ -20,9 +20,10 @@ concurrency:
 
 jobs:
   ci:
-    uses: krizaka/.github/.github/workflows/node-ci.yml@84a22e72359caf315d8bf346f4a31cdb22f25997 # main
+    uses: krizaka/.github/.github/workflows/node-ci.yml@a6e5270354f053e7d225c35ea45c5aa429ba5878 # main
     permissions:
       contents: read
+      actions: read  # asked by node-ci.yml (propagate-pins)
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     with:
