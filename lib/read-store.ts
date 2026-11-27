@@ -24,7 +24,8 @@ export const readStore = {
     };
   },
   getSnapshot(): readonly string[] {
-    return (cache ??= load());
+    cache ??= load();
+    return cache;
   },
   getServerSnapshot(): readonly string[] {
     return NONE;
