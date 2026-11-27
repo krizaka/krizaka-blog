@@ -125,20 +125,20 @@ export function faqOf(body: string): Faq[] {
   let fence = false;
   let current: { question: string; lines: string[] } | undefined;
   const flush = () => {
-    if (current && current.lines.join("").trim())
+    if (current?.lines.join("").trim())
       out.push({ question: plainText(current.question), answer: plainText(current.lines.join("\n")) });
     current = undefined;
   };
   for (const line of body.split("\n")) {
     if (/^\s*(```|~~~)/.test(line)) fence = !fence;
     const h = fence ? null : parseAtxHeading(line, 2, 3);
-    if (h && h.hashes === "##") {
+    if (h?.hashes === "##") {
       flush();
       inFaq = FAQ_HEADING.test(headingText(h.raw));
       continue;
     }
     if (!inFaq) continue;
-    if (h && h.hashes === "###") {
+    if (h?.hashes === "###") {
       flush();
       current = { question: headingText(h.raw), lines: [] };
       continue;
