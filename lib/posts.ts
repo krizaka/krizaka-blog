@@ -175,7 +175,7 @@ export function seriesOf(locale: Locale): { series: string; posts: Post[] }[] {
   return [...by]
     .map(([series, posts]) => ({
       series,
-      posts: posts.sort((a, b) => (a.part ?? 99) - (b.part ?? 99) || a.date.localeCompare(b.date)),
+      posts: posts.toSorted((a, b) => (a.part ?? 99) - (b.part ?? 99) || a.date.localeCompare(b.date)),
     }))
     .sort((a, b) => b.posts.length - a.posts.length || a.series.localeCompare(b.series));
 }
