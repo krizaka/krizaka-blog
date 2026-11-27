@@ -84,16 +84,18 @@ ${basics("fr")}
 /** llms-full.txt: the same story with what each chapter holds (its period, the sections it walks through, the figures it gives), so a model can choose a chapter without opening them all. */
 export function llmsFullText({ chapters, posts }) {
   const prefix = (l) => (l === "fr" ? "/fr" : "");
-  const chapter = (c) =>
-    [
+  const chapter = (c) => {
+    const periodSuffix = c.period ? ` (${c.period})` : "";
+    return [
       `### ${c.chapter}. ${c.title}`,
-      `${SITE}${prefix(c.locale)}/story/${c.slug}/${c.period ? ` (${c.period})` : ""}`,
+      `${SITE}${prefix(c.locale)}/story/${c.slug}/${periodSuffix}`,
       c.description,
       c.headings.length ? `Sections: ${c.headings.join(" / ")}` : "",
       ...c.stats.map((s) => `- ${s.value} ${s.label}`),
     ]
       .filter(Boolean)
       .join("\n");
+  };
   const part = (l, title) =>
     `## ${title}\n\n${
       chapters

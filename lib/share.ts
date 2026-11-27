@@ -19,8 +19,10 @@ export function shareUrl(target: ShareTarget, url: string, title: string): strin
       return `https://news.ycombinator.com/submitlink?u=${enc(url)}&t=${enc(title)}`;
     case "reddit":
       return `https://www.reddit.com/submit?url=${enc(url)}&title=${enc(title)}`;
-    case "email":
-      return `mailto:?subject=${enc(title)}&body=${enc(`${title}\n\n${url}`)}`;
+    case "email": {
+      const body = `${title}\n\n${url}`;
+      return `mailto:?subject=${enc(title)}&body=${enc(body)}`;
+    }
   }
 }
 

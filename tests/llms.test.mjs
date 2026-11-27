@@ -57,3 +57,32 @@ test("llms-full.txt gives each chapter its sections and figures, in reading orde
   }
   assert.ok(full.includes("Sections: "), "sections listed");
 });
+
+test("llmsFullText formats chapters both with and without a period", () => {
+  const full = llmsFullText({
+    chapters: [
+      {
+        locale: "en",
+        chapter: 1,
+        slug: "dated",
+        title: "Dated",
+        period: "Oct 2026",
+        description: "Desc",
+        headings: ["One"],
+        stats: [{ value: "1", label: "day" }],
+      },
+      {
+        locale: "en",
+        chapter: 2,
+        slug: "undated",
+        title: "Undated",
+        description: "Desc 2",
+        headings: [],
+        stats: [],
+      },
+    ],
+    posts: [],
+  });
+  assert.ok(full.includes("/story/dated/ (Oct 2026)"));
+  assert.ok(full.includes("/story/undated/\nDesc 2"));
+});
