@@ -22,7 +22,7 @@ timed() {
 echo "::group::Closed means closed"
 grep -q "Disallow: /$" out/robots.txt
 grep -q 'name="robots" content="noindex' out/index.html
-test -f out/index.html && test -f out/fr/index.html && test -f out/feed.xml && test -f out/fr/atom.xml && test -f out/llms.txt && test -f out/sitemap.xml && test -f out/admin/index.html && test -f out/admin/config.yml
+[[ -f out/index.html && -f out/fr/index.html && -f out/feed.xml && -f out/fr/atom.xml && -f out/llms.txt && -f out/sitemap.xml && -f out/admin/index.html && -f out/admin/config.yml ]]
 echo "::endgroup::"
 
 echo "::group::Build, open, with the drafts"
@@ -92,7 +92,7 @@ echo "::endgroup::"
 echo "::group::The feeds are pure XML a reader accepts (no XSLT); the old /feed/ page is a stub to the story"
 for f in out/feed.xml out/fr/feed.xml out/atom.xml out/fr/atom.xml; do python3 -c "import sys, xml.dom.minidom as m; m.parse(sys.argv[1])" "$f"; done
 ! grep -q 'xml-stylesheet' out/feed.xml out/fr/feed.xml out/atom.xml out/fr/atom.xml
-test ! -e out/feed.xsl
+[[ ! -e out/feed.xsl ]]
 grep -q 'http-equiv="refresh" content="0; url=/"' out/feed/index.html
 grep -q 'http-equiv="refresh" content="0; url=/fr/"' out/fr/feed/index.html
 for p in out/index.html out/fr/index.html; do grep -q 'id="subscribe"' "$p"; done
@@ -101,7 +101,7 @@ grep -q 'id="subscribe"' out/basics/understanding-ai-before-you-start/index.html
 echo "::endgroup::"
 
 echo "::group::Open Graph images, feeds listing, retired addresses"
-test -f out/og/understanding-ai-before-you-start.png && test -f out/fr/og/understanding-ai-before-you-start.png
+[[ -f out/og/understanding-ai-before-you-start.png && -f out/fr/og/understanding-ai-before-you-start.png ]]
 grep -q "/story/what-a-gpu-costs/" out/feed.xml && grep -q "/fr/story/what-a-gpu-costs/" out/fr/atom.xml
 grep -q 'http-equiv="refresh" content="0; url=/story/what-a-gpu-costs/"' out/posts/what-image-and-video-generation-costs/index.html
 for p in story series tags search saved feed posts; do
