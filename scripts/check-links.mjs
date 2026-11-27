@@ -34,7 +34,7 @@ const SKIP = /(?:^(?:mailto:|tel:|javascript:|data:|#)|\/cdn-cgi\/)/i;
 /** The entities React writes in attributes (&amp; &quot; &#x27; &#39; …), decoded. */
 export const decodeEntities = (v) =>
   v
-    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(Number.parseInt(h, 16)))
     .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
     .replace(/&quot;/g, '"')
     .replace(/&lt;/g, "<")
