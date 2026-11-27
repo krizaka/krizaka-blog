@@ -15,7 +15,7 @@ export function localizedPath(locale: Locale, path: string): string {
 
 /** The language of a URL path, and the path without its language prefix. */
 export function splitLocale(pathname: string): { locale: Locale; path: string } {
-  const m = pathname.match(/^\/fr(\/.*)?$/);
+  const m = /^\/fr(\/.*)?$/.exec(pathname);
   return m ? { locale: "fr", path: m[1] ?? "/" } : { locale: "en", path: pathname || "/" };
 }
 
@@ -25,7 +25,7 @@ export function splitLocale(pathname: string): { locale: Locale; path: string } 
  */
 export function languageSwitchPath(other: Locale, path: string, translated: readonly string[]): string {
   const clean = path === "/" ? "/" : path.replace(/\/$/, "");
-  const post = clean.match(/^\/posts\/([a-z0-9]+(?:-[a-z0-9]+)*)$/);
+  const post = /^\/posts\/([a-z0-9]+(?:-[a-z0-9]+)*)$/.exec(clean);
   if (post) return translated.includes(post[1]) ? localizedPath(other, clean) : localizedPath(other, "/");
   return localizedPath(other, clean);
 }

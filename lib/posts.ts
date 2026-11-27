@@ -85,7 +85,7 @@ function parseUpdated(value: unknown): string | undefined {
 }
 
 export function parsePost(file: string, source: string): Post {
-  const m = file.match(FILE);
+  const m = FILE.exec(file);
   if (!m) {
     throw new Error(`content/posts/${file}: the name must be <slug>.<en|fr>.mdx`);
   }
@@ -163,7 +163,7 @@ export const plainText = (body: string): string =>
   body
     .replace(/```[\s\S]*?```/g, " ")
     .replace(/<[^<>]+>/g, " ")
-    .replace(/!?\[([^\[\]]*)\]\([^()]*\)/g, "$1")
+    .replace(/!?\[([^[\]]*)\]\([^()]*\)/g, "$1")
     .replace(/[#>*_`|~-]+/g, " ")
     .replace(/\s+/g, " ")
     .trim();

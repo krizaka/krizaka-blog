@@ -5,8 +5,8 @@
      `/search/`, `/saved/`, `/feed/`, `/posts/` move to the story (the home), or to the chapter or shelf post that absorbed them.
    Each stub is a 0-second meta refresh and a canonical, noindex, with a visible link (app/components/pages/RetiredPost.tsx): the
    permanent move a static host can give. A live page never has a stub at its own address (tests/retired-stubs.test.mjs). */
-import redirects from "./redirects.json";
-import type { Locale } from "./i18n";
+import redirects from "./redirects.json" with { type: "json" };
+import type { Locale } from "./locale.ts";
 import { stubHref, stubSlugs } from "./retired-core.mjs";
 
 export type Retired = { href: string; chapterSlug: string; anchor: string };
@@ -39,7 +39,7 @@ export function retiredTarget(locale: Locale, key: string): Retired | undefined 
   const href = MAP[key]?.[locale];
   if (!href) return undefined;
   const [path, anchor = ""] = href.split("#");
-  const slug = path.match(/^\/(?:fr\/)?(?:story|basics)\/([a-z0-9-]+)\/$/)?.[1] ?? "";
+  const slug = /^\/(?:fr\/)?(?:story|basics)\/([a-z0-9-]+)\/$/.exec(path)?.[1] ?? "";
   return { href, chapterSlug: slug, anchor };
 }
 
