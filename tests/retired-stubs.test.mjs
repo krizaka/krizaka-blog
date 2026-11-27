@@ -224,3 +224,18 @@ test("a built page is a redirect stub only when it carries a 0-second refresh me
   );
   assert.equal(isRedirectStub("<main><h1>A chapter</h1></main>"), false);
 });
+
+test("retiredTarget parses chapter and basics targets from lib/retired.ts", async () => {
+  const { retiredTarget, retiredSlugs, retiredSeriesIds, pageKey, retiredPagesUnder } =
+    await import("../lib/retired.ts");
+  assert.ok(retiredSlugs().length > 0);
+  assert.ok(retiredSeriesIds().length > 0);
+  assert.ok(retiredPagesUnder("/tags/").length > 0);
+
+  const chapterTarget = retiredTarget("en", "cette-semaine-2026-w46");
+  assert.ok(chapterTarget?.chapterSlug);
+  const frTarget = retiredTarget("fr", "cette-semaine-2026-w46");
+  assert.equal(frTarget?.chapterSlug, chapterTarget?.chapterSlug);
+  assert.equal(retiredTarget("en", pageKey("/feed/"))?.chapterSlug, "");
+  assert.equal(retiredTarget("en", "unknown-key-xyz"), undefined);
+});

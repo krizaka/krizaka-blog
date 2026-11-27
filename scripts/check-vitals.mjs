@@ -13,10 +13,11 @@ export const BUDGET = JSON.parse(readFileSync(new URL("./vitals-budget.json", im
 /** The problems of one page's measures against the budget (empty when it holds). */
 export function vitalsProblems(path, metrics, budget = BUDGET) {
   const out = [];
-  if (!(metrics.lcp > 0)) out.push(`${path}: no Largest Contentful Paint was reported`);
+  if (!Number.isFinite(metrics.lcp) || metrics.lcp <= 0) out.push(`${path}: no Largest Contentful Paint was reported`);
   else if (metrics.lcp > budget.lcpMs)
     out.push(`${path}: LCP ${Math.round(metrics.lcp)} ms is over the ${budget.lcpMs} ms budget`);
-  if (!(metrics.cls <= budget.cls)) out.push(`${path}: CLS ${metrics.cls.toFixed(3)} is over the ${budget.cls} budget`);
+  if (!Number.isFinite(metrics.cls) || metrics.cls > budget.cls)
+    out.push(`${path}: CLS ${metrics.cls.toFixed(3)} is over the ${budget.cls} budget`);
   return out;
 }
 

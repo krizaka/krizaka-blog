@@ -19,7 +19,7 @@ export const RENDITION_FORMATS = ["avif", "webp"];
 
 /** The problems of one entry's renditions (`{ avif: [{ w, url }], webp: [...] }`): both formats, exactly the widths of `renditionWidths`, on the CDN. */
 export function renditionProblems(id, m) {
-  if (!(m.width > 0)) return [];
+  if (!Number.isFinite(m.width) || m.width <= 0) return [];
   const r = m.renditions;
   if (!r || typeof r !== "object")
     return [
@@ -128,7 +128,8 @@ function fileProblems(id, m) {
   const out = [];
   if (!Array.isArray(m.srcs) || m.srcs.length === 0) out.push(`media ${id}: srcs is required`);
   for (const s of m.srcs ?? [])
-    if (!onBlogCdn(s.url) || !(s.w > 0)) out.push(`media ${id}: every src needs a width and a URL on ${CDN}`);
+    if (!onBlogCdn(s.url) || !Number.isFinite(s.w) || s.w <= 0)
+      out.push(`media ${id}: every src needs a width and a URL on ${CDN}`);
   return out;
 }
 

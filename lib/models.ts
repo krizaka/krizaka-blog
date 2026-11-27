@@ -424,7 +424,7 @@ export function mentionsOf(body: string): Mention[] {
 export function modelLinkProblems(body: string): string[] {
   const out: string[] = [];
   for (const m of body.matchAll(/<Model\b([^>]*)>([\s\S]*?)<\/Model>/g)) {
-    const id = m[1].match(/\bid="([^"]*)"/)?.[1];
+    const id = /\bid="([^"]*)"/.exec(m[1])?.[1];
     if (!id || !MODEL_BY_ID.has(id)) out.push(`<Model${m[1]}> names no model of lib/models.ts`);
   }
   const mentions = mentionsOf(body);

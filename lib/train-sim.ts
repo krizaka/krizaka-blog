@@ -133,8 +133,10 @@ export function trainFrames(script: readonly TrainEvent[] = TRAIN_SCRIPT): Frame
     const { frame } = apply(cars, event, i + 1);
     frames.push({ ...frame, cars: place(cars) });
   });
-  const last = frames[frames.length - 1];
-  frames.push({ step: last.step + 1, beat: "done", cars: place(cars) });
+  const last = frames.at(-1);
+  if (last) {
+    frames.push({ step: last.step + 1, beat: "done", cars: place(cars) });
+  }
   return frames;
 }
 
@@ -148,7 +150,7 @@ export function trainProblems(script: readonly TrainEvent[] = TRAIN_SCRIPT): str
   } catch (error) {
     return [error instanceof Error ? error.message : String(error)];
   }
-  const end = frames[frames.length - 1].cars;
+  const end = frames.at(-1)?.cars ?? [];
   if (!end.some((c) => c.lane === "merged")) out.push("the scenario never merges a car");
   if (!end.some((c) => c.lane === "siding")) out.push("the scenario never sets a red car aside");
   for (const c of end) {

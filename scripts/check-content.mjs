@@ -21,9 +21,7 @@ const { files, problems } = checkDir(join(root, "content/posts"), ctx);
 problems.push(...mediaProblems(ctx.media));
 /* The story's chapters (content/chapters): a post's rules, plus chapter, period, sources, versus and stats. */
 const chapters = checkChapters(join(root, "content/chapters"), join(root, "content/posts"), ctx);
-problems.push(...chapters.problems);
-/* The « how we work » chapter's figures carry simulated data; a guard scans their components, simulations and messages. */
-problems.push(...articleConfidentialProblems(root));
+problems.push(...chapters.problems, ...articleConfidentialProblems(root));
 /* No media in the repository (they live on the CDN): an image file under content/ or public/ fails. */
 const IMAGE = /\.(png|jpe?g|gif|webp|avif|mp4|webm|mov)$/i;
 const walk = (d) =>

@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { MM, PAGE, fillOf, layoutProblems, opensPart, pushedPictures } from "../lib/pdf-layout.mjs";
+import { MM, PAGE, fillOf, layoutProblems, opensPart, pushedPictures, readPages } from "../lib/pdf-layout.mjs";
 
 const TOP = PAGE.height - PAGE.top; // the first line of the text block
 const BOTTOM = PAGE.bottom;
@@ -73,5 +73,34 @@ test("the generator reads every PDF it makes back with the guard, and repairs be
     css,
     /margin-left: -\d+mm/,
     "nothing wider than the text block (Chromium would shrink every page)",
+  );
+});
+
+test("readPages extracts non-blank text items from a PDF and ignores whitespace-only runs", async () => {
+  const stream = "BT /F1 12 Tf 72 700 Td (   ) Tj 0 -20 Td (Hello PDF) Tj ET";
+  const objs = [
+    "1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n",
+    "2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj\n",
+    "3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >> endobj\n",
+    "4 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj\n",
+    `5 0 obj << /Length ${stream.length} >> stream\n${stream}\nendstream endobj\n`,
+  ];
+  let pdf = "%PDF-1.4\n";
+  const offsets = [0];
+  for (const obj of objs) {
+    offsets.push(pdf.length);
+    pdf += obj;
+  }
+  const xref = pdf.length;
+  pdf += `xref\n0 ${objs.length + 1}\n0000000000 65535 f \n`;
+  for (let i = 1; i < offsets.length; i++) {
+    pdf += `${String(offsets[i]).padStart(10, "0")} 00000 n \n`;
+  }
+  pdf += `trailer << /Size ${objs.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
+  const pages = await readPages(Buffer.from(pdf, "ascii"));
+  assert.equal(pages.length, 1);
+  assert.equal(
+    pages[0].items.some((it) => it.kind === "text" && it.text.includes("Hello PDF")),
+    true,
   );
 });

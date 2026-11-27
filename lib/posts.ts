@@ -4,8 +4,8 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import matter from "gray-matter";
-import { LOCALES, type Locale } from "./i18n";
-import { SHOW_DRAFTS } from "./site";
+import { LOCALES, type Locale } from "./locale.ts";
+import { SHOW_DRAFTS } from "./site.ts";
 import { featuredOrder, publishedTime } from "./reading.ts";
 import { resolveLinks } from "./links.ts";
 
@@ -47,47 +47,73 @@ const FILE = /^([a-z0-9]+(?:-[a-z0-9]+)*)\.(en|fr)\.mdx$/;
 export const readingMinutes = (body: string): number =>
   Math.max(1, Math.ceil(body.split(/\s+/).filter(Boolean).length / 220));
 
+function requireField(data: Record<string, unknown>, file: string, key: string): string {
+  const value = data[key];
+  if (typeof value !== "string" || !value.trim()) {
+    throw new Error(`content/posts/${file}: "${key}" is required`);
+  }
+  return value.trim();
+}
+
+function optionalTrimmed(value: unknown): string | undefined {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+  const trimmed = value.trim();
+  return trimmed || undefined;
+}
+
+function optionalString(value: unknown): string | undefined {
+  return typeof value === "string" && value ? value : undefined;
+}
+
+function parsePublishedAt(value: unknown): string | undefined {
+  if (value instanceof Date) {
+    return value.toISOString();
+  }
+  return typeof value === "string" ? value : undefined;
+}
+
+function parseUpdated(value: unknown): string | undefined {
+  if (!value) {
+    return undefined;
+  }
+  if (value instanceof Date) {
+    return value.toISOString().slice(0, 10);
+  }
+  return typeof value === "string" || typeof value === "number" ? String(value) : undefined;
+}
+
 export function parsePost(file: string, source: string): Post {
-  const m = file.match(FILE);
-  if (!m) throw new Error(`content/posts/${file}: the name must be <slug>.<en|fr>.mdx`);
+  const m = FILE.exec(file);
+  if (!m) {
+    throw new Error(`content/posts/${file}: the name must be <slug>.<en|fr>.mdx`);
+  }
   const { data, content } = matter(resolveLinks(source));
-  const need = (k: string) => {
-    const v = data[k];
-    if (typeof v !== "string" || !v.trim()) throw new Error(`content/posts/${file}: "${k}" is required`);
-    return v.trim();
-  };
-  const date = data.date instanceof Date ? data.date.toISOString().slice(0, 10) : need("date");
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error(`content/posts/${file}: "date" must be YYYY-MM-DD`);
+  const date = data.date instanceof Date ? data.date.toISOString().slice(0, 10) : requireField(data, file, "date");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    throw new Error(`content/posts/${file}: "date" must be YYYY-MM-DD`);
+  }
   const tags = Array.isArray(data.tags) ? data.tags.map(String) : [];
   return {
     slug: m[1],
     locale: m[2] as Locale,
-    title: need("title"),
-    description: need("description"),
-    seoTitle: typeof data.seoTitle === "string" && data.seoTitle.trim() ? data.seoTitle.trim() : undefined,
-    seoDescription:
-      typeof data.seoDescription === "string" && data.seoDescription.trim() ? data.seoDescription.trim() : undefined,
+    title: requireField(data, file, "title"),
+    description: requireField(data, file, "description"),
+    seoTitle: optionalTrimmed(data.seoTitle),
+    seoDescription: optionalTrimmed(data.seoDescription),
     date,
-    publishedAt:
-      data.publishedAt instanceof Date
-        ? data.publishedAt.toISOString()
-        : typeof data.publishedAt === "string"
-          ? data.publishedAt
-          : undefined,
-    updated: data.updated
-      ? data.updated instanceof Date
-        ? data.updated.toISOString().slice(0, 10)
-        : String(data.updated)
-      : undefined,
+    publishedAt: parsePublishedAt(data.publishedAt),
+    updated: parseUpdated(data.updated),
     tags,
     author: typeof data.author === "string" ? data.author : "krizaka",
     draft: data.draft === true,
-    cover: typeof data.cover === "string" && data.cover ? data.cover : undefined,
-    coverAlt: typeof data.coverAlt === "string" && data.coverAlt.trim() ? data.coverAlt.trim() : undefined,
+    cover: optionalString(data.cover),
+    coverAlt: optionalTrimmed(data.coverAlt),
     featured: data.featured === true,
-    series: typeof data.series === "string" && data.series ? data.series : undefined,
+    series: optionalString(data.series),
     part: typeof data.part === "number" ? data.part : undefined,
-    image: typeof data.image === "string" && data.image ? data.image : undefined,
+    image: optionalString(data.image),
     body: content,
     readingMinutes: readingMinutes(content),
   };
@@ -136,8 +162,8 @@ export const postsWithTag = (locale: Locale, tag: string): Post[] =>
 export const plainText = (body: string): string =>
   body
     .replace(/```[\s\S]*?```/g, " ")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/<[^<>]+>/g, " ")
+    .replace(/!?\[([^[\]]*)\]\([^()]*\)/g, "$1")
     .replace(/[#>*_`|~-]+/g, " ")
     .replace(/\s+/g, " ")
     .trim();
@@ -149,7 +175,7 @@ export function seriesOf(locale: Locale): { series: string; posts: Post[] }[] {
   return [...by]
     .map(([series, posts]) => ({
       series,
-      posts: posts.sort((a, b) => (a.part ?? 99) - (b.part ?? 99) || a.date.localeCompare(b.date)),
+      posts: posts.toSorted((a, b) => (a.part ?? 99) - (b.part ?? 99) || a.date.localeCompare(b.date)),
     }))
     .sort((a, b) => b.posts.length - a.posts.length || a.series.localeCompare(b.series));
 }

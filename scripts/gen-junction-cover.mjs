@@ -174,8 +174,7 @@ function track(rand, curve, g0, g1, { from = 0, to = 1, sleepers = true } = {}) 
     );
     if (rand() < 0.5) out.push(pen(rand, lineD([s.a, s.z]), 0.7, { opacity: 0.3, twice: false }));
   }
-  out.push(pen(rand, lineD(left), 1.5, { opacity: 0.85 }));
-  out.push(pen(rand, lineD(right), 2.1, { opacity: 0.9 }));
+  out.push(pen(rand, lineD(left), 1.5, { opacity: 0.85 }), pen(rand, lineD(right), 2.1, { opacity: 0.9 }));
   return out.join("\n");
 }
 
@@ -222,8 +221,10 @@ function wagon(rand, at, size) {
     ),
   ];
   for (const x of [-38, 38]) {
-    out.push(`<circle cx="${x}" cy="4" r="9" fill="${P.ink}" opacity="0.8" filter="url(#w3)"/>`);
-    out.push(pen(rand, `M${x - 9} 4 a9 9 0 1 0 18 0 a9 9 0 1 0 -18 0`, 1.2, { twice: false }));
+    out.push(
+      `<circle cx="${x}" cy="4" r="9" fill="${P.ink}" opacity="0.8" filter="url(#w3)"/>`,
+      pen(rand, `M${x - 9} 4 a9 9 0 1 0 18 0 a9 9 0 1 0 -18 0`, 1.2, { twice: false }),
+    );
   }
   out.push(
     pen(
@@ -235,8 +236,6 @@ function wagon(rand, at, size) {
       1.5,
       { twice: false },
     ),
-  );
-  out.push(
     pen(
       rand,
       lineD([
@@ -265,8 +264,6 @@ function wagon(rand, at, size) {
         0.95,
         "w3",
       ),
-    );
-    out.push(
       pen(
         rand,
         lineD([
@@ -291,8 +288,6 @@ function wagon(rand, at, size) {
           1,
           "w3",
         ),
-      );
-      out.push(
         pen(
           rand,
           polyD([
@@ -307,8 +302,7 @@ function wagon(rand, at, size) {
     }
     if (k === sheets - 1) {
       const top = face(x0, x1, y - th);
-      out.push(wash(polyD(top), "#fffdf7", 1, "w3"));
-      out.push(pen(rand, polyD(top), 1.2));
+      out.push(wash(polyD(top), "#fffdf7", 1, "w3"), pen(rand, polyD(top), 1.2));
       for (let r = 0; r < 3; r++) {
         const yy = y - th - 2.6 - r * 2.8;
         const xs = x0 + 8 + r * 2.6;
@@ -739,11 +733,7 @@ function station(rand) {
         0.95,
         "w3",
       ),
-    );
-    out.push(
       `<rect x="${wx - 6}" y="398" width="34" height="38" fill="${P.orange}" opacity="0.28" filter="url(#glow)"/>`,
-    );
-    out.push(
       pen(
         rand,
         polyD([
@@ -754,8 +744,6 @@ function station(rand) {
         ]),
         1,
       ),
-    );
-    out.push(
       pen(
         rand,
         lineD([
@@ -779,8 +767,6 @@ function station(rand) {
       0.7,
       "w3",
     ),
-  );
-  out.push(
     pen(
       rand,
       polyD([
@@ -814,8 +800,6 @@ function poles(rand) {
         ]),
         1.2 + h / 130,
       ),
-    );
-    out.push(
       pen(
         rand,
         lineD([

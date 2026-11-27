@@ -34,30 +34,32 @@ const SKIP = /(?:^(?:mailto:|tel:|javascript:|data:|#)|\/cdn-cgi\/)/i;
 /** The entities React writes in attributes (&amp; &quot; &#x27; &#39; …), decoded. */
 export const decodeEntities = (v) =>
   v
-    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(Number.parseInt(h, 16)))
     .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
-    .replace(/&quot;/g, '"')
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&amp;/g, "&");
+    .replaceAll("&quot;", '"')
+    .replaceAll("&lt;", "<")
+    .replaceAll("&gt;", ">")
+    .replaceAll("&amp;", "&");
 
 /** The URLs of a srcset, read as the HTML spec reads them: a URL runs to the next whitespace (a data: URL keeps its
     comma), then its descriptor runs to the next comma. */
 export function srcsetUrls(value) {
   const urls = [];
+  const skipWhile = (from, test) => {
+    let k = from;
+    while (k < value.length && test(value[k])) k++;
+    return k;
+  };
   let i = 0;
   while (i < value.length) {
-    while (i < value.length && /[\s,]/.test(value[i])) i++;
-    let j = i;
-    while (j < value.length && !/\s/.test(value[j])) j++;
-    let url = value.slice(i, j);
-    const endsWithComma = url.endsWith(",");
-    url = url.replace(/,+$/, "");
+    i = skipWhile(i, (c) => /[\s,]/.test(c));
+    const j = skipWhile(i, (c) => !/\s/.test(c));
+    const raw = value.slice(i, j);
+    let end = raw.length;
+    while (end > 0 && raw[end - 1] === ",") end--;
+    const url = raw.slice(0, end);
     if (url) urls.push(url);
-    i = j;
-    if (!endsWithComma) {
-      while (i < value.length && value[i] !== ",") i++;
-    }
+    i = raw.endsWith(",") ? j : skipWhile(j, (c) => c !== ",");
   }
   return urls;
 }
@@ -140,6 +142,29 @@ export async function follow(url, { method = "GET", fetchImpl = fetch, timeout =
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+const FALLBACK_TO_GET = new Set([400, 403, 404, 405, 501]);
+
+async function probeExternal(url, fetchImpl) {
+  let result = await follow(url, { method: "HEAD", fetchImpl });
+  if (!result.error && FALLBACK_TO_GET.has(result.status)) {
+    result = await follow(url, { method: "GET", fetchImpl });
+  }
+  if (result.body) {
+    await result.body.body?.cancel?.().catch(() => {});
+  }
+  return result;
+}
+
+function isFinalExternalResult(result) {
+  return Boolean(result.error) || result.status < 400 || (result.status !== 429 && result.status < 500);
+}
+
+function formatFetchError(url, err) {
+  const code = err.cause?.code ?? err.message;
+  const error = err.name === "TimeoutError" ? "timeout" : code;
+  return { result: { url, status: 0, error }, fatal: code === "ENOTFOUND" };
+}
+
 /** An external link: HEAD, then GET if HEAD is refused; three tries with backoff on network errors, 429 and 5xx.
     `transient` is true when the last answer could be the network's or the host's mood (timeout, reset, 429, 5xx): reported,
     not fatal. A 4xx, an unknown host or a redirect loop is broken. */
@@ -147,24 +172,102 @@ export async function checkExternal(url, { fetchImpl = fetch, tries = 3, wait = 
   let last = { url, status: 0, error: "not tried" };
   for (let i = 0; i < tries; i++) {
     try {
-      last = await follow(url, { method: "HEAD", fetchImpl });
-      if (!last.error && [400, 403, 404, 405, 501].includes(last.status))
-        last = await follow(url, { method: "GET", fetchImpl });
-      if (last.body) await last.body.body?.cancel?.().catch(() => {});
-      if (last.error) return { ...last, transient: false };
-      if (last.status < 400) return { ...last, transient: false };
-      if (last.status !== 429 && last.status < 500) return { ...last, transient: false };
+      last = await probeExternal(url, fetchImpl);
+      if (isFinalExternalResult(last)) {
+        return { ...last, transient: false };
+      }
     } catch (e) {
-      const code = e.cause?.code ?? e.message;
-      last = { url, status: 0, error: e.name === "TimeoutError" ? "timeout" : code };
-      if (code === "ENOTFOUND") return { ...last, transient: false };
+      const { result, fatal } = formatFetchError(url, e);
+      last = result;
+      if (fatal) {
+        return { ...last, transient: false };
+      }
     }
-    if (i < tries - 1) await sleep(wait * (i + 1));
+    if (i < tries - 1) {
+      await sleep(wait * (i + 1));
+    }
   }
   return { ...last, transient: true };
 }
 
-async function crawl({ base, host, external }) {
+function recordDiscoveredLink(target, fromUrl, ctx) {
+  if (!isInternal(target, ctx.base)) {
+    if (!ctx.externals.has(target)) {
+      ctx.externals.set(target, fromUrl);
+    }
+    return;
+  }
+  if (!ctx.seen.has(target)) {
+    ctx.seen.add(target);
+    ctx.where.set(target, fromUrl);
+    ctx.queue.push(target);
+  }
+}
+
+function collectPageLinks(text, finalUrl, fromUrl, ctx) {
+  for (const link of extractLinks(text)) {
+    const resolved = resolve(link, finalUrl, ctx.base, ctx.host);
+    if (resolved) {
+      recordDiscoveredLink(resolved, fromUrl, ctx);
+    }
+  }
+  for (const x of text.matchAll(/\]\((https?:\/\/[^)\s]+)\)/g)) {
+    const resolved = resolve(x[1], finalUrl, ctx.base, ctx.host);
+    if (resolved && !isInternal(resolved, ctx.base) && !ctx.externals.has(resolved)) {
+      ctx.externals.set(resolved, fromUrl);
+    }
+  }
+}
+
+async function visitInternalUrl(url, ctx) {
+  let r;
+  try {
+    r = await follow(url, { fetchImpl: ctx.fetchImpl });
+  } catch (e) {
+    ctx.failures.push(`${url} — ${e.message} (linked from ${ctx.where.get(url)})`);
+    return;
+  }
+  if (r.error || r.status < 200 || r.status >= 300) {
+    ctx.failures.push(`${url} — ${r.error ?? r.status} (linked from ${ctx.where.get(url)})`);
+    await r.body?.body?.cancel?.().catch(() => {});
+    return;
+  }
+  if (!isInternal(r.final, ctx.base) || !(isPage(r.final, r.type) || r.final.endsWith(".txt"))) {
+    await r.body?.body?.cancel?.().catch(() => {});
+    return;
+  }
+  const text = await r.body.text();
+  collectPageLinks(text, r.final, url, ctx);
+}
+
+async function classifyExternalUrl(url, linkedFrom, ctx, soft) {
+  const r = await checkExternal(url, { fetchImpl: ctx.fetchImpl, wait: ctx.wait });
+  const ok = !r.error && r.status >= 200 && r.status < 400;
+  if (ok) {
+    return;
+  }
+  const line = `${url} — ${r.error ?? r.status} (linked from ${linkedFrom})`;
+  if (isSoft(url) || r.transient) {
+    soft.push(line);
+  } else {
+    ctx.failures.push(line);
+  }
+}
+
+async function checkExternalPool(ctx, soft) {
+  const list = [...ctx.externals.keys()];
+  let i = 0;
+  const worker = async () => {
+    while (i < list.length) {
+      const u = list[i++];
+      await classifyExternalUrl(u, ctx.externals.get(u), ctx, soft);
+    }
+  };
+  await Promise.all(Array.from({ length: 6 }, worker));
+  console.log(`check-links: ${list.length} external URLs checked`);
+}
+
+export async function crawl({ base, host, external, fetchImpl = fetch, wait = 1500 }) {
   const start = [
     "/",
     "/fr/",
@@ -176,68 +279,32 @@ async function crawl({ base, host, external }) {
     "/llms.txt",
     "/404.html",
   ].map((p) => new URL(p, base).toString());
-  const queue = [...start];
-  const seen = new Set(queue);
-  const where = new Map(start.map((u) => [u, "(start)"]));
-  const externals = new Map();
-  const failures = [];
-  while (queue.length) {
-    const url = queue.shift();
-    let r;
-    try {
-      r = await follow(url);
-    } catch (e) {
-      failures.push(`${url} — ${e.message} (linked from ${where.get(url)})`);
-      continue;
-    }
-    if (r.error || r.status < 200 || r.status >= 300) {
-      failures.push(`${url} — ${r.error ?? r.status} (linked from ${where.get(url)})`);
-      await r.body?.body?.cancel?.().catch(() => {});
-      continue;
-    }
-    if (!isInternal(r.final, base) || !(isPage(r.final, r.type) || r.final.endsWith(".txt"))) {
-      await r.body?.body?.cancel?.().catch(() => {});
-      continue;
-    }
-    const text = await r.body.text();
-    for (const link of extractLinks(text)) {
-      const u = resolve(link, r.final, base, host);
-      if (!u) continue;
-      if (isInternal(u, base)) {
-        if (!seen.has(u)) {
-          seen.add(u);
-          where.set(u, url);
-          queue.push(u);
-        }
-      } else if (!externals.has(u)) externals.set(u, url);
-    }
-    for (const x of text.matchAll(/\]\((https?:\/\/[^)\s]+)\)/g)) {
-      const u = resolve(x[1], r.final, base, host);
-      if (u && !isInternal(u, base) && !externals.has(u)) externals.set(u, url);
-    }
+  const ctx = {
+    base,
+    host,
+    fetchImpl,
+    wait,
+    queue: [...start],
+    seen: new Set(start),
+    where: new Map(start.map((u) => [u, "(start)"])),
+    externals: new Map(),
+    failures: [],
+  };
+  while (ctx.queue.length) {
+    await visitInternalUrl(ctx.queue.shift(), ctx);
   }
-  console.log(`check-links: ${seen.size} internal URLs, ${failures.length} broken`);
+  console.log(`check-links: ${ctx.seen.size} internal URLs, ${ctx.failures.length} broken`);
   const soft = [];
   if (external) {
-    const list = [...externals.keys()];
-    let i = 0;
-    const worker = async () => {
-      while (i < list.length) {
-        const u = list[i++];
-        const r = await checkExternal(u);
-        const ok = !r.error && r.status >= 200 && r.status < 400;
-        if (ok) continue;
-        const line = `${u} — ${r.error ?? r.status} (linked from ${externals.get(u)})`;
-        if (isSoft(u) || r.transient) soft.push(line);
-        else failures.push(line);
-      }
-    };
-    await Promise.all(Array.from({ length: 6 }, worker));
-    console.log(`check-links: ${list.length} external URLs checked`);
+    await checkExternalPool(ctx, soft);
   }
-  for (const s of soft) console.log(`not fatal (host refuses robots, or a transient answer after retries): ${s}`);
-  for (const f of failures) console.error(`BROKEN ${f}`);
-  return failures.length;
+  for (const s of soft) {
+    console.log(`not fatal (host refuses robots, or a transient answer after retries): ${s}`);
+  }
+  for (const f of ctx.failures) {
+    console.error(`BROKEN ${f}`);
+  }
+  return ctx.failures.length;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

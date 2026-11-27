@@ -158,81 +158,142 @@ async function waitLive(url, minutes = 20) {
   return false;
 }
 
-async function cli() {
-  const arg = (n) => {
-    const i = process.argv.indexOf(n);
-    return i > 0 ? process.argv[i + 1] : undefined;
-  };
-  const dry = process.argv.includes("--dry-run");
-  const testTo = arg("--test-to");
-  if (!dry && !testTo && !newsletterEnabled())
-    return console.log(
-      "newsletter: sending is switched off (set the repository variable MAIL_NEWSLETTER_ENABLED to true); nothing sent",
-    );
-  const before = arg("--before");
-  const after = arg("--after") ?? "HEAD";
-  let slugs;
-  if (arg("--slug")) {
-    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(arg("--slug"))) throw new Error("newsletter: --slug must be a post's slug");
-    slugs = [arg("--slug")];
-  } else {
-    // No "before" (a new branch, a forced history): nothing can be told apart, so nothing is sent automatically.
-    if (!before || ZERO.test(before))
-      return console.log("newsletter: no previous commit to compare with; use --slug to send by hand");
-    const changed = git("diff", "--name-only", before, after, "--", "content/posts", "content/chapters").split("\n");
-    slugs = publishedBetween(changed.filter(Boolean), { before: (p) => show(before, p), after: (p) => show(after, p) });
+function readArg(name, argv = process.argv) {
+  const i = argv.indexOf(name);
+  return i > 0 ? argv[i + 1] : undefined;
+}
+
+export function resolveSlugs(slugArg, before, after, { gitImpl = git, showImpl = show } = {}) {
+  if (slugArg) {
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slugArg)) {
+      throw new Error("newsletter: --slug must be a post's slug");
+    }
+    return [slugArg];
   }
-  if (!slugs.length) return console.log("newsletter: no post published by these commits");
-  const media = JSON.parse(readFileSync("lib/media.json", "utf8"));
-  const token = process.env.MAIL_SEND_TOKEN;
-  if (!dry && !token) throw new Error("newsletter: MAIL_SEND_TOKEN is not set");
-  for (const slug of slugs) {
-    /* A test may preview a draft (the working tree); a real send reads the published commit. */
-    const read = testTo
-      ? (p) => {
-          try {
-            return readFileSync(p, "utf8");
-          } catch {
-            return null;
-          }
-        }
-      : (p) => show(after, p);
-    const versions = versionsOf(slug, read, media, { drafts: Boolean(testTo) });
-    if (!Object.keys(versions).length) {
-      console.log(`newsletter: ${slug} is not published at ${after}`);
-      continue;
-    }
-    const rendered = await withRenderedEmails(versions);
-    if (dry) {
-      console.log(
-        `newsletter (dry run): would send ${slug}`,
-        JSON.stringify(
-          Object.fromEntries(
-            Object.entries(rendered).map(([l, v]) => [
-              l,
-              { title: v.title, url: v.url, subject: v.subject, cover: v.coverUrl ?? null, htmlBytes: v.html.length },
-            ]),
-          ),
-        ),
-      );
-      continue;
-    }
-    if (testTo) {
-      const locale = arg("--locale");
-      const r = await requestSend(slug, rendered, token, fetch, { test: testTo, locale });
-      console.log(`newsletter: test e-mail of ${slug} (${r.locale}) sent to ${r.to} only`);
-      continue;
-    }
-    for (const v of Object.values(versions))
-      if (!(await waitLive(v.url))) throw new Error(`newsletter: ${v.url} is not live after 20 minutes; nothing sent`);
-    const r = await requestSend(slug, rendered, token);
-    console.log(assertDelivered(slug, r));
+  // No "before" (a new branch, a forced history): nothing can be told apart, so nothing is sent automatically.
+  if (!before || ZERO.test(before)) {
+    console.log("newsletter: no previous commit to compare with; use --slug to send by hand");
+    return null;
+  }
+  const changed = gitImpl("diff", "--name-only", before, after, "--", "content/posts", "content/chapters").split("\n");
+  return publishedBetween(changed.filter(Boolean), {
+    before: (p) => showImpl(before, p),
+    after: (p) => showImpl(after, p),
+  });
+}
+
+function readWorkingFile(path) {
+  try {
+    return readFileSync(path, "utf8");
+  } catch {
+    return null;
   }
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+export function formatDryRunSummary(rendered) {
+  return JSON.stringify(
+    Object.fromEntries(
+      Object.entries(rendered).map(([l, v]) => [
+        l,
+        { title: v.title, url: v.url, subject: v.subject, cover: v.coverUrl ?? null, htmlBytes: v.html.length },
+      ]),
+    ),
+  );
+}
+
+export async function deliverSlug(
+  slug,
+  {
+    after,
+    dry,
+    testTo,
+    locale,
+    media,
+    token,
+    readFileImpl = readWorkingFile,
+    showImpl = show,
+    waitLiveImpl = waitLive,
+    fetchImpl = fetch,
+  },
+) {
+  /* A test may preview a draft (the working tree); a real send reads the published commit. */
+  const read = testTo ? readFileImpl : (p) => showImpl(after, p);
+  const versions = versionsOf(slug, read, media, { drafts: Boolean(testTo) });
+  if (!Object.keys(versions).length) {
+    console.log(`newsletter: ${slug} is not published at ${after}`);
+    return;
+  }
+  const rendered = await withRenderedEmails(versions);
+  if (dry) {
+    console.log(`newsletter (dry run): would send ${slug}`, formatDryRunSummary(rendered));
+    return;
+  }
+  if (testTo) {
+    const r = await requestSend(slug, rendered, token, fetchImpl, { test: testTo, locale });
+    console.log(`newsletter: test e-mail of ${slug} (${r.locale}) sent to ${r.to} only`);
+    return;
+  }
+  for (const v of Object.values(versions)) {
+    if (!(await waitLiveImpl(v.url))) {
+      throw new Error(`newsletter: ${v.url} is not live after 20 minutes; nothing sent`);
+    }
+  }
+  const r = await requestSend(slug, rendered, token, fetchImpl);
+  console.log(assertDelivered(slug, r));
+}
+
+export async function cli({
+  argv = process.argv,
+  env = process.env,
+  gitImpl = git,
+  showImpl = show,
+  readFileImpl = readWorkingFile,
+  waitLiveImpl = waitLive,
+  fetchImpl = fetch,
+  media,
+} = {}) {
+  const dry = argv.includes("--dry-run");
+  const testTo = readArg("--test-to", argv);
+  if (!dry && !testTo && !newsletterEnabled(env)) {
+    console.log(
+      "newsletter: sending is switched off (set the repository variable MAIL_NEWSLETTER_ENABLED to true); nothing sent",
+    );
+    return;
+  }
+  const before = readArg("--before", argv);
+  const after = readArg("--after", argv) ?? "HEAD";
+  const slugs = resolveSlugs(readArg("--slug", argv), before, after, { gitImpl, showImpl });
+  if (!slugs) {
+    return;
+  }
+  if (!slugs.length) {
+    console.log("newsletter: no post published by these commits");
+    return;
+  }
+  const loadedMedia = media ?? JSON.parse(readFileSync("lib/media.json", "utf8"));
+  const token = env.MAIL_SEND_TOKEN;
+  if (!dry && !token) {
+    throw new Error("newsletter: MAIL_SEND_TOKEN is not set");
+  }
+  const locale = readArg("--locale", argv);
+  for (const slug of slugs) {
+    await deliverSlug(slug, {
+      after,
+      dry,
+      testTo,
+      locale,
+      media: loadedMedia,
+      token,
+      readFileImpl,
+      showImpl,
+      waitLiveImpl,
+      fetchImpl,
+    });
+  }
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href)
   cli().catch((e) => {
     console.error(e.message);
     process.exit(1);
   });
-}

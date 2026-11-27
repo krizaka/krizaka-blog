@@ -27,7 +27,7 @@ export function coverOf(media, id) {
   const list = media?.[id]?.renditions?.webp;
   if (!Array.isArray(list) || !list.length) return undefined;
   const sorted = [...list].sort((a, b) => a.w - b.w);
-  return (sorted.find((r) => r.w >= COVER_WIDTH) ?? sorted[sorted.length - 1]).url;
+  return (sorted.find((r) => r.w >= COVER_WIDTH) ?? sorted.at(-1)).url;
 }
 
 /** One language's e-mail: { subject, html, text, headers }, placeholders in place of the reader's own values. */
@@ -55,7 +55,7 @@ export async function withRenderedEmails(versions) {
 
 /** The image URLs of a rendered e-mail (what a client would fetch). */
 export const imagesOf = (html) =>
-  [...html.matchAll(/<img\b[^>]*?\ssrc="([^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, "&"));
+  [...html.matchAll(/<img\b[^>]*?\ssrc="([^"]+)"/g)].map((m) => m[1].replaceAll("&amp;", "&"));
 
 /** The placeholder of the signed token in the confirmation link, identical to the function's CONFIRM_TOKEN (tests/newsletter.test.mjs). */
 export const CONFIRM_TOKEN = "__CONFIRM_TOKEN__";

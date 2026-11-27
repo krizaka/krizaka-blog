@@ -4,6 +4,8 @@
 # contract, the links, the layout in a real browser, the feeds, the Open Graph images and the stubs of removed addresses.
 set -euo pipefail
 
+readonly ENDGROUP="::endgroup::"
+
 # A pinned download: a hiccup of the host is retried (GitHub answered 504 on epubcheck and froze the repository, krizaka-internal#2962),
 # a wrong file never passes, the checksum still decides.
 fetch_pinned() {
@@ -22,28 +24,28 @@ timed() {
 echo "::group::Closed means closed"
 grep -q "Disallow: /$" out/robots.txt
 grep -q 'name="robots" content="noindex' out/index.html
-test -f out/index.html && test -f out/fr/index.html && test -f out/feed.xml && test -f out/fr/atom.xml && test -f out/llms.txt && test -f out/sitemap.xml && test -f out/admin/index.html && test -f out/admin/config.yml
-echo "::endgroup::"
+[[ -f out/index.html && -f out/fr/index.html && -f out/feed.xml && -f out/fr/atom.xml && -f out/llms.txt && -f out/sitemap.xml && -f out/admin/index.html && -f out/admin/config.yml ]]
+echo "$ENDGROUP"
 
 echo "::group::Build, open, with the drafts"
 APP_INDEXING_ENABLED=true APP_SHOW_DRAFTS=1 npm run build
-echo "::endgroup::"
+echo "$ENDGROUP"
 
 echo "::group::What search engines read on every page (title <= 60, description <= 155, one h1, alt on every image, no NaN)"
 node scripts/check-meta.mjs out
-echo "::endgroup::"
+echo "$ENDGROUP"
 
 echo "::group::Every published post is linked from the home page, in each language (krizaka-internal#3219)"
 node scripts/check-home-posts.mjs --out out
-echo "::endgroup::"
+echo "$ENDGROUP"
 
 echo "::group::The page contract of a post: the founder's signature at its end, the other language a link (krizaka-internal#3643)"
 node scripts/check-post-pages.mjs --out out
-echo "::endgroup::"
+echo "$ENDGROUP"
 
 echo "::group::Commercial names (krizaka-internal#2103): the old chapters keep their historical names, so the built site is a report"
 node_modules/.bin/krizaka-code-names --report out | tail -1
-echo "::endgroup::"
+echo "$ENDGROUP"
 
 echo "::group::The family's SEO contract, every link, the layout"
 npm install --no-save --ignore-scripts --no-audit --no-fund serve@14.2.6
@@ -61,13 +63,13 @@ timed node scripts/check-layout.mjs --base http://localhost:3000 --posts out
 timed node scripts/check-visual.mjs --base http://localhost:3000
 # The console of the home and of a chapter: no CORS refusal on the CDN's AVIF covers, no unused preload (krizaka-internal#3975).
 timed node scripts/check-console.mjs --base http://localhost:3000 --out out
-echo "::endgroup::"
+echo "$ENDGROUP"
 
 echo "::group::Reading offline: every chapter is saveable and in the service worker's precache, and a saved chapter opens with no network"
 # The same chapters as the build it checks: the open build above has the drafts in its manifest.
 APP_SHOW_DRAFTS=1 node scripts/check-offline.mjs
 node scripts/check-offline-reading.mjs --base http://localhost:3000 --out out
-echo "::endgroup::"
+echo "$ENDGROUP"
 
 echo "::group::Downloads: the EPUB and the PDF of every chapter and of the series, in each language, each checked"
 # pandoc 3.13 (the EPUB), pinned by its checksum; Chromium (the PDF) is the one Playwright installed above.
@@ -83,25 +85,25 @@ node scripts/gen-downloads.mjs check
 grep -q '<enclosure url="https://krizaka-assets.b-cdn.net/sites/blog/posts/downloads/' out/feed.xml
 grep -q 'rel="enclosure" type="application/pdf"' out/fr/atom.xml
 grep -q '"attachments"' out/feed.json
-echo "::endgroup::"
+echo "$ENDGROUP"
 
 echo "::group::Core Web Vitals budget (LCP <= 2.5 s, CLS <= 0.1, phone window, CPU x4)"
 node scripts/check-vitals.mjs --base http://localhost:3000 --posts out
-echo "::endgroup::"
+echo "$ENDGROUP"
 
 echo "::group::The feeds are pure XML a reader accepts (no XSLT); the old /feed/ page is a stub to the story"
 for f in out/feed.xml out/fr/feed.xml out/atom.xml out/fr/atom.xml; do python3 -c "import sys, xml.dom.minidom as m; m.parse(sys.argv[1])" "$f"; done
 ! grep -q 'xml-stylesheet' out/feed.xml out/fr/feed.xml out/atom.xml out/fr/atom.xml
-test ! -e out/feed.xsl
+[[ ! -e out/feed.xsl ]]
 grep -q 'http-equiv="refresh" content="0; url=/"' out/feed/index.html
 grep -q 'http-equiv="refresh" content="0; url=/fr/"' out/fr/feed/index.html
 for p in out/index.html out/fr/index.html; do grep -q 'id="subscribe"' "$p"; done
 grep -q 'href="#subscribe"' out/basics/understanding-ai-before-you-start/index.html
 grep -q 'id="subscribe"' out/basics/understanding-ai-before-you-start/index.html
-echo "::endgroup::"
+echo "$ENDGROUP"
 
 echo "::group::Open Graph images, feeds listing, retired addresses"
-test -f out/og/understanding-ai-before-you-start.png && test -f out/fr/og/understanding-ai-before-you-start.png
+[[ -f out/og/understanding-ai-before-you-start.png && -f out/fr/og/understanding-ai-before-you-start.png ]]
 grep -q "/story/what-a-gpu-costs/" out/feed.xml && grep -q "/fr/story/what-a-gpu-costs/" out/fr/atom.xml
 grep -q 'http-equiv="refresh" content="0; url=/story/what-a-gpu-costs/"' out/posts/what-image-and-video-generation-costs/index.html
 for p in story series tags search saved feed posts; do
@@ -109,4 +111,4 @@ for p in story series tags search saved feed posts; do
   grep -q 'http-equiv="refresh" content="0; url=/fr/"' "out/fr/$p/index.html"
 done
 grep -q 'http-equiv="refresh" content="0; url=/story/what-a-gpu-costs/"' out/tags/costs/index.html
-echo "::endgroup::"
+echo "$ENDGROUP"

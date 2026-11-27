@@ -304,3 +304,17 @@ test("a long cover description (the alt of a cover can be a sentence) is cut to 
   assert.ok(html.includes("<img"));
   assert.ok(html.includes('…"'), "cut with an ellipsis");
 });
+
+test("coverOf falls back to the widest rendition when none reaches 1200 px", () => {
+  const narrow = {
+    tiny: {
+      renditions: {
+        webp: [
+          { w: 480, url: "https://cdn/tiny-480.webp" },
+          { w: 768, url: "https://cdn/tiny-768.webp" },
+        ],
+      },
+    },
+  };
+  assert.equal(coverOf(narrow, "tiny"), "https://cdn/tiny-768.webp");
+});

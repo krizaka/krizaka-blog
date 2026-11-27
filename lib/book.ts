@@ -10,7 +10,7 @@ export function chaptersAround(
   const at = publishedTime(post);
   const byTime = [...chapters].sort((a, b) => publishedTime(a) - publishedTime(b) || a.chapter - b.chapter);
   return {
-    before: byTime.filter((c) => publishedTime(c) <= at).at(-1),
+    before: byTime.findLast((c) => publishedTime(c) <= at),
     after: byTime.find((c) => publishedTime(c) > at),
   };
 }
