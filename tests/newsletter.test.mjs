@@ -8,6 +8,10 @@ import {
   requestSend,
   newsletterEnabled,
   assertDelivered,
+  resolveSlugs,
+  formatDryRunSummary,
+  deliverSlug,
+  cli,
 } from "../scripts/newsletter-send.mjs";
 
 const require = createRequire(import.meta.url);
@@ -890,4 +894,153 @@ test("the list's connection gives every statement a timeout", () => {
     "utf8",
   );
   assert.match(src, /new Client\(\{[^}]*statement_timeout: STATEMENT_TIMEOUT_MS/);
+});
+
+test("resolveSlugs validates explicit slugs, skips empty/zero before, and diffs commits otherwise", () => {
+  assert.deepEqual(resolveSlugs("valid-slug-1", undefined, "HEAD"), ["valid-slug-1"]);
+  assert.throws(() => resolveSlugs("Bad_Slug", undefined, "HEAD"), /--slug must be a post's slug/);
+  const origLog = console.log;
+  const logs = [];
+  console.log = (...a) => logs.push(a.join(" "));
+  try {
+    assert.equal(resolveSlugs(undefined, undefined, "HEAD"), null);
+    assert.equal(resolveSlugs(undefined, "0000000000000000000000000000000000000000", "HEAD"), null);
+    const filesBefore = { "content/posts/demo.en.mdx": post(true) };
+    const filesAfter = { "content/posts/demo.en.mdx": post(false) };
+    const slugs = resolveSlugs(undefined, "aaa", "bbb", {
+      gitImpl: () => "content/posts/demo.en.mdx\n",
+      showImpl: (rev, p) => (rev === "aaa" ? (filesBefore[p] ?? null) : (filesAfter[p] ?? null)),
+    });
+    assert.deepEqual(slugs, ["demo"]);
+  } finally {
+    console.log = origLog;
+  }
+});
+
+test("formatDryRunSummary serialises each rendered locale summary", () => {
+  const summary = JSON.parse(
+    formatDryRunSummary({
+      en: { title: "Hi", url: "https://blog.krizaka.com/posts/hi/", subject: "Sub", html: "<p>Hi</p>" },
+      fr: {
+        title: "Salut",
+        url: "https://blog.krizaka.com/fr/posts/hi/",
+        subject: "Sujet",
+        coverUrl: "https://cdn/x.webp",
+        html: "<p>Salut</p>",
+      },
+    }),
+  );
+  assert.deepEqual(summary, {
+    en: { title: "Hi", url: "https://blog.krizaka.com/posts/hi/", subject: "Sub", cover: null, htmlBytes: 9 },
+    fr: {
+      title: "Salut",
+      url: "https://blog.krizaka.com/fr/posts/hi/",
+      subject: "Sujet",
+      cover: "https://cdn/x.webp",
+      htmlBytes: 12,
+    },
+  });
+});
+
+test("deliverSlug handles unpublished, dry-run, test-to, waitLive failure, and real send paths", async () => {
+  const published = { "content/posts/demo.en.mdx": post(false) };
+  const showImpl = (_rev, p) => published[p] ?? null;
+  const origLog = console.log;
+  const logs = [];
+  console.log = (...a) => logs.push(a.join(" "));
+  try {
+    await deliverSlug("missing", { after: "HEAD", dry: true, media: {}, showImpl });
+    assert.ok(logs.some((l) => l.includes("is not published at HEAD")));
+
+    await deliverSlug("demo", { after: "HEAD", dry: true, media: {}, showImpl });
+    assert.ok(logs.some((l) => l.includes("would send demo")));
+
+    const sendFetch = (body) => async () => ({ ok: true, status: 200, text: async () => JSON.stringify(body) });
+    const testFetch = sendFetch({ test: true, sent: 1, locale: "en", to: "me@example.com" });
+    await deliverSlug("demo", {
+      after: "HEAD",
+      dry: false,
+      testTo: "me@example.com",
+      locale: "en",
+      media: {},
+      token: "tok",
+      readFileImpl: (p) => published[p] ?? null,
+      fetchImpl: testFetch,
+    });
+    assert.ok(logs.some((l) => l.includes("test e-mail of demo (en) sent to me@example.com only")));
+
+    await assert.rejects(
+      deliverSlug("demo", {
+        after: "HEAD",
+        dry: false,
+        media: {},
+        token: "tok",
+        showImpl,
+        waitLiveImpl: async () => false,
+        fetchImpl: testFetch,
+      }),
+      /is not live after 20 minutes/,
+    );
+
+    const liveFetch = sendFetch({ sent: 2, failed: 0, total: 2 });
+    await deliverSlug("demo", {
+      after: "HEAD",
+      dry: false,
+      media: {},
+      token: "tok",
+      showImpl,
+      waitLiveImpl: async () => true,
+      fetchImpl: liveFetch,
+    });
+    assert.ok(logs.some((l) => l.includes("newsletter: demo sent to 2 of 2")));
+  } finally {
+    console.log = origLog;
+  }
+});
+
+test("cli gates on enabled flag, resolves slugs, validates token, and delivers in dry-run and test-to modes", async () => {
+  const origLog = console.log;
+  const logs = [];
+  console.log = (...a) => logs.push(a.join(" "));
+  try {
+    await cli({ argv: ["node", "newsletter-send.mjs"], env: {} });
+    assert.ok(logs.some((l) => l.includes("sending is switched off")));
+
+    await cli({ argv: ["node", "newsletter-send.mjs", "--dry-run"], env: {} });
+    assert.ok(logs.some((l) => l.includes("no previous commit")));
+
+    await cli({
+      argv: ["node", "newsletter-send.mjs", "--dry-run", "--before", "aaa", "--after", "bbb"],
+      env: {},
+      gitImpl: () => "",
+      showImpl: () => null,
+    });
+    assert.ok(logs.some((l) => l.includes("no post published by these commits")));
+
+    await assert.rejects(
+      cli({
+        argv: ["node", "newsletter-send.mjs", "--slug", "demo"],
+        env: { MAIL_NEWSLETTER_ENABLED: "true" },
+        media: {},
+      }),
+      /MAIL_SEND_TOKEN is not set/,
+    );
+
+    await cli({
+      argv: ["node", "newsletter-send.mjs", "--dry-run", "--slug", "demo", "--locale", "en"],
+      env: {},
+      showImpl: (_rev, p) => (p === "content/posts/demo.en.mdx" ? post(false) : null),
+    });
+    assert.ok(logs.some((l) => l.includes("would send demo")));
+
+    // Exercise default readWorkingFile (both missing and existing file) with --test-to on a nonexistent slug
+    await cli({
+      argv: ["node", "newsletter-send.mjs", "--test-to", "me@example.com", "--slug", "no-such-post-xyz"],
+      env: { MAIL_SEND_TOKEN: "tok" },
+      media: {},
+    });
+    assert.ok(logs.some((l) => l.includes("no-such-post-xyz is not published")));
+  } finally {
+    console.log = origLog;
+  }
 });

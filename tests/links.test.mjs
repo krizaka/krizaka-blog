@@ -4,6 +4,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   decodeEntities,
+  srcsetUrls,
   extractLinks,
   resolve,
   isInternal,
@@ -11,6 +12,7 @@ import {
   isSoft,
   follow,
   checkExternal,
+  crawl,
   SOFT_HOSTS,
 } from "../scripts/check-links.mjs";
 import { resolveLinks } from "../lib/links.ts";
@@ -158,4 +160,120 @@ test("no post links to the desktop scope file that moved to krizaka-tauri-kit", 
     )
     .map((f) => f.replace(root, ""));
   assert.deepEqual(offenders, []);
+});
+
+test("srcsetUrls strips trailing commas from URL candidates without backtracking", () => {
+  assert.deepEqual(srcsetUrls("https://cdn/a.webp,,, https://cdn/b.webp 960w"), [
+    "https://cdn/a.webp",
+    "https://cdn/b.webp",
+  ]);
+});
+
+test("checkExternal falls back to GET on HEAD refusal, cancels bodies, and classifies network errors", async () => {
+  let cancelled = false;
+  const headRefused = async (_url, init) => {
+    if (init.method === "HEAD") {
+      return { status: 405, headers: new Map(), body: null };
+    }
+    return {
+      status: 200,
+      headers: new Map(),
+      body: {
+        cancel: async () => {
+          cancelled = true;
+        },
+      },
+    };
+  };
+  const ok = await checkExternal("https://example.com/get-only", { fetchImpl: headRefused, wait: 1 });
+  assert.equal(ok.status, 200);
+  assert.equal(ok.transient, false);
+  assert.equal(cancelled, true);
+
+  let timeoutCalls = 0;
+  const timedOut = await checkExternal("https://example.com/slow", {
+    tries: 2,
+    wait: 1,
+    fetchImpl: async () => {
+      timeoutCalls++;
+      const err = new Error("aborted");
+      err.name = "TimeoutError";
+      throw err;
+    },
+  });
+  assert.equal(timeoutCalls, 2);
+  assert.equal(timedOut.error, "timeout");
+  assert.equal(timedOut.transient, true);
+
+  let dnsCalls = 0;
+  const missingHost = await checkExternal("https://no-such-host.invalid/", {
+    tries: 3,
+    wait: 1,
+    fetchImpl: async () => {
+      dnsCalls++;
+      const err = new Error("fetch failed");
+      err.cause = { code: "ENOTFOUND" };
+      throw err;
+    },
+  });
+  assert.equal(dnsCalls, 1);
+  assert.equal(missingHost.error, "ENOTFOUND");
+  assert.equal(missingHost.transient, false);
+});
+
+test("crawl walks internal pages, markdown links, non-page assets, and external URLs", async () => {
+  const base = "http://localhost:3000";
+  const host = "https://blog.krizaka.com";
+  const makeResp = (status, bodyText = "", contentType = "text/html") => ({
+    status,
+    headers: new Map([["content-type", contentType]]),
+    body: { cancel: async () => {} },
+    text: async () => bodyText,
+  });
+  const routes = new Map([
+    [
+      `${base}/`,
+      makeResp(
+        200,
+        '<a href="/page/">p</a><a href="/page/">dup</a><a href="/broken/">b</a><a href="/boom/">x</a><img src="/logo.png"><a href="https://ok.example/1">ok</a><a href="https://ok.example/1">ok2</a><a href="https://dead.example/404">dead</a><a href="https://opensource.org/osd">soft</a><a href="https://flaky.example/503">flaky</a>',
+      ),
+    ],
+    [`${base}/fr/`, makeResp(200, '<a href="/page/">fr</a>')],
+    [`${base}/page/`, makeResp(200, "<p>ok</p>")],
+    [`${base}/logo.png`, makeResp(200, "png", "image/png")],
+    [`${base}/broken/`, makeResp(404, "missing")],
+    [`${base}/feed.xml`, makeResp(200, "<rss/>", "application/rss+xml")],
+    [`${base}/atom.xml`, makeResp(200, "<feed/>", "application/atom+xml")],
+    [`${base}/fr/feed.xml`, makeResp(200, "<rss/>", "application/rss+xml")],
+    [`${base}/fr/atom.xml`, makeResp(200, "<feed/>", "application/atom+xml")],
+    [`${base}/sitemap.xml`, makeResp(200, "<urlset/>", "application/xml")],
+    [`${base}/llms.txt`, makeResp(200, "Read [docs](https://ok.example/md) and [home](/page/)", "text/plain")],
+    [`${base}/404.html`, makeResp(200, "<h1>404</h1>")],
+    ["https://ok.example/1", makeResp(200)],
+    ["https://ok.example/md", makeResp(200)],
+    ["https://dead.example/404", makeResp(404)],
+    ["https://opensource.org/osd", makeResp(403)],
+    ["https://flaky.example/503", makeResp(503)],
+  ]);
+  const fetchImpl = async (url) => {
+    if (url === `${base}/boom/`) {
+      throw new Error("socket hang up");
+    }
+    return routes.get(url) ?? makeResp(404);
+  };
+  const origLog = console.log;
+  const origErr = console.error;
+  const logs = [];
+  const errs = [];
+  console.log = (...a) => logs.push(a.join(" "));
+  console.error = (...a) => errs.push(a.join(" "));
+  try {
+    const failures = await crawl({ base, host, external: true, fetchImpl, wait: 1 });
+    assert.equal(failures, 3, "internal 404, internal fetch error, and external 404");
+    assert.ok(logs.some((l) => l.includes("not fatal")));
+    assert.ok(errs.some((e) => e.includes("https://dead.example/404")));
+  } finally {
+    console.log = origLog;
+    console.error = origErr;
+  }
 });
