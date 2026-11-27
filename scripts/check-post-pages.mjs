@@ -44,7 +44,7 @@ export function bookProblems(html, { locale }) {
   const chapter = new RegExp(`^${locale === "fr" ? "/fr" : ""}/story/[^/]+/$`);
   const navs = page.tags("nav");
   const links = (nav) => page.tags("a").filter((a) => a.startIndex > nav.startIndex && a.endIndex < nav.endIndex);
-  const book = navs.find(
+  const book = navs.some(
     (nav) =>
       links(nav).some((a) => a.attribs.href === home) && links(nav).some((a) => chapter.test(a.attribs.href ?? "")),
   );
