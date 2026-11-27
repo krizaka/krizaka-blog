@@ -55,7 +55,9 @@ export function srcsetUrls(value) {
     i = skipWhile(i, (c) => /[\s,]/.test(c));
     const j = skipWhile(i, (c) => !/\s/.test(c));
     const raw = value.slice(i, j);
-    const url = raw.replace(/,+$/, "");
+    let end = raw.length;
+    while (end > 0 && raw[end - 1] === ",") end--;
+    const url = raw.slice(0, end);
     if (url) urls.push(url);
     i = raw.endsWith(",") ? j : skipWhile(j, (c) => c !== ",");
   }
