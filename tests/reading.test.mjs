@@ -120,3 +120,11 @@ test("a post's questions section becomes its FAQ: each h3 a question, the text u
   assert.deepEqual(faqOf("no section"), []);
   assert.deepEqual(faqOf("## FAQ\n\n### Q\n\nA <<script>script>x 3 > 2\n"), [{ question: "Q", answer: "A x 3 2" }]);
 });
+
+test("ATX headings handle optional closing hashes and ignore empty headings", () => {
+  assert.deepEqual(headingsOf("## Title ##\n\n##   \n\n## ###\n\n## Plain"), [
+    { id: "title", text: "Title" },
+    { id: "", text: "###" },
+    { id: "plain", text: "Plain" },
+  ]);
+});

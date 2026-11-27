@@ -99,6 +99,14 @@ export function coverProblems(html) {
   return out;
 }
 
+function stripTrailingSlashes(value) {
+  let end = value.length;
+  while (end > 0 && value[end - 1] === "/") {
+    end--;
+  }
+  return value.slice(0, end);
+}
+
 /* A retired post's stub (app/components/pages/RetiredPost.tsx): no title, description or h1, but a 0-second refresh, a canonical to
    the same address, noindex and a visible link to it. The problems; an empty list when it is fine. */
 export function stubProblems(html) {
@@ -109,7 +117,7 @@ export function stubProblems(html) {
   if (!refresh) out.push("a stub needs a 0-second refresh (meta http-equiv=refresh)");
   const canonical = page.tags("link", (el) => el.attribs.rel?.toLowerCase() === "canonical")[0]?.attribs.href;
   if (!canonical) out.push("a stub needs a canonical");
-  else if (refresh && !canonical.replace(/\/+$/, "").endsWith(refresh.replace(/\/+$/, "")))
+  else if (refresh && !stripTrailingSlashes(canonical).endsWith(stripTrailingSlashes(refresh)))
     out.push(`the stub's canonical (${canonical}) is not its refresh target (${refresh})`);
   const robots = metaNamed(page, "robots")?.attribs.content ?? "";
   if (!robots.toLowerCase().includes("noindex")) out.push("a stub is not noindex");

@@ -52,7 +52,11 @@ export function srcsetUrls(value) {
     while (j < value.length && !/\s/.test(value[j])) j++;
     let url = value.slice(i, j);
     const endsWithComma = url.endsWith(",");
-    url = url.replace(/,+$/, "");
+    let end = url.length;
+    while (end > 0 && url[end - 1] === ",") {
+      end--;
+    }
+    url = url.slice(0, end);
     if (url) urls.push(url);
     i = j;
     if (!endsWithComma) {

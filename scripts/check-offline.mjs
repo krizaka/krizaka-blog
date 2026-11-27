@@ -38,7 +38,7 @@ function strayProblems(manifest, chapters) {
 /** The worker: one classic script, whose precache holds the offline pages and the manifest, every file there and nothing never cached. */
 function workerProblems(out, sw) {
   const problems = [];
-  if (/^\s*import[\s{]/m.test(sw) || sw.includes("__WB_MANIFEST"))
+  if (sw.split(/\r?\n/).some((line) => /^\s*import[\s{]/.test(line)) || sw.includes("__WB_MANIFEST"))
     problems.push("sw.js is not a bundled classic script");
   const precached = [...sw.matchAll(/url"?:\s*"([^"]+)"/g)].map((m) => m[1]);
   for (const need of ["/offline/", "/fr/offline/", "/offline-manifest.json"])

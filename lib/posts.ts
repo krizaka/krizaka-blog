@@ -162,8 +162,8 @@ export const postsWithTag = (locale: Locale, tag: string): Post[] =>
 export const plainText = (body: string): string =>
   body
     .replace(/```[\s\S]*?```/g, " ")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/<[^<>]+>/g, " ")
+    .replace(/!?\[([^\[\]]*)\]\([^()]*\)/g, "$1")
     .replace(/[#>*_`|~-]+/g, " ")
     .replace(/\s+/g, " ")
     .trim();

@@ -6,10 +6,35 @@ import GithubSlugger from "github-slugger";
 
 export type Heading = { id: string; text: string };
 
+function stripClosingHashes(raw: string): string {
+  const trimmed = raw.trimEnd();
+  let end = trimmed.length;
+  while (end > 0 && trimmed[end - 1] === "#") {
+    end--;
+  }
+  const stripped = trimmed.slice(0, end).trimEnd();
+  return stripped || trimmed;
+}
+
+function parseAtxHeading(line: string, minLevel: number, maxLevel: number): { hashes: string; raw: string } | null {
+  let level = 0;
+  while (level < line.length && line[level] === "#") {
+    level++;
+  }
+  if (level < minLevel || level > maxLevel || level >= line.length || !/\s/.test(line[level])) {
+    return null;
+  }
+  const rest = line.slice(level).trimStart();
+  if (!rest) {
+    return null;
+  }
+  return { hashes: line.slice(0, level), raw: stripClosingHashes(rest) };
+}
+
 /** The words of a Markdown heading as rendered: links keep their text, code and emphasis marks go. */
 const headingText = (raw: string): string =>
   raw
-    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/!?\[([^[\]]*)\]\([^()]*\)/g, "$1")
     .replace(/`([^`]*)`/g, "$1")
     .replace(/(\*\*|__|\*|_)(.+?)\1/g, "$2")
     .split(/[<>]/)
@@ -25,11 +50,11 @@ export function headingsOf(body: string): Heading[] {
   for (const line of body.split("\n")) {
     if (/^\s*(```|~~~)/.test(line)) fence = !fence;
     if (fence) continue;
-    const m = line.match(/^(#{1,6})\s+(.+?)\s*#*\s*$/);
+    const m = parseAtxHeading(line, 1, 6);
     if (!m) continue;
-    const text = headingText(m[2]);
+    const text = headingText(m.raw);
     const id = slugger.slug(text);
-    if (m[1].length === 2) out.push({ id, text });
+    if (m.hashes.length === 2) out.push({ id, text });
   }
   return out;
 }
@@ -86,7 +111,7 @@ function withoutTags(raw: string): string {
 
 /** The words of a Markdown/MDX passage as a reader sees them: links and <Model> keep their text, marks and tags go. */
 const plainText = (raw: string): string =>
-  withoutTags(raw.replace(/<Model\b[^>]*>([\s\S]*?)<\/Model>/g, "$1").replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1"))
+  withoutTags(raw.replace(/!?\[([^[\]]*)\]\([^()]*\)/g, "$1"))
     .replace(/`([^`]*)`/g, "$1")
     .replace(/(\*\*|__|\*|_)(.+?)\1/g, "$2")
     .replace(/\s+/g, " ")
@@ -106,16 +131,16 @@ export function faqOf(body: string): Faq[] {
   };
   for (const line of body.split("\n")) {
     if (/^\s*(```|~~~)/.test(line)) fence = !fence;
-    const h = fence ? null : line.match(/^(#{2,3})\s+(.+?)\s*#*\s*$/);
-    if (h && h[1] === "##") {
+    const h = fence ? null : parseAtxHeading(line, 2, 3);
+    if (h && h.hashes === "##") {
       flush();
-      inFaq = FAQ_HEADING.test(headingText(h[2]));
+      inFaq = FAQ_HEADING.test(headingText(h.raw));
       continue;
     }
     if (!inFaq) continue;
-    if (h && h[1] === "###") {
+    if (h && h.hashes === "###") {
       flush();
-      current = { question: headingText(h[2]), lines: [] };
+      current = { question: headingText(h.raw), lines: [] };
       continue;
     }
     current?.lines.push(line);
