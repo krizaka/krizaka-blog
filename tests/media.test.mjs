@@ -172,3 +172,22 @@ test("a diagram drawn from code cannot be a post's cover", async () => {
     problems.join("\n"),
   );
 });
+
+test("coverOf resolves renditions, plain images, and video posters from lib/media.ts", async () => {
+  const { coverOf, hasMedia, mediaIds, mediaOf } = await import("../lib/media.ts");
+  assert.ok(mediaIds().length > 0);
+  assert.equal(hasMedia("gallery-mini-souk"), true);
+  assert.equal(hasMedia("no-such-media"), false);
+  assert.throws(() => mediaOf("no-such-media"), /has no media/);
+
+  const withRenditions = coverOf("gallery-mini-souk");
+  assert.match(withRenditions.src, /\.webp$/);
+  assert.ok(withRenditions.srcSet?.includes("768w"));
+
+  const plainImage = coverOf("gallery-tea-pour");
+  assert.ok(plainImage.src.length > 0);
+  assert.ok(plainImage.srcSet && plainImage.srcSet.length > 0);
+
+  const video = coverOf("clip-tea-pour");
+  assert.ok(video.src.length > 0);
+});

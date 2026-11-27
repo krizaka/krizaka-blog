@@ -27,7 +27,7 @@ export function coverOf(media, id) {
   const list = media?.[id]?.renditions?.webp;
   if (!Array.isArray(list) || !list.length) return undefined;
   const sorted = [...list].sort((a, b) => a.w - b.w);
-  return (sorted.find((r) => r.w >= COVER_WIDTH) ?? sorted[sorted.length - 1]).url;
+  return (sorted.find((r) => r.w >= COVER_WIDTH) ?? sorted.at(-1)).url;
 }
 
 /** One language's e-mail: { subject, html, text, headers }, placeholders in place of the reader's own values. */

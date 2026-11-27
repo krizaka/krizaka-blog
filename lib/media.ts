@@ -3,8 +3,8 @@
    result (model, prompt, seed, machine, time, cost, Sovkora run id) read from the Sovkora records that made it
    (`sovkora-web` gallery.ts · gallery-clips.ts · model-compare.ts, `sovkora` docs/measurements/runs.json).
    A figure of a post is `<Figure id="…" alt="…" />`; a clip is `<Clip id="…" alt="…" />`. Nothing here is typed by hand. */
-import data from "./media.json";
-import { BLUR } from "./blur";
+import data from "./media.json" with { type: "json" };
+import { BLUR } from "./blur.ts";
 
 export type Made = {
   model: string;
@@ -80,7 +80,8 @@ export function coverOf(id: string): Cover {
   const r = m.renditions;
   if (r && r.webp.length > 0) {
     const webp = [...r.webp].sort((a, b) => a.w - b.w);
-    const src = (webp.find((s) => s.w >= 768) ?? webp[webp.length - 1]).url;
+    const picked = webp.find((s) => s.w >= 768) ?? webp.at(-1);
+    const src = picked?.url ?? "";
     return {
       src,
       srcSet: set(webp),
@@ -92,8 +93,9 @@ export function coverOf(id: string): Cover {
   }
   if (m.kind === "video") return { src: m.poster, width: m.width, height: m.height, blur: m.blur };
   const sorted = [...m.srcs].sort((a, b) => a.w - b.w);
+  const picked = sorted.find((s) => s.w >= 960) ?? sorted.at(-1);
   return {
-    src: (sorted.find((s) => s.w >= 960) ?? sorted[sorted.length - 1]).url,
+    src: picked?.url ?? "",
     srcSet: set(sorted),
     width: m.width,
     height: m.height,
