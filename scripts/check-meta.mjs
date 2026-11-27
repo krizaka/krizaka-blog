@@ -17,11 +17,11 @@ const decode = (s) =>
   s
     .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(Number.parseInt(h, 16)))
     .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
-    .replace(/&quot;/g, '"')
-    .replace(/&apos;/g, "'")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&amp;/g, "&");
+    .replaceAll("&quot;", '"')
+    .replaceAll("&apos;", "'")
+    .replaceAll("&lt;", "<")
+    .replaceAll("&gt;", ">")
+    .replaceAll("&amp;", "&");
 
 /** The text between tags, outside <script> and <style> (a scan, not a sanitizer: the build's own HTML, read for a check).
     `prose`: also outside <pre>, the code blocks, where `undefined` is a word of the language quoted, not a broken figure. */

@@ -55,7 +55,7 @@ export async function withRenderedEmails(versions) {
 
 /** The image URLs of a rendered e-mail (what a client would fetch). */
 export const imagesOf = (html) =>
-  [...html.matchAll(/<img\b[^>]*?\ssrc="([^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, "&"));
+  [...html.matchAll(/<img\b[^>]*?\ssrc="([^"]+)"/g)].map((m) => m[1].replaceAll("&amp;", "&"));
 
 /** The placeholder of the signed token in the confirmation link, identical to the function's CONFIRM_TOKEN (tests/newsletter.test.mjs). */
 export const CONFIRM_TOKEN = "__CONFIRM_TOKEN__";

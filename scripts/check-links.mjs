@@ -36,10 +36,10 @@ export const decodeEntities = (v) =>
   v
     .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(Number.parseInt(h, 16)))
     .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
-    .replace(/&quot;/g, '"')
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&amp;/g, "&");
+    .replaceAll("&quot;", '"')
+    .replaceAll("&lt;", "<")
+    .replaceAll("&gt;", ">")
+    .replaceAll("&amp;", "&");
 
 /** The URLs of a srcset, read as the HTML spec reads them: a URL runs to the next whitespace (a data: URL keeps its
     comma), then its descriptor runs to the next comma. */
