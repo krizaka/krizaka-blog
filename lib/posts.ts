@@ -81,7 +81,7 @@ function parseUpdated(value: unknown): string | undefined {
   if (value instanceof Date) {
     return value.toISOString().slice(0, 10);
   }
-  return String(value);
+  return typeof value === "string" || typeof value === "number" ? String(value) : undefined;
 }
 
 export function parsePost(file: string, source: string): Post {

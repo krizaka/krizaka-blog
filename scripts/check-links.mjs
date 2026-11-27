@@ -45,23 +45,19 @@ export const decodeEntities = (v) =>
     comma), then its descriptor runs to the next comma. */
 export function srcsetUrls(value) {
   const urls = [];
+  const skipWhile = (from, test) => {
+    let k = from;
+    while (k < value.length && test(value[k])) k++;
+    return k;
+  };
   let i = 0;
   while (i < value.length) {
-    while (i < value.length && /[\s,]/.test(value[i])) i++;
-    let j = i;
-    while (j < value.length && !/\s/.test(value[j])) j++;
-    let url = value.slice(i, j);
-    const endsWithComma = url.endsWith(",");
-    let end = url.length;
-    while (end > 0 && url[end - 1] === ",") {
-      end--;
-    }
-    url = url.slice(0, end);
+    i = skipWhile(i, (c) => /[\s,]/.test(c));
+    const j = skipWhile(i, (c) => !/\s/.test(c));
+    const raw = value.slice(i, j);
+    const url = raw.replace(/,+$/, "");
     if (url) urls.push(url);
-    i = j;
-    if (!endsWithComma) {
-      while (i < value.length && value[i] !== ",") i++;
-    }
+    i = raw.endsWith(",") ? j : skipWhile(j, (c) => c !== ",");
   }
   return urls;
 }

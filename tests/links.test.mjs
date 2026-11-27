@@ -271,7 +271,8 @@ test("crawl walks internal pages, markdown links, non-page assets, and external 
     const failures = await crawl({ base, host, external: true, fetchImpl, wait: 1 });
     assert.equal(failures, 3, "internal 404, internal fetch error, and external 404");
     assert.ok(logs.some((l) => l.includes("not fatal")));
-    assert.ok(errs.some((e) => e.includes("https://dead.example/404")));
+    const brokenUrls = errs.map((e) => e.split(" ")[1]).filter((u) => URL.canParse(u));
+    assert.ok(brokenUrls.some((u) => new URL(u).host === "dead.example" && new URL(u).pathname === "/404"));
   } finally {
     console.log = origLog;
     console.error = origErr;
