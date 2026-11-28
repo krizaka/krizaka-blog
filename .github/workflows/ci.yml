@@ -20,7 +20,7 @@ concurrency:
 
 jobs:
   ci:
-    uses: krizaka/.github/.github/workflows/node-ci.yml@b44f5bd2fd388e70c62d22542f61eb7d4d9939ee # main
+    uses: krizaka/.github/.github/workflows/node-ci.yml@3ed4594243c9874520122685c597faf0cdeecd89 # main
     permissions:
       contents: read
       actions: read  # asked by node-ci.yml (propagate-pins)
